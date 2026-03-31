@@ -1,5 +1,5 @@
+import 'package:calculus_system/modules/two-point%20slope/solver/two_point_slope_solver.dart';
 import 'package:flutter/material.dart';
-import '../solver/two_point_slope_solver.dart';
 
 // ─────────────────────────────────────────────────────────────
 // CONTROLLER
@@ -26,10 +26,10 @@ class TwoPointSlopeController extends ChangeNotifier {
   String? _errorMessage;
 
   // ── Getters ───────────────────────────────────────────────
-  SolveState get state        => _state;
+  SolveState get state => _state;
   TwoPointSlopeResult? get result => _result;
-  String? get errorMessage    => _errorMessage;
-  bool get hasSolved          => _state == SolveState.solved;
+  String? get errorMessage => _errorMessage;
+  bool get hasSolved => _state == SolveState.solved;
 
   // ── Solve ─────────────────────────────────────────────────
   void solve() {
@@ -42,7 +42,10 @@ class TwoPointSlopeController extends ChangeNotifier {
       final y2 = double.parse(y2Controller.text.trim());
 
       _result = TwoPointSlopeSolver.solve(
-        x1: x1, y1: y1, x2: x2, y2: y2,
+        x1: x1,
+        y1: y1,
+        x2: x2,
+        y2: y2,
       );
       _state = SolveState.solved;
       _errorMessage = null;

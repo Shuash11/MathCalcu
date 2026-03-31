@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
-import '../core/module_registry.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class DistanceModuleCard extends StatefulWidget {
   final ModuleEntry module;
@@ -44,13 +44,17 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
               color: context.watch<ThemeProvider>().card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: _hovered ? orange.withValues(alpha :0.4) : orange.withValues(alpha :0.18),
+                color: _hovered
+                    ? orange.withValues(alpha: 0.4)
+                    : orange.withValues(alpha: 0.18),
                 width: _hovered ? 2 : 1,
               ),
               boxShadow: [
                 // Enhanced shadow on hover
                 BoxShadow(
-                  color: _hovered ? orange.withValues(alpha :0.2) : orange.withValues(alpha :0.08),
+                  color: _hovered
+                      ? orange.withValues(alpha: 0.2)
+                      : orange.withValues(alpha: 0.08),
                   blurRadius: _hovered ? 36 : 24,
                   offset: const Offset(0, 8),
                   spreadRadius: _hovered ? 2 : 0,
@@ -80,7 +84,7 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                       height: _hovered ? 160 : 120,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: orange.withValues(alpha :_hovered ? 0.12 : 0.07),
+                        color: orange.withValues(alpha: _hovered ? 0.12 : 0.07),
                       ),
                     ),
                   ),
@@ -97,7 +101,7 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                       height: _hovered ? 140 : 100,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: orange.withValues(alpha :_hovered ? 0.1 : 0.05),
+                        color: orange.withValues(alpha: _hovered ? 0.1 : 0.05),
                       ),
                     ),
                   ),
@@ -115,10 +119,10 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                         height: 80,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: deepOrange.withValues(alpha :0.15),
+                          color: deepOrange.withValues(alpha: 0.15),
                           boxShadow: [
                             BoxShadow(
-                              color: orange.withValues(alpha :0.3),
+                              color: orange.withValues(alpha: 0.3),
                               blurRadius: 20,
                               spreadRadius: 5,
                             ),
@@ -143,18 +147,21 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                orange.withValues(alpha :_hovered ? 0.2 : 0.12),
-                                orange.withValues(alpha :_hovered ? 0.1 : 0.05),
+                                orange.withValues(alpha: _hovered ? 0.2 : 0.12),
+                                orange.withValues(alpha: _hovered ? 0.1 : 0.05),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: _hovered ? orange.withValues(alpha :0.5) : orange.withValues(alpha :0.25),
+                              color: _hovered
+                                  ? orange.withValues(alpha: 0.5)
+                                  : orange.withValues(alpha: 0.25),
                               width: _hovered ? 2 : 1,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: orange.withValues(alpha :_hovered ? 0.3 : 0.15),
+                                color: orange.withValues(
+                                    alpha: _hovered ? 0.3 : 0.15),
                                 blurRadius: _hovered ? 16 : 8,
                                 offset: const Offset(0, 4),
                               ),
@@ -164,7 +171,9 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               transform: _hovered
-                                  ? (Matrix4.identity()..scale(1.15)..rotateZ(0.1))
+                                  ? (Matrix4.identity()
+                                    ..scale(1.15)
+                                    ..rotateZ(0.1))
                                   : Matrix4.identity(),
                               child: Icon(
                                 widget.module.icon,
@@ -186,7 +195,11 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
-                                  color: _hovered ? lightOrange : context.watch<ThemeProvider>().textPrimary,
+                                  color: _hovered
+                                      ? lightOrange
+                                      : context
+                                          .watch<ThemeProvider>()
+                                          .textPrimary,
                                   letterSpacing: -0.4,
                                 ),
                                 child: Text(widget.module.label),
@@ -196,9 +209,11 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                                 duration: const Duration(milliseconds: 200),
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: _hovered 
-                                      ? lightOrange.withValues(alpha :0.7) 
-                                      : context.watch<ThemeProvider>().textSecondary,
+                                  color: _hovered
+                                      ? lightOrange.withValues(alpha: 0.7)
+                                      : context
+                                          .watch<ThemeProvider>()
+                                          .textSecondary,
                                 ),
                                 child: Text(widget.module.subtitle),
                               ),
@@ -216,16 +231,22 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
-                              color: _hovered ? orange.withValues(alpha :0.15) : Colors.transparent,
+                              color: _hovered
+                                  ? orange.withValues(alpha: 0.15)
+                                  : Colors.transparent,
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: _hovered ? orange.withValues(alpha :0.4) : orange.withValues(alpha :0.2),
+                                color: _hovered
+                                    ? orange.withValues(alpha: 0.4)
+                                    : orange.withValues(alpha: 0.2),
                                 width: 1.5,
                               ),
                             ),
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
-                              color: _hovered ? lightOrange : orange.withValues(alpha :0.6),
+                              color: _hovered
+                                  ? lightOrange
+                                  : orange.withValues(alpha: 0.6),
                               size: 16,
                             ),
                           ),

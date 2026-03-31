@@ -1,6 +1,6 @@
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../theme/theme_provider.dart';
 
 // ═════════════════════════════════════════════════════════════
 // JOASHUA — INEQUALITY MODULE THEME
@@ -16,10 +16,14 @@ class InequalityTheme {
   // ──────────────────────────────────────────────────────────
 
   // Dynamic values using BuildContext
-  static Color surface(BuildContext context) => context.watch<ThemeProvider>().surface;
-  static Color card(BuildContext context) => context.watch<ThemeProvider>().card;
-  static Color text(BuildContext context) => context.watch<ThemeProvider>().textPrimary;
-  static Color textSecondary(BuildContext context) => context.watch<ThemeProvider>().textSecondary;
+  static Color surface(BuildContext context) =>
+      context.watch<ThemeProvider>().surface;
+  static Color card(BuildContext context) =>
+      context.watch<ThemeProvider>().card;
+  static Color text(BuildContext context) =>
+      context.watch<ThemeProvider>().textPrimary;
+  static Color textSecondary(BuildContext context) =>
+      context.watch<ThemeProvider>().textSecondary;
 
   static const Map<String, Color> subtypeAccents = {
     'strict': Color(0xFF6C63FF),

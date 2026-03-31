@@ -1,6 +1,6 @@
+import 'package:calculus_system/modules/pointslope/Theme/pointslopetheme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import '../Theme/pointslopetheme.dart';
 
 /// ── Card shell ────────────────────────────────
 class PSCard extends StatelessWidget {
@@ -13,7 +13,9 @@ class PSCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: PSTheme.cardGradient(context),
         borderRadius: BorderRadius.circular(PSTheme.radiusCard),
-        border: Border.all(color: PSTheme.glowPurple(0.25).withValues(alpha: 0.15), width: 1.5),
+        border: Border.all(
+            color: PSTheme.glowPurple(0.25).withValues(alpha: 0.15),
+            width: 1.5),
         boxShadow: PSTheme.cardShadow(context),
       ),
       child: ClipRRect(
@@ -259,7 +261,9 @@ class PSTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: PSTheme.isLight(context) ? Colors.black.withValues(alpha: 0.03) : Colors.white.withValues(alpha: 0.04),
+        color: PSTheme.isLight(context)
+            ? Colors.black.withValues(alpha: 0.03)
+            : Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(PSTheme.radiusInput),
         border: Border.all(
           color: PSTheme.glowPurple(0.2).withValues(alpha: 0.15),
@@ -276,7 +280,8 @@ class PSTextField extends StatelessWidget {
         ],
         style: PSTheme.inputTextStyle(context),
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           border: InputBorder.none,
           hintText: '3/4 or 1.5',
           hintStyle: PSTheme.inputHintStyle(context),
@@ -374,9 +379,9 @@ class PSResultBanner extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ] else ...[
-            Text('Enter values above', style: PSTheme.placeholderStyle(context)),
+            Text('Enter values above',
+                style: PSTheme.placeholderStyle(context)),
           ],
-
           if (tappable) ...[
             const SizedBox(height: 12),
             const Divider(),

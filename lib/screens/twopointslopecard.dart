@@ -1,8 +1,8 @@
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../core/module_registry.dart';
 
 class TwoPointSlopeModuleCard extends StatefulWidget {
   final ModuleEntry module;
@@ -17,9 +17,9 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color _amber     = Color(0xFFF59E0B);
+  static const Color _amber = Color(0xFFF59E0B);
   static const Color _deepAmber = Color(0xFFB45309);
-  static const Color _softGold  = Color(0xFFFCD34D);
+  static const Color _softGold = Color(0xFFFCD34D);
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,8 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                       child: CustomPaint(
                         size: const Size(48, 30),
                         painter: _TwoPointPainter(
-                          color: _softGold.withValues(alpha: _hovered ? 0.8 : 0.4),
+                          color:
+                              _softGold.withValues(alpha: _hovered ? 0.8 : 0.4),
                           strokeWidth: _hovered ? 3 : 2,
                         ),
                       ),
@@ -213,7 +214,9 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                   fontWeight: FontWeight.w600,
                                   color: _hovered
                                       ? _softGold
-                                      : context.watch<ThemeProvider>().textPrimary,
+                                      : context
+                                          .watch<ThemeProvider>()
+                                          .textPrimary,
                                   letterSpacing: -0.4,
                                 ),
                                 child: Text(widget.module.label),
@@ -225,7 +228,9 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                   fontSize: 13,
                                   color: _hovered
                                       ? _softGold.withValues(alpha: 0.7)
-                                      : context.watch<ThemeProvider>().textSecondary,
+                                      : context
+                                          .watch<ThemeProvider>()
+                                          .textSecondary,
                                 ),
                                 child: Text(widget.module.subtitle),
                               ),

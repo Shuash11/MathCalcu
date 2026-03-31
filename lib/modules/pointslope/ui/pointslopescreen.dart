@@ -1,8 +1,8 @@
 // lib/ui/point_slope_screen.dart
+import 'package:calculus_system/modules/pointslope/Theme/pointslopetheme.dart';
+import 'package:calculus_system/modules/pointslope/solver/pointslopesolver.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../Theme/pointslopetheme.dart';
-import '../solver/pointslopesolver.dart';
 import 'pointslopesubwidget.dart';
 import 'package:calculus_system/modules/pointslope/solver/pointslopesteps.dart';
 
@@ -179,7 +179,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                       const SizedBox(height: 20),
                       const PSFormulaBanner(),
                       const SizedBox(height: 20),
-
                       RepaintBoundary(
                         child: PSInputsRow(
                           mCtrl: _mCtrl,
@@ -187,11 +186,9 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                           y1Ctrl: _y1Ctrl,
                         ),
                       ),
-
                       const SizedBox(height: 20),
                       const PSDivider(),
                       const SizedBox(height: 20),
-
                       ValueListenableBuilder<_ResultData?>(
                         valueListenable: _resultNotifier,
                         builder: (context, result, _) {
@@ -206,9 +203,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                           );
                         },
                       ),
-
                       const SizedBox(height: 14),
-
                       ValueListenableBuilder<_GraphStrings?>(
                         valueListenable: _graphStringsNotifier,
                         builder: (context, strings, _) {
@@ -219,9 +214,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                           );
                         },
                       ),
-
                       const SizedBox(height: 12),
-
                       ValueListenableBuilder<Map<String, String>?>(
                         valueListenable: _badgesNotifier,
                         builder: (context, badges, _) {

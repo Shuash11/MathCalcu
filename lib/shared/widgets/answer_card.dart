@@ -1,7 +1,7 @@
+import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import '../../core/solve_result.dart';
 import 'package:provider/provider.dart';
-import '../../theme/theme_provider.dart';
 
 // ─────────────────────────────────────────────────────────────
 // ANSWER CARD — shared widget used by ALL modules
@@ -69,14 +69,14 @@ class _AnswerCardState extends State<AnswerCard>
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                accent.withValues(alpha :0.15),
-                accent.withValues(alpha :0.05),
+                accent.withValues(alpha: 0.15),
+                accent.withValues(alpha: 0.05),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: accent.withValues(alpha :0.3), width: 1),
+            border: Border.all(color: accent.withValues(alpha: 0.3), width: 1),
           ),
           child: Row(
             children: [
@@ -89,7 +89,7 @@ class _AnswerCardState extends State<AnswerCard>
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: accent.withValues(alpha :0.7),
+                        color: accent.withValues(alpha: 0.7),
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -128,7 +128,7 @@ class _AnswerCardState extends State<AnswerCard>
                     'Steps',
                     style: TextStyle(
                       fontSize: 10,
-                      color: accent.withValues(alpha :0.7),
+                      color: accent.withValues(alpha: 0.7),
                       letterSpacing: 0.5,
                     ),
                   ),

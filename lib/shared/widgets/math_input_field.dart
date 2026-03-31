@@ -1,6 +1,6 @@
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../theme/theme_provider.dart';
 
 // ─────────────────────────────────────────────────────────────
 // MATH INPUT FIELD
@@ -36,6 +36,7 @@ class _MathInputFieldState extends State<MathInputField> {
     _focusNode.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();

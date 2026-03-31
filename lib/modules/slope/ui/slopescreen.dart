@@ -1,10 +1,10 @@
+import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
+import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
-import '../theme/slope_theme.dart';
-import '../types/slope_solver.dart';
-import 'slope_input_field.dart';
-import 'slope_step_dialog.dart';
 import 'slope_comparison.dart';
+import 'slope_input_field.dart';
 import 'slope_result.dart';
+import 'slope_step_dialog.dart';
 
 class SlopeScreen extends StatefulWidget {
   const SlopeScreen({super.key});

@@ -1,8 +1,8 @@
+import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
+import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../theme/slope_theme.dart';
-import '../types/slope_solver.dart';
 
 class SlopeStepItem extends StatelessWidget {
   final int number;
@@ -61,7 +61,10 @@ class SlopeStepItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.9),
+                        color: context
+                            .watch<ThemeProvider>()
+                            .textPrimary
+                            .withValues(alpha: 0.9),
                         fontFamily: 'monospace',
                       ),
                     ),
@@ -145,8 +148,7 @@ class _FinalBox extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             decoration: BoxDecoration(
               color: SlopeTheme.accentColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),

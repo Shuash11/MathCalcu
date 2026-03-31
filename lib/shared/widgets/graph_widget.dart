@@ -1,7 +1,7 @@
+import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import '../../core/solve_result.dart';
 import 'package:provider/provider.dart';
-import '../../theme/theme_provider.dart';
 
 // ─────────────────────────────────────────────────────────────
 // GRAPH WIDGET — shared container shell
@@ -30,7 +30,7 @@ class GraphWidget extends StatelessWidget {
         color: theme.cardSecondary,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: accentColor.withValues(alpha :0.12),
+          color: accentColor.withValues(alpha: 0.12),
           width: 1,
         ),
       ),
@@ -56,7 +56,7 @@ class GraphWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: accentColor.withValues(alpha :0.5),
+                  color: accentColor.withValues(alpha: 0.5),
                   letterSpacing: 1.0,
                 ),
               ),
@@ -75,7 +75,7 @@ class _GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = accentColor.withValues(alpha :0.05)
+      ..color = accentColor.withValues(alpha: 0.05)
       ..strokeWidth = 0.5;
 
     const step = 40.0;

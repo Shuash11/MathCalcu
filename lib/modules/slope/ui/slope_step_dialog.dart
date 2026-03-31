@@ -1,7 +1,8 @@
+import 'package:calculus_system/modules/slope/graph/slopegraph.dart';
+import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
+import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
-import '../theme/slope_theme.dart';
-import '../graph/slopegraph.dart';
-import '../types/slope_solver.dart';
+
 import 'slope_step.dart';
 
 class SlopeStepDialog extends StatelessWidget {
@@ -37,13 +38,14 @@ class SlopeStepDialog extends StatelessWidget {
                       children: [
                         Text(
                           'Calculation Steps',
-                          style: SlopeTheme.titleStyle(context).copyWith(fontSize: 20),
+                          style: SlopeTheme.titleStyle(context)
+                              .copyWith(fontSize: 20),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'How to find the slope',
-                          style:
-                              SlopeTheme.subtitleStyle(context).copyWith(fontSize: 12),
+                          style: SlopeTheme.subtitleStyle(context)
+                              .copyWith(fontSize: 12),
                         ),
                       ],
                     ),
@@ -96,7 +98,8 @@ class SlopeStepDialog extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _solidButton(context,
+                    child: _solidButton(
+                      context,
                       label: 'Close',
                       onTap: () => Navigator.pop(context),
                     ),
@@ -132,7 +135,8 @@ class SlopeStepDialog extends StatelessWidget {
         ),
       );
 
-  Widget _solidButton(BuildContext context, {required String label, required VoidCallback onTap}) =>
+  Widget _solidButton(BuildContext context,
+          {required String label, required VoidCallback onTap}) =>
       ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(

@@ -1,6 +1,6 @@
 import 'dart:math';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-
 import 'absolute_card.dart';
 import 'continued_card.dart';
 import 'non_strict_card.dart';
@@ -11,7 +11,6 @@ import 'strict_card.dart';
 import 'radical_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../theme/theme_provider.dart';
 
 class InequalityCardPickerScreen extends StatelessWidget {
   const InequalityCardPickerScreen({super.key});

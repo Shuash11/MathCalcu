@@ -1,6 +1,6 @@
+import 'package:calculus_system/modules/midpoint/Solver/midpointsolver.dart';
+import 'package:calculus_system/modules/midpoint/Theme/midpointtheme.dart';
 import 'package:flutter/material.dart';
-import '../Theme/midpointtheme.dart';
-import '../Solver/midpointsolver.dart';
 
 enum StepMode { midpoint, endpoint }
 
@@ -210,7 +210,8 @@ class _StepItem extends StatelessWidget {
                   child: Container(
                     width: 2,
                     margin: const EdgeInsets.symmetric(vertical: 4),
-                    color: MidpointTheme.accent(context).withValues(alpha: 0.15),
+                    color:
+                        MidpointTheme.accent(context).withValues(alpha: 0.15),
                   ),
                 ),
             ],

@@ -1,6 +1,6 @@
+import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
+import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
-import '../theme/slope_theme.dart';
-import '../types/slope_solver.dart';
 
 // ─────────────────────────────────────────────────────────────
 // SLOPE RESULT CARDS
@@ -31,8 +31,7 @@ class SlopeAnswerCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -104,8 +103,7 @@ class SlopeComparisonCard extends StatelessWidget {
           ? const Color(0xFFFFB347)
           : const Color(0xFF95E1D3);
 
-  String get _label =>
-      result.isPerpendicular ? 'Perpendicular' : 'Parallel';
+  String get _label => result.isPerpendicular ? 'Perpendicular' : 'Parallel';
 
   IconData get _icon {
     if (result.isParallel) return Icons.trending_up_rounded;
@@ -132,8 +130,7 @@ class SlopeComparisonCard extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-              color: color.withValues(alpha: 0.3), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,8 +144,7 @@ class SlopeComparisonCard extends StatelessWidget {
                     color: color.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child:
-                      Icon(_icon, color: color, size: 24),
+                  child: Icon(_icon, color: color, size: 24),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -178,13 +174,10 @@ class SlopeComparisonCard extends StatelessWidget {
                   ),
                 ),
                 Icon(Icons.arrow_forward_ios_rounded,
-                    size: 16,
-                    color: color.withValues(alpha: 0.6)),
+                    size: 16, color: color.withValues(alpha: 0.6)),
               ],
             ),
-
             const SizedBox(height: 16),
-
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -203,9 +196,7 @@ class SlopeComparisonCard extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
             Row(
               children: [
                 Expanded(

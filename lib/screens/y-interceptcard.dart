@@ -1,8 +1,8 @@
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../core/module_registry.dart';
 
 class YInterceptModuleCard extends StatefulWidget {
   final ModuleEntry module;

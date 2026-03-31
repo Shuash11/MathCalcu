@@ -1,8 +1,8 @@
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../core/module_registry.dart';
+import 'package:provider/provider.dart';
 
 class MidpointModuleCard extends StatefulWidget {
   final ModuleEntry module;
@@ -169,9 +169,8 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
-                                      color: _hovered
-                                          ? _glow
-                                          : theme.textPrimary,
+                                      color:
+                                          _hovered ? _glow : theme.textPrimary,
                                       letterSpacing: -0.5,
                                     ),
                                   ),
@@ -187,8 +186,8 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
                                       boxShadow: _hovered
                                           ? [
                                               BoxShadow(
-                                                color: _glow
-                                                    .withValues(alpha: 0.6),
+                                                color: _glow.withValues(
+                                                    alpha: 0.6),
                                                 blurRadius: 8,
                                                 spreadRadius: 2,
                                               ),

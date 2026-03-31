@@ -1,6 +1,6 @@
+import 'package:calculus_system/modules/pointslope/solver/pointslopesolver.dart';
+import 'package:calculus_system/modules/pointslope/Theme/pointslopetheme.dart';
 import 'package:flutter/material.dart';
-import '../Theme/pointslopetheme.dart';
-import '../solver/pointslopesolver.dart';
 
 class SolveStepsScreen extends StatefulWidget {
   final PointSlopeSolver solver;
@@ -24,7 +24,6 @@ class _SolveStepsScreenState extends State<SolveStepsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-
             // ── Top bar (fixed height) ──
             _buildTopBar(context),
 
@@ -52,7 +51,6 @@ class _SolveStepsScreenState extends State<SolveStepsScreen> {
 
             // ── Bottom nav (fixed height, never expands) ──
             _buildBottomBar(context),
-
           ],
         ),
       ),
@@ -73,12 +71,12 @@ class _SolveStepsScreenState extends State<SolveStepsScreen> {
           GestureDetector(
             onTap: () => Navigator.of(context).pop(),
             child: Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 color: PSTheme.glowPurple(0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                    color: PSTheme.glowPurple(0.35), width: 1.5),
+                border: Border.all(color: PSTheme.glowPurple(0.35), width: 1.5),
               ),
               child: const Icon(Icons.arrow_back_ios_new_rounded,
                   color: PSTheme.electricPurple, size: 18),
@@ -202,7 +200,9 @@ class _StepCard extends StatelessWidget {
         border: Border.all(
           color: isActive
               ? PSTheme.neonMagenta
-              : (PSTheme.isLight(context) ? PSTheme.deepViolet.withValues(alpha: 0.3) : const Color(0xFF4C1D95)),
+              : (PSTheme.isLight(context)
+                  ? PSTheme.deepViolet.withValues(alpha: 0.3)
+                  : const Color(0xFF4C1D95)),
           width: isActive ? 1.8 : 1.2,
         ),
       ),
@@ -211,12 +211,12 @@ class _StepCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // ── Number + title ──
             Row(
               children: [
                 Container(
-                  width: 30, height: 30,
+                  width: 30,
+                  height: 30,
                   decoration: BoxDecoration(
                     color: isActive
                         ? const Color(0xFF7C3AED)
@@ -274,7 +274,9 @@ class _StepCard extends StatelessWidget {
               child: Text(
                 step.explanation,
                 style: TextStyle(
-                  color: PSTheme.isLight(context) ? Colors.black87 : const Color(0xFFE9D5FF),
+                  color: PSTheme.isLight(context)
+                      ? Colors.black87
+                      : const Color(0xFFE9D5FF),
                   fontSize: 13.5,
                   height: 1.75,
                   fontFamily: 'monospace',
@@ -304,7 +306,9 @@ class _StepCard extends StatelessWidget {
                     child: Text(
                       step.result,
                       style: TextStyle(
-                        color: PSTheme.isLight(context) ? PSTheme.deepViolet : Colors.white,
+                        color: PSTheme.isLight(context)
+                            ? PSTheme.deepViolet
+                            : Colors.white,
                         fontSize: 13.5,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'monospace',
@@ -314,7 +318,6 @@ class _StepCard extends StatelessWidget {
                 ],
               ),
             ),
-
           ],
         ),
       ),

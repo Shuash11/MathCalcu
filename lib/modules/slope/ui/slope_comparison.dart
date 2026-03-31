@@ -1,7 +1,7 @@
+import 'package:calculus_system/modules/slope/graph/slopegraph.dart';
+import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
+import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
-import '../theme/slope_theme.dart';
-import '../graph/slopegraph.dart';
-import '../types/slope_solver.dart';
 import 'slope_step.dart';
 
 class SlopeComparisonDialog extends StatelessWidget {
@@ -52,12 +52,14 @@ class SlopeComparisonDialog extends StatelessWidget {
                       children: [
                         Text(
                           'Line Relationship',
-                          style: SlopeTheme.titleStyle(context).copyWith(fontSize: 20),
+                          style: SlopeTheme.titleStyle(context)
+                              .copyWith(fontSize: 20),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'How we determined if lines are parallel or perpendicular',
-                          style: SlopeTheme.subtitleStyle(context).copyWith(fontSize: 12),
+                          style: SlopeTheme.subtitleStyle(context)
+                              .copyWith(fontSize: 12),
                         ),
                       ],
                     ),
@@ -99,16 +101,18 @@ class SlopeComparisonDialog extends StatelessWidget {
               const SizedBox(height: 24),
 
               // ── Steps ──
-              ...List.generate(steps.length, (i) => Padding(
-                    padding: EdgeInsets.only(
-                      bottom: i < steps.length - 1 ? 10 : 0,
-                    ),
-                    child: SlopeStepItem(
-                      number: i + 1,
-                      step: steps[i],
-                      isFinal: i == steps.length - 1,
-                    ),
-                  )),
+              ...List.generate(
+                  steps.length,
+                  (i) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: i < steps.length - 1 ? 10 : 0,
+                        ),
+                        child: SlopeStepItem(
+                          number: i + 1,
+                          step: steps[i],
+                          isFinal: i == steps.length - 1,
+                        ),
+                      )),
 
               const SizedBox(height: 24),
 
@@ -168,15 +172,20 @@ class SlopeComparisonDialog extends StatelessWidget {
     );
   }
 
-  Widget _outlineButton({required BuildContext context, required String label, required VoidCallback onTap}) =>
+  Widget _outlineButton(
+          {required BuildContext context,
+          required String label,
+          required VoidCallback onTap}) =>
       ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: SlopeTheme.accentColor.withValues(alpha: 0.2),
           padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 0,
-          side: BorderSide(color: SlopeTheme.accentColor.withValues(alpha: 0.3)),
+          side:
+              BorderSide(color: SlopeTheme.accentColor.withValues(alpha: 0.3)),
         ),
         child: Text(
           label,
@@ -188,13 +197,17 @@ class SlopeComparisonDialog extends StatelessWidget {
         ),
       );
 
-  Widget _solidButton({required BuildContext context, required String label, required VoidCallback onTap}) =>
+  Widget _solidButton(
+          {required BuildContext context,
+          required String label,
+          required VoidCallback onTap}) =>
       ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: SlopeTheme.accentColor,
           padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 0,
         ),
         child: Text(

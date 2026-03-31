@@ -1,10 +1,10 @@
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/screens/about_sheets.dart';
 import 'package:calculus_system/screens/inequality.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../core/module_registry.dart';
 import 'distancecard.dart';
 import 'slopecard.dart';
 import 'midpointcard.dart';

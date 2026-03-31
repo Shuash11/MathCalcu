@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
-import '../core/module_registry.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class SlopeModuleCard extends StatefulWidget {
   final ModuleEntry module;
@@ -44,13 +44,17 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
               color: context.watch<ThemeProvider>().card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: _hovered ? pinkAccent.withValues(alpha :0.4) : pinkAccent.withValues(alpha :0.18),
+                color: _hovered
+                    ? pinkAccent.withValues(alpha: 0.4)
+                    : pinkAccent.withValues(alpha: 0.18),
                 width: _hovered ? 2 : 1,
               ),
               boxShadow: [
                 // Enhanced shadow on hover
                 BoxShadow(
-                  color: _hovered ? pinkAccent.withValues(alpha :0.2) : pinkAccent.withValues(alpha :0.08),
+                  color: _hovered
+                      ? pinkAccent.withValues(alpha: 0.2)
+                      : pinkAccent.withValues(alpha: 0.08),
                   blurRadius: _hovered ? 36 : 24,
                   offset: const Offset(0, 8),
                   spreadRadius: _hovered ? 2 : 0,
@@ -80,7 +84,8 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                       height: _hovered ? 160 : 120,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: pinkAccent.withValues(alpha :_hovered ? 0.12 : 0.07),
+                        color: pinkAccent.withValues(
+                            alpha: _hovered ? 0.12 : 0.07),
                       ),
                     ),
                   ),
@@ -97,7 +102,8 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                       height: _hovered ? 140 : 100,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: pinkAccent.withValues(alpha :_hovered ? 0.1 : 0.05),
+                        color:
+                            pinkAccent.withValues(alpha: _hovered ? 0.1 : 0.05),
                       ),
                     ),
                   ),
@@ -115,10 +121,10 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                         height: 60,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: deepPink.withValues(alpha :0.2),
+                          color: deepPink.withValues(alpha: 0.2),
                           boxShadow: [
                             BoxShadow(
-                              color: pinkAccent.withValues(alpha :0.3),
+                              color: pinkAccent.withValues(alpha: 0.3),
                               blurRadius: 20,
                               spreadRadius: 5,
                             ),
@@ -139,7 +145,8 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                       child: CustomPaint(
                         size: const Size(40, 30),
                         painter: _SlopeLinePainter(
-                          color: lightPink.withValues(alpha :_hovered ? 0.8 : 0.4),
+                          color:
+                              lightPink.withValues(alpha: _hovered ? 0.8 : 0.4),
                           strokeWidth: _hovered ? 3 : 2,
                         ),
                       ),
@@ -161,18 +168,23 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                pinkAccent.withValues(alpha :_hovered ? 0.2 : 0.12),
-                                pinkAccent.withValues(alpha :_hovered ? 0.1 : 0.05),
+                                pinkAccent.withValues(
+                                    alpha: _hovered ? 0.2 : 0.12),
+                                pinkAccent.withValues(
+                                    alpha: _hovered ? 0.1 : 0.05),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: _hovered ? pinkAccent.withValues(alpha :0.5) : pinkAccent.withValues(alpha :0.25),
+                              color: _hovered
+                                  ? pinkAccent.withValues(alpha: 0.5)
+                                  : pinkAccent.withValues(alpha: 0.25),
                               width: _hovered ? 2 : 1,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: pinkAccent.withValues(alpha :_hovered ? 0.3 : 0.15),
+                                color: pinkAccent.withValues(
+                                    alpha: _hovered ? 0.3 : 0.15),
                                 blurRadius: _hovered ? 16 : 8,
                                 offset: const Offset(0, 4),
                               ),
@@ -182,7 +194,9 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               transform: _hovered
-                                  ? (Matrix4.identity()..scale(1.15)..rotateZ(-0.1))
+                                  ? (Matrix4.identity()
+                                    ..scale(1.15)
+                                    ..rotateZ(-0.1))
                                   : Matrix4.identity(),
                               child: Icon(
                                 widget.module.icon,
@@ -204,7 +218,11 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
-                                  color: _hovered ? lightPink : context.watch<ThemeProvider>().textPrimary,
+                                  color: _hovered
+                                      ? lightPink
+                                      : context
+                                          .watch<ThemeProvider>()
+                                          .textPrimary,
                                   letterSpacing: -0.4,
                                 ),
                                 child: Text(widget.module.label),
@@ -214,9 +232,11 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                                 duration: const Duration(milliseconds: 200),
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: _hovered 
-                                      ? lightPink.withValues(alpha :0.7) 
-                                      : context.watch<ThemeProvider>().textSecondary,
+                                  color: _hovered
+                                      ? lightPink.withValues(alpha: 0.7)
+                                      : context
+                                          .watch<ThemeProvider>()
+                                          .textSecondary,
                                 ),
                                 child: Text(widget.module.subtitle),
                               ),
@@ -234,16 +254,22 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
-                              color: _hovered ? pinkAccent.withValues(alpha :0.15) : Colors.transparent,
+                              color: _hovered
+                                  ? pinkAccent.withValues(alpha: 0.15)
+                                  : Colors.transparent,
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: _hovered ? pinkAccent.withValues(alpha :0.4) : pinkAccent.withValues(alpha :0.2),
+                                color: _hovered
+                                    ? pinkAccent.withValues(alpha: 0.4)
+                                    : pinkAccent.withValues(alpha: 0.2),
                                 width: 1.5,
                               ),
                             ),
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
-                              color: _hovered ? lightPink : pinkAccent.withValues(alpha :0.6),
+                              color: _hovered
+                                  ? lightPink
+                                  : pinkAccent.withValues(alpha: 0.6),
                               size: 16,
                             ),
                           ),

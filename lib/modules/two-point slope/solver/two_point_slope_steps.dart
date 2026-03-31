@@ -1,6 +1,6 @@
+import 'package:calculus_system/modules/two-point%20slope/Theme/two_point_slope_theme.dart';
+import 'package:calculus_system/modules/two-point%20slope/solver/two_point_slope_solver.dart';
 import 'package:flutter/material.dart';
-import 'two_point_slope_solver.dart';
-import '../Theme/two_point_slope_theme.dart';
 
 // ─────────────────────────────────────────────────────────────
 // STEPS WIDGET
@@ -66,7 +66,9 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
 
   @override
   void dispose() {
-    for (final c in _controllers) {c.dispose();}
+    for (final c in _controllers) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -99,8 +101,8 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
 
         // Steps list
         ...widget.result.steps.asMap().entries.map((entry) {
-          final i     = entry.key;
-          final step  = entry.value;
+          final i = entry.key;
+          final step = entry.value;
           final color = _stepColors[i % _stepColors.length];
 
           return FadeTransition(
@@ -187,19 +189,19 @@ class _StepCard extends StatelessWidget {
                       const SizedBox(height: 10),
 
                       // Formula
-                        _FormulaRow(
-                          label: 'Formula',
-                          value: step.formula,
-                          color: TwoPointSlopeTheme.textSecondary(context),
-                        ),
+                      _FormulaRow(
+                        label: 'Formula',
+                        value: step.formula,
+                        color: TwoPointSlopeTheme.textSecondary(context),
+                      ),
                       const SizedBox(height: 6),
 
                       // Substitution
-                        _FormulaRow(
-                          label: 'Substitute',
-                          value: step.substitution,
-                          color: TwoPointSlopeTheme.textPrimary(context),
-                        ),
+                      _FormulaRow(
+                        label: 'Substitute',
+                        value: step.substitution,
+                        color: TwoPointSlopeTheme.textPrimary(context),
+                      ),
                       const SizedBox(height: 6),
 
                       // Result

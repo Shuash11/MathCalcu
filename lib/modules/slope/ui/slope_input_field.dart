@@ -1,5 +1,5 @@
+import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
 import 'package:flutter/material.dart';
-import '../theme/slope_theme.dart';
 
 /// A labelled text field used for coordinate inputs.
 /// Uses [TextInputType.text] so the full keyboard (including `/`) is available.

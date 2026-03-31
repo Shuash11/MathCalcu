@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../core/module_registry.dart';
+import 'package:provider/provider.dart';
 
 class CircleModuleCard extends StatefulWidget {
   final ModuleEntry module;
@@ -85,12 +85,16 @@ class _CircleModuleCardState extends State<CircleModuleCard>
               color: context.watch<ThemeProvider>().card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: _hovered ? _cyan.withValues(alpha :0.5) : _indigo.withValues(alpha :0.3),
+                color: _hovered
+                    ? _cyan.withValues(alpha: 0.5)
+                    : _indigo.withValues(alpha: 0.3),
                 width: _hovered ? 2 : 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: _hovered ? _cyan.withValues(alpha :0.25) : _indigo.withValues(alpha :0.15),
+                  color: _hovered
+                      ? _cyan.withValues(alpha: 0.25)
+                      : _indigo.withValues(alpha: 0.15),
                   blurRadius: _hovered ? 40 : 24,
                   offset: const Offset(0, 8),
                   spreadRadius: _hovered ? 4 : 0,
@@ -135,7 +139,7 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                         height: 100,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: _indigo.withValues(alpha :0.08),
+                          color: _indigo.withValues(alpha: 0.08),
                         ),
                       ),
                     ),
@@ -151,7 +155,7 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                       decoration: BoxDecoration(
                         gradient: RadialGradient(
                           colors: [
-                            _cyan.withValues(alpha :_hovered ? 0.2 : 0.1),
+                            _cyan.withValues(alpha: _hovered ? 0.2 : 0.1),
                             Colors.transparent,
                           ],
                         ),
@@ -171,18 +175,22 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
-                                _indigo.withValues(alpha :_hovered ? 0.3 : 0.15),
-                                _cyan.withValues(alpha :_hovered ? 0.1 : 0.05),
+                                _indigo.withValues(
+                                    alpha: _hovered ? 0.3 : 0.15),
+                                _cyan.withValues(alpha: _hovered ? 0.1 : 0.05),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(30),
                             border: Border.all(
-                              color: _hovered ? _cyan.withValues(alpha :0.5) : _indigo.withValues(alpha :0.3),
+                              color: _hovered
+                                  ? _cyan.withValues(alpha: 0.5)
+                                  : _indigo.withValues(alpha: 0.3),
                               width: 2,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: _cyan.withValues(alpha :_hovered ? 0.3 : 0.15),
+                                color: _cyan.withValues(
+                                    alpha: _hovered ? 0.3 : 0.15),
                                 blurRadius: _hovered ? 20 : 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -204,7 +212,8 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        color: _cyan.withValues(alpha :_hovered ? 0.4 : 0.2),
+                                        color: _cyan.withValues(
+                                            alpha: _hovered ? 0.4 : 0.2),
                                         width: 2,
                                       ),
                                     ),
@@ -233,19 +242,24 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                                       fontWeight: FontWeight.w600,
                                       color: _hovered
                                           ? _softIndigo
-                                          : context.watch<ThemeProvider>().textPrimary,
+                                          : context
+                                              .watch<ThemeProvider>()
+                                              .textPrimary,
                                       letterSpacing: -0.5,
                                     ),
                                   ),
                                   const SizedBox(width: 10),
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: _cyan.withValues(alpha :_hovered ? 0.2 : 0.1),
+                                      color: _cyan.withValues(
+                                          alpha: _hovered ? 0.2 : 0.1),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color: _cyan.withValues(alpha :_hovered ? 0.5 : 0.3),
+                                        color: _cyan.withValues(
+                                            alpha: _hovered ? 0.5 : 0.3),
                                       ),
                                     ),
                                     child: Row(
@@ -266,7 +280,11 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                                 duration: const Duration(milliseconds: 200),
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: _hovered ? _softIndigo.withValues(alpha :0.7) : context.watch<ThemeProvider>().textSecondary,
+                                  color: _hovered
+                                      ? _softIndigo.withValues(alpha: 0.7)
+                                      : context
+                                          .watch<ThemeProvider>()
+                                          .textSecondary,
                                   height: 1.3,
                                 ),
                                 child: Text(widget.module.subtitle),
@@ -298,19 +316,25 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  _indigo.withValues(alpha :_hovered ? 0.2 : 0.05),
-                                  _cyan.withValues(alpha :_hovered ? 0.1 : 0.02),
+                                  _indigo.withValues(
+                                      alpha: _hovered ? 0.2 : 0.05),
+                                  _cyan.withValues(
+                                      alpha: _hovered ? 0.1 : 0.02),
                                 ],
                               ),
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: _hovered ? _cyan.withValues(alpha :0.4) : _indigo.withValues(alpha :0.2),
+                                color: _hovered
+                                    ? _cyan.withValues(alpha: 0.4)
+                                    : _indigo.withValues(alpha: 0.2),
                                 width: 1.5,
                               ),
                             ),
                             child: Icon(
                               Icons.arrow_forward_rounded,
-                              color: _hovered ? _softIndigo : _cyan.withValues(alpha :0.7),
+                              color: _hovered
+                                  ? _softIndigo
+                                  : _cyan.withValues(alpha: 0.7),
                               size: 20,
                             ),
                           ),
@@ -335,13 +359,15 @@ class _CircleModuleCardState extends State<CircleModuleCard>
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        boxShadow: _hovered ? [
-          BoxShadow(
-            color: color.withValues(alpha :0.6),
-            blurRadius: 4,
-            spreadRadius: 1,
-          ),
-        ] : null,
+        boxShadow: _hovered
+            ? [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.6),
+                  blurRadius: 4,
+                  spreadRadius: 1,
+                ),
+              ]
+            : null,
       ),
     );
   }
@@ -350,16 +376,16 @@ class _CircleModuleCardState extends State<CircleModuleCard>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha :0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha :0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w600,
-          color: color.withValues(alpha :0.9),
+          color: color.withValues(alpha: 0.9),
         ),
       ),
     );
@@ -387,7 +413,7 @@ class _OrbitPainter extends CustomPainter {
     final radius = hovered ? 50.0 : 35.0;
 
     final pathPaint = Paint()
-      ..color = color2.withValues(alpha :0.1)
+      ..color = color2.withValues(alpha: 0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
     canvas.drawCircle(center, radius, pathPaint);
@@ -401,7 +427,7 @@ class _OrbitPainter extends CustomPainter {
       final double y = center.dy + radius * sin(angle);
 
       final glowPaint = Paint()
-        ..color = colors[i].withValues(alpha :hovered ? 0.4 : 0.2)
+        ..color = colors[i].withValues(alpha: hovered ? 0.4 : 0.2)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(Offset(x, y), hovered ? 8 : 5, glowPaint);
 

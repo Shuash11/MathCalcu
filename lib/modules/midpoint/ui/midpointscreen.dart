@@ -1,8 +1,7 @@
+import 'package:calculus_system/modules/midpoint/Solver/midpointsolver.dart';
+import 'package:calculus_system/modules/midpoint/Solver/midpointsteps.dart';
+import 'package:calculus_system/modules/midpoint/Theme/midpointtheme.dart';
 import 'package:flutter/material.dart';
-
-import '../Solver/midpointsolver.dart';
-import '../Theme/midpointtheme.dart';
-import '../Solver/midpointsteps.dart';
 
 class MidpointScreen extends StatefulWidget {
   const MidpointScreen({super.key});
@@ -481,7 +480,8 @@ class _MidpointScreenState extends State<MidpointScreen> {
                               Row(
                                 children: [
                                   Text(_resultLabel,
-                                      style: MidpointTheme.resultLabel(context)),
+                                      style:
+                                          MidpointTheme.resultLabel(context)),
                                   const Spacer(),
                                   Container(
                                     padding: const EdgeInsets.symmetric(

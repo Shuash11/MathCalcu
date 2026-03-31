@@ -1,7 +1,7 @@
+import 'package:calculus_system/modules/two-point%20slope/Theme/two_point_slope_theme.dart';
 import 'package:calculus_system/modules/two-point%20slope/solver/two_point_slope_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../Theme/two_point_slope_theme.dart';
 
 // ─────────────────────────────────────────────────────────────
 // GRAPH WIDGET

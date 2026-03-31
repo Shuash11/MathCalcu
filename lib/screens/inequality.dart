@@ -1,8 +1,8 @@
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../core/module_registry.dart';
+import '../theme/theme_provider.dart';
 
 // ═════════════════════════════════════════════════════════════
 // JOASHUA — INEQUALITY MODULE CARD
@@ -177,7 +177,9 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600,
-                                            color: context.watch<ThemeProvider>().textPrimary,
+                                            color: context
+                                                .watch<ThemeProvider>()
+                                                .textPrimary,
                                             letterSpacing: -0.5,
                                           ),
                                           overflow: TextOverflow.ellipsis,
@@ -213,7 +215,9 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                     widget.module.subtitle,
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: context.watch<ThemeProvider>().textSecondary,
+                                      color: context
+                                          .watch<ThemeProvider>()
+                                          .textSecondary,
                                       height: 1.3,
                                     ),
                                   ),
