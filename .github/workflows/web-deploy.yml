@@ -7,14 +7,23 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.2.2
+
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
-      - run: flutter pub get
-      - run: flutter build web --release
-      - uses: peaceiris/actions-gh-pages@v3
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Web
+        run: flutter build web --release
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
