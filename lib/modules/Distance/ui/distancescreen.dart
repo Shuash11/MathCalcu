@@ -12,7 +12,7 @@ class Distancescreen extends StatefulWidget {
   State<Distancescreen> createState() => _DistancescreenState();
 }
 
-class _DistancescreenState extends State<Distancescreen> 
+class _DistancescreenState extends State<Distancescreen>
     with TickerProviderStateMixin {
   bool _is2D = false;
 
@@ -33,7 +33,7 @@ class _DistancescreenState extends State<Distancescreen>
   bool _hasError = false;
   String _errorMsg = '';
   bool _showSteps = false;
-  
+
   double _parsedX1 = 0;
   double _parsedX2 = 0;
   double? _parsedY1;
@@ -49,8 +49,7 @@ class _DistancescreenState extends State<Distancescreen>
     _y2Ctrl.addListener(_onTextChanged);
   }
 
-  void _onTextChanged() {
-  }
+  void _onTextChanged() {}
 
   @override
   void dispose() {
@@ -58,7 +57,7 @@ class _DistancescreenState extends State<Distancescreen>
     _y1Ctrl.removeListener(_onTextChanged);
     _x2Ctrl.removeListener(_onTextChanged);
     _y2Ctrl.removeListener(_onTextChanged);
-    
+
     _x1Ctrl.dispose();
     _y1Ctrl.dispose();
     _x2Ctrl.dispose();
@@ -97,32 +96,38 @@ class _DistancescreenState extends State<Distancescreen>
   String _formatDistance(double value, bool is2D) {
     if (!is2D) {
       final abs = value.abs();
-      return abs == abs.toInt() 
-          ? abs.toInt().toString() 
-          : abs.toStringAsFixed(6).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+      return abs == abs.toInt()
+          ? abs.toInt().toString()
+          : abs
+              .toStringAsFixed(6)
+              .replaceAll(RegExp(r'0+$'), '')
+              .replaceAll(RegExp(r'\.$'), '');
     }
-    
+
     final int squared = (value * value).round();
     final double sqrtVal = sqrt(squared);
-    
+
     if (sqrtVal == sqrtVal.roundToDouble()) {
       return sqrtVal.round().toString();
     }
-    
+
     int largestSquare = 1;
     int remaining = squared;
-    
+
     for (int i = 2; i * i <= squared; i++) {
       while (remaining % (i * i) == 0) {
         largestSquare *= i;
         remaining ~/= (i * i);
       }
     }
-    
+
     if (largestSquare == 1) {
-      return value.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+      return value
+          .toStringAsFixed(4)
+          .replaceAll(RegExp(r'0+$'), '')
+          .replaceAll(RegExp(r'\.$'), '');
     }
-    
+
     if (remaining == 1) return largestSquare.toString();
     return '$largestSquare√$remaining';
   }
@@ -142,7 +147,7 @@ class _DistancescreenState extends State<Distancescreen>
       _solved = true;
       _hasError = result.hasError;
       _showSteps = false;
-      
+
       if (result.hasError) {
         _errorMsg = result.errorMessage ?? 'Calculation error';
         _distance = null;
@@ -152,7 +157,7 @@ class _DistancescreenState extends State<Distancescreen>
         _calculatedDistance = d;
         _distance = _formatDistance(d, _is2D);
         _formula = result.formula;
-        
+
         _parsedX1 = double.parse(_x1Ctrl.text);
         _parsedX2 = double.parse(_x2Ctrl.text);
         _parsedY1 = _is2D ? double.parse(_y1Ctrl.text) : null;
@@ -177,13 +182,15 @@ class _DistancescreenState extends State<Distancescreen>
           child: TextField(
             controller: controller,
             focusNode: focusNode,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+            keyboardType: const TextInputType.numberWithOptions(
+                decimal: true, signed: true),
             style: DistanceTheme.inputText(context),
             decoration: InputDecoration(
               hintText: '0',
               hintStyle: DistanceTheme.inputHint(context),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
             onChanged: null,
             onEditingComplete: () {
@@ -219,7 +226,9 @@ class _DistancescreenState extends State<Distancescreen>
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: active ? DistanceTheme.modeButtonActive : DistanceTheme.modeButtonInactive(context),
+            style: active
+                ? DistanceTheme.modeButtonActive
+                : DistanceTheme.modeButtonInactive(context),
           ),
         ),
       ),
@@ -245,7 +254,6 @@ class _DistancescreenState extends State<Distancescreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 // ── Header ──────────────────────────────────
                 Row(
                   children: [
@@ -259,22 +267,26 @@ class _DistancescreenState extends State<Distancescreen>
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: DistanceTheme.accent15),
                         ),
-                        child: Icon(Icons.arrow_back_rounded, color: DistanceTheme.text(context), size: 22),
+                        child: Icon(Icons.arrow_back_rounded,
+                            color: DistanceTheme.text(context), size: 22),
                       ),
                     ),
                     const SizedBox(width: 14),
                     Container(
                       width: 44,
                       height: 44,
-                      decoration: DistanceTheme.headerIconDecoration(DistanceTheme.accent12),
-                      child: const Icon(Icons.straighten_rounded, color: DistanceTheme.accent, size: 22),
+                      decoration: DistanceTheme.headerIconDecoration(
+                          DistanceTheme.accent12),
+                      child: const Icon(Icons.straighten_rounded,
+                          color: DistanceTheme.accent, size: 22),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Distance', style: DistanceTheme.headerTitle(context)),
+                          Text('Distance',
+                              style: DistanceTheme.headerTitle(context)),
                           Text(
                             _is2D ? 'Two points in a plane' : 'Number line',
                             style: DistanceTheme.headerSubtitle,
@@ -296,10 +308,18 @@ class _DistancescreenState extends State<Distancescreen>
                   child: Row(
                     children: [
                       _buildModeButton('Number Line (1D)', !_is2D, () {
-                        setState(() { _is2D = false; _solved = false; _showSteps = false; });
+                        setState(() {
+                          _is2D = false;
+                          _solved = false;
+                          _showSteps = false;
+                        });
                       }),
                       _buildModeButton('Coordinate (2D)', _is2D, () {
-                        setState(() { _is2D = true; _solved = false; _showSteps = false; });
+                        setState(() {
+                          _is2D = true;
+                          _solved = false;
+                          _showSteps = false;
+                        });
                       }),
                     ],
                   ),
@@ -309,11 +329,13 @@ class _DistancescreenState extends State<Distancescreen>
 
                 // ── Formula hint ─────────────────────────────
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: DistanceTheme.spaceMd),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: DistanceTheme.spaceMd),
                   decoration: DistanceTheme.formulaHintDecoration,
                   child: Row(
                     children: [
-                      const Icon(Icons.functions_rounded, color: DistanceTheme.accent70, size: 16),
+                      const Icon(Icons.functions_rounded,
+                          color: DistanceTheme.accent70, size: 16),
                       const SizedBox(width: DistanceTheme.spaceXl),
                       Text(
                         _is2D ? 'd = √((x₂−x₁)² + (y₂−y₁)²)' : 'd = |x₂ − x₁|',
@@ -335,12 +357,13 @@ class _DistancescreenState extends State<Distancescreen>
                           controller: _x1Ctrl,
                           focusNode: _x1Focus,
                           nextFocus: _x2Focus,
-                         ),
+                        ),
                       ),
                       const SizedBox(width: DistanceTheme.spaceLg),
-                  const    Padding(
-                        padding:  EdgeInsets.only(top: 22),
-                        child: Icon(Icons.arrow_forward_rounded, color: DistanceTheme.accent30, size: 20),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 22),
+                        child: Icon(Icons.arrow_forward_rounded,
+                            color: DistanceTheme.accent30, size: 20),
                       ),
                       const SizedBox(width: DistanceTheme.spaceLg),
                       Expanded(
@@ -360,7 +383,8 @@ class _DistancescreenState extends State<Distancescreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('POINT A', style: DistanceTheme.pointLabel),
+                            const Text('POINT A',
+                                style: DistanceTheme.pointLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
                               label: 'x₁',
@@ -386,13 +410,17 @@ class _DistancescreenState extends State<Distancescreen>
                             Container(
                               width: 6,
                               height: 6,
-                              decoration: const BoxDecoration(shape: BoxShape.circle, color: DistanceTheme.accent30),
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: DistanceTheme.accent30),
                             ),
                             const SizedBox(height: 6),
                             Container(
                               width: 6,
                               height: 6,
-                              decoration: const BoxDecoration(shape: BoxShape.circle, color: DistanceTheme.accent15),
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: DistanceTheme.accent15),
                             ),
                           ],
                         ),
@@ -402,7 +430,8 @@ class _DistancescreenState extends State<Distancescreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('POINT B', style: DistanceTheme.pointLabel),
+                            const Text('POINT B',
+                                style: DistanceTheme.pointLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
                               label: 'x₂',
@@ -430,18 +459,22 @@ class _DistancescreenState extends State<Distancescreen>
                   onTap: _onCalculate,
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: DistanceTheme.space2xl),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: DistanceTheme.space2xl),
                     decoration: BoxDecoration(
                       color: DistanceTheme.accent,
-                      borderRadius: BorderRadius.circular(DistanceTheme.radiusXl),
+                      borderRadius:
+                          BorderRadius.circular(DistanceTheme.radiusXl),
                       boxShadow: DistanceTheme.accentShadow,
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.calculate_rounded, color: Colors.white, size: 18),
+                        Icon(Icons.calculate_rounded,
+                            color: Colors.white, size: 18),
                         SizedBox(width: DistanceTheme.spaceSm),
-                        Text('Calculate Distance', style: DistanceTheme.calculateButton),
+                        Text('Calculate Distance',
+                            style: DistanceTheme.calculateButton),
                       ],
                     ),
                   ),
@@ -450,16 +483,18 @@ class _DistancescreenState extends State<Distancescreen>
                 // ── Results Section ──────────────────────────────
                 if (_solved) ...[
                   const SizedBox(height: DistanceTheme.space4xl),
-                  
                   if (_hasError)
                     Container(
                       padding: const EdgeInsets.all(DistanceTheme.space2xl),
                       decoration: DistanceTheme.errorDecoration(context),
                       child: Row(
                         children: [
-                          const Icon(Icons.error_outline_rounded, color: DistanceTheme.error, size: 18),
+                          const Icon(Icons.error_outline_rounded,
+                              color: DistanceTheme.error, size: 18),
                           const SizedBox(width: DistanceTheme.spaceXl),
-                          Expanded(child: Text(_errorMsg, style: DistanceTheme.errorText)),
+                          Expanded(
+                              child: Text(_errorMsg,
+                                  style: DistanceTheme.errorText)),
                         ],
                       ),
                     )
@@ -472,7 +507,7 @@ class _DistancescreenState extends State<Distancescreen>
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
-                          color: DistanceTheme.accent.withValues(alpha :0.1),
+                          color: DistanceTheme.accent.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: DistanceTheme.accent30),
                         ),
@@ -480,12 +515,14 @@ class _DistancescreenState extends State<Distancescreen>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              _is2D ? Icons.scatter_plot_rounded : Icons.linear_scale_rounded,
+                              _is2D
+                                  ? Icons.scatter_plot_rounded
+                                  : Icons.linear_scale_rounded,
                               color: DistanceTheme.accent,
                               size: 20,
                             ),
                             const SizedBox(width: 10),
-                       const     Text(
+                            const Text(
                               'View Graph',
                               style: TextStyle(
                                 fontSize: 15,
@@ -495,7 +532,7 @@ class _DistancescreenState extends State<Distancescreen>
                               ),
                             ),
                             const SizedBox(width: 8),
-                         const    Icon(
+                            const Icon(
                               Icons.arrow_forward_rounded,
                               color: DistanceTheme.accent,
                               size: 18,
@@ -514,39 +551,51 @@ class _DistancescreenState extends State<Distancescreen>
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
                           gradient: DistanceTheme.resultGradient,
-                          borderRadius: BorderRadius.circular(DistanceTheme.radius2xl),
+                          borderRadius:
+                              BorderRadius.circular(DistanceTheme.radius2xl),
                           border: Border.all(
-                            color: _showSteps ? DistanceTheme.accent : DistanceTheme.accent30,
+                            color: _showSteps
+                                ? DistanceTheme.accent
+                                : DistanceTheme.accent30,
                             width: _showSteps ? 2 : 1,
                           ),
-                          boxShadow: _showSteps ? [
-                            BoxShadow(
-                              color: DistanceTheme.accent.withValues(alpha :0.2),
-                              blurRadius: 20,
-                              offset: const Offset(0, 8),
-                            ),
-                          ] : null,
+                          boxShadow: _showSteps
+                              ? [
+                                  BoxShadow(
+                                    color: DistanceTheme.accent
+                                        .withValues(alpha: 0.2),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ]
+                              : null,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                const Text('DISTANCE', style: DistanceTheme.resultLabel),
+                                const Text('DISTANCE',
+                                    style: DistanceTheme.resultLabel),
                                 const Spacer(),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: _showSteps 
-                                        ? DistanceTheme.accent.withValues(alpha :0.2)
-                                        : DistanceTheme.accent.withValues(alpha :0.1),
+                                    color: _showSteps
+                                        ? DistanceTheme.accent
+                                            .withValues(alpha: 0.2)
+                                        : DistanceTheme.accent
+                                            .withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        _showSteps ? 'Hide steps' : 'Show steps',
+                                        _showSteps
+                                            ? 'Hide steps'
+                                            : 'Show steps',
                                         style: const TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.w600,
@@ -556,7 +605,8 @@ class _DistancescreenState extends State<Distancescreen>
                                       const SizedBox(width: 4),
                                       AnimatedRotation(
                                         turns: _showSteps ? 0.5 : 0,
-                                        duration: const Duration(milliseconds: 200),
+                                        duration:
+                                            const Duration(milliseconds: 200),
                                         child: const Icon(
                                           Icons.keyboard_arrow_down_rounded,
                                           color: DistanceTheme.accent,
@@ -569,20 +619,21 @@ class _DistancescreenState extends State<Distancescreen>
                               ],
                             ),
                             const SizedBox(height: DistanceTheme.spaceMd),
-                            
                             Text(
                               'd = ${_distance ?? '—'}',
                               style: DistanceTheme.resultValue(context),
                             ),
-                            
                             if (_formula != null && !_showSteps) ...[
                               const SizedBox(height: DistanceTheme.spaceLg),
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: DistanceTheme.spaceMd),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: DistanceTheme.spaceMd),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha :0.12),
-                                  borderRadius: BorderRadius.circular(DistanceTheme.radiusSm),
+                                  color: Colors.black.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(
+                                      DistanceTheme.radiusSm),
                                 ),
                                 child: Text(
                                   _formula!,
@@ -592,7 +643,6 @@ class _DistancescreenState extends State<Distancescreen>
                                 ),
                               ),
                             ],
-                            
                             AnimatedCrossFade(
                               firstChild: const SizedBox.shrink(),
                               secondChild: Column(
@@ -602,7 +652,8 @@ class _DistancescreenState extends State<Distancescreen>
                                   Container(
                                     width: double.infinity,
                                     height: 1,
-                                    color: DistanceTheme.accent.withValues(alpha :0.2),
+                                    color: DistanceTheme.accent
+                                        .withValues(alpha: 0.2),
                                     margin: const EdgeInsets.only(bottom: 20),
                                   ),
                                   DistanceSteps(
@@ -615,8 +666,8 @@ class _DistancescreenState extends State<Distancescreen>
                                   ),
                                 ],
                               ),
-                              crossFadeState: _showSteps 
-                                  ? CrossFadeState.showSecond 
+                              crossFadeState: _showSteps
+                                  ? CrossFadeState.showSecond
                                   : CrossFadeState.showFirst,
                               duration: const Duration(milliseconds: 250),
                             ),
@@ -626,7 +677,7 @@ class _DistancescreenState extends State<Distancescreen>
                     ),
                   ],
                 ],
-                
+
                 const SizedBox(height: 300),
               ],
             ),

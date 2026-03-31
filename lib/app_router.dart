@@ -1,11 +1,8 @@
 import 'package:calculus_system/modules/circles/center/screen/subscreens/center_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/modules/Distance/ui/Distancescreen.dart';
+import 'package:calculus_system/modules/Distance/ui/distancescreen.dart';
 import 'package:go_router/go_router.dart';
-
 import 'screens/category_picker_screen.dart';
-
-// ── JOASHUA: import your module screen here ──────────────
 import 'modules/inequalities/card_picker_screen.dart';
 import 'modules/inequalities/strict/screen/strict_screen.dart';
 import 'modules/inequalities/non_strict/screen/non_strict_screen.dart';
@@ -15,18 +12,12 @@ import 'modules/inequalities/simple/screen/simple_screen.dart';
 import 'modules/inequalities/rational/screen/rational_screen.dart';
 import 'modules/inequalities/quadratic/screen/quadratic_screen.dart';
 import 'modules/inequalities/radical/screen/radical_screen.dart';
-// ─────────────────────────────────────────────────────────
-
-// ── NASH: import your module screen here ─────────────────
-
-
 import 'modules/slope/ui/slopescreen.dart';
 import 'modules/midpoint/ui/midpointscreen.dart';
 import 'modules/pointslope/ui/pointslopescreen.dart';
 import 'modules/y-intercept/ui/y_intercept_ui.dart';
 import 'modules/two-point slope/ui/twopointslopescreen.dart';
 import 'modules/circles/card_picker_screen.dart';
-
 import 'modules/circles/center_raidus_form/screen/center_radiusui.dart';
 import 'modules/circles/raidus/screen/radiusui.dart';
 // ─────────────────────────────────────────────────────────
@@ -67,49 +58,57 @@ class AppRouter {
           GoRoute(
             path: 'strict',
             name: 'strict',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const StrictScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const StrictScreen()),
           ),
           GoRoute(
             path: 'non_strict',
             name: 'non_strict',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const NonStrictScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const NonStrictScreen()),
           ),
           GoRoute(
             path: 'absolute',
             name: 'absolute',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const AbsoluteScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const AbsoluteScreen()),
           ),
           GoRoute(
             path: 'continued',
             name: 'continued',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const ContinuedScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const ContinuedScreen()),
           ),
           GoRoute(
             path: 'simple',
             name: 'simple',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const SimpleScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const SimpleScreen()),
           ),
           GoRoute(
             path: 'rational',
             name: 'rational',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const RationalScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const RationalScreen()),
           ),
           GoRoute(
             path: 'quadratic',
             name: 'quadratic',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const QuadraticScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const QuadraticScreen()),
           ),
           GoRoute(
             path: 'radical',
             name: 'radical',
-            pageBuilder: (context, state) => _fadeRoute(state.pageKey, const RadicalScreen()),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const RadicalScreen()),
           ),
         ],
       ),
       // ─────────────────────────────────────────────────
 
       // ── NASH's routes ─────────────────────────────────
-   
+
       GoRoute(
         path: '/slope',
         name: 'slope',
