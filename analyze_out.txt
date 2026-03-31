@@ -1,0 +1,40 @@
+﻿Analyzing mathcalcu...
+
+  error - lib\app_router.dart:20:8 - Target of URI doesn't exist: 'modules/inequalities/inequalities2/ui/solver_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist. - uri_does_not_exist
+  error - lib\app_router.dart:21:8 - Target of URI doesn't exist: 'modules/inequalities/inequalities2/ui/solver_picker.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist. - uri_does_not_exist
+  error - lib\app_router.dart:109:44 - The name 'SolverPickerScreen' isn't a class. Try correcting the name to match an existing class. - creation_with_non_type
+  error - lib\app_router.dart:116:22 - The method 'SolverScreen' isn't defined for the type 'AppRouter'. Try correcting the name to the name of an existing method, or defining a method named 'SolverScreen'. - undefined_method
+  error - lib\modules\inequalities\core\animated_inequality_card.dart:5:8 - Target of URI doesn't exist: '../../theme/inequality_theme.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist. - uri_does_not_exist
+  error - lib\modules\inequalities\core\animated_inequality_card.dart:75:22 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:6:8 - Target of URI doesn't exist: '../../theme/inequality_theme.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist. - uri_does_not_exist
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:13:8 - Target of URI doesn't exist: '../../graph/inequality_graph.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist. - uri_does_not_exist
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:95:20 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:110:24 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:141:22 - Invalid constant value. - invalid_constant
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:141:22 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:161:24 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:185:24 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:199:18 - Invalid constant value. - invalid_constant
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:199:18 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:226:24 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:227:22 - The method 'InequalityGraph' isn't defined for the type '_BaseInequalityScreenState'. Try correcting the name to the name of an existing method, or defining a method named 'InequalityGraph'. - undefined_method
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:229:26 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - lib\modules\inequalities\core\base_inequality_screen.dart:235:24 - Undefined name 'InequalityTheme'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+warning - lib\modules\Distance\solver\distancesteps.dart:149:13 - The value of the local variable 'radical' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - lib\modules\inequalities\absolute\solver\absolute_solver.dart:4:8 - Unused import: '../../core/linear_solver.dart'. Try removing the import directive. - unused_import
+warning - lib\modules\inequalities\core\inequality_core_solver.dart:1:8 - Unused import: 'dart:math'. Try removing the import directive. - unused_import
+warning - lib\modules\inequalities\quadratic\solver\quadratic_solver.dart:30:15 - The value of the local variable 'satisfies' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - lib\modules\two-point slope\solver\two_point_slope_solver.dart:1:8 - Unused import: 'dart:math'. Try removing the import directive. - unused_import
+   info - lib\modules\circles\finding _radius_card.dart:1:1 - The file name 'finding _radius_card.dart' isn't a lower_case_with_underscores identifier. Try changing the name to follow the lower_case_with_underscores style. - file_names
+   info - lib\modules\inequalities\absolute\screen\absolute_screen.dart:10:12 - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation. - prefer_const_constructors
+   info - lib\modules\inequalities\continued\screen\continued_screen.dart:10:12 - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation. - prefer_const_constructors
+   info - lib\modules\inequalities\non_strict\screen\non_strict_screen.dart:10:12 - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation. - prefer_const_constructors
+   info - lib\modules\inequalities\quadratic\screen\quadratic_screen.dart:10:12 - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation. - prefer_const_constructors
+   info - lib\modules\inequalities\rational\screen\rational_screen.dart:10:12 - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation. - prefer_const_constructors
+   info - lib\modules\inequalities\simple\screen\simple_screen.dart:10:12 - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation. - prefer_const_constructors
+   info - lib\modules\inequalities\strict\screen\strict_screen.dart:10:12 - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation. - prefer_const_constructors
+   info - lib\modules\y-intercept\solver\y-intercpet_solver.dart:1:1 - The file name 'y-intercpet_solver.dart' isn't a lower_case_with_underscores identifier. Try changing the name to follow the lower_case_with_underscores style. - file_names
+   info - lib\modules\y-intercept\ui\y-interceptui.dart:1:1 - The file name 'y-interceptui.dart' isn't a lower_case_with_underscores identifier. Try changing the name to follow the lower_case_with_underscores style. - file_names
+   info - lib\screens\y-interceptcard.dart:1:1 - The file name 'y-interceptcard.dart' isn't a lower_case_with_underscores identifier. Try changing the name to follow the lower_case_with_underscores style. - file_names
+
+36 issues found.
