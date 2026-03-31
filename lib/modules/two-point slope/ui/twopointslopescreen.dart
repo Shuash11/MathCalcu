@@ -1,9 +1,9 @@
+import 'package:calculus_system/modules/two-point%20slope/Theme/two_point_slope_theme.dart';
+import 'package:calculus_system/modules/two-point%20slope/controller/two_point_slope_controller.dart';
+import 'package:calculus_system/modules/two-point%20slope/graph/two_point_slope_graph.dart';
+import 'package:calculus_system/modules/two-point%20slope/solver/two_point_slope_steps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../controller/two_point_slope_controller.dart';
-import '../Theme/two_point_slope_theme.dart';
-import '../solver/two_point_slope_steps.dart';
-import '../graph/two_point_slope_graph.dart';
 
 // ─────────────────────────────────────────────────────────────
 // TWO-POINT SLOPE SCREEN - COMPLETE & FIXED
@@ -146,8 +146,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   HapticFeedback.lightImpact();
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
@@ -188,7 +188,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             const SizedBox(height: 20),
 
             // Point 1
-          const  _PointLabel(
+            const _PointLabel(
               label: 'Point 1',
               color: TwoPointSlopeTheme.stepBlue,
             ),
@@ -246,7 +246,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             const SizedBox(height: 16),
 
             // Point 2
-           const _PointLabel(
+            const _PointLabel(
               label: 'Point 2',
               color: TwoPointSlopeTheme.stepGreen,
             ),
@@ -524,8 +524,7 @@ class _SolveButtonState extends State<_SolveButton> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.calculate_rounded,
-                      color: Colors.white, size: 18),
+                  Icon(Icons.calculate_rounded, color: Colors.white, size: 18),
                   SizedBox(width: 8),
                   Text(
                     'Solve',
@@ -578,15 +577,15 @@ class _EquationTile extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 11,
-                  color: TwoPointSlopeTheme.textSecondary(context).withValues(alpha: 0.6),
+                  color: TwoPointSlopeTheme.textSecondary(context)
+                      .withValues(alpha: 0.6),
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
                 ),
               ),
               const SizedBox(width: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
                   color: tagColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(5),

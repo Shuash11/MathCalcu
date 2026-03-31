@@ -1,6 +1,6 @@
 // lib/Controller/center_controller.dart
+import 'package:calculus_system/modules/circles/center/solver/centersolver.dart';
 import 'package:flutter/material.dart';
-import '../solver/centersolver.dart';
 
 /// Holds all mutable state for the Finding-Center screen.
 /// Pass this into sub-widgets so they stay stateless / dumb.
@@ -22,14 +22,14 @@ class CenterController extends ChangeNotifier {
     final y2 = CenterSolver.parse(y2Ctrl.text);
 
     if (x1 == null || y1 == null || x2 == null || y2 == null) {
-      result   = null;
+      result = null;
       errorMsg = 'Please fill in all four fields correctly.';
       notifyListeners();
       return;
     }
 
     errorMsg = null;
-    result   = CenterSolver.compute(x1: x1, y1: y1, x2: x2, y2: y2);
+    result = CenterSolver.compute(x1: x1, y1: y1, x2: x2, y2: y2);
     notifyListeners();
   }
 
@@ -38,7 +38,7 @@ class CenterController extends ChangeNotifier {
     y1Ctrl.clear();
     x2Ctrl.clear();
     y2Ctrl.clear();
-    result   = null;
+    result = null;
     errorMsg = null;
     notifyListeners();
   }

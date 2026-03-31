@@ -1,6 +1,6 @@
-import '../../../../core/solve_result.dart';
-import '../../../../core/step_model.dart';
-import '../../core/inequality_core_solver.dart';
+import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/modules/inequalities/core/inequality_core_solver.dart';
 
 class RationalSolver {
   // ─── Public API ───────────────────────────────────────────────────────────

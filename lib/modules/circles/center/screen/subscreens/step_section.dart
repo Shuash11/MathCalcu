@@ -1,6 +1,6 @@
 // lib/Screens/SubScreens/steps_section.dart
+import 'package:calculus_system/modules/circles/center/Theme/centertheme.dart';
 import 'package:flutter/material.dart';
-import '../../Theme/centertheme.dart';
 
 class CenterStepsSection extends StatelessWidget {
   final String? steps;
@@ -45,19 +45,19 @@ class CenterStepsSection extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           ...steps!.split('\n').map(
-            (line) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(
-                line,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: FindingCenterTheme.textPrimary,
-                  height: 1.5,
-                  fontFamily: 'monospace',
+                (line) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text(
+                    line,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: FindingCenterTheme.textPrimary,
+                      height: 1.5,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
         ],
       ),
     );

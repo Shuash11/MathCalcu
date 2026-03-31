@@ -1,5 +1,5 @@
+import 'package:calculus_system/modules/circles/raidus/Theme/radiustheme.dart';
 import 'package:flutter/material.dart';
-import '../../Theme/radiustheme.dart';
 
 class RadiusResultCard extends StatelessWidget {
   const RadiusResultCard({super.key, required this.formattedRadius});
@@ -44,7 +44,8 @@ class RadiusResultCard extends StatelessWidget {
                 'r = ',
                 style: TextStyle(
                   fontSize: 20,
-                  color: FindingRadiusTheme.textSecondary.withValues(alpha: 0.8),
+                  color:
+                      FindingRadiusTheme.textSecondary.withValues(alpha: 0.8),
                 ),
               ),
               Text(

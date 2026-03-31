@@ -1,6 +1,6 @@
 import 'dart:math';
+import 'package:calculus_system/modules/Distance/Theme/distancetheme.dart';
 import 'package:flutter/material.dart';
-import '../Theme/distancetheme.dart';
 
 class DistanceGraphScreen extends StatelessWidget {
   final bool is2D;
@@ -125,11 +125,26 @@ class DistanceGraphScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildInfoItem(context, 'Point A', is2D ? '($x1, $y1)' : 'x = $x1', DistanceTheme.accent),
-                        Container(width: 1, height: 40, color: DistanceTheme.accent.withValues(alpha :0.2)),
-                        _buildInfoItem(context, 'Point B', is2D ? '($x2, $y2)' : 'x = $x2', DistanceTheme.text(context)),
-                        Container(width: 1, height: 40, color: DistanceTheme.accent.withValues(alpha :0.2)),
-                        _buildInfoItem(context, 'Distance', 'd = $distanceLabel', DistanceTheme.accent),
+                        _buildInfoItem(
+                            context,
+                            'Point A',
+                            is2D ? '($x1, $y1)' : 'x = $x1',
+                            DistanceTheme.accent),
+                        Container(
+                            width: 1,
+                            height: 40,
+                            color: DistanceTheme.accent.withValues(alpha: 0.2)),
+                        _buildInfoItem(
+                            context,
+                            'Point B',
+                            is2D ? '($x2, $y2)' : 'x = $x2',
+                            DistanceTheme.text(context)),
+                        Container(
+                            width: 1,
+                            height: 40,
+                            color: DistanceTheme.accent.withValues(alpha: 0.2)),
+                        _buildInfoItem(context, 'Distance',
+                            'd = $distanceLabel', DistanceTheme.accent),
                       ],
                     ),
                   ],
@@ -142,7 +157,8 @@ class DistanceGraphScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(BuildContext context, String label, String value, Color valueColor) {
+  Widget _buildInfoItem(
+      BuildContext context, String label, String value, Color valueColor) {
     return Column(
       children: [
         Text(
@@ -196,10 +212,10 @@ class FullScreenCoordinatePainter extends CustomPainter {
 
     final allX = [x1, x2];
     final allY = [y1, y2];
-    
+
     final xMargin = (allX.reduce(max) - allX.reduce(min)).abs() * 0.3 + 2;
     final yMargin = (allY.reduce(max) - allY.reduce(min)).abs() * 0.3 + 2;
-    
+
     final minX = allX.reduce(min) - xMargin;
     final maxX = allX.reduce(max) + xMargin;
     final minY = allY.reduce(min) - yMargin;
@@ -219,31 +235,35 @@ class FullScreenCoordinatePainter extends CustomPainter {
 
     // Grid
     final gridPaint = Paint()
-      ..color = DistanceTheme.accent.withValues(alpha :0.08)
+      ..color = DistanceTheme.accent.withValues(alpha: 0.08)
       ..strokeWidth = 1;
 
     for (double i = minX.floorToDouble(); i <= maxX.ceilToDouble(); i += 1) {
       final x = tx(i);
-      canvas.drawLine(Offset(x, padding), Offset(x, size.height - padding), gridPaint);
+      canvas.drawLine(
+          Offset(x, padding), Offset(x, size.height - padding), gridPaint);
     }
     for (double i = minY.floorToDouble(); i <= maxY.ceilToDouble(); i += 1) {
       final y = ty(i);
-      canvas.drawLine(Offset(padding, y), Offset(size.width - padding, y), gridPaint);
+      canvas.drawLine(
+          Offset(padding, y), Offset(size.width - padding, y), gridPaint);
     }
 
     // Axes
     final axisPaint = Paint()
-      ..color = textColor.withValues(alpha :0.3)
+      ..color = textColor.withValues(alpha: 0.3)
       ..strokeWidth = 2;
 
     final zeroY = ty(0);
     if (zeroY >= padding && zeroY <= size.height - padding) {
-      canvas.drawLine(Offset(padding, zeroY), Offset(size.width - padding, zeroY), axisPaint);
+      canvas.drawLine(Offset(padding, zeroY),
+          Offset(size.width - padding, zeroY), axisPaint);
     }
 
     final zeroX = tx(0);
     if (zeroX >= padding && zeroX <= size.width - padding) {
-      canvas.drawLine(Offset(zeroX, padding), Offset(zeroX, size.height - padding), axisPaint);
+      canvas.drawLine(Offset(zeroX, padding),
+          Offset(zeroX, size.height - padding), axisPaint);
     }
 
     // Points and line
@@ -252,7 +272,7 @@ class FullScreenCoordinatePainter extends CustomPainter {
 
     // Distance line with glow
     final glowPaint = Paint()
-      ..color = DistanceTheme.accent.withValues(alpha :0.3)
+      ..color = DistanceTheme.accent.withValues(alpha: 0.3)
       ..strokeWidth = 8
       ..style = PaintingStyle.stroke;
     canvas.drawLine(pointA, pointB, glowPaint);
@@ -270,7 +290,7 @@ class FullScreenCoordinatePainter extends CustomPainter {
     // Distance label
     final midX = (pointA.dx + pointB.dx) / 2;
     final midY = (pointA.dy + pointB.dy) / 2;
-    
+
     final textSpan = TextSpan(
       text: 'd = $distanceLabel',
       style: TextStyle(
@@ -284,7 +304,7 @@ class FullScreenCoordinatePainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     textPainter.layout();
-    
+
     final bgRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
         center: Offset(midX, midY - 25),
@@ -293,22 +313,23 @@ class FullScreenCoordinatePainter extends CustomPainter {
       ),
       const Radius.circular(6),
     );
-    
+
     final bgP = Paint()..color = DistanceTheme.accent;
     canvas.drawRRect(bgRect, bgP);
-    
+
     textPainter.paint(
       canvas,
       Offset(midX - textPainter.width / 2, midY - 25 - textPainter.height / 2),
     );
   }
 
-  void _drawPoint(Canvas canvas, Offset position, Color color, String label, String coords) {
+  void _drawPoint(Canvas canvas, Offset position, Color color, String label,
+      String coords) {
     final glowPaint = Paint()
-      ..color = color.withValues(alpha :0.4)
+      ..color = color.withValues(alpha: 0.4)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(position, 15, glowPaint);
-    
+
     final pointPaint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
@@ -367,7 +388,7 @@ class FullScreenNumberLinePainter extends CustomPainter {
 
     // Number line track
     final trackPaint = Paint()
-      ..color = DistanceTheme.accent.withValues(alpha :0.1)
+      ..color = DistanceTheme.accent.withValues(alpha: 0.1)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -383,27 +404,30 @@ class FullScreenNumberLinePainter extends CustomPainter {
 
     // Main line
     final linePaint = Paint()
-      ..color = textColor.withValues(alpha :0.4)
+      ..color = textColor.withValues(alpha: 0.4)
       ..strokeWidth = 4;
-    canvas.drawLine(Offset(lineStart, lineY), Offset(lineEnd, lineY), linePaint);
+    canvas.drawLine(
+        Offset(lineStart, lineY), Offset(lineEnd, lineY), linePaint);
 
     // Ticks
     final tickPaint = Paint()
-      ..color = textColor.withValues(alpha :0.3)
+      ..color = textColor.withValues(alpha: 0.3)
       ..strokeWidth = 2;
 
     final step = _calculateStep(range);
     for (double i = minVal; i <= maxVal; i += step) {
       final x = tx(i);
       canvas.drawLine(Offset(x, lineY - 10), Offset(x, lineY + 10), tickPaint);
-      _drawText(canvas, _formatNumber(i), x, lineY + 28, textColor.withValues(alpha :0.6), 12);
+      _drawText(canvas, _formatNumber(i), x, lineY + 28,
+          textColor.withValues(alpha: 0.6), 12);
     }
 
     // Points
     final p1 = tx(x1);
     final p2 = tx(x2);
 
-    _drawPoint(canvas, p1, lineY, DistanceTheme.accent, 'x₁ = ${_formatNumber(x1)}');
+    _drawPoint(
+        canvas, p1, lineY, DistanceTheme.accent, 'x₁ = ${_formatNumber(x1)}');
     _drawPoint(canvas, p2, lineY, textColor, 'x₂ = ${_formatNumber(x2)}');
 
     // Bracket
@@ -422,9 +446,10 @@ class FullScreenNumberLinePainter extends CustomPainter {
     return n.toStringAsFixed(1);
   }
 
-  void _drawPoint(Canvas canvas, double x, double y, Color color, String label) {
+  void _drawPoint(
+      Canvas canvas, double x, double y, Color color, String label) {
     final glowPaint = Paint()
-      ..color = color.withValues(alpha :0.4)
+      ..color = color.withValues(alpha: 0.4)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(x, y), 14, glowPaint);
 
@@ -445,9 +470,12 @@ class FullScreenNumberLinePainter extends CustomPainter {
       ..color = DistanceTheme.accent
       ..strokeWidth = 3;
 
-    canvas.drawLine(Offset(left, bracketY - 10), Offset(left, bracketY + 10), bracketPaint);
-    canvas.drawLine(Offset(right, bracketY - 10), Offset(right, bracketY + 10), bracketPaint);
-    canvas.drawLine(Offset(left, bracketY), Offset(right, bracketY), bracketPaint);
+    canvas.drawLine(
+        Offset(left, bracketY - 10), Offset(left, bracketY + 10), bracketPaint);
+    canvas.drawLine(Offset(right, bracketY - 10), Offset(right, bracketY + 10),
+        bracketPaint);
+    canvas.drawLine(
+        Offset(left, bracketY), Offset(right, bracketY), bracketPaint);
 
     // Arrow heads
     final arrowPaint = Paint()
@@ -466,15 +494,19 @@ class FullScreenNumberLinePainter extends CustomPainter {
       ..lineTo(right - 8, bracketY + 4);
     canvas.drawPath(path2, arrowPaint);
 
-    _drawText(canvas, 'd = $distanceLabel', (left + right) / 2, bracketY + 20, DistanceTheme.accent, 13);
+    _drawText(canvas, 'd = $distanceLabel', (left + right) / 2, bracketY + 20,
+        DistanceTheme.accent, 13);
   }
 
-  void _drawText(Canvas canvas, String text, double x, double y, Color color, double size) {
+  void _drawText(Canvas canvas, String text, double x, double y, Color color,
+      double size) {
     final textSpan = TextSpan(
       text: text,
-      style: TextStyle(color: color, fontSize: size, fontWeight: FontWeight.w600),
+      style:
+          TextStyle(color: color, fontSize: size, fontWeight: FontWeight.w600),
     );
-    final textPainter = TextPainter(text: textSpan, textDirection: TextDirection.ltr);
+    final textPainter =
+        TextPainter(text: textSpan, textDirection: TextDirection.ltr);
     textPainter.layout();
     textPainter.paint(canvas, Offset(x - textPainter.width / 2, y));
   }

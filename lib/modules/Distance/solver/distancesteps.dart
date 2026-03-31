@@ -1,6 +1,6 @@
 import 'dart:math';
+import 'package:calculus_system/modules/Distance/Theme/distancetheme.dart';
 import 'package:flutter/material.dart';
-import '../theme/distancetheme.dart';
 
 /// Step data model for distance calculation breakdown
 class StepSection {
@@ -38,7 +38,10 @@ class RadicalResult {
     return '$coefficient√$radicand';
   }
 
-  String toDecimalString() => decimalValue.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+  String toDecimalString() => decimalValue
+      .toStringAsFixed(4)
+      .replaceAll(RegExp(r'0+$'), '')
+      .replaceAll(RegExp(r'\.$'), '');
 }
 
 /// Displays detailed calculation steps with expandable sections
@@ -64,11 +67,16 @@ class DistanceSteps extends StatelessWidget {
 
   /// Simplify √n to a√b form where b has no perfect square factors
   RadicalResult _simplifyRadical(double value) {
-    if (value < 0) return RadicalResult(coefficient: 0, radicand: 0, isPerfectSquare: false, decimalValue: value);
-    
+    if (value < 0)
+      return RadicalResult(
+          coefficient: 0,
+          radicand: 0,
+          isPerfectSquare: false,
+          decimalValue: value);
+
     final int n = value.round();
     final double sqrtN = sqrt(n);
-    
+
     // Check if perfect square
     if (sqrtN == sqrtN.roundToDouble()) {
       return RadicalResult(
@@ -82,7 +90,7 @@ class DistanceSteps extends StatelessWidget {
     // Find largest perfect square factor
     int largestSquare = 1;
     int remaining = n;
-    
+
     for (int i = 2; i * i <= n; i++) {
       while (remaining % (i * i) == 0) {
         largestSquare *= i;
@@ -100,7 +108,10 @@ class DistanceSteps extends StatelessWidget {
 
   String _format(double n) {
     if (n == n.toInt()) return n.toInt().toString();
-    return n.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+    return n
+        .toStringAsFixed(4)
+        .replaceAll(RegExp(r'0+$'), '')
+        .replaceAll(RegExp(r'\.$'), '');
   }
 
   List<StepSection> get _steps {
@@ -110,27 +121,31 @@ class DistanceSteps extends StatelessWidget {
       final double dySquared = dy * dy;
       final double dxSquared = dx * dx;
       final double sum = dxSquared + dySquared;
-      
+
       // Simplify the final radical
       final radical = _simplifyRadical(sum);
 
       return [
         StepSection(
           title: 'Identify Coordinates',
-          content: 'Point A: (${_format(x1)}, ${_format(y1!)})\nPoint B: (${_format(x2)}, ${_format(y2!)})',
+          content:
+              'Point A: (${_format(x1)}, ${_format(y1!)})\nPoint B: (${_format(x2)}, ${_format(y2!)})',
         ),
         StepSection(
           title: 'Calculate Differences',
-          content: 'x = ${_format(x2)} − ${_format(x1)} = ${_format(dx)}\nΔy = ${_format(y2!)} − ${_format(y1!)} = ${_format(dy)}',
+          content:
+              'x = ${_format(x2)} − ${_format(x1)} = ${_format(dx)}\nΔy = ${_format(y2!)} − ${_format(y1!)} = ${_format(dy)}',
         ),
         StepSection(
           title: 'Square the Differences',
-          content: '(x)² = ${_format(dx)}² = ${_format(dxSquared)}\n(y)² = ${_format(dy)}² = ${_format(dySquared)}',
+          content:
+              '(x)² = ${_format(dx)}² = ${_format(dxSquared)}\n(y)² = ${_format(dy)}² = ${_format(dySquared)}',
           isFormula: true,
         ),
         StepSection(
           title: 'Sum the Squares',
-          content: '${_format(dxSquared)} + ${_format(dySquared)} = ${_format(sum)}',
+          content:
+              '${_format(dxSquared)} + ${_format(dySquared)} = ${_format(sum)}',
           isFormula: true,
         ),
         StepSection(
@@ -143,7 +158,7 @@ class DistanceSteps extends StatelessWidget {
     } else {
       final double diff = (x2 - x1);
       final double absDiff = diff.abs();
-      
+
       return [
         StepSection(
           title: 'Identify Points',
@@ -151,7 +166,8 @@ class DistanceSteps extends StatelessWidget {
         ),
         StepSection(
           title: 'Calculate Difference',
-          content: 'x₂ − x₁ = ${_format(x2)} − ${_format(x1)} = ${_format(diff)}',
+          content:
+              'x₂ − x₁ = ${_format(x2)} − ${_format(x1)} = ${_format(diff)}',
         ),
         StepSection(
           title: 'Apply Absolute Value',
@@ -169,9 +185,9 @@ class DistanceSteps extends StatelessWidget {
 
   String _buildRadicalExplanation(double original, RadicalResult radical) {
     final buffer = StringBuffer();
-    
+
     buffer.writeln('d = √${_format(original)}');
-    
+
     if (radical.isPerfectSquare) {
       buffer.writeln('\nSince ${_format(original)} is a perfect square:');
       buffer.write('d = ${radical.coefficient}');
@@ -181,15 +197,16 @@ class DistanceSteps extends StatelessWidget {
     } else {
       final int square = radical.coefficient * radical.coefficient;
       buffer.writeln('\nFactor out perfect square:');
-      buffer.writeln('√${_format(original)} = √($square × ${radical.radicand})');
+      buffer
+          .writeln('√${_format(original)} = √($square × ${radical.radicand})');
       buffer.writeln('= √$square × √${radical.radicand}');
       buffer.write('= ${radical.coefficient}√${radical.radicand}');
-      
+
       if (radical.radicand > 1) {
         buffer.write(' ≈ ${radical.toDecimalString()}');
       }
     }
-    
+
     return buffer.toString();
   }
 
@@ -204,19 +221,19 @@ class DistanceSteps extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: DistanceTheme.accent.withValues(alpha :0.1),
+            color: DistanceTheme.accent.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: DistanceTheme.accent15),
           ),
           child: Row(
             children: [
-            const  Icon(
+              const Icon(
                 Icons.format_list_numbered_rounded,
                 color: DistanceTheme.accent,
                 size: 18,
               ),
               const SizedBox(width: 8),
-           const   Text(
+              const Text(
                 'Solution Steps',
                 style: TextStyle(
                   fontSize: 13,
@@ -236,7 +253,6 @@ class DistanceSteps extends StatelessWidget {
             ],
           ),
         ),
-
         ...List.generate(steps.length, (index) {
           final step = steps[index];
           final isLast = index == steps.length - 1;
@@ -275,12 +291,12 @@ class _StepItem extends StatelessWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: step.isResult 
-                      ? DistanceTheme.accent 
-                      : DistanceTheme.accent.withValues(alpha :0.15),
+                  color: step.isResult
+                      ? DistanceTheme.accent
+                      : DistanceTheme.accent.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
-                  border: step.isResult 
-                      ? null 
+                  border: step.isResult
+                      ? null
                       : Border.all(color: DistanceTheme.accent30),
                 ),
                 child: Center(
@@ -288,7 +304,7 @@ class _StepItem extends StatelessWidget {
                       ? const Icon(Icons.check, color: Colors.white, size: 14)
                       : Text(
                           '$index',
-                          style:const TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                             color: DistanceTheme.accent,
@@ -301,26 +317,25 @@ class _StepItem extends StatelessWidget {
                   child: Container(
                     width: 2,
                     margin: const EdgeInsets.symmetric(vertical: 4),
-                    color: DistanceTheme.accent.withValues(alpha :0.15),
+                    color: DistanceTheme.accent.withValues(alpha: 0.15),
                   ),
                 ),
             ],
           ),
           const SizedBox(width: 12),
-          
           Expanded(
             child: Container(
               margin: EdgeInsets.only(bottom: isLast ? 0 : 16),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: step.isResult 
-                    ? DistanceTheme.accent.withValues(alpha :0.08)
+                color: step.isResult
+                    ? DistanceTheme.accent.withValues(alpha: 0.08)
                     : DistanceTheme.card(context),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: step.isResult 
-                      ? DistanceTheme.accent30 
-                      : DistanceTheme.accent.withValues(alpha :0.08),
+                  color: step.isResult
+                      ? DistanceTheme.accent30
+                      : DistanceTheme.accent.withValues(alpha: 0.08),
                 ),
               ),
               child: Column(
@@ -331,19 +346,22 @@ class _StepItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                      color: step.isResult ? DistanceTheme.accent : DistanceTheme.text70(context),
+                      color: step.isResult
+                          ? DistanceTheme.accent
+                          : DistanceTheme.text70(context),
                       letterSpacing: 0.5,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Container(
                     width: double.infinity,
-                    padding: step.isFormula 
-                        ? const EdgeInsets.symmetric(horizontal: 12, vertical: 10)
+                    padding: step.isFormula
+                        ? const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10)
                         : EdgeInsets.zero,
-                    decoration: step.isFormula 
+                    decoration: step.isFormula
                         ? BoxDecoration(
-                            color: Colors.black.withValues(alpha :0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(8),
                           )
                         : null,
@@ -352,8 +370,11 @@ class _StepItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         height: 1.6,
-                        color: step.isResult ? DistanceTheme.text(context) : DistanceTheme.text55(context),
-                        fontWeight: step.isResult ? FontWeight.w600 : FontWeight.w500,
+                        color: step.isResult
+                            ? DistanceTheme.text(context)
+                            : DistanceTheme.text55(context),
+                        fontWeight:
+                            step.isResult ? FontWeight.w600 : FontWeight.w500,
                         fontFamily: step.isFormula ? 'monospace' : null,
                       ),
                     ),

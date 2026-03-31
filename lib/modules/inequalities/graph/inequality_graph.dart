@@ -1,8 +1,8 @@
+import 'package:calculus_system/core/base_graph.dart';
+import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../theme/theme_provider.dart';
-import '../../../core/base_graph.dart';
-import '../../../core/solve_result.dart';
 
 class InequalityGraph extends BaseGraph {
   const InequalityGraph({

@@ -1,6 +1,6 @@
+import 'package:calculus_system/modules/inequalities/core/base_inequality_screen.dart';
+import 'package:calculus_system/modules/inequalities/rational/solver/rational_solver.dart';
 import 'package:flutter/material.dart';
-import '../../core/base_inequality_screen.dart';
-import '../solver/rational_solver.dart';
 
 class RationalScreen extends StatelessWidget {
   const RationalScreen({super.key});

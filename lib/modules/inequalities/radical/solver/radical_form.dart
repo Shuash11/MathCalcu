@@ -5,9 +5,8 @@
 
 import 'dart:math' as math;
 
+import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/modules/inequalities/core/inequality_core_solver.dart';
-
-import '../../../../core/solve_result.dart';
 
 import 'radical_helpers.dart';
 import 'radical_models.dart';
@@ -34,7 +33,7 @@ class RadicalForms {
 
   static SolveResult _solveConstantRhs(RadicalPrep p) {
     final ia = p.ia, ib = p.ib, k = p.k!, op = p.op;
-    final f = InequalityCoreSolver.fmt;
+    const f = InequalityCoreSolver.fmt;
 
     // Constant radicand — evaluate directly.
     if (ia == 0) {
@@ -105,8 +104,9 @@ class RadicalForms {
       final sqOp = ia > 0 ? op : InequalityCoreSolver.flipOp(op);
 
       if (ia > 0) {
-        if (rawBound < domBound)
+        if (rawBound < domBound) {
           return RadicalHelpers.domainResult(ia, domBound);
+        }
         final lb = sqOp == '>' ? '(' : '[';
         return SolveResult(
           answer: 'x $sqOp ${f(rawBound)}',
@@ -114,8 +114,9 @@ class RadicalForms {
           intervalNotation: '$lb${f(rawBound)}, ∞)',
         );
       } else {
-        if (rawBound > domBound)
+        if (rawBound > domBound) {
           return RadicalHelpers.domainResult(ia, domBound);
+        }
         final rb = sqOp == '<' ? ')' : ']';
         return SolveResult(
           answer: 'x $sqOp ${f(rawBound)}',
@@ -217,7 +218,7 @@ class RadicalForms {
   static SolveResult _solveQuadRhsNumeric(
       double ia, double ib, double qe, double rc, double rd, String op,
       {required bool requireRhsNonNeg}) {
-    final f = InequalityCoreSolver.fmt;
+    const f = InequalityCoreSolver.fmt;
 
     final domBound = ia != 0 ? -ib / ia : double.negativeInfinity;
 

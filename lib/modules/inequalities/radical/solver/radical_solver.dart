@@ -14,11 +14,11 @@
 //   Form F  √(ax+b)  op  ex²+cx+d       — radical vs quadratic
 //   Form G  ex²+cx+d op  √(ax+b)        — quadratic vs radical (normalised → F)
 
+import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/modules/inequalities/core/inequality_core_solver.dart';
 import 'package:calculus_system/modules/inequalities/radical/solver/radical_form.dart';
 import 'package:calculus_system/modules/inequalities/radical/solver/radical_parsers.dart';
-import '../../../../core/solve_result.dart';
-import '../../../../core/step_model.dart';
 import 'radical_models.dart';
 
 class RadicalSolver {

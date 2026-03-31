@@ -1,8 +1,8 @@
 // lib/Screens/SubScreens/input_section.dart
+import 'package:calculus_system/modules/circles/center/Theme/centertheme.dart';
 import 'package:calculus_system/modules/circles/center/controller/centercontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../Theme/centertheme.dart';
 
 class CenterInputSection extends StatelessWidget {
   final CenterController controller;
@@ -91,7 +91,8 @@ class _PointCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -324,7 +325,10 @@ class _ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [FindingCenterTheme.indigo, FindingCenterTheme.purple],
+                  colors: [
+                    FindingCenterTheme.indigo,
+                    FindingCenterTheme.purple
+                  ],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [

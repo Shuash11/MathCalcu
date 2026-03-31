@@ -1,17 +1,18 @@
 import 'dart:async';
-import '../graph/inequality_graph.dart';
-import '../theme/inequality_theme.dart';
+import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/modules/inequalities/graph/inequality_graph.dart';
+import 'package:calculus_system/modules/inequalities/theme/inequality_theme.dart';
+import 'package:calculus_system/shared/widgets/answer_card.dart';
+import 'package:calculus_system/shared/widgets/graph_widget.dart';
+import 'package:calculus_system/shared/widgets/math_input_field.dart';
+import 'package:calculus_system/shared/widgets/steps_drawer.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/solve_result.dart';
-import '../../../shared/widgets/math_input_field.dart';
-import '../../../shared/widgets/answer_card.dart';
-import '../../../shared/widgets/graph_widget.dart';
-import '../../../shared/widgets/steps_drawer.dart';
-import '../../../core/step_model.dart';
+
 import 'package:provider/provider.dart';
-import '../../../theme/theme_provider.dart';
 
 class BaseInequalityScreen extends StatefulWidget {
   final String title;
@@ -137,7 +138,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
               color: context.watch<ThemeProvider>().card,
               borderRadius: BorderRadius.circular(10),
             ),
-            child:const Icon(
+            child: const Icon(
               Icons.arrow_back_ios_rounded,
               size: 14,
               color: InequalityTheme.accentColor,

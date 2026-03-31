@@ -1,6 +1,6 @@
 // lib/Screens/SubScreens/formula_card.dart
+import 'package:calculus_system/modules/circles/center/Theme/centertheme.dart';
 import 'package:flutter/material.dart';
-import '../../Theme/centertheme.dart';
 
 class CenterFormulaCard extends StatelessWidget {
   const CenterFormulaCard({super.key});

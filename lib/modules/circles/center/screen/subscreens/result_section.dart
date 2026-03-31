@@ -1,7 +1,7 @@
 // lib/Screens/SubScreens/result_section.dart
+import 'package:calculus_system/modules/circles/center/Theme/centertheme.dart';
 import 'package:calculus_system/modules/circles/center/solver/centersolver.dart';
 import 'package:flutter/material.dart';
-import '../../Theme/centertheme.dart';
 
 class CenterResultSection extends StatelessWidget {
   final CenterResult? result;

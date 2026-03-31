@@ -7,7 +7,7 @@ import 'theme/theme_provider.dart';
 void main() async {
   // ── PRE-RUN INITIALIZATION ──
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Create and asynchronously load theme preferences before running the app
   final themeProvider = ThemeProvider();
   await themeProvider.load();
@@ -33,11 +33,11 @@ class CalculusApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
-    
+
     return MaterialApp.router(
       title: 'Calculus System',
       debugShowCheckedModeBanner: false,
-      theme: themeProvider.isLight ? AppTheme.light() : AppTheme.dark(), 
+      theme: themeProvider.isLight ? AppTheme.light() : AppTheme.dark(),
       routerConfig: AppRouter.router,
     );
   }

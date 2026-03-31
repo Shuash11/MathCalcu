@@ -1,3 +1,4 @@
+import 'package:calculus_system/modules/circles/raidus/Theme/radiustheme.dart';
 import 'package:calculus_system/modules/circles/raidus/controller/radius_controller.dart';
 import 'package:calculus_system/modules/circles/raidus/screen/subscreen/radius_action_buttons.dart';
 import 'package:calculus_system/modules/circles/raidus/screen/subscreen/radius_error_card.dart';
@@ -7,8 +8,6 @@ import 'package:calculus_system/modules/circles/raidus/screen/subscreen/radius_i
 import 'package:calculus_system/modules/circles/raidus/screen/subscreen/radius_result.dart';
 import 'package:calculus_system/modules/circles/raidus/screen/subscreen/radius_steps.dart';
 import 'package:flutter/material.dart';
-import '../Theme/radiustheme.dart';
-
 
 class FindingRadiusScreen extends StatefulWidget {
   const FindingRadiusScreen({super.key});
@@ -93,7 +92,8 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
                 const SizedBox(height: 24),
                 RadiusStepsCard(steps: _ctrl.result!.steps),
                 const SizedBox(height: 16),
-                RadiusResultCard(formattedRadius: _ctrl.result!.formattedRadius),
+                RadiusResultCard(
+                    formattedRadius: _ctrl.result!.formattedRadius),
               ],
             ],
           ),

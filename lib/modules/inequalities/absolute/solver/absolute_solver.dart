@@ -1,6 +1,6 @@
-import '../../../../core/solve_result.dart';
-import '../../../../core/step_model.dart';
-import '../../core/inequality_core_solver.dart';
+import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/modules/inequalities/core/inequality_core_solver.dart';
 
 class AbsoluteSolver {
   static SolveResult solve(String input) {
@@ -39,25 +39,29 @@ class AbsoluteSolver {
       final effectiveOp = absOnLeft ? op : InequalityCoreSolver.flipOp(op);
 
       if (effectiveOp == '<' || effectiveOp == '≤') {
-        if (k < 0)
+        if (k < 0) {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
-        if (k == 0 && effectiveOp == '<')
+        }
+        if (k == 0 && effectiveOp == '<') {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
+        }
         if (k == 0 && effectiveOp == '≤') {
-          if (a == 0)
+          if (a == 0) {
             return const SolveResult(
                 answer: 'No solution', points: [], intervalNotation: '∅');
+          }
           final root = -b / a;
           return SolveResult(
               answer: 'x = ${InequalityCoreSolver.fmt(root)}',
               points: [root],
               intervalNotation: '{${InequalityCoreSolver.fmt(root)}}');
         }
-        if (a == 0)
+        if (a == 0) {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
+        }
         final v1 = (-k - b) / a;
         final v2 = (k - b) / a;
         final l = v1 < v2 ? v1 : v2;
@@ -72,20 +76,22 @@ class AbsoluteSolver {
               '$lb${InequalityCoreSolver.fmt(l)}, ${InequalityCoreSolver.fmt(h)}$rb',
         );
       } else {
-        if (k < 0)
+        if (k < 0) {
           return const SolveResult(
               answer: 'All real numbers',
               points: [],
               intervalNotation: '(-∞, +∞)');
+        }
         if (k == 0 && effectiveOp == '≥') {
           return const SolveResult(
               answer: 'All real numbers',
               points: [],
               intervalNotation: '(-∞, +∞)');
         }
-        if (a == 0)
+        if (a == 0) {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
+        }
         if (k == 0 && effectiveOp == '>') {
           final root = -b / a;
           return SolveResult(

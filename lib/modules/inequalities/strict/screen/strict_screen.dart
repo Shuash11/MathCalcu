@@ -1,6 +1,6 @@
+import 'package:calculus_system/modules/inequalities/core/base_inequality_screen.dart';
+import 'package:calculus_system/modules/inequalities/core/linear_solver.dart';
 import 'package:flutter/material.dart';
-import '../../core/base_inequality_screen.dart';
-import '../../core/linear_solver.dart';
 
 class StrictScreen extends StatelessWidget {
   const StrictScreen({super.key});

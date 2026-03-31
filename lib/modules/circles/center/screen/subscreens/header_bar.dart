@@ -1,6 +1,6 @@
 // lib/Screens/SubScreens/header_bar.dart
+import 'package:calculus_system/modules/circles/center/Theme/centertheme.dart';
 import 'package:flutter/material.dart';
-import '../../Theme/centertheme.dart';
 
 class CenterHeaderBar extends StatelessWidget {
   const CenterHeaderBar({super.key});
@@ -36,7 +36,8 @@ class CenterHeaderBar extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: const Icon(Icons.adjust_rounded, color: Colors.white, size: 26),
+          child:
+              const Icon(Icons.adjust_rounded, color: Colors.white, size: 26),
         ),
         const SizedBox(width: 14),
         const Expanded(

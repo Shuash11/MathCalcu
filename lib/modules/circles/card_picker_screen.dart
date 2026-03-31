@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
-
 import 'finding _radius_card.dart';
 import 'finding_center_card.dart';
 import 'finding_center_radius_card.dart';
@@ -16,7 +15,7 @@ class CircleCardPickerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    
+
     return Scaffold(
       backgroundColor: theme.surface,
       body: Stack(
@@ -72,7 +71,8 @@ class CircleCardPickerScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: _indigo.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: _indigo.withValues(alpha: 0.35), width: 1.5),
+          border:
+              Border.all(color: _indigo.withValues(alpha: 0.35), width: 1.5),
         ),
         child: const Icon(Icons.arrow_back_ios_new_rounded,
             color: _indigo, size: 18),
@@ -105,7 +105,7 @@ class _PickerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    
+
     return Row(
       children: [
         _OrbitBadge(),

@@ -4,8 +4,9 @@
 // No form-specific logic lives here — only algorithms.
 
 import 'dart:math' as math;
+import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/modules/inequalities/core/inequality_core_solver.dart';
-import '../../../../core/solve_result.dart';
+
 import 'radical_models.dart';
 
 class RadicalHelpers {

@@ -1,9 +1,9 @@
 import 'dart:math';
+import 'package:calculus_system/modules/Distance/Graph/distance_graph.dart';
+import 'package:calculus_system/modules/Distance/Theme/distancetheme.dart';
+import 'package:calculus_system/modules/Distance/solver/distancesolver.dart';
+import 'package:calculus_system/modules/Distance/solver/distancesteps.dart';
 import 'package:flutter/material.dart';
-import '../solver/distancesolver.dart';
-import '../Theme/distancetheme.dart';
-import '../solver/distancesteps.dart';
-import '../Graph/distance_graph.dart';
 
 class Distancescreen extends StatefulWidget {
   const Distancescreen({super.key});

@@ -1,7 +1,6 @@
+import 'package:calculus_system/modules/circles/center_raidus_form/Theme/center_radius_theme.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/solver/center_radius_solver.dart';
 import 'package:flutter/material.dart';
-
-import '../../Theme/center_radius_theme.dart';
 
 class StepTile extends StatelessWidget {
   final SolverStep step;
@@ -160,7 +159,8 @@ class _FinalBox extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: accentColor.withValues(alpha: 0.4), width: 1.5),
+        border:
+            Border.all(color: accentColor.withValues(alpha: 0.4), width: 1.5),
       ),
       child: Column(
         children: [
@@ -196,7 +196,8 @@ class _FinalBox extends StatelessWidget {
             const SizedBox(height: 14),
             Container(
               height: 1,
-              color: FindingCenterRadiusTheme.textSecondary.withValues(alpha: 0.15),
+              color: FindingCenterRadiusTheme.textSecondary
+                  .withValues(alpha: 0.15),
             ),
             const SizedBox(height: 12),
             ...step.subLines.map(

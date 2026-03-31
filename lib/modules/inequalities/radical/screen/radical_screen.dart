@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../core/base_inequality_screen.dart';
-import '../solver/radical_solver.dart';
+import 'package:calculus_system/modules/inequalities/core/base_inequality_screen.dart';
+import 'package:calculus_system/modules/inequalities/radical/solver/radical_solver.dart';
 
 class RadicalScreen extends StatelessWidget {
   const RadicalScreen({super.key});
