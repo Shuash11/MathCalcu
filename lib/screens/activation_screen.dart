@@ -1,5 +1,3 @@
-// lib/screens/activation_gate.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -272,7 +270,7 @@ class _ActivationScreenState extends State<_ActivationScreen>
                       child: AnimatedBuilder(
                         animation: _showError
                             ? _shakeAnimation
-                            : AlwaysStoppedAnimation(0),
+                            : const AlwaysStoppedAnimation(0),
                         builder: (context, child) {
                           // Use glow effect during error instead of shake
                           final glowIntensity =

@@ -15,13 +15,16 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.24.0'
+          flutter-version: '3.27.1'
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build Web
         run: flutter build web --release --base-href "/MathCalcu/" --pwa-strategy=offline-first
+
+      - name: Override Service Worker
+        run: cp web/flutter_service_worker.js build/web/flutter_service_worker.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
