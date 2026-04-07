@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:calculus_system/modules/Distance/ui/distancescreen.dart';
 import 'package:go_router/go_router.dart';
 import 'screens/category_picker_screen.dart';
+import 'screens/activation_screen.dart'; // ← ADD THIS
 import 'modules/inequalities/card_picker_screen.dart';
 import 'modules/inequalities/strict/screen/strict_screen.dart';
 import 'modules/inequalities/non_strict/screen/non_strict_screen.dart';
@@ -20,14 +21,8 @@ import 'modules/two-point slope/ui/twopointslopescreen.dart';
 import 'modules/circles/card_picker_screen.dart';
 import 'modules/circles/center_raidus_form/screen/center_radiusui.dart';
 import 'modules/circles/raidus/screen/radiusui.dart';
-// ─────────────────────────────────────────────────────────
-
-// ── FUTURE DEV: import your module screen here ───────────
-// import 'modules/your_module/ui/your_screen.dart';
-// ─────────────────────────────────────────────────────────
 
 class AppRouter {
-  // ── Fade transition helper ────────────────────────────
   static CustomTransitionPage _fadeRoute(LocalKey key, Widget child) {
     return CustomTransitionPage(
       key: key,
@@ -37,16 +32,17 @@ class AppRouter {
       },
     );
   }
-  // ─────────────────────────────────────────────────────
 
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     routes: [
-      // ── Shared landing screen ──────────────────────────
+      // ── Home — wrapped with activation gate ────────────
       GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) => const CategoryPickerScreen(),
+        builder: (context, state) => const ActivationGate(
+          child: CategoryPickerScreen(), // ← WRAPPED HERE
+        ),
       ),
 
       // ── JOASHUA's routes ──────────────────────────────
@@ -105,10 +101,8 @@ class AppRouter {
           ),
         ],
       ),
-      // ─────────────────────────────────────────────────
 
       // ── NASH's routes ─────────────────────────────────
-
       GoRoute(
         path: '/slope',
         name: 'slope',
@@ -139,7 +133,6 @@ class AppRouter {
         name: 'two-point-slope',
         builder: (context, state) => const TwoPointSlopeScreen(),
       ),
-      // ─────────────────────────────────────────────────
 
       // ── Circle routes ─────────────────────────────────
       GoRoute(
@@ -173,22 +166,6 @@ class AppRouter {
           ),
         ],
       ),
-      // ─────────────────────────────────────────────────
-
-      // ── FUTURE DEV: add your routes here ─────────────
-      // GoRoute(
-      //   path: '/your_module',
-      //   name: 'your_module',
-      //   builder: (context, state) => const YourPickerScreen(),
-      //   routes: [
-      //     GoRoute(
-      //       path: 'solve',
-      //       name: 'your-solve',
-      //       builder: (context, state) => YourScreen(),
-      //     ),
-      //   ],
-      // ),
-      // ─────────────────────────────────────────────────
     ],
   );
 }

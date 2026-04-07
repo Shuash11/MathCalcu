@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart'; 
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class FindingRadiusCard extends StatefulWidget {
@@ -53,7 +53,7 @@ class _FindingRadiusCardState extends State<FindingRadiusCard>
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) => setState(() => _pressed = false),
         onTapCancel: () => setState(() => _pressed = false),
-          onTap: () => context.push('/circle/finding-radius'),
+        onTap: () => context.push('/circle/finding-radius'),
         child: AnimatedScale(
           scale: _pressed ? 0.97 : 1.0,
           duration: const Duration(milliseconds: 110),
@@ -114,7 +114,9 @@ class _FindingRadiusCardState extends State<FindingRadiusCard>
                                     fontWeight: FontWeight.w600,
                                     color: _hovered
                                         ? _softIndigo
-                                        : context.watch<ThemeProvider>().textPrimary,
+                                        : context
+                                            .watch<ThemeProvider>()
+                                            .textPrimary,
                                     letterSpacing: -0.4,
                                   ),
                                   child: const Text('Finding the Radius'),
@@ -175,12 +177,16 @@ class _IconOrbit extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           if (hovered)
-            AnimatedBuilder(
-              animation: controller,
-              builder: (_, __) => CustomPaint(
-                size: const Size(64, 64),
-                painter:
-                    _OrbitPainter(progress: controller.value, color: accent),
+            Positioned.fill(
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: AnimatedBuilder(
+                  animation: controller,
+                  builder: (_, __) => CustomPaint(
+                    painter: _OrbitPainter(progress: controller.value, color: accent),
+                  ),
+                ),
               ),
             ),
           AnimatedContainer(

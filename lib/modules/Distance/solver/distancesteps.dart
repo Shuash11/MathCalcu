@@ -67,12 +67,13 @@ class DistanceSteps extends StatelessWidget {
 
   /// Simplify √n to a√b form where b has no perfect square factors
   RadicalResult _simplifyRadical(double value) {
-    if (value < 0)
+    if (value < 0) {
       return RadicalResult(
           coefficient: 0,
           radicand: 0,
           isPerfectSquare: false,
           decimalValue: value);
+    }
 
     final int n = value.round();
     final double sqrtN = sqrt(n);

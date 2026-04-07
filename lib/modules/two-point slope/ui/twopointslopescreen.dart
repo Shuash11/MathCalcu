@@ -143,7 +143,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               GestureDetector(
                 onTap: () {
                   _controller.fillExample();
-                  HapticFeedback.lightImpact();
+                  try {
+                    HapticFeedback.lightImpact();
+                  } catch (_) {}
                 },
                 child: Container(
                   padding:
@@ -222,7 +224,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               child: GestureDetector(
                 onTap: () {
                   _controller.swapPoints();
-                  HapticFeedback.lightImpact();
+                  try {
+                    HapticFeedback.lightImpact();
+                  } catch (_) {}
                 },
                 child: Container(
                   width: 36,
@@ -285,7 +289,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     child: GestureDetector(
                       onTap: () {
                         _controller.reset();
-                        HapticFeedback.lightImpact();
+                        try {
+                          HapticFeedback.lightImpact();
+                        } catch (_) {}
                       },
                       child: Container(
                         width: 48,
@@ -311,7 +317,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _SolveButton(
                     onTap: () {
                       _controller.solve();
-                      HapticFeedback.mediumImpact();
+                      try {
+                        HapticFeedback.mediumImpact();
+                      } catch (_) {}
                     },
                   ),
                 ),

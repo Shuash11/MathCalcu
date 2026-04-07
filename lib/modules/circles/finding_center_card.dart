@@ -52,7 +52,7 @@ class _FindingCenterCardState extends State<FindingCenterCard>
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) => setState(() => _pressed = false),
         onTapCancel: () => setState(() => _pressed = false),
-          onTap: () => context.push('/circle/finding-center'),
+        onTap: () => context.push('/circle/finding-center'),
         child: AnimatedScale(
           scale: _pressed ? 0.97 : 1.0,
           duration: const Duration(milliseconds: 110),
@@ -107,7 +107,6 @@ class _FindingCenterCardState extends State<FindingCenterCard>
                                 CrossAxisAlignment.start, // Add this
                             children: [
                               Flexible(
-                                // Wrap with this
                                 child: AnimatedDefaultTextStyle(
                                   duration: const Duration(milliseconds: 200),
                                   style: TextStyle(
@@ -115,7 +114,9 @@ class _FindingCenterCardState extends State<FindingCenterCard>
                                     fontWeight: FontWeight.w600,
                                     color: _hovered
                                         ? _softIndigo
-                                        : context.watch<ThemeProvider>().textPrimary,
+                                        : context
+                                            .watch<ThemeProvider>()
+                                            .textPrimary,
                                     letterSpacing: -0.4,
                                   ),
                                   child: const Text('Finding the Center'),
@@ -176,12 +177,16 @@ class _IconOrbit extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           if (hovered)
-            AnimatedBuilder(
-              animation: controller,
-              builder: (_, __) => CustomPaint(
-                size: const Size(64, 64),
-                painter:
-                    _OrbitPainter(progress: controller.value, color: accent),
+            Positioned.fill(
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: AnimatedBuilder(
+                  animation: controller,
+                  builder: (_, __) => CustomPaint(
+                    painter: _OrbitPainter(progress: controller.value, color: accent),
+                  ),
+                ),
               ),
             ),
           AnimatedContainer(

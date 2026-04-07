@@ -173,25 +173,38 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
               ],
             ),
             const SizedBox(height: 20),
-            Text(
-              'Calculus\nSystem',
-              style: TextStyle(
-                fontSize: 42,
-                fontWeight: FontWeight.w700,
-                color: context.watch<ThemeProvider>().textPrimary,
-                height: 1.1,
-                letterSpacing: -1.5,
-              ),
+            Row(
+              children: [
+                Image.asset(
+                  'assets/images/app_icon.png',
+                  width: 42,
+                  height: 42,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'MathCalc',
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontWeight: FontWeight.w700,
+                    color: context.watch<ThemeProvider>().textPrimary,
+                    height: 1.1,
+                    letterSpacing: -1.5,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
-            Text(
-              '${_modules.length} topics available',
-              style: TextStyle(
-                fontSize: 15,
-                color: context.watch<ThemeProvider>().textSecondary,
+            Container(
+              margin: const EdgeInsets.only(left: 50),
+              child: Text(
+                '${_modules.length} topics available',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: context.watch<ThemeProvider>().textSecondary,
+                ),
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 15),
           ],
         ),
       ),

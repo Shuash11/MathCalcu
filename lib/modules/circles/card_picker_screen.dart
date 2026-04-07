@@ -36,9 +36,9 @@ class CircleCardPickerScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildTopBar(context, theme),
+                    Row(children: [_buildTopBar(context, theme)]),
                     const SizedBox(height: 16),
                     const _PickerHeader(),
                     const SizedBox(height: 20),
@@ -194,11 +194,16 @@ class _OrbitBadgeState extends State<_OrbitBadge>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          AnimatedBuilder(
-            animation: _ctrl,
-            builder: (_, __) => CustomPaint(
-              size: const Size(52, 52),
-              painter: _OrbitRingPainter(progress: _ctrl.value),
+          Positioned.fill(
+            child: SizedBox(
+              width: 52,
+              height: 52,
+              child: AnimatedBuilder(
+                animation: _ctrl,
+                builder: (_, __) => CustomPaint(
+                  painter: _OrbitRingPainter(progress: _ctrl.value),
+                ),
+              ),
             ),
           ),
           Container(

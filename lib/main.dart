@@ -8,16 +8,22 @@ void main() async {
   // ── PRE-RUN INITIALIZATION ──
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Create and asynchronously load theme preferences before running the app
+  // Create theme provider (load asynchronously in background)
   final themeProvider = ThemeProvider();
-  await themeProvider.load();
+  // Don't await - let it load in background while app starts
+  themeProvider.load();
 
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ),
-  );
+  // Only set system UI overlay style on mobile platforms (not on web or desktop)
+  try {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
+  } catch (_) {
+    // Ignore errors on unsupported platforms (web, linux, windows, macos)
+  }
 
   runApp(
     ChangeNotifierProvider.value(
@@ -35,10 +41,14 @@ class CalculusApp extends StatelessWidget {
     final themeProvider = context.watch<ThemeProvider>();
 
     return MaterialApp.router(
-      title: 'Calculus System',
+      title: 'MathCalcu',
       debugShowCheckedModeBanner: false,
       theme: themeProvider.isLight ? AppTheme.light() : AppTheme.dark(),
       routerConfig: AppRouter.router,
+      builder: (context, child) {
+        // Global error handler for unhandled exceptions
+        return child ?? const Scaffold(body: Center(child: Text('Error loading app')));
+      },
     );
   }
 }

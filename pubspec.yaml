@@ -10,31 +10,34 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # ── Routing ────────────────────────────────────────────────
+    
+  cupertino_icons: ^1.0.8
+  # ── Routing ──────────────────────────────────────────────────
   go_router: ^13.0.0
 
-  # ── Graphing ───────────────────────────────────────────────
-  fl_chart: ^0.68.0          # used by module graph/ classes
+  # ── Graphing ─────────────────────────────────────────────────
+  fl_chart: ^0.68.0
 
-  # ── Math rendering ─────────────────────────────────────────
-  flutter_math_fork: ^0.7.2  # LaTeX rendering in StepsDrawer
+  # ── Math rendering ───────────────────────────────────────────
+  flutter_math_fork: ^0.7.2
 
-  # ── State management ───────────────────────────────────────
-  provider: ^6.1.0           # optional — use if state grows
+  # ── State management ─────────────────────────────────────────
+  provider: ^6.1.0
 
-  # ── Utilities ──────────────────────────────────────────────
-  equatable: ^2.0.5          # value equality on model classes
+  # ── Utilities ────────────────────────────────────────────────
+  equatable: ^2.0.5
 
-  # ── Animation Optimization ─────────────────────────────────
-  visibility_detector: ^0.4.0+2  # pause animations when off-screen
+  # ── Animation optimization ──────────────────────────────────
+  visibility_detector: ^0.4.0+2
+
+  # ── Local storage (activation gate) ─────────────────────────
   shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  flutter_launcher_icons: "^0.13.1"
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
@@ -43,6 +46,9 @@ flutter:
     - assets/images/
 
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: launcher_icon
   ios: true
-  image_path: "assets/images/app_icon.png"
+  image_path: assets/images/app_icon.png
+  web:
+    generate: true
+    image_path: assets/images/app_icon.png

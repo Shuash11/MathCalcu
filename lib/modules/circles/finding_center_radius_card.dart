@@ -179,12 +179,16 @@ class _IconOrbit extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           if (hovered)
-            AnimatedBuilder(
-              animation: controller,
-              builder: (_, __) => CustomPaint(
-                size: const Size(64, 64),
-                painter:
-                    _OrbitPainter(progress: controller.value, color: accent),
+            Positioned.fill(
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: AnimatedBuilder(
+                  animation: controller,
+                  builder: (_, __) => CustomPaint(
+                    painter: _OrbitPainter(progress: controller.value, color: accent),
+                  ),
+                ),
               ),
             ),
           AnimatedContainer(

@@ -132,6 +132,7 @@ class _FinalBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

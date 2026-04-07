@@ -113,20 +113,21 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                 children: [
                   // Animated orbits - only when hovered
                   if (_hovered)
-                    AnimatedBuilder(
-                      animation: _orbitController,
-                      builder: (context, child) {
-                        return CustomPaint(
-                          size: Size.infinite,
-                          painter: _OrbitPainter(
-                            progress: _orbitController.value,
-                            color1: _indigo,
-                            color2: _cyan,
-                            color3: _teal,
-                            hovered: _hovered,
-                          ),
-                        );
-                      },
+                    Positioned.fill(
+                      child: AnimatedBuilder(
+                        animation: _orbitController,
+                        builder: (context, child) {
+                          return CustomPaint(
+                            painter: _OrbitPainter(
+                              progress: _orbitController.value,
+                              color1: _indigo,
+                              color2: _cyan,
+                              color3: _teal,
+                              hovered: _hovered,
+                            ),
+                          );
+                        },
+                      ),
                     ),
 
                   // Static decoration when not hovered
@@ -235,17 +236,20 @@ class _CircleModuleCardState extends State<CircleModuleCard>
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    widget.module.label,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: _hovered
-                                          ? _softIndigo
-                                          : context
-                                              .watch<ThemeProvider>()
-                                              .textPrimary,
-                                      letterSpacing: -0.5,
+                                  Flexible(
+                                    child: Text(
+                                      widget.module.label,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: _hovered
+                                            ? _softIndigo
+                                            : context
+                                                .watch<ThemeProvider>()
+                                                .textPrimary,
+                                        letterSpacing: -0.5,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(width: 10),
