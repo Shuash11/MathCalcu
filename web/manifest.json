@@ -1,11 +1,12 @@
 {
     "name": "mathcalcu",
     "short_name": "mathcalcu",
-    "start_url": ".",
+    "start_url": "/MathCalcu/",
+    "scope": "/MathCalcu/",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A MathCalcu app .",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
