@@ -1,4 +1,4 @@
-import 'package:calculus_system/modules/circles/center_raidus_form/Animations/Time_anim.dart';
+import 'package:calculus_system/modules/circles/center_raidus_form/Animations/time_anim.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/Theme/center_radius_theme.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/models/field_def.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/screen/subscreen/widgets_inputcard/buttons.dart';
