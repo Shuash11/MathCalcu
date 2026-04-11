@@ -21,7 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import '../../../ast.dart';
+import 'package:flutter_math_fork/ast.dart';
+
 import 'functions/custom/cursor.dart';
 import 'functions/katex_base.dart';
 import 'functions/katex_ext.dart';

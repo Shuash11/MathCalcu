@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../ast/options.dart';
-import '../ast/style.dart';
-import '../ast/syntax_tree.dart';
-import '../ast/tex_break.dart';
-import '../parser/tex/parse_error.dart';
-import '../parser/tex/parser.dart';
-import '../parser/tex/settings.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/style.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/tex_break.dart';
+import 'package:flutter_math_fork/src/parser/tex/parse_error.dart';
+import 'package:flutter_math_fork/src/parser/tex/parser.dart';
+import 'package:flutter_math_fork/src/parser/tex/settings.dart';
 import 'exception.dart';
 import 'mode.dart';
 import 'selectable.dart';

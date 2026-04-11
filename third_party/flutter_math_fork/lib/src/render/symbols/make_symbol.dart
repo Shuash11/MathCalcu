@@ -1,15 +1,15 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../ast/options.dart';
-import '../../ast/size.dart';
-import '../../ast/symbols/symbols.dart';
-import '../../ast/symbols/symbols_composite.dart';
-import '../../ast/symbols/symbols_extra.dart';
-import '../../ast/syntax_tree.dart';
-import '../../ast/types.dart';
-import '../../font/metrics/font_metrics.dart';
-import '../layout/reset_dimension.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
+import 'package:flutter_math_fork/src/ast/symbols/symbols.dart';
+import 'package:flutter_math_fork/src/ast/symbols/symbols_composite.dart';
+import 'package:flutter_math_fork/src/ast/symbols/symbols_extra.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/types.dart';
+import 'package:flutter_math_fork/src/font/metrics/font_metrics.dart';
+import 'package:flutter_math_fork/src/render/layout/reset_dimension.dart';
 import 'make_composite.dart';
 
 BuildResult makeBaseSymbol({

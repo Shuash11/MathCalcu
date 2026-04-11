@@ -7,8 +7,8 @@ import 'overlay.dart';
 import 'overlay_manager.dart';
 
 class MathSelectionHandleOverlay extends StatefulWidget {
-  MathSelectionHandleOverlay({
-    Key? key,
+  const MathSelectionHandleOverlay({
+    super.key,
     // required this.ast,
     required this.manager,
     required this.selection,
@@ -19,7 +19,7 @@ class MathSelectionHandleOverlay extends StatefulWidget {
     this.onSelectionHandleTapped,
     required this.selectionControls,
     this.dragStartBehavior = DragStartBehavior.start,
-  }) : super(key: key);
+  });
 
   // final SyntaxTree ast;
   final SelectionOverlayManagerMixin manager;

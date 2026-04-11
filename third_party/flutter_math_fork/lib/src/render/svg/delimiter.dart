@@ -1,10 +1,10 @@
-import '../../ast/options.dart';
-import '../../ast/size.dart';
-import '../../ast/style.dart';
-import '../../ast/symbols/symbols.dart';
-import '../../ast/types.dart';
-import '../../font/metrics/font_metrics.dart';
-import '../../utils/unicode_literal.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
+import 'package:flutter_math_fork/src/ast/style.dart';
+import 'package:flutter_math_fork/src/ast/symbols/symbols.dart';
+import 'package:flutter_math_fork/src/ast/types.dart';
+import 'package:flutter_math_fork/src/font/metrics/font_metrics.dart';
+import 'package:flutter_math_fork/src/utils/unicode_literal.dart';
 
 class DelimiterConf {
   final FontOptions font;

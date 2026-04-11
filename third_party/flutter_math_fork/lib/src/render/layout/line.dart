@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../constants.dart';
-import '../utils/render_box_offset.dart';
-import '../utils/render_box_layout.dart';
+import 'package:flutter_math_fork/src/render/constants.dart';
+import 'package:flutter_math_fork/src/render/utils/render_box_offset.dart';
+import 'package:flutter_math_fork/src/render/utils/render_box_layout.dart';
 
 class LineParentData extends ContainerBoxParentData<RenderBox> {
   // The first canBreakBefore has no effect
@@ -30,6 +30,7 @@ class LineElement extends ParentDataWidget<LineParentData> {
   final double trailingMargin;
   final bool alignerOrSpacer;
 
+  // ignore: use_super_parameters
   const LineElement({
     Key? key,
     this.canBreakBefore = false,
@@ -383,7 +384,8 @@ class RenderLine extends RenderBox
       final childParentData = child.parentData as LineParentData;
       var childSize = sizeMap[child] ?? Size.zero;
       if (childParentData.alignerOrSpacer) {
-        const childConstraints = BoxConstraints.tightFor(width: 0.0);
+        // ignore: prefer_const_declarations
+        final childConstraints = const BoxConstraints.tightFor(width: 0.0);
         childSize = child.getLayoutSize(childConstraints, dry: dry);
 
         colWidths.add(mainPos - lastColPosition);
@@ -405,7 +407,8 @@ class RenderLine extends RenderBox
 
     if (!dry) {
       this.caretOffsets = caretOffsets;
-      _overflow = mainPos - size.width;
+      // ignore: unnecessary_this
+      this._overflow = mainPos - size.width;
       this.maxHeightAboveBaseline = maxHeightAboveBaseline;
     } else {
       return size;

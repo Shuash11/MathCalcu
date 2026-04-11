@@ -10,8 +10,10 @@ import 'selection_manager.dart';
 mixin SelectionOverlayManagerMixin<T extends StatefulWidget>
     on SelectionManagerMixin<T>
     implements MathSelectionGestureDetectorBuilderDelegate {
+  @override
   FocusNode get focusNode;
 
+  @override
   bool get hasFocus => focusNode.hasFocus;
 
   double get preferredLineHeight;
@@ -109,6 +111,7 @@ mixin SelectionOverlayManagerMixin<T extends StatefulWidget>
     return false;
   }
 
+  @override
   void handleSelectionChanged(
       TextSelection selection, SelectionChangedCause? cause,
       [ExtraSelectionChangedCause? extraCause]) {

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../controller.dart';
+import 'package:flutter_math_fork/src/widgets/controller.dart';
 import 'selection_manager.dart';
 
 /// Helper class that keeps state relevant to the editing cursor.

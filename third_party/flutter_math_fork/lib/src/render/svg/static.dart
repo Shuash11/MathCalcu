@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../../ast/options.dart';
-import '../../ast/size.dart';
-import '../layout/reset_baseline.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
+import 'package:flutter_math_fork/src/render/layout/reset_baseline.dart';
 import 'svg_geomertry.dart';
 import 'svg_string.dart';
 

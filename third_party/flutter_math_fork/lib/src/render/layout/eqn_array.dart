@@ -4,11 +4,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../ast/nodes/matrix.dart';
-import '../constants.dart';
-import '../utils/render_box_offset.dart';
-import '../utils/render_box_layout.dart';
-import 'line.dart';
+import 'package:flutter_math_fork/src/ast/nodes/matrix.dart';
+import 'package:flutter_math_fork/src/render/constants.dart';
+import 'package:flutter_math_fork/src/render/utils/render_box_offset.dart';
+import 'package:flutter_math_fork/src/render/utils/render_box_layout.dart';
+import 'package:flutter_math_fork/src/render/layout/line.dart';
 
 class EqnArrayParentData extends ContainerBoxParentData<RenderBox> {}
 
@@ -19,15 +19,15 @@ class EqnArray extends MultiChildRenderObjectWidget {
   final List<MatrixSeparatorStyle> hlines;
   final List<double> rowSpacings;
 
-  EqnArray({
-    Key? key,
+  const EqnArray({
+    super.key,
     required this.ruleThickness,
     required this.jotSize,
     required this.arrayskip,
     required this.hlines,
     required this.rowSpacings,
-    required List<Widget> children,
-  }) : super(key: key, children: children);
+    required super.children,
+  });
 
   @override
   RenderObject createRenderObject(BuildContext context) => RenderEqnArray(

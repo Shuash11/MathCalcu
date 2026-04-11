@@ -21,8 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import '../../ast/syntax_tree.dart';
-import '../../ast/types.dart';
+
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/types.dart';
 import 'environments/array.dart';
 import 'environments/eqn_array.dart';
 import 'parser.dart';

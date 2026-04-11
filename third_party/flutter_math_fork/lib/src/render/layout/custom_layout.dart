@@ -1,11 +1,9 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-
-import '../constants.dart';
-import '../utils/get_type_of.dart';
-import '../utils/render_box_offset.dart';
-import '../utils/render_box_layout.dart';
-
+import 'package:flutter_math_fork/src/render/constants.dart';
+import 'package:flutter_math_fork/src/render/utils/get_type_of.dart';
+import 'package:flutter_math_fork/src/render/utils/render_box_offset.dart';
+import 'package:flutter_math_fork/src/render/utils/render_box_layout.dart';
 abstract class CustomLayoutDelegate<T> {
   const CustomLayoutDelegate();
 
@@ -44,6 +42,7 @@ class CustomLayoutId<T> extends ParentDataWidget<CustomLayoutParentData<T>> {
   /// Marks a child with a layout identifier.
   ///
   /// Both the child and the id arguments must not be null.
+  // ignore: use_super_parameters
   CustomLayoutId({
     Key? key,
     required this.id,
@@ -78,11 +77,11 @@ class CustomLayout<T> extends MultiChildRenderObjectWidget {
   /// Creates a custom multi-child layout.
   ///
   /// The [delegate] argument must not be null.
-  CustomLayout({
-    Key? key,
+  const CustomLayout({
+    super.key,
     required this.delegate,
-    required List<Widget> children,
-  }) : super(key: key, children: children);
+    required super.children,
+  });
 
   /// The delegate that controls the layout of the children.
   final CustomLayoutDelegate<T> delegate;
@@ -199,9 +198,10 @@ class RenderCustomLayout<T> extends RenderBox
 
   @override
   void performLayout() {
-    this.size = _computeLayout(constraints, dry: false);
+    size = _computeLayout(constraints, dry: false);
   }
 
+  @override
   Size computeDryLayout(BoxConstraints constraints) =>
       _computeLayout(constraints);
 

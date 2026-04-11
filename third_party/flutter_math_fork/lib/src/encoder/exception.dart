@@ -1,4 +1,6 @@
-import '../widgets/exception.dart';
+
+
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class EncoderException implements FlutterMathException {
   @override

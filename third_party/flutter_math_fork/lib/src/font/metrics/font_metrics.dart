@@ -1,6 +1,7 @@
-import '../../ast/font_metrics.dart';
-import '../../ast/size.dart';
-import '../../ast/types.dart';
+
+import 'package:flutter_math_fork/ast.dart';
+import 'package:flutter_math_fork/src/ast/font_metrics.dart';
+
 import 'font_metrics_data.dart';
 import 'unicode_scripts.dart';
 

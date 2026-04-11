@@ -22,20 +22,19 @@
 // SOFTWARE.
 
 import 'package:collection/collection.dart';
-
-import '../../../ast/nodes/left_right.dart';
-import '../../../ast/nodes/matrix.dart';
-import '../../../ast/nodes/style.dart';
-import '../../../ast/nodes/symbol.dart';
-import '../../../ast/options.dart';
-import '../../../ast/size.dart';
-import '../../../ast/style.dart';
-import '../../../ast/syntax_tree.dart';
-import '../define_environment.dart';
-import '../functions/katex_base.dart';
-import '../macros.dart';
-import '../parse_error.dart';
-import '../parser.dart';
+import 'package:flutter_math_fork/src/ast/nodes/left_right.dart';
+import 'package:flutter_math_fork/src/ast/nodes/matrix.dart';
+import 'package:flutter_math_fork/src/ast/nodes/style.dart';
+import 'package:flutter_math_fork/src/ast/nodes/symbol.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
+import 'package:flutter_math_fork/src/ast/style.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/parser/tex/define_environment.dart';
+import 'package:flutter_math_fork/src/parser/tex/functions/katex_base.dart';
+import 'package:flutter_math_fork/src/parser/tex/macros.dart';
+import 'package:flutter_math_fork/src/parser/tex/parse_error.dart';
+import 'package:flutter_math_fork/src/parser/tex/parser.dart';
 
 const arrayEntries = {
   [

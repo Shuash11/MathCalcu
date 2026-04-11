@@ -4,10 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-
-import '../../ast/syntax_tree.dart';
-import '../../utils/num_extension.dart';
-import 'line.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/utils/num_extension.dart';
+import 'package:flutter_math_fork/src/render/layout/line.dart';
 
 class EditableLine extends MultiChildRenderObjectWidget {
   const EditableLine({

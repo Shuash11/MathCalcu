@@ -1,13 +1,10 @@
 import 'dart:convert';
-
 import 'package:collection/collection.dart';
-
-import '../../ast/syntax_tree.dart';
-import '../../ast/types.dart';
-import '../../parser/tex/functions.dart';
-import '../../parser/tex/settings.dart';
-import '../../utils/alpha_numeric.dart';
-import '../encoder.dart';
+import 'package:flutter_math_fork/ast.dart';
+import 'package:flutter_math_fork/src/parser/tex/functions.dart';
+import 'package:flutter_math_fork/src/parser/tex/settings.dart';
+import 'package:flutter_math_fork/src/utils/alpha_numeric.dart';
+import 'package:flutter_math_fork/src/encoder/encoder.dart';
 import 'functions.dart';
 
 final texEncodingCache = Expando<EncodeResult>('Tex encoding results');
@@ -217,7 +214,7 @@ extension TexEncoderJoinerExt on Iterable<String> {
       final next = (iterator..moveNext()).current;
       if (current.length == 1 ||
           (next.isNotEmpty && !isAlphaNumericUnit(next[0]) && next[0] != '*') ||
-          (current.isNotEmpty && current[current.length - 1] == '\}')) {
+          (current.isNotEmpty && current[current.length - 1] == '}')) {
         return current;
       }
       return '$current ';

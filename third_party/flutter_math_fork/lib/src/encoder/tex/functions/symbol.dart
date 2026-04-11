@@ -1,4 +1,12 @@
-part of '../functions.dart';
+
+
+import 'package:collection/collection.dart';
+import 'package:flutter_math_fork/ast.dart';
+import 'package:flutter_math_fork/src/ast/symbols/symbols_composite.dart';
+import 'package:flutter_math_fork/src/encoder/encoder.dart';
+import 'package:flutter_math_fork/src/parser/tex/symbols.dart';
+import 'package:flutter_math_fork/src/utils/alpha_numeric.dart';
+import 'package:flutter_math_fork/src/utils/unicode_literal.dart';
 
 EncodeResult _symbolEncoder(GreenNode node) {
   final symbolNode = node as SymbolNode;

@@ -3,11 +3,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../ast/syntax_tree.dart';
-import '../../encoder/tex/encoder.dart';
-import '../../render/layout/line_editable.dart';
-import '../../utils/render_box_extensions.dart';
-import '../controller.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/encoder/tex/encoder.dart';
+import 'package:flutter_math_fork/src/render/layout/line_editable.dart';
+import 'package:flutter_math_fork/src/utils/render_box_extensions.dart';
+import 'package:flutter_math_fork/src/widgets/controller.dart';
 
 enum ExtraSelectionChangedCause {
   // Selection handle dragged,

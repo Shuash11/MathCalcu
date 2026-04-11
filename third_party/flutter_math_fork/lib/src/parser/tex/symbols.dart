@@ -28,9 +28,9 @@
 
 import 'dart:ui';
 
-import '../../ast/options.dart';
-import '../../ast/syntax_tree.dart';
-import '../../ast/types.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/types.dart';
 import 'symbols_extra.dart';
 
 class TexSymbolConfig {
@@ -418,7 +418,7 @@ const texSymbolCommandConfigs = {
     '/': TexSymbolConfig('/'),
     '@': TexSymbolConfig('@'),
     '.': TexSymbolConfig('.'),
-    '\"': TexSymbolConfig('\"'),
+    '"': TexSymbolConfig('"'),
     'A': TexSymbolConfig('A'),
     'B': TexSymbolConfig('B'),
     'C': TexSymbolConfig('C'),
@@ -1524,7 +1524,7 @@ const texSymbolCommandConfigs = {
     '<': TexSymbolConfig('<'),
     '>': TexSymbolConfig('>'),
     '|': TexSymbolConfig('|'),
-    '\"': TexSymbolConfig('\"'),
+    '"': TexSymbolConfig('"'),
     ';': TexSymbolConfig(';'),
     ':': TexSymbolConfig(':'),
     '?': TexSymbolConfig('?'),
@@ -2171,7 +2171,7 @@ const texSymbolCommandConfigs = {
     '\\textbackslash': TexSymbolConfig('\\'),
     '\\\'': TexSymbolConfig('\u02CA'),
     '\\`': TexSymbolConfig('\u02CB'),
-    '\\\"': TexSymbolConfig('\u00A8'),
+    '\\"': TexSymbolConfig('\u00A8'),
     '\\textasciitilde': TexSymbolConfig('~'),
     '\\=': TexSymbolConfig('\u02C9'),
     '\\u': TexSymbolConfig('\u02D8'),

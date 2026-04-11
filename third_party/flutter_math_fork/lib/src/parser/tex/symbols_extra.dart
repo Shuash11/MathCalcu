@@ -1,6 +1,6 @@
 // These symbols are migrated from elsewhere in KaTeX, e.g., macro
 
-import '../../ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
 import 'symbols.dart';
 
 const extraTexMathSymbolCommandConfigs = {

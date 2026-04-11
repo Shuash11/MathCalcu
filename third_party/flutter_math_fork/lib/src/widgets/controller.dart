@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import '../ast/syntax_tree.dart';
-import '../utils/text_extension.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/utils/text_extension.dart';
 
 class MathController extends ChangeNotifier {
   MathController({

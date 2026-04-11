@@ -24,10 +24,10 @@
 //ignore_for_file: prefer_single_quotes
 //ignore_for_file: lines_longer_than_80_chars
 
-import '../../ast/syntax_tree.dart';
-import '../../ast/types.dart';
-import '../../font/metrics/font_metrics_data.dart';
-import '../../utils/log.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/types.dart';
+import 'package:flutter_math_fork/src/utils/log.dart';
+import 'package:flutter_math_fork/src/font/metrics/font_metrics_data.dart';
 
 import 'functions.dart';
 import 'macro_expander.dart';

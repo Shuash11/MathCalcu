@@ -2,7 +2,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../controller.dart';
+import 'package:flutter_math_fork/src/widgets/controller.dart';
 import 'selection_manager.dart';
 
 /// Selection utility mixin for Web
@@ -22,11 +22,13 @@ import 'selection_manager.dart';
 ///
 mixin WebSelectionControlsManagerMixin<T extends StatefulWidget>
     on SelectionManagerMixin<T> implements TextInputClient {
+  @override
   FocusNode get focusNode;
   late FocusNode _oldFocusNode;
 
   TextInputConnection? _textInputConnection;
 
+  @override
   bool get hasFocus => focusNode.hasFocus;
 
   late MathController _oldController;
@@ -78,7 +80,7 @@ mixin WebSelectionControlsManagerMixin<T extends StatefulWidget>
     if (!_hasInputConnection) {
       _textInputConnection = TextInput.attach(
         this,
-        TextInputConfiguration(
+      const  TextInputConfiguration(
           inputType: TextInputType.multiline,
           readOnly: true,
           autocorrect: false,
@@ -110,7 +112,7 @@ mixin WebSelectionControlsManagerMixin<T extends StatefulWidget>
 
   void _updateSizeAndTransform() {
     if (_textInputConnection != null) {
-      final renderBox = this.context.findRenderObject();
+      final renderBox = context.findRenderObject();
       if (renderBox is RenderBox) {
         final size = renderBox.size;
         final transform = renderBox.getTransformTo(null);

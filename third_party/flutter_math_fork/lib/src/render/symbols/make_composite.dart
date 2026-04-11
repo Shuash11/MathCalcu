@@ -1,17 +1,17 @@
 import 'package:flutter/widgets.dart';
 
-import '../../ast/nodes/over.dart';
-import '../../ast/nodes/style.dart';
-import '../../ast/nodes/symbol.dart';
-import '../../ast/options.dart';
-import '../../ast/size.dart';
-import '../../ast/syntax_tree.dart';
-import '../../ast/types.dart';
-import '../../parser/tex/font.dart';
-import '../../utils/unicode_literal.dart';
-import '../layout/line.dart';
-import '../layout/reset_dimension.dart';
-import '../layout/shift_baseline.dart';
+import 'package:flutter_math_fork/src/ast/nodes/over.dart';
+import 'package:flutter_math_fork/src/ast/nodes/style.dart';
+import 'package:flutter_math_fork/src/ast/nodes/symbol.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/types.dart';
+import 'package:flutter_math_fork/src/parser/tex/font.dart';
+import 'package:flutter_math_fork/src/utils/unicode_literal.dart';
+import 'package:flutter_math_fork/src/render/layout/line.dart';
+import 'package:flutter_math_fork/src/render/layout/reset_dimension.dart';
+import 'package:flutter_math_fork/src/render/layout/shift_baseline.dart';
 import 'make_symbol.dart';
 
 BuildResult makeRlapCompositeSymbol(

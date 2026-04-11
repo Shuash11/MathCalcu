@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import '../ast/size.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
 
 const infiniteConstraint = BoxConstraints();
 

@@ -2,13 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'gesture_detector_builder.dart';
-import 'overlay_manager.dart';
 
 class SelectableMathSelectionGestureDetectorBuilder
     extends MathSelectionGestureDetectorBuilder {
   SelectableMathSelectionGestureDetectorBuilder({
-    required SelectionOverlayManagerMixin delegate,
-  }) : super(delegate: delegate);
+    required super.delegate,
+  });
 
   @override
   void onForcePressStart(ForcePressDetails details) {

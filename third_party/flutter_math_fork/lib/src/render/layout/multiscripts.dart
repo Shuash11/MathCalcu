@@ -4,12 +4,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tuple/tuple.dart';
 
-import '../../ast/options.dart';
-import '../../ast/size.dart';
-import '../../ast/style.dart';
-import '../../ast/syntax_tree.dart';
-import '../../utils/iterable_extensions.dart';
-import 'custom_layout.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
+import 'package:flutter_math_fork/src/ast/style.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/utils/iterable_extensions.dart';
+import 'package:flutter_math_fork/src/render/layout/custom_layout.dart';
 
 /// This should be the perfect use case for [CustomMultiChildLayout] and
 /// [MultiChildLayoutDelegate]. However, they don't support baseline

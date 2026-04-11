@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import '../../utils/log.dart';
+import 'package:flutter_math_fork/src/utils/log.dart';
 import 'macros.dart';
 import 'parse_error.dart';
 import 'parser.dart';
@@ -77,7 +77,7 @@ class TexParserSettings {
     this.strictFun,
     this.globalGroup = false,
     this.colorIsTextColor = false,
-  }) : this.strict = strictFun == null ? strict : Strict.function
+  }) : strict = strictFun == null ? strict : Strict.function
   //: assert(strict != Strict.function || strictFun != null) // This line causes analyzer error
   ;
 

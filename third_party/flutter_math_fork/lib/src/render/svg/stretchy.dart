@@ -2,10 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
-import '../../ast/options.dart';
-import '../../ast/size.dart';
-import 'svg_geomertry.dart';
-import 'svg_string.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+import 'package:flutter_math_fork/src/ast/size.dart';
+import 'package:flutter_math_fork/src/render/svg/svg_geomertry.dart';
+import 'package:flutter_math_fork/src/render/svg/svg_string.dart';
 
 class _KatexImagesData {
   final List<String> paths;

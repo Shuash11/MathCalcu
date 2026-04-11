@@ -25,7 +25,9 @@
 
 import 'dart:ui';
 
-import '../../ast/options.dart';
+import 'package:flutter_math_fork/src/ast/options.dart';
+
+
 
 // Map<String, FontOptions> _fontOptionsTable;
 // Map<String, FontOptions> get fontOptionsTable {

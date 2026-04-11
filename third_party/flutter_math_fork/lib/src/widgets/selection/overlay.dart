@@ -3,7 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../ast/syntax_tree.dart';
+import 'package:flutter_math_fork/src/ast/syntax_tree.dart';
 import 'handle_overlay.dart';
 import 'overlay_manager.dart';
 import 'selection_manager.dart';
