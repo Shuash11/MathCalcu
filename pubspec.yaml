@@ -19,7 +19,10 @@ dependencies:
   fl_chart: ^0.68.0
 
   # ── Math rendering ───────────────────────────────────────────
-  flutter_math_fork: ^0.7.2
+  flutter_math_fork: 
+    git:
+      url: https://github.com/simpleclub/flutter_math
+      ref: main
 
   # ── State management ─────────────────────────────────────────
   provider: ^6.1.0
