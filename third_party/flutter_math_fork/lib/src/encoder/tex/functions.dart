@@ -1,4 +1,4 @@
-library tex_encoder_functions;
+
 import 'package:collection/collection.dart';
 import 'package:flutter_math_fork/src/ast/nodes/accent.dart';
 import 'package:flutter_math_fork/src/ast/nodes/accent_under.dart';
