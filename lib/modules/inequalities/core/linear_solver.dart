@@ -1,77 +1,60 @@
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
-
-import 'inequality_core_solver.dart';
+import 'package:calculus_system/modules/inequalities/core/inequality_core_solver.dart';
 
 class LinearSolver {
   static SolveResult solve(String input) {
-    try {
-      final normalized = InequalityCoreSolver.normalize(input);
-      final ops = RegExp(r'[≥≤><]')
-          .allMatches(normalized)
-          .map((m) => m.group(0)!)
-          .toList();
-      if (ops.isEmpty) {
-        return SolveResult.error('No inequality operator found.');
-      }
+    final normalized = InequalityCoreSolver.normalize(input);
+    final ops = _extractOps(normalized);
+    if (ops.isEmpty) return SolveResult.error('No operator found.');
 
-      if (ops.length == 2) {
-        final parts = normalized.split(RegExp(r'[≥≤><]'));
-        return _solveDouble(normalized, ops, parts);
-      }
-
-      final op = ops[0];
-      final sides = InequalityCoreSolver.splitOnOp(normalized, op);
-      if (sides == null) {
-        return SolveResult.error('Could not split expression.');
-      }
-
-      final left = InequalityCoreSolver.parseLinear(sides[0]);
-      final right = InequalityCoreSolver.parseLinear(sides[1]);
-      if (left == null || right == null) {
-        return SolveResult.error(
-            'Could not parse expression. Check your input.');
-      }
-
-      final a = left['x']! - right['x']!;
-      final b = left['c']! - right['c']!;
-
-      if (a == 0) {
-        final satisfies = InequalityCoreSolver.evalOp(-b, op, 0);
-        if (satisfies) {
-          return const SolveResult(
-              answer: 'All real numbers',
-              points: [],
-              intervalNotation: '(-∞, ∞)');
-        } else {
-          return const SolveResult(
-              answer: 'No solution', points: [], intervalNotation: '∅');
-        }
-      }
-
-      final boundary = -b / a;
-      final finalOp = a < 0 ? InequalityCoreSolver.flipOp(op) : op;
-      final answer = 'x $finalOp ${InequalityCoreSolver.fmt(boundary)}';
-      final interval = InequalityCoreSolver.interval(finalOp, boundary);
-
-      return SolveResult(
-          answer: answer, points: [boundary], intervalNotation: interval);
-    } catch (e) {
-      return SolveResult.error('Error solving: $e');
+    if (ops.length == 2) {
+      final parts = _splitDouble(normalized);
+      if (parts == null)
+        return SolveResult.error('Could not split double inequality.');
+      return _solveDouble(normalized, ops, parts);
     }
+
+    final op = ops[0];
+    final sides = InequalityCoreSolver.splitOnOp(normalized, op);
+    if (sides == null) return SolveResult.error('Could not split on operator.');
+
+    final left = InequalityCoreSolver.parseLinear(sides[0]);
+    final right = InequalityCoreSolver.parseLinear(sides[1]);
+    if (left == null || right == null)
+      return SolveResult.error('Could not parse linear expressions.');
+
+    final la = left['x']!, lc = left['c']!;
+    final ra = right['x']!, rc = right['c']!;
+    final a = la - ra, b = lc - rc;
+
+    if (a == 0) {
+      final sat = InequalityCoreSolver.evalOp(b, op, 0);
+      return SolveResult(
+        answer: sat ? 'All real numbers' : 'No solution',
+        points: [],
+        intervalNotation: sat ? '(-∞, ∞)' : '∅',
+      );
+    }
+
+    final boundary = -b / a;
+    final finalOp = a < 0 ? InequalityCoreSolver.flipOp(op) : op;
+    return SolveResult(
+      answer: 'x $finalOp ${InequalityCoreSolver.fmt(boundary)}',
+      points: [boundary],
+      intervalNotation: InequalityCoreSolver.interval(finalOp, boundary),
+    );
   }
 
   static List<StepModel> getSteps(String input) {
     final steps = <StepModel>[];
     final normalized = InequalityCoreSolver.normalize(input);
-    final ops = RegExp(r'[≥≤><]')
-        .allMatches(normalized)
-        .map((m) => m.group(0)!)
-        .toList();
+    final ops = _extractOps(normalized);
     if (ops.isEmpty) return steps;
 
     if (ops.length == 2) {
-      final parts = normalized.split(RegExp(r'[≥≤><]'));
+      final parts = _splitDouble(normalized);
+      if (parts == null) return steps;
       return _stepsDouble(input, ops, parts);
     }
 
@@ -83,256 +66,267 @@ class LinearSolver {
     final right = InequalityCoreSolver.parseLinear(sides[1]);
     if (left == null || right == null) return steps;
 
-    final la = left['x']!;
-    final lc = left['c']!;
-    final ra = right['x']!;
-    final rc = right['c']!;
-    final a = la - ra;
-    final b = lc - rc;
+    final la = left['x']!, lc = left['c']!;
+    final ra = right['x']!, rc = right['c']!;
+    final a = la - ra, b = lc - rc;
 
     int n = 1;
+    const f = InequalityCoreSolver.fmt;
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original inequality',
-      explanation: '',
+      title: 'Original Inequality',
+      explanation: 'Start with the given inequality.',
       latex: input.trim(),
     ));
 
-    if (ra != 0) {
-      final xPart =
-          a == 1 ? 'x' : (a == -1 ? '-x' : '${InequalityCoreSolver.fmt(a)}x');
-      final cPart = lc >= 0
-          ? (lc != 0 ? '+ ${InequalityCoreSolver.fmt(lc)}' : '')
-          : InequalityCoreSolver.fmt(lc);
+    if (ra != 0 || rc != 0) {
+      final aMove = -ra, bMove = -rc;
+      final sA = aMove >= 0 ? '+' : '-';
+      final sB = bMove >= 0 ? '+' : '-';
+      
+      final lhs1 = '${_cl(la)}x ${lc != 0 ? (lc > 0 ? "+ ${f(lc)}" : "- ${f(lc.abs())}") : ""}';
+      final rhs1 = '${ra != 0 ? "${_cl(ra)}x" : ""} ${rc != 0 ? (rc > 0 ? (ra != 0 ? "+ ${f(rc)}" : f(rc)) : "- ${f(rc.abs())}") : (ra == 0 ? "0" : "")}';
+      
+      final lhs2 = '$lhs1 ${ra != 0 ? "$sA ${_cl(aMove.abs())}x" : ""} ${rc != 0 ? "$sB ${f(bMove.abs())}" : ""}';
+
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Group x terms',
-        explanation: '',
+        title: 'Group Variables and Constants',
+        explanation: 'Move all terms containing x to the left side and all constants to the right (or left) to compare with zero.',
         latex:
-            '$xPart ${cPart.isNotEmpty ? cPart : ""} $op ${InequalityCoreSolver.fmt(rc)}',
+            '\\begin{aligned} $lhs1 &${_tex(op)} $rhs1 \\\\ $lhs2 &${_tex(op)} 0 \\end{aligned}',
+      ));
+      steps.add(StepModel(
+        stepNumber: n++,
+        title: 'Combine Like Terms',
+        explanation: 'Simplify both sides by grouping the x-terms and the numerical constants.',
+        latex: '${_cl(a)}x ${b != 0 ? (b > 0 ? "+ ${f(b)}" : "- ${f(b.abs())}") : ""} ${_tex(op)} 0',
       ));
     }
 
-    if (lc != 0) {
-      final rhs = rc - lc;
-      final xPart =
-          a == 1 ? 'x' : (a == -1 ? '-x' : '${InequalityCoreSolver.fmt(a)}x');
+    if (b != 0) {
+      final bMove = -b;
+      final moveAction = bMove >= 0 ? 'Add' : 'Subtract';
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Move constants',
-        explanation: '',
-        latex: '$xPart $op ${InequalityCoreSolver.fmt(rhs)}',
+        title: 'Isolate Variable Term',
+        explanation: 'Move the constant term to the other side by $moveAction ${f(bMove.abs())} on both sides.',
+        latex:
+            '\\begin{aligned} ${_cl(a)}x ${b > 0 ? "+ ${f(b)}" : "- ${f(b.abs())}"} &${_tex(op)} 0 \\\\ ${_cl(a)}x &${_tex(op)} ${f(bMove)} \\end{aligned}',
       ));
     }
 
     if (a == 0) {
+      final sat = InequalityCoreSolver.evalOp(b, op, 0);
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Evaluate constant check',
-        explanation: '',
+        title: 'Evaluate Result',
+        explanation: 'Check if the resulting inequality is a true mathematical statement.',
         latex:
-            '${InequalityCoreSolver.fmt(b)} $op 0 → ${InequalityCoreSolver.evalOp(b, op, 0) ? "True: All real numbers" : "False: No solution"}',
+            '${f(b)} ${_tex(op)} 0 \\quad \\rightarrow \\quad ${sat ? "\\text{True}" : "\\text{False}"}',
+      ));
+      steps.add(StepModel(
+        stepNumber: n++,
+        title: 'Solution Summary',
+        explanation: sat
+            ? 'The statement is always true, so x can be any real number.'
+            : 'The statement is false, so there is no solution for x.',
+        latex: sat ? r'(-\infty, \infty)' : r'\emptyset',
       ));
       return steps;
     }
 
+    final finalOp = a < 0 ? InequalityCoreSolver.flipOp(op) : op;
     final boundary = -b / a;
+    if (a != 1) {
+      final action = a < 0
+          ? 'Divide by ${f(a)} and flip the inequality sign (since it is negative)'
+          : 'Divide by ${f(a)} on both sides';
 
-    if (a == -1) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Divide by -1 (flip inequality)',
-        explanation: '',
+        title: 'Divide by Coefficient',
+        explanation: '$action to isolate x.',
         latex:
-            'x ${InequalityCoreSolver.flipOp(op)} ${InequalityCoreSolver.fmt(boundary)}',
-      ));
-    } else if (a < 0) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Divide by ${InequalityCoreSolver.fmt(a)} (flip inequality)',
-        explanation: '',
-        latex:
-            'x ${InequalityCoreSolver.flipOp(op)} ${InequalityCoreSolver.fmt(boundary)}',
-      ));
-    } else if (a != 1) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Divide by ${InequalityCoreSolver.fmt(a)}',
-        explanation: '',
-        latex: 'x $op ${InequalityCoreSolver.fmt(boundary)}',
+            '\\begin{aligned} \\frac{${_cl(a)}x}{${f(a)}} &${_tex(finalOp)} \\frac{${f(-b)}}{${f(a)}} \\\\ x &${_tex(finalOp)} ${f(boundary)} \\end{aligned}',
       ));
     }
 
-    final finalOp = a < 0 ? InequalityCoreSolver.flipOp(op) : op;
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution set',
-      explanation: '',
+      title: 'Interval Notation',
+      explanation: 'Final solution set expressed in interval notation.',
       latex: InequalityCoreSolver.interval(finalOp, boundary),
     ));
 
     return steps;
   }
 
+  static String _cl(double a) {
+    if (a == 1) return '';
+    if (a == -1) return '-';
+    return InequalityCoreSolver.fmt(a);
+  }
+
+  static String _tex(String op) => switch (op) {
+        '≥' => '\\geq',
+        '≤' => '\\leq',
+        '>' => '>',
+        '<' => '<',
+        _ => op,
+      };
+
+  static List<String> _extractOps(String s) {
+    final ops = <String>[];
+    for (int i = 0; i < s.length; i++) {
+      final ch = s[i];
+      if (ch == '<' || ch == '>' || ch == '≤' || ch == '≥') ops.add(ch);
+    }
+    return ops;
+  }
+
+  static List<String>? _splitDouble(String s) {
+    final ops = _extractOps(s);
+    if (ops.length != 2) return null;
+    final idx1 = s.indexOf(ops[0]);
+    final idx2 = s.indexOf(ops[1], idx1 + 1);
+    return [
+      s.substring(0, idx1),
+      s.substring(idx1 + 1, idx2),
+      s.substring(idx2 + 1),
+    ];
+  }
+
   static SolveResult _solveDouble(
       String normalized, List<String> ops, List<String> parts) {
-    if (parts.length != 3) {
-      return SolveResult.error('Invalid double inequality format.');
-    }
     final left = InequalityCoreSolver.parseLinear(parts[0]);
     final mid = InequalityCoreSolver.parseLinear(parts[1]);
     final right = InequalityCoreSolver.parseLinear(parts[2]);
-
-    if (left == null || mid == null || right == null) {
-      return SolveResult.error('Could not parse double inequality parts.');
+    if (left == null ||
+        mid == null ||
+        right == null ||
+        left['x'] != 0 ||
+        right['x'] != 0) {
+      return SolveResult.error('Unsupported double inequality form.');
     }
+    final mx = mid['x']!, mc = mid['c']!;
+    final lc = left['c']!, rc = right['c']!;
+    if (mx == 0) return SolveResult.error('No variable in middle.');
 
-    if (left['x'] != 0 || right['x'] != 0) {
-      return SolveResult.error(
-          'Variables on the outside are not supported yet.');
-    }
-
-    final mx = mid['x']!;
-    final c = mid['c']!;
-    final l = left['c']!;
-    final r = right['c']!;
-
-    if (mx == 0) return SolveResult.error('No variable in the expression.');
-
-    final newL = l - c;
-    final newR = r - c;
-
-    double boundL = newL / mx;
-    double boundR = newR / mx;
-    String op1 = ops[0];
-    String op2 = ops[1];
+    double bL = (lc - mc) / mx, bR = (rc - mc) / mx;
+    String op1 = ops[0], op2 = ops[1];
 
     if (mx < 0) {
       op1 = InequalityCoreSolver.flipOp(op1);
       op2 = InequalityCoreSolver.flipOp(op2);
-      final tempOp = op1;
-      op1 = op2;
-      op2 = tempOp;
-
-      final tempB = boundL;
-      boundL = boundR;
-      boundR = tempB;
+      if (bL > bR) {
+        final tB = bL;
+        bL = bR;
+        bR = tB;
+        final tO = op1;
+        op1 = InequalityCoreSolver.flipOp(op2);
+        op2 = InequalityCoreSolver.flipOp(tO);
+      }
     }
-
-    final lb = (op1 == '≤' || op1 == '≥') ? '[' : '(';
-    final rb = (op2 == '≤' || op2 == '≥') ? ']' : ')';
-    final interval =
-        '$lb${InequalityCoreSolver.fmt(boundL)}, ${InequalityCoreSolver.fmt(boundR)}$rb';
-
-    if (boundL > boundR || (boundL == boundR && (op1 == '<' || op2 == '<'))) {
+    if (bL > bR || (bL == bR && (op1 == '<' || op2 == '<'))) {
       return const SolveResult(
           answer: 'No solution', points: [], intervalNotation: '∅');
     }
-
+    final lb = (op1 == '≤' || op1 == '≥') ? '[' : '(';
+    final rb = (op2 == '≤' || op2 == '≥') ? ']' : ')';
+    final interval =
+        '$lb${InequalityCoreSolver.fmt(bL)}, ${InequalityCoreSolver.fmt(bR)}$rb';
     final answer =
-        '${InequalityCoreSolver.fmt(boundL)} $op1 x $op2 ${InequalityCoreSolver.fmt(boundR)}';
+        '${InequalityCoreSolver.fmt(bL)} $op1 x $op2 ${InequalityCoreSolver.fmt(bR)}';
     return SolveResult(
-        answer: answer, points: [boundL, boundR], intervalNotation: interval);
+        answer: answer, points: [bL, bR], intervalNotation: interval);
   }
 
   static List<StepModel> _stepsDouble(
       String input, List<String> ops, List<String> parts) {
     final steps = <StepModel>[];
     int n = 1;
+    const f = InequalityCoreSolver.fmt;
 
     steps.add(StepModel(
-      stepNumber: n++,
-      title: 'Original double inequality',
-      explanation: '',
-      latex: input.trim(),
-    ));
-
+        stepNumber: n++,
+        title: 'Original Inequality',
+        explanation: 'Start with the compound inequality.',
+        latex: input.trim()));
     final left = InequalityCoreSolver.parseLinear(parts[0]);
     final mid = InequalityCoreSolver.parseLinear(parts[1]);
     final right = InequalityCoreSolver.parseLinear(parts[2]);
-    if (left == null || mid == null || right == null) return steps;
-    if (left['x'] != 0 || right['x'] != 0) return steps;
+    if (left == null ||
+        mid == null ||
+        right == null ||
+        left['x'] != 0 ||
+        right['x'] != 0) {
+      return steps;
+    }
 
-    final mx = mid['x']!;
-    final c = mid['c']!;
-    final l = left['c']!;
-    final r = right['c']!;
+    final mx = mid['x']!, mc = mid['c']!, lc = left['c']!, rc = right['c']!;
     if (mx == 0) return steps;
+    String op1 = ops[0], op2 = ops[1];
 
-    if (c != 0) {
-      final newL = l - c;
-      final newR = r - c;
-      final xPart = mx == 1
-          ? 'x'
-          : (mx == -1 ? '-x' : '${InequalityCoreSolver.fmt(mx)}x');
+    if (mc != 0) {
+      final nL = lc - mc, nR = rc - mc;
+      final xPart = '${_cl(mx)}x';
+      final action = mc > 0 ? 'Subtract' : 'Add';
       steps.add(StepModel(
         stepNumber: n++,
-        title: c > 0
-            ? 'Subtract ${InequalityCoreSolver.fmt(c)} from all parts'
-            : 'Add ${InequalityCoreSolver.fmt(-c)} to all parts',
-        explanation: '',
+        title: 'Isolate Variable Term',
+        explanation: 'Move the constant term away from the middle by performing $action ${f(mc.abs())} on all parts of the inequality.',
         latex:
-            '${InequalityCoreSolver.fmt(newL)} ${ops[0]} $xPart ${ops[1]} ${InequalityCoreSolver.fmt(newR)}',
+            '\\begin{aligned} ${f(lc)} - ${f(mc)} &${_tex(op1)} $xPart + ${f(mc)} - ${f(mc)} &&${_tex(op2)} ${f(rc)} - ${f(mc)} \\\\ ${f(nL)} &${_tex(op1)} $xPart &&${_tex(op2)} ${f(nR)} \\end{aligned}',
       ));
     }
 
-    double boundL = (l - c) / mx;
-    double boundR = (r - c) / mx;
-    String op1 = ops[0];
-    String op2 = ops[1];
-
-    if (mx != 1) {
-      if (mx < 0) {
-        op1 = InequalityCoreSolver.flipOp(op1);
-        op2 = InequalityCoreSolver.flipOp(op2);
-        final tempOp = op1;
-        op1 = op2;
-        op2 = tempOp;
-        final tempB = boundL;
-        boundL = boundR;
-        boundR = tempB;
-
+    double bL = (lc - mc) / mx, bR = (rc - mc) / mx;
+    if (mx == 1) {
+      // Done
+    } else if (mx < 0) {
+      op1 = InequalityCoreSolver.flipOp(op1);
+      op2 = InequalityCoreSolver.flipOp(op2);
+      steps.add(StepModel(
+        stepNumber: n++,
+        title: 'Divide by Negative',
+        explanation:
+            'Divide all parts by ${f(mx)} and flip the inequality symbols because we are dividing by a negative number.',
+        latex:
+            '\\begin{aligned} \\frac{${f(lc - mc)}}{${f(mx)}} &${_tex(op1)} x &&${_tex(op2)} \\frac{${f(rc - mc)}}{${f(mx)}} \\\\ ${f(bL)} &${_tex(op1)} x &&${_tex(op2)} ${f(bR)} \\end{aligned}',
+      ));
+      if (bL > bR) {
+        final tB = bL;
+        bL = bR;
+        bR = tB;
+        final tO = op1;
+        op1 = InequalityCoreSolver.flipOp(op2);
+        op2 = InequalityCoreSolver.flipOp(tO);
         steps.add(StepModel(
           stepNumber: n++,
-          title:
-              'Divide by ${InequalityCoreSolver.fmt(mx)} (flip inequalities)',
-          explanation: '',
-          latex:
-              '${InequalityCoreSolver.fmt(boundL)} $op1 x $op2 ${InequalityCoreSolver.fmt(boundR)}',
-        ));
-      } else {
-        steps.add(StepModel(
-          stepNumber: n++,
-          title: 'Divide by ${InequalityCoreSolver.fmt(mx)}',
-          explanation: '',
-          latex:
-              '${InequalityCoreSolver.fmt(boundL)} $op1 x $op2 ${InequalityCoreSolver.fmt(boundR)}',
+          title: 'Rewrite in Ascending Order',
+          explanation: 'Reorganize the solution to show the range from smallest to largest.',
+          latex: '${f(bL)} ${_tex(op1)} x ${_tex(op2)} ${f(bR)}',
         ));
       }
-    }
-
-    final lb = (op1 == '≤' || op1 == '≥') ? '[' : '(';
-    final rb = (op2 == '≤' || op2 == '≥') ? ']' : ')';
-    final interval =
-        '$lb${InequalityCoreSolver.fmt(boundL)}, ${InequalityCoreSolver.fmt(boundR)}$rb';
-
-    if (boundL > boundR || (boundL == boundR && (op1 == '<' || op2 == '<'))) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Solution set',
-        explanation: '',
-        latex: 'No solution (∅)',
-      ));
     } else {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Solution set',
-        explanation: '',
-        latex: interval,
+        title: 'Divide All Parts',
+        explanation: 'Divide every part of the inequality by ${f(mx)} to isolate x in the middle.',
+        latex:
+            '\\begin{aligned} \\frac{${f(lc - mc)}}{${f(mx)}} &${_tex(op1)} x &&${_tex(op2)} \\frac{${f(rc - mc)}}{${f(mx)}} \\\\ ${f(bL)} &${_tex(op1)} x &&${_tex(op2)} ${f(bR)} \\end{aligned}',
       ));
     }
 
+    final bool noSol = bL > bR || (bL == bR && (op1 == '<' || op2 == '<'));
+    steps.add(StepModel(
+      stepNumber: n++,
+      title: 'Interval Notation',
+      explanation: 'Final solution set expressed in interval notation.',
+      latex: noSol ? r'\emptyset' : solve(input).intervalNotation,
+    ));
     return steps;
   }
 }

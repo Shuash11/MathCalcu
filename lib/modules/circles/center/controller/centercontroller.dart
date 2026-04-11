@@ -1,9 +1,8 @@
 // lib/Controller/center_controller.dart
+
 import 'package:calculus_system/modules/circles/center/solver/centersolver.dart';
 import 'package:flutter/material.dart';
 
-/// Holds all mutable state for the Finding-Center screen.
-/// Pass this into sub-widgets so they stay stateless / dumb.
 class CenterController extends ChangeNotifier {
   final x1Ctrl = TextEditingController();
   final y1Ctrl = TextEditingController();
@@ -13,23 +12,36 @@ class CenterController extends ChangeNotifier {
   CenterResult? result;
   String? errorMsg;
 
-  // ── Public API ────────────────────────────────────────────
-
   void calculate() {
-    final x1 = CenterSolver.parse(x1Ctrl.text);
-    final y1 = CenterSolver.parse(y1Ctrl.text);
-    final x2 = CenterSolver.parse(x2Ctrl.text);
-    final y2 = CenterSolver.parse(y2Ctrl.text);
-
-    if (x1 == null || y1 == null || x2 == null || y2 == null) {
+    // Check if any field is empty first
+    if (x1Ctrl.text.trim().isEmpty ||
+        y1Ctrl.text.trim().isEmpty ||
+        x2Ctrl.text.trim().isEmpty ||
+        y2Ctrl.text.trim().isEmpty) {
       result = null;
-      errorMsg = 'Please fill in all four fields correctly.';
+      errorMsg = 'Please fill in all fields';
+
       notifyListeners();
       return;
     }
 
+    final computed = CenterSolver.computeExact(
+      x1: x1Ctrl.text,
+      y1: y1Ctrl.text,
+      x2: x2Ctrl.text,
+      y2: y2Ctrl.text,
+    );
+
+    if (computed == null) {
+      result = null;
+      errorMsg =
+          'Invalid input. Check that all numbers are valid (e.g., 2, 3.5, 1/2)';
+      notifyListeners();
+      return;
+    }
+
+    result = computed;
     errorMsg = null;
-    result = CenterSolver.compute(x1: x1, y1: y1, x2: x2, y2: y2);
     notifyListeners();
   }
 

@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'dart:math';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -184,7 +185,8 @@ class _IconOrbit extends StatelessWidget {
                 child: AnimatedBuilder(
                   animation: controller,
                   builder: (_, __) => CustomPaint(
-                    painter: _OrbitPainter(progress: controller.value, color: accent),
+                    painter: _OrbitPainter(
+                        progress: controller.value, color: accent),
                   ),
                 ),
               ),

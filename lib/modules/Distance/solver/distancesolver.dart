@@ -96,9 +96,7 @@ class DistanceSolver {
     // Format numbers cleanly (trim trailing zeros)
     String fmt(double n) {
       final s = n.toStringAsFixed(4);
-      return s
-          .replaceAll(RegExp(r'0+$'), '')
-          .replaceAll(RegExp(r'\.$'), '');
+      return s.replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
     }
 
     final formula = '√((${fmt(x2)}−${fmt(x1)})² + (${fmt(y2)}−${fmt(y1)})²)\n'
@@ -136,11 +134,11 @@ class DistanceSolver {
 class _ParseResult {
   final double? value;
   final String? error;
-  
+
   const _ParseResult({this.value, this.error});
-  
+
   bool get hasError => error != null;
-  DistanceResult? get errorResult => 
+  DistanceResult? get errorResult =>
       hasError ? DistanceResult.error(error!) : null;
 
   factory _ParseResult.success(double v) => _ParseResult(value: v);

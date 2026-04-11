@@ -132,7 +132,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Slope Calculator',
+                      'Equation of the line',
                       style: TwoPointSlopeTheme.headingStyle(context),
                     ),
                   ],

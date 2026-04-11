@@ -1,3 +1,4 @@
+import 'package:calculus_system/modules/midpoint/graph/midpoint_graph.dart';
 import 'package:calculus_system/modules/midpoint/Solver/midpointsolver.dart';
 import 'package:calculus_system/modules/midpoint/Solver/midpointsteps.dart';
 import 'package:calculus_system/modules/midpoint/Theme/midpointtheme.dart';
@@ -137,6 +138,59 @@ class _MidpointScreenState extends State<MidpointScreen> {
 
   String get _buttonLabel =>
       _mode == StepMode.midpoint ? 'Calculate Midpoint' : 'Find Endpoint';
+
+  void _openGraph() {
+    if (_savedResX == null || _savedResY == null) return;
+
+    double p(String s) {
+      if (s.contains('/')) {
+        final parts = s.split('/');
+        if (parts.length == 2) {
+          final n = double.tryParse(parts[0].trim());
+          final d = double.tryParse(parts[1].trim());
+          if (n != null && d != null && d != 0) return n / d;
+        }
+      }
+      return double.tryParse(s) ?? 0.0;
+    }
+
+    final ax = p(_savedAX);
+    final ay = p(_savedAY);
+    final bx = p(_savedBX);
+    final by = p(_savedBY);
+    final rx = _savedResX!.toDouble();
+    final ry = _savedResY!.toDouble();
+
+    if (_mode == StepMode.midpoint) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MidpointGraphScreen(
+            x1: ax,
+            y1: ay,
+            x2: bx,
+            y2: by,
+            mx: rx,
+            my: ry,
+          ),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MidpointGraphScreen(
+            x1: bx,
+            y1: by,
+            x2: rx,
+            y2: ry,
+            mx: ax,
+            my: ay,
+          ),
+        ),
+      );
+    }
+  }
 
   // ── Widgets ───────────────────────────────────────────────
 
@@ -520,6 +574,41 @@ class _MidpointScreenState extends State<MidpointScreen> {
                                               size: 16),
                                         ),
                                       ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  GestureDetector(
+                                    onTap: _openGraph,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: MidpointTheme.accent(context)
+                                            .withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(
+                                            color: MidpointTheme.accent(context)
+                                                .withValues(alpha: 0.2)),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.show_chart_rounded,
+                                              size: 14,
+                                              color: MidpointTheme.accent(
+                                                  context)),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            'Graph',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                              color: MidpointTheme.accent(
+                                                  context),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

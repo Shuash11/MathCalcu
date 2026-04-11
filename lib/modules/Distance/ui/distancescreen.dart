@@ -93,6 +93,11 @@ class _DistancescreenState extends State<Distancescreen>
     );
   }
 
+  /// Formats the distance for display.
+  /// - For 1D: returns absolute value (integer or trimmed decimal).
+  /// - For 2D:
+  ///   - Perfect square → integer (e.g., "5")
+  ///   - Non‑perfect square → exact radical + approximation (e.g., "√5 ≈ 2.2361")
   String _formatDistance(double value, bool is2D) {
     if (!is2D) {
       final abs = value.abs();
@@ -107,13 +112,14 @@ class _DistancescreenState extends State<Distancescreen>
     final int squared = (value * value).round();
     final double sqrtVal = sqrt(squared);
 
+    // Perfect square → return integer only
     if (sqrtVal == sqrtVal.roundToDouble()) {
       return sqrtVal.round().toString();
     }
 
+    // Simplify radical
     int largestSquare = 1;
     int remaining = squared;
-
     for (int i = 2; i * i <= squared; i++) {
       while (remaining % (i * i) == 0) {
         largestSquare *= i;
@@ -121,15 +127,22 @@ class _DistancescreenState extends State<Distancescreen>
       }
     }
 
-    if (largestSquare == 1) {
-      return value
-          .toStringAsFixed(4)
-          .replaceAll(RegExp(r'0+$'), '')
-          .replaceAll(RegExp(r'\.$'), '');
+    String exact;
+    if (remaining == 1) {
+      exact = largestSquare.toString();
+    } else if (largestSquare == 1) {
+      exact = '√$remaining';
+    } else {
+      exact = '$largestSquare√$remaining';
     }
 
-    if (remaining == 1) return largestSquare.toString();
-    return '$largestSquare√$remaining';
+    // Decimal approximation (trimmed to 4 decimal places)
+    final approx = value
+        .toStringAsFixed(4)
+        .replaceAll(RegExp(r'0+$'), '')
+        .replaceAll(RegExp(r'\.$'), '');
+
+    return '$exact ≈ $approx';
   }
 
   void _onCalculate() {

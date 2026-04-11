@@ -1,6 +1,7 @@
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -157,108 +158,133 @@ class _StepTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Timeline column
-          SizedBox(
-            width: 36,
-            child: Column(
-              children: [
-                // Step number circle
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: accentColor.withValues(alpha: 0.4),
-                      width: 1,
-                    ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Timeline column
+        SizedBox(
+          width: 36,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              // Connecting line (draws first so it's behind the circle)
+              if (!isLast)
+                Positioned(
+                  top: 28, // Start below circle center/bottom
+                  bottom: 0,
+                  width: 2,
+                  child: Container(
+                    color: accentColor.withValues(alpha: 0.12),
                   ),
-                  child: Center(
-                    child: Text(
-                      '${step.stepNumber}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: accentColor,
-                      ),
+                ),
+              // Step number circle
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: accentColor.withValues(alpha: 0.4),
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    '${step.stepNumber}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: accentColor,
                     ),
                   ),
                 ),
-                // Connecting line
-                if (!isLast)
-                  Expanded(
-                    child: Container(
-                      width: 1,
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      color: accentColor.withValues(alpha: 0.12),
-                    ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 14),
+
+        // Content
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: isLast ? 0 : 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  step.title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().textPrimary,
+                    letterSpacing: -0.2,
                   ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  step.explanation,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: context.watch<ThemeProvider>().textSecondary,
+                    height: 1.55,
+                  ),
+                ),
+                if (step.latex != null) ...[
+                  const SizedBox(height: 12),
+                  _buildMathContainer(context, step.latex!),
+                ],
+                if (step.subLatex != null && step.subLatex!.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Row(
+                    children: step.subLatex!
+                        .map((l) => Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  right: l == step.subLatex!.last ? 0 : 8,
+                                ),
+                                child: _buildMathContainer(context, l),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ],
               ],
             ),
           ),
+        ),
+      ],
+    );
+  }
 
-          const SizedBox(width: 14),
-
-          // Content
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: isLast ? 0 : 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    step.title,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: context.watch<ThemeProvider>().textPrimary,
-                      letterSpacing: -0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    step.explanation,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: context.watch<ThemeProvider>().textSecondary,
-                      height: 1.55,
-                    ),
-                  ),
-                  // Optional LaTeX hint (replace with flutter_math_fork)
-                  if (step.latex != null) ...[
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.watch<ThemeProvider>().surface,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: accentColor.withValues(alpha: 0.15),
-                        ),
-                      ),
-                      child: Text(
-                        // TODO: replace with Math.tex(step.latex!) from flutter_math_fork
-                        step.latex!,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: accentColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+  Widget _buildMathContainer(BuildContext context, String tex) {
+    final theme = context.watch<ThemeProvider>();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 12,
+      ),
+      decoration: BoxDecoration(
+        color: theme.surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.15),
+        ),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        child: SelectableMath.tex(
+          tex,
+          mathStyle: MathStyle.text,
+          textStyle: TextStyle(
+            fontSize: 15,
+            color: accentColor,
           ),
-        ],
+        ),
       ),
     );
   }

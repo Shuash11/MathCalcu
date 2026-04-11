@@ -2,13 +2,11 @@ import 'dart:math';
 import 'package:calculus_system/modules/Distance/Theme/distancetheme.dart';
 import 'package:flutter/material.dart';
 
-/// Step data model for distance calculation breakdown
 class StepSection {
   final String title;
   final String content;
   final bool isFormula;
   final bool isResult;
-
   const StepSection({
     required this.title,
     required this.content,
@@ -17,13 +15,11 @@ class StepSection {
   });
 }
 
-/// Helper class for radical simplification
 class RadicalResult {
   final int coefficient;
   final int radicand;
   final bool isPerfectSquare;
   final double decimalValue;
-
   const RadicalResult({
     required this.coefficient,
     required this.radicand,
@@ -31,20 +27,12 @@ class RadicalResult {
     required this.decimalValue,
   });
 
-  @override
-  String toString() {
-    if (isPerfectSquare) return coefficient.toString();
-    if (coefficient == 1) return '√$radicand';
-    return '$coefficient√$radicand';
-  }
-
   String toDecimalString() => decimalValue
       .toStringAsFixed(4)
       .replaceAll(RegExp(r'0+$'), '')
       .replaceAll(RegExp(r'\.$'), '');
 }
 
-/// Displays detailed calculation steps with expandable sections
 class DistanceSteps extends StatelessWidget {
   final bool is2D;
   final double x1;
@@ -52,7 +40,6 @@ class DistanceSteps extends StatelessWidget {
   final double x2;
   final double? y2;
   final double distance;
-  final bool showImmediately;
 
   const DistanceSteps({
     super.key,
@@ -62,52 +49,9 @@ class DistanceSteps extends StatelessWidget {
     required this.x2,
     this.y2,
     required this.distance,
-    this.showImmediately = false,
   });
 
-  /// Simplify √n to a√b form where b has no perfect square factors
-  RadicalResult _simplifyRadical(double value) {
-    if (value < 0) {
-      return RadicalResult(
-          coefficient: 0,
-          radicand: 0,
-          isPerfectSquare: false,
-          decimalValue: value);
-    }
-
-    final int n = value.round();
-    final double sqrtN = sqrt(n);
-
-    // Check if perfect square
-    if (sqrtN == sqrtN.roundToDouble()) {
-      return RadicalResult(
-        coefficient: sqrtN.round(),
-        radicand: 1,
-        isPerfectSquare: true,
-        decimalValue: sqrtN,
-      );
-    }
-
-    // Find largest perfect square factor
-    int largestSquare = 1;
-    int remaining = n;
-
-    for (int i = 2; i * i <= n; i++) {
-      while (remaining % (i * i) == 0) {
-        largestSquare *= i;
-        remaining ~/= (i * i);
-      }
-    }
-
-    return RadicalResult(
-      coefficient: largestSquare,
-      radicand: remaining,
-      isPerfectSquare: false,
-      decimalValue: sqrt(n),
-    );
-  }
-
-  String _format(double n) {
+  String _fmt(double n) {
     if (n == n.toInt()) return n.toInt().toString();
     return n
         .toStringAsFixed(4)
@@ -115,106 +59,176 @@ class DistanceSteps extends StatelessWidget {
         .replaceAll(RegExp(r'\.$'), '');
   }
 
-  List<StepSection> get _steps {
-    if (is2D) {
-      final double dy = (y2! - y1!);
-      final double dx = (x2 - x1);
-      final double dySquared = dy * dy;
-      final double dxSquared = dx * dx;
-      final double sum = dxSquared + dySquared;
+  // Wraps a negative number in parentheses for clean display
+  String _signed(double n) => n < 0 ? '(${_fmt(n)})' : _fmt(n);
 
-      // Simplify the final radical
-      final radical = _simplifyRadical(sum);
-
-      return [
-        StepSection(
-          title: 'Identify Coordinates',
-          content:
-              'Point A: (${_format(x1)}, ${_format(y1!)})\nPoint B: (${_format(x2)}, ${_format(y2!)})',
-        ),
-        StepSection(
-          title: 'Calculate Differences',
-          content:
-              'x = ${_format(x2)} − ${_format(x1)} = ${_format(dx)}\nΔy = ${_format(y2!)} − ${_format(y1!)} = ${_format(dy)}',
-        ),
-        StepSection(
-          title: 'Square the Differences',
-          content:
-              '(x)² = ${_format(dx)}² = ${_format(dxSquared)}\n(y)² = ${_format(dy)}² = ${_format(dySquared)}',
-          isFormula: true,
-        ),
-        StepSection(
-          title: 'Sum the Squares',
-          content:
-              '${_format(dxSquared)} + ${_format(dySquared)} = ${_format(sum)}',
-          isFormula: true,
-        ),
-        StepSection(
-          title: 'Simplify the Square Root',
-          content: _buildRadicalExplanation(sum, radical),
-          isFormula: true,
-          isResult: true,
-        ),
-      ];
-    } else {
-      final double diff = (x2 - x1);
-      final double absDiff = diff.abs();
-
-      return [
-        StepSection(
-          title: 'Identify Points',
-          content: 'Point 1: x₁ = ${_format(x1)}\nPoint 2: x₂ = ${_format(x2)}',
-        ),
-        StepSection(
-          title: 'Calculate Difference',
-          content:
-              'x₂ − x₁ = ${_format(x2)} − ${_format(x1)} = ${_format(diff)}',
-        ),
-        StepSection(
-          title: 'Apply Absolute Value',
-          content: '|${_format(diff)}| = ${_format(absDiff)}',
-          isFormula: true,
-        ),
-        StepSection(
-          title: 'Final Distance',
-          content: 'd = ${_format(absDiff)}',
-          isResult: true,
-        ),
-      ];
+  RadicalResult _simplifyRadical(double value) {
+    final int n = value.round();
+    final double sqrtN = sqrt(n);
+    if ((sqrtN - sqrtN.roundToDouble()).abs() < 1e-9) {
+      return RadicalResult(
+        coefficient: sqrtN.round(),
+        radicand: 1,
+        isPerfectSquare: true,
+        decimalValue: sqrtN,
+      );
     }
-  }
-
-  String _buildRadicalExplanation(double original, RadicalResult radical) {
-    final buffer = StringBuffer();
-
-    buffer.writeln('d = √${_format(original)}');
-
-    if (radical.isPerfectSquare) {
-      buffer.writeln('\nSince ${_format(original)} is a perfect square:');
-      buffer.write('d = ${radical.coefficient}');
-    } else if (radical.coefficient == 1) {
-      buffer.writeln('\n${_format(original)} has no perfect square factors');
-      buffer.write('d = √${_format(original)} ≈ ${radical.toDecimalString()}');
-    } else {
-      final int square = radical.coefficient * radical.coefficient;
-      buffer.writeln('\nFactor out perfect square:');
-      buffer
-          .writeln('√${_format(original)} = √($square × ${radical.radicand})');
-      buffer.writeln('= √$square × √${radical.radicand}');
-      buffer.write('= ${radical.coefficient}√${radical.radicand}');
-
-      if (radical.radicand > 1) {
-        buffer.write(' ≈ ${radical.toDecimalString()}');
+    int coefficient = 1;
+    int remaining = n;
+    for (int i = 2; i * i <= n; i++) {
+      while (remaining % (i * i) == 0) {
+        coefficient *= i;
+        remaining ~/= (i * i);
       }
     }
+    return RadicalResult(
+      coefficient: coefficient,
+      radicand: remaining,
+      isPerfectSquare: false,
+      decimalValue: sqrt(n),
+    );
+  }
 
-    return buffer.toString();
+  List<StepSection> get _steps {
+    // ── 1D ──────────────────────────────────────────────
+    if (!is2D) {
+      final double diff = (x2 - x1).abs();
+      return [
+        const StepSection(
+          title: 'Step 1 — Write the formula',
+          content: 'd  =  | x2 - x1 |',
+          isFormula: true,
+        ),
+        StepSection(
+          title: 'Step 2 — Substitute the given values',
+          content: 'd  =  | ${_signed(x2)} - ${_signed(x1)} |',
+          isFormula: true,
+        ),
+        StepSection(
+          title: 'Step 3 — Subtract inside the absolute value',
+          content: 'd  =  | ${_fmt(x2 - x1)} |',
+          isFormula: true,
+        ),
+        StepSection(
+          title: 'Step 4 — Apply absolute value',
+          content: 'd  =  ${_fmt(diff)}',
+          isFormula: true,
+          isResult: true,
+        ),
+      ];
+    }
+
+    // ── 2D ──────────────────────────────────────────────
+    final double dx = x2 - x1;
+    final double dy = y2! - y1!;
+    final double dx2 = dx * dx;
+    final double dy2 = dy * dy;
+    final double sum = dx2 + dy2;
+    final RadicalResult radical = _simplifyRadical(sum);
+
+    return [
+      // 1 — Formula
+      const StepSection(
+        title: 'Step 1 — Write the formula',
+        content: 'd  =  √( (x2 - x1)²  +  (y2 - y1)² )',
+        isFormula: true,
+      ),
+
+      // 2 — Substitute
+      StepSection(
+        title: 'Step 2 — Substitute the given values',
+        content:
+            'd  =  √( (${_signed(x2)} - ${_signed(x1)})²  +  (${_signed(y2!)} - ${_signed(y1!)})² )',
+        isFormula: true,
+      ),
+
+      // 3 — Compute differences inside the parentheses
+      StepSection(
+        title: 'Step 3 — Compute the differences inside each parenthesis',
+        content: 'x2 - x1  =  ${_signed(x2)} - ${_signed(x1)}  =  ${_fmt(dx)}\n'
+            'y2 - y1  =  ${_signed(y2!)} - ${_signed(y1!)}  =  ${_fmt(dy)}\n\n'
+            'd  =  √( (${_fmt(dx)})²  +  (${_fmt(dy)})² )',
+        isFormula: true,
+      ),
+
+      // 4 — Square each difference
+      StepSection(
+        title: 'Step 4 — Square each difference',
+        content: '(${_fmt(dx)})²  =  ${_fmt(dx2)}\n'
+            '(${_fmt(dy)})²  =  ${_fmt(dy2)}\n\n'
+            'd  =  √( ${_fmt(dx2)}  +  ${_fmt(dy2)} )',
+        isFormula: true,
+      ),
+
+      // 5 — Add the squares
+      StepSection(
+        title: 'Step 5 — Add the squares under the sqrt',
+        content: '${_fmt(dx2)}  +  ${_fmt(dy2)}  =  ${_fmt(sum)}\n\n'
+            'd  =  √( ${_fmt(sum)} )',
+        isFormula: true,
+      ),
+
+      // 6 — Evaluate the sqrt (branches here)
+      ..._sqrtSteps(sum, radical),
+    ];
+  }
+
+  /// Returns the final 1 or 2 steps depending on perfect square or not.
+  List<StepSection> _sqrtSteps(double sum, RadicalResult r) {
+    final String sumStr = _fmt(sum);
+
+    // Perfect square — single result step, no approximation needed
+    if (r.isPerfectSquare) {
+      return [
+        StepSection(
+          title: 'Step 6 — Take the square root',
+          content: 'sqrt( $sumStr ) is a perfect square\n\n'
+              'd  =  ${r.coefficient}',
+          isFormula: true,
+          isResult: true,
+        ),
+      ];
+    }
+
+    // Not a perfect square — simplify radical first, then approximate
+    final bool canSimplify = r.coefficient > 1;
+
+    if (canSimplify) {
+      return [
+        StepSection(
+          title: 'Step 6 — Simplify the radical',
+          content: '√( $sumStr ) is not a perfect square\n\n'
+              'Factor out the largest perfect square:\n'
+              '√( $sumStr )  =  √( ${r.coefficient * r.coefficient} x ${r.radicand} )\n'
+              '               =  ${r.coefficient} √( ${r.radicand} )',
+          isFormula: true,
+        ),
+        StepSection(
+          title: 'Step 7 — Approximate the decimal value',
+          content: 'd  =  ${r.coefficient} √( ${r.radicand} )\n'
+              'd  =  ${r.toDecimalString()}',
+          isFormula: true,
+          isResult: true,
+        ),
+      ];
+    }
+
+    // Cannot simplify — radical stays as-is, just approximate
+    return [
+      StepSection(
+        title: 'Step 6 — Evaluate the square root',
+        content: '√( $sumStr ) cannot be simplified further\n\n'
+            'd  =  √( $sumStr )\n'
+            'd  =  ${r.toDecimalString()}',
+        isFormula: true,
+        isResult: true,
+      ),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     final steps = _steps;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -226,59 +240,42 @@ class DistanceSteps extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: DistanceTheme.accent15),
           ),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.format_list_numbered_rounded,
+          child: Row(children: [
+            const Icon(Icons.school_rounded,
+                color: DistanceTheme.accent, size: 18),
+            const SizedBox(width: 8),
+            const Text(
+              'Distance Formula — Step by Step',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
                 color: DistanceTheme.accent,
-                size: 18,
               ),
-              const SizedBox(width: 8),
-              const Text(
-                'Solution Steps',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: DistanceTheme.accent,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '${steps.length} steps',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: DistanceTheme.text40(context),
-                ),
-              ),
-            ],
+            ),
+            const Spacer(),
+            Text(
+              '${steps.length} steps',
+              style:
+                  TextStyle(fontSize: 11, color: DistanceTheme.text40(context)),
+            ),
+          ]),
+        ),
+        ...List.generate(
+          steps.length,
+          (i) => _StepItem(
+            step: steps[i],
+            isLast: i == steps.length - 1,
           ),
         ),
-        ...List.generate(steps.length, (index) {
-          final step = steps[index];
-          final isLast = index == steps.length - 1;
-
-          return _StepItem(
-            index: index + 1,
-            step: step,
-            isLast: isLast,
-          );
-        }),
       ],
     );
   }
 }
 
 class _StepItem extends StatelessWidget {
-  final int index;
   final StepSection step;
   final bool isLast;
-
-  const _StepItem({
-    required this.index,
-    required this.step,
-    required this.isLast,
-  });
+  const _StepItem({required this.step, required this.isLast});
 
   @override
   Widget build(BuildContext context) {
@@ -286,44 +283,40 @@ class _StepItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: step.isResult
-                      ? DistanceTheme.accent
-                      : DistanceTheme.accent.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                  border: step.isResult
-                      ? null
-                      : Border.all(color: DistanceTheme.accent30),
-                ),
-                child: Center(
-                  child: step.isResult
-                      ? const Icon(Icons.check, color: Colors.white, size: 14)
-                      : Text(
-                          '$index',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: DistanceTheme.accent,
-                          ),
-                        ),
+          // Timeline column
+          Column(children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: step.isResult
+                    ? DistanceTheme.accent
+                    : DistanceTheme.accent.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+                border: step.isResult
+                    ? null
+                    : Border.all(color: DistanceTheme.accent30),
+              ),
+              child: Center(
+                child: step.isResult
+                    ? const Icon(Icons.check, color: Colors.white, size: 14)
+                    : const Icon(Icons.edit_rounded,
+                        color: DistanceTheme.accent, size: 13),
+              ),
+            ),
+            if (!isLast)
+              Expanded(
+                child: Container(
+                  width: 2,
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  color: DistanceTheme.accent.withValues(alpha: 0.15),
                 ),
               ),
-              if (!isLast)
-                Expanded(
-                  child: Container(
-                    width: 2,
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    color: DistanceTheme.accent.withValues(alpha: 0.15),
-                  ),
-                ),
-            ],
-          ),
+          ]),
+
           const SizedBox(width: 12),
+
+          // Card
           Expanded(
             child: Container(
               margin: EdgeInsets.only(bottom: isLast ? 0 : 16),
@@ -342,6 +335,7 @@ class _StepItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Step title
                   Text(
                     step.title,
                     style: TextStyle(
@@ -350,33 +344,29 @@ class _StepItem extends StatelessWidget {
                       color: step.isResult
                           ? DistanceTheme.accent
                           : DistanceTheme.text70(context),
-                      letterSpacing: 0.5,
                     ),
                   ),
                   const SizedBox(height: 8),
+                  // Content block
                   Container(
                     width: double.infinity,
-                    padding: step.isFormula
-                        ? const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10)
-                        : EdgeInsets.zero,
-                    decoration: step.isFormula
-                        ? BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(8),
-                          )
-                        : null,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: Text(
                       step.content,
                       style: TextStyle(
+                        fontFamily: 'monospace',
                         fontSize: 13,
                         height: 1.6,
+                        fontWeight:
+                            step.isResult ? FontWeight.w600 : FontWeight.w500,
                         color: step.isResult
                             ? DistanceTheme.text(context)
                             : DistanceTheme.text55(context),
-                        fontWeight:
-                            step.isResult ? FontWeight.w600 : FontWeight.w500,
-                        fontFamily: step.isFormula ? 'monospace' : null,
                       ),
                     ),
                   ),

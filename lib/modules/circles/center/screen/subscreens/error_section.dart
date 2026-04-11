@@ -20,7 +20,8 @@ class CenterErrorSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 20),
+          const Icon(Icons.error_outline_rounded,
+              color: Colors.redAccent, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text(

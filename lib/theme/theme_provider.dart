@@ -46,8 +46,9 @@ class ThemeProvider extends ChangeNotifier {
       ? const Color(0xFF1E1E28).withValues(alpha: 0.6)
       : const Color(0xFFE8E8F0).withValues(alpha: 0.4);
 
-  Color get shadowColor =>
-      _isLight ? Colors.black.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.4);
+  Color get shadowColor => _isLight
+      ? Colors.black.withValues(alpha: 0.08)
+      : Colors.black.withValues(alpha: 0.4);
 
   Color get accentColor => const Color(0xFF6C63FF);
 }

@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';

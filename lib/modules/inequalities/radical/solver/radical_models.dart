@@ -1,71 +1,29 @@
 // radical_models.dart
-//
-// Shared data models used across all radical_*.dart files.
-// Import only this file — never import sibling internals directly.
 
-import 'dart:math' as math;
-
-// ── RHS type classification ───────────────────────────────────────────────────
-
-enum RhsType { constant, radical, linear, quadratic }
-
-// ── Parsed problem representation ────────────────────────────────────────────
-
-/// Holds every piece of information extracted by the parser so the
-/// form-solvers never need to touch raw strings again.
-class RadicalPrep {
-  /// Original user-input string (untouched, for display).
-  final String original;
-
-  /// Inner radicand expression string, e.g. "2x+3".
-  final String inner;
-
-  /// Radicand coefficients: radicand = ia·x + ib.
-  final double ia, ib;
-
-  /// Effective operator after normalising √ to the left side.
-  final String op;
-
-  final RhsType rhsType;
-
-  /// Raw RHS expression string (non-constant forms, used in step display).
-  final String? rhsExpr;
-
-  /// Constant RHS value (Form A/B only).
-  final double? k;
-
-  /// Linear / radical / quadratic RHS coefficients:
-  ///   linear    → rc·x + rd
-  ///   radical   → √(rc·x + rd)
-  ///   quadratic → qe·x² + rc·x + rd
-  final double? rc, rd, qe;
-
-  const RadicalPrep({
-    required this.original,
-    required this.inner,
-    required this.ia,
-    required this.ib,
-    required this.op,
-    required this.rhsType,
-    this.rhsExpr,
-    this.k,
-    this.rc,
-    this.rd,
-    this.qe,
-  });
+enum RhsType {
+  constant,
+  radical,
+  linear,
+  quadratic,
 }
 
-// ── Analytic interval model ───────────────────────────────────────────────────
-//
-// Represents one of six canonical interval shapes produced by the analytic
-// quadratic solver. The numeric solver uses RadicalSpan instead.
-
-enum IvKind { allReals, point, bounded, unbounded, halfLeft, halfRight }
+enum IvKind {
+  allReals,
+  point,
+  bounded,
+  unbounded,
+  halfLeft,
+  halfRight,
+}
 
 class Iv {
   final IvKind kind;
-  final double? lo, hi;
-  final bool clo, chi; // closed-left / closed-right
+  final double? lo;
+  final double? hi;
+  final bool clo;
+  final bool chi;
+  final String? symbolicLo;
+  final String? symbolicHi;
 
   const Iv({
     required this.kind,
@@ -73,106 +31,211 @@ class Iv {
     this.hi,
     this.clo = false,
     this.chi = false,
+    this.symbolicLo,
+    this.symbolicHi,
   });
-
-  // ── factories ──────────────────────────────────────────────────────────────
 
   factory Iv.allReals() => const Iv(kind: IvKind.allReals);
 
-  factory Iv.point(double x) =>
-      Iv(kind: IvKind.point, lo: x, hi: x, clo: true, chi: true);
+  factory Iv.point(double x, {String? symbolic}) => Iv(
+        kind: IvKind.point,
+        lo: x,
+        hi: x,
+        clo: true,
+        chi: true,
+        symbolicLo: symbolic,
+        symbolicHi: symbolic,
+      );
 
-  factory Iv.bounded(double l, double h, bool closed) =>
-      Iv(kind: IvKind.bounded, lo: l, hi: h, clo: closed, chi: closed);
+  factory Iv.bounded(double lo, double hi, bool closed,
+          {String? symbolicLo, String? symbolicHi}) =>
+      Iv(
+        kind: IvKind.bounded,
+        lo: lo,
+        hi: hi,
+        clo: closed,
+        chi: closed,
+        symbolicLo: symbolicLo,
+        symbolicHi: symbolicHi,
+      );
 
-  /// Represents (-∞, lo] ∪ [hi, ∞).
-  /// lo = upper bound of left ray, hi = lower bound of right ray.
-  factory Iv.unbounded(double l, double h, bool closed) =>
-      Iv(kind: IvKind.unbounded, lo: l, hi: h, clo: closed, chi: closed);
+  factory Iv.unbounded(double lo, double hi, bool closed,
+          {String? symbolicLo, String? symbolicHi}) =>
+      Iv(
+        kind: IvKind.unbounded,
+        lo: lo,
+        hi: hi,
+        clo: closed,
+        chi: closed,
+        symbolicLo: symbolicLo,
+        symbolicHi: symbolicHi,
+      );
 
-  factory Iv.halfLine(double b, String op) {
-    final closed = op == '≥' || op == '≤';
-    return (op == '>' || op == '≥')
-        ? Iv(kind: IvKind.halfRight, lo: b, clo: closed)
-        : Iv(kind: IvKind.halfLeft, hi: b, chi: closed);
+  // ADD THIS FACTORY CONSTRUCTOR:
+  factory Iv.halfLine(double x, String op) {
+    if (op == '>' || op == '≥') {
+      return Iv(
+        kind: IvKind.halfRight,
+        lo: x,
+        clo: op == '≥',
+      );
+    } else {
+      return Iv(
+        kind: IvKind.halfLeft,
+        hi: x,
+        chi: op == '≤',
+      );
+    }
   }
 
-  // ── rendering ──────────────────────────────────────────────────────────────
+  factory Iv.halfLeft(double hi, String op, {String? symbolicHi}) => Iv(
+        kind: IvKind.halfLeft,
+        hi: hi,
+        chi: op == '≤' || op == '≥',
+        symbolicHi: symbolicHi,
+      );
 
-  String toNotation(String Function(double) f) {
+  factory Iv.halfRight(double lo, String op, {String? symbolicLo}) => Iv(
+        kind: IvKind.halfRight,
+        lo: lo,
+        clo: op == '≤' || op == '≥',
+        symbolicLo: symbolicLo,
+      );
+
+  String toNotation(String Function(double) fmt) {
     switch (kind) {
       case IvKind.allReals:
         return '(-∞, ∞)';
       case IvKind.point:
-        return '{${f(lo!)}}';
+        final s = symbolicLo ?? fmt(lo!);
+        return '{$s}';
       case IvKind.bounded:
-        return '${clo ? '[' : '('}${f(lo!)}, ${f(hi!)}${chi ? ']' : ')'}';
+        final ls = symbolicLo ?? fmt(lo!);
+        final hs = symbolicHi ?? fmt(hi!);
+        return '${clo ? '[' : '('}$ls, $hs${chi ? ']' : ')'}';
       case IvKind.unbounded:
-        return '(-∞, ${f(lo!)}${clo ? ']' : ')'} ∪ ${chi ? '[' : '('}${f(hi!)}, ∞)';
+        final ls = symbolicLo ?? fmt(lo!);
+        final hs = symbolicHi ?? fmt(hi!);
+        return '(-∞, $ls${clo ? ']' : ')'} ∪ ${chi ? '[' : '('}$hs, ∞)';
       case IvKind.halfLeft:
-        // BUG FIX: original appended an extra ')' then used replaceAll('))',')')
-        // as a workaround — that hack produced '(-∞, X])' when chi=true.
-        // Correct form: just close with the bracket/paren, no trailing ')'.
-        return '(-∞, ${f(hi!)}${chi ? ']' : ')'})';
+        final hs = symbolicHi ?? fmt(hi!);
+        return '(-∞, $hs${chi ? ']' : ')'}';
       case IvKind.halfRight:
-        return '${clo ? '[' : '('}${f(lo!)}, ∞)';
+        final ls = symbolicLo ?? fmt(lo!);
+        return '${clo ? '[' : '('}$ls, ∞)';
     }
   }
 
-  String toAnswer(String Function(double) f) {
+  String toAnswer(String Function(double) fmt) {
     switch (kind) {
       case IvKind.allReals:
         return 'All real numbers';
       case IvKind.point:
-        return 'x = ${f(lo!)}';
+        return 'x = ${symbolicLo ?? fmt(lo!)}';
       case IvKind.bounded:
-        return '${f(lo!)} ${clo ? '≤' : '<'} x ${chi ? '≤' : '<'} ${f(hi!)}';
+        final ls = symbolicLo ?? fmt(lo!);
+        final hs = symbolicHi ?? fmt(hi!);
+        return '$ls ≤ x ≤ $hs';
       case IvKind.unbounded:
-        return 'x ${clo ? '≤' : '<'} ${f(lo!)} or x ${chi ? '≥' : '>'} ${f(hi!)}';
+        final ls = symbolicLo ?? fmt(lo!);
+        final hs = symbolicHi ?? fmt(hi!);
+        return 'x ≤ $ls or x ≥ $hs';
       case IvKind.halfLeft:
-        return 'x ${chi ? '≤' : '<'} ${f(hi!)}';
+        final hs = symbolicHi ?? fmt(hi!);
+        return 'x ≤ $hs';
       case IvKind.halfRight:
-        return 'x ${clo ? '≥' : '>'} ${f(lo!)}';
+        final ls = symbolicLo ?? fmt(lo!);
+        return 'x ≥ $ls';
     }
+  }
+
+  RadicalSpan toSpan() {
+    return RadicalSpan(
+      lo ?? double.negativeInfinity,
+      hi ?? double.infinity,
+      clo,
+      chi,
+      symbolicLo: symbolicLo,
+      symbolicHi: symbolicHi,
+    );
   }
 }
 
-// ── Numeric span ──────────────────────────────────────────────────────────────
-//
-// Used by the numeric solver (Form F/G: radical vs quadratic).
-
 class RadicalSpan {
-  final double lo, hi;
-  final bool clo, chi;
+  final double lo;
+  final double hi;
+  final bool clo;
+  final bool chi;
+  final String? symbolicLo;
+  final String? symbolicHi;
 
-  const RadicalSpan(this.lo, this.hi, this.clo, this.chi);
+  RadicalSpan(this.lo, this.hi, this.clo, this.chi,
+      {this.symbolicLo, this.symbolicHi});
 
-  RadicalSpan withChi(bool v) => RadicalSpan(lo, hi, clo, v);
+  RadicalSpan merge(RadicalSpan other) {
+    // If they touch at a point b, and b is included in at least one,
+    // then the union is continuous.
+    return RadicalSpan(
+      lo,
+      other.hi,
+      clo,
+      other.chi,
+      symbolicLo: symbolicLo,
+      symbolicHi: other.symbolicHi,
+    );
+  }
+
+  RadicalSpan withChi(bool newChi) => RadicalSpan(lo, hi, clo, newChi,
+      symbolicLo: symbolicLo, symbolicHi: symbolicHi);
 
   RadicalSpan extendTo(double newHi, bool newChi) =>
-      RadicalSpan(lo, newHi, clo, newChi);
+      RadicalSpan(lo, newHi, clo, newChi,
+          symbolicLo: symbolicLo, symbolicHi: symbolicHi);
 
-  RadicalSpan merge(RadicalSpan o) => RadicalSpan(
-        math.min(lo, o.lo),
-        math.max(hi, o.hi),
-        lo <= o.lo ? clo : o.clo,
-        hi >= o.hi ? chi : o.chi,
-      );
-
-  String toNotation(String Function(double) f) {
-    final ls = lo.isInfinite ? '-∞' : f(lo);
-    final hs = hi.isInfinite ? '∞' : f(hi);
-    final lb = lo.isInfinite ? '(' : (clo ? '[' : '(');
-    final rb = hi.isInfinite ? ')' : (chi ? ']' : ')');
-    return '$lb$ls, $hs$rb';
+  String toNotation(String Function(double) fmt) {
+    final ls = symbolicLo ?? fmt(lo);
+    final hs = symbolicHi ?? fmt(hi);
+    return '${clo ? '[' : '('}$ls, $hs${chi ? ']' : ')'}';
   }
 
-  String toAnswer(String Function(double) f) {
-    if (lo == hi && clo && chi) return 'x = ${f(lo)}';
-    final ls = lo.isInfinite ? null : f(lo);
-    final hs = hi.isInfinite ? null : f(hi);
-    if (ls == null) return 'x ${chi ? '≤' : '<'} ${hs!}';
-    if (hs == null) return 'x ${clo ? '≥' : '>'} $ls';
-    return '$ls ${clo ? '≤' : '<'} x ${chi ? '≤' : '<'} $hs';
+  String toAnswer(String Function(double) fmt) {
+    if (lo == hi && clo && chi) {
+      return 'x = ${symbolicLo ?? fmt(lo)}';
+    }
+    final ls = symbolicLo ?? fmt(lo);
+    final hs = symbolicHi ?? fmt(hi);
+    if (lo.isInfinite) return 'x ≤ $hs';
+    if (hi.isInfinite) return 'x ≥ $ls';
+    return '$ls ≤ x ≤ $hs';
   }
+}
+
+class RadicalPrep {
+  final String original;
+  final String inner;
+  final double ia;
+  final double ib;
+  final String op;
+  final RhsType rhsType;
+  final bool wasFlipped;
+  final double? k;
+  final String? rhsExpr;
+  final double? rc;
+  final double? rd;
+  final double? qe;
+
+  RadicalPrep({
+    required this.original,
+    required this.inner,
+    required this.ia,
+    required this.ib,
+    required this.op,
+    required this.rhsType,
+    required this.wasFlipped,
+    this.k,
+    this.rhsExpr,
+    this.rc,
+    this.rd,
+    this.qe,
+  });
 }

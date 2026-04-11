@@ -1,7 +1,9 @@
 import 'package:calculus_system/modules/circles/center_raidus_form/Theme/center_radius_theme.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/controller/center_radius_controller.dart';
+import 'package:calculus_system/modules/circles/center_raidus_form/models/field_def.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/screen/subscreen/input_card.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/screen/subscreen/solution_steps.dart';
+import 'package:calculus_system/modules/circles/center_raidus_form/screen/subscreen/widgets_inputcard/equation_input_card.dart';
 import 'package:flutter/material.dart';
 
 class FindingCenterRadiusScreen extends StatefulWidget {

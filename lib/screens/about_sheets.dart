@@ -12,6 +12,7 @@ class _Developer {
   final String email;
   final String contribution;
 
+  // ignore: non_constant_identifier_names
   final String Phone;
   final String groups;
   final String facebook;
@@ -22,6 +23,7 @@ class _Developer {
     required this.role,
     this.email = '', // ← put email or leave blank
     this.contribution = '', // ← what they worked on
+    // ignore: non_constant_identifier_names
     required this.Phone,
     this.groups = '',
     this.facebook = '',
@@ -39,7 +41,7 @@ const _developers = [
         'Wiring, Debugging, Deploying, Absolute , Strict , Non Strict, Radical , Continued , Finding the Center , Finding the Radius',
     Phone: '09639201328',
     groups:
-        'Mary Chris Malinao\nKym Alinsonorin\nAljhun Gallego(gwapo)\nCresa Delacruz',
+        'Mary Chris Malinao\nKym Alinsonorin\nAljhun Gallego(gwapo)\nCresa Delacruz(Documentation)\nJoseph Rebamonte\nMerjohn Pagente',
   ),
   _Developer(
     name: 'Michaela Denise Ong',
@@ -50,7 +52,7 @@ const _developers = [
     contribution: 'Slope, Distance , Midpoint, Documentation',
     Phone: '09452238406',
     groups:
-        'Marie Joy Sebusana\nSusan Rhea Tamboby\nVenus Caliguid\nAlche Paye\nVincent Padillio',
+        'Marie Joy Sebusana\nSusan Rhea Tamboboy\nVenus Caliguid\nAlche Paye\nVincent Padillio\nStephen Mark Maluto',
   ),
   _Developer(
     name: 'Nash Bruce Quiros',
@@ -72,12 +74,12 @@ const _developers = [
     contribution: 'Parallel & Perpendicular(Slope), Two-Point Slope',
     Phone: '09639201328',
     groups:
-        'Anjelyn Campos\nAlthea Sumalpong\nHearty Abugatal\nRafol Shayne Lowelle\nNoel Sale Jr',
+        'Anjelyn Campos\nAlthea Sumalpong\nHearty Abugatal\nRafol Shayne Lowelle\nNoel Sale Jr\nJeomark Jumawan\nGraceselle Managing',
   ),
   _Developer(
     name: 'Clifford Probetso',
     program: 'BS Computer Science',
-    role: 'Developer 6',
+    role: 'Developer 5',
     email: 'clifford.probetso@gmail.com',
     contribution: 'Point Slope, Finding the Center Radius',
     facebook: 'Clifford Probetso',
@@ -92,7 +94,8 @@ const _developers = [
     email: 'linzy21x@gmail.com',
     contribution: 'Slope-Intercept_form',
     Phone: '09700455407',
-    groups: 'Gretechen Tumilap\nGonzaga\nJemson Tubis',
+    groups:
+        'Gretechen Tumilap\nGonzaga Blessy\nJemson Tubis\nAllysa Sharise Cagui-at\nAlyssa Jean Toso',
   ),
 ];
 
@@ -515,7 +518,7 @@ class _DeveloperTileState extends State<_DeveloperTile>
                     const SizedBox(height: 10),
                     _InfoRow(
                       icon: Icons.group_add_outlined,
-                      label: 'Memebers', // ← LABEL
+                      label: 'Members', // ← LABEL
                       value: dev.groups.toString(), // ← VALUE
                       color: color,
                       theme: theme,

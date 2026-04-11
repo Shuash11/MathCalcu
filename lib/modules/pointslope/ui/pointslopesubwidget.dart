@@ -104,7 +104,8 @@ class PSHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text('Point-Slope Form', style: PSTheme.titleStyle(context)),
+                  Text('Equation of a line',
+                      style: PSTheme.titleStyle(context)),
                   const SizedBox(width: 10),
                   AnimatedBuilder(
                     animation: pulseAnim,
@@ -154,7 +155,7 @@ class PSFormulaBanner extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('STANDARD FORM', style: PSTheme.monoCaptionStyle(context)),
+          Text('Point Slope Form', style: PSTheme.monoCaptionStyle(context)),
           const SizedBox(height: 6),
           RichText(
             text: TextSpan(

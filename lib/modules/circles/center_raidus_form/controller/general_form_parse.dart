@@ -8,8 +8,8 @@ class GeneralFormParser {
         .replaceAll('Y²', 'y^2')
         .replaceAll('X^2', 'x^2')
         .replaceAll('Y^2', 'y^2')
-        .replaceAll('x2', 'x^2')   // handles x2 notation
-        .replaceAll('y2', 'y^2')   // handles y2 notation
+        .replaceAll('x2', 'x^2') // handles x2 notation
+        .replaceAll('y2', 'y^2') // handles y2 notation
         .replaceAll('X2', 'x^2')
         .replaceAll('Y2', 'y^2')
         .replaceAll('X', 'x')
@@ -43,7 +43,11 @@ class GeneralFormParser {
     final xMatch = RegExp(r'([+-][0-9.]*)x(?!\^)').firstMatch(eq);
     if (xMatch != null) {
       final raw = xMatch.group(1)!;
-      D = raw == '+' ? 1 : raw == '-' ? -1 : double.parse(raw);
+      D = raw == '+'
+          ? 1
+          : raw == '-'
+              ? -1
+              : double.parse(raw);
       eq = eq.replaceFirst(xMatch.group(0)!, '');
     }
 
@@ -52,7 +56,11 @@ class GeneralFormParser {
     final yMatch = RegExp(r'([+-][0-9.]*)y(?!\^)').firstMatch(eq);
     if (yMatch != null) {
       final raw = yMatch.group(1)!;
-      E = raw == '+' ? 1 : raw == '-' ? -1 : double.parse(raw);
+      E = raw == '+'
+          ? 1
+          : raw == '-'
+              ? -1
+              : double.parse(raw);
       eq = eq.replaceFirst(yMatch.group(0)!, '');
     }
 

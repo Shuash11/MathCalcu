@@ -7,11 +7,13 @@ class StepModel {
   final String title;
   final String explanation;
   final String? latex; // optional: rendered math expression
+  final List<String>? subLatex; // optional: side-by-side math blocks
 
   const StepModel({
     required this.stepNumber,
     required this.title,
     required this.explanation,
     this.latex,
+    this.subLatex,
   });
 }

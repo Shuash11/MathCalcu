@@ -1,4 +1,7 @@
 import 'package:calculus_system/modules/circles/center/screen/subscreens/center_screen.dart';
+import 'package:calculus_system/modules/circles/raidus/screen/radiusui.dart';
+import 'package:calculus_system/modules/y-intercept/ui/slope_intercept_scr.dart';
+import 'package:calculus_system/modules/y-intercept/ui/parallel_perpendicular_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/modules/Distance/ui/distancescreen.dart';
 import 'package:go_router/go_router.dart';
@@ -16,11 +19,10 @@ import 'modules/inequalities/radical/screen/radical_screen.dart';
 import 'modules/slope/ui/slopescreen.dart';
 import 'modules/midpoint/ui/midpointscreen.dart';
 import 'modules/pointslope/ui/pointslopescreen.dart';
-import 'modules/y-intercept/ui/y_intercept_ui.dart';
+
 import 'modules/two-point slope/ui/twopointslopescreen.dart';
 import 'modules/circles/card_picker_screen.dart';
 import 'modules/circles/center_raidus_form/screen/center_radiusui.dart';
-import 'modules/circles/raidus/screen/radiusui.dart';
 
 class AppRouter {
   static CustomTransitionPage _fadeRoute(LocalKey key, Widget child) {
@@ -127,6 +129,11 @@ class AppRouter {
         path: '/slope-intercept-form',
         name: 'slope-intercept-form',
         builder: (context, state) => const YInterceptScreen(),
+      ),
+      GoRoute(
+        path: '/parallel-perpendicular',
+        name: 'parallel-perpendicular',
+        builder: (context, state) => const ParallelPerpendicularScreen(),
       ),
       GoRoute(
         path: '/two-point-slope',

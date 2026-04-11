@@ -4,50 +4,32 @@ import 'fraction.dart';
 // ─────────────────────────────────────────────────────────────
 // PARALLEL / PERPENDICULAR SOLVER
 //
-// Accepts two lines in either:
-//   • General form   Ax + By + C = 0   (e.g. "3x + 5y + 7 = 0")
-//   • Standard form  Ax + By = C       (e.g. "5x - 3y = 2")
-//
-// Converts each to slope-intercept form y = mx + b,
-// then determines if the lines are parallel, perpendicular, or neither.
+// Accepts any valid linear equation with terms in ANY order:
+//   • General form      Ax + By + C = 0   e.g. "3x + 5y + 7 = 0"
+//   • Standard form     Ax + By = C       e.g. "5x - 3y = 2"
+//   • Slope-intercept   y = mx + b        e.g. "y = 2x + 1"
+//   • Jumbled           e.g. "3 + y - 2x = 0", "-5 + 2x + y = 0"
 // ─────────────────────────────────────────────────────────────
 
 enum PPRelationship { parallel, perpendicular, neither, sameLine }
 
-enum PPInputFormat { generalForm, standardForm, unknown }
-
-// ── Result ────────────────────────────────────────────────────
+// ── Data models ───────────────────────────────────────────────
 
 class PPResult {
-  /// Slope of line 1. Null for vertical lines.
   final YIFraction? slope1;
-
-  /// Slope of line 2. Null for vertical lines.
   final YIFraction? slope2;
-
-  /// y-intercept of line 1. Null for vertical lines.
   final YIFraction? yIntercept1;
-
-  /// y-intercept of line 2. Null for vertical lines.
   final YIFraction? yIntercept2;
-
-  /// Slope-intercept form of line 1.
   final String slopeIntercept1;
-
-  /// Slope-intercept form of line 2.
   final String slopeIntercept2;
-
-  /// The relationship between the two lines.
   final PPRelationship relationship;
-
-  /// Human-readable verdict string.
   final String verdict;
-
-  /// Emoji/symbol for the verdict.
   final String verdictSymbol;
-
-  /// Full solution steps.
   final List<PPSolverStep> steps;
+
+  // Raw integer coefficients exposed for the graph painter
+  final int a1, b1, c1;
+  final int a2, b2, c2;
 
   const PPResult({
     required this.slope1,
@@ -60,468 +42,727 @@ class PPResult {
     required this.verdict,
     required this.verdictSymbol,
     required this.steps,
+    required this.a1,
+    required this.b1,
+    required this.c1,
+    required this.a2,
+    required this.b2,
+    required this.c2,
   });
 }
 
+/// A single classroom step.
 class PPSolverStep {
   final int number;
   final String title;
-  final String formula;
-  final String substitution;
-  final String result;
-  final String explanation;
+  final List<PPStepBlock> blocks;
 
   const PPSolverStep({
     required this.number,
     required this.title,
-    required this.formula,
-    this.substitution = '',
-    required this.result,
-    this.explanation = '',
+    required this.blocks,
   });
 }
 
-// ── Solver ────────────────────────────────────────────────────
+/// Block types map directly to the four container styles in the UI.
+enum PPBlockType {
+  formula, // the rule / theorem being applied
+  substitution, // plugging in the actual numbers
+  working, // intermediate algebra lines
+  result, // the boxed final answer for that step
+  note, // plain-English teacher note
+}
+
+class PPStepBlock {
+  final PPBlockType type;
+
+  /// Plain text label shown above the LaTeX (optional).
+  final String? label;
+
+  /// LaTeX string rendered with flutter_math_fork.
+  /// If null, [content] is rendered as plain text.
+  final String? latex;
+
+  /// Plain-text fallback / note content (used when latex is null).
+  final String content;
+
+  const PPStepBlock({
+    required this.type,
+    this.label,
+    this.latex,
+    this.content = '',
+  });
+}
+
+// ── Internal helpers ──────────────────────────────────────────
+
+class _Line {
+  final int A, B, C;
+  final String display;
+  const _Line(
+      {required this.A,
+      required this.B,
+      required this.C,
+      required this.display});
+}
+
+class _SIResult {
+  final YIFraction? slope;
+  final YIFraction? yInt;
+  final String equation;
+  final String latexEquation;
+  final bool isVertical;
+  const _SIResult({
+    required this.slope,
+    required this.yInt,
+    required this.equation,
+    required this.latexEquation,
+    required this.isVertical,
+  });
+}
+
+// ── LaTeX helpers ─────────────────────────────────────────────
+
+/// Converts a YIFraction to a LaTeX string.
+/// e.g.  YIFraction(3,4) → r"\frac{3}{4}"
+///       YIFraction(-3,4) → r"-\frac{3}{4}"
+///       YIFraction(2,1)  → "2"
+String _fracTex(YIFraction f) {
+  final s = f.simplified();
+  if (s.denominator == 1) return '${s.numerator}';
+  final sign = (s.numerator < 0) ? '-' : '';
+  final num = s.numerator.abs();
+  return r'$sign\frac{$num}{${s.denominator}}'
+      .replaceAll(r'$sign', sign)
+      .replaceAll(r'$num', '$num')
+      .replaceAll(r'${s.denominator}', '${s.denominator}');
+}
+
+/// Builds a LaTeX slope-intercept string, e.g. r"y = \frac{-2}{3}x + 4"
+String _siLatex(YIFraction m, YIFraction b) {
+  final mTex = _fracTex(m);
+  final bAbs = _fracTex(b.abs());
+
+  if (m.isZero) return 'y = ${_fracTex(b)}';
+
+  String mPart;
+  final ms = m.simplified();
+  if (ms.numerator == 1 && ms.denominator == 1) {
+    mPart = 'x';
+  } else if (ms.numerator == -1 && ms.denominator == 1) {
+    mPart = '-x';
+  } else {
+    mPart = '${mTex}x';
+  }
+
+  if (b.isZero) return 'y = $mPart';
+  if (b.numerator > 0) return 'y = $mPart + ${_fracTex(b)}';
+  return 'y = $mPart - $bAbs';
+}
+
+/// Builds a LaTeX general-form string, e.g. r"3x + 5y + 7 = 0"
+String _lineLatex(int A, int B, int C) {
+  String t(int c, String v, bool first) {
+    if (c == 0) return '';
+    final abs = c.abs();
+    final vs = abs == 1 ? v : '${abs}$v';
+    if (first) return c < 0 ? '-$vs' : vs;
+    return c < 0 ? ' - $vs' : ' + $vs';
+  }
+
+  final x = t(A, 'x', true);
+  final y = t(B, 'y', x.isEmpty);
+  String c = '';
+  if (C != 0) {
+    if (x.isEmpty && y.isEmpty) {
+      c = '$C';
+    } else {
+      c = C > 0 ? ' + $C' : ' - ${C.abs()}';
+    }
+  }
+  return '$x$y$c = 0';
+}
+
+// ── Parser ────────────────────────────────────────────────────
 
 class ParallelPerpendicularSolver {
   ParallelPerpendicularSolver._();
 
-  /// Parse two line strings and compute their relationship.
-  /// Returns null if either string cannot be parsed.
-  static PPResult? tryParse({
-    required String line1,
-    required String line2,
-  }) {
-    final c1 = _parseLineString(line1.trim());
-    final c2 = _parseLineString(line2.trim());
-    if (c1 == null || c2 == null) return null;
-    return _compute(c1, c2);
+  static PPResult? tryParse({required String line1, required String line2}) {
+    final l1 = _parseLine(line1.trim());
+    final l2 = _parseLine(line2.trim());
+    if (l1 == null || l2 == null) return null;
+    return _compute(l1, l2);
   }
 
-  // ── Core computation ─────────────────────────────────────
+  static _Line? _parseLine(String raw) {
+    final s = raw
+        .replaceAll('\u2212', '-')
+        .replaceAll('\u2013', '-')
+        .replaceAll(' ', '')
+        .toLowerCase();
 
-  static PPResult _compute(_LineCoeffs l1, _LineCoeffs l2) {
-    final steps = <PPSolverStep>[];
-    int stepNum = 1;
+    final eqIdx = s.indexOf('=');
+    if (eqIdx < 0) return null;
 
-    // ── Step 1: Identify line 1 ──
-    steps.add(PPSolverStep(
-      number: stepNum++,
-      title: 'Identify Line 1',
-      formula: l1.format == PPInputFormat.generalForm
-          ? 'Ax + By + C = 0'
-          : 'Ax + By = C',
-      substitution: l1.display,
-      result: 'A₁ = ${l1.A},  B₁ = ${l1.B},  C₁ = ${l1.C}',
-      explanation: 'Extract coefficients from Line 1.',
-    ));
+    final lhsStr = s.substring(0, eqIdx);
+    final rhsStr = s.substring(eqIdx + 1);
 
-    // ── Step 2: Identify line 2 ──
-    steps.add(PPSolverStep(
-      number: stepNum++,
-      title: 'Identify Line 2',
-      formula: l2.format == PPInputFormat.generalForm
-          ? 'Ax + By + C = 0'
-          : 'Ax + By = C',
-      substitution: l2.display,
-      result: 'A₂ = ${l2.A},  B₂ = ${l2.B},  C₂ = ${l2.C}',
-      explanation: 'Extract coefficients from Line 2.',
-    ));
+    int A = 0, B = 0, C = 0;
 
-    // ── Convert L1 to slope-intercept ──
-    final conv1 = _toSlopeIntercept(l1, 1, steps, stepNum);
-    stepNum = conv1.nextStep;
-    final si1 = conv1.equation;
-    final m1  = conv1.slope;
-    final b1  = conv1.yIntercept;
-
-    // ── Convert L2 to slope-intercept ──
-    final conv2 = _toSlopeIntercept(l2, 2, steps, stepNum);
-    stepNum = conv2.nextStep;
-    final si2 = conv2.equation;
-    final m2  = conv2.slope;
-    final b2  = conv2.yIntercept;
-
-    // ── Slope comparison step ──
-    final m1Str = m1 == null ? 'undefined (vertical)' : m1.toString();
-    final m2Str = m2 == null ? 'undefined (vertical)' : m2.toString();
-
-    steps.add(PPSolverStep(
-      number: stepNum++,
-      title: 'Compare Slopes',
-      formula: 'Parallel: m₁ = m₂   |   Perpendicular: m₁ × m₂ = -1',
-      substitution: 'm₁ = $m1Str,   m₂ = $m2Str',
-      result: 'm₁ = $m1Str   and   m₂ = $m2Str',
-      explanation:
-          'Compare the two slopes to determine the line relationship.',
-    ));
-
-    // ── Determine relationship ──
-    final rel = _relationship(m1, m2, b1, b2);
-
-    // ── Verdict step ──
-    String verdictFormula = '';
-    String verdictSub = '';
-    switch (rel) {
-      case PPRelationship.parallel:
-        verdictFormula = 'm₁ = m₂';
-        verdictSub = '$m1Str = $m2Str  ✓';
-        break;
-      case PPRelationship.perpendicular:
-        verdictFormula = 'm₁ × m₂ = -1';
-        final product = m1 != null && m2 != null
-            ? (m1 * m2).simplified().toString()
-            : 'undefined';
-        verdictSub = '$m1Str × $m2Str = $product';
-        break;
-      case PPRelationship.sameLine:
-        verdictFormula = 'm₁ = m₂  and  b₁ = b₂';
-        verdictSub = 'Same slope and same intercept';
-        break;
-      case PPRelationship.neither:
-        verdictFormula = 'm₁ ≠ m₂  and  m₁ × m₂ ≠ -1';
-        verdictSub = 'Slopes are different and not negative reciprocals';
-        break;
+    void addTokens(String expr, int sign) {
+      final e = (expr.isEmpty ? '' : (expr[0] != '-' ? '+$expr' : expr));
+      final re = RegExp(r'[+\-][^+\-]+');
+      for (final m in re.allMatches(e)) {
+        final tok = m.group(0)!;
+        final tokSign = tok[0] == '-' ? -1 : 1;
+        final body = tok.substring(1);
+        if (body.contains('x')) {
+          final raw = body.replaceAll('x', '');
+          A += sign * tokSign * _coeff(raw);
+        } else if (body.contains('y')) {
+          final raw = body.replaceAll('y', '');
+          B += sign * tokSign * _coeff(raw);
+        } else {
+          final v = int.tryParse(body);
+          if (v == null) return;
+          C += sign * tokSign * v;
+        }
+      }
     }
 
+    addTokens(lhsStr, 1);
+    addTokens(rhsStr, -1);
+
+    if (A == 0 && B == 0) return null;
+
+    return _Line(A: A, B: B, C: C, display: _buildDisplay(A, B, C));
+  }
+
+  static int _coeff(String raw) {
+    if (raw.isEmpty || raw == '+') return 1;
+    if (raw == '-') return -1;
+    return int.tryParse(raw) ?? 1;
+  }
+
+  static String _buildDisplay(int A, int B, int C) {
+    String t(int c, String v, bool first) {
+      if (c == 0) return '';
+      final abs = c.abs();
+      final vs = abs == 1 ? v : '$abs$v';
+      if (first) return c < 0 ? '-$vs' : vs;
+      return c < 0 ? ' - $vs' : ' + $vs';
+    }
+
+    final x = t(A, 'x', true);
+    final y = t(B, 'y', x.isEmpty);
+    String c = '';
+    if (C != 0) {
+      if (x.isEmpty && y.isEmpty) {
+        c = '$C';
+      } else {
+        c = C > 0 ? ' + $C' : ' - ${C.abs()}';
+      }
+    }
+    return '$x$y$c = 0';
+  }
+
+  // ── Core computation ──────────────────────────────────────
+
+  static PPResult _compute(_Line l1, _Line l2) {
+    final steps = <PPSolverStep>[];
+    int n = 1;
+
+    // ── STEP 1: Identify both lines ──────────────────────────
     steps.add(PPSolverStep(
-      number: stepNum++,
+      number: n++,
+      title: 'Identify the given equations',
+      blocks: [
+        const PPStepBlock(
+          type: PPBlockType.note,
+          content:
+              'We rewrite each equation in general form Ax + By + C = 0 so we can clearly identify the coefficients A, B, and C.',
+        ),
+        const PPStepBlock(
+          type: PPBlockType.formula,
+          latex: r'Ax + By + C = 0',
+          content: 'General form',
+          label: 'General form',
+        ),
+        PPStepBlock(
+          type: PPBlockType.substitution,
+          label: 'Line 1',
+          latex:
+              '${_lineLatex(l1.A, l1.B, l1.C)} \\quad\\Rightarrow\\quad A_1 = ${l1.A},\\; B_1 = ${l1.B},\\; C_1 = ${l1.C}',
+          content: '',
+        ),
+        PPStepBlock(
+          type: PPBlockType.substitution,
+          label: 'Line 2',
+          latex:
+              '${_lineLatex(l2.A, l2.B, l2.C)} \\quad\\Rightarrow\\quad A_2 = ${l2.A},\\; B_2 = ${l2.B},\\; C_2 = ${l2.C}',
+          content: '',
+        ),
+      ],
+    ));
+
+    // ── STEP 2: Convert Line 1 to slope-intercept ────────────
+    final si1 = _toSI(l1);
+    steps.add(_buildSIStep(n++, 1, l1, si1));
+
+    // ── STEP 3: Convert Line 2 to slope-intercept ────────────
+    final si2 = _toSI(l2);
+    steps.add(_buildSIStep(n++, 2, l2, si2));
+
+    // ── STEP 4: State the slopes ─────────────────────────────
+    final m1Str = si1.slope == null ? 'undefined' : _fracTex(si1.slope!);
+    final m2Str = si2.slope == null ? 'undefined' : _fracTex(si2.slope!);
+
+    steps.add(PPSolverStep(
+      number: n++,
+      title: 'Extract and compare the slopes',
+      blocks: [
+        const PPStepBlock(
+          type: PPBlockType.note,
+          content:
+              'The slope m is the coefficient of x after isolating y. We now read off the slopes from each slope-intercept form.',
+        ),
+        const PPStepBlock(
+          type: PPBlockType.formula,
+          latex: r'y = mx + b \quad\Rightarrow\quad \text{slope} = m',
+          content: '',
+          label: 'Slope-intercept form',
+        ),
+        PPStepBlock(
+          type: PPBlockType.substitution,
+          label: 'Line 1 slope',
+          latex: '${si1.latexEquation} \\quad\\Rightarrow\\quad m_1 = $m1Str',
+          content: '',
+        ),
+        PPStepBlock(
+          type: PPBlockType.substitution,
+          label: 'Line 2 slope',
+          latex: '${si2.latexEquation} \\quad\\Rightarrow\\quad m_2 = $m2Str',
+          content: '',
+        ),
+        PPStepBlock(
+          type: PPBlockType.result,
+          latex: 'm_1 = $m1Str \\qquad m_2 = $m2Str',
+          content: '',
+        ),
+      ],
+    ));
+
+    // ── STEP 5: Apply the relationship tests ─────────────────
+    final rel = _classify(si1, si2);
+    steps.add(_buildTestStep(n++, si1, si2, rel));
+
+    // ── STEP 6: Conclusion ───────────────────────────────────
+    steps.add(PPSolverStep(
+      number: n++,
       title: 'Conclusion',
-      formula: verdictFormula,
-      substitution: verdictSub,
-      result: _verdictString(rel),
-      explanation: _verdictExplanation(rel),
+      blocks: [
+        PPStepBlock(
+          type: PPBlockType.note,
+          content: _verdictExplanation(rel),
+        ),
+        PPStepBlock(
+          type: PPBlockType.result,
+          latex:
+              '\\textbf{${_verdictSymbol(rel)}\\; \\text{The lines are ${_verdictString(rel).replaceAll(' ', '\\ ')}}}',
+          content:
+              '${_verdictSymbol(rel)}  The lines are ${_verdictString(rel)}.',
+        ),
+      ],
     ));
 
     return PPResult(
-      slope1: m1,
-      slope2: m2,
-      yIntercept1: b1,
-      yIntercept2: b2,
-      slopeIntercept1: si1,
-      slopeIntercept2: si2,
+      slope1: si1.slope,
+      slope2: si2.slope,
+      yIntercept1: si1.yInt,
+      yIntercept2: si2.yInt,
+      slopeIntercept1: si1.equation,
+      slopeIntercept2: si2.equation,
       relationship: rel,
       verdict: _verdictString(rel),
       verdictSymbol: _verdictSymbol(rel),
       steps: steps,
+      a1: l1.A,
+      b1: l1.B,
+      c1: l1.C,
+      a2: l2.A,
+      b2: l2.B,
+      c2: l2.C,
     );
   }
 
-  // ── Convert one line to slope-intercept, appending steps ──
+  // ── Build slope-intercept conversion step ────────────────
 
-  static _ConvResult _toSlopeIntercept(
-    _LineCoeffs l,
-    int lineNum,
-    List<PPSolverStep> steps,
-    int startStep,
-  ) {
-    int n = startStep;
-    final sub = lineNum == 1 ? '₁' : '₂';
+  static PPSolverStep _buildSIStep(int n, int lineNum, _Line l, _SIResult si) {
+    final sub = lineNum == 1 ? '_1' : '_2';
+    final lineLabel = 'Line $lineNum';
 
-    // Vertical line: B = 0
     if (l.B == 0) {
-      if (l.A == 0) {
-        steps.add(PPSolverStep(
-          number: n++,
-          title: 'Convert Line $lineNum to Slope-Intercept',
-          formula: 'Degenerate (A = B = 0)',
-          substitution: l.display,
-          result: 'Invalid line',
-          explanation: 'Both A and B are zero — this is not a valid line.',
-        ));
-        return _ConvResult(
-          equation: 'Invalid',
-          slope: null,
-          yIntercept: null,
-          nextStep: n,
-        );
-      }
-      // x = -C/A  (general) or x = C/A (standard)
-      final xVal = l.format == PPInputFormat.generalForm
-          ? YIFraction(numerator: -l.C, denominator: l.A).simplified()
-          : YIFraction(numerator: l.C, denominator: l.A).simplified();
-      steps.add(PPSolverStep(
-        number: n++,
-        title: 'Convert Line $lineNum to Slope-Intercept',
-        formula: 'B$sub = 0 → vertical line',
-        substitution: l.display,
-        result: 'x = $xVal  (vertical — slope undefined)',
-        explanation:
-            'When B = 0 there is no y-term, so the line is vertical with undefined slope.',
-      ));
-      return _ConvResult(
-        equation: 'x = $xVal',
-        slope: null,
-        yIntercept: null,
-        nextStep: n,
+      return PPSolverStep(
+        number: n,
+        title: 'Convert $lineLabel to slope-intercept form',
+        blocks: [
+          PPStepBlock(
+            type: PPBlockType.note,
+            content:
+                'Since B$sub = 0, there is no y-term. This line is vertical and has an undefined slope.',
+          ),
+          const PPStepBlock(
+            type: PPBlockType.formula,
+            latex:
+                r'B = 0 \;\Rightarrow\; Ax + C = 0 \;\Rightarrow\; x = -\tfrac{C}{A}',
+            content: '',
+            label: 'Vertical line rule',
+          ),
+          PPStepBlock(
+            type: PPBlockType.substitution,
+            latex:
+                '${l.A}x + (${l.C}) = 0 \\\\[4pt] ${l.A}x = ${-l.C} \\\\[4pt] x = \\dfrac{${-l.C}}{${l.A}}',
+            content: '',
+            label: 'Substituting',
+          ),
+          PPStepBlock(
+            type: PPBlockType.result,
+            latex: si.latexEquation,
+            content: '${si.equation}  (vertical — slope undefined)',
+          ),
+        ],
       );
     }
 
-    // For general form  Ax + By + C = 0  →  y = (-A/B)x + (-C/B)
-    // For standard form Ax + By = C      →  y = (-A/B)x + (C/B)
-    final YIFraction m;
-    final YIFraction b;
+    final mNum = -l.A;
+    final bNum = -l.C;
+    final mFrac = YIFraction(numerator: mNum, denominator: l.B).simplified();
+    final bFrac = YIFraction(numerator: bNum, denominator: l.B).simplified();
 
-    if (l.format == PPInputFormat.generalForm) {
-      m = YIFraction(numerator: -l.A, denominator: l.B).simplified();
-      b = YIFraction(numerator: -l.C, denominator: l.B).simplified();
-    } else {
-      // standard: Ax + By = C  →  y = (-A/B)x + C/B
-      m = YIFraction(numerator: -l.A, denominator: l.B).simplified();
-      b = YIFraction(numerator: l.C, denominator: l.B).simplified();
-    }
-
-    final eq = _slopeInterceptStr(m, b);
-
-    steps.add(PPSolverStep(
-      number: n++,
-      title: 'Convert Line $lineNum to Slope-Intercept',
-      formula: l.format == PPInputFormat.generalForm
-          ? 'By = -Ax - C  →  y = (-A/B)x + (-C/B)'
-          : 'By = C - Ax   →  y = (-A/B)x + (C/B)',
-      substitution: '${l.B}y = ${l.format == PPInputFormat.generalForm ? '-' : ''}${l.A != 0 ? '${-l.A}x' : ''}'
-          '${l.format == PPInputFormat.generalForm ? ' - ${l.C}' : ' + ${l.C}'}',
-      result: eq,
-      explanation:
-          'Isolate y by moving the x-term and constant, then divide by B$sub = ${l.B}.',
-    ));
-
-    return _ConvResult(equation: eq, slope: m, yIntercept: b, nextStep: n);
+    return PPSolverStep(
+      number: n,
+      title: 'Convert $lineLabel to slope-intercept form',
+      blocks: [
+        PPStepBlock(
+          type: PPBlockType.note,
+          content:
+              'Isolate y by moving all other terms to the right, then divide every term by B$sub = ${l.B}.',
+        ),
+        const PPStepBlock(
+          type: PPBlockType.formula,
+          latex:
+              r'Ax + By + C = 0 \;\Rightarrow\; y = -\dfrac{A}{B}x - \dfrac{C}{B}',
+          content: '',
+          label: 'Conversion formula',
+        ),
+        PPStepBlock(
+          type: PPBlockType.substitution,
+          label: 'Substituting',
+          latex: '${_lineLatex(l.A, l.B, l.C)} \\\\[6pt]'
+              '${l.B}y = ${mNum < 0 ? mNum : '+$mNum'}x + $bNum \\\\[6pt]'
+              'y = \\dfrac{$mNum}{${l.B}}x + \\dfrac{$bNum}{${l.B}}',
+          content: '',
+        ),
+        PPStepBlock(
+          type: PPBlockType.working,
+          label: 'Simplifying',
+          latex: 'm$sub = \\dfrac{$mNum}{${l.B}} = ${_fracTex(mFrac)} \\\\[6pt]'
+              'b$sub = \\dfrac{$bNum}{${l.B}} = ${_fracTex(bFrac)}',
+          content: '',
+        ),
+        PPStepBlock(
+          type: PPBlockType.result,
+          latex: si.latexEquation,
+          content: si.equation,
+        ),
+      ],
+    );
   }
 
-  // ── Relationship logic ────────────────────────────────────
+  // ── Build the test step ───────────────────────────────────
 
-  static PPRelationship _relationship(
-    YIFraction? m1,
-    YIFraction? m2,
-    YIFraction? b1,
-    YIFraction? b2,
-  ) {
-    // Both vertical
-    if (m1 == null && m2 == null) {
-      if (b1 == b2) return PPRelationship.sameLine;
-      return PPRelationship.parallel;
+  static PPSolverStep _buildTestStep(
+      int n, _SIResult si1, _SIResult si2, PPRelationship rel) {
+    final m1Tex =
+        si1.slope != null ? _fracTex(si1.slope!) : r'\text{undefined}';
+    final m2Tex =
+        si2.slope != null ? _fracTex(si2.slope!) : r'\text{undefined}';
+
+    switch (rel) {
+      case PPRelationship.parallel:
+        final b1Tex = si1.yInt != null ? _fracTex(si1.yInt!) : r'\text{—}';
+        final b2Tex = si2.yInt != null ? _fracTex(si2.yInt!) : r'\text{—}';
+        return PPSolverStep(
+          number: n,
+          title: 'Apply the parallel lines test',
+          blocks: [
+            const PPStepBlock(
+              type: PPBlockType.note,
+              content:
+                  'Two lines are parallel when they have EQUAL slopes but DIFFERENT y-intercepts. They never intersect.',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.formula,
+              latex: r'm_1 = m_2 \quad\text{and}\quad b_1 \neq b_2',
+              content: '',
+              label: 'Parallel condition',
+            ),
+            PPStepBlock(
+              type: PPBlockType.substitution,
+              label: 'Checking slopes',
+              latex: 'm_1 = $m1Tex \\quad,\\quad m_2 = $m2Tex',
+              content: '',
+            ),
+            PPStepBlock(
+              type: PPBlockType.substitution,
+              label: 'Checking intercepts',
+              latex: 'b_1 = $b1Tex \\quad,\\quad b_2 = $b2Tex',
+              content: '',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.working,
+              latex:
+                  'm_1 = m_2 \\;\\checkmark \\quad(\\text{slopes equal})\\\\[4pt] b_1 \\neq b_2 \\;\\checkmark \\quad(\\text{intercepts differ})',
+              content: '',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.result,
+              latex: r'\text{The lines are } \textbf{PARALLEL} \;(\parallel)',
+              content: 'The lines are PARALLEL (∥).',
+            ),
+          ],
+        );
+
+      case PPRelationship.perpendicular:
+        final product = si1.slope != null && si2.slope != null
+            ? (si1.slope! * si2.slope!).simplified()
+            : null;
+        final prodTex =
+            product != null ? _fracTex(product) : r'\text{undefined}';
+        return PPSolverStep(
+          number: n,
+          title: 'Apply the perpendicular lines test',
+          blocks: [
+            const PPStepBlock(
+              type: PPBlockType.note,
+              content:
+                  'Two lines are perpendicular when their slopes are negative reciprocals. Their product equals −1.',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.formula,
+              latex: r'm_1 \times m_2 = -1',
+              content: '',
+              label: 'Perpendicular condition',
+            ),
+            PPStepBlock(
+              type: PPBlockType.substitution,
+              label: 'Substituting',
+              latex: '($m1Tex) \\times ($m2Tex)',
+              content: '',
+            ),
+            PPStepBlock(
+              type: PPBlockType.working,
+              latex: '= $prodTex = -1 \\;\\checkmark',
+              content: '',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.result,
+              latex:
+                  r'm_1 \times m_2 = -1 \;\checkmark \quad\text{The lines are } \textbf{PERPENDICULAR}\;(\perp)',
+              content: 'The lines are PERPENDICULAR (⊥).',
+            ),
+          ],
+        );
+
+      case PPRelationship.sameLine:
+        final b1Tex = si1.yInt != null ? _fracTex(si1.yInt!) : r'\text{—}';
+        final b2Tex = si2.yInt != null ? _fracTex(si2.yInt!) : r'\text{—}';
+        return PPSolverStep(
+          number: n,
+          title: 'Apply the coincident lines test',
+          blocks: [
+            const PPStepBlock(
+              type: PPBlockType.note,
+              content:
+                  'Two lines are coincident when both slopes AND y-intercepts are identical — they overlap completely.',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.formula,
+              latex: r'm_1 = m_2 \quad\text{and}\quad b_1 = b_2',
+              content: '',
+              label: 'Same-line condition',
+            ),
+            PPStepBlock(
+              type: PPBlockType.substitution,
+              latex:
+                  'm_1 = $m1Tex = m_2 \\;\\checkmark \\\\[4pt] b_1 = $b1Tex = $b2Tex = b_2 \\;\\checkmark',
+              content: '',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.result,
+              latex: r'\text{The lines are the } \textbf{SAME LINE}\;(\equiv)',
+              content: 'The lines are the SAME LINE (≡).',
+            ),
+          ],
+        );
+
+      case PPRelationship.neither:
+        final product = si1.slope != null && si2.slope != null
+            ? (si1.slope! * si2.slope!).simplified()
+            : null;
+        final prodTex =
+            product != null ? _fracTex(product) : r'\text{undefined}';
+        return PPSolverStep(
+          number: n,
+          title: 'Apply both tests — parallel and perpendicular',
+          blocks: [
+            const PPStepBlock(
+              type: PPBlockType.note,
+              content:
+                  'We check both conditions. If neither is satisfied, the lines intersect at an oblique angle.',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.formula,
+              latex:
+                  r'\text{Parallel: } m_1 = m_2 \qquad \text{Perpendicular: } m_1 \times m_2 = -1',
+              content: '',
+              label: 'Both conditions',
+            ),
+            PPStepBlock(
+              type: PPBlockType.substitution,
+              latex: 'm_1 = $m1Tex,\\quad m_2 = $m2Tex',
+              content: '',
+            ),
+            PPStepBlock(
+              type: PPBlockType.working,
+              latex:
+                  '\\text{Parallel? } m_1 = m_2 \\;\\Rightarrow\\; $m1Tex \\neq $m2Tex \\;\\times \\\\[6pt]'
+                  '\\text{Perpendicular? } m_1 \\times m_2 = $prodTex \\neq -1 \\;\\times',
+              content: '',
+            ),
+            const PPStepBlock(
+              type: PPBlockType.result,
+              latex:
+                  r'\text{The lines are } \textbf{NEITHER}\text{ parallel nor perpendicular}',
+              content: 'The lines are NEITHER parallel nor perpendicular.',
+            ),
+          ],
+        );
     }
-    // One vertical, one not → neither
-    if (m1 == null || m2 == null) return PPRelationship.neither;
+  }
 
-    // Same slope
+  // ── Convert line to slope-intercept ──────────────────────
+
+  static _SIResult _toSI(_Line l) {
+    if (l.B == 0) {
+      if (l.A == 0) {
+        return const _SIResult(
+            slope: null,
+            yInt: null,
+            equation: 'Invalid',
+            latexEquation: r'\text{Invalid}',
+            isVertical: true);
+      }
+      final xv = YIFraction(numerator: -l.C, denominator: l.A).simplified();
+      final xvTex = _fracTex(xv);
+      return _SIResult(
+          slope: null,
+          yInt: null,
+          equation: 'x = $xv',
+          latexEquation: 'x = $xvTex',
+          isVertical: true);
+    }
+    final m = YIFraction(numerator: -l.A, denominator: l.B).simplified();
+    final b = YIFraction(numerator: -l.C, denominator: l.B).simplified();
+    return _SIResult(
+      slope: m,
+      yInt: b,
+      equation: _siStr(m, b),
+      latexEquation: _siLatex(m, b),
+      isVertical: false,
+    );
+  }
+
+  static String _siStr(YIFraction m, YIFraction b) {
+    if (m.isZero) return 'y = $b';
+    String mp;
+    if (m == const YIFraction(numerator: 1, denominator: 1)) {
+      mp = 'x';
+    } else if (m == const YIFraction(numerator: -1, denominator: 1)) {
+      mp = '-x';
+    } else
+      mp = '${m}x  ';
+    if (b.isZero) return 'y = $mp';
+    if (b.numerator > 0) return 'y = $mp + $b';
+    return 'y = $mp - ${b.abs()}';
+  }
+
+  // ── Classification ────────────────────────────────────────
+
+  static PPRelationship _classify(_SIResult s1, _SIResult s2) {
+    if (s1.isVertical && s2.isVertical) {
+      return s1.equation == s2.equation
+          ? PPRelationship.sameLine
+          : PPRelationship.parallel;
+    }
+    if (s1.isVertical || s2.isVertical) return PPRelationship.neither;
+
+    final m1 = s1.slope!, m2 = s2.slope!;
+
     if (m1 == m2) {
-      if (b1 != null && b2 != null && b1 == b2) return PPRelationship.sameLine;
+      if (s1.yInt != null && s2.yInt != null && s1.yInt == s2.yInt) {
+        return PPRelationship.sameLine;
+      }
       return PPRelationship.parallel;
     }
 
-    // ── FIX: Check perpendicular via cross-multiplication ──
-    // m1 * m2 == -1  ⟺  numerator(m1 * m2) == -denominator(m1 * m2)
-    // This avoids relying on == against a hardcoded YIFraction(-1, 1),
-    // which fails when simplified() leaves the product as e.g. -15/15.
     final product = (m1 * m2).simplified();
-    final isNegativeOne = product.numerator == -product.denominator;
-    if (isNegativeOne) {
+    if (product.numerator == -product.denominator) {
       return PPRelationship.perpendicular;
     }
 
     return PPRelationship.neither;
   }
 
-  // ── Parsing ───────────────────────────────────────────────
-
-  /// Tries general form first, then standard form.
-  static _LineCoeffs? _parseLineString(String input) {
-    final gf = _parseGeneralForm(input);
-    if (gf != null) return gf;
-    final sf = _parseStandardForm(input);
-    return sf;
-  }
-
-  /// Parses "Ax + By + C = 0" variants.
-  static _LineCoeffs? _parseGeneralForm(String input) {
-    final s = _normalise(input);
-
-    // Must end with "=0"
-    if (!s.endsWith('=0')) return null;
-    final lhs = s.substring(0, s.length - 2);
-
-    final coeffs = _extractCoeffsFromExpression(lhs);
-    if (coeffs == null) return null;
-
-    return _LineCoeffs(
-      A: coeffs.$1,
-      B: coeffs.$2,
-      C: coeffs.$3,
-      format: PPInputFormat.generalForm,
-      display: _buildGeneralFormDisplay(coeffs.$1, coeffs.$2, coeffs.$3),
-    );
-  }
-
-  /// Parses "Ax + By = C" variants.
-  static _LineCoeffs? _parseStandardForm(String input) {
-    final s = _normalise(input);
-
-    final eqIdx = s.indexOf('=');
-    if (eqIdx < 0) return null;
-    final lhs = s.substring(0, eqIdx);
-    final rhs = s.substring(eqIdx + 1);
-
-    // rhs must be a plain integer (standard form C)
-    final C = int.tryParse(rhs);
-    if (C == null) return null;
-
-    final coeffs = _extractCoeffsFromExpression(lhs);
-    if (coeffs == null) return null;
-
-    // coeffs.$3 should be 0 (no standalone constant in lhs for standard form)
-    return _LineCoeffs(
-      A: coeffs.$1,
-      B: coeffs.$2,
-      C: C,
-      format: PPInputFormat.standardForm,
-      display: _buildStandardFormDisplay(coeffs.$1, coeffs.$2, C),
-    );
-  }
-
-  /// Extracts (A, B, freeConstant) from an expression like "3x+5y+7" or "-2x+y".
-  static (int, int, int)? _extractCoeffsFromExpression(String expr) {
-    int A = 0, B = 0, C = 0;
-
-    // Tokenise into signed terms: e.g. "+3x", "-5y", "+7"
-    final tokenPattern = RegExp(r'[+-]?[^+-]+');
-    final tokens = tokenPattern.allMatches(expr).map((m) => m.group(0)!).toList();
-
-    for (final tok in tokens) {
-      if (tok.isEmpty) continue;
-      if (tok.contains('x')) {
-        final raw = tok.replaceAll('x', '').trim();
-        A = _parseCoefficient(raw);
-      } else if (tok.contains('y')) {
-        final raw = tok.replaceAll('y', '').trim();
-        B = _parseCoefficient(raw);
-      } else {
-        final val = int.tryParse(tok.trim());
-        if (val == null) return null;
-        C = val;
-      }
-    }
-
-    return (A, B, C);
-  }
-
-  static int _parseCoefficient(String raw) {
-    if (raw.isEmpty || raw == '+') return 1;
-    if (raw == '-') return -1;
-    return int.tryParse(raw) ?? 0;
-  }
-
-  static String _normalise(String s) => s
-      .replaceAll('\u2212', '-')
-      .replaceAll(' ', '')
-      .toLowerCase();
-
-  // ── Display builders ──────────────────────────────────────
-
-  static String _buildGeneralFormDisplay(int A, int B, int C) {
-    final x = _termStr(A, 'x', isFirst: true);
-    final y = _termStr(B, 'y', isFirst: x.isEmpty);
-    final c = C == 0
-        ? ''
-        : C > 0
-            ? '+ $C'
-            : '- ${C.abs()}';
-    return '${[x, y, c].where((s) => s.isNotEmpty).join(' ')} = 0';
-  }
-
-  static String _buildStandardFormDisplay(int A, int B, int C) {
-    final x = _termStr(A, 'x', isFirst: true);
-    final y = _termStr(B, 'y', isFirst: x.isEmpty);
-    return '${[x, y].where((s) => s.isNotEmpty).join(' ')} = $C';
-  }
-
-  static String _termStr(int coeff, String v, {required bool isFirst}) {
-    if (coeff == 0) return '';
-    final abs = coeff.abs();
-    final varStr = abs == 1 ? v : '$abs$v';
-    if (isFirst) return coeff < 0 ? '-$varStr' : varStr;
-    return coeff < 0 ? '- $varStr' : '+ $varStr';
-  }
-
-  static String _slopeInterceptStr(YIFraction m, YIFraction b) {
-    String mPart;
-    if (m.isZero) return 'y = $b';
-    if (m == const YIFraction(numerator: 1, denominator: 1)) {
-      mPart = 'x';
-    // ignore: curly_braces_in_flow_control_structures
-    } else if (m == const YIFraction(numerator: -1, denominator: 1)) mPart = '-x';
-    // ignore: curly_braces_in_flow_control_structures
-    else mPart = '${m}x';
-
-    if (b.isZero)        return 'y = $mPart';
-    if (b.numerator > 0) return 'y = $mPart + $b';
-    return 'y = $mPart - ${b.abs()}';
-  }
-
   // ── Verdict helpers ───────────────────────────────────────
 
   static String _verdictString(PPRelationship r) {
     switch (r) {
-      case PPRelationship.parallel:      return 'Parallel';
-      case PPRelationship.perpendicular: return 'Perpendicular';
-      case PPRelationship.sameLine:      return 'Same Line (Coincident)';
-      case PPRelationship.neither:       return 'Neither';
+      case PPRelationship.parallel:
+        return 'Parallel';
+      case PPRelationship.perpendicular:
+        return 'Perpendicular';
+      case PPRelationship.sameLine:
+        return 'Same Line (Coincident)';
+      case PPRelationship.neither:
+        return 'Neither';
     }
   }
 
   static String _verdictSymbol(PPRelationship r) {
     switch (r) {
-      case PPRelationship.parallel:      return '∥';
-      case PPRelationship.perpendicular: return '⊥';
-      case PPRelationship.sameLine:      return '≡';
-      case PPRelationship.neither:       return '∦';
+      case PPRelationship.parallel:
+        return '∥';
+      case PPRelationship.perpendicular:
+        return '⊥';
+      case PPRelationship.sameLine:
+        return '≡';
+      case PPRelationship.neither:
+        return '∦';
     }
   }
 
   static String _verdictExplanation(PPRelationship r) {
     switch (r) {
       case PPRelationship.parallel:
-        return 'Equal slopes (m₁ = m₂) and different y-intercepts mean the lines never intersect.';
+        return 'Since m₁ = m₂ and b₁ ≠ b₂, the lines have the same slope but different y-intercepts. They run in the same direction and will never meet — they are parallel.';
       case PPRelationship.perpendicular:
-        return 'Slopes are negative reciprocals (m₁ × m₂ = -1), so the lines meet at a right angle.';
+        return 'Since m₁ × m₂ = −1, the slopes are negative reciprocals. The lines cross at exactly 90° — they are perpendicular.';
       case PPRelationship.sameLine:
-        return 'Identical slopes and intercepts — these are the same line.';
+        return 'Since m₁ = m₂ and b₁ = b₂, both equations describe the exact same line. Every point on one line is also on the other — they are coincident.';
       case PPRelationship.neither:
-        return 'Slopes are neither equal nor negative reciprocals, so the lines intersect at an oblique angle.';
+        return 'The slopes are not equal (so not parallel) and their product is not −1 (so not perpendicular). The lines intersect at an oblique angle — neither condition applies.';
     }
   }
 }
-
-// ── Internal helpers ──────────────────────────────────────────
-
-class _LineCoeffs {
-  final int A;
-  final int B;
-  final int C;
-  final PPInputFormat format;
-  final String display;
-  const _LineCoeffs({
-    required this.A,
-    required this.B,
-    required this.C,
-    required this.format,
-    required this.display,
-  });
-}
-
-class _ConvResult {
-  final String equation;
-  final YIFraction? slope;
-  final YIFraction? yIntercept;
-  final int nextStep;
-  const _ConvResult({
-    required this.equation,
-    required this.slope,
-    required this.yIntercept,
-    required this.nextStep,
-  });
-}
-
-// Re-export so the UI only needs to import this file for the PP feature.
-// YIFraction is already in fraction.dart — referenced via relative import.

@@ -29,7 +29,7 @@ class ModuleRegistry {
       icon: Icons.show_chart,
       accent: Color(0xFF00C2FF),
     ),
-     const ModuleEntry(
+    const ModuleEntry(
       label: 'midpoint',
       subtitle: 'Find center point between coordinates',
       route: '/midpoint',
@@ -48,7 +48,7 @@ class ModuleRegistry {
 
     // ── MIDPOINT MODULE ──────────────────────────────────
     // Clean white/silver accent - unique from orange distance
-   
+
     // ─────────────────────────────────────────────────────
 // ── POINT-SLOPE MODULE ───────────────────────────────
 // Deep violet/purple theme - mathematical sophistication
@@ -60,32 +60,39 @@ class ModuleRegistry {
       accent: Color(0xFFA855F7), // Electric purple
     ),
 // ─────────────────────────────────────────────────────
-const ModuleEntry(
-  label: 'Two-Point Slope',
-  subtitle: 'Find slope from two coordinate points',
-  route: '/two-point-slope',
-  icon: Icons.show_chart_rounded,
-  accent: Color(0xFFF59E0B), // Amber
-),
+    const ModuleEntry(
+      label: 'Two-Point Slope',
+      subtitle: 'Find slope from two coordinate points',
+      route: '/two-point-slope',
+      icon: Icons.show_chart_rounded,
+      accent: Color(0xFFF59E0B), // Amber
+    ),
 // ── Y-INTERCEPT MODULE ────────────────────────────────
 // Emerald green + gold - represents crossing point/growth
-const ModuleEntry(
-  label: 'slope-intercept-form',
-  subtitle: 'Find where \nline crosses\nY-axis',
-  route: '/slope-intercept-form',
-  icon: Icons.vertical_align_bottom_rounded, // Suggests bottom/crossing
-  accent: Color(0xFF10B981), // Emerald green
-),
+    const ModuleEntry(
+      label: 'slope-intercept-form',
+      subtitle: 'Find where \nline crosses\nY-axis',
+      route: '/slope-intercept-form',
+      icon: Icons.vertical_align_bottom_rounded, // Suggests bottom/crossing
+      accent: Color(0xFF10B981), // Emerald green
+    ),
+    const ModuleEntry(
+      label: 'parallel-perpendicular',
+      subtitle: 'Compare two lines and\ncheck their relationship',
+      route: '/parallel-perpendicular',
+      icon: Icons.compare_arrows_rounded,
+      accent: Color(0xFF06B6D4),
+    ),
 // ─────────────────────────────────────────────────────
 // ── CIRCLE MODULE ─────────────────────────────────────
 // Indigo + cyan theme - 3 solution types inside
-const ModuleEntry(
-  label: 'circle',
-  subtitle: 'Standard · General · Center-Radius',
-  route: '/circle',
-  icon: Icons.radio_button_unchecked_rounded, // Circle icon
-  accent: Color(0xFF06B6D4), // Cyan
-),
+    const ModuleEntry(
+      label: 'circle',
+      subtitle: 'Standard · General · Center-Radius',
+      route: '/circle',
+      icon: Icons.radio_button_unchecked_rounded, // Circle icon
+      accent: Color(0xFF06B6D4), // Cyan
+    ),
 // ─────────────────────────────────────────────────────
 
 // ─────────────────────────────────────────────────────

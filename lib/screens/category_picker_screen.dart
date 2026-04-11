@@ -12,6 +12,7 @@ import 'pointslopecard.dart';
 import 'y-interceptcard.dart';
 import 'circlecard.dart';
 import 'twopointslopecard.dart';
+import 'parallelperpendicularcard.dart';
 
 class CategoryPickerScreen extends StatefulWidget {
   const CategoryPickerScreen({super.key});
@@ -81,6 +82,9 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
     }
     if (label == 'slope-intercept-form') {
       return YInterceptModuleCard(module: module);
+    }
+    if (label == 'parallel-perpendicular') {
+      return ParallelPerpendicularModuleCard(module: module);
     }
     if (label == 'circle') return CircleModuleCard(module: module);
     if (label == 'two-point slope' || label == 'twopointslope') {

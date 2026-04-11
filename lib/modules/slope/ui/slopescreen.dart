@@ -205,7 +205,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   Widget _header() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Slope Calculator', style: SlopeTheme.titleStyle(context)),
+          Text('Equation of a line', style: SlopeTheme.titleStyle(context)),
           const SizedBox(height: 6),
           Text(
             'Enter coordinates — supports fractions like 3/5 or -1/4',

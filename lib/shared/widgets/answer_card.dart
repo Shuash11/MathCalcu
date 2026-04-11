@@ -1,6 +1,7 @@
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -94,18 +95,32 @@ class _AnswerCardState extends State<AnswerCard>
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      widget.result.answer,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w700,
-                        color: context.watch<ThemeProvider>().textPrimary,
-                        letterSpacing: -0.5,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      softWrap: true,
-                    ),
+                    widget.result.latex != null
+                        ? SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            child: SelectableMath.tex(
+                              widget.result.latex!,
+                              mathStyle: MathStyle.display,
+                              textStyle: TextStyle(
+                                fontSize: 22,
+                                color:
+                                    context.watch<ThemeProvider>().textPrimary,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            widget.result.answer,
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w700,
+                              color: context.watch<ThemeProvider>().textPrimary,
+                              letterSpacing: -0.5,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            softWrap: true,
+                          ),
                     if (widget.result.intervalNotation != null) ...[
                       const SizedBox(height: 4),
                       Text(

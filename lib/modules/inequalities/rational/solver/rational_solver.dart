@@ -35,125 +35,157 @@ class RationalSolver {
     if (p == null) return steps;
 
     int n = 1;
+    const f = InequalityCoreSolver.fmt;
     final numStr = _ll(p.numA, p.numC);
     final denStr = _ll(p.denA, p.denC);
-    final rhsFmt = InequalityCoreSolver.fmt(p.rhs);
+    final rhsFmt = f(p.rhs);
     final combStr = _ll(p.combA, p.combC);
 
-    // ── Step 1: Given ─────────────────────────────────────────────────────────
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Given',
-      explanation: '',
-      latex: '($numStr) / ($denStr) ${p.op} $rhsFmt',
+      title: 'Original Inequality',
+      explanation: 'Start with the given rational inequality.',
+      latex: r'\frac{' + numStr + r'}{' + denStr + r'} ${_tex(p.op)} ' + rhsFmt,
     ));
 
-    // ── Step 2: Subtract RHS (only when rhs ≠ 0) ─────────────────────────────
     if (p.rhs != 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Subtract $rhsFmt',
-        explanation: '',
-        latex: '($numStr) / ($denStr) - $rhsFmt ${p.op} 0',
+        title: 'Subtract Constant',
+        explanation:
+            'Move all terms to one side to compare the expression with zero.',
+        latex: r'\frac{' +
+            numStr +
+            r'}{' +
+            denStr +
+            r'} - ' +
+            rhsFmt +
+            ' ' +
+            _tex(p.op) +
+            ' 0',
       ));
 
-      // ── Step 3: Write RHS over common denominator ───────────────────────────
-      final rhsExpanded = _ll(p.rhs * p.denA, p.rhs * p.denC);
+      final rhsExp = _ll(p.rhs * p.denA, p.rhs * p.denC);
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Common denominator',
-        explanation: '',
-        latex: '($numStr) / ($denStr) - ($rhsExpanded) / ($denStr) ${p.op} 0',
+        title: 'Common Denominator',
+        explanation:
+            'Rewrite the constant as a fraction over the common denominator.',
+        latex: r'\frac{' +
+            numStr +
+            r'}{' +
+            denStr +
+            r'} - \frac{' +
+            rhsExp +
+            r'}{' +
+            denStr +
+            r'} ' +
+            _tex(p.op) +
+            ' 0',
       ));
 
-      // ── Step 4: Combine into one fraction ───────────────────────────────────
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Combine',
-        explanation: '',
-        latex: '($numStr - ($rhsExpanded)) / ($denStr) ${p.op} 0',
+        title: 'Combine Fractions',
+        explanation:
+            'Subtract the numerators while keeping the common denominator.',
+        latex: r'\frac{' +
+            numStr +
+            r' - (' +
+            rhsExp +
+            r')}{' +
+            denStr +
+            r'} ' +
+            _tex(p.op) +
+            ' 0',
       ));
     }
 
-    // ── Step 5: Simplified fraction ───────────────────────────────────────────
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Simplify',
-      explanation: '',
-      latex: '($combStr) / ($denStr) ${p.op} 0',
+      title: 'Standard Form',
+      explanation: 'Simplify the numerator to reach standard form.',
+      latex: r'\frac{' + combStr + r'}{' + denStr + r'} ' + _tex(p.op) + ' 0',
     ));
 
-    // ── Step 6: Numerator = 0 ─────────────────────────────────────────────────
     final numZero = p.combA != 0 ? -p.combC / p.combA : double.nan;
     if (!numZero.isNaN) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Numerator = 0',
-        explanation: '',
-        latex: '$combStr = 0  →  x = ${InequalityCoreSolver.fmt(numZero)}',
+        title: 'Numerator Zero',
+        explanation:
+            'Find the points where the expression equals zero (the roots).',
+        latex: '$combStr = 0 \\implies x = ${f(numZero)}',
       ));
     }
 
-    // ── Step 7: Denominator = 0 (always excluded) ─────────────────────────────
     final denZero = p.denA != 0 ? -p.denC / p.denA : double.nan;
     if (!denZero.isNaN) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Denominator = 0  (excluded)',
-        explanation: '',
-        latex: '$denStr = 0  →  x = ${InequalityCoreSolver.fmt(denZero)}',
+        title: 'Denominator Zero',
+        explanation:
+            'Find where the expression is undefined (vertical asymptotes).',
+        latex: '$denStr = 0 \\implies x = ${f(denZero)}',
       ));
     }
 
-    // ── Step 8: Number line ───────────────────────────────────────────────────
     final pts = _criticalPoints(p)..sort();
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Number line',
-      explanation: '',
-      latex: pts.map(InequalityCoreSolver.fmt).join('  <  '),
+      title: 'Sign Analysis',
+      explanation:
+          'Test each interval on the number line to find where the inequality holds true.',
+      latex: _buildSignChart(p, pts),
     ));
 
-    // ── Step 9: Test each region ──────────────────────────────────────────────
-    final testPts = <double>[
-      pts.first - 1,
-      for (int i = 0; i < pts.length - 1; i++) (pts[i] + pts[i + 1]) / 2,
-      pts.last + 1,
-    ];
-
-    for (final tx in testPts) {
-      final denVal = p.denA * tx + p.denC;
-      if (denVal == 0) continue;
-      final numVal = p.combA * tx + p.combC;
-      final result = numVal / denVal;
-      final satisfies = InequalityCoreSolver.evalOp(result, p.op, 0);
-      final txFmt = InequalityCoreSolver.fmt(tx);
-      final numValFmt = InequalityCoreSolver.fmt(numVal);
-      final denValFmt = InequalityCoreSolver.fmt(denVal);
-      final resFmt = InequalityCoreSolver.fmt(result);
-      final mark = satisfies ? '✓' : '✗';
-
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'x = $txFmt',
-        explanation: '',
-        latex: '$numValFmt / $denValFmt = $resFmt ${p.op} 0  $mark',
-      ));
-    }
-
-    // ── Step 10: Solution set ─────────────────────────────────────────────────
     final intervals = _buildIntervals(p);
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution',
-      explanation: '',
-      latex: intervals.isEmpty ? '∅' : intervals.join(' ∪ '),
+      title: 'Interval Notation',
+      explanation:
+          'Combine the successful intervals into the final solution set.',
+      latex: intervals.isEmpty ? r'\emptyset' : intervals.join(' \\cup '),
     ));
 
     return steps;
   }
 
   // ─── Internal helpers ─────────────────────────────────────────────────────
+
+  static String _buildSignChart(_Parsed p, List<double> pts) {
+    const f = InequalityCoreSolver.fmt;
+    final testPts = <double>[
+      pts.first - 1,
+      for (int i = 0; i < pts.length - 1; i++) (pts[i] + pts[i + 1]) / 2,
+      pts.last + 1,
+    ];
+
+    final buffer = StringBuffer();
+    buffer.write(r'\begin{aligned} ');
+    for (int i = 0; i < testPts.length; i++) {
+      final tx = testPts[i];
+      final denVal = p.denA * tx + p.denC;
+      if (denVal == 0) continue;
+      final numVal = p.combA * tx + p.combC;
+      final satisfies = InequalityCoreSolver.evalOp(numVal / denVal, p.op, 0);
+      final mark = satisfies ? r'\text{ \checkmark}' : r'\text{ \times}';
+
+      buffer.write(
+          'x = ${f(tx)}: \\quad \\frac{${f(numVal)}}{${f(denVal)}} ${_tex(p.op)} 0 \\implies $mark');
+      if (i < testPts.length - 1) buffer.write(r' \\ ');
+    }
+    buffer.write(r' \end{aligned}');
+    return buffer.toString();
+  }
+
+  static String _tex(String op) => switch (op) {
+        '≥' => '\\geq',
+        '≤' => '\\leq',
+        '>' => '>',
+        '<' => '<',
+        _ => op,
+      };
 
   static _Parsed? _parse(String input) {
     final normalized = InequalityCoreSolver.normalize(input);
@@ -201,7 +233,8 @@ class RationalSolver {
     final pts = <double>[];
     if (p.combA != 0) pts.add(-p.combC / p.combA);
     if (p.denA != 0) pts.add(-p.denC / p.denA);
-    return pts;
+    // Remove duplicates
+    return pts.toSet().toList();
   }
 
   static bool _satisfies(double x, _Parsed p) {

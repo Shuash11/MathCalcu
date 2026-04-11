@@ -1,7 +1,6 @@
 import 'package:calculus_system/modules/circles/center_raidus_form/Theme/center_radius_theme.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/solver/center_radius_solver.dart';
 import 'package:flutter/material.dart';
-
 import 'step_tile.dart';
 
 class SolutionSteps extends StatelessWidget {
@@ -24,11 +23,13 @@ class SolutionSteps extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        ...List.generate(steps.length, (i) => StepTile(
-              step: steps[i],
-              index: i,
-              isLast: i == steps.length - 1,
-            )),
+        ...List.generate(
+            steps.length,
+            (i) => StepTile(
+                  step: steps[i],
+                  index: i,
+                  isLast: i == steps.length - 1,
+                )),
       ],
     );
   }

@@ -142,7 +142,7 @@ class QuadraticSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Write the original inequality',
+      title: 'Original Inequality',
       explanation: 'Identify the square root on both sides.',
       latex: p.original,
     ));
@@ -152,47 +152,28 @@ class QuadraticSolver {
       title: 'Simplify √(x²) = |x|',
       explanation:
           'Since √(x²) = |x| for all real x, the inequality becomes an absolute value inequality.',
-      latex: '|x| $op √(${p.sqrtRhs}) = $bStr',
+      latex: '|x| ${_tex(op)} \\sqrt{${p.sqrtRhs}} = $bStr',
     ));
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Set up the absolute value inequality',
+      title: 'Apply Absolute Property',
       explanation: op == '≤' || op == '<'
-          ? '|x| $op k  ⟹  −k $op x $op k'
-          : '|x| $op k  ⟹  x ${InequalityCoreSolver.flipOp(op)} −k  or  x $op k',
-      latex: '|x| $op $bStr',
+          ? 'An absolute value less than k means x is between -k and k.'
+          : 'An absolute value greater than k means x is outside -k and k.',
+      latex: op == '≤' || op == '<'
+          ? '-$bStr ${_tex(op)} x ${_tex(op)} $bStr'
+          : 'x ${_tex(InequalityCoreSolver.flipOp(op))} -$bStr \\text{ or } x ${_tex(op)} $bStr',
     ));
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Test boundary values on the number line',
-      explanation:
-          'Check a value outside and inside the proposed solution set.',
-      latex: _buildSqrtTestLatex(op, bound),
-    ));
-
-    steps.add(StepModel(
-      stepNumber: n++,
-      title: 'Write the solution set',
-      explanation: 'S.S.',
+      title: 'Solution Set',
+      explanation: 'Represent the valid input range in interval notation.',
       latex: _solveSqrt(p).intervalNotation,
     ));
 
     return steps;
-  }
-
-  static String _buildSqrtTestLatex(String op, double b) {
-    final t1 = -(b + 1);
-    const t2 = 0.0;
-    final t3 = b + 1;
-    String check(double t) {
-      final absT = t.abs();
-      final pass = InequalityCoreSolver.evalOp(absT, op, b);
-      return '|${InequalityCoreSolver.fmt(t)}| = ${InequalityCoreSolver.fmt(absT)} ${pass ? "✓" : "✗"}';
-    }
-
-    return '${check(t1)}\n${check(t2)}\n${check(t3)}';
   }
 
   // ── standard quadratic solution ────────────────────────────────────────────
@@ -201,7 +182,6 @@ class QuadraticSolver {
     final a = p.a!, b = p.b!, c = p.c!;
     final op = p.op;
 
-    // FIX 3: Guard against unparseable input (all zeros likely means parse failed)
     if (a == 0 && b == 0 && c == 0 && op.isEmpty) {
       return SolveResult.error('Could not parse inequality.');
     }
@@ -279,45 +259,45 @@ class QuadraticSolver {
     final a = p.a!, b = p.b!, c = p.c!;
     final op = p.op;
     int n = 1;
+    const f = InequalityCoreSolver.fmt;
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Write the original inequality',
-      explanation: 'Start with the given quadratic inequality.',
+      title: 'Original Inequality',
+      explanation: 'Begin with the given quadratic inequality.',
       latex: p.original,
     ));
 
-    final needsMove =
-        (p.rhsRaw != null && p.rhsRaw!.isNotEmpty && p.rhsRaw != '0');
-    if (needsMove) {
-      final bStr = b >= 0
-          ? '+ ${InequalityCoreSolver.fmt(b)}'
-          : InequalityCoreSolver.fmt(b);
-      final cStr = c >= 0
-          ? '+ ${InequalityCoreSolver.fmt(c)}'
-          : InequalityCoreSolver.fmt(c);
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Move all terms to the left side',
-        explanation: 'Make the right-hand side zero.',
-        latex: '${_coefStr(a)}x² $bStr x $cStr $op 0',
-      ));
-    }
+    final bStr = b >= 0 ? '+ ${f(b)}' : '- ${f(b.abs())}';
+    final cStr = c >= 0 ? '+ ${f(c)}' : '- ${f(c.abs())}';
+    steps.add(StepModel(
+      stepNumber: n++,
+      title: 'Standard Form',
+      explanation: 'Rearrange into the form ax² + bx + c ${_tex(op)} 0.',
+      latex:
+          '\\begin{aligned} ${_coefStr(a)}x^2 ${b != 0 ? "$bStr x" : ""} ${c != 0 ? cStr : ""} &${_tex(op)} 0 \\end{aligned}',
+    ));
 
     final disc = b * b - 4 * a * c;
+    steps.add(StepModel(
+      stepNumber: n++,
+      title: 'Calculate Discriminant',
+      explanation: 'Calculate Δ = b² - 4ac to determine the roots.',
+      latex:
+          '\\begin{aligned} \\Delta &= (${f(b)})^2 - 4(${f(a)})(${f(c)}) \\\\ &= ${f(disc)} \\end{aligned}',
+    ));
 
     if (disc < 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Compute the discriminant',
-        explanation:
-            'Δ = b² − 4ac = (${InequalityCoreSolver.fmt(b)})² − 4(${InequalityCoreSolver.fmt(a)})(${InequalityCoreSolver.fmt(c)})',
-        latex: 'Δ = ${InequalityCoreSolver.fmt(disc)} < 0  →  no real roots',
+        title: 'Analyze Roots',
+        explanation: 'The discriminant is negative, so there are no real roots.',
+        latex: '\\Delta < 0 \\implies \\text{No real zeros}',
       ));
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Write the solution set',
-        explanation: 'Since Δ < 0 the parabola does not cross the x-axis.',
+        title: 'Interval Notation',
+        explanation: 'Represent the solution based on the parabola direction.',
         latex: _solveStandard(p).intervalNotation,
       ));
       return steps;
@@ -329,64 +309,60 @@ class QuadraticSolver {
     final lo = r1 < r2 ? r1 : r2;
     final hi = r1 < r2 ? r2 : r1;
 
-    final factored = _tryFactor(a, b, c);
-    if (factored != null) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Factor the quadratic',
-        explanation: 'Express the left side as a product of two binomials.',
-        latex: '($factored) $op 0',
-      ));
-    } else {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Compute the discriminant',
-        explanation:
-            'Δ = b² − 4ac = (${InequalityCoreSolver.fmt(b)})² − 4(${InequalityCoreSolver.fmt(a)})(${InequalityCoreSolver.fmt(c)})',
-        latex: 'Δ = ${InequalityCoreSolver.fmt(disc)}',
-      ));
-    }
+    steps.add(StepModel(
+      stepNumber: n++,
+      title: 'Quadratic Formula',
+      explanation: 'Apply the formula to find the critical values.',
+      latex:
+          'x = \\frac{-(${f(b)}) \\pm \\sqrt{${f(disc)}}}{2(${f(a)})} \\\\ \\implies x = \\frac{-${f(b)} \\pm ${f(sqrtD)}}{${f(2 * a)}}',
+    ));
 
     if (disc == 0) {
       final root = -b / (2 * a);
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Find the root (double root)',
-        explanation: 'Δ = 0 → one repeated root.',
-        latex: 'x = ${InequalityCoreSolver.fmt(root)}',
+        title: 'Find Root',
+        explanation: 'One double root at the vertex.',
+        latex: 'x = ${f(root)}',
       ));
     } else {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Find the roots',
-        explanation: 'Set each factor equal to zero.',
-        latex:
-            'x − ${InequalityCoreSolver.fmt(lo)} = 0    |    x − ${InequalityCoreSolver.fmt(hi)} = 0\n'
-            'x = ${InequalityCoreSolver.fmt(lo)}          x = ${InequalityCoreSolver.fmt(hi)}',
+        title: 'Find Zeros',
+        explanation: 'Critical points where the expression equals zero.',
+        latex: 'x_1 = ${f(lo)}, \\quad x_2 = ${f(hi)}',
       ));
+
+      final factored = _tryFactor(a, b, c);
+      if (factored != null) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          title: 'Factored Form',
+          explanation: 'Express as a product of linear factors.',
+          latex: '($factored) ${_tex(op)} 0',
+        ));
+      }
     }
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Build a sign chart (test values)',
-      explanation:
-          'Pick a test point in each interval and check if it satisfies the inequality.',
+      title: 'Sign Chart Analysis',
+      explanation: 'Test values in each interval to find solutions.',
       latex: _buildSignChart(a, lo, hi, op),
     ));
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Write the solution set',
-      explanation: 'S.S.',
+      title: 'Interval Notation',
+      explanation: 'Identify the intervals that satisfy the condition.',
       latex: _solveStandard(p).intervalNotation,
     ));
 
     return steps;
   }
 
-  // ── sign chart builder ─────────────────────────────────────────────────────
-
   static String _buildSignChart(double a, double lo, double hi, String op) {
+    const f = InequalityCoreSolver.fmt;
     final t1 = lo - 1;
     final t2 = (lo + hi) / 2;
     final t3 = hi + 1;
@@ -394,18 +370,19 @@ class QuadraticSolver {
     String testLine(double t) {
       final expr = a * (t - lo) * (t - hi);
       final passes = InequalityCoreSolver.evalOp(expr, op, 0);
-      final loStr = InequalityCoreSolver.fmt(lo);
-      final hiStr = InequalityCoreSolver.fmt(hi);
-      final tStr = InequalityCoreSolver.fmt(t);
-      final f1 = t - lo;
-      final f2 = t - hi;
-      final s1 = f1 > 0 ? '+' : '−';
-      final s2 = f2 > 0 ? '+' : '−';
-      return '($tStr−$loStr)($tStr−$hiStr) = ($s1)($s2) = ${passes ? "✓" : "✗"}';
+      return 'x = ${f(t)}: \\quad (${a > 0 ? "+" : "-"})(${t - lo > 0 ? "+" : "-"})(${t - hi > 0 ? "+" : "-"}) = ${expr > 0 ? "+" : "-"} \\implies ${passes ? r"\text{\checkmark}" : r"\text{\times}"}';
     }
 
-    return '${testLine(t1)}\n${testLine(t2)}\n${testLine(t3)}';
+    return '\\begin{aligned} ${testLine(t1)} \\\\ ${testLine(t2)} \\\\ ${testLine(t3)} \\end{aligned}';
   }
+
+  static String _tex(String op) => switch (op) {
+        '≥' => '\\geq',
+        '≤' => '\\leq',
+        '>' => '>',
+        '<' => '<',
+        _ => op,
+      };
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -413,11 +390,10 @@ class QuadraticSolver {
     final disc = b * b - 4 * a * c;
     if (disc < 0) return null;
     final sqrtD = math.sqrt(disc);
-    // FIX 4: Check disc is a perfect square (integer), not sqrtD against its round
     final discRounded = disc.roundToDouble();
-    if ((disc - discRounded).abs() > 1e-6) return null; // non-integer disc
+    if ((disc - discRounded).abs() > 1e-6) return null;
     final sqrtDRounded = sqrtD.roundToDouble();
-    if ((sqrtD - sqrtDRounded).abs() > 1e-6) return null; // irrational sqrt
+    if ((sqrtD - sqrtDRounded).abs() > 1e-6) return null;
 
     final r1 = (-b - sqrtD) / (2 * a);
     final r2 = (-b + sqrtD) / (2 * a);
@@ -425,10 +401,10 @@ class QuadraticSolver {
     String binomial(double r) {
       if (r == 0) return 'x';
       final rStr = InequalityCoreSolver.fmt(r.abs());
-      return r < 0 ? 'x + $rStr' : 'x − $rStr';
+      return r < 0 ? 'x + $rStr' : 'x - $rStr';
     }
 
-    final aStr = a == 1 ? '' : (a == -1 ? '−' : InequalityCoreSolver.fmt(a));
+    final aStr = a == 1 ? '' : (a == -1 ? '-' : InequalityCoreSolver.fmt(a));
     return '$aStr(${binomial(r1)})(${binomial(r2)})';
   }
 
@@ -468,10 +444,6 @@ class QuadraticSolver {
     if (expr.isEmpty) return {'a': 0, 'b': 0, 'c': 0};
 
     double a = 0, b = 0, c = 0;
-
-    // FIX 5: Robust tokeniser — collect sign + term together by scanning
-    // forward and splitting only when we hit a +/- that is NOT at position 0
-    // and NOT inside parentheses (for fraction coefficients like (1/2)).
     final tokens = <String>[];
     int depth = 0;
     String cur = '';
@@ -496,20 +468,13 @@ class QuadraticSolver {
     if (cur.isNotEmpty) tokens.add(cur);
 
     for (final tok in tokens) {
-      // Remove explicit multiplication sign
       final t = tok.replaceAll('*', '');
-
       if (t.contains('x^2') || t.contains('x²')) {
-        // Quadratic term — coefficient is everything before 'x'
         a += _extractCoef(t.substring(0, t.indexOf('x')));
       } else if (t.contains('x')) {
-        // Linear term
         final xIdx = t.indexOf('x');
         b += _extractCoef(t.substring(0, xIdx));
       } else {
-        // Constant term
-        // FIX 6: Strip leading '+' before parsing since double.tryParse
-        // handles '-' but is inconsistent with leading '+' on some platforms
         final clean = t.startsWith('+') ? t.substring(1) : t;
         c += _parseFrac(clean);
       }
@@ -519,7 +484,6 @@ class QuadraticSolver {
 
   static double _extractCoef(String s) {
     s = s.trim();
-    // FIX 7: Strip outer parentheses that wrap fraction coefficients e.g. (1/2)
     if (s.startsWith('(') && s.endsWith(')')) {
       s = s.substring(1, s.length - 1);
     }
@@ -530,7 +494,6 @@ class QuadraticSolver {
 
   static double _parseFrac(String s) {
     s = s.trim();
-    // FIX 8: Strip outer parens here too for safety
     if (s.startsWith('(') && s.endsWith(')')) {
       s = s.substring(1, s.length - 1);
     }
@@ -574,10 +537,6 @@ class QuadraticSolver {
     }
   }
 
-  // FIX 9: Separate op extraction from op index finding.
-  // Check longest ops first so '>=' isn't consumed as '>'.
-  // After _preprocess normalises '>=' → '≥', we only ever see the unicode chars,
-  // but we keep the priority order for safety.
   static String? _extractOp(String s) {
     if (s.contains('≥')) return '≥';
     if (s.contains('≤')) return '≤';
@@ -586,17 +545,10 @@ class QuadraticSolver {
     return null;
   }
 
-  // FIX 10: Find the operator index properly.
-  // For '>' and '<' we want the last occurrence to avoid matching a negative
-  // exponent or unary minus that could appear on the left side.
-  // For '≥' and '≤' (single unicode code units) indexOf is reliable.
   static int _findOpIndex(String s, String op) {
     if (op == '>' || op == '<') {
-      // Walk right-to-left and return the first standalone operator
-      // (not preceded by another operator char like '!' or '=')
       for (int i = s.length - 1; i >= 0; i--) {
         if (s[i] == op) {
-          // Make sure it's not part of '>=' or '<=' that wasn't normalised
           if (i + 1 < s.length && s[i + 1] == '=') continue;
           return i;
         }
@@ -606,8 +558,6 @@ class QuadraticSolver {
     return s.indexOf(op);
   }
 }
-
-// ── Internal prep container ───────────────────────────────────────────────────
 
 class _Prep {
   final String original;

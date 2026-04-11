@@ -1,5 +1,7 @@
 // lib/Screens/SubScreens/result_section.dart
+
 import 'package:calculus_system/modules/circles/center/Theme/centertheme.dart';
+
 import 'package:calculus_system/modules/circles/center/solver/centersolver.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +16,8 @@ class CenterResultSection extends StatelessWidget {
 
     final h = result!.h;
     final k = result!.k;
+    final showHApprox = !h.isWhole;
+    final showKApprox = !k.isWhole;
 
     return Container(
       width: double.infinity,
@@ -43,22 +47,68 @@ class CenterResultSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
+
+          // Exact form: C ( 7/2 , 5 )
           Text(
-            'C ( ${CenterSolver.fmt(h)}, ${CenterSolver.fmt(k)} )',
+            'C ( ${result!.hExact}, ${result!.kExact} )',
             style: const TextStyle(
-              fontSize: 36,
+              fontSize: 32,
               fontWeight: FontWeight.bold,
               color: FindingCenterTheme.indigo,
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'h = ${CenterSolver.fmt(h)}     k = ${CenterSolver.fmt(k)}',
-            style: TextStyle(
-              fontSize: 14,
-              color: FindingCenterTheme.textSecondary.withValues(alpha: 0.7),
+
+          const SizedBox(height: 16),
+
+          // Approximations when not whole numbers
+          if (showHApprox || showKApprox)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: FindingCenterTheme.indigo.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (showHApprox) ...[
+                    Text(
+                      'h ≈ ${result!.hApprox}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: FindingCenterTheme.textSecondary,
+                      ),
+                    ),
+                    if (showKApprox)
+                      const Text(
+                        '    ',
+                        style:
+                            TextStyle(color: FindingCenterTheme.textSecondary),
+                      ),
+                  ],
+                  if (showKApprox)
+                    Text(
+                      'k ≈ ${result!.kApprox}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: FindingCenterTheme.textSecondary,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
+
+          // If both are whole, show simple equals
+          if (!showHApprox && !showKApprox)
+            Text(
+              'h = ${result!.hExact}     k = ${result!.kExact}',
+              style: TextStyle(
+                fontSize: 14,
+                color: FindingCenterTheme.textSecondary.withValues(alpha: 0.7),
+              ),
+            ),
         ],
       ),
     );
