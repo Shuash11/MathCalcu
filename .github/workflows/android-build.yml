@@ -20,6 +20,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          flutter-version: '3.27.1'   # ← ADDED
 
       - name: Install dependencies
         run: flutter pub get
@@ -40,3 +41,4 @@ jobs:
           name: MathCalcu Latest
           files: build/app/outputs/flutter-apk/MathCalcu.apk
           token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true             # ← ADDED
