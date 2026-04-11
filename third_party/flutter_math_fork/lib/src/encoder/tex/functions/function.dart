@@ -1,4 +1,4 @@
-part of '../functions.dart';
+part of functions;
 
 EncodeResult _functionEncoder(GreenNode node) {
   final functionNode = node as FunctionNode;

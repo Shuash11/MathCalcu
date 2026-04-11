@@ -1,4 +1,4 @@
-part of '../functions.dart';
+part of functions;
 
 EncodeResult _accentEncoder(GreenNode node) {
   final accentNode = node as AccentNode;
