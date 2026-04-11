@@ -1,10 +1,4 @@
-
-import 'package:collection/collection.dart';
-import 'package:flutter_math_fork/ast.dart';
-import 'package:flutter_math_fork/src/encoder/encoder.dart';
-import 'package:flutter_math_fork/src/encoder/tex/encoder.dart';
-import 'package:flutter_math_fork/src/parser/tex/functions/katex_base.dart';
-import 'package:flutter_math_fork/src/utils/unicode_literal.dart';
+part of '../functions.dart';
 
 EncodeResult _accentUnderEncoder(GreenNode node) {
   final accentNode = node as AccentUnderNode;
