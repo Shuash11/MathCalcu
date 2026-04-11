@@ -31,7 +31,7 @@ enum _ScriptPos {
 
 class Multiscripts extends StatelessWidget {
   const Multiscripts({
-    Key? key,
+    super.key,
     this.alignPostscripts = false,
     required this.isBaseCharacterBox,
     required this.baseResult,
@@ -39,7 +39,7 @@ class Multiscripts extends StatelessWidget {
     this.supResult,
     this.presubResult,
     this.presupResult,
-  }) : super(key: key);
+  });
 
   final bool alignPostscripts;
   final bool isBaseCharacterBox;

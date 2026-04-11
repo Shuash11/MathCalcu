@@ -50,7 +50,7 @@ Widget svgWidgetFromPath(
 
   final svgString = svgStringFromPath(path, viewPort, viewBox, color,
       preserveAspectRatio: preserveAspectRatio);
-  return Container(
+  return SizedBox(
     height: viewPort.height,
     width: viewPort.width,
     child: SvgPicture.string(

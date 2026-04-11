@@ -18,8 +18,10 @@ mixin CursorTimerManagerMixin<T extends StatefulWidget>
 
   bool get cursorOpacityAnimates;
 
+  @override
   bool get hasFocus;
 
+  @override
   FocusNode get focusNode;
 
   Timer? _cursorTimer;

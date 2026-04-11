@@ -13,7 +13,7 @@ void main() {
     });
 
     test('node matcher', () {
-      final target = TexParser('\\frac{123}{abc}', TexParserSettings())
+      final target = TexParser('\\frac{123}{abc}', const TexParserSettings())
           .parse()
           .children
           .first;

@@ -43,10 +43,10 @@ class CursorNode extends LeafNode {
 /// Used to align [CursorNode] properly in a [RenderLine] in respect to symbols
 class _BaselineDistance extends SingleChildRenderObjectWidget {
   const _BaselineDistance({
-    Key? key,
+    super.key,
     required this.baselineDistance,
     required super.child,
-  }) : super(key: key);
+  });
 
   final double baselineDistance;
 

@@ -165,7 +165,7 @@ String _lineLatex(int A, int B, int C) {
   String t(int c, String v, bool first) {
     if (c == 0) return '';
     final abs = c.abs();
-    final vs = abs == 1 ? v : '${abs}$v';
+    final vs = abs == 1 ? v : '$abs$v';
     if (first) return c < 0 ? '-$vs' : vs;
     return c < 0 ? ' - $vs' : ' + $vs';
   }

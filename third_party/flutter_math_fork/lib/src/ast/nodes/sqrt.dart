@@ -314,7 +314,7 @@ Widget sqrtSvg({
         minDelimiterHeight,
   );
 
-  final extraViniculum = 0.0; //math.max(0.0, options)
+  const extraViniculum = 0.0; //math.max(0.0, options)
   // final ruleWidth =
   //     options.fontMetrics.sqrtRuleThickness.cssEm.toLpUnder(options);
   // TODO: support Settings.minRuleThickness.

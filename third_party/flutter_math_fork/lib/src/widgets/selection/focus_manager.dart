@@ -36,7 +36,7 @@ mixin FocusManagerMixin<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     super.build(context);
     _focusAttachment.reparent();
-    return _NullWidget();
+    return const _NullWidget();
   }
 }
 

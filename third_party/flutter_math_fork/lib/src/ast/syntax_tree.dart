@@ -549,11 +549,11 @@ class EquationRowNode extends ParentableNode<GreenNode>
     final lineChildren = List.generate(
       flattenedBuildResults.length,
       (index) => LineElement(
-        child: flattenedBuildResults[index].widget,
         canBreakBefore: false, // TODO
         alignerOrSpacer: flattenedChildList[index] is SpaceNode &&
             (flattenedChildList[index] as SpaceNode).alignerOrSpacer,
         trailingMargin: childSpacingConfs[index].spacingAfter,
+        child: flattenedBuildResults[index].widget,
       ),
       growable: false,
     );
@@ -611,7 +611,6 @@ class EquationRowNode extends ParentableNode<GreenNode>
             final value = Provider.of<SelectionStyle>(context);
             return EditableLine(
               key: _key,
-              children: lineChildren,
               devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
               node: this,
               preferredLineHeight: options.fontSize,
@@ -629,6 +628,7 @@ class EquationRowNode extends ParentableNode<GreenNode>
               paintCursorAboveText: value.paintCursorAboveText,
               selectionColor: value.selectionColor,
               showCursor: value.showCursor,
+              children: lineChildren,
             );
           },
         ),
@@ -663,6 +663,7 @@ class EquationRowNode extends ParentableNode<GreenNode>
   @override
   AtomType get rightType => overrideType ?? AtomType.ord;
 
+  @override
   Map<String, Object?> toJson() => super.toJson()
     ..addAll({
       'children': children.map((child) => child.toJson()).toList(),

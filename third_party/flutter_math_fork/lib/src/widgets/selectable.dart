@@ -39,7 +39,7 @@ class SelectableMath extends StatelessWidget {
   ///
   /// See [SelectableMath] for its member documentation.
   const SelectableMath({
-    Key? key,
+    super.key,
     this.ast,
     this.autofocus = false,
     this.cursorColor,
@@ -64,8 +64,7 @@ class SelectableMath extends StatelessWidget {
             const ToolbarOptions(
               selectAll: true,
               copy: true,
-            ),
-        super(key: key);
+            );
 
   /// The equation to display.
   ///
@@ -221,6 +220,7 @@ class SelectableMath extends StatelessWidget {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     if (parseException != null) {
       return onErrorFallback(parseException!);
@@ -337,7 +337,7 @@ class SelectableMath extends StatelessWidget {
 /// The internal widget for [SelectableMath] when no errors are encountered.
 class InternalSelectableMath extends StatefulWidget {
   const InternalSelectableMath({
-    Key? key,
+    super.key,
     required this.ast,
     this.autofocus = false,
     required this.cursorColor,
@@ -357,7 +357,7 @@ class InternalSelectableMath extends StatefulWidget {
     this.showCursor = false,
     required this.textSelectionControls,
     required this.toolbarOptions,
-  }) : super(key: key);
+  });
 
   final SyntaxTree ast;
 
@@ -410,19 +410,25 @@ class InternalSelectableMathState extends State<InternalSelectableMath>
         WebSelectionControlsManagerMixin,
         SingleTickerProviderStateMixin,
         CursorTimerManagerMixin {
+  @override
   TextSelectionControls get textSelectionControls =>
       widget.textSelectionControls;
 
   FocusNode? _focusNode;
 
+  @override
   FocusNode get focusNode => widget.focusNode ?? (_focusNode ??= FocusNode());
 
+  @override
   bool get showCursor => widget.showCursor; //?? false;
 
+  @override
   bool get cursorOpacityAnimates => widget.cursorOpacityAnimates;
 
+  @override
   DragStartBehavior get dragStartBehavior => widget.dragStartBehavior;
 
+  @override
   late MathController controller;
 
   late FocusNode _oldFocusNode;
@@ -468,6 +474,7 @@ class InternalSelectableMathState extends State<InternalSelectableMath>
     controller.dispose();
   }
 
+  @override
   void onSelectionChanged(
       TextSelection selection, SelectionChangedCause? cause) {
     switch (Theme.of(context).platform) {
@@ -485,6 +492,7 @@ class InternalSelectableMathState extends State<InternalSelectableMath>
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     super.build(context); // See AutomaticKeepAliveClientMixin.
 

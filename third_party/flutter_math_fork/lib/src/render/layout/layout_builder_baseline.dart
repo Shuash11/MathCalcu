@@ -12,8 +12,6 @@ class LayoutBuilderPreserveBaseline
     required LayoutWidgetBuilder builder,
   }) : super(key: key, builder: builder);
 
-  @override
-  LayoutWidgetBuilder get builder => super.builder;
 
   @override
   _RenderLayoutBuilderPreserveBaseline createRenderObject(

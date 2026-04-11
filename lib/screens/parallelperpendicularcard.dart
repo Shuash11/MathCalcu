@@ -223,7 +223,7 @@ class _ParallelPerpendicularModuleCardState
                             const Wrap(
                                 spacing: 6,
                                 runSpacing: 6,
-                                children: const [
+                                children: [
                                   _TagPill(label: 'Two Lines', color: _indigo),
                                   _TagPill(label: 'Slope Check', color: _cyan),
                                   _TagPill(label: 'Compare', color: _sky),

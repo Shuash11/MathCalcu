@@ -32,6 +32,7 @@ class SymbolNode extends LeafNode {
   /// Overriding atom font;
   final FontOptions? overrideFont;
 
+  @override
   final Mode mode;
 
   // bool get noBreak => symbol == '\u00AF';
@@ -88,7 +89,7 @@ class SymbolNode extends LeafNode {
     } else {
       // TODO: log a warning here.
       return BuildResult(
-        widget: Container(
+        widget: SizedBox(
           height: 0,
           width: 0,
         ),

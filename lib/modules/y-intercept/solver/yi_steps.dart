@@ -139,7 +139,7 @@ List<YISolverStep> buildSlopeStepsFromStandard(
             '$yOnlyLatex = $C ${A > 0 ? '-' : '+'} ${A.abs() == 1 ? 'x' : '${A.abs()}x'}',
       ),
       YISubStep(label: 'Write the result', latex: rhsTex),
-      YISubStep(
+      const YISubStep(
         label: 'Note',
         latex: r'\text{Move the whole x-term, not just its coefficient.}',
       ),
@@ -156,14 +156,14 @@ List<YISolverStep> buildSlopeStepsFromStandard(
   final subSteps = <YISubStep>[
     YISubStep(label: 'Start with the equation', latex: rhsTex),
     YISubStep(
-      label: 'Divide each term by ${B}',
+      label: 'Divide each term by $B',
       latex:
-          '\\frac{$yOnlyLatex}{${B}} = \\frac{${C}}{${B}} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{${B}}',
+          '\\frac{$yOnlyLatex}{$B} = \\frac{$C}{$B} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{$B}',
     ),
     YISubStep(
       label: 'Simplify the left side',
       latex:
-          'y = \\frac{${C}}{${B}} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{${B}}',
+          'y = \\frac{$C}{$B} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{$B}',
     ),
     YISubStep(label: 'Arrange into y = mx + b', latex: divTex),
     if (needsSimplify)
@@ -172,9 +172,9 @@ List<YISolverStep> buildSlopeStepsFromStandard(
 
   steps.add(YISolverStep.single(
     number: n++,
-    title: 'Divide both sides by ${B}',
+    title: 'Divide both sides by $B',
     formulaLatex: r'y = mx + b',
-    substitutionLatex: 'y = \\frac{${-A}}{${B}}x + \\frac{${C}}{${B}}',
+    substitutionLatex: 'y = \\frac{${-A}}{$B}x + \\frac{$C}{$B}',
     resultLatex: eqTex,
     explanation: 'Divide every term by the coefficient of y to isolate y.',
     subSteps: subSteps,
@@ -264,7 +264,7 @@ List<YISolverStep> buildSlopeStepsFromGeneral(
         ),
       YISubStep(
         label: C == 0 ? 'Keep the equation as is' : 'Write the standard form',
-        latex: '${gfTex} \\Rightarrow ${sfTex}',
+        latex: '$gfTex \\Rightarrow $sfTex',
       ),
       YISubStep(
         label: 'Identify the x-term',
@@ -296,14 +296,14 @@ List<YISolverStep> buildSlopeStepsFromGeneral(
           '$yOnlyLatex = $C ${A > 0 ? '-' : '+'} ${A.abs() == 1 ? 'x' : '${A.abs()}x'}',
     ),
     YISubStep(
-      label: 'Divide each term by ${B}',
+      label: 'Divide each term by $B',
       latex:
-          '\\frac{$yOnlyLatex}{${B}} = \\frac{${C}}{${B}} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{${B}}',
+          '\\frac{$yOnlyLatex}{$B} = \\frac{$C}{$B} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{$B}',
     ),
     YISubStep(
       label: 'Simplify the left side',
       latex:
-          'y = \\frac{${C}}{${B}} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{${B}}',
+          'y = \\frac{$C}{$B} ${A > 0 ? '-' : '+'} \\frac{${A.abs()}x}{$B}',
     ),
     YISubStep(label: 'Arrange into y = mx + b', latex: divTex),
     if (needsSimplify)
@@ -312,9 +312,9 @@ List<YISolverStep> buildSlopeStepsFromGeneral(
 
   steps.add(YISolverStep.single(
     number: n++,
-    title: 'Move the x-term and divide by ${B}',
+    title: 'Move the x-term and divide by $B',
     formulaLatex: r'y = mx + b',
-    substitutionLatex: 'y = \\frac{${-A}}{${B}}x + \\frac{${C}}{${B}}',
+    substitutionLatex: 'y = \\frac{${-A}}{$B}x + \\frac{$C}{$B}',
     resultLatex: eqTex,
     explanation: 'From standard form, move the x-term and then divide by the coefficient of y.',
     subSteps: subSteps,
@@ -510,7 +510,7 @@ List<YISolverStep> buildGeneralFormSteps(
         YISubStep(
           label: 'constant',
           latex:
-              '${generalConst >= 0 ? generalConst : '(${generalConst})'} \\Rightarrow C = $generalConst',
+              '${generalConst >= 0 ? generalConst : '($generalConst)'} \\Rightarrow C = $generalConst',
         ),
       ],
     ),
@@ -680,7 +680,7 @@ List<YISolverStep> buildVerticalSlopeSteps(
         number: 1,
         title: 'Identify a vertical line',
         formulaLatex: r'Ax = C \quad \text{(no y-term)}',
-        substitutionLatex: '${A}x = ${C}',
+        substitutionLatex: '${A}x = $C',
         resultLatex: sfTex,
         explanation: 'When there is no y-term, the line is vertical.',
       ),
@@ -705,7 +705,7 @@ List<YISolverStep> buildVerticalXSteps(
         number: 1,
         title: 'Solve for x',
         formulaLatex: r'Ax = C \Rightarrow x = \frac{C}{A}',
-        substitutionLatex: 'x = \\frac{${C}}{${A}}',
+        substitutionLatex: 'x = \\frac{$C}{$A}',
         resultLatex: 'x = ${boxLatex(fracLatex(xVal))}',
         explanation: 'Divide both sides by A.',
       ),

@@ -178,12 +178,12 @@ final _mathitLetters = {
 
 FontOptions mathdefault(String value) {
   if (_numberDigitRegex.hasMatch(value[0]) || _mathitLetters.contains(value)) {
-    return FontOptions(
+    return const FontOptions(
       fontFamily: 'Main',
       fontShape: FontStyle.italic,
     );
   } else {
-    return FontOptions(
+    return const FontOptions(
       fontFamily: 'Math',
       fontShape: FontStyle.italic,
     );

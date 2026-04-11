@@ -9,7 +9,7 @@ import 'recode.dart';
 void main() {
   group('EquationRowEncoderResult', () {
     test('empty row', () {
-      final result = EquationRowTexEncodeResult(<dynamic>[]);
+      const result = EquationRowTexEncodeResult(<dynamic>[]);
       expect(result.stringify(TexEncodeConf.mathConf), '{}');
       expect(result.stringify(TexEncodeConf.mathParamConf), '');
     });
@@ -17,7 +17,7 @@ void main() {
     test('normal row', () {
       final result = EquationRowTexEncodeResult(<dynamic>[
         'a',
-        StaticEncodeResult('b'),
+        const StaticEncodeResult('b'),
         SymbolNode(symbol: 'c'),
         EquationRowNode.empty(),
       ]);

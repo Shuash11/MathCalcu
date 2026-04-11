@@ -263,7 +263,7 @@ class _ToBuild extends Matcher {
   _ToBuild({
     MathOptions? options,
     this.settings = nonstrictSettings,
-  }) : this.options = options ?? MathOptions.displayOptions;
+  }) : options = options ?? MathOptions.displayOptions;
 
   @override
   Description describe(Description description) =>

@@ -63,7 +63,7 @@ mixin SelectionManagerMixin<T extends StatefulWidget> on State<T>
 
   void _handleFocusChange() {
     if (!hasFocus) {
-      handleSelectionChanged(TextSelection.collapsed(offset: -1), null,
+      handleSelectionChanged(const TextSelection.collapsed(offset: -1), null,
           ExtraSelectionChangedCause.unfocus);
     }
   }

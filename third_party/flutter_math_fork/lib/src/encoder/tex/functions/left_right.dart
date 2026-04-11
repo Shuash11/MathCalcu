@@ -21,7 +21,7 @@ EncodeResult _leftRightEncoder(GreenNode node) {
 }
 
 EncodeResult _delimEncoder(String? delim) {
-  if (delim == null) return StaticEncodeResult('.');
+  if (delim == null) return const StaticEncodeResult('.');
   final result = _baseSymbolEncoder(delim, Mode.math);
   return result != null
       ? delimiterCommands.contains(result)
