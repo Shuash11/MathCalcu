@@ -8,7 +8,7 @@ import 'package:flutter_math_fork/src/parser/tex/symbols.dart';
 import 'package:flutter_math_fork/src/utils/alpha_numeric.dart';
 import 'package:flutter_math_fork/src/utils/unicode_literal.dart';
 
-EncodeResult _symbolEncoder(GreenNode node) {
+EncodeResult symbolEncoder(GreenNode node) {//giwala ang "_" sa symbol encoder kay naay special handling sa subscript/superscript - LEgaste
   final symbolNode = node as SymbolNode;
   final symbol = symbolNode.symbol;
   final mode = symbolNode.mode;

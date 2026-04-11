@@ -760,7 +760,7 @@ class TexParser {
         final command = unicodeAccents[accent]![mode];
         if (command == null) {
           throw ParseException(
-              'Accent $accent unsupported in ${mode} mode', nucleus);
+              'Accent $accent unsupported in $mode mode', nucleus);
         }
       }
       combiningMarks = match[0]!;

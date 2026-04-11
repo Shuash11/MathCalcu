@@ -1,5 +1,6 @@
 part of '../functions.dart';
 
+
 EncodeResult _leftRightEncoder(GreenNode node) {
   final leftRightNode = node as LeftRightNode;
   final left = _delimEncoder(leftRightNode.leftDelim);
@@ -38,4 +39,8 @@ EncodeResult _delimEncoder(String? delim) {
               '${unicodeLiteral(delim)} with mode Math',
           '.',
         );
+}
+
+_baseSymbolEncoder(String delim, Mode math) {
+  //buhatan rag funtion - LEgaste
 }
