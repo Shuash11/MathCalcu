@@ -52,25 +52,35 @@ class PPResult {
 }
 
 /// A single classroom step.
+///
+/// [groupKey] — when two steps share the same non-null groupKey they will be
+/// rendered side-by-side in the UI (Line 1 on the left, Line 2 on the right).
+/// Leave null for steps that should always be full-width.
 class PPSolverStep {
   final int number;
   final String title;
   final List<PPStepBlock> blocks;
 
+  /// Optional pairing key. Steps that share the same key are displayed
+  /// side-by-side. The first step encountered with a key goes on the left,
+  /// the second goes on the right.
+  final String? groupKey;
+
   const PPSolverStep({
     required this.number,
     required this.title,
     required this.blocks,
+    this.groupKey,
   });
 }
 
 /// Block types map directly to the four container styles in the UI.
 enum PPBlockType {
-  formula, // the rule / theorem being applied
+  formula,      // the rule / theorem being applied
   substitution, // plugging in the actual numbers
-  working, // intermediate algebra lines
-  result, // the boxed final answer for that step
-  note, // plain-English teacher note
+  working,      // intermediate algebra lines
+  result,       // the boxed final answer for that step
+  note,         // plain-English teacher note
 }
 
 class PPStepBlock {
@@ -123,10 +133,6 @@ class _SIResult {
 
 // ── LaTeX helpers ─────────────────────────────────────────────
 
-/// Converts a YIFraction to a LaTeX string.
-/// e.g.  YIFraction(3,4) → r"\frac{3}{4}"
-///       YIFraction(-3,4) → r"-\frac{3}{4}"
-///       YIFraction(2,1)  → "2"
 String _fracTex(YIFraction f) {
   final s = f.simplified();
   if (s.denominator == 1) return '${s.numerator}';
@@ -138,7 +144,6 @@ String _fracTex(YIFraction f) {
       .replaceAll(r'${s.denominator}', '${s.denominator}');
 }
 
-/// Builds a LaTeX slope-intercept string, e.g. r"y = \frac{-2}{3}x + 4"
 String _siLatex(YIFraction m, YIFraction b) {
   final mTex = _fracTex(m);
   final bAbs = _fracTex(b.abs());
@@ -160,7 +165,6 @@ String _siLatex(YIFraction m, YIFraction b) {
   return 'y = $mPart - $bAbs';
 }
 
-/// Builds a LaTeX general-form string, e.g. r"3x + 5y + 7 = 0"
 String _lineLatex(int A, int B, int C) {
   String t(int c, String v, bool first) {
     if (c == 0) return '';
@@ -274,6 +278,7 @@ class ParallelPerpendicularSolver {
     int n = 1;
 
     // ── STEP 1: Identify both lines ──────────────────────────
+    // Full-width — shows both lines in one card (no groupKey)
     steps.add(PPSolverStep(
       number: n++,
       title: 'Identify the given equations',
@@ -306,15 +311,15 @@ class ParallelPerpendicularSolver {
       ],
     ));
 
-    // ── STEP 2: Convert Line 1 to slope-intercept ────────────
+    // ── STEP 2 & 3: Convert each line to slope-intercept ─────
+    // These share groupKey 'convert_si' so they render side-by-side.
     final si1 = _toSI(l1);
-    steps.add(_buildSIStep(n++, 1, l1, si1));
-
-    // ── STEP 3: Convert Line 2 to slope-intercept ────────────
     final si2 = _toSI(l2);
-    steps.add(_buildSIStep(n++, 2, l2, si2));
+    steps.add(_buildSIStep(n++, 1, l1, si1, groupKey: 'convert_si'));
+    steps.add(_buildSIStep(n++, 2, l2, si2, groupKey: 'convert_si'));
 
     // ── STEP 4: State the slopes ─────────────────────────────
+    // Full-width — compares both slopes in one card (no groupKey)
     final m1Str = si1.slope == null ? 'undefined' : _fracTex(si1.slope!);
     final m2Str = si2.slope == null ? 'undefined' : _fracTex(si2.slope!);
 
@@ -396,16 +401,24 @@ class ParallelPerpendicularSolver {
     );
   }
 
-  // ── Build slope-intercept conversion step ────────────────
+  // ── Build slope-intercept conversion step ─────────────────
+  // Now accepts an optional [groupKey] for side-by-side pairing.
 
-  static PPSolverStep _buildSIStep(int n, int lineNum, _Line l, _SIResult si) {
-    final sub = lineNum == 1 ? '_1' : '_2';
+  static PPSolverStep _buildSIStep(
+    int n,
+    int lineNum,
+    _Line l,
+    _SIResult si, {
+    String? groupKey,
+  }) {
+    final sub = lineNum == 1 ? 'Sub 1' : 'Sub 2';
     final lineLabel = 'Line $lineNum';
 
     if (l.B == 0) {
       return PPSolverStep(
         number: n,
         title: 'Convert $lineLabel to slope-intercept form',
+        groupKey: groupKey,
         blocks: [
           PPStepBlock(
             type: PPBlockType.note,
@@ -443,6 +456,7 @@ class ParallelPerpendicularSolver {
     return PPSolverStep(
       number: n,
       title: 'Convert $lineLabel to slope-intercept form',
+      groupKey: groupKey,
       blocks: [
         PPStepBlock(
           type: PPBlockType.note,

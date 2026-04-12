@@ -7,7 +7,7 @@ final List<GoRoute> finalsRoutes = [
     name: 'second-sem',
     builder: (context, state) => const FinalsPickerScreen(),
 
-    routes: [
+    routes: const [
       // Future routes go here
     ],
   ),
