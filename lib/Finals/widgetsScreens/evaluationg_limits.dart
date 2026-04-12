@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/Finals/Finals_Theme.dart';
+import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';

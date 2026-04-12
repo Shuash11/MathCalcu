@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/Finals/Finals_Theme.dart';
+import 'package:calculus_system/Finals/finals_theme.dart';
 
 // ─────────────────────────────────────────────────────────────
 // FINALS ABOUT SHEET
