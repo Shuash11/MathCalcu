@@ -1,31 +1,31 @@
-// lib/modules/yintercept/widgets/pp_step_block_widget.dart
-//
-// Drop-in replacement for however you currently render PPStepBlock.
-// Uses flutter_math_fork to render the `latex` field exactly like the
-// screenshot (formula box → rendered fraction, result box → boxed answer).
-//
-// Usage:
-//   PPStepBlockWidget(block: step.blocks[i])
-//
-// Requires in pubspec.yaml:
-//   flutter_math_fork: ^0.7.2   (or whatever version you already have)
+// lib/modules/y-intercept/ui/widgets/pp_stepblock_widget.dart
 
 import 'package:calculus_system/modules/y-intercept/solver/parallel_perpendicular.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:calculus_system/modules/y-intercept/Theme/theme.dart';
 
+const _cyan  = Color(0xFF06B6D4);
+const _amber = Color(0xFFF59E0B);
+const _slate = Color(0xFF64748B);
 
-// ─── Colour tokens (match your existing theme) ────────────────
-const _cyan   = Color(0xFF06B6D4);
-
-const _amber  = Color(0xFFF59E0B);
-const _slate  = Color(0xFF64748B);
+// PPStepBlockWidget renders a single block inside a step card.
+//
+// [width] — the exact pixel width the block should occupy.
+// Always pass this from _StepCard so LaTeX has a finite bounded constraint.
+// Never rely on IntrinsicWidth or ConstrainedBox inside a scroll view.
 
 class PPStepBlockWidget extends StatelessWidget {
   final PPStepBlock block;
 
-  const PPStepBlockWidget({super.key, required this.block});
+  /// Explicit finite width for the block. Required for correct LaTeX layout.
+  final double? width;
+
+  const PPStepBlockWidget({
+    super.key,
+    required this.block,
+    this.width,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class PPStepBlockWidget extends StatelessWidget {
 
     switch (block.type) {
       case PPBlockType.note:
-        return _NoteBlock(text: block.content, isDark: isDark);
+        return _NoteBlock(text: block.content, isDark: isDark, width: width);
 
       case PPBlockType.formula:
         return _MathBlock(
@@ -42,6 +42,7 @@ class PPStepBlockWidget extends StatelessWidget {
           fallback: block.content,
           borderColor: _cyan,
           isDark: isDark,
+          width: width,
         );
 
       case PPBlockType.substitution:
@@ -51,6 +52,7 @@ class PPStepBlockWidget extends StatelessWidget {
           fallback: block.content,
           borderColor: _slate,
           isDark: isDark,
+          width: width,
         );
 
       case PPBlockType.working:
@@ -60,6 +62,7 @@ class PPStepBlockWidget extends StatelessWidget {
           fallback: block.content,
           borderColor: _amber,
           isDark: isDark,
+          width: width,
         );
 
       case PPBlockType.result:
@@ -67,6 +70,7 @@ class PPStepBlockWidget extends StatelessWidget {
           latex: block.latex,
           fallback: block.content,
           isDark: isDark,
+          width: width,
         );
     }
   }
@@ -77,27 +81,31 @@ class PPStepBlockWidget extends StatelessWidget {
 class _NoteBlock extends StatelessWidget {
   final String text;
   final bool isDark;
-  const _NoteBlock({required this.text, required this.isDark});
+  final double? width;
+  const _NoteBlock({required this.text, required this.isDark, this.width});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 13,
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.6)
-              : Colors.black.withValues(alpha: 0.55),
-          height: 1.5,
+    return SizedBox(
+      width: width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 13,
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.6)
+                : Colors.black.withValues(alpha: 0.55),
+            height: 1.5,
+          ),
         ),
       ),
     );
   }
 }
 
-// ─── Generic math block (formula / substitution / working) ────
+// ─── Generic math block ───────────────────────────────────────
 
 class _MathBlock extends StatelessWidget {
   final String? label;
@@ -105,6 +113,7 @@ class _MathBlock extends StatelessWidget {
   final String fallback;
   final Color borderColor;
   final bool isDark;
+  final double? width;
 
   const _MathBlock({
     this.label,
@@ -112,12 +121,15 @@ class _MathBlock extends StatelessWidget {
     required this.fallback,
     required this.borderColor,
     required this.isDark,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      width: width,
+      // ClipRRect ensures nothing bleeds outside the rounded border
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: borderColor.withValues(alpha: isDark ? 0.08 : 0.05),
         borderRadius: BorderRadius.circular(10),
@@ -126,6 +138,7 @@ class _MathBlock extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (label != null) ...[
             Text(
@@ -146,50 +159,56 @@ class _MathBlock extends StatelessWidget {
   }
 }
 
-// ─── Result block (boxed, highlighted) ────────────────────────
+// ─── Result block ─────────────────────────────────────────────
 
 class _ResultBlock extends StatelessWidget {
   final String? latex;
   final String fallback;
   final bool isDark;
+  final double? width;
 
   const _ResultBlock({
     this.latex,
     required this.fallback,
     required this.isDark,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      width: width,
+      // ClipRRect ensures nothing bleeds outside the rounded border
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: _cyan.withValues(alpha: isDark ? 0.12 : 0.08),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: _cyan.withValues(alpha: 0.5), width: 1.5),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Center(child: _renderMath(latex, fallback, isDark, fontSize: 15)),
+      child: Center(
+        child: _renderMath(latex, fallback, isDark, fontSize: 15),
+      ),
     );
   }
 }
 
 // ─── Core renderer ────────────────────────────────────────────
 
-/// Renders [latex] with flutter_math_fork if non-null,
-/// else falls back to plain text [fallback].
-///
-/// Multi-line LaTeX (lines separated by \\\\ or actual newlines) is split
-/// and each line rendered separately so alignment stays clean.
-Widget _renderMath(String? latex, String fallback, bool isDark, {double fontSize = 13.5}) {
-  final textColor = isDark ? Colors.white.withValues(alpha: 0.88) : Colors.black.withValues(alpha: 0.82);
+Widget _renderMath(
+  String? latex,
+  String fallback,
+  bool isDark, {
+  double fontSize = 13.5,
+}) {
+  final textColor = isDark
+      ? Colors.white.withValues(alpha: 0.88)
+      : Colors.black.withValues(alpha: 0.82);
 
   if (latex == null || latex.isEmpty) {
     return _plainLines(fallback, textColor, fontSize);
   }
 
-  // Split on LaTeX line-break  \\   (four backslashes in Dart source = two literal)
-  // We also honour \n in the latex string for convenience.
   final lines = latex
       .replaceAll(r'\\[6pt]', r'\\')
       .replaceAll(r'\\[4pt]', r'\\')
@@ -205,6 +224,7 @@ Widget _renderMath(String? latex, String fallback, bool isDark, {double fontSize
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
     children: lines
         .map((l) => Padding(
               padding: const EdgeInsets.only(bottom: 4),
@@ -215,12 +235,24 @@ Widget _renderMath(String? latex, String fallback, bool isDark, {double fontSize
 }
 
 Widget _mathLine(String tex, Color color, double fontSize) {
-  return Math.tex(
-    tex,
-    textStyle: TextStyle(fontSize: fontSize, color: color),
-    onErrorFallback: (err) => Text(
-      tex,
-      style: TextStyle(fontSize: fontSize, color: color, fontFamily: 'monospace'),
+  // SingleChildScrollView (horizontal) prevents the LaTeX widget from
+  // overflowing the card bounds on narrow screens (e.g. side-by-side cards).
+  // RepaintBoundary isolates flutter_math_fork's internal MouseRegion widgets
+  // from the parent scroll view, preventing mouse_tracker assertion errors
+  // that fire on every scroll frame when math is inside a ListView.
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    physics: const BouncingScrollPhysics(),
+    child: RepaintBoundary(
+      child: Math.tex(
+        tex,
+        textStyle: TextStyle(fontSize: fontSize, color: color),
+        onErrorFallback: (err) => Text(
+          tex,
+          style: TextStyle(
+              fontSize: fontSize, color: color, fontFamily: 'monospace'),
+        ),
+      ),
     ),
   );
 }
@@ -228,12 +260,15 @@ Widget _mathLine(String tex, Color color, double fontSize) {
 Widget _plainLines(String text, Color color, double fontSize) {
   final lines = text.split('\n').where((l) => l.isNotEmpty).toList();
   if (lines.length == 1) {
-    return Text(text, style: TextStyle(fontSize: fontSize, color: color, height: 1.4));
+    return Text(text,
+        style: TextStyle(fontSize: fontSize, color: color, height: 1.4));
   }
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
     children: lines
-        .map((l) => Text(l, style: TextStyle(fontSize: fontSize, color: color, height: 1.4)))
+        .map((l) => Text(l,
+            style: TextStyle(fontSize: fontSize, color: color, height: 1.4)))
         .toList(),
   );
 }
