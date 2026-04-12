@@ -1,9 +1,9 @@
-import 'package:calculus_system/Finals/Finals_Theme.dart';
+import 'package:calculus_system/Finals/Finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
 import 'package:calculus_system/Finals/widgetsScreens/evaluationg_limits.dart';
 import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart' as finals_about_sheets;
 import 'package:calculus_system/Finals/widgetsScreens/limits_and_infinity_card.dart';
-import 'package:calculus_system/screens/about_sheets.dart';
+
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
