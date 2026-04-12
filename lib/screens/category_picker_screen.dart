@@ -162,7 +162,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              '2nd Sem',
+                              'Finals',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
