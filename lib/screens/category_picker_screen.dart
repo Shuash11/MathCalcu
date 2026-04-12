@@ -111,6 +111,9 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
   }
 
   Widget _buildHeader() {
+    final theme = context.watch<ThemeProvider>();
+    const accent = Color(0xFF6C63FF);
+
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(28, 48, 28, 8),
@@ -125,27 +128,68 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6C63FF),
+                    color: accent,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
 
-                // Right-side buttons: About + Theme toggle
+                // Right-side buttons
                 Row(
                   children: [
+                    // ── 2nd Sem pill button ──────────────────────────
+                    GestureDetector(
+                      onTap: () => context.push('/second-sem'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: accent.withValues(alpha: 0.45),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.school_rounded,
+                              size: 15,
+                              color: accent.withValues(alpha: 0.85),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '2nd Sem',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: accent.withValues(alpha: 0.85),
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+
                     // About button
                     GestureDetector(
                       onTap: () => showAboutSheet(context),
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: context.watch<ThemeProvider>().card,
+                          color: theme.card,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
                           Icons.person_rounded,
                           size: 20,
-                          color: Color(0xFF6C63FF),
+                          color: accent,
                         ),
                       ),
                     ),
@@ -158,17 +202,15 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: context.watch<ThemeProvider>().card,
+                          color: theme.card,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          context.watch<ThemeProvider>().isLight
+                          theme.isLight
                               ? Icons.dark_mode_rounded
                               : Icons.light_mode_rounded,
                           size: 20,
-                          color: context.watch<ThemeProvider>().isLight
-                              ? const Color(0xFF6C63FF)
-                              : Colors.amber,
+                          color: theme.isLight ? accent : Colors.amber,
                         ),
                       ),
                     ),
@@ -190,7 +232,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
                   style: TextStyle(
                     fontSize: 42,
                     fontWeight: FontWeight.w700,
-                    color: context.watch<ThemeProvider>().textPrimary,
+                    color: theme.textPrimary,
                     height: 1.1,
                     letterSpacing: -1.5,
                   ),
@@ -204,7 +246,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
                 '${_modules.length} topics available',
                 style: TextStyle(
                   fontSize: 15,
-                  color: context.watch<ThemeProvider>().textSecondary,
+                  color: theme.textSecondary,
                 ),
               ),
             ),
