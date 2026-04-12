@@ -1,6 +1,8 @@
 import 'package:calculus_system/Finals/Finals_Theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
 import 'package:calculus_system/Finals/widgetsScreens/evaluationg_limits.dart';
+import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart' as finals_about_sheets;
+import 'package:calculus_system/Finals/widgetsScreens/limits_and_infinity_card.dart';
 import 'package:calculus_system/screens/about_sheets.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ import 'package:provider/provider.dart';
 // To wire a new card:
 //   1. Create  screens/finals/cards/your_card.dart
 //   2. Add entry to FinalsModuleRegistry.modules
-//   3. Add an if-branch in _buildModuleCard() below
+//
 // ─────────────────────────────────────────────────────────────
 
 class FinalsPickerScreen extends StatefulWidget {
@@ -76,7 +78,15 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   }
 
   Widget _buildModuleCard(FinalsModuleEntry module) {
-    if (module.label.toLowerCase().contains('limit')) {
+    final label = module.label.toLowerCase();
+
+    // Check MORE SPECIFIC match first (infinity)
+    if (label.contains('infinity')) {
+      return FinalsInfinityLimitsCard(module: module);
+    }
+
+    // Then check GENERAL match (limit)
+    if (label.contains('limit')) {
       return FinalsLimitsCard(module: module);
     }
 
@@ -172,7 +182,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
 
                     // 👤 HUMAN ICON BUTTON (About button)
                     GestureDetector(
-                      onTap: () => showAboutSheet(context),
+                      onTap: () =>  finals_about_sheets.showFinalsAboutSheet(context), 
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -439,7 +449,7 @@ class _EmptyState extends StatelessWidget {
 // DEFAULT CARD
 // Used for any module that doesn't have a custom card yet.
 // Replace with a custom card by adding a branch in
-// FinalsPickerScreen._buildModuleCard().
+
 // ─────────────────────────────────────────────────────────────
 
 class _FinalsDefaultCard extends StatefulWidget {
@@ -447,7 +457,7 @@ class _FinalsDefaultCard extends StatefulWidget {
   const _FinalsDefaultCard({required this.module});
 
   @override
-  State<_FinalsDefaultCard> createState() => new _FinalsDefaultCardState();
+  State<_FinalsDefaultCard> createState() => _FinalsDefaultCardState();
 }
 
 class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
@@ -631,8 +641,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
-                                  color:
-                                      _hovered ? accent : theme.textPrimary,
+                                  color: _hovered ? accent : theme.textPrimary,
                                   letterSpacing: -0.3,
                                 ),
                                 child: Text(widget.module.label),

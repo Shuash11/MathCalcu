@@ -18,6 +18,14 @@ class FinalsModuleRegistry {
       icon: Icons.functions_rounded,
       accent: Color(0xFFFFB020),
     ),
+ const FinalsModuleEntry(
+      label: 'Limits at Infinity',
+      subtitle: '',
+      route: '/infinity',
+      icon: Icons.all_inclusive_rounded,
+      accent: Color(0xFFFF6B35), // Secondary deep orange
+    ),
+    
     // const FinalsModuleEntry(
     //   label: 'Limits',
     //   subtitle: 'One-sided · Infinite · At a point',

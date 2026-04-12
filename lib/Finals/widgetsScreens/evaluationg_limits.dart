@@ -36,7 +36,6 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCubic,
-            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: theme.card,
               borderRadius: BorderRadius.circular(22),
@@ -62,116 +61,164 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                 ),
               ],
             ),
-            child: Stack(
-              children: [
-                // ✨ Gradient glow overlay
-                Positioned.fill(
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 300),
-                    opacity: _hovered ? 1 : 0.6,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(22),
-                        gradient: FinalsTheme.cardGlow(
-                          hovered: _hovered,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: Stack(
+                children: [
+                  // ✨ Gradient glow overlay
+                  Positioned.fill(
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: _hovered ? 1 : 0.6,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(22),
+                          gradient: FinalsTheme.cardGlow(
+                            hovered: _hovered,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                // 🔥 Content
-                Row(
-                  children: [
-                    // Icon block
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        gradient: FinalsTheme.headerGradient,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: FinalsTheme.primary.withValues(alpha: 0.35),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
+                  // 🔥 Content
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        // 🌅 LEFT ICON BOX - matching infinity card style
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            gradient: _hovered
+                                ? FinalsTheme.headerGradient
+                                : LinearGradient(
+                                    colors: [
+                                      FinalsTheme.primary.withValues(alpha: 0.2),
+                                      FinalsTheme.secondary.withValues(alpha: 0.1),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: FinalsTheme.primary.withValues(
+                                alpha: _hovered ? 0.8 : 0.35,
+                              ),
+                              width: _hovered ? 2 : 1.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: FinalsTheme.primary.withValues(
+                                  alpha: _hovered ? 0.4 : 0.2,
+                                ),
+                                blurRadius: _hovered ? 16 : 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.functions_rounded,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
+                          child: Center(
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Icon(
+                                Icons.functions_rounded,
+                                key: ValueKey(_hovered),
+                                color: _hovered
+                                    ? Colors.white
+                                    : FinalsTheme.primary,
+                                size: 28,
+                              ),
+                            ),
+                          ),
+                        ),
 
-                    const SizedBox(width: 18),
+                        const SizedBox(width: 18),
 
-                    // Texts
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 200),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.4,
+                        // Texts
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 200),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -0.4,
+                                  color: _hovered
+                                      ? FinalsTheme.primary
+                                      : theme.textPrimary,
+                                ),
+                                child: const Text("Evaluating Limits"),
+                              ),
+
+                              const SizedBox(height: 6),
+
+                              AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 200),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  height: 1.4,
+                                  color: _hovered
+                                      ? FinalsTheme.primary.withValues(alpha: 0.7)
+                                      : theme.textSecondary,
+                                ),
+                                child: const Text(
+                                  "Direct substitution, factoring, rationalization & special limits",
+                                ),
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              // Tag / badge row
+                              Row(
+                                children: [
+                                  _badge("Core", FinalsTheme.primary),
+                                  const SizedBox(width: 6),
+                                  _badge("Important", FinalsTheme.secondary),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+
+                        // Arrow button
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          transform: _hovered
+                              ? (Matrix4.identity()..translate(4.0, 0.0))
+                              : Matrix4.identity(),
+                          child: Container(
+                            width: 34,
+                            height: 34,
+                            decoration: BoxDecoration(
+                              color: _hovered
+                                  ? FinalsTheme.primary.withValues(alpha: 0.15)
+                                  : Colors.transparent,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: FinalsTheme.primary.withValues(
+                                  alpha: _hovered ? 0.5 : 0.25,
+                                ),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
                               color: _hovered
                                   ? FinalsTheme.primary
-                                  : theme.textPrimary,
-                            ),
-                            child: const Text("Evaluating Limits"),
-                          ),
-
-                          const SizedBox(height: 6),
-
-                          AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 200),
-                            style: TextStyle(
-                              fontSize: 13,
-                              height: 1.4,
-                              color: _hovered
-                                  ? FinalsTheme.primary.withValues(alpha: 0.7)
-                                  : theme.textSecondary,
-                            ),
-                            child: const Text(
-                              "Direct substitution, factoring, rationalization & infinity limits",
+                                  : FinalsTheme.primary.withValues(alpha: 0.5),
                             ),
                           ),
-
-                          const SizedBox(height: 10),
-
-                          // Tag / badge row
-                          Row(
-                            children: [
-                              _badge("Core", FinalsTheme.primary),
-                              const SizedBox(width: 6),
-                              _badge("Important", FinalsTheme.secondary),
-                            ],
-                          )
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-
-                    // Arrow
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      transform: _hovered
-                          ? (Matrix4.identity()..translate(4.0))
-                          : Matrix4.identity(),
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 16,
-                        color: _hovered
-                            ? FinalsTheme.primary
-                            : FinalsTheme.primary.withValues(alpha: 0.5),
-                      ),
-                    )
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
