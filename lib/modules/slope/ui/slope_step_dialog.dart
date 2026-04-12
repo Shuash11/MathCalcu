@@ -65,13 +65,15 @@ class SlopeStepDialog extends StatelessWidget {
 
               // ── Steps ──
               ...List.generate(
-                  steps.length,
-                  (i) => SlopeStepItem(
-                        number: i + 1,
-                        step: steps[i],
-                        isFinal: i == steps.length - 1,
-                        isLast: i == steps.length - 1,
-                      )),
+                steps.length,
+                (i) => SlopeStepItem(
+                  number: i + 1,
+                  step: steps[i],
+                  isFinal: i == steps.length - 1,
+                  isLast: i == steps.length - 1,
+                ),
+              ),
+
               const SizedBox(height: 24),
 
               // ── Action buttons ──
@@ -86,10 +88,8 @@ class SlopeStepDialog extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) => SlopeGraphScreen(
-                              x1: result.x1,
-                              y1: result.y1,
-                              x2: result.x2,
-                              y2: result.y2,
+                              result1: result,
+                              // single-line view — no result2 or comparison
                             ),
                           ),
                         );
@@ -113,7 +113,10 @@ class SlopeStepDialog extends StatelessWidget {
     );
   }
 
-  Widget _outlineButton({required String label, required VoidCallback onTap}) =>
+  Widget _outlineButton({
+    required String label,
+    required VoidCallback onTap,
+  }) =>
       ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
@@ -135,8 +138,11 @@ class SlopeStepDialog extends StatelessWidget {
         ),
       );
 
-  Widget _solidButton(BuildContext context,
-          {required String label, required VoidCallback onTap}) =>
+  Widget _solidButton(
+    BuildContext context, {
+    required String label,
+    required VoidCallback onTap,
+  }) =>
       ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
