@@ -16,7 +16,7 @@ class _Developer {
   final String contribution;
   final String phone;
   final String groups;
-  final String facebook;
+  final String Facebook;
 
   const _Developer({
     required this.name,
@@ -26,7 +26,7 @@ class _Developer {
     this.contribution = '',
     required this.phone,
     this.groups = '',
-    this.facebook = '',
+    this.Facebook = '',
   });
 }
 
@@ -36,7 +36,7 @@ const _developers = [
     program: 'BS Computer Science',
     role: 'Lead Developer',
     email: 'joashuabarimbao10@gmail.com',
-    facebook: 'Joashua Marl Barimbao',
+    Facebook: 'Joashua Marl Barimbao',
     contribution:
         'Wiring, Debugging,',
     phone: '09639201328',
@@ -47,7 +47,7 @@ const _developers = [
     name: 'Michaela Denise Ong',
     program: 'BS Computer Science',
     role: 'Developer 2 / Docs',
-    facebook: 'Michaela Denise Ong',
+    Facebook: 'Michaela Denise Ong',
     email: 'michaeladenis11@gmail.com',
     contribution: '',
     phone: '09452238406',
@@ -59,7 +59,7 @@ const _developers = [
     program: 'BS Computer Science',
     role: 'Developer 3',
     email: 'quirosnash2@gmail.com',
-    facebook: 'Nash Bruce Quiros',
+    Facebook: 'Nash Bruce Quiros',
     contribution: '',
     phone: '09953941510',
     groups:
@@ -70,7 +70,7 @@ const _developers = [
     program: 'BS Computer Science',
     role: 'Developer 4',
     email: 'johncarlolegaste@gmail.com',
-    facebook: 'John Carlo legaste',
+    Facebook: 'John Carlo legaste',
     contribution: '',
     phone: '09639201328',
     groups:
@@ -82,7 +82,7 @@ const _developers = [
     role: 'Developer 5',
     email: 'clifford.probetso@gmail.com',
     contribution: '',
-    facebook: 'Clifford Probetso',
+    Facebook: 'Clifford Probetso',
     phone: '09510069125',
     groups: '',
   ),
@@ -90,7 +90,7 @@ const _developers = [
     name: 'Johnlin Redido',
     program: 'BS Computer Science',
     role: 'Developer 6',
-    facebook: 'Johnlin Redido',
+    Facebook: 'Johnlin Redido',
     email: 'linzy21x@gmail.com',
     contribution: '',
     phone: '09700455407',
@@ -232,7 +232,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Icon(
+                            const  Icon(
                                 Icons.emoji_events_rounded,
                                 color: FinalsTheme.primary,
                                 size: 20,
@@ -567,7 +567,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                         _DetailItem(
                           icon: Icons.facebook_rounded,
                           label: 'Facebook',
-                          value: dev.facebook.isNotEmpty ? dev.facebook : 'Not provided',
+                          value: dev.Facebook.isNotEmpty ? dev.Facebook : 'Not provided',
                           color: color,
                         ),
                         const SizedBox(height: 12),
