@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/Finals/Finals_Theme.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -40,10 +38,10 @@ const _developers = [
     email: 'joashuabarimbao10@gmail.com',
     facebook: 'Joashua Marl Barimbao',
     contribution:
-        'Wiring, Debugging, Deploying, Absolute, Strict, Non Strict, Radical, Continued, Finding the Center, Finding the Radius',
+        'Wiring, Debugging,',
     phone: '09639201328',
     groups:
-        'Mary Chris Malinao\nKym Alinsonorin\nAljhun Gallego\nCresa Delacruz\nJoseph Rebamonte\nMerjohn Pagente',
+        '',
   ),
   _Developer(
     name: 'Michaela Denise Ong',
@@ -51,10 +49,10 @@ const _developers = [
     role: 'Developer 2 / Docs',
     facebook: 'Michaela Denise Ong',
     email: 'michaeladenis11@gmail.com',
-    contribution: 'Slope, Distance, Midpoint, Documentation',
+    contribution: '',
     phone: '09452238406',
     groups:
-        'Marie Joy Sebusana\nSusan Rhea Tamboboy\nVenus Caliguid\nAlche Paye\nVincent Padillio\nStephen Mark Maluto',
+        '',
   ),
   _Developer(
     name: 'Nash Bruce Quiros',
@@ -62,10 +60,10 @@ const _developers = [
     role: 'Developer 3',
     email: 'quirosnash2@gmail.com',
     facebook: 'Nash Bruce Quiros',
-    contribution: 'Basic, Quadratic, Rational',
+    contribution: '',
     phone: '09953941510',
     groups:
-        'Cabrera Carl Edward\nTyrus Regine\nRhea Mae Bustamante\nJoshua Barientos',
+        '',
   ),
   _Developer(
     name: 'John Carlo Legaste',
@@ -73,20 +71,20 @@ const _developers = [
     role: 'Developer 4',
     email: 'johncarlolegaste@gmail.com',
     facebook: 'John Carlo legaste',
-    contribution: 'Parallel & Perpendicular(Slope), Two-Point Slope',
+    contribution: '',
     phone: '09639201328',
     groups:
-        'Anjelyn Campos\nAlthea Sumalpong\nHearty Abugatal\nRafol Shayne Lowelle\nNoel Sale Jr\nJeomark Jumawan\nGraceselle Managing',
+        '',
   ),
   _Developer(
     name: 'Clifford Probetso',
     program: 'BS Computer Science',
     role: 'Developer 5',
     email: 'clifford.probetso@gmail.com',
-    contribution: 'Point Slope, Finding the Center Radius',
+    contribution: '',
     facebook: 'Clifford Probetso',
     phone: '09510069125',
-    groups: 'Angelie Jerusalem\nIvan Rabanzo',
+    groups: '',
   ),
   _Developer(
     name: 'Johnlin Redido',
@@ -94,10 +92,10 @@ const _developers = [
     role: 'Developer 6',
     facebook: 'Johnlin Redido',
     email: 'linzy21x@gmail.com',
-    contribution: 'Slope-Intercept form',
+    contribution: '',
     phone: '09700455407',
     groups:
-        'Gretechen Tumilap\nGonzaga Blessy\nJemson Tubis\nAllysa Sharise Cagui-at\nAlyssa Jean Toso',
+        '',
   ),
 ];
 
@@ -115,7 +113,7 @@ class _FinalsAboutSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.watch<ThemeProvider>();
+
 
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
