@@ -1,4 +1,4 @@
-import 'package:calculus_system/Finals/Finals_theme.dart';
+import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
 import 'package:calculus_system/Finals/widgetsScreens/evaluationg_limits.dart';
 import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart' as finals_about_sheets;
