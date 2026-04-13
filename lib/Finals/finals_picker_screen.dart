@@ -1,9 +1,11 @@
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
+import 'package:calculus_system/Finals/widgetsScreens/derevatives_card.dart';
 import 'package:calculus_system/Finals/widgetsScreens/evaluationg_limits.dart';
-import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart' as finals_about_sheets;
+import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart'
+    as finals_about_sheets;
+import 'package:calculus_system/Finals/widgetsScreens/finding_slope_derevatives_card.dart';
 import 'package:calculus_system/Finals/widgetsScreens/limits_and_infinity_card.dart';
-
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,11 +82,16 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   Widget _buildModuleCard(FinalsModuleEntry module) {
     final label = module.label.toLowerCase();
 
+    if (label.contains('slope') && label.contains('derivative')) {
+      return FinalsSlopeDerivativeCard(module: module);
+    }
     // Check MORE SPECIFIC match first (infinity)
     if (label.contains('infinity')) {
       return FinalsInfinityLimitsCard(module: module);
     }
-
+    if (label.contains('derivative')) {
+      return FinalsDerivativesCard(module: module);
+    }
     // Then check GENERAL match (limit)
     if (label.contains('limit')) {
       return FinalsLimitsCard(module: module);
@@ -182,7 +189,8 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
 
                     // 👤 HUMAN ICON BUTTON (About button)
                     GestureDetector(
-                      onTap: () =>  finals_about_sheets.showFinalsAboutSheet(context), 
+                      onTap: () =>
+                          finals_about_sheets.showFinalsAboutSheet(context),
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(

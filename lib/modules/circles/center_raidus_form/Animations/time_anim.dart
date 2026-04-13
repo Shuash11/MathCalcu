@@ -1,6 +1,4 @@
-// ignore: file_names
-// ignore: file_names
-// ignore: file_names
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

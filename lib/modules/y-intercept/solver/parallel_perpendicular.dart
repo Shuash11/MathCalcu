@@ -411,7 +411,7 @@ class ParallelPerpendicularSolver {
     _SIResult si, {
     String? groupKey,
   }) {
-    final sub = lineNum == 1 ? 'Sub 1' : 'Sub 2';
+    final sub = lineNum == 1 ? '_1' : '_2';
     final lineLabel = 'Line $lineNum';
 
     if (l.B == 0) {

@@ -18,14 +18,27 @@ class FinalsModuleRegistry {
       icon: Icons.functions_rounded,
       accent: Color(0xFFFFB020),
     ),
- const FinalsModuleEntry(
+    const FinalsModuleEntry(
       label: 'Limits at Infinity',
       subtitle: '',
       route: '/infinity',
       icon: Icons.all_inclusive_rounded,
       accent: Color(0xFFFF6B35), // Secondary deep orange
     ),
-    
+    const FinalsModuleEntry(
+      label: 'Derivatives',
+      subtitle: 'Power rule · Product rule · Quotient rule · Chain rule',
+      route: '/derivatives',
+      icon: Icons.trending_up_rounded,
+      accent: Color(0xFFFFD166), // Tertiary soft yellow
+    ),
+    const FinalsModuleEntry(
+      label: 'Slope Using Derivatives',
+      subtitle: 'Tangent line slope · Evaluate at point · Instantaneous rate',
+      route: '/slope-derivative',
+      icon: Icons.show_chart_rounded,
+      accent: Color(0xFFEF476F), // Danger rose red
+    ),
     // const FinalsModuleEntry(
     //   label: 'Limits',
     //   subtitle: 'One-sided · Infinite · At a point',

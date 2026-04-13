@@ -18,11 +18,23 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
   bool _hovered = false;
 
   static const Color _amber = Color(0xFFF59E0B);
-  static const Color _deepAmber = Color(0xFFB45309);
+
   static const Color _softGold = Color(0xFFFCD34D);
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+
+    // Responsive breakpoints
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+
+    // Responsive sizing
+    final iconSize = isSmall ? 48.0 : 56.0;
+    final titleSize = isSmall ? 16.0 : 20.0;
+    final subtitleSize = isSmall ? 12.0 : 13.0;
+    final padding = isSmall ? 16.0 : 24.0;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -41,7 +53,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
             duration: const Duration(milliseconds: 280),
             curve: Curves.easeOutCubic,
             decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().card,
+              color: theme.card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: _hovered
@@ -58,24 +70,18 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                   offset: const Offset(0, 8),
                   spreadRadius: _hovered ? 2 : 0,
                 ),
-                BoxShadow(
-                  color: context.watch<ThemeProvider>().shadowColor,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  spreadRadius: -4,
-                ),
               ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
+              // REMOVED: Fixed height SizedBox - now uses intrinsic height
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  // Blob top-right
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOut,
-                    top: _hovered ? -40 : -30,
-                    right: _hovered ? -40 : -30,
+                  // Background blobs
+                  Positioned(
+                    top: -30,
+                    right: -30,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       width: _hovered ? 160 : 120,
@@ -86,13 +92,9 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                       ),
                     ),
                   ),
-
-                  // Blob bottom-left
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOut,
-                    bottom: _hovered ? -30 : -20,
-                    left: _hovered ? -30 : -20,
+                  Positioned(
+                    bottom: -20,
+                    left: -20,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       width: _hovered ? 140 : 100,
@@ -103,62 +105,35 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                       ),
                     ),
                   ),
-
-                  // Extra glow on hover
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 500),
-                    top: _hovered ? 30 : 50,
-                    right: _hovered ? 80 : 60,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: _hovered ? 0.5 : 0,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _deepAmber.withValues(alpha: 0.2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: _amber.withValues(alpha: 0.3),
-                              blurRadius: 20,
-                              spreadRadius: 5,
-                            ),
-                          ],
+                  // Optional: Hide decorative line on very small screens to save space
+                  if (!isSmall)
+                    Positioned(
+                      bottom: 20,
+                      left: 20,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: _hovered ? 0.6 : 0.2,
+                        child: CustomPaint(
+                          size: const Size(48, 30),
+                          painter: _TwoPointPainter(
+                            color: _softGold.withValues(
+                                alpha: _hovered ? 0.8 : 0.4),
+                            strokeWidth: _hovered ? 3 : 2,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-
-                  // Two-point line decorator bottom-left
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    bottom: _hovered ? 20 : 10,
-                    left: 20,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: _hovered ? 0.6 : 0.2,
-                      child: CustomPaint(
-                        size: const Size(48, 30),
-                        painter: _TwoPointPainter(
-                          color:
-                              _softGold.withValues(alpha: _hovered ? 0.8 : 0.4),
-                          strokeWidth: _hovered ? 3 : 2,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Content
+                  // Main content
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: EdgeInsets.all(padding),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Icon box
+                        // Icon
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
-                          width: 56,
-                          height: 56,
+                          width: iconSize,
+                          height: iconSize,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
@@ -175,14 +150,6 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                   : _amber.withValues(alpha: 0.25),
                               width: _hovered ? 2 : 1,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: _amber.withValues(
-                                    alpha: _hovered ? 0.3 : 0.15),
-                                blurRadius: _hovered ? 16 : 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
                           ),
                           child: Center(
                             child: AnimatedContainer(
@@ -195,52 +162,57 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                               child: Icon(
                                 widget.module.icon,
                                 color: _hovered ? _softGold : _amber,
-                                size: 26,
+                                size: iconSize * 0.46,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 18),
-
-                        // Text
+                        SizedBox(width: isSmall ? 12 : 18),
+                        // Text content
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
+                              // Title with overflow protection
                               AnimatedDefaultTextStyle(
                                 duration: const Duration(milliseconds: 200),
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: titleSize,
                                   fontWeight: FontWeight.w600,
-                                  color: _hovered
-                                      ? _softGold
-                                      : context
-                                          .watch<ThemeProvider>()
-                                          .textPrimary,
+                                  color:
+                                      _hovered ? _softGold : theme.textPrimary,
                                   letterSpacing: -0.4,
                                 ),
-                                child: Text(widget.module.label),
+                                child: Text(
+                                  widget.module.label,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: isSmall ? 2 : 4),
+                              // Subtitle with overflow protection
                               AnimatedDefaultTextStyle(
                                 duration: const Duration(milliseconds: 200),
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: subtitleSize,
                                   color: _hovered
                                       ? _softGold.withValues(alpha: 0.7)
-                                      : context
-                                          .watch<ThemeProvider>()
-                                          .textSecondary,
+                                      : theme.textSecondary,
                                 ),
-                                child: Text(widget.module.subtitle),
+                                child: Text(
+                                  widget.module.subtitle,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              const SizedBox(height: 10),
-
-                              // Formula chip
+                              SizedBox(height: isSmall ? 8 : 10),
+                              // Formula chip - responsive text
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 250),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: isSmall ? 8 : 10,
+                                    vertical: isSmall ? 3 : 4),
                                 decoration: BoxDecoration(
                                   color: _amber.withValues(
                                       alpha: _hovered ? 0.15 : 0.08),
@@ -254,21 +226,25 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                   text: TextSpan(
                                     style: TextStyle(
                                       fontFamily: 'monospace',
-                                      fontSize: 12,
+                                      fontSize: isSmall ? 10 : 12,
                                       color: _hovered ? _softGold : _amber,
                                     ),
-                                    children: const [
-                                      TextSpan(text: 'm = '),
+                                    children: [
+                                      const TextSpan(text: 'm = '),
                                       TextSpan(
                                         text: '(y₂−y₁)',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w700),
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: isSmall ? 10 : 12,
+                                        ),
                                       ),
-                                      TextSpan(text: ' / '),
+                                      const TextSpan(text: ' / '),
                                       TextSpan(
                                         text: '(x₂−x₁)',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w700),
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: isSmall ? 10 : 12,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -277,7 +253,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                             ],
                           ),
                         ),
-
+                        SizedBox(width: isSmall ? 8 : 12),
                         // Arrow
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
@@ -285,8 +261,8 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                               ? (Matrix4.identity()..translate(4.0, 0.0))
                               : Matrix4.identity(),
                           child: Container(
-                            width: 36,
-                            height: 36,
+                            width: isSmall ? 32 : 36,
+                            height: isSmall ? 32 : 36,
                             decoration: BoxDecoration(
                               color: _hovered
                                   ? _amber.withValues(alpha: 0.15)
@@ -304,7 +280,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                               color: _hovered
                                   ? _softGold
                                   : _amber.withValues(alpha: 0.6),
-                              size: 16,
+                              size: isSmall ? 16 : 16,
                             ),
                           ),
                         ),
@@ -321,12 +297,11 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
   }
 }
 
-// Draws a rising line with two endpoint dots — hints at two-point concept
 class _TwoPointPainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
 
-  _TwoPointPainter({required this.color, required this.strokeWidth});
+  const _TwoPointPainter({required this.color, required this.strokeWidth});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -335,10 +310,8 @@ class _TwoPointPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
 
-    // Rising line from bottom-left to top-right
     canvas.drawLine(Offset(0, size.height), Offset(size.width, 0), linePaint);
 
-    // Two point dots
     final dotPaint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;

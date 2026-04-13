@@ -1,16 +1,8 @@
 import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/theme_provider.dart';
-
-// ═════════════════════════════════════════════════════════════
-// JOASHUA — INEQUALITY MODULE CARD
-// ─────────────────────────────────────────────────────────────
-// Custom card for the Inequalities module on CategoryPickerScreen.
-// Blends InequalityTheme (purple) + SolverTheme (teal) accents.
-// Hover/press animation matches MidpointModuleCard style.
-// ═════════════════════════════════════════════════════════════
+import 'package:provider/provider.dart';
 
 class InequalityModuleCard extends StatefulWidget {
   final ModuleEntry module;
@@ -24,15 +16,23 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  // ── InequalityTheme ───────────────────────────────────────
   static const Color _purple = Color(0xFF6C63FF);
   static const Color _purpleLight = Color(0xFF9B8FFF);
-
-  // ── SolverTheme ───────────────────────────────────────────
   static const Color _teal = Color(0xFF2DD4BF);
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+
+    // Responsive
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+
+    final iconSize = isSmall ? 48.0 : 60.0;
+    final titleSize = isSmall ? 16.0 : 20.0;
+    final subtitleSize = isSmall ? 12.0 : 13.0;
+    final padding = isSmall ? 16.0 : 24.0;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -50,86 +50,78 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
             duration: const Duration(milliseconds: 280),
             curve: Curves.easeOutCubic,
             decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().card,
+              color: theme.card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: _hovered
                     ? _purple.withValues(alpha: 0.5)
                     : _purple.withValues(alpha: 0.22),
-                width: _hovered ? 1.5 : 1,
+                width: _hovered ? 2 : 1,
               ),
               boxShadow: [
-                // Purple glow
                 BoxShadow(
                   color: _hovered
-                      ? _purple.withValues(alpha: 0.2)
-                      : _purple.withValues(alpha: 0.08),
+                      ? _purple.withValues(alpha: 0.25)
+                      : _purple.withValues(alpha: 0.1),
                   blurRadius: _hovered ? 36 : 24,
                   offset: const Offset(0, 8),
                   spreadRadius: _hovered ? 2 : 0,
                 ),
-                // Teal glow
                 BoxShadow(
-                  color: _hovered
-                      ? _teal.withValues(alpha: 0.12)
-                      : _teal.withValues(alpha: 0.05),
+                  color: _teal.withValues(alpha: _hovered ? 0.15 : 0.05),
                   blurRadius: _hovered ? 24 : 16,
                   offset: const Offset(0, 4),
-                  spreadRadius: _hovered ? 1 : 0,
-                ),
-                // Inner depth
-                BoxShadow(
-                  color: context.watch<ThemeProvider>().shadowColor,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  spreadRadius: -4,
                 ),
               ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  // ── Animated radial gradient background ───
+                  // Animated radial gradient background
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.easeOut,
-                    top: _hovered ? -20 : 0,
-                    left: _hovered ? -20 : 0,
-                    right: _hovered ? -20 : 40,
-                    bottom: _hovered ? -20 : 40,
+                    top: _hovered ? -30 : 0,
+                    left: _hovered ? -30 : 0,
+                    right: _hovered ? -30 : 40,
+                    bottom: _hovered ? -30 : 40,
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: RadialGradient(
                           center: Alignment.topLeft,
                           radius: 1.2,
                           colors: [
-                            _purple.withValues(alpha: _hovered ? 0.1 : 0.04),
+                            _purple.withValues(alpha: _hovered ? 0.15 : 0.04),
                             Colors.transparent,
                           ],
                         ),
                       ),
                     ),
                   ),
-
-                  // ── Content ───────────────────────────────
+                  // Content
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: EdgeInsets.all(padding),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            // ── Icon container ────────────
-                            Container(
-                              width: 60,
-                              height: 60,
+                            // Icon container
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: iconSize,
+                              height: iconSize,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    _purple.withValues(alpha: 0.2),
+                                    _purple.withValues(
+                                        alpha: _hovered ? 0.28 : 0.2),
                                     _teal.withValues(alpha: 0.12),
                                   ],
                                 ),
@@ -140,34 +132,27 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                       : _purple.withValues(alpha: 0.2),
                                   width: 1.5,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: _purple.withValues(alpha: 0.15),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
                               ),
                               child: Center(
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
                                   transform: _hovered
-                                      ? (Matrix4.identity()..scale(1.1))
+                                      ? (Matrix4.identity()..scale(1.15))
                                       : Matrix4.identity(),
                                   child: Icon(
                                     widget.module.icon,
                                     color: _hovered ? _purpleLight : _purple,
-                                    size: 28,
+                                    size: iconSize * 0.47,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 18),
-
-                            // ── Label + subtitle ──────────
+                            SizedBox(width: isSmall ? 12 : 18),
+                            // Label + subtitle
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Row(
                                     children: [
@@ -175,24 +160,21 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                         child: Text(
                                           widget.module.label,
                                           style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: titleSize,
                                             fontWeight: FontWeight.w600,
-                                            color: context
-                                                .watch<ThemeProvider>()
-                                                .textPrimary,
+                                            color: theme.textPrimary,
                                             letterSpacing: -0.5,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
-                                      // Indicator dot
+                                      SizedBox(width: isSmall ? 6 : 8),
                                       AnimatedContainer(
                                         duration:
                                             const Duration(milliseconds: 200),
-                                        width: 6,
-                                        height: 6,
+                                        width: isSmall ? 6 : 8,
+                                        height: isSmall ? 6 : 8,
                                         decoration: BoxDecoration(
                                           color: _hovered ? _teal : _purple,
                                           shape: BoxShape.circle,
@@ -210,33 +192,33 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 6),
+                                  SizedBox(height: isSmall ? 4 : 6),
                                   Text(
                                     widget.module.subtitle,
                                     style: TextStyle(
-                                      fontSize: 13,
-                                      color: context
-                                          .watch<ThemeProvider>()
-                                          .textSecondary,
+                                      fontSize: subtitleSize,
+                                      color: theme.textSecondary,
                                       height: 1.3,
                                     ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
                             ),
-
-                            // ── Animated arrow ────────────
+                            SizedBox(width: isSmall ? 8 : 12),
+                            // Animated arrow
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               transform: _hovered
                                   ? (Matrix4.identity()..translate(4.0, 0.0))
                                   : Matrix4.identity(),
                               child: Container(
-                                width: 36,
-                                height: 36,
+                                width: isSmall ? 32 : 36,
+                                height: isSmall ? 32 : 36,
                                 decoration: BoxDecoration(
                                   color: _hovered
-                                      ? _purple.withValues(alpha: 0.12)
+                                      ? _purple.withValues(alpha: 0.15)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
                                   border: Border.all(
@@ -250,47 +232,44 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                   color: _hovered
                                       ? _purpleLight
                                       : _purple.withValues(alpha: 0.7),
-                                  size: 18,
+                                  size: isSmall ? 16 : 18,
                                 ),
                               ),
                             ),
                           ],
                         ),
-
-                        const SizedBox(height: 18),
-
-                        // ── Type pills ────────────────────
+                        SizedBox(height: isSmall ? 12 : 18),
+                        // Type pills
                         Wrap(
-                          spacing: 8,
-                          runSpacing: 6,
+                          spacing: isSmall ? 6 : 8,
+                          runSpacing: isSmall ? 4 : 6,
                           children: [
                             _TypePill(
-                              label: 'Strict',
-                              color: _purple,
-                              hovered: _hovered,
-                            ),
+                                label: 'Strict',
+                                color: _purple,
+                                hovered: _hovered,
+                                isSmall: isSmall),
                             _TypePill(
-                              label: 'Absolute',
-                              color: _purpleLight,
-                              hovered: _hovered,
-                            ),
+                                label: 'Absolute',
+                                color: _purpleLight,
+                                hovered: _hovered,
+                                isSmall: isSmall),
                             _TypePill(
-                              label: 'Rational',
-                              color: _teal,
-                              hovered: _hovered,
-                            ),
+                                label: 'Rational',
+                                color: _teal,
+                                hovered: _hovered,
+                                isSmall: isSmall),
                             _TypePill(
-                              label: '+4 more',
-                              color: _teal,
-                              hovered: _hovered,
-                            ),
+                                label: '+4 more',
+                                color: _teal,
+                                hovered: _hovered,
+                                isSmall: isSmall),
                           ],
                         ),
                       ],
                     ),
                   ),
-
-                  // ── Decorative corner accent ───────────────
+                  // Decorative corners
                   Positioned(
                     top: 0,
                     right: 0,
@@ -298,14 +277,14 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                       duration: const Duration(milliseconds: 200),
                       opacity: _hovered ? 0.6 : 0.15,
                       child: Container(
-                        width: 100,
-                        height: 100,
+                        width: _hovered ? 120 : 100,
+                        height: _hovered ? 120 : 100,
                         decoration: BoxDecoration(
                           gradient: RadialGradient(
                             center: Alignment.topRight,
                             radius: 0.8,
                             colors: [
-                              _purple.withValues(alpha: 0.4),
+                              _purple.withValues(alpha: 0.5),
                               Colors.transparent,
                             ],
                           ),
@@ -313,8 +292,6 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                       ),
                     ),
                   ),
-
-                  // ── Teal corner accent (bottom left) ───────
                   Positioned(
                     bottom: 0,
                     left: 0,
@@ -322,14 +299,14 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                       duration: const Duration(milliseconds: 200),
                       opacity: _hovered ? 0.4 : 0.08,
                       child: Container(
-                        width: 80,
-                        height: 80,
+                        width: _hovered ? 100 : 80,
+                        height: _hovered ? 100 : 80,
                         decoration: BoxDecoration(
                           gradient: RadialGradient(
                             center: Alignment.bottomLeft,
                             radius: 0.8,
                             colors: [
-                              _teal.withValues(alpha: 0.4),
+                              _teal.withValues(alpha: 0.5),
                               Colors.transparent,
                             ],
                           ),
@@ -347,35 +324,37 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
   }
 }
 
-// ── Type pill badge ───────────────────────────────────────────
 class _TypePill extends StatelessWidget {
   final String label;
   final Color color;
   final bool hovered;
+  final bool isSmall;
 
   const _TypePill({
     required this.label,
     required this.color,
     required this.hovered,
+    required this.isSmall,
   });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(
+          horizontal: isSmall ? 8 : 10, vertical: isSmall ? 3 : 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: hovered ? 0.18 : 0.1),
+        color: color.withValues(alpha: hovered ? 0.2 : 0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: color.withValues(alpha: hovered ? 0.35 : 0.2),
+          color: color.withValues(alpha: hovered ? 0.4 : 0.2),
           width: 1,
         ),
       ),
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 11,
+          fontSize: isSmall ? 10 : 11,
           fontWeight: FontWeight.w600,
           color: color,
           letterSpacing: 0.3,

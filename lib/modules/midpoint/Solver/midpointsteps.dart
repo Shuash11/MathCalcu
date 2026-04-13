@@ -3,48 +3,21 @@ import 'package:calculus_system/modules/midpoint/Theme/midpointtheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
-// ---------------------------------------------------------------------------
-// ENUMS
-// ---------------------------------------------------------------------------
-
 enum StepMode { midpoint, endpoint }
-
-// ---------------------------------------------------------------------------
-// DATA MODEL
-// ---------------------------------------------------------------------------
-// A step is either:
-//   • single  — one full-width math box  (StepKind.single)
-//   • dual    — two side-by-side case boxes (StepKind.dual)
-// ---------------------------------------------------------------------------
 
 enum _StepKind { single, dual }
 
 class StepSection {
   final String stepLabel;
-
-  /// Short guide label shown next to the step number.
   final String guide;
-
   final _StepKind kind;
-
-  // ── single step fields ────────────────────────────────────────────────────
   final String? latexContent;
   final String? plainContent;
-
-  // ── dual step fields ──────────────────────────────────────────────────────
-  /// Header label for the left panel, e.g. "x-coordinate"
   final String? leftLabel;
-
-  /// Header label for the right panel, e.g. "y-coordinate"
   final String? rightLabel;
-
-  /// LaTeX for the left case panel.
   final String? leftLatex;
-
-  /// LaTeX for the right case panel.
   final String? rightLatex;
 
-  // Single constructor
   const StepSection.single({
     required this.stepLabel,
     required this.guide,
@@ -60,7 +33,6 @@ class StepSection {
           'Single step needs latexContent or plainContent.',
         );
 
-  // Dual constructor
   const StepSection.dual({
     required this.stepLabel,
     required this.guide,
@@ -73,21 +45,8 @@ class StepSection {
         plainContent = null;
 }
 
-// ---------------------------------------------------------------------------
-// STEP BUILDER — pure logic, zero widgets
-// ---------------------------------------------------------------------------
-
 class _StepBuilder {
   const _StepBuilder._();
-
-  // ── Midpoint mode ─────────────────────────────────────────────────────────
-  //
-  // Steps:
-  //   1. Identify endpoints          — single (plain text)
-  //   2. Midpoint formula            — single (LaTeX)
-  //   3. Add both coordinates        — DUAL  (x left | y right)
-  //   4. Compute xₘ and yₘ          — DUAL  (x left | y right)
-  //   5. Final answer + verify       — single (LaTeX)
 
   static List<StepSection> midpoint({
     required Fraction x1,
@@ -106,69 +65,90 @@ class _StepBuilder {
       y1.denominator * y2.denominator,
     );
 
+    final x1s = x1.toString();
+    final y1s = y1.toString();
+    final x2s = x2.toString();
+    final y2s = y2.toString();
+    final sumXs = sumX.toString();
+    final sumYs = sumY.toString();
+    final resXs = resX.toString();
+    final resYs = resY.toString();
+
     return [
+      // ── Step 1 ──────────────────────────────────────────────────────────
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify endpoints',
-        plainContent: 'A = ($x1,  $y1)   →   (x₁, y₁)\n'
-            'B = ($x2,  $y2)   →   (x₂, y₂)',
+        plainContent: 'A = ($x1s,  $y1s)   →   (x₁, y₁)\n'
+            'B = ($x2s,  $y2s)   →   (x₂, y₂)',
       ),
-      const StepSection.single(
+
+      // ── Step 2 ──────────────────────────────────────────────────────────
+      StepSection.single(
         stepLabel: 'Step 2',
         guide: 'Midpoint formula',
         latexContent:
             r'M = \left(\dfrac{x_1+x_2}{2},\;\dfrac{y_1+y_2}{2}\right)',
       ),
-      // ── DUAL: add both coordinates side-by-side ──────────────────────────
+
+      // ── Step 3 ──────────────────────────────────────────────────────────
+      // FIX: use raw-string fragments so \\ is a real LaTeX line-break (\\),
+      // not the single backslash produced by a non-raw Dart string.
       StepSection.dual(
         stepLabel: 'Step 3',
         guide: 'Add both coordinates',
         leftLabel: 'x-coordinate',
         rightLabel: 'y-coordinate',
-        leftLatex: '\\begin{aligned}'
-            'x_1 + x_2 &= $x1 + $x2 \\\\'
-            '&= $sumX'
-            '\\end{aligned}',
-        rightLatex: '\\begin{aligned}'
-            'y_1 + y_2 &= $y1 + $y2 \\\\'
-            '&= $sumY'
-            '\\end{aligned}',
+        leftLatex: r'\begin{aligned}'
+            'x_1 + x_2 &= $x1s + $x2s'
+            r' \\'
+            '&= $sumXs'
+            r'\end{aligned}',
+        rightLatex: r'\begin{aligned}'
+            'y_1 + y_2 &= $y1s + $y2s'
+            r' \\'
+            '&= $sumYs'
+            r'\end{aligned}',
       ),
-      // ── DUAL: divide both by 2 side-by-side ─────────────────────────────
+
+      // ── Step 4 ──────────────────────────────────────────────────────────
       StepSection.dual(
         stepLabel: 'Step 4',
         guide: 'Divide by 2',
         leftLabel: 'Find xₘ',
         rightLabel: 'Find yₘ',
-        leftLatex: '\\begin{aligned}'
-            'x_m &= \\dfrac{$sumX}{2} \\\\'
-            '&= \\boxed{$resX}'
-            '\\end{aligned}',
-        rightLatex: '\\begin{aligned}'
-            'y_m &= \\dfrac{$sumY}{2} \\\\'
-            '&= \\boxed{$resY}'
-            '\\end{aligned}',
+        leftLatex: r'\begin{aligned}'
+            r'x_m &= \dfrac{' '$sumXs' r'}{2} \\'
+            r'&= \boxed{' '$resXs' r'}'
+            r'\end{aligned}',
+        rightLatex: r'\begin{aligned}'
+            r'y_m &= \dfrac{' '$sumYs' r'}{2} \\'
+            r'&= \boxed{' '$resYs' r'}'
+            r'\end{aligned}',
       ),
+
+      // ── Step 5 ──────────────────────────────────────────────────────────
+      // FIX: the previous non-raw string
+      //   'M &= \left($resXs,\;$resYs\right)\\[8pt]'
+      // caused two bugs:
+      //   1. \r (in \right) became a carriage-return character.
+      //   2. \\ became a single \, so \\[8pt] became \[8pt] →
+      //      "Undefined control sequence: \[".
+      // Solution: split every LaTeX fragment into raw strings (r'...') and
+      // splice variable values in via adjacent non-raw string literals.
+      // \\[8pt] is also not supported by flutter_math_fork (KaTeX subset),
+      // so it is replaced with a plain \\ line-break.
       StepSection.single(
         stepLabel: 'Step 5',
         guide: 'Answer + verify',
-        latexContent: '\\begin{aligned}'
-            'M &= \\left($resX,\\;$resY\\right)\\\\[8pt]'
-            'x_m &= \\dfrac{$x1+$x2}{2} = $resX \\;\\checkmark \\\\'
-            'y_m &= \\dfrac{$y1+$y2}{2} = $resY \\;\\checkmark'
-            '\\end{aligned}',
+        latexContent: r'\begin{aligned}'
+            r'M &= \left(' '$resXs' r',\;' '$resYs' r'\right)\\'
+            r'x_m &= \dfrac{' '$x1s' r'+' '$x2s' r'}{2} = ' '$resXs' r'\;\checkmark \\'
+            r'y_m &= \dfrac{' '$y1s' r'+' '$y2s' r'}{2} = ' '$resYs' r'\;\checkmark'
+            r'\end{aligned}',
       ),
     ];
   }
-
-  // ── Endpoint mode ─────────────────────────────────────────────────────────
-  //
-  // Steps:
-  //   1. Identify given values        — single (plain text)
-  //   2. Midpoint formula             — single (LaTeX)
-  //   3. Rearrange for endpoint       — single (LaTeX)
-  //   4. Solve for x₂ and y₂         — DUAL  (x left | y right)
-  //   5. Final answer + verify        — single (LaTeX)
 
   static List<StepSection> endpoint({
     required Fraction xm,
@@ -181,61 +161,73 @@ class _StepBuilder {
     final doubleXm = MidpointSolver.multiplyFractionByInt(xm, 2);
     final doubleYm = MidpointSolver.multiplyFractionByInt(ym, 2);
 
+    final xms = xm.toString();
+    final yms = ym.toString();
+    final x1s = x1.toString();
+    final y1s = y1.toString();
+    final doubleXms = doubleXm.toString();
+    final doubleYms = doubleYm.toString();
+    final resXs = resX.toString();
+    final resYs = resY.toString();
+
     return [
+      // ── Step 1 ──────────────────────────────────────────────────────────
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify given values',
-        plainContent: 'M = ($xm,  $ym)   →   midpoint\n'
-            'A = ($x1,  $y1)   →   known endpoint\n'
+        plainContent: 'M = ($xms,  $yms)   →   midpoint\n'
+            'A = ($x1s,  $y1s)   →   known endpoint\n'
             'B = (x₂, y₂)      →   find this',
       ),
-      const StepSection.single(
+
+      // ── Step 2 ──────────────────────────────────────────────────────────
+      StepSection.single(
         stepLabel: 'Step 2',
         guide: 'Midpoint formula',
         latexContent:
             r'M = \left(\dfrac{x_1+x_2}{2},\;\dfrac{y_1+y_2}{2}\right)',
       ),
-      const StepSection.single(
+
+      // ── Step 3 ──────────────────────────────────────────────────────────
+      StepSection.single(
         stepLabel: 'Step 3',
         guide: 'Rearrange for unknown endpoint',
-        latexContent: r'''\begin{aligned}
-x_2 &= 2x_m - x_1 \\
-y_2 &= 2y_m - y_1
-\end{aligned}''',
+        latexContent:
+            r'\begin{aligned} x_2 &= 2x_m - x_1 \\ y_2 &= 2y_m - y_1 \end{aligned}',
       ),
-      // ── DUAL: solve x₂ and y₂ side-by-side ──────────────────────────────
+
+      // ── Step 4 ──────────────────────────────────────────────────────────
       StepSection.dual(
         stepLabel: 'Step 4',
         guide: 'Solve both coordinates',
         leftLabel: 'Solve x₂',
         rightLabel: 'Solve y₂',
-        leftLatex: '\\begin{aligned}'
-            'x_2 &= 2($xm) - ($x1) \\\\'
-            '&= $doubleXm - $x1 \\\\'
-            '&= \\boxed{$resX}'
-            '\\end{aligned}',
-        rightLatex: '\\begin{aligned}'
-            'y_2 &= 2($ym) - ($y1) \\\\'
-            '&= $doubleYm - $y1 \\\\'
-            '&= \\boxed{$resY}'
-            '\\end{aligned}',
+        leftLatex: r'\begin{aligned}'
+            r'x_2 &= 2(' '$xms' r') - (' '$x1s' r') \\'
+            r'&= ' '$doubleXms' r' - ' '$x1s' r' \\'
+            r'&= \boxed{' '$resXs' r'}'
+            r'\end{aligned}',
+        rightLatex: r'\begin{aligned}'
+            r'y_2 &= 2(' '$yms' r') - (' '$y1s' r') \\'
+            r'&= ' '$doubleYms' r' - ' '$y1s' r' \\'
+            r'&= \boxed{' '$resYs' r'}'
+            r'\end{aligned}',
       ),
+
+      // ── Step 5 ──────────────────────────────────────────────────────────
+      // Same fix as midpoint Step 5: all LaTeX in raw strings, no \\[8pt].
       StepSection.single(
         stepLabel: 'Step 5',
         guide: 'Answer + verify',
-        latexContent: '\\begin{aligned}'
-            'B &= \\left($resX,\\;$resY\\right)\\\\[8pt]'
-            'x_m &= \\dfrac{$x1+$resX}{2} = $xm \\;\\checkmark \\\\'
-            'y_m &= \\dfrac{$y1+$resY}{2} = $ym \\;\\checkmark'
-            '\\end{aligned}',
+        latexContent: r'\begin{aligned}'
+            r'B &= \left(' '$resXs' r',\;' '$resYs' r'\right)\\'
+            r'x_m &= \dfrac{' '$x1s' r'+' '$resXs' r'}{2} = ' '$xms' r'\;\checkmark \\'
+            r'y_m &= \dfrac{' '$y1s' r'+' '$resYs' r'}{2} = ' '$yms' r'\;\checkmark'
+            r'\end{aligned}',
       ),
     ];
   }
 }
-
-// ---------------------------------------------------------------------------
-// ROOT WIDGET
-// ---------------------------------------------------------------------------
 
 class MidpointSteps extends StatelessWidget {
   final StepMode mode;
@@ -291,51 +283,70 @@ class MidpointSteps extends StatelessWidget {
     final steps = _buildSteps();
     if (steps == null) return const _ErrorCard();
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+    final isMedium = screenWidth < 400;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        _Header(stepCount: steps.length, mode: mode),
-        const SizedBox(height: 16),
-        _Timeline(steps: steps),
+        _Header(
+          stepCount: steps.length,
+          mode: mode,
+          isSmall: isSmall,
+        ),
+        SizedBox(height: isSmall ? 12 : 16),
+        _Timeline(
+          steps: steps,
+          isSmall: isSmall,
+          isMedium: isMedium,
+        ),
       ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// HEADER
-// ---------------------------------------------------------------------------
+// ────────────────────────────────────────────────────────────────────────────
+// Supporting widgets (unchanged from original)
+// ────────────────────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
   final int stepCount;
   final StepMode mode;
+  final bool isSmall;
 
-  const _Header({required this.stepCount, required this.mode});
+  const _Header({
+    required this.stepCount,
+    required this.mode,
+    required this.isSmall,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: isSmall ? 4 : 6,
+      runSpacing: 6,
       children: [
         Icon(
           Icons.school_rounded,
-          size: 13,
+          size: isSmall ? 12 : 13,
           color: MidpointTheme.accent(context).withValues(alpha: 0.6),
         ),
-        const SizedBox(width: 6),
         Text(
           'Solution',
           style: TextStyle(
-            fontSize: 12,
+            fontSize: isSmall ? 11 : 12,
             fontWeight: FontWeight.w700,
             color: MidpointTheme.accent(context).withValues(alpha: 0.6),
             letterSpacing: 0.2,
           ),
         ),
-        const SizedBox(width: 6),
-        _Chip(label: '$stepCount steps'),
-        const SizedBox(width: 4),
+        _Chip(label: '$stepCount steps', isSmall: isSmall),
         _Chip(
           label: mode == StepMode.midpoint ? 'Find Midpoint' : 'Find Endpoint',
+          isSmall: isSmall,
         ),
       ],
     );
@@ -344,12 +355,17 @@ class _Header extends StatelessWidget {
 
 class _Chip extends StatelessWidget {
   final String label;
-  const _Chip({required this.label});
+  final bool isSmall;
+
+  const _Chip({required this.label, required this.isSmall});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      padding: EdgeInsets.symmetric(
+        horizontal: isSmall ? 6 : 7,
+        vertical: isSmall ? 1.5 : 2,
+      ),
       decoration: BoxDecoration(
         color: MidpointTheme.accent(context).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
@@ -357,7 +373,7 @@ class _Chip extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: isSmall ? 9 : 10,
           fontWeight: FontWeight.w700,
           color: MidpointTheme.accent(context).withValues(alpha: 0.7),
         ),
@@ -366,107 +382,132 @@ class _Chip extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// TIMELINE
-// ---------------------------------------------------------------------------
-
 class _Timeline extends StatelessWidget {
   final List<StepSection> steps;
-  const _Timeline({required this.steps});
+  final bool isSmall;
+  final bool isMedium;
+
+  const _Timeline({
+    required this.steps,
+    required this.isSmall,
+    required this.isMedium,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (int i = 0; i < steps.length; i++)
           _StepRow(
             step: steps[i],
             isLast: i == steps.length - 1,
+            isSmall: isSmall,
+            isMedium: isMedium,
           ),
       ],
     );
   }
 }
-
-// ---------------------------------------------------------------------------
-// STEP ROW — dispatches to single or dual body
-// ---------------------------------------------------------------------------
 
 class _StepRow extends StatelessWidget {
   final StepSection step;
   final bool isLast;
+  final bool isSmall;
+  final bool isMedium;
 
-  const _StepRow({required this.step, required this.isLast});
+  const _StepRow({
+    required this.step,
+    required this.isLast,
+    required this.isSmall,
+    required this.isMedium,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Timeline column
-        _Dot(
-          label: step.stepLabel.replaceAll(RegExp(r'[^0-9]'), ''),
-          isLast: isLast,
-        ),
-        const SizedBox(width: 14),
+    final dotSize = isSmall ? 26.0 : 30.0;
+    final spacing = isSmall ? 10.0 : 14.0;
+    final bottomPadding = isLast ? 0.0 : (isSmall ? 20.0 : 28.0);
 
-        // Content column
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : 28),
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomPadding),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _TimelineDot(
+            label: step.stepLabel.replaceAll(RegExp(r'[^0-9]'), ''),
+            isLast: isLast,
+            size: dotSize,
+            isSmall: isSmall,
+          ),
+          SizedBox(width: spacing),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 _GuideLabel(
                   stepLabel: step.stepLabel,
                   guide: step.guide,
+                  isSmall: isSmall,
                 ),
-                const SizedBox(height: 8),
-                // Dispatch on kind
+                SizedBox(height: isSmall ? 6 : 8),
                 if (step.kind == _StepKind.single)
-                  _SingleMathBox(step: step)
+                  _SingleMathBox(
+                    step: step,
+                    isSmall: isSmall,
+                    isMedium: isMedium,
+                  )
                 else
-                  _DualCaseRow(step: step),
+                  _DualCaseRow(
+                    step: step,
+                    isSmall: isSmall,
+                    isMedium: isMedium,
+                  ),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// DOT + CONNECTOR LINE
-// ---------------------------------------------------------------------------
-
-class _Dot extends StatelessWidget {
+class _TimelineDot extends StatelessWidget {
   final String label;
   final bool isLast;
+  final double size;
+  final bool isSmall;
 
-  const _Dot({required this.label, required this.isLast});
+  const _TimelineDot({
+    required this.label,
+    required this.isLast,
+    required this.size,
+    required this.isSmall,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 30,
-          height: 30,
+          width: size,
+          height: size,
           decoration: BoxDecoration(
             color: MidpointTheme.accent(context).withValues(alpha: 0.1),
             shape: BoxShape.circle,
             border: Border.all(
               color: MidpointTheme.accent(context).withValues(alpha: 0.4),
-              width: 1.5,
+              width: isSmall ? 1.2 : 1.5,
             ),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: isSmall ? 10 : 12,
               fontWeight: FontWeight.w900,
               color: MidpointTheme.accent(context),
             ),
@@ -474,9 +515,9 @@ class _Dot extends StatelessWidget {
         ),
         if (!isLast)
           Container(
-            width: 2,
-            height: 90,
-            margin: const EdgeInsets.symmetric(vertical: 3),
+            width: isSmall ? 1.5 : 2,
+            height: isSmall ? 50 : 70,
+            margin: EdgeInsets.symmetric(vertical: isSmall ? 2 : 3),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -493,15 +534,16 @@ class _Dot extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// GUIDE LABEL  — "Step N  ·  <guide>"
-// ---------------------------------------------------------------------------
-
 class _GuideLabel extends StatelessWidget {
   final String stepLabel;
   final String guide;
+  final bool isSmall;
 
-  const _GuideLabel({required this.stepLabel, required this.guide});
+  const _GuideLabel({
+    required this.stepLabel,
+    required this.guide,
+    required this.isSmall,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -511,7 +553,7 @@ class _GuideLabel extends StatelessWidget {
           TextSpan(
             text: stepLabel,
             style: TextStyle(
-              fontSize: 10,
+              fontSize: isSmall ? 9 : 10,
               fontWeight: FontWeight.w700,
               color: MidpointTheme.accent(context).withValues(alpha: 0.5),
               letterSpacing: 0.6,
@@ -520,14 +562,14 @@ class _GuideLabel extends StatelessWidget {
           TextSpan(
             text: '  ·  ',
             style: TextStyle(
-              fontSize: 10,
+              fontSize: isSmall ? 9 : 10,
               color: MidpointTheme.text40(context),
             ),
           ),
           TextSpan(
             text: guide,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: isSmall ? 12 : 13,
               fontWeight: FontWeight.w700,
               color: MidpointTheme.text(context),
             ),
@@ -538,22 +580,28 @@ class _GuideLabel extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// SINGLE MATH BOX  — full width, one formula
-// ---------------------------------------------------------------------------
-
 class _SingleMathBox extends StatelessWidget {
   final StepSection step;
-  const _SingleMathBox({required this.step});
+  final bool isSmall;
+  final bool isMedium;
+
+  const _SingleMathBox({
+    required this.step,
+    required this.isSmall,
+    required this.isMedium,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final padding = isSmall ? 10.0 : 14.0;
+    final fontSize = isSmall ? 13.0 : (isMedium ? 14.0 : 15.0);
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
       decoration: BoxDecoration(
         color: MidpointTheme.accent(context).withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
         border: Border.all(
           color: MidpointTheme.accent(context).withValues(alpha: 0.2),
         ),
@@ -564,7 +612,7 @@ class _SingleMathBox extends StatelessWidget {
               child: SelectableMath.tex(
                 step.latexContent!,
                 textStyle: TextStyle(
-                  fontSize: 15,
+                  fontSize: fontSize,
                   color: MidpointTheme.text(context),
                 ),
               ),
@@ -572,7 +620,7 @@ class _SingleMathBox extends StatelessWidget {
           : Text(
               step.plainContent!,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: isSmall ? 12 : 13,
                 height: 1.75,
                 color: MidpointTheme.text50(context),
                 fontWeight: FontWeight.w500,
@@ -583,38 +631,60 @@ class _SingleMathBox extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// DUAL CASE ROW  — two panels side-by-side, mirroring the screenshot layout
-//
-// Each panel has:
-//   • a small case label header  (e.g. "x-coordinate")
-//   • the full math steps below it
-//
-// Both panels share equal width via Expanded + a visible gap between them.
-// ---------------------------------------------------------------------------
-
 class _DualCaseRow extends StatelessWidget {
   final StepSection step;
-  const _DualCaseRow({required this.step});
+  final bool isSmall;
+  final bool isMedium;
+
+  const _DualCaseRow({
+    required this.step,
+    required this.isSmall,
+    required this.isMedium,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth < 340) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _CasePanel(
+            label: step.leftLabel!,
+            latex: step.leftLatex!,
+            isSmall: isSmall,
+            isMedium: isMedium,
+          ),
+          SizedBox(height: isSmall ? 8 : 10),
+          _CasePanel(
+            label: step.rightLabel!,
+            latex: step.rightLatex!,
+            isSmall: isSmall,
+            isMedium: isMedium,
+          ),
+        ],
+      );
+    }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Left panel
         Expanded(
           child: _CasePanel(
             label: step.leftLabel!,
             latex: step.leftLatex!,
+            isSmall: isSmall,
+            isMedium: isMedium,
           ),
         ),
-        const SizedBox(width: 10),
-        // Right panel
+        SizedBox(width: isSmall ? 6 : 10),
         Expanded(
           child: _CasePanel(
             label: step.rightLabel!,
             latex: step.rightLatex!,
+            isSmall: isSmall,
+            isMedium: isMedium,
           ),
         ),
       ],
@@ -622,22 +692,34 @@ class _DualCaseRow extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// CASE PANEL  — individual panel inside a dual step
-// ---------------------------------------------------------------------------
-
 class _CasePanel extends StatelessWidget {
   final String label;
   final String latex;
+  final bool isSmall;
+  final bool isMedium;
 
-  const _CasePanel({required this.label, required this.latex});
+  const _CasePanel({
+    required this.label,
+    required this.latex,
+    required this.isSmall,
+    required this.isMedium,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final headerPadding = isSmall
+        ? const EdgeInsets.symmetric(horizontal: 10, vertical: 6)
+        : const EdgeInsets.symmetric(horizontal: 12, vertical: 7);
+    final bodyPadding = isSmall
+        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 10)
+        : const EdgeInsets.symmetric(horizontal: 10, vertical: 14);
+    final fontSize = isSmall ? 12.0 : (isMedium ? 13.0 : 14.0);
+    final labelSize = isSmall ? 10.0 : 11.0;
+
     return Container(
       decoration: BoxDecoration(
         color: MidpointTheme.accent(context).withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
         border: Border.all(
           color: MidpointTheme.accent(context).withValues(alpha: 0.2),
         ),
@@ -645,14 +727,13 @@ class _CasePanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Case label header — thin accent strip at top
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            padding: headerPadding,
             decoration: BoxDecoration(
               color: MidpointTheme.accent(context).withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(isSmall ? 8 : 10),
+                topRight: Radius.circular(isSmall ? 8 : 10),
               ),
               border: Border(
                 bottom: BorderSide(
@@ -664,23 +745,21 @@ class _CasePanel extends StatelessWidget {
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: labelSize,
                 fontWeight: FontWeight.w700,
                 color: MidpointTheme.accent(context),
                 letterSpacing: 0.3,
               ),
             ),
           ),
-
-          // Math body
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+            padding: bodyPadding,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SelectableMath.tex(
                 latex,
                 textStyle: TextStyle(
-                  fontSize: 14,
+                  fontSize: fontSize,
                   color: MidpointTheme.text(context),
                 ),
               ),
@@ -692,30 +771,37 @@ class _CasePanel extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// ERROR CARD
-// ---------------------------------------------------------------------------
-
 class _ErrorCard extends StatelessWidget {
   const _ErrorCard();
 
   @override
   Widget build(BuildContext context) {
+    final isSmall = MediaQuery.of(context).size.width < 360;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(isSmall ? 12 : 14),
       decoration: BoxDecoration(
         color: Colors.red.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
         border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
       ),
-      child: Text(
-        'Invalid input. Use whole numbers or fractions (e.g. 3, −2, 1/2).',
-        style: TextStyle(
-          fontSize: 13,
-          height: 1.6,
-          color: Colors.red.shade400,
-        ),
+      child: Row(
+        children: [
+          Icon(Icons.error_outline_rounded,
+              color: Colors.red.shade400, size: isSmall ? 16 : 18),
+          SizedBox(width: isSmall ? 10 : 14),
+          Expanded(
+            child: Text(
+              'Invalid input. Use whole numbers or fractions (e.g. 3, −2, 1/2).',
+              style: TextStyle(
+                fontSize: isSmall ? 12 : 13,
+                height: 1.6,
+                color: Colors.red.shade400,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
