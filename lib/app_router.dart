@@ -35,23 +35,23 @@ class AppRouter {
       },
     );
   }
- static final GoRouter router1 = GoRouter(
-    initialLocation: '/',
-    routes: [
-      // ── Home ────────────────────────────────────────────
-      GoRoute(
-        path: '/',
-        name: 'home',
-        builder: (context, state) => const ActivationGate(
-          child: CategoryPickerScreen(),
-        ),
+
+  static final GoRouter router1 = GoRouter(initialLocation: '/', routes: [
+    // ── Home ────────────────────────────────────────────
+    GoRoute(
+      path: '/',
+      name: 'home',
+      builder: (context, state) => const ActivationGate(
+        child: CategoryPickerScreen(),
       ),
- 
-      // ── Finals routes (mounted from finals_router.dart) ─
-      ...finalsRoutes, 
-      ]
-      ); 
- 
+    ),
+
+    // ── Finals routes (mounted from finals_router.dart) ─
+    ...finalsRoutes,
+
+    // ..
+  ]);
+
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     routes: [
@@ -64,6 +64,7 @@ class AppRouter {
         ),
       ),
 
+      ...finalsRoutes,
       // ── JOASHUA's routes ──────────────────────────────
       GoRoute(
         path: '/inequalities',
@@ -188,18 +189,9 @@ class AppRouter {
               const FindingCenterRadiusScreen(),
             ),
           ),
-     
         ],
       ),
-           GoRoute(
-            path: '/second-sem',
-            name: 'second-sem',
-       //put the screenpag here
-        pageBuilder: (context, state) => _fadeRoute(
-              state.pageKey,
-              const FinalsPickerScreen(),
-            ),
-          ),
+   
     ],
   );
 }

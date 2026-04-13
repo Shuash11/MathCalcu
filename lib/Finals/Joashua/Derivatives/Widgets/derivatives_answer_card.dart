@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+
+import 'package:calculus_system/Finals/finals_theme.dart';
+
+class DerivativeAnswerCard extends StatelessWidget {
+  final String originalExpr;
+  final String answerExpr;
+  final bool hasError;
+  final String? errorMessage;
+  final VoidCallback onTap;
+
+  const DerivativeAnswerCard({
+    Key? key,
+    required this.originalExpr,
+    required this.answerExpr,
+    this.hasError = false,
+    this.errorMessage,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: hasError ? null : onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        decoration: BoxDecoration(
+          gradient: hasError
+              ? LinearGradient(
+                  colors: [
+                    FinalsTheme.danger.withValues(alpha: 0.1),
+                    FinalsTheme.danger.withValues(alpha: 0.05)
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : FinalsTheme.cardGlow(hovered: true),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: hasError
+                ? FinalsTheme.danger.withValues(alpha: 0.3)
+                : FinalsTheme.primary.withValues(alpha: 0.3),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: hasError
+                  ? FinalsTheme.danger.withValues(alpha: 0.1)
+                  : FinalsTheme.primary.withValues(alpha: 0.15),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  hasError ? 'Parsing Error' : 'Derivative Result',
+                  style: FinalsTheme.labelStyle(context).copyWith(
+                    color: hasError ? FinalsTheme.danger : null,
+                    fontSize: 11,
+                  ),
+                ),
+                if (!hasError)
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: FinalsTheme.primary.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: FinalsTheme.primary,
+                      size: 18,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (hasError)
+              Text(
+                errorMessage ?? 'Invalid expression syntax.',
+                style: FinalsTheme.subtitleStyle(context)
+                    .copyWith(color: FinalsTheme.danger),
+              )
+            else ...[
+              Text(
+                'f(x) = $originalExpr',
+                style: FinalsTheme.subtitleStyle(context),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: FinalsTheme.surface(context).withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  "f\'(x) = $answerExpr",
+                  style: FinalsTheme.titleStyle(context).copyWith(
+                    fontSize: 20,
+                    color: FinalsTheme.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'Tap to view step-by-step solution',
+                  style: FinalsTheme.labelStyle(context).copyWith(
+                    fontSize: 9,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ]
+          ],
+        ),
+      ),
+    );
+  }
+}
