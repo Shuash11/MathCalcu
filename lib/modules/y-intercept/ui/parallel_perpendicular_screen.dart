@@ -63,7 +63,8 @@ class _ParallelPerpendicularScreenState
       _errorNotifier.value = null;
       return;
     }
-    final result = ParallelPerpendicularSolver.tryParse(line1: l1, line2: l2);
+    final result =
+        ParallelPerpendicularSolver.tryParse(line1: l1, line2: l2);
     if (result == null) {
       _resultNotifier.value = null;
       _errorNotifier.value =
@@ -102,10 +103,11 @@ class _ParallelPerpendicularScreenState
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: _cyan.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                        border:
-                            Border.all(color: _cyan.withValues(alpha: 0.3)),
+                        color: _cyan.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: _cyan.withValues(alpha: 0.35),
+                            width: 1.5),
                       ),
                       child: const Icon(Icons.arrow_back_ios_new_rounded,
                           color: _cyan, size: 16),
@@ -131,7 +133,7 @@ class _ParallelPerpendicularScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _HintBanner(),
+                    const _HintBanner(),
                     const SizedBox(height: 14),
                     _EquationField(
                       controller: _line1Ctrl,
@@ -148,21 +150,13 @@ class _ParallelPerpendicularScreenState
                     ),
                     const SizedBox(height: 8),
 
-                    // Error
+                    // error message
                     ValueListenableBuilder<String?>(
                       valueListenable: _errorNotifier,
                       builder: (_, err, __) {
                         if (err == null) return const SizedBox.shrink();
-                        return Container(
-                          margin: const EdgeInsets.only(top: 4, bottom: 4),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.redAccent.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color:
-                                    Colors.redAccent.withValues(alpha: 0.3)),
-                          ),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
                           child: Text(err,
                               style: TextStyle(
                                   color: Colors.redAccent.shade200,
@@ -173,13 +167,16 @@ class _ParallelPerpendicularScreenState
 
                     const SizedBox(height: 16),
 
-                    // Results
+                    // results area
                     ValueListenableBuilder<PPResult?>(
                       valueListenable: _resultNotifier,
                       builder: (context, result, _) {
-                        if (result == null) return const _EmptyState();
+                        if (result == null) {
+                          return const _EmptyState(accent: _cyan);
+                        }
                         return _ResultSection(
                           result: result,
+                          accent: _cyan,
                           emerald: emerald,
                           onStepsTap: () => _showSteps(result),
                           onGraphTap: () => showGraphSheet(context, result),
@@ -198,32 +195,33 @@ class _ParallelPerpendicularScreenState
 }
 
 // ─────────────────────────────────────────────────────────────
-// Hint Banner
+// UI Components
 // ─────────────────────────────────────────────────────────────
 
 class _HintBanner extends StatelessWidget {
+  const _HintBanner();
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _cyan.withValues(alpha: 0.07),
+        color: _cyan.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _cyan.withValues(alpha: 0.18)),
+        border: Border.all(color: _cyan.withValues(alpha: 0.2)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.info_outline_rounded,
-              color: _cyan.withValues(alpha: 0.7), size: 16),
-          const SizedBox(width: 8),
+              color: _cyan.withValues(alpha: 0.8), size: 18),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Accepts: Ax + By = C · Ax + By + C = 0 · y = mx + b\nTerms may appear in any order.',
+              'Enter equations in any format (e.g., y = 2x + 1, 3x - 4y = 12, or 2x + y - 5 = 0).',
               style: YITheme.subtitleStyle(context).copyWith(
-                  fontSize: 12,
-                  color: YITheme.textSecondary(context),
-                  height: 1.5),
+                color: YITheme.textSecondary(context),
+                fontSize: 12,
+              ),
             ),
           ),
         ],
@@ -231,10 +229,6 @@ class _HintBanner extends StatelessWidget {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────
-// Equation Field
-// ─────────────────────────────────────────────────────────────
 
 class _EquationField extends StatelessWidget {
   final TextEditingController controller;
@@ -251,69 +245,64 @@ class _EquationField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accent.withValues(alpha: 0.3)),
-        color: YITheme.isLight(context)
-            ? Colors.black.withValues(alpha: 0.02)
-            : Colors.white.withValues(alpha: 0.03),
-      ),
-      child: Row(
-        children: [
-          Container(
-            margin: const EdgeInsets.all(8),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(label,
-                style: YITheme.inputLabelStyle(context).copyWith(
-                    color: accent, fontSize: 10, letterSpacing: 0.5)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: YITheme.inputLabelStyle(context)
+                .copyWith(color: accent, fontSize: 10)),
+        const SizedBox(height: 6),
+        TextField(
+          controller: controller,
+          style: YITheme.resultEquationStyle(context).copyWith(
+            color: YITheme.textPrimary(context),
+            fontSize: 16,
           ),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              style: YITheme.inputTextStyle(context).copyWith(fontSize: 14),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
-                hintText: hint,
-                hintStyle: YITheme.inputTextStyle(context).copyWith(
-                    color: YITheme.textSecondary(context)
-                        .withValues(alpha: 0.4),
-                    fontSize: 13),
-              ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: YITheme.subtitleStyle(context).copyWith(
+              color: YITheme.textSecondary(context).withValues(alpha: 0.5),
+            ),
+            filled: true,
+            fillColor: YITheme.surface(context).withValues(alpha: 0.8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: accent, width: 1.5),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// Empty State
-// ─────────────────────────────────────────────────────────────
-
 class _EmptyState extends StatelessWidget {
-  const _EmptyState();
+  final Color accent;
+  const _EmptyState({required this.accent});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
       decoration: BoxDecoration(
-        color: _cyan.withValues(alpha: 0.04),
+        color: accent.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _cyan.withValues(alpha: 0.12)),
+        border: Border.all(color: accent.withValues(alpha: 0.12)),
       ),
       child: Column(
         children: [
           Icon(Icons.compare_arrows_rounded,
-              color: _cyan.withValues(alpha: 0.3), size: 40),
+              color: accent.withValues(alpha: 0.3), size: 40),
           const SizedBox(height: 12),
           Text('Enter two equations above',
               style: YITheme.titleStyle(context).copyWith(
@@ -328,18 +317,16 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// Result Section
-// ─────────────────────────────────────────────────────────────
-
 class _ResultSection extends StatelessWidget {
   final PPResult result;
+  final Color accent;
   final Color emerald;
   final VoidCallback onStepsTap;
   final VoidCallback onGraphTap;
 
   const _ResultSection({
     required this.result,
+    required this.accent,
     required this.emerald,
     required this.onStepsTap,
     required this.onGraphTap,
@@ -364,204 +351,148 @@ class _ResultSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Verdict
         GestureDetector(
           onTap: onGraphTap,
-          child: Container(
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                  color: color.withValues(alpha: 0.35), width: 1.5),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: color.withValues(alpha: 0.4)),
-                  ),
-                  child: Center(
-                    child: Text(result.verdictSymbol,
-                        style: TextStyle(fontSize: 22, color: color)),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('RESULT',
-                          style: YITheme.inputLabelStyle(context).copyWith(
-                              color: color.withValues(alpha: 0.7),
-                              fontSize: 10,
-                              letterSpacing: 1)),
-                      const SizedBox(height: 4),
-                      Text(result.verdict,
-                          style: YITheme.titleStyle(context).copyWith(
-                              color: color,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          child: _VerdictCard(result: result, accent: color),
         ),
         const SizedBox(height: 12),
-
-        // Line cards side by side
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: _LineCard(
-                label: 'Line 1',
+              child: _EquationResultCard(
+                title: 'Line 1',
                 equation: result.slopeIntercept1,
-                slope: result.slope1?.toString() ?? 'undefined',
+                meta: 'm = ${result.slope1?.toString() ?? 'undefined'}',
                 accent: _cyan,
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: _LineCard(
-                label: 'Line 2',
+              child: _EquationResultCard(
+                title: 'Line 2',
                 equation: result.slopeIntercept2,
-                slope: result.slope2?.toString() ?? 'undefined',
+                meta: 'm = ${result.slope2?.toString() ?? 'undefined'}',
                 accent: emerald,
               ),
             ),
           ],
         ),
         const SizedBox(height: 12),
-
-        // Action buttons
-        Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: onStepsTap,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 13),
-                  decoration: BoxDecoration(
-                    color: _cyan.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border:
-                        Border.all(color: _cyan.withValues(alpha: 0.28)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.receipt_long_rounded,
-                          color: _cyan, size: 15),
-                      const SizedBox(width: 6),
-                      Text('Solution Steps',
-                          style: YITheme.inputLabelStyle(context)
-                              .copyWith(color: _cyan, fontSize: 12)),
-                    ],
-                  ),
-                ),
-              ),
+        GestureDetector(
+          onTap: onStepsTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: accent.withValues(alpha: 0.28)),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: GestureDetector(
-                onTap: onGraphTap,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 13),
-                  decoration: BoxDecoration(
-                    color: emerald.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color: emerald.withValues(alpha: 0.28)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.show_chart_rounded,
-                          color: emerald, size: 15),
-                      const SizedBox(width: 6),
-                      Text('Graph',
-                          style: YITheme.inputLabelStyle(context)
-                              .copyWith(color: emerald, fontSize: 12)),
-                    ],
-                  ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.receipt_long_rounded, color: accent, size: 16),
+                const SizedBox(width: 8),
+                Text(
+                  'View Solution Steps',
+                  style: YITheme.inputLabelStyle(context)
+                      .copyWith(color: accent, fontSize: 11),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ],
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// Line Card
-// ─────────────────────────────────────────────────────────────
+class _VerdictCard extends StatelessWidget {
+  final PPResult result;
+  final Color accent;
+  const _VerdictCard({required this.result, required this.accent});
 
-class _LineCard extends StatelessWidget {
-  final String label;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(16),
+        border:
+            Border.all(color: accent.withValues(alpha: 0.28), width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'VERDICT',
+                style: YITheme.inputLabelStyle(context)
+                    .copyWith(color: accent, fontSize: 10),
+              ),
+              const Spacer(),
+              Icon(Icons.show_chart_rounded, color: accent, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                'Tap to graph',
+                style: YITheme.subtitleStyle(context).copyWith(
+                    color: accent.withValues(alpha: 0.7), fontSize: 11),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${result.verdictSymbol}  ${result.verdict}',
+            style: YITheme.resultEquationStyle(context)
+                .copyWith(color: accent, fontSize: 22),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EquationResultCard extends StatelessWidget {
+  final String title;
   final String equation;
-  final String slope;
+  final String meta;
   final Color accent;
 
-  const _LineCard({
-    required this.label,
+  const _EquationResultCard({
+    required this.title,
     required this.equation,
-    required this.slope,
+    required this.meta,
     required this.accent,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: YITheme.surface(context),
+        color: accent.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: accent.withValues(alpha: 0.3), width: 1.5),
+        border: Border.all(color: accent.withValues(alpha: 0.22)),
       ),
-      clipBehavior: Clip.antiAlias,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            color: accent.withValues(alpha: 0.12),
-            child: Text(label,
-                textAlign: TextAlign.center,
-                style: YITheme.inputLabelStyle(context).copyWith(
-                    color: accent, fontSize: 11, letterSpacing: 0.5)),
+          Text(title,
+              style: YITheme.inputLabelStyle(context)
+                  .copyWith(color: accent)),
+          const SizedBox(height: 6),
+          SelectableText(
+            equation,
+            style: YITheme.resultEquationStyle(context).copyWith(
+                color: YITheme.textPrimary(context), fontSize: 15),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              child: Text(equation,
-                  style: YITheme.resultEquationStyle(context).copyWith(
-                      color: YITheme.textPrimary(context), fontSize: 13)),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 10, 12),
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            decoration: BoxDecoration(
-              border: Border.all(color: accent.withValues(alpha: 0.4)),
-              borderRadius: BorderRadius.circular(8),
-              color: accent.withValues(alpha: 0.06),
-            ),
-            child: Text('m = $slope',
-                textAlign: TextAlign.center,
-                style: YITheme.resultEquationStyle(context).copyWith(
-                    color: accent,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          Text(
+            meta,
+            style: YITheme.subtitleStyle(context)
+                .copyWith(color: YITheme.textSecondary(context)),
           ),
         ],
       ),
@@ -582,9 +513,6 @@ class _SolutionStepsSheet extends StatelessWidget {
     final emerald = YITheme.emerald(context);
     final steps = result.steps;
 
-    // Group steps into display rows:
-    // Steps that share the same groupKey are paired side-by-side.
-    // Steps with no groupKey (or unique groupKey) render full-width.
     final rows = _groupSteps(steps, emerald);
 
     return DraggableScrollableSheet(
@@ -598,7 +526,7 @@ class _SolutionStepsSheet extends StatelessWidget {
             color: YITheme.surface(context),
             borderRadius:
                 const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(color: _cyan.withValues(alpha: 0.2)),
+            border: Border.all(color: _cyan.withValues(alpha: 0.28)),
           ),
           child: Column(
             children: [
@@ -640,8 +568,6 @@ class _SolutionStepsSheet extends StatelessWidget {
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    // Subtract the ListView's left+right padding (16+16=32)
-                    // so cards never exceed the visible area.
                     const hPad = 16.0;
                     final availableWidth = constraints.maxWidth - hPad * 2;
                     return ListView.separated(
@@ -662,8 +588,6 @@ class _SolutionStepsSheet extends StatelessWidget {
     );
   }
 
-  /// Pairs steps that share the same [groupKey] into [_SideBySideRow].
-  /// All others become [_FullWidthRow].
   List<_StepRow> _groupSteps(List<PPSolverStep> steps, Color emerald) {
     final rows = <_StepRow>[];
     final Map<String, PPSolverStep> pending = {};
@@ -687,7 +611,6 @@ class _SolutionStepsSheet extends StatelessWidget {
       }
     }
 
-    // Flush any unpaired steps as full-width
     for (final step in pending.values) {
       rows.add(_FullWidthRow(step: step, accent: _cyan));
     }
@@ -704,7 +627,6 @@ abstract class _StepRow {
   Widget build(BuildContext context, double availableWidth);
 }
 
-/// Renders a single step at full width.
 class _FullWidthRow extends _StepRow {
   final PPSolverStep step;
   final Color accent;
@@ -720,7 +642,6 @@ class _FullWidthRow extends _StepRow {
   }
 }
 
-/// Renders two steps side-by-side, each occupying exactly half the width.
 class _SideBySideRow extends _StepRow {
   final PPSolverStep left;
   final PPSolverStep right;
@@ -751,14 +672,13 @@ class _SideBySideRow extends _StepRow {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Step Card
-// Uses an explicit [width] so LaTeX always has bounded constraints.
+// THE MISSING STEP CARD WIDGET
+// This wraps your PPStepBlockWidget to create the actual cards
 // ─────────────────────────────────────────────────────────────
 
 class _StepCard extends StatelessWidget {
   final PPSolverStep step;
   final Color accent;
-  /// Explicit width — must always be a finite value so LaTeX renders correctly.
   final double width;
 
   const _StepCard({
@@ -769,70 +689,75 @@ class _StepCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      child: Container(
-        decoration: BoxDecoration(
-          color: YITheme.surface(context),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: accent.withValues(alpha: 0.22)),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Step header
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-              color: accent.withValues(alpha: 0.08),
-              child: Row(
-                children: [
-                  Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      color: accent,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text('${step.number}',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(step.title,
-                        style: YITheme.titleStyle(context)
-                            .copyWith(fontSize: 13)),
-                  ),
-                ],
-              ),
-            ),
+    // Subtract padding so the inner math blocks don't overflow horizontally
+    final innerWidth = width - 24; 
 
-            // Blocks — width is passed directly into PPStepBlockWidget so
-            // LaTeX always has a finite bounded constraint. No IntrinsicWidth,
-            // no ConstrainedBox, no SingleChildScrollView wrapping — these all
-            // cause assertion failures and kill scrolling performance.
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: step.blocks.map((b) {
-                  // innerWidth = card width minus the 12px padding on each side
-                  final innerWidth = width - 24.0;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: PPStepBlockWidget(block: b, width: innerWidth),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
+    return Container(
+      width: width,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: YITheme.surface(context).withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: accent.withValues(alpha: 0.2),
+          width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Step Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'Step ${step.number}',
+                  style: TextStyle(
+                    color: accent,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  step.title,
+                  style: TextStyle(
+                    color: YITheme.textPrimary(context),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          
+          // Step Blocks (mapped to your PPStepBlockWidget)
+          ...step.blocks.map((block) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: PPStepBlockWidget(
+                  block: block,
+                  width: innerWidth, 
+                ),
+              )),
+        ],
       ),
     );
   }

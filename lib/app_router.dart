@@ -1,3 +1,4 @@
+import 'package:calculus_system/Finals/finals_router.dart';
 import 'package:calculus_system/modules/circles/center/screen/subscreens/center_screen.dart';
 import 'package:calculus_system/modules/circles/raidus/screen/radiusui.dart';
 import 'package:calculus_system/modules/y-intercept/ui/slope_intercept_scr.dart';
@@ -19,7 +20,7 @@ import 'modules/inequalities/radical/screen/radical_screen.dart';
 import 'modules/slope/ui/slopescreen.dart';
 import 'modules/midpoint/ui/midpointscreen.dart';
 import 'modules/pointslope/ui/pointslopescreen.dart';
-
+import 'Finals/finals_picker_screen.dart';
 import 'modules/two-point slope/ui/twopointslopescreen.dart';
 import 'modules/circles/card_picker_screen.dart';
 import 'modules/circles/center_raidus_form/screen/center_radiusui.dart';
@@ -34,7 +35,23 @@ class AppRouter {
       },
     );
   }
-
+ static final GoRouter router1 = GoRouter(
+    initialLocation: '/',
+    routes: [
+      // ── Home ────────────────────────────────────────────
+      GoRoute(
+        path: '/',
+        name: 'home',
+        builder: (context, state) => const ActivationGate(
+          child: CategoryPickerScreen(),
+        ),
+      ),
+ 
+      // ── Finals routes (mounted from finals_router.dart) ─
+      ...finalsRoutes, 
+      ]
+      ); 
+ 
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     routes: [
@@ -171,8 +188,17 @@ class AppRouter {
               const FindingCenterRadiusScreen(),
             ),
           ),
+     
         ],
       ),
+           GoRoute(
+            path: '/second-sem',
+            name: 'second-sem',
+        pageBuilder: (context, state) => _fadeRoute(
+              state.pageKey,
+              const FinalsPickerScreen(),
+            ),
+          ),
     ],
   );
 }

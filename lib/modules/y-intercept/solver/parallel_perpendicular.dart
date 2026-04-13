@@ -109,11 +109,12 @@ class PPStepBlock {
 class _Line {
   final int A, B, C;
   final String display;
-  const _Line(
-      {required this.A,
-      required this.B,
-      required this.C,
-      required this.display});
+  const _Line({
+    required this.A,
+    required this.B,
+    required this.C,
+    required this.display,
+  });
 }
 
 class _SIResult {
@@ -138,10 +139,8 @@ String _fracTex(YIFraction f) {
   if (s.denominator == 1) return '${s.numerator}';
   final sign = (s.numerator < 0) ? '-' : '';
   final num = s.numerator.abs();
-  return r'$sign\frac{$num}{${s.denominator}}'
-      .replaceAll(r'$sign', sign)
-      .replaceAll(r'$num', '$num')
-      .replaceAll(r'${s.denominator}', '${s.denominator}');
+  // Clean standard Dart string interpolation (fixed from raw string hack)
+  return '$sign\\frac{$num}{${s.denominator}}';
 }
 
 String _siLatex(YIFraction m, YIFraction b) {
@@ -169,7 +168,7 @@ String _lineLatex(int A, int B, int C) {
   String t(int c, String v, bool first) {
     if (c == 0) return '';
     final abs = c.abs();
-    final vs = abs == 1 ? v : '${abs}$v';
+    final vs = abs == 1 ? v : '$abs$v';
     if (first) return c < 0 ? '-$vs' : vs;
     return c < 0 ? ' - $vs' : ' + $vs';
   }
@@ -222,11 +221,11 @@ class ParallelPerpendicularSolver {
         final tokSign = tok[0] == '-' ? -1 : 1;
         final body = tok.substring(1);
         if (body.contains('x')) {
-          final raw = body.replaceAll('x', '');
-          A += sign * tokSign * _coeff(raw);
+          final rawC = body.replaceAll('x', '');
+          A += sign * tokSign * _coeff(rawC);
         } else if (body.contains('y')) {
-          final raw = body.replaceAll('y', '');
-          B += sign * tokSign * _coeff(raw);
+          final rawC = body.replaceAll('y', '');
+          B += sign * tokSign * _coeff(rawC);
         } else {
           final v = int.tryParse(body);
           if (v == null) return;
@@ -278,7 +277,6 @@ class ParallelPerpendicularSolver {
     int n = 1;
 
     // ── STEP 1: Identify both lines ──────────────────────────
-    // Full-width — shows both lines in one card (no groupKey)
     steps.add(PPSolverStep(
       number: n++,
       title: 'Identify the given equations',
@@ -312,14 +310,12 @@ class ParallelPerpendicularSolver {
     ));
 
     // ── STEP 2 & 3: Convert each line to slope-intercept ─────
-    // These share groupKey 'convert_si' so they render side-by-side.
     final si1 = _toSI(l1);
     final si2 = _toSI(l2);
     steps.add(_buildSIStep(n++, 1, l1, si1, groupKey: 'convert_si'));
     steps.add(_buildSIStep(n++, 2, l2, si2, groupKey: 'convert_si'));
 
     // ── STEP 4: State the slopes ─────────────────────────────
-    // Full-width — compares both slopes in one card (no groupKey)
     final m1Str = si1.slope == null ? 'undefined' : _fracTex(si1.slope!);
     final m2Str = si2.slope == null ? 'undefined' : _fracTex(si2.slope!);
 
@@ -402,7 +398,6 @@ class ParallelPerpendicularSolver {
   }
 
   // ── Build slope-intercept conversion step ─────────────────
-  // Now accepts an optional [groupKey] for side-by-side pairing.
 
   static PPSolverStep _buildSIStep(
     int n,
@@ -411,7 +406,9 @@ class ParallelPerpendicularSolver {
     _SIResult si, {
     String? groupKey,
   }) {
-    final sub = lineNum == 1 ? 'Sub 1' : 'Sub 2';
+    // FIX: Removed the duplicate `final sub = lineNum == 1 ? 'Sub 1' : 'Sub 2';` line
+    final sub = lineNum == 1 ? '_1' : '_2';
+
     final lineLabel = 'Line $lineNum';
 
     if (l.B == 0) {
@@ -434,10 +431,10 @@ class ParallelPerpendicularSolver {
           ),
           PPStepBlock(
             type: PPBlockType.substitution,
+            label: 'Substituting',
             latex:
                 '${l.A}x + (${l.C}) = 0 \\\\[4pt] ${l.A}x = ${-l.C} \\\\[4pt] x = \\dfrac{${-l.C}}{${l.A}}',
             content: '',
-            label: 'Substituting',
           ),
           PPStepBlock(
             type: PPBlockType.result,

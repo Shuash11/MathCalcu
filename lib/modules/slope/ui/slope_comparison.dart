@@ -102,69 +102,53 @@ class SlopeComparisonDialog extends StatelessWidget {
 
               // ── Steps ──
               ...List.generate(
-                  steps.length,
-                  (i) => Padding(
-                        padding: EdgeInsets.only(
-                          bottom: i < steps.length - 1 ? 10 : 0,
-                        ),
-                        child: SlopeStepItem(
-                          number: i + 1,
-                          step: steps[i],
-                          isFinal: i == steps.length - 1,
-                        ),
-                      )),
+                steps.length,
+                (i) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: i < steps.length - 1 ? 10 : 0,
+                  ),
+                  child: SlopeStepItem(
+                    number: i + 1,
+                    step: steps[i],
+                    isFinal: i == steps.length - 1,
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 24),
 
-              // ── Action buttons ──
-              if (comparisonResult.isParallel ||
-                  comparisonResult.isPerpendicular) ...[
-                Row(
-                  children: [
-                    Expanded(
-                      child: _outlineButton(
-                        context: context,
-                        label: 'View Graph',
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SlopeGraphScreen(
-                                x1: result1.x1,
-                                y1: result1.y1,
-                                x2: result1.x2,
-                                y2: result1.y2,
-                                x3: result2.x1,
-                                y3: result2.y1,
-                                x4: result2.x2,
-                                y4: result2.y2,
-                              ),
+              // ── Action buttons — always show View Graph ──
+              Row(
+                children: [
+                  Expanded(
+                    child: _outlineButton(
+                      context: context,
+                      label: 'View Graph',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SlopeGraphScreen(
+                              result1: result1,
+                              result2: result2,
+                              comparison: comparisonResult,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _solidButton(
-                        context: context,
-                        label: 'Close',
-                        onTap: () => Navigator.pop(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ] else ...[
-                SizedBox(
-                  width: double.infinity,
-                  child: _solidButton(
-                    context: context,
-                    label: 'Close',
-                    onTap: () => Navigator.pop(context),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _solidButton(
+                      context: context,
+                      label: 'Close',
+                      onTap: () => Navigator.pop(context),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -172,10 +156,11 @@ class SlopeComparisonDialog extends StatelessWidget {
     );
   }
 
-  Widget _outlineButton(
-          {required BuildContext context,
-          required String label,
-          required VoidCallback onTap}) =>
+  Widget _outlineButton({
+    required BuildContext context,
+    required String label,
+    required VoidCallback onTap,
+  }) =>
       ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
@@ -197,10 +182,11 @@ class SlopeComparisonDialog extends StatelessWidget {
         ),
       );
 
-  Widget _solidButton(
-          {required BuildContext context,
-          required String label,
-          required VoidCallback onTap}) =>
+  Widget _solidButton({
+    required BuildContext context,
+    required String label,
+    required VoidCallback onTap,
+  }) =>
       ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
