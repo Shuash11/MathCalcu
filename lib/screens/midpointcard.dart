@@ -1,6 +1,6 @@
 import 'package:calculus_system/core/module_registry.dart';
-import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -16,26 +16,28 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  // Dynamic colors for light/dark mode compatibility
-  Color get _iceWhite => context.watch<ThemeProvider>().isLight
-      ? const Color(0xFF334155) // Slate 800 - Good contrast in light mode
-      : const Color(0xFFF8F9FA); // Frost white - Good in dark mode
-
-  Color get _silver => context.watch<ThemeProvider>().isLight
-      ? const Color(0xFF475569)
-      : const Color(0xFFE9ECEF);
-
-  Color get _frost => context.watch<ThemeProvider>().isLight
-      ? const Color(0xFF64748B)
-      : const Color(0xFFDEE2E6);
-
-  Color get _glow => context.watch<ThemeProvider>().isLight
-      ? const Color(0xFF0F172A)
-      : const Color(0xFFFFFFFF);
-
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
+
+    // Responsive breakpoints
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+
+    // Responsive values
+    final iconSize = isSmall ? 48.0 : 56.0;
+    final titleSize = isSmall ? 16.0 : 20.0;
+
+    final tagPadding = isSmall ? 6.0 : 8.0;
+    final padding = isSmall ? 16.0 : 24.0;
+
+    // Theme-aware colors
+    final Color accent =
+        theme.isLight ? const Color(0xFF334155) : const Color(0xFFF8F9FA);
+    final Color secondary =
+        theme.isLight ? const Color(0xFF475569) : const Color(0xFFE9ECEF);
+    final Color subtle =
+        theme.isLight ? const Color(0xFF64748B) : const Color(0xFFDEE2E6);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -48,8 +50,9 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
         },
         onTapCancel: () => setState(() => _pressed = false),
         child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1,
+          scale: _pressed ? 0.97 : 1.0,
           duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 280),
             curve: Curves.easeOutCubic,
@@ -58,138 +61,129 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: _hovered
-                    ? _iceWhite.withValues(alpha: 0.4)
-                    : _iceWhite.withValues(alpha: 0.12),
+                    ? accent.withValues(alpha: 0.25)
+                    : accent.withValues(alpha: 0.12),
                 width: _hovered ? 1.5 : 1,
               ),
               boxShadow: [
-                // Soft accent glow
                 BoxShadow(
-                  color: _hovered
-                      ? _iceWhite.withValues(alpha: 0.15)
-                      : _iceWhite.withValues(alpha: 0.05),
-                  blurRadius: _hovered ? 32 : 20,
+                  color: accent.withValues(alpha: _hovered ? 0.12 : 0.06),
+                  blurRadius: _hovered ? 28 : 20,
                   offset: const Offset(0, 8),
-                  spreadRadius: _hovered ? 2 : 0,
-                ),
-                // Inner depth shadow
-                BoxShadow(
-                  color: theme.shadowColor,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  spreadRadius: -4,
                 ),
               ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  // Animated gradient background
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOut,
-                    top: _hovered ? -20 : 0,
-                    left: _hovered ? -20 : 0,
-                    right: _hovered ? -20 : 40,
-                    bottom: _hovered ? -20 : 40,
-                    child: Container(
+                  // Decorative radial — top right
+                  Positioned(
+                    top: -20,
+                    right: -20,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: _hovered ? 100 : 80,
+                      height: _hovered ? 100 : 80,
                       decoration: BoxDecoration(
                         gradient: RadialGradient(
-                          center: Alignment.topLeft,
-                          radius: 1.2,
+                          center: Alignment.topRight,
+                          radius: 0.8,
                           colors: [
-                            _iceWhite.withValues(alpha: _hovered ? 0.08 : 0.03),
+                            accent.withValues(alpha: _hovered ? 0.12 : 0.08),
                             Colors.transparent,
                           ],
                         ),
                       ),
                     ),
                   ),
-
+                  // Decorative circle — bottom left
+                  Positioned(
+                    bottom: -20,
+                    left: -20,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: _hovered ? 110 : 90,
+                      height: _hovered ? 110 : 90,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color:
+                            secondary.withValues(alpha: _hovered ? 0.08 : 0.05),
+                      ),
+                    ),
+                  ),
                   // Content
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: EdgeInsets.all(padding),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Icon container with frosted glass effect
-                        Container(
-                          width: 60,
-                          height: 60,
+                        // Icon box
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: iconSize,
+                          height: iconSize,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                _iceWhite.withValues(alpha: 0.15),
-                                _iceWhite.withValues(alpha: 0.05),
+                                accent.withValues(alpha: _hovered ? 0.2 : 0.15),
+                                accent.withValues(alpha: 0.05),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: _hovered
-                                  ? _iceWhite.withValues(alpha: 0.5)
-                                  : _iceWhite.withValues(alpha: 0.2),
+                              color: accent.withValues(
+                                  alpha: _hovered ? 0.3 : 0.2),
                               width: 1.5,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: _iceWhite.withValues(alpha: 0.1),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
                           ),
-                          child: Center(
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              transform: _hovered
-                                  ? (Matrix4.identity()..scale(1.1))
-                                  : Matrix4.identity(),
-                              child: Icon(
-                                widget.module.icon,
-                                color: _hovered ? _glow : _silver,
-                                size: 28,
-                              ),
-                            ),
+                          child: Icon(
+                            widget.module.icon,
+                            color: secondary,
+                            size: iconSize * 0.46,
                           ),
                         ),
-                        const SizedBox(width: 18),
-
-                        // Text content
+                        SizedBox(width: isSmall ? 12 : 18),
+                        // Labels + tags
                         Expanded(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    widget.module.label,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                          _hovered ? _glow : theme.textPrimary,
-                                      letterSpacing: -0.5,
+                                  Flexible(
+                                    child: Text(
+                                      widget.module.label,
+                                      style: TextStyle(
+                                        fontSize: titleSize,
+                                        fontWeight: FontWeight.w700,
+                                        color: theme.textPrimary,
+                                        letterSpacing: -0.5,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  // Unique indicator dot
+                                  SizedBox(width: isSmall ? 6 : 8),
+                                  // Pulsing indicator
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
-                                    width: 8,
-                                    height: 8,
+                                    width: isSmall ? 6 : 7,
+                                    height: isSmall ? 6 : 7,
                                     decoration: BoxDecoration(
-                                      color: _hovered ? _glow : _frost,
+                                      color: _hovered ? accent : subtle,
                                       shape: BoxShape.circle,
                                       boxShadow: _hovered
                                           ? [
                                               BoxShadow(
-                                                color: _glow.withValues(
-                                                    alpha: 0.6),
-                                                blurRadius: 8,
-                                                spreadRadius: 2,
+                                                color: accent.withValues(
+                                                    alpha: 0.4),
+                                                blurRadius: 6,
+                                                spreadRadius: 1,
                                               ),
                                             ]
                                           : null,
@@ -197,73 +191,49 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
-                              // Mode Tags
+                              SizedBox(height: isSmall ? 6 : 8),
                               Wrap(
-                                spacing: 6,
+                                spacing: isSmall ? 4 : 6,
+                                runSpacing: isSmall ? 4 : 6,
                                 children: [
-                                  _buildTag('Midpoint', _iceWhite),
-                                  _buildTag('Endpoint', _silver),
+                                  _buildTag(
+                                      'Midpoint', accent, tagPadding, isSmall),
+                                  _buildTag('Endpoint', secondary, tagPadding,
+                                      isSmall),
                                 ],
                               ),
                             ],
                           ),
                         ),
-
-                        // Animated arrow
+                        SizedBox(width: isSmall ? 8 : 12),
+                        // Arrow
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered
                               ? (Matrix4.identity()..translate(4.0, 0.0))
                               : Matrix4.identity(),
                           child: Container(
-                            width: 36,
-                            height: 36,
+                            width: isSmall ? 32 : 36,
+                            height: isSmall ? 32 : 36,
                             decoration: BoxDecoration(
-                              color: _hovered
-                                  ? _iceWhite.withValues(alpha: 0.1)
-                                  : Colors.transparent,
                               shape: BoxShape.circle,
+                              color: _hovered
+                                  ? accent.withValues(alpha: 0.1)
+                                  : Colors.transparent,
                               border: Border.all(
-                                color: _hovered
-                                    ? _iceWhite.withValues(alpha: 0.3)
-                                    : _iceWhite.withValues(alpha: 0.1),
+                                color: accent.withValues(
+                                    alpha: _hovered ? 0.25 : 0.15),
                               ),
                             ),
                             child: Icon(
                               Icons.arrow_forward_rounded,
-                              color: _hovered
-                                  ? _glow
-                                  : _silver.withValues(alpha: 0.7),
-                              size: 18,
+                              color: secondary.withValues(
+                                  alpha: _hovered ? 0.9 : 0.7),
+                              size: isSmall ? 16 : 18,
                             ),
                           ),
                         ),
                       ],
-                    ),
-                  ),
-
-                  // Decorative corner accent
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 200),
-                      opacity: _hovered ? 0.6 : 0.2,
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          gradient: RadialGradient(
-                            center: Alignment.topRight,
-                            radius: 0.8,
-                            colors: [
-                              _iceWhite,
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ],
@@ -275,9 +245,10 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
     );
   }
 
-  Widget _buildTag(String label, Color color) {
+  Widget _buildTag(String label, Color color, double padding, bool isSmall) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding:
+          EdgeInsets.symmetric(horizontal: padding, vertical: isSmall ? 2 : 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
@@ -286,7 +257,7 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: isSmall ? 9 : 10,
           fontWeight: FontWeight.w600,
           color: color.withValues(alpha: 0.8),
         ),

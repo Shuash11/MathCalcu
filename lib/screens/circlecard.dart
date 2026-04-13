@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -13,61 +12,31 @@ class CircleModuleCard extends StatefulWidget {
   State<CircleModuleCard> createState() => _CircleModuleCardState();
 }
 
-class _CircleModuleCardState extends State<CircleModuleCard>
-    with SingleTickerProviderStateMixin {
+class _CircleModuleCardState extends State<CircleModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
-  late AnimationController _orbitController;
 
-  // Indigo + cyan theme
   static const Color _indigo = Color(0xFF6366F1);
   static const Color _cyan = Color(0xFF06B6D4);
   static const Color _teal = Color(0xFF14B8A6);
-  static const Color _softIndigo = Color(0xFFA5B4FC);
-
-  @override
-  void initState() {
-    super.initState();
-    _orbitController = AnimationController(
-      duration: const Duration(milliseconds: 3000),
-      vsync: this,
-    );
-    // Don't start animation automatically - wait for hover
-  }
-
-  @override
-  void dispose() {
-    _orbitController.dispose();
-    super.dispose();
-  }
-
-  void _startAnimation() {
-    if (!_orbitController.isAnimating) {
-      _orbitController.repeat();
-    }
-  }
-
-  void _stopAnimation() {
-    if (_orbitController.isAnimating) {
-      _orbitController.stop();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+
+    // Responsive
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+
+    final iconSize = isSmall ? 48.0 : 56.0;
+    final titleSize = isSmall ? 16.0 : 20.0;
+    final subtitleSize = isSmall ? 12.0 : 13.0;
+    final padding = isSmall ? 16.0 : 24.0;
+    final pillPadding = isSmall ? 6.0 : 8.0;
+
     return MouseRegion(
-      onEnter: (_) {
-        setState(() {
-          _hovered = true;
-          _startAnimation();
-        });
-      },
-      onExit: (_) {
-        setState(() {
-          _hovered = false;
-          _stopAnimation();
-        });
-      },
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) {
@@ -76,270 +45,164 @@ class _CircleModuleCardState extends State<CircleModuleCard>
         },
         onTapCancel: () => setState(() => _pressed = false),
         child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1,
+          scale: _pressed ? 0.97 : 1.0,
           duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 280),
             curve: Curves.easeOutCubic,
             decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().card,
+              color: theme.card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: _hovered
-                    ? _cyan.withValues(alpha: 0.5)
+                    ? _indigo.withValues(alpha: 0.45)
                     : _indigo.withValues(alpha: 0.3),
                 width: _hovered ? 2 : 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: _hovered
-                      ? _cyan.withValues(alpha: 0.25)
-                      : _indigo.withValues(alpha: 0.15),
-                  blurRadius: _hovered ? 40 : 24,
+                  color: _indigo.withValues(alpha: _hovered ? 0.18 : 0.1),
+                  blurRadius: _hovered ? 32 : 24,
                   offset: const Offset(0, 8),
-                  spreadRadius: _hovered ? 4 : 0,
-                ),
-                BoxShadow(
-                  color: context.watch<ThemeProvider>().shadowColor,
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                  spreadRadius: -4,
                 ),
               ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  // Animated orbits - only when hovered
-                  if (_hovered)
-                    Positioned.fill(
-                      child: AnimatedBuilder(
-                        animation: _orbitController,
-                        builder: (context, child) {
-                          return CustomPaint(
-                            painter: _OrbitPainter(
-                              progress: _orbitController.value,
-                              color1: _indigo,
-                              color2: _cyan,
-                              color3: _teal,
-                              hovered: _hovered,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-
-                  // Static decoration when not hovered
-                  if (!_hovered)
-                    Positioned(
-                      top: -20,
-                      right: -20,
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _indigo.withValues(alpha: 0.08),
-                        ),
-                      ),
-                    ),
-
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    top: _hovered ? -30 : 0,
-                    right: _hovered ? -30 : 0,
+                  // Decorative circles
+                  Positioned(
+                    top: -20,
+                    right: -20,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      width: _hovered ? 150 : 100,
-                      height: _hovered ? 150 : 100,
+                      width: _hovered ? 120 : 100,
+                      height: _hovered ? 120 : 100,
                       decoration: BoxDecoration(
-                        gradient: RadialGradient(
-                          colors: [
-                            _cyan.withValues(alpha: _hovered ? 0.2 : 0.1),
-                            Colors.transparent,
-                          ],
-                        ),
                         shape: BoxShape.circle,
+                        color:
+                            _indigo.withValues(alpha: _hovered ? 0.12 : 0.08),
                       ),
                     ),
                   ),
-
+                  Positioned(
+                    bottom: -20,
+                    left: -20,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: _hovered ? 110 : 90,
+                      height: _hovered ? 110 : 90,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _cyan.withValues(alpha: _hovered ? 0.1 : 0.06),
+                      ),
+                    ),
+                  ),
+                  // Content
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: EdgeInsets.all(padding),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // Icon box — circle shape
                         AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          width: 60,
-                          height: 60,
+                          duration: const Duration(milliseconds: 200),
+                          width: iconSize,
+                          height: iconSize,
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
                                 _indigo.withValues(
-                                    alpha: _hovered ? 0.3 : 0.15),
-                                _cyan.withValues(alpha: _hovered ? 0.1 : 0.05),
+                                    alpha: _hovered ? 0.2 : 0.15),
+                                _cyan.withValues(alpha: 0.05),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(30),
+                            shape: BoxShape.circle,
                             border: Border.all(
-                              color: _hovered
-                                  ? _cyan.withValues(alpha: 0.5)
-                                  : _indigo.withValues(alpha: 0.3),
-                              width: 2,
+                              color: _indigo.withValues(
+                                  alpha: _hovered ? 0.4 : 0.3),
+                              width: 1.5,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: _cyan.withValues(
-                                    alpha: _hovered ? 0.3 : 0.15),
-                                blurRadius: _hovered ? 20 : 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
                           ),
-                          child: Center(
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              transform: _hovered
-                                  ? (Matrix4.identity()..scale(1.1))
-                                  : Matrix4.identity(),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    width: _hovered ? 50 : 44,
-                                    height: _hovered ? 50 : 44,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: _cyan.withValues(
-                                            alpha: _hovered ? 0.4 : 0.2),
-                                        width: 2,
-                                      ),
-                                    ),
-                                  ),
-                                  Icon(
-                                    widget.module.icon,
-                                    color: _hovered ? _softIndigo : _cyan,
-                                    size: 24,
-                                  ),
-                                ],
-                              ),
-                            ),
+                          child: Icon(
+                            widget.module.icon,
+                            color: _cyan,
+                            size: iconSize * 0.43,
                           ),
                         ),
-                        const SizedBox(width: 18),
+                        SizedBox(width: isSmall ? 12 : 18),
+                        // Labels + pills
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Row(
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      widget.module.label,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600,
-                                        color: _hovered
-                                            ? _softIndigo
-                                            : context
-                                                .watch<ThemeProvider>()
-                                                .textPrimary,
-                                        letterSpacing: -0.5,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: _cyan.withValues(
-                                          alpha: _hovered ? 0.2 : 0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: _cyan.withValues(
-                                            alpha: _hovered ? 0.5 : 0.3),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        _buildDot(_indigo, 0),
-                                        const SizedBox(width: 3),
-                                        _buildDot(_cyan, 1),
-                                        const SizedBox(width: 3),
-                                        _buildDot(_teal, 2),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 200),
+                              Text(
+                                widget.module.label,
                                 style: TextStyle(
-                                  fontSize: 13,
-                                  color: _hovered
-                                      ? _softIndigo.withValues(alpha: 0.7)
-                                      : context
-                                          .watch<ThemeProvider>()
-                                          .textSecondary,
+                                  fontSize: titleSize,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.textPrimary,
+                                  letterSpacing: -0.5,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                              SizedBox(height: isSmall ? 2 : 4),
+                              Text(
+                                widget.module.subtitle,
+                                style: TextStyle(
+                                  fontSize: subtitleSize,
+                                  color: theme.textSecondary,
                                   height: 1.3,
                                 ),
-                                child: Text(widget.module.subtitle),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 8),
-                              AnimatedOpacity(
-                                duration: const Duration(milliseconds: 300),
-                                opacity: _hovered ? 1 : 0.7,
-                                child: Wrap(
-                                  spacing: 6,
-                                  children: [
-                                    _buildTypePill('Standard', _indigo),
-                                    _buildTypePill('General', _cyan),
-                                    _buildTypePill('Center', _teal),
-                                  ],
-                                ),
+                              SizedBox(height: isSmall ? 6 : 8),
+                              Wrap(
+                                spacing: isSmall ? 4 : 6,
+                                runSpacing: isSmall ? 4 : 6,
+                                children: [
+                                  _buildTypePill('Standard', _indigo,
+                                      pillPadding, isSmall),
+                                  _buildTypePill(
+                                      'General', _cyan, pillPadding, isSmall),
+                                  _buildTypePill(
+                                      'Center', _teal, pillPadding, isSmall),
+                                ],
                               ),
                             ],
                           ),
                         ),
+                        SizedBox(width: isSmall ? 8 : 12),
+                        // Arrow
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered
-                              ? (Matrix4.identity()..translate(6.0, 0.0))
+                              ? (Matrix4.identity()..translate(4.0, 0.0))
                               : Matrix4.identity(),
                           child: Container(
-                            width: 40,
-                            height: 40,
+                            width: isSmall ? 32 : 36,
+                            height: isSmall ? 32 : 36,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  _indigo.withValues(
-                                      alpha: _hovered ? 0.2 : 0.05),
-                                  _cyan.withValues(
-                                      alpha: _hovered ? 0.1 : 0.02),
-                                ],
-                              ),
                               shape: BoxShape.circle,
+                              color: _hovered
+                                  ? _indigo.withValues(alpha: 0.1)
+                                  : Colors.transparent,
                               border: Border.all(
-                                color: _hovered
-                                    ? _cyan.withValues(alpha: 0.4)
-                                    : _indigo.withValues(alpha: 0.2),
-                                width: 1.5,
+                                color: _indigo.withValues(
+                                    alpha: _hovered ? 0.3 : 0.2),
                               ),
                             ),
                             child: Icon(
                               Icons.arrow_forward_rounded,
-                              color: _hovered
-                                  ? _softIndigo
-                                  : _cyan.withValues(alpha: 0.7),
-                              size: 20,
+                              color:
+                                  _cyan.withValues(alpha: _hovered ? 0.9 : 0.7),
+                              size: isSmall ? 16 : 18,
                             ),
                           ),
                         ),
@@ -355,95 +218,24 @@ class _CircleModuleCardState extends State<CircleModuleCard>
     );
   }
 
-  Widget _buildDot(Color color, int index) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: 5,
-      height: 5,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: _hovered
-            ? [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.6),
-                  blurRadius: 4,
-                  spreadRadius: 1,
-                ),
-              ]
-            : null,
-      ),
-    );
-  }
-
-  Widget _buildTypePill(String label, Color color) {
+  Widget _buildTypePill(
+      String label, Color color, double padding, bool isSmall) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding:
+          EdgeInsets.symmetric(horizontal: padding, vertical: isSmall ? 2 : 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: isSmall ? 9 : 10,
           fontWeight: FontWeight.w600,
           color: color.withValues(alpha: 0.9),
         ),
       ),
     );
-  }
-}
-
-class _OrbitPainter extends CustomPainter {
-  final double progress;
-  final Color color1;
-  final Color color2;
-  final Color color3;
-  final bool hovered;
-
-  _OrbitPainter({
-    required this.progress,
-    required this.color1,
-    required this.color2,
-    required this.color3,
-    required this.hovered,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width * 0.8, size.height * 0.5);
-    final radius = hovered ? 50.0 : 35.0;
-
-    final pathPaint = Paint()
-      ..color = color2.withValues(alpha: 0.1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    canvas.drawCircle(center, radius, pathPaint);
-
-    final angles = [0.0, 2.094, 4.189];
-    final colors = [color1, color2, color3];
-
-    for (int i = 0; i < 3; i++) {
-      final angle = angles[i] + (progress * 2 * pi);
-      final double x = center.dx + radius * cos(angle);
-      final double y = center.dy + radius * sin(angle);
-
-      final glowPaint = Paint()
-        ..color = colors[i].withValues(alpha: hovered ? 0.4 : 0.2)
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(Offset(x, y), hovered ? 8 : 5, glowPaint);
-
-      final dotPaint = Paint()
-        ..color = colors[i]
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(Offset(x, y), hovered ? 4 : 3, dotPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _OrbitPainter oldDelegate) {
-    return progress != oldDelegate.progress || hovered != oldDelegate.hovered;
   }
 }

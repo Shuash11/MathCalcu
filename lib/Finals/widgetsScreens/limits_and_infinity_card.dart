@@ -63,218 +63,246 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(22),
-              child: Stack(
-                children: [
-                  // ✨ Subtle background glow (top-right)
-                  Positioned(
-                    top: -30,
-                    right: -30,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 400),
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            FinalsTheme.tertiary.withValues(
-                              alpha: _hovered ? 0.25 : 0.12,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // --- RESPONSIVE BREAKPOINTS ---
+                  final bool isMobile = constraints.maxWidth < 600;
+                  
+                  // Dynamic Sizes
+                  final double horizontalPadding = isMobile ? 16.0 : 20.0;
+                  final double verticalPadding = isMobile ? 16.0 : 20.0;
+                  final double iconBoxSize = isMobile ? 50.0 : 60.0;
+                  final double spacing = isMobile ? 14.0 : 18.0;
+                  final double titleFontSize = isMobile ? 16.0 : 18.0;
+                  final double subFontSize = isMobile ? 12.0 : 13.0;
+
+                  return Stack(
+                    children: [
+                      // ✨ Subtle background glow (top-right)
+                      Positioned(
+                        top: -30,
+                        right: -30,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 400),
+                          width: isMobile ? 100 : 120, // Slightly smaller on mobile
+                          height: isMobile ? 100 : 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                FinalsTheme.tertiary.withValues(
+                                  alpha: _hovered ? 0.25 : 0.12,
+                                ),
+                                Colors.transparent,
+                              ],
                             ),
-                            Colors.transparent,
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
 
-                  // 🔥 Content
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        // 🌅 LEFT ICON BOX - matching reference style
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            gradient: _hovered
-                                ? const LinearGradient(
-                                    colors: [
-                                      FinalsTheme.secondary,
-                                      FinalsTheme.primary,
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  )
-                                : LinearGradient(
-                                    colors: [
-                                      FinalsTheme.secondary.withValues(alpha: 0.2),
-                                      FinalsTheme.primary.withValues(alpha: 0.1),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: FinalsTheme.secondary.withValues(
-                                alpha: _hovered ? 0.8 : 0.35,
-                              ),
-                              width: _hovered ? 2 : 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: FinalsTheme.secondary.withValues(
-                                  alpha: _hovered ? 0.4 : 0.2,
-                                ),
-                                blurRadius: _hovered ? 16 : 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: Icon(
-                                Icons.all_inclusive_rounded,
-                                key: ValueKey(_hovered),
-                                color: _hovered
-                                    ? Colors.white
-                                    : FinalsTheme.secondary,
-                                size: 28,
-                              ),
-                            ),
-                          ),
+                      // 🔥 Content
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                          vertical: verticalPadding,
                         ),
+                        child: Row(
+                          children: [
+                            // 🌅 LEFT ICON BOX
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              width: iconBoxSize,
+                              height: iconBoxSize,
+                              decoration: BoxDecoration(
+                                gradient: _hovered
+                                    ? const LinearGradient(
+                                        colors: [
+                                          FinalsTheme.secondary,
+                                          FinalsTheme.primary,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      )
+                                    : LinearGradient(
+                                        colors: [
+                                          FinalsTheme.secondary.withValues(alpha: 0.2),
+                                          FinalsTheme.primary.withValues(alpha: 0.1),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: FinalsTheme.secondary.withValues(
+                                    alpha: _hovered ? 0.8 : 0.35,
+                                  ),
+                                  width: _hovered ? 2 : 1.5,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: FinalsTheme.secondary.withValues(
+                                      alpha: _hovered ? 0.4 : 0.2,
+                                    ),
+                                    blurRadius: _hovered ? 16 : 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 200),
+                                  child: Icon(
+                                    Icons.all_inclusive_rounded,
+                                    key: ValueKey(_hovered),
+                                    color: _hovered
+                                        ? Colors.white
+                                        : FinalsTheme.secondary,
+                                    size: isMobile ? 24 : 28,
+                                  ),
+                                ),
+                              ),
+                            ),
 
-                        const SizedBox(width: 18),
+                            SizedBox(width: spacing),
 
-                        // Texts
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Title with inline infinity badge
-                              Row(
+                            // Texts & Badges
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  // Title with inline infinity badge
+                                  Row(
+                                    children: [
+                                      Flexible( // Flexible prevents overflow
+                                        child: AnimatedDefaultTextStyle(
+                                          duration: const Duration(milliseconds: 200),
+                                          style: TextStyle(
+                                            fontSize: titleFontSize,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: -0.4,
+                                            color: _hovered
+                                                ? FinalsTheme.secondary
+                                                : theme.textPrimary,
+                                          ),
+                                          child: const Text("Limits at Infinity"),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      // Small infinity badge
+                                      AnimatedContainer(
+                                        duration: const Duration(milliseconds: 200),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: isMobile ? 6 : 6,
+                                          vertical: isMobile ? 2 : 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: FinalsTheme.danger.withValues(
+                                            alpha: _hovered ? 0.2 : 0.12,
+                                          ),
+                                          borderRadius: BorderRadius.circular(6),
+                                          border: Border.all(
+                                            color: FinalsTheme.danger.withValues(
+                                              alpha: _hovered ? 0.5 : 0.3,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "∞",
+                                          style: TextStyle(
+                                            fontSize: isMobile ? 11 : 12,
+                                            fontWeight: FontWeight.w900,
+                                            color: FinalsTheme.danger.withValues(
+                                              alpha: _hovered ? 1.0 : 0.8,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: isMobile ? 4 : 6),
+
+                                  // Subtitle
                                   AnimatedDefaultTextStyle(
                                     duration: const Duration(milliseconds: 200),
                                     style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: -0.4,
+                                      fontSize: subFontSize,
+                                      height: 1.4,
                                       color: _hovered
-                                          ? FinalsTheme.secondary
-                                          : theme.textPrimary,
+                                          ? FinalsTheme.secondary.withValues(alpha: 0.7)
+                                          : theme.textSecondary,
                                     ),
-                                    child: const Text("Limits at Infinity"),
+                                    child: const Text(
+                                      "Horizontal asymptotes, end behavior & rational functions at ∞",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  // Small infinity badge
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: FinalsTheme.danger.withValues(
-                                        alpha: _hovered ? 0.2 : 0.12,
+
+                                  SizedBox(height: isMobile ? 8 : 10),
+
+                                  // Badge row - Changed to Wrap
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 6,
+                                    children: [
+                                      _pillBadge(
+                                        "Advanced",
+                                        FinalsTheme.secondary,
+                                        Icons.trending_up_rounded,
+                                        isMobile,
                                       ),
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                        color: FinalsTheme.danger.withValues(
-                                          alpha: _hovered ? 0.5 : 0.3,
-                                        ),
+                                      _pillBadge(
+                                        "Critical",
+                                        FinalsTheme.danger,
+                                        Icons.warning_amber_rounded,
+                                        isMobile,
                                       ),
-                                    ),
-                                    child: Text(
-                                      "∞",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w900,
-                                        color: FinalsTheme.danger.withValues(
-                                          alpha: _hovered ? 1.0 : 0.8,
-                                        ),
-                                      ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
+                            ),
 
-                              const SizedBox(height: 6),
-
-                              // Subtitle
-                              AnimatedDefaultTextStyle(
+                            // Arrow on right - Hide on mobile
+                            if (!isMobile)
+                              AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  height: 1.4,
-                                  color: _hovered
-                                      ? FinalsTheme.secondary.withValues(alpha: 0.7)
-                                      : theme.textSecondary,
-                                ),
-                                child: const Text(
-                                  "Horizontal asymptotes, end behavior & rational functions at ∞",
-                                ),
-                              ),
-
-                              const SizedBox(height: 10),
-
-                              // Badge row
-                              Row(
-                                children: [
-                                  _pillBadge(
-                                    "Advanced",
-                                    FinalsTheme.secondary,
-                                    Icons.trending_up_rounded,
+                                transform: _hovered
+                                    ? (Matrix4.identity()..translate(4.0, 0.0))
+                                    : Matrix4.identity(),
+                                margin: const EdgeInsets.only(left: 12),
+                                child: Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                    color: _hovered
+                                        ? FinalsTheme.secondary.withValues(alpha: 0.15)
+                                        : Colors.transparent,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: FinalsTheme.secondary.withValues(
+                                        alpha: _hovered ? 0.5 : 0.25,
+                                      ),
+                                      width: 1.5,
+                                    ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  _pillBadge(
-                                    "Critical",
-                                    FinalsTheme.danger,
-                                    Icons.warning_amber_rounded,
+                                  child: Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    color: _hovered
+                                        ? FinalsTheme.secondary
+                                        : FinalsTheme.secondary.withValues(alpha: 0.5),
+                                    size: 16,
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Arrow on right
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          transform: _hovered
-                              ? (Matrix4.identity()..translate(4.0, 0.0))
-                              : Matrix4.identity(),
-                          child: Container(
-                            width: 34,
-                            height: 34,
-                            decoration: BoxDecoration(
-                              color: _hovered
-                                  ? FinalsTheme.secondary.withValues(alpha: 0.15)
-                                  : Colors.transparent,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: FinalsTheme.secondary.withValues(
-                                  alpha: _hovered ? 0.5 : 0.25,
                                 ),
-                                width: 1.5,
                               ),
-                            ),
-                            child: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: _hovered
-                                  ? FinalsTheme.secondary
-                                  : FinalsTheme.secondary.withValues(alpha: 0.5),
-                              size: 16,
-                            ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -283,10 +311,13 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
     );
   }
 
-  Widget _pillBadge(String text, Color color, IconData icon) {
+  Widget _pillBadge(String text, Color color, IconData icon, bool isMobile) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8 : 10, 
+        vertical: isMobile ? 4 : 5
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
@@ -300,14 +331,14 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
         children: [
           Icon(
             icon,
-            size: 12,
+            size: isMobile ? 10 : 12,
             color: color,
           ),
           const SizedBox(width: 4),
           Text(
             text,
             style: TextStyle(
-              fontSize: 11,
+              fontSize: isMobile ? 10 : 11,
               fontWeight: FontWeight.w700,
               color: color,
               letterSpacing: 0.3,
