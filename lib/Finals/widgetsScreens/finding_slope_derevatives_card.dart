@@ -25,10 +25,17 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Calculate a scale factor (Clamped so it doesn't get too tiny or too big)
-        final double s = (constraints.maxWidth / _baseDesignWidth).clamp(0.7, 1.2);
+        // FIX: Handle Unbounded Constraints (e.g. when placed in a Row)
+        // If the width is infinite, we default to our base width to prevent crashes.
+        final double effectiveWidth = constraints.hasInfiniteWidth 
+            ? _baseDesignWidth 
+            : constraints.maxWidth;
 
-        return MouseRegion(
+        // Calculate a scale factor (Clamped so it doesn't get too tiny or too big)
+        final double s = (effectiveWidth / _baseDesignWidth).clamp(0.7, 1.2);
+
+        // The content widget
+        Widget content = MouseRegion(
           onEnter: (_) => setState(() => _hovered = true),
           onExit: (_) => setState(() => _hovered = false),
           child: GestureDetector(
@@ -51,7 +58,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                     color: FinalsTheme.danger.withValues(
                       alpha: _hovered ? 0.6 : 0.25,
                     ),
-                    width: _hovered ? 2 : 1,
+                    width: _hovered ? 2 * s : 1 * s, // Scaled border width
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -99,7 +106,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                       Padding(
                         padding: EdgeInsets.all(20 * s),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start, // Align top to allow text expansion
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // 🌅 LEFT ICON BOX
                             AnimatedContainer(
@@ -165,7 +172,6 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   // Title with m badge
-                                  // CHANGED: Row -> Wrap to allow text to move to next line
                                   Wrap(
                                     crossAxisAlignment: WrapCrossAlignment.center,
                                     spacing: 8 * s,
@@ -181,7 +187,6 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                                           color: _hovered
                                               ? FinalsTheme.danger
                                               : theme.textPrimary,
-                                          // No maxLines constraint here anymore
                                         ),
                                         child: const Text("Slope Using Derivatives"),
                                       ),
@@ -221,7 +226,6 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                                   SizedBox(height: 6 * s),
 
                                   // Subtitle
-                                  // CHANGED: Removed maxLines and overflow to allow full text
                                   AnimatedDefaultTextStyle(
                                     duration: const Duration(milliseconds: 200),
                                     style: TextStyle(
@@ -239,7 +243,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                                   SizedBox(height: 10 * s),
 
                                   // Badge row
-                                  Wrap( // Also using Wrap here for extra safety
+                                  Wrap(
                                     spacing: 8 * s,
                                     runSpacing: 6 * s,
                                     children: [
@@ -262,7 +266,6 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                             ),
 
                             // Arrow button
-                            // Hidden on very small scales to prevent overlap with expanding text
                             if (s > 0.85) 
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
@@ -303,6 +306,14 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
             ),
           ),
         );
+
+        // If constraints were infinite, wrap in SizedBox to give it a defined width.
+        // This prevents the "BoxConstraints forces an infinite width" crash.
+        if (constraints.hasInfiniteWidth) {
+          return SizedBox(width: effectiveWidth, child: content);
+        }
+
+        return content;
       },
     );
   }

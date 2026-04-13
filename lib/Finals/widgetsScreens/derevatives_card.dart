@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
@@ -27,7 +29,7 @@ class _FinalsDerivativesCardState extends State<FinalsDerivativesCard> {
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) {
           setState(() => _pressed = false);
-          // context.push(widget.module.route);
+        context.go('/second-sem/derivatives');
         },
         onTapCancel: () => setState(() => _pressed = false),
         child: AnimatedScale(

@@ -28,7 +28,7 @@ class FinalsModuleRegistry {
     const FinalsModuleEntry(
       label: 'Derivatives',
       subtitle: 'Power rule · Product rule · Quotient rule · Chain rule',
-      route: '/derivatives',
+      route: '/second-sem/derivatives',
       icon: Icons.trending_up_rounded,
       accent: Color(0xFFFFD166), // Tertiary soft yellow
     ),
