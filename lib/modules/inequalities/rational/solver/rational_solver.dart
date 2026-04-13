@@ -59,6 +59,7 @@ class RationalSolver {
             r'}{' +
             denStr +
             r'} - ' +
+            // ignore: prefer_interpolation_to_compose_strings
             rhsFmt +
             ' ' +
             _tex(p.op) +
@@ -80,6 +81,7 @@ class RationalSolver {
             r'}{' +
             denStr +
             r'} ' +
+            // ignore: prefer_interpolation_to_compose_strings
             _tex(p.op) +
             ' 0',
       ));
@@ -96,6 +98,7 @@ class RationalSolver {
             r')}{' +
             denStr +
             r'} ' +
+            // ignore: prefer_interpolation_to_compose_strings
             _tex(p.op) +
             ' 0',
       ));
@@ -105,6 +108,7 @@ class RationalSolver {
       stepNumber: n++,
       title: 'Standard Form',
       explanation: 'Simplify the numerator to reach standard form.',
+      // ignore: prefer_interpolation_to_compose_strings
       latex: r'\frac{' + combStr + r'}{' + denStr + r'} ' + _tex(p.op) + ' 0',
     ));
 

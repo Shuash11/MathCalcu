@@ -16,13 +16,23 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  // Pink accent colors
   static const Color pinkAccent = Color(0xFFFF6B6B);
-  static const Color deepPink = Color(0xFFFF4757);
   static const Color lightPink = Color(0xFFFFB8B8);
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    
+    // Responsive breakpoints
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+    
+    // Responsive sizing
+    final iconSize = isSmall ? 48.0 : 56.0;
+    final titleSize = isSmall ? 16.0 : 20.0;
+    final subtitleSize = isSmall ? 12.0 : 13.0;
+    final padding = isSmall ? 16.0 : 24.0;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -41,236 +51,157 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
             duration: const Duration(milliseconds: 280),
             curve: Curves.easeOutCubic,
             decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().card,
+              color: theme.card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: _hovered
-                    ? pinkAccent.withValues(alpha: 0.4)
+                color: _hovered 
+                    ? pinkAccent.withValues(alpha: 0.35)
                     : pinkAccent.withValues(alpha: 0.18),
                 width: _hovered ? 2 : 1,
               ),
               boxShadow: [
-                // Enhanced shadow on hover
                 BoxShadow(
-                  color: _hovered
-                      ? pinkAccent.withValues(alpha: 0.2)
-                      : pinkAccent.withValues(alpha: 0.08),
-                  blurRadius: _hovered ? 36 : 24,
+                  color: pinkAccent.withValues(alpha: _hovered ? 0.15 : 0.08),
+                  blurRadius: _hovered ? 32 : 24,
                   offset: const Offset(0, 8),
-                  spreadRadius: _hovered ? 2 : 0,
-                ),
-                // Inner depth shadow
-                BoxShadow(
-                  color: context.watch<ThemeProvider>().shadowColor,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  spreadRadius: -4,
                 ),
               ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
+              // REMOVED: Fixed height - now uses intrinsic height
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  // Animated background circle (top right)
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOut,
-                    top: _hovered ? -40 : -30,
-                    right: _hovered ? -40 : -30,
+                  // Decorative circle — top right
+                  Positioned(
+                    top: -30,
+                    right: -30,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      width: _hovered ? 160 : 120,
-                      height: _hovered ? 160 : 120,
+                      width: _hovered ? 140 : 120,
+                      height: _hovered ? 140 : 120,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: pinkAccent.withValues(
-                            alpha: _hovered ? 0.12 : 0.07),
+                        color: pinkAccent.withValues(alpha: _hovered ? 0.1 : 0.07),
                       ),
                     ),
                   ),
-
-                  // Animated background circle (bottom left)
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOut,
-                    bottom: _hovered ? -30 : -20,
-                    left: _hovered ? -30 : -20,
+                  // Decorative circle — bottom left
+                  Positioned(
+                    bottom: -20,
+                    left: -20,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      width: _hovered ? 140 : 100,
-                      height: _hovered ? 140 : 100,
+                      width: _hovered ? 120 : 100,
+                      height: _hovered ? 120 : 100,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color:
-                            pinkAccent.withValues(alpha: _hovered ? 0.1 : 0.05),
+                        color: pinkAccent.withValues(alpha: _hovered ? 0.08 : 0.05),
                       ),
                     ),
                   ),
-
-                  // Additional glow circle on hover
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 500),
-                    top: _hovered ? 30 : 50,
-                    right: _hovered ? 80 : 60,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: _hovered ? 0.5 : 0,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: deepPink.withValues(alpha: 0.2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: pinkAccent.withValues(alpha: 0.3),
-                              blurRadius: 20,
-                              spreadRadius: 5,
-                            ),
-                          ],
+                  // Slope line decoration — bottom left (hidden on small screens)
+                  if (!isSmall)
+                    Positioned(
+                      bottom: 20,
+                      left: 20,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 200),
+                        opacity: _hovered ? 0.4 : 0.2,
+                        child: CustomPaint(
+                          size: const Size(40, 30),
+                          painter: _SlopeLinePainter(
+                            color: _hovered ? pinkAccent : lightPink,
+                            strokeWidth: _hovered ? 3 : 2,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-
-                  // Rising slope indicator on hover
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    bottom: _hovered ? 20 : 10,
-                    left: 20,
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: _hovered ? 0.6 : 0.2,
-                      child: CustomPaint(
-                        size: const Size(40, 30),
-                        painter: _SlopeLinePainter(
-                          color:
-                              lightPink.withValues(alpha: _hovered ? 0.8 : 0.4),
-                          strokeWidth: _hovered ? 3 : 2,
-                        ),
-                      ),
-                    ),
-                  ),
-
                   // Content
                   Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: EdgeInsets.all(padding),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Icon container with hover effects
+                        // Icon box with hover animation
                         AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          width: 56,
-                          height: 56,
+                          duration: const Duration(milliseconds: 200),
+                          width: iconSize,
+                          height: iconSize,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                pinkAccent.withValues(
-                                    alpha: _hovered ? 0.2 : 0.12),
-                                pinkAccent.withValues(
-                                    alpha: _hovered ? 0.1 : 0.05),
+                                pinkAccent.withValues(alpha: _hovered ? 0.18 : 0.12),
+                                pinkAccent.withValues(alpha: _hovered ? 0.08 : 0.05),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: _hovered
-                                  ? pinkAccent.withValues(alpha: 0.5)
-                                  : pinkAccent.withValues(alpha: 0.25),
-                              width: _hovered ? 2 : 1,
+                              color: pinkAccent.withValues(alpha: _hovered ? 0.4 : 0.25),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: pinkAccent.withValues(
-                                    alpha: _hovered ? 0.3 : 0.15),
-                                blurRadius: _hovered ? 16 : 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
                           ),
-                          child: Center(
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              transform: _hovered
-                                  ? (Matrix4.identity()
-                                    ..scale(1.15)
-                                    ..rotateZ(-0.1))
-                                  : Matrix4.identity(),
-                              child: Icon(
-                                widget.module.icon,
-                                color: _hovered ? lightPink : pinkAccent,
-                                size: 26,
-                              ),
-                            ),
+                          child: Icon(
+                            widget.module.icon,
+                            color: _hovered ? pinkAccent : pinkAccent.withValues(alpha: 0.9),
+                            size: iconSize * 0.46,
                           ),
                         ),
-                        const SizedBox(width: 18),
-
-                        // Text content with hover animations
+                        SizedBox(width: isSmall ? 12 : 18),
+                        // Labels with overflow protection
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 200),
+                              Text(
+                                widget.module.label,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: titleSize,
                                   fontWeight: FontWeight.w600,
-                                  color: _hovered
-                                      ? lightPink
-                                      : context
-                                          .watch<ThemeProvider>()
-                                          .textPrimary,
+                                  color: theme.textPrimary,
                                   letterSpacing: -0.4,
                                 ),
-                                child: Text(widget.module.label),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4),
-                              AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 200),
+                              SizedBox(height: isSmall ? 2 : 4),
+                              Text(
+                                widget.module.subtitle,
                                 style: TextStyle(
-                                  fontSize: 13,
-                                  color: _hovered
-                                      ? lightPink.withValues(alpha: 0.7)
-                                      : context
-                                          .watch<ThemeProvider>()
-                                          .textSecondary,
+                                  fontSize: subtitleSize,
+                                  color: theme.textSecondary,
                                 ),
-                                child: Text(widget.module.subtitle),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
                         ),
-
-                        // Animated arrow
+                        SizedBox(width: isSmall ? 8 : 12),
+                        // Arrow with hover animation
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
-                          transform: _hovered
+                          transform: _hovered 
                               ? (Matrix4.identity()..translate(4.0, 0.0))
                               : Matrix4.identity(),
                           child: Container(
-                            width: 36,
-                            height: 36,
+                            width: isSmall ? 32 : 36,
+                            height: isSmall ? 32 : 36,
                             decoration: BoxDecoration(
-                              color: _hovered
-                                  ? pinkAccent.withValues(alpha: 0.15)
-                                  : Colors.transparent,
                               shape: BoxShape.circle,
+                              color: _hovered ? pinkAccent.withValues(alpha: 0.12) : Colors.transparent,
                               border: Border.all(
-                                color: _hovered
-                                    ? pinkAccent.withValues(alpha: 0.4)
-                                    : pinkAccent.withValues(alpha: 0.2),
+                                color: pinkAccent.withValues(alpha: _hovered ? 0.35 : 0.2),
                                 width: 1.5,
                               ),
                             ),
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
-                              color: _hovered
-                                  ? lightPink
-                                  : pinkAccent.withValues(alpha: 0.6),
-                              size: 16,
+                              color: _hovered ? pinkAccent : pinkAccent.withValues(alpha: 0.6),
+                              size: isSmall ? 16 : 16,
                             ),
                           ),
                         ),
@@ -287,12 +218,11 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
   }
 }
 
-// Custom painter for slope line decoration
 class _SlopeLinePainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
 
-  _SlopeLinePainter({required this.color, required this.strokeWidth});
+  const _SlopeLinePainter({required this.color, required this.strokeWidth});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -301,24 +231,18 @@ class _SlopeLinePainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
 
-    // Draw rising line (positive slope)
-    canvas.drawLine(
-      Offset(0, size.height),
-      Offset(size.width, 0),
-      paint,
-    );
-
-    // Draw arrow at top
-    final arrowPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
+    canvas.drawLine(Offset(0, size.height), Offset(size.width, 0), paint);
 
     final path = Path()
       ..moveTo(size.width - 8, 0)
       ..lineTo(size.width, 0)
       ..lineTo(size.width, 8)
       ..close();
-    canvas.drawPath(path, arrowPaint);
+    canvas.drawPath(
+        path,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill);
   }
 
   @override

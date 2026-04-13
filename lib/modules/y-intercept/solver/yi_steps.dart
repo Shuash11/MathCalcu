@@ -139,7 +139,7 @@ List<YISolverStep> buildSlopeStepsFromStandard(
             '$yOnlyLatex = $C ${A > 0 ? '-' : '+'} ${A.abs() == 1 ? 'x' : '${A.abs()}x'}',
       ),
       YISubStep(label: 'Write the result', latex: rhsTex),
-      YISubStep(
+      const YISubStep(
         label: 'Note',
         latex: r'\text{Move the whole x-term, not just its coefficient.}',
       ),

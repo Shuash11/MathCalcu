@@ -194,7 +194,6 @@ class AppRouter {
            GoRoute(
             path: '/second-sem',
             name: 'second-sem',
-       //put the screenpag here
         pageBuilder: (context, state) => _fadeRoute(
               state.pageKey,
               const FinalsPickerScreen(),

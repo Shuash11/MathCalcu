@@ -27,7 +27,7 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) {
           setState(() => _pressed = false);
-          // context.push(widget.module.route);
+       
         },
         onTapCancel: () => setState(() => _pressed = false),
         child: AnimatedScale(

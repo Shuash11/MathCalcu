@@ -10,8 +10,9 @@ class LinearSolver {
 
     if (ops.length == 2) {
       final parts = _splitDouble(normalized);
-      if (parts == null)
+      if (parts == null) {
         return SolveResult.error('Could not split double inequality.');
+      }
       return _solveDouble(normalized, ops, parts);
     }
 
@@ -22,6 +23,7 @@ class LinearSolver {
     final left = InequalityCoreSolver.parseLinear(sides[0]);
     final right = InequalityCoreSolver.parseLinear(sides[1]);
     if (left == null || right == null)
+      // ignore: curly_braces_in_flow_control_structures
       return SolveResult.error('Could not parse linear expressions.');
 
     final la = left['x']!, lc = left['c']!;
