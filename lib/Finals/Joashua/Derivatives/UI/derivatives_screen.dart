@@ -9,7 +9,7 @@ import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/deriviatives_
 
 
 class DerivativeScreen extends StatefulWidget {
-  const DerivativeScreen({super.key});
+  const DerivativeScreen({Key? key}) : super(key: key);
 
   @override
   State<DerivativeScreen> createState() => _DerivativeScreenState();
