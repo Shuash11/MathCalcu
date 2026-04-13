@@ -20,7 +20,8 @@ import 'modules/inequalities/radical/screen/radical_screen.dart';
 import 'modules/slope/ui/slopescreen.dart';
 import 'modules/midpoint/ui/midpointscreen.dart';
 import 'modules/pointslope/ui/pointslopescreen.dart';
-import 'Finals/finals_picker_screen.dart';
+
+
 import 'modules/two-point slope/ui/twopointslopescreen.dart';
 import 'modules/circles/card_picker_screen.dart';
 import 'modules/circles/center_raidus_form/screen/center_radiusui.dart';
@@ -191,7 +192,7 @@ class AppRouter {
           ),
         ],
       ),
-   
+  
     ],
   );
 }
