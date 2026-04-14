@@ -14,14 +14,14 @@ class FinalsModuleRegistry {
     const FinalsModuleEntry(
       label: 'Evaluating Limits',
       subtitle: 'By substitution  · By conjugate · By factoring ',
-      route: '/limits',
+      route: '/second-sem/limits',
       icon: Icons.functions_rounded,
       accent: Color(0xFFFFB020),
     ),
     const FinalsModuleEntry(
       label: 'Limits at Infinity',
-      subtitle: '',
-      route: '/infinity',
+      subtitle: 'Horizontal asymptotes & end behavior',
+      route: '/second-sem/infinity',
       icon: Icons.all_inclusive_rounded,
       accent: Color(0xFFFF6B35), // Secondary deep orange
     ),

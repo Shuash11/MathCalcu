@@ -1,4 +1,5 @@
 import 'package:calculus_system/Finals/Joashua/Derivatives/UI/derivatives_screen.dart';
+import 'package:calculus_system/Finals/Joashua/Limits_Infinity/Ui/limits_infinity_scr.dart';
 import 'package:calculus_system/Finals/Joashua/Slope_Using_derivatives/UI/slope_solver_screen.dart';
 import 'package:calculus_system/Finals/finals_picker_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +20,11 @@ final List<GoRoute> finalsRoutes = [
         path: 'slope-derivative',
         name: 'slope-derivative',
         builder: (context, state) => const SlopeSolverScreen(),
+      ),
+      GoRoute(
+        path: 'infinity',
+        name: 'infinity',
+        builder: (context, state) => const LimitsInfinityScreen(),
       ),
 
       // Future routes go here (e.g., Integrals, Limits)

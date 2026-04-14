@@ -4,7 +4,6 @@ import 'package:calculus_system/Finals/Joashua/Derivatives/Widgets/derivatives_s
 import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/derivatives_steps.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
-
 import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/deriviatives_solver.dart'; // Adjust path
 
 
