@@ -22,9 +22,9 @@ class LinearSolver {
 
     final left = InequalityCoreSolver.parseLinear(sides[0]);
     final right = InequalityCoreSolver.parseLinear(sides[1]);
-    if (left == null || right == null)
-      // ignore: curly_braces_in_flow_control_structures
+    if (left == null || right == null) {
       return SolveResult.error('Could not parse linear expressions.');
+    }
 
     final la = left['x']!, lc = left['c']!;
     final ra = right['x']!, rc = right['c']!;
@@ -86,24 +86,30 @@ class LinearSolver {
       final aMove = -ra, bMove = -rc;
       final sA = aMove >= 0 ? '+' : '-';
       final sB = bMove >= 0 ? '+' : '-';
-      
-      final lhs1 = '${_cl(la)}x ${lc != 0 ? (lc > 0 ? "+ ${f(lc)}" : "- ${f(lc.abs())}") : ""}';
-      final rhs1 = '${ra != 0 ? "${_cl(ra)}x" : ""} ${rc != 0 ? (rc > 0 ? (ra != 0 ? "+ ${f(rc)}" : f(rc)) : "- ${f(rc.abs())}") : (ra == 0 ? "0" : "")}';
-      
-      final lhs2 = '$lhs1 ${ra != 0 ? "$sA ${_cl(aMove.abs())}x" : ""} ${rc != 0 ? "$sB ${f(bMove.abs())}" : ""}';
+
+      final lhs1 =
+          '${_cl(la)}x ${lc != 0 ? (lc > 0 ? "+ ${f(lc)}" : "- ${f(lc.abs())}") : ""}';
+      final rhs1 =
+          '${ra != 0 ? "${_cl(ra)}x" : ""} ${rc != 0 ? (rc > 0 ? (ra != 0 ? "+ ${f(rc)}" : f(rc)) : "- ${f(rc.abs())}") : (ra == 0 ? "0" : "")}';
+
+      final lhs2 =
+          '$lhs1 ${ra != 0 ? "$sA ${_cl(aMove.abs())}x" : ""} ${rc != 0 ? "$sB ${f(bMove.abs())}" : ""}';
 
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Group Variables and Constants',
-        explanation: 'Move all terms containing x to the left side and all constants to the right (or left) to compare with zero.',
+        explanation:
+            'Move all terms containing x to the left side and all constants to the right (or left) to compare with zero.',
         latex:
             '\\begin{aligned} $lhs1 &${_tex(op)} $rhs1 \\\\ $lhs2 &${_tex(op)} 0 \\end{aligned}',
       ));
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Combine Like Terms',
-        explanation: 'Simplify both sides by grouping the x-terms and the numerical constants.',
-        latex: '${_cl(a)}x ${b != 0 ? (b > 0 ? "+ ${f(b)}" : "- ${f(b.abs())}") : ""} ${_tex(op)} 0',
+        explanation:
+            'Simplify both sides by grouping the x-terms and the numerical constants.',
+        latex:
+            '${_cl(a)}x ${b != 0 ? (b > 0 ? "+ ${f(b)}" : "- ${f(b.abs())}") : ""} ${_tex(op)} 0',
       ));
     }
 
@@ -113,7 +119,8 @@ class LinearSolver {
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Isolate Variable Term',
-        explanation: 'Move the constant term to the other side by $moveAction ${f(bMove.abs())} on both sides.',
+        explanation:
+            'Move the constant term to the other side by $moveAction ${f(bMove.abs())} on both sides.',
         latex:
             '\\begin{aligned} ${_cl(a)}x ${b > 0 ? "+ ${f(b)}" : "- ${f(b.abs())}"} &${_tex(op)} 0 \\\\ ${_cl(a)}x &${_tex(op)} ${f(bMove)} \\end{aligned}',
       ));
@@ -124,7 +131,8 @@ class LinearSolver {
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Evaluate Result',
-        explanation: 'Check if the resulting inequality is a true mathematical statement.',
+        explanation:
+            'Check if the resulting inequality is a true mathematical statement.',
         latex:
             '${f(b)} ${_tex(op)} 0 \\quad \\rightarrow \\quad ${sat ? "\\text{True}" : "\\text{False}"}',
       ));
@@ -278,7 +286,8 @@ class LinearSolver {
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Isolate Variable Term',
-        explanation: 'Move the constant term away from the middle by performing $action ${f(mc.abs())} on all parts of the inequality.',
+        explanation:
+            'Move the constant term away from the middle by performing $action ${f(mc.abs())} on all parts of the inequality.',
         latex:
             '\\begin{aligned} ${f(lc)} - ${f(mc)} &${_tex(op1)} $xPart + ${f(mc)} - ${f(mc)} &&${_tex(op2)} ${f(rc)} - ${f(mc)} \\\\ ${f(nL)} &${_tex(op1)} $xPart &&${_tex(op2)} ${f(nR)} \\end{aligned}',
       ));
@@ -308,7 +317,8 @@ class LinearSolver {
         steps.add(StepModel(
           stepNumber: n++,
           title: 'Rewrite in Ascending Order',
-          explanation: 'Reorganize the solution to show the range from smallest to largest.',
+          explanation:
+              'Reorganize the solution to show the range from smallest to largest.',
           latex: '${f(bL)} ${_tex(op1)} x ${_tex(op2)} ${f(bR)}',
         ));
       }
@@ -316,7 +326,8 @@ class LinearSolver {
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Divide All Parts',
-        explanation: 'Divide every part of the inequality by ${f(mx)} to isolate x in the middle.',
+        explanation:
+            'Divide every part of the inequality by ${f(mx)} to isolate x in the middle.',
         latex:
             '\\begin{aligned} \\frac{${f(lc - mc)}}{${f(mx)}} &${_tex(op1)} x &&${_tex(op2)} \\frac{${f(rc - mc)}}{${f(mx)}} \\\\ ${f(bL)} &${_tex(op1)} x &&${_tex(op2)} ${f(bR)} \\end{aligned}',
       ));

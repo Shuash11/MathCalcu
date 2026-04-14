@@ -3,13 +3,15 @@ import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class FinalsInfinityLimitsCard extends StatefulWidget {
   final FinalsModuleEntry module;
   const FinalsInfinityLimitsCard({super.key, required this.module});
 
   @override
-  State<FinalsInfinityLimitsCard> createState() => _FinalsInfinityLimitsCardState();
+  State<FinalsInfinityLimitsCard> createState() =>
+      _FinalsInfinityLimitsCardState();
 }
 
 class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
@@ -27,7 +29,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) {
           setState(() => _pressed = false);
-          // context.push(widget.module.route);
+          context.go('/second-sem/infinity');
         },
         onTapCancel: () => setState(() => _pressed = false),
         child: AnimatedScale(
@@ -67,7 +69,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                 builder: (context, constraints) {
                   // --- RESPONSIVE BREAKPOINTS ---
                   final bool isMobile = constraints.maxWidth < 600;
-                  
+
                   // Dynamic Sizes
                   final double horizontalPadding = isMobile ? 16.0 : 20.0;
                   final double verticalPadding = isMobile ? 16.0 : 20.0;
@@ -84,7 +86,9 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                         right: -30,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 400),
-                          width: isMobile ? 100 : 120, // Slightly smaller on mobile
+                          width: isMobile
+                              ? 100
+                              : 120, // Slightly smaller on mobile
                           height: isMobile ? 100 : 120,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -125,8 +129,10 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                       )
                                     : LinearGradient(
                                         colors: [
-                                          FinalsTheme.secondary.withValues(alpha: 0.2),
-                                          FinalsTheme.primary.withValues(alpha: 0.1),
+                                          FinalsTheme.secondary
+                                              .withValues(alpha: 0.2),
+                                          FinalsTheme.primary
+                                              .withValues(alpha: 0.1),
                                         ],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -174,9 +180,11 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                   // Title with inline infinity badge
                                   Row(
                                     children: [
-                                      Flexible( // Flexible prevents overflow
+                                      Flexible(
+                                        // Flexible prevents overflow
                                         child: AnimatedDefaultTextStyle(
-                                          duration: const Duration(milliseconds: 200),
+                                          duration:
+                                              const Duration(milliseconds: 200),
                                           style: TextStyle(
                                             fontSize: titleFontSize,
                                             fontWeight: FontWeight.w800,
@@ -185,13 +193,15 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                                 ? FinalsTheme.secondary
                                                 : theme.textPrimary,
                                           ),
-                                          child: const Text("Limits at Infinity"),
+                                          child:
+                                              const Text("Limits at Infinity"),
                                         ),
                                       ),
                                       const SizedBox(width: 8),
                                       // Small infinity badge
                                       AnimatedContainer(
-                                        duration: const Duration(milliseconds: 200),
+                                        duration:
+                                            const Duration(milliseconds: 200),
                                         padding: EdgeInsets.symmetric(
                                           horizontal: isMobile ? 6 : 6,
                                           vertical: isMobile ? 2 : 2,
@@ -200,9 +210,11 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                           color: FinalsTheme.danger.withValues(
                                             alpha: _hovered ? 0.2 : 0.12,
                                           ),
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
                                           border: Border.all(
-                                            color: FinalsTheme.danger.withValues(
+                                            color:
+                                                FinalsTheme.danger.withValues(
                                               alpha: _hovered ? 0.5 : 0.3,
                                             ),
                                           ),
@@ -212,7 +224,8 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                           style: TextStyle(
                                             fontSize: isMobile ? 11 : 12,
                                             fontWeight: FontWeight.w900,
-                                            color: FinalsTheme.danger.withValues(
+                                            color:
+                                                FinalsTheme.danger.withValues(
                                               alpha: _hovered ? 1.0 : 0.8,
                                             ),
                                           ),
@@ -230,7 +243,8 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                       fontSize: subFontSize,
                                       height: 1.4,
                                       color: _hovered
-                                          ? FinalsTheme.secondary.withValues(alpha: 0.7)
+                                          ? FinalsTheme.secondary
+                                              .withValues(alpha: 0.7)
                                           : theme.textSecondary,
                                     ),
                                     child: const Text(
@@ -278,7 +292,8 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                   height: 34,
                                   decoration: BoxDecoration(
                                     color: _hovered
-                                        ? FinalsTheme.secondary.withValues(alpha: 0.15)
+                                        ? FinalsTheme.secondary
+                                            .withValues(alpha: 0.15)
                                         : Colors.transparent,
                                     shape: BoxShape.circle,
                                     border: Border.all(
@@ -292,7 +307,8 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                     Icons.arrow_forward_ios_rounded,
                                     color: _hovered
                                         ? FinalsTheme.secondary
-                                        : FinalsTheme.secondary.withValues(alpha: 0.5),
+                                        : FinalsTheme.secondary
+                                            .withValues(alpha: 0.5),
                                     size: 16,
                                   ),
                                 ),
@@ -315,9 +331,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 8 : 10, 
-        vertical: isMobile ? 4 : 5
-      ),
+          horizontal: isMobile ? 8 : 10, vertical: isMobile ? 4 : 5),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),

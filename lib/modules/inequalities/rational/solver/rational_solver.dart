@@ -62,6 +62,7 @@ class RationalSolver {
             // ignore: prefer_interpolation_to_compose_strings
             rhsFmt +
             ' ' +
+            // ignore: prefer_interpolation_to_compose_strings
             _tex(p.op) +
             ' 0',
       ));
