@@ -6,6 +6,7 @@ import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart'
     as finals_about_sheets;
 import 'package:calculus_system/Finals/widgetsScreens/finding_slope_derevatives_card.dart';
 import 'package:calculus_system/Finals/widgetsScreens/limits_and_infinity_card.dart';
+import 'package:calculus_system/screens/category_picker_screen.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -146,7 +147,11 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                   children: [
                     // Back to Mid Term pill
                     GestureDetector(
-                      onTap: () => Navigator.of(context).maybePop(),
+                      onTap: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const CategoryPickerScreen())),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
