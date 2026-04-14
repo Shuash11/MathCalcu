@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
@@ -42,6 +43,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
             onTapDown: (_) => setState(() => _pressed = true),
             onTapUp: (_) {
               setState(() => _pressed = false);
+               context.go('/second-sem/slope-derivative');
               // context.push(widget.module.route);
             },
             onTapCancel: () => setState(() => _pressed = false),

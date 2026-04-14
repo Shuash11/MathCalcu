@@ -35,7 +35,7 @@ class FinalsModuleRegistry {
     const FinalsModuleEntry(
       label: 'Slope Using Derivatives',
       subtitle: 'Tangent line slope · Evaluate at point · Instantaneous rate',
-      route: '/slope-derivative',
+      route: '/second-sem/slope-derivative',
       icon: Icons.show_chart_rounded,
       accent: Color(0xFFEF476F), // Danger rose red
     ),

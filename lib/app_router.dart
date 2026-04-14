@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:calculus_system/modules/Distance/ui/distancescreen.dart';
 import 'package:go_router/go_router.dart';
 import 'screens/category_picker_screen.dart';
-import 'screens/activation_screen.dart'; // ← ADD THIS
+import 'screens/activation_screen.dart'; 
 import 'modules/inequalities/card_picker_screen.dart';
 import 'modules/inequalities/strict/screen/strict_screen.dart';
 import 'modules/inequalities/non_strict/screen/non_strict_screen.dart';
@@ -20,8 +20,6 @@ import 'modules/inequalities/radical/screen/radical_screen.dart';
 import 'modules/slope/ui/slopescreen.dart';
 import 'modules/midpoint/ui/midpointscreen.dart';
 import 'modules/pointslope/ui/pointslopescreen.dart';
-
-
 import 'modules/two-point slope/ui/twopointslopescreen.dart';
 import 'modules/circles/card_picker_screen.dart';
 import 'modules/circles/center_raidus_form/screen/center_radiusui.dart';
