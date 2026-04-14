@@ -3,6 +3,7 @@ import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class FinalsLimitsCard extends StatefulWidget {
   final FinalsModuleEntry module;
@@ -26,7 +27,8 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Calculate dynamic scale factor based on actual given width
-        final double s = (constraints.maxWidth / _baseDesignWidth).clamp(0.7, 1.2);
+        final double s =
+            (constraints.maxWidth / _baseDesignWidth).clamp(0.7, 1.2);
 
         return MouseRegion(
           onEnter: (_) => setState(() => _hovered = true),
@@ -35,7 +37,7 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
             onTapDown: (_) => setState(() => _pressed = true),
             onTapUp: (_) {
               setState(() => _pressed = false);
-              // context.push(widget.module.route);
+              context.go(widget.module.route);
             },
             onTapCancel: () => setState(() => _pressed = false),
             child: AnimatedScale(
@@ -104,8 +106,10 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                                     ? FinalsTheme.headerGradient
                                     : LinearGradient(
                                         colors: [
-                                          FinalsTheme.primary.withValues(alpha: 0.2),
-                                          FinalsTheme.secondary.withValues(alpha: 0.1),
+                                          FinalsTheme.primary
+                                              .withValues(alpha: 0.2),
+                                          FinalsTheme.secondary
+                                              .withValues(alpha: 0.1),
                                         ],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -175,7 +179,8 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                                       fontSize: 13 * s,
                                       height: 1.4,
                                       color: _hovered
-                                          ? FinalsTheme.primary.withValues(alpha: 0.7)
+                                          ? FinalsTheme.primary
+                                              .withValues(alpha: 0.7)
                                           : theme.textSecondary,
                                     ),
                                     child: const Text(
@@ -192,7 +197,8 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                                     children: [
                                       _badge("Core", FinalsTheme.primary, s),
                                       SizedBox(width: 6 * s),
-                                      _badge("Important", FinalsTheme.secondary, s),
+                                      _badge("Important", FinalsTheme.secondary,
+                                          s),
                                     ],
                                   )
                                 ],
@@ -203,14 +209,16 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               transform: _hovered
-                                  ? (Matrix4.identity()..translate(4.0 * s, 0.0))
+                                  ? (Matrix4.identity()
+                                    ..translate(4.0 * s, 0.0))
                                   : Matrix4.identity(),
                               child: Container(
                                 width: 34 * s,
                                 height: 34 * s,
                                 decoration: BoxDecoration(
                                   color: _hovered
-                                      ? FinalsTheme.primary.withValues(alpha: 0.15)
+                                      ? FinalsTheme.primary
+                                          .withValues(alpha: 0.15)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
                                   border: Border.all(
@@ -225,7 +233,8 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                                   size: 16 * s,
                                   color: _hovered
                                       ? FinalsTheme.primary
-                                      : FinalsTheme.primary.withValues(alpha: 0.5),
+                                      : FinalsTheme.primary
+                                          .withValues(alpha: 0.5),
                                 ),
                               ),
                             ),
