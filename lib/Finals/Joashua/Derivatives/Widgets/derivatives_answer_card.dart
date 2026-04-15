@@ -10,13 +10,13 @@ class DerivativeAnswerCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const DerivativeAnswerCard({
-    Key? key,
+    super.key,
     required this.originalExpr,
     required this.answerExpr,
     this.hasError = false,
     this.errorMessage,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                       color: FinalsTheme.primary.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.keyboard_arrow_down_rounded,
                       color: FinalsTheme.primary,
                       size: 18,
@@ -107,7 +107,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontSize: 20,
                     color: FinalsTheme.primary,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w800,  
                   ),
                 ),
               ),

@@ -39,60 +39,63 @@ class _StepTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final accentColor = FinalsTheme.danger;
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Timeline indicator
-          SizedBox(
-            width: 32,
-            child: Column(
-              children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: accentColor.withValues(alpha: 0.4), width: 1.5),
-                  ),
-                  child: Center(
-                    child: Text(
-                      (index + 1).toString(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        color: accentColor,
-                      ),
+    return Stack(
+      children: [
+        // Timeline line
+        if (!isLast)
+          Positioned(
+            left: 15.25, // 32/2 - 1.5/2
+            top: 28, // 24 height + 4 margin
+            bottom: 4, // 4 margin
+            child: Container(
+              width: 1.5,
+              color: accentColor.withValues(alpha: 0.15),
+            ),
+          ),
+
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Timeline indicator
+            SizedBox(
+              width: 32,
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                      color: accentColor.withValues(alpha: 0.4), width: 1.5),
+                ),
+                child: Center(
+                  child: Text(
+                    (index + 1).toString(),
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      color: accentColor,
                     ),
                   ),
                 ),
-                if (!isLast)
-                  Expanded(
-                    child: Container(
-                      width: 1.5,
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      color: accentColor.withValues(alpha: 0.15),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Step content
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _FormattedStepText(text: step),
-                ],
               ),
             ),
-          ),
-        ],
-      ),
+            const SizedBox(width: 16),
+            // Step content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _FormattedStepText(text: step),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -104,64 +107,64 @@ class _FormattedStepText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Basic heuristic to identify math snippets in the step string
-    // This is a simple implementation that looks for parts enclosed in brackets [] or containing math operators
-    
-    // For this module, we'll try to detect if a line is primarily math or contains math blocks.
-    // The StepGenerator in steps.dart uses brackets [] for some math parts sometimes, 
-    // but often it's just raw strings.
-    
-    bool isMath = _isMathExpression(text);
-
-    if (isMath) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: FinalsTheme.cardSecondary(context),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: FinalsTheme.danger.withValues(alpha: 0.1)),
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Math.tex(
-            _convertToTex(text),
-            textStyle: FinalsTheme.titleStyle(context).copyWith(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-            onErrorFallback: (err) => Text(text),
-          ),
+    if (!text.contains('\$\$')) {
+      return Text(
+        text.trim(),
+        style: FinalsTheme.subtitleStyle(context).copyWith(
+          fontSize: 14,
+          color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
+          height: 1.5,
         ),
       );
     }
 
-    return Text(
-      text,
-      style: FinalsTheme.subtitleStyle(context).copyWith(
-        fontSize: 14,
-        color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
-        height: 1.5,
-      ),
-    );
-  }
+    final parts = text.split('\$\$');
+    final children = <Widget>[];
 
-  bool _isMathExpression(String line) {
-    // If it contains specific LCD keywords and looks algebraic
-    if (line.contains('/') && (line.contains('x') || line.contains('('))) {
-        // If it's short and full of operators, it's likely math
-        if (line.length < 50 && RegExp(r'[+\-*/^=]').hasMatch(line)) return true;
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].trim().isEmpty) continue;
+
+      if (i % 2 == 1) {
+        // Math block
+        children.add(Container(
+          width: double.infinity,
+          margin: const EdgeInsets.only(top: 8, bottom: 8),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: FinalsTheme.cardSecondary(context),
+            borderRadius: BorderRadius.circular(12),
+            border:
+                Border.all(color: FinalsTheme.danger.withValues(alpha: 0.1)),
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Math.tex(
+              parts[i].trim(),
+              textStyle: FinalsTheme.titleStyle(context).copyWith(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+              onErrorFallback: (err) => Text(parts[i].trim()),
+            ),
+          ),
+        ));
+      } else {
+        // Text block
+        children.add(Text(
+          parts[i].trim(),
+          style: FinalsTheme.subtitleStyle(context).copyWith(
+            fontSize: 14,
+            color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
+            height: 1.5,
+          ),
+        ));
+      }
     }
-    return line.contains('→') || line.startsWith('Numerator') || line.contains('LCD is');
-  }
 
-  String _convertToTex(String text) {
-    // Simple replacements to make the text look more like LaTeX
-    // In a real app, the StepGenerator should return proper LaTeX
-    String tex = text;
-    tex = tex.replaceAll('*', r'\cdot ');
-    // Handle simple fractions like 1/x -> \frac{1}{x}
-    // This is very limited, but works for the current StepGenerator's output style
-    return tex;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 }

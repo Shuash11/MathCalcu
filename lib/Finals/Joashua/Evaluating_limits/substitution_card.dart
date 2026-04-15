@@ -16,7 +16,8 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
   bool _pressed = false;
 
   final String title = 'By Substitution';
-  final String subtitle = 'The quickest way: Plug the value directly into the function.';
+  final String subtitle =
+      'The quickest way: Plug the value directly into the function.';
   final IconData icon = Icons.input_rounded;
   final String route = '/second-sem/limits/substitution';
   final Color accent = FinalsTheme.primary;
@@ -93,7 +94,8 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
 
                   // ── Content
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 18),
                     child: Row(
                       children: [
                         // ── Icon Box
@@ -104,8 +106,10 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                accent.withValues(alpha: _hovered ? 0.22 : 0.13),
-                                accent.withValues(alpha: _hovered ? 0.10 : 0.05),
+                                accent.withValues(
+                                    alpha: _hovered ? 0.22 : 0.13),
+                                accent.withValues(
+                                    alpha: _hovered ? 0.10 : 0.05),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -119,7 +123,8 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: accent.withValues(alpha: _hovered ? 0.28 : 0.12),
+                                color: accent.withValues(
+                                    alpha: _hovered ? 0.28 : 0.12),
                                 blurRadius: _hovered ? 14 : 6,
                                 offset: const Offset(0, 3),
                               ),
@@ -128,7 +133,9 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
                           child: Center(
                             child: Icon(
                               icon,
-                              color: _hovered ? accent : accent.withValues(alpha: 0.85),
+                              color: _hovered
+                                  ? accent
+                                  : accent.withValues(alpha: 0.85),
                               size: 24,
                             ),
                           ),
@@ -191,7 +198,9 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
                             ),
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
-                              color: _hovered ? accent : accent.withValues(alpha: 0.5),
+                              color: _hovered
+                                  ? accent
+                                  : accent.withValues(alpha: 0.5),
                               size: 14,
                             ),
                           ),
