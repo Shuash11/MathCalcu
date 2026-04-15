@@ -1,26 +1,25 @@
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
 
-class LCDAnswerCard extends StatelessWidget {
+class FactoringAnswerCard extends StatelessWidget {
   final double? answer;
-  final String? fractionalAnswer;
   final String method;
   final bool isShowingSteps;
   final VoidCallback onTap;
+  final String? error;
 
-  const LCDAnswerCard({
+  const FactoringAnswerCard({
     super.key,
     required this.answer,
-    this.fractionalAnswer,
     required this.method,
     required this.isShowingSteps,
     required this.onTap,
+    this.error,
   });
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = FinalsTheme.danger;
+    const accentColor = FinalsTheme.primary;
     
     return GestureDetector(
       onTap: onTap,
@@ -81,7 +80,7 @@ class LCDAnswerCard extends StatelessWidget {
                 ),
                 _ValueDisplay(
                   answer: answer,
-                  fractionalAnswer: fractionalAnswer,
+                  error: error,
                   accentColor: accentColor,
                 ),
               ],
@@ -152,51 +151,26 @@ class _StatusIcon extends StatelessWidget {
 
 class _ValueDisplay extends StatelessWidget {
   final double? answer;
-  final String? fractionalAnswer;
+  final String? error;
   final Color accentColor;
 
   const _ValueDisplay({
     required this.answer,
-    this.fractionalAnswer,
+    this.error,
     required this.accentColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    final String displayVal = answer == null
-        ? 'Undefined'
-        : (answer! == answer!.toInt() ? answer!.toInt().toString() : answer!.toStringAsFixed(4));
-
-    if (fractionalAnswer != null) {
-      return Flexible(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: FinalsTheme.surface(context),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: accentColor.withValues(alpha: 0.2)),
-            boxShadow: [
-              BoxShadow(
-                color: accentColor.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Math.tex(
-              fractionalAnswer!.replaceAll('\$', ''),
-              textStyle: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                color: accentColor,
-              ),
-              onErrorFallback: (err) => _buildTextDisplay(displayVal, accentColor, context, wrapFlexible: false),
-            ),
-          ),
-        ),
-      );
+    String displayVal = 'Error';
+    if (error != null) {
+      displayVal = 'Failed';
+    } else if (answer == null || answer!.isNaN) {
+      displayVal = 'Undefined';
+    } else if (answer!.isInfinite) {
+      displayVal = answer! > 0 ? '∞' : '-∞';
+    } else {
+      displayVal = answer! == answer!.toInt() ? answer!.toInt().toString() : answer!.toStringAsFixed(4);
     }
 
     return _buildTextDisplay(displayVal, accentColor, context, wrapFlexible: true);

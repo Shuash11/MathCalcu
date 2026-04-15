@@ -1,3 +1,4 @@
+library lcd_math_engine;
 /// src/lcd_engine.dart
 import 'dart:math';
 
@@ -71,6 +72,9 @@ class Tokenizer {
       } else if (ch == ')') {
         tokens.add(Token(TokenType.rparen, ch));
         _pos++;
+      } else if (ch == '√' || ch == '\u221A') {
+        tokens.add(Token(TokenType.function, 'sqrt'));
+        _pos++;
       } else if (RegExp(r'[+\-*/^]').hasMatch(ch)) {
         tokens.add(Token(TokenType.operator, ch));
         _pos++;
@@ -113,8 +117,9 @@ class Parser {
 
   MathNode parse() {
     final node = _parseExpression();
-    if (_current < tokens.length - 1)
+    if (_current < tokens.length - 1) {
       throw Exception("Unexpected token at end");
+    }
     return node;
   }
 
@@ -173,16 +178,31 @@ class Parser {
       _current++;
       final funcName = token.value;
       _expect(TokenType.lparen);
+      
+      // Handle empty function argument like sqrt()
+      if (_current < tokens.length && tokens[_current].type == TokenType.rparen) {
+        _current++;
+        return FunctionNode(funcName, const NumberNode(0));
+      }
+      
       final arg = _parseExpression();
       _expect(TokenType.rparen);
       return FunctionNode(funcName, arg);
     } else if (token.type == TokenType.lparen) {
       _current++;
+      
+      // Handle empty parentheses ()
+      if (_current < tokens.length && tokens[_current].type == TokenType.rparen) {
+        _current++;
+        return const NumberNode(0);
+      }
+      
       final expr = _parseExpression();
       _expect(TokenType.rparen);
       return expr;
     }
-    throw Exception("Unexpected token: ${token.value}");
+    
+    throw Exception("Math Error: Unexpected '${token.value}' at this position.");
   }
 
   void _expect(TokenType type) {
@@ -194,7 +214,7 @@ class Parser {
 // ==========================================
 // 4. ENGINE EVALUATOR & STRATEGY ROUTER
 // ==========================================
-enum LimitStrategy { DirectSubstitution, LCD, Conjugate, Unknown }
+enum LimitStrategy { directSubstitution, lcd, conjugate, unknown }
 
 class LimitEngine {
   /// Main entry point to solve a limit
@@ -202,6 +222,10 @@ class LimitEngine {
       String equation, String variable, double approachValue) {
     // Clean up input
     equation = equation.replaceAll(' ', '').replaceAll('lim', '');
+    
+    // Smart Preprocessing: If user types "1/x - 1/3 / x-3", help them by wrapping 
+    // the likely numerator and denominator.
+    equation = _smartPreprocess(equation);
 
     final tokens = Tokenizer(equation).tokenize();
     final ast = Parser(tokens).parse();
@@ -224,10 +248,10 @@ class LimitEngine {
     final strategy = _identifyStrategy(ast, variable, approachValue);
 
     // Step 3: Pass the AST to the StepGenerator so it can extract exact algebra strings
-    if (strategy == LimitStrategy.Conjugate) {
+    if (strategy == LimitStrategy.conjugate) {
       return StepGenerator.solveByConjugate(
           equation, variable, approachValue, ast);
-    } else if (strategy == LimitStrategy.LCD) {
+    } else if (strategy == LimitStrategy.lcd) {
       return StepGenerator.solveByLCD(equation, variable, approachValue, ast);
     }
 
@@ -273,38 +297,78 @@ class LimitEngine {
   static LimitStrategy _identifyStrategy(
       MathNode node, String varName, double val) {
     // Heuristic: Does the AST contain a sqrt function? Assume Conjugate.
-    if (_containsFunction(node, 'sqrt')) return LimitStrategy.Conjugate;
+    if (_containsFunction(node, 'sqrt')) return LimitStrategy.conjugate;
 
     // Heuristic: Does the top-level structure have divisions inside the numerator or denominator? Assume LCD.
-    if (_hasNestedFractions(node)) return LimitStrategy.LCD;
+    if (_hasNestedFractions(node)) return LimitStrategy.lcd;
 
-    return LimitStrategy.Unknown;
+    return LimitStrategy.unknown;
   }
 
   static bool _containsFunction(MathNode node, String name) {
     if (node is FunctionNode && node.name == name) return true;
-    if (node is BinaryOpNode)
+    if (node is BinaryOpNode) {
       return _containsFunction(node.left, name) ||
           _containsFunction(node.right, name);
+    }
     if (node is UnaryMinusNode) return _containsFunction(node.child, name);
     return false;
   }
 
   static bool _hasNestedFractions(MathNode node) {
     if (node is BinaryOpNode) {
-      if (node.op == '/') {
-        // If numerator or denominator is also a division, it's complex fractions (LCD)
-        if (node.left is BinaryOpNode && (node.left as BinaryOpNode).op == '/')
-          return true;
-        if (node.right is BinaryOpNode &&
-            (node.right as BinaryOpNode).op == '/') return true;
-        // Also check for addition/subtraction in numerator (classic LCD setup like (1/x - 1/2)/x-2)
-        if (node.left is BinaryOpNode &&
-            ((node.left as BinaryOpNode).op == '+' ||
-                (node.left as BinaryOpNode).op == '-')) return true;
-      }
+      // A "complex fraction" is one where the overall numerator itself
+      // contains a division (e.g. (1/x - 1/3) / (x - 3)).
+      // We deliberately do NOT match just any +/- in the numerator — that
+      // would wrongly catch conjugate or polynomial-factoring problems.
+      if (node.op == '/' && _containsOp(node.left, '/')) return true;
       return _hasNestedFractions(node.left) || _hasNestedFractions(node.right);
     }
+    if (node is UnaryMinusNode) return _hasNestedFractions(node.child);
     return false;
+  }
+
+  static bool _containsOp(MathNode node, String op) {
+    if (node is BinaryOpNode) {
+      if (node.op == op) return true;
+      return _containsOp(node.left, op) || _containsOp(node.right, op);
+    }
+    if (node is UnaryMinusNode) return _containsOp(node.child, op);
+    return false;
+  }
+
+  /// Helps users who forget outer parentheses: "1/x - 1/3 / x - 3" -> "(1/x - 1/3) / (x - 3)"
+  static String _smartPreprocess(String input) {
+    if (input.startsWith('(') && input.endsWith(')')) return input;
+
+    // Count occurrences of '/'
+    int slashCount = '/'.allMatches(input).length;
+    if (slashCount < 2) return input; // Only one slash, ambiguity is low
+
+    // Heuristic: Find the division that splits the expression into a complex numerator 
+    // and a simple binomial denominator (common in limit problems).
+    // Usually the 'main' division is the LAST one that isn't inside parentheses,
+    // OR it's the one splitting the expression into the largest chunks.
+    
+    // For "1/x - 1/3 / x - 3", the divisions are at indices 1, 9, and 13.
+    // If we pick index 9: numerator "1/x-1/3", denominator "x-3".
+    // This looks like a valid limit problem!
+    
+    // We try to find a division index 'i' such that 
+    // numerator = input.substring(0, i) and denominator = input.substring(i+1)
+    // and numerator contains a '/' while denominator does NOT (for standard LCD/Conjugate).
+    for (int i = input.length - 1; i >= 0; i--) {
+      if (input[i] == '/') {
+        String num = input.substring(0, i);
+        String den = input.substring(i + 1);
+        
+        // If numerator has its own division and denominator looks like a linear factor (no /)
+        if (num.contains('/') && !den.contains('/')) {
+           return "($num)/($den)";
+        }
+      }
+    }
+
+    return input; 
   }
 }

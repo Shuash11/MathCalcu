@@ -8,7 +8,7 @@ import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/deriviatives_
 
 
 class DerivativeScreen extends StatefulWidget {
-  const DerivativeScreen({Key? key}) : super(key: key);
+  const DerivativeScreen({super.key});
 
   @override
   State<DerivativeScreen> createState() => _DerivativeScreenState();
@@ -118,8 +118,8 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
 
             // Answer Card
             if (_isLoading)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
                   child: Center(
                     child: CircularProgressIndicator(

@@ -1,4 +1,5 @@
 import 'package:calculus_system/Finals/Joashua/Derivatives/UI/derivatives_screen.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/UI/factoring_limit_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_LCD/UI/lcd_limit_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/evaluating_limits_picker.dart';
 import 'package:calculus_system/Finals/Joashua/Limits_Infinity/Ui/limits_infinity_scr.dart';
@@ -44,8 +45,7 @@ final List<GoRoute> finalsRoutes = [
                   body: Center(child: Text('Conjugate Screen')))),
           GoRoute(
               path: 'factoring',
-              builder: (context, state) => const Scaffold(
-                  body: Center(child: Text('Factoring Screen')))),
+              builder: (context, state) => const FactoringLimitScreen()),
           GoRoute(
               path: 'lcd',
               builder: (context, state) => const LCDLimitScreen()),

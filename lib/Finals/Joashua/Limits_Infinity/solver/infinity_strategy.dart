@@ -47,7 +47,8 @@ class InfinityStrategy implements SolverStrategy {
         type: StepType.simplification,
         description: 'Simplify the expression first',
         expression: simplified,
-        explanation: 'Simplifying before analysis ensures accurate leading-term '
+        explanation:
+            'Simplifying before analysis ensures accurate leading-term '
             'extraction and growth-rate comparison.',
       ));
     }
@@ -233,8 +234,7 @@ class InfinityStrategy implements SolverStrategy {
       //   final direction = sign(coeffRatio) * sign(x^degreeDiff)
       final isNegativeInfinity =
           problem.limitType == LimitType.negativeInfinity;
-      final xPowerSign =
-          (isNegativeInfinity && degreeDiff.isOdd) ? -1.0 : 1.0;
+      final xPowerSign = (isNegativeInfinity && degreeDiff.isOdd) ? -1.0 : 1.0;
       final limitSign = coeffRatio.sign * xPowerSign;
 
       final goesNegative = limitSign < 0;
@@ -285,9 +285,11 @@ class InfinityStrategy implements SolverStrategy {
       // Equal degrees → ratio of leading coefficients.
       steps.add(SolutionStep(
         type: StepType.conclusion,
-        description: 'Equal degrees — limit equals ratio of leading coefficients',
+        description:
+            'Equal degrees — limit equals ratio of leading coefficients',
         expression: NumberNode(coeffRatio),
-        explanation: 'When degrees are equal, the limit is the ratio of leading '
+        explanation:
+            'When degrees are equal, the limit is the ratio of leading '
             'coefficients: $numLeadingCoeff / $denLeadingCoeff = $coeffRatio',
       ));
 
@@ -304,8 +306,7 @@ class InfinityStrategy implements SolverStrategy {
   /// BUG FIX: Original returned on the FIRST term matching [degree].
   /// e.g. "2x² + 3x²" would report leading coefficient 2 instead of 5.
   /// Now accumulates ALL terms at [degree] before returning.
-  double? _getLeadingCoefficient(
-      ASTNode node, String variable, int degree) {
+  double? _getLeadingCoefficient(ASTNode node, String variable, int degree) {
     final terms = node.getTerms();
     double? total;
     for (final term in terms) {
@@ -387,12 +388,10 @@ class InfinityStrategy implements SolverStrategy {
 
         steps.add(SolutionStep(
           type: StepType.conclusion,
-          description:
-              'Numerator exponential (ln-rate $numRate) dominates '
+          description: 'Numerator exponential (ln-rate $numRate) dominates '
               'denominator (ln-rate $denRate)',
           expression: result,
-          explanation:
-              'The numerator exponential grows faster; '
+          explanation: 'The numerator exponential grows faster; '
               'limit = ${goesNegative ? '-∞' : '+∞'}.',
         ));
 
@@ -408,12 +407,10 @@ class InfinityStrategy implements SolverStrategy {
       } else if (denRate > numRate) {
         steps.add(SolutionStep(
           type: StepType.conclusion,
-          description:
-              'Denominator exponential (ln-rate $denRate) dominates '
+          description: 'Denominator exponential (ln-rate $denRate) dominates '
               'numerator (ln-rate $numRate)',
           expression: NumberNode(0),
-          explanation:
-              'The denominator exponential grows faster; limit = 0.',
+          explanation: 'The denominator exponential grows faster; limit = 0.',
         ));
 
         return SolveResult(
@@ -431,8 +428,8 @@ class InfinityStrategy implements SolverStrategy {
   }
 
   bool _containsExponential(ASTNode node) {
-    if (node is FunctionNode &&
-        (node.name == 'exp' || node.name == 'ln')) return true;
+    if (node is FunctionNode && (node.name == 'exp' || node.name == 'ln'))
+      return true;
     if (node is BinaryOpNode) {
       // Also detect base^variable patterns like 2^x.
       if (node.operator == '^') {
@@ -451,8 +448,7 @@ class InfinityStrategy implements SolverStrategy {
   bool _referencesVariable(ASTNode node) {
     if (node is VariableNode) return true;
     if (node is BinaryOpNode) {
-      return _referencesVariable(node.left) ||
-          _referencesVariable(node.right);
+      return _referencesVariable(node.left) || _referencesVariable(node.right);
     }
     if (node is UnaryMinusNode) return _referencesVariable(node.operand);
     if (node is FunctionNode) return _referencesVariable(node.argument);

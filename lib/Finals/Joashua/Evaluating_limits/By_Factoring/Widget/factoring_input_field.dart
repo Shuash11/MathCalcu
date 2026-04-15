@@ -1,14 +1,14 @@
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 
-class LCDInputField extends StatelessWidget {
+class FactoringInputField extends StatelessWidget {
   final TextEditingController expressionController;
   final TextEditingController approachController;
   final String currentVariable;
   final ValueChanged<String> onVariableChanged;
   final VoidCallback onSolve;
 
-  const LCDInputField({
+  const FactoringInputField({
     super.key,
     required this.expressionController,
     required this.approachController,
@@ -19,8 +19,7 @@ class LCDInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We use the 'danger' color (rose red) as the primary accent for LCD
-    const accentColor = FinalsTheme.danger;
+    const accentColor = FinalsTheme.primary;
 
     return Container(
       decoration: BoxDecoration(
@@ -55,7 +54,7 @@ class LCDInputField extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
-                      hintText: '(1/x - 1/3) / (x - 3)',
+                      hintText: '(x^2 - 4) / (x - 2)',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                         color: FinalsTheme.textSecondary(context)
                             .withValues(alpha: 0.3),
@@ -68,7 +67,7 @@ class LCDInputField extends StatelessWidget {
                 ),
 
                 // Math Symbol Button
-                _buildMathSymbolChip(context, '√', '√()', accentColor, isFunction: true),
+                _buildMathSymbolChip(context, '^', '^', accentColor),
                 const SizedBox(width: 8),
 
                 // Solve Button
@@ -226,7 +225,7 @@ class LCDInputField extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? FinalsTheme.danger.withValues(alpha: 0.1)
+                          ? FinalsTheme.primary.withValues(alpha: 0.1)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -236,7 +235,7 @@ class LCDInputField extends StatelessWidget {
                         style: FinalsTheme.titleStyle(ctx).copyWith(
                           fontFamily: 'serif',
                           fontSize: 18,
-                          color: isSelected ? FinalsTheme.danger : null,
+                          color: isSelected ? FinalsTheme.primary : null,
                         ),
                       ),
                       onTap: () {
@@ -247,7 +246,7 @@ class LCDInputField extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16)),
                       trailing: isSelected
                           ? const Icon(Icons.check_circle_rounded,
-                              color: FinalsTheme.danger)
+                              color: FinalsTheme.primary)
                           : null,
                     ),
                   );
@@ -266,20 +265,17 @@ class LCDInputField extends StatelessWidget {
         final text = expressionController.text;
         final selection = expressionController.selection;
         
-        // If there's no selection or cursor, just append to the end
         if (selection.baseOffset == -1 || selection.extentOffset == -1) {
           expressionController.text = text + inputStr;
           if (isFunction) {
             expressionController.selection = TextSelection.collapsed(offset: expressionController.text.length - 1);
           }
         } else {
-          // Insert at cursor position
           final start = selection.start;
           final end = selection.end;
           final newText = text.replaceRange(start, end, inputStr);
           expressionController.text = newText;
           
-          // Place cursor perfectly inside the () for functions, or after the inserted text
           final newOffset = isFunction ? start + inputStr.length - 1 : start + inputStr.length;
           expressionController.selection = TextSelection.collapsed(offset: newOffset);
         }

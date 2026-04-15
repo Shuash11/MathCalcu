@@ -1,23 +1,25 @@
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_LCD/Widget/lcd_answer_card.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_LCD/Widget/lcd_input_field.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_LCD/Widget/lcd_steps_view.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_LCD/library/math_limits_library.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/Widget/factoring_answer_card.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/Widget/factoring_input_field.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/Widget/factoring_steps_view.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/solvers/solver_engine.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/solvers/solution_steps.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 
-class LCDLimitScreen extends StatefulWidget {
-  const LCDLimitScreen({super.key});
+class FactoringLimitScreen extends StatefulWidget {
+  const FactoringLimitScreen({super.key});
 
   @override
-  State<LCDLimitScreen> createState() => _LCDLimitScreenState();
+  State<FactoringLimitScreen> createState() => _FactoringLimitScreenState();
 }
 
-class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStateMixin {
+class _FactoringLimitScreenState extends State<FactoringLimitScreen> with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   String _currentVariable = 'x';
   
-  LimitSolution? _solution;
+  SolutionResult? _result;
+  List<SolutionStep> _steps = [];
   bool _showSteps = false;
   bool _isSolving = false;
 
@@ -77,14 +79,18 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
 
     // Call engine
     try {
-      final sol = LimitEngine.solve(
-        _expressionController.text,
-        _currentVariable,
-        approachVal,
-      );
+      final engine = LimitSolverEngine();
+      final result = engine.solve(LimitProblem(
+        expression: _expressionController.text,
+        approachValue: approachVal,
+      ));
+      
+      final stepsGen = SolutionStepsGenerator();
+      final steps = stepsGen.generate(result);
       
       setState(() {
-        _solution = sol;
+        _result = result;
+        _steps = steps;
         _isSolving = false;
       });
     } catch (e) {
@@ -123,7 +129,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         // Input Section
-                        LCDInputField(
+                        FactoringInputField(
                           expressionController: _expressionController,
                           approachController: _approachController,
                           currentVariable: _currentVariable,
@@ -133,19 +139,19 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
 
                         // Animated Result Section
                         if (_isSolving)
-                          const Padding(
-                            padding: EdgeInsets.all(40.0),
+                          Padding(
+                            padding: const EdgeInsets.all(40.0),
                             child: Center(
-                              child: CircularProgressIndicator(color: FinalsTheme.danger),
+                              child: CircularProgressIndicator(color: FinalsTheme.primary),
                             ),
                           )
-                        else if (_solution != null) ...[
-                          LCDAnswerCard(
-                            answer: _solution!.finalAnswer,
-                            fractionalAnswer: _solution!.fractionalAnswer,
-                            method: _solution!.methodUsed,
+                        else if (_result != null) ...[
+                          FactoringAnswerCard(
+                            answer: _result!.finalValue,
+                            method: 'Factoring Method',
                             isShowingSteps: _showSteps,
                             onTap: () => setState(() => _showSteps = !_showSteps),
+                            error: _result!.errorMessage,
                           ),
 
                           // Steps Section
@@ -160,19 +166,19 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                                       children: [
                                         Row(
                                           children: [
-                                            const Icon(Icons.list_alt_rounded, color: FinalsTheme.danger, size: 18),
+                                            Icon(Icons.list_alt_rounded, color: FinalsTheme.primary, size: 18),
                                             const SizedBox(width: 10),
                                             Text(
                                               'SOLUTION STEPS',
                                               style: FinalsTheme.labelStyle(context).copyWith(
-                                                color: FinalsTheme.danger,
+                                                color: FinalsTheme.primary,
                                                 letterSpacing: 1.5,
                                               ),
                                             ),
                                           ],
                                         ),
                                         const SizedBox(height: 24),
-                                        LCDStepsView(steps: _solution!.steps),
+                                        FactoringStepsView(steps: _steps),
                                       ],
                                     ),
                                   )
@@ -205,7 +211,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
               foregroundColor: FinalsTheme.textPrimary(context),
               padding: const EdgeInsets.all(12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              side: BorderSide(color: FinalsTheme.danger.withValues(alpha: 0.1)),
+              side: BorderSide(color: FinalsTheme.primary.withValues(alpha: 0.1)),
             ),
           ),
           const SizedBox(width: 20),
@@ -215,7 +221,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'LCD Method',
+                  'Factoring Method',
                   style: FinalsTheme.titleStyle(context).copyWith(fontSize: 24),
                 ),
                 Text(
@@ -229,18 +235,18 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: FinalsTheme.danger.withValues(alpha: 0.1),
+              color: FinalsTheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: FinalsTheme.danger.withValues(alpha: 0.2)),
+              border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.2)),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.layers_rounded, size: 14, color: FinalsTheme.danger),
-                SizedBox(width: 6),
+                Icon(Icons.layers_rounded, size: 14, color: FinalsTheme.primary),
+                const SizedBox(width: 6),
                 Text(
-                  'By LCD',
+                  'By Factoring',
                   style: TextStyle(
-                    color: FinalsTheme.danger,
+                    color: FinalsTheme.primary,
                     fontWeight: FontWeight.w800,
                     fontSize: 10,
                   ),
