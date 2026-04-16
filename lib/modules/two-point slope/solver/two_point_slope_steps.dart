@@ -1,6 +1,7 @@
 import 'package:calculus_system/modules/two-point%20slope/Theme/two_point_slope_theme.dart';
 import 'package:calculus_system/modules/two-point%20slope/solver/two_point_slope_solver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 // ─────────────────────────────────────────────────────────────
 // STEPS WIDGET
@@ -138,88 +139,95 @@ class _StepCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Colored left bar + number
-              Container(
-                width: 48,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.08),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                  ),
-                  border: Border(
-                    right: BorderSide(
-                      color: color.withValues(alpha: 0.2),
-                    ),
-                  ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Colored left bar + number
+            Container(
+              width: 48,
+              height: 80,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.08),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
                 ),
-                child: Center(
-                  child: Text(
-                    '${step.number}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: color,
-                    ),
+                border: Border(
+                  right: BorderSide(
+                    color: color.withValues(alpha: 0.2),
                   ),
                 ),
               ),
+              child: Center(
+                child: Text(
+                  '${step.number}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: color,
+                  ),
+                ),
+              ),
+            ),
 
-              // Content
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title
-                      Text(
-                        step.title,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: color,
-                          letterSpacing: 0.3,
-                        ),
+            // Content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title
+                    Text(
+                      step.title,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: color,
+                        letterSpacing: 0.3,
                       ),
-                      const SizedBox(height: 10),
+                    ),
+                    const SizedBox(height: 10),
 
-                      // Formula
-                      _FormulaRow(
-                        label: 'Formula',
-                        value: step.formula,
+                    // Formula - show as LaTeX
+                    if (step.formula.isNotEmpty)
+                      _LatexValue(
+                        latex: step.formula,
+                        fallback: step.formula,
+                        fontSize: 13,
                         color: TwoPointSlopeTheme.textSecondary(context),
                       ),
-                      const SizedBox(height: 6),
+                    const SizedBox(height: 6),
 
-                      // Substitution
-                      _FormulaRow(
-                        label: 'Substitute',
-                        value: step.substitution,
+                    // Substitution - show as LaTeX
+                    if (step.substitution.isNotEmpty)
+                      _LatexValue(
+                        latex: step.substitution,
+                        fallback: step.substitution,
+                        fontSize: 13,
                         color: TwoPointSlopeTheme.textPrimary(context),
                       ),
-                      const SizedBox(height: 6),
+                    const SizedBox(height: 6),
 
-                      // Result
-                      _FormulaRow(
-                        label: 'Result',
-                        value: step.result,
+                    // Result - show as LaTeX
+                    if (step.result.isNotEmpty)
+                      _LatexValue(
+                        latex: step.result,
+                        fallback: step.result,
+                        fontSize: 13,
                         color: color,
                         bold: true,
                       ),
 
-                      const SizedBox(height: 10),
-                      const Divider(
-                        color: Color(0xFF222230),
-                        height: 1,
-                      ),
-                      const SizedBox(height: 10),
+                    const SizedBox(height: 10),
+                    const Divider(
+                      color: Color(0xFF222230),
+                      height: 1,
+                    ),
+                    const SizedBox(height: 10),
 
-                      // Explanation
+                    // Explanation
+                    if (step.explanation.isNotEmpty)
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -242,61 +250,60 @@ class _StepCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _FormulaRow extends StatelessWidget {
-  final String label;
-  final String value;
+class _LatexValue extends StatelessWidget {
+  final String latex;
+  final String fallback;
+  final double fontSize;
   final Color color;
   final bool bold;
 
-  const _FormulaRow({
-    required this.label,
-    required this.value,
+  const _LatexValue({
+    required this.latex,
+    required this.fallback,
+    required this.fontSize,
     required this.color,
     this.bold = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 72,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: TwoPointSlopeTheme.textMuted(context),
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-            ),
-          ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: TwoPointSlopeTheme.surface(context).withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Math.tex(
+        latex,
+        textStyle: TextStyle(
+          fontSize: fontSize,
+          color: color,
+          fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
         ),
-        Expanded(
-          child: Text(
-            value,
+        onErrorFallback: (error) {
+          return Text(
+            fallback,
             style: TextStyle(
               fontFamily: 'monospace',
-              fontSize: 13,
+              fontSize: fontSize - 1,
               color: color,
               fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
-              height: 1.4,
             ),
-          ),
-        ),
-      ],
+          );
+        },
+      ),
     );
   }
 }

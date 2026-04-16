@@ -1,6 +1,11 @@
 // lib/modules/yintercept/graph/yintercept_graph.dart
 import 'package:flutter/material.dart';
 
+String _fmt(double v) {
+  if (v == v.truncateToDouble()) return v.toInt().toString();
+  return v.toStringAsFixed(1);
+}
+
 class YInterceptGraph extends StatelessWidget {
   final String mText;
   final String bText;
@@ -62,12 +67,12 @@ class YInterceptGraphPainter extends CustomPainter {
     // Calculate view bounds
     final yIntercept = b;
     final xIntercept = -b / m;
-    
+
     // Center the view on the intercepts
     final centerX = xIntercept;
     final centerY = yIntercept;
     const range = 10.0;
-    
+
     final xMin = centerX - range;
     final xMax = centerX + range;
     final yMin = centerY - range;
@@ -172,7 +177,7 @@ class YInterceptGraphPainter extends CustomPainter {
       // Label x-intercept
       final xLabel = TextPainter(
         text: TextSpan(
-          text: '(${xIntercept.toStringAsFixed(1)}, 0)',
+          text: '(${_fmt(xIntercept)}, 0)',
           style: const TextStyle(
             fontSize: 10,
             color: Color(0xFF10B981),
@@ -187,7 +192,7 @@ class YInterceptGraphPainter extends CustomPainter {
     // Label y-intercept
     final yLabel = TextPainter(
       text: TextSpan(
-        text: '(0, ${b.toStringAsFixed(1)})',
+        text: '(0, ${_fmt(b)})',
         style: const TextStyle(
           fontSize: 10,
           color: Color(0xFFF59E0B),

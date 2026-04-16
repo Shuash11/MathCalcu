@@ -105,11 +105,18 @@ class _FormattedStepText extends StatelessWidget {
 
   const _FormattedStepText({required this.text});
 
+  static const _doubleDollar = r'$$';
+  static const _singleDollar = r'$';
+
   @override
   Widget build(BuildContext context) {
-    if (!text.contains('\$\$')) {
+    final normalizedText = text
+        .replaceAll(_doubleDollar, _doubleDollar)
+        .replaceAll(_singleDollar, _singleDollar);
+
+    if (!normalizedText.contains(_doubleDollar)) {
       return Text(
-        text.trim(),
+        normalizedText.trim(),
         style: FinalsTheme.subtitleStyle(context).copyWith(
           fontSize: 14,
           color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
@@ -117,15 +124,15 @@ class _FormattedStepText extends StatelessWidget {
         ),
       );
     }
+    final List<String> blockParts = normalizedText.split(_doubleDollar);
+    final List<Widget> children = [];
 
-    final parts = text.split('\$\$');
-    final children = <Widget>[];
-
-    for (int i = 0; i < parts.length; i++) {
-      if (parts[i].trim().isEmpty) continue;
+    for (int i = 0; i < blockParts.length; i++) {
+      final part = blockParts[i].trim();
+      if (part.isEmpty) continue;
 
       if (i % 2 == 1) {
-        // Math block
+        // == BLOCK MATH ($$) ==
         children.add(Container(
           width: double.infinity,
           margin: const EdgeInsets.only(top: 8, bottom: 8),
@@ -140,23 +147,68 @@ class _FormattedStepText extends StatelessWidget {
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
             child: Math.tex(
-              parts[i].trim(),
+              part,
               textStyle: FinalsTheme.titleStyle(context).copyWith(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
-              onErrorFallback: (err) => Text(parts[i].trim()),
+              onErrorFallback: (err) => Text(part),
             ),
           ),
         ));
       } else {
-        // Text block
-        children.add(Text(
-          parts[i].trim(),
-          style: FinalsTheme.subtitleStyle(context).copyWith(
-            fontSize: 14,
-            color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
-            height: 1.5,
+        // == TEXT BLOCK (May contain inline math $ and bolding **) ==
+        final List<String> inlineParts = part.split(r'$');
+        final List<InlineSpan> spans = [];
+
+        for (int j = 0; j < inlineParts.length; j++) {
+          final inlinePart = inlineParts[j];
+          if (inlinePart.isEmpty) continue;
+
+          if (j % 2 == 1) {
+            // -- INLINE MATH ($) --
+            spans.add(WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Math.tex(
+                inlinePart,
+                textStyle: FinalsTheme.subtitleStyle(context).copyWith(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: FinalsTheme.textPrimary(context),
+                ),
+                onErrorFallback: (err) => Text(inlinePart),
+              ),
+            ));
+          } else {
+            // -- PLAIN TEXT with optional ** bolding --
+            final regex = RegExp(r'\*\*(.*?)\*\*');
+            int lastIndex = 0;
+
+            for (final match in regex.allMatches(inlinePart)) {
+              if (match.start > lastIndex) {
+                spans.add(TextSpan(
+                    text: inlinePart.substring(lastIndex, match.start)));
+              }
+              spans.add(TextSpan(
+                text: match.group(1),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ));
+              lastIndex = match.end;
+            }
+            if (lastIndex < inlinePart.length) {
+              spans.add(TextSpan(text: inlinePart.substring(lastIndex)));
+            }
+          }
+        }
+
+        children.add(RichText(
+          text: TextSpan(
+            style: FinalsTheme.subtitleStyle(context).copyWith(
+              fontSize: 14,
+              color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
+              height: 1.5,
+            ),
+            children: spans,
           ),
         ));
       }

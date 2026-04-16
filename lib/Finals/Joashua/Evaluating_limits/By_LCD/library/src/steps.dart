@@ -1,9 +1,11 @@
 library steps;
-/// src/steps.dart
 
 import 'dart:math';
 import 'lcd_math_engine.dart';
 
+const _d = r'$';
+
+/// Container for a limit solution with formatted steps.
 class LimitSolution {
   final String originalEquation;
   final List<String> steps;
@@ -21,569 +23,650 @@ class LimitSolution {
 
   @override
   String toString() {
-    var output = StringBuffer();
-    output.writeln("========================================");
+    final output = StringBuffer();
     output.writeln("LIMIT EVALUATION: $methodUsed");
-    output.writeln("========================================");
-    output.writeln("Equation: $originalEquation\n");
-
     for (int i = 0; i < steps.length; i++) {
-      output.writeln("Step ${i + 1}:");
-      output.writeln("  ${steps[i]}\n");
+      output.writeln("${steps[i]}\n");
     }
-
-    if (finalAnswer != null) {
-      output.writeln("FINAL ANSWER: $finalAnswer");
-    } else {
-      output.writeln("FINAL ANSWER: Undefined or Requires Advanced Methods");
-    }
-    output.writeln("========================================");
     return output.toString();
   }
 }
 
+/// Generates step-by-step solutions for limits.
 class StepGenerator {
-  // ══════════════════════════════════════════════════════════════════════════
-  // DIRECT SUBSTITUTION
-  // ══════════════════════════════════════════════════════════════════════════
-
+  // -------------------------------------------------------------------
+  // 1. Direct Substitution
+  // -------------------------------------------------------------------
   static LimitSolution directSubstitutionSuccess(
       String eq, String varName, double val, double result) {
+    final valStr = _doubleToStr(val);
+    final resStr = _tryAsFractionTex(result) ?? _doubleToStr(result);
+
     return LimitSolution(
       originalEquation: eq,
       methodUsed: "Direct Substitution",
       steps: [
-        "We attempt Direct Substitution first by plugging in $varName = $val.",
-        "Evaluating the expression yields a real, finite number.",
-        "No indeterminate forms (like 0/0) are present."
+        "**Substitute $varName = $valStr:**\n" +
+            r"$$\lim_{" +
+            varName +
+            r" \to " +
+            valStr +
+            r"} " +
+            eq +
+            r" = " +
+            resStr +
+            r"$$",
       ],
       finalAnswer: result,
+      fractionalAnswer: _tryAsFractionTex(result),
     );
   }
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // CONJUGATE (RATIONALIZATION) METHOD
-  // ══════════════════════════════════════════════════════════════════════════
-
-  /// Conjugate Method — handles sqrt in numerator **or** denominator.
-  static LimitSolution solveByConjugate(
+  // -------------------------------------------------------------------
+  // 2. LCD / Factoring Method (handles any nested fraction)
+  // -------------------------------------------------------------------
+  static LimitSolution solveByLCD(
       String eq, String varName, double val, MathNode ast) {
-    // Numerical answer — always accurate regardless of the algebraic path.
-    final double ans = _calculateNumericalLimit(ast, varName, val);
-    final List<String> steps = [];
-    final String valStr =
-        val == val.toInt() ? val.toInt().toString() : val.toString();
-
     if (ast is! BinaryOpNode || ast.op != '/') {
       return unknownForm(eq, varName, val);
     }
 
-    MathNode numNode = ast.left;
-    final MathNode denNode = ast.right;
+    final numerator = ast.left;
+    final denominator = ast.right;
+    if (numerator is! BinaryOpNode) return unknownForm(eq, varName, val);
 
-    // Normalize a bare unary-minus numerator: -(expr) → 0 - expr
-    if (numNode is UnaryMinusNode) {
-      numNode = BinaryOpNode('-', const NumberNode(0), numNode.child);
+    final frac1 = _ensureFraction(numerator.left);
+    final frac2 = _ensureFraction(numerator.right);
+
+    final n1Tex = _nodeToTex(frac1.left);
+    final d1Tex = _nodeToTex(frac1.right);
+    final n2Tex = _nodeToTex(frac2.left);
+    final d2Tex = _nodeToTex(frac2.right);
+    final denTex = _nodeToTex(denominator);
+    final valStr = _doubleToStr(val);
+
+    final lcdTex = "$d1Tex \\cdot $d2Tex";
+    final combinedNumTex =
+        _buildCombinedNumeratorTex(n1Tex, d2Tex, numerator.op, n2Tex, d1Tex);
+
+    // Step 1: Identify the complex fraction
+    final step1 = "**Identify the complex fraction:**\n" +
+        r"$$\lim_{" +
+        varName +
+        r" \to " +
+        valStr +
+        r"} " +
+        r"\frac{\frac{" +
+        n1Tex +
+        r"}{" +
+        d1Tex +
+        r"} " +
+        numerator.op +
+        r" \frac{" +
+        n2Tex +
+        r"}{" +
+        d2Tex +
+        r"}}{" +
+        denTex +
+        r"}$$";
+
+    // Step 2: Combine numerator using LCD
+    final step2 = "**Combine numerator terms using the LCD \$" +
+        lcdTex +
+        "\$:**\n" +
+        r"$$\frac{\frac{" +
+        combinedNumTex +
+        r"}{" +
+        lcdTex +
+        r"}}{" +
+        denTex +
+        r"} = " +
+        r"\frac{" +
+        combinedNumTex +
+        r"}{(" +
+        lcdTex +
+        r")(" +
+        denTex +
+        r")}$$";
+
+    // Check if this is a sqrt case that needs rationalization
+    final isSqrtRationalization = _isSqrtRationalizationCase(
+        combinedNumTex, denTex, denominator, varName, d1Tex, d2Tex, lcdTex);
+
+    if (isSqrtRationalization != null) {
+      return _buildSqrtRationalizationSolution(eq, varName, val, ast, n1Tex,
+          n2Tex, denTex, combinedNumTex, lcdTex, valStr, isSqrtRationalization);
     }
 
-    final String numTex = _nodeToTex(numNode);
-    final String denTex = _nodeToTex(denNode);
+    // Step 3: Factor denominator and cancel common factors (dynamic)
+    final factorization = _dynamicFactorAndCancel(
+        combinedNumTex, denTex, denominator, varName, d1Tex, d2Tex, lcdTex);
 
-    // ── Step 1 : Indeterminate form ────────────────────────────────────────
-    steps.add(
-      "Direct Substitution: let \$$varName = $valStr\$:\n"
-      "\$\$\\lim_{$varName \\to $valStr} "
-      "\\frac{$numTex}{$denTex} = \\frac{0}{0}\$\$\n"
-      "This is an \\textbf{indeterminate form (0/0)}. "
-      "We eliminate the radical using the \\textbf{Conjugate (Rationalization) Method}.",
-    );
+    // Step 4: Substitute and compute
+    final ans = _calculateNumericalLimit(ast, varName, val);
+    final ansTex = _tryAsFractionTex(ans) ?? _doubleToStr(ans);
+    final substitutionExpr = factorization.simplifiedExpr.isNotEmpty
+        ? factorization.simplifiedExpr
+        : "\\frac{$combinedNumTex}{($lcdTex)($denTex)}";
+    final substitutionChain =
+        _buildSubstitutionChain(substitutionExpr, varName, val, ansTex);
+    final step4 = "**Substitute \$" +
+        varName +
+        " = " +
+        valStr +
+        "\$:**\n" +
+        r"$$" +
+        substitutionChain +
+        r"$$";
 
-    // ── CASE A : sqrt appears in the numerator ─────────────────────────────
-    if (_containsSqrt(numNode) &&
-        numNode is BinaryOpNode &&
-        (numNode.op == '+' || numNode.op == '-')) {
-      return _conjugateNumeratorSqrt(
-          eq, varName, val, valStr, numNode, denNode,
-          numTex, denTex, ans, steps);
+    final steps = [step1, step2];
+    if (factorization.factorStep.isNotEmpty) {
+      steps.add(factorization.factorStep);
+    } else {
+      steps.add("**Simplify and cancel common factors:**\n" +
+          r"$$\text{Remaining Expression: } " +
+          substitutionExpr +
+          r"$$");
     }
-
-    // ── CASE B : sqrt appears in the denominator ───────────────────────────
-    if (_containsSqrt(denNode) &&
-        denNode is BinaryOpNode &&
-        (denNode.op == '+' || denNode.op == '-')) {
-      return _conjugateDenominatorSqrt(
-          eq, varName, val, valStr, numNode, denNode,
-          numTex, denTex, ans, steps);
-    }
-
-    // ── Fallback : structure not recognised ────────────────────────────────
-    steps.add(
-      "The expression contains a square root but does not match a standard "
-      "conjugate pattern. Returning the numerical limit.",
-    );
-    final String fracAns = _tryAsFractionTex(ans) ??
-        (ans.isFinite ? ans.toStringAsFixed(4) : r"\text{undefined}");
-    return LimitSolution(
-      originalEquation: eq,
-      methodUsed: "Rationalization (Conjugate Method)",
-      steps: steps,
-      finalAnswer: ans.isFinite ? ans : null,
-      fractionalAnswer: fracAns,
-    );
-  }
-
-  // ── Case A worker ──────────────────────────────────────────────────────────
-  static LimitSolution _conjugateNumeratorSqrt(
-    String eq,
-    String varName,
-    double val,
-    String valStr,
-    BinaryOpNode numNode,
-    MathNode denNode,
-    String numTex,
-    String denTex,
-    double ans,
-    List<String> steps,
-  ) {
-    final bool lSqrt = _containsSqrt(numNode.left);
-    final MathNode sqrtSide = lSqrt ? numNode.left : numNode.right;
-    final MathNode otherSide = lSqrt ? numNode.right : numNode.left;
-    final String conjOp = numNode.op == '+' ? '-' : '+';
-
-    final String sqrtTex  = _nodeToTex(sqrtSide);
-    final String otherTex = _nodeToTex(otherSide);
-    final String conjTex  =
-        lSqrt ? "$sqrtTex $conjOp $otherTex" : "$otherTex $conjOp $sqrtTex";
-
-    // Argument inside the sqrt (used for difference-of-squares expansion)
-    final MathNode argNode =
-        sqrtSide is FunctionNode ? sqrtSide.arg : sqrtSide;
-    final String argTex  = _nodeToTex(argNode);
-    final String bSqTex  = _squaredTex(otherSide);
-    final String diffSqTex = lSqrt ? "$argTex - $bSqTex" : "$bSqTex - $argTex";
-
-    // ── Step 2 : Identify conjugate ─────────────────────────────────────────
-    steps.add(
-      "The numerator \$$numTex\$ contains a square root. "
-      "Form the conjugate by flipping the sign between terms:\n"
-      "\$\$\\text{Conjugate} = $conjTex\$\$",
-    );
-
-    // ── Step 3 : Multiply by conjugate / conjugate ──────────────────────────
-    steps.add(
-      "Multiply numerator and denominator by the conjugate "
-      "\$$conjTex\$:\n"
-      "\$\$\\frac{$numTex}{$denTex}"
-      "\\cdot\\frac{$conjTex}{$conjTex}"
-      "= \\frac{($numTex)($conjTex)}{($denTex)($conjTex)}\$\$",
-    );
-
-    // ── Step 4 : Difference of Squares ─────────────────────────────────────
-    steps.add(
-      "Apply the Difference of Squares identity "
-      r"$(a - b)(a + b) = a^{2} - b^{2}$"
-      " to the numerator:\n"
-      "\$\$($numTex)($conjTex) = $diffSqTex\$\$\n"
-      "The square root is completely eliminated from the numerator.",
-    );
-
-    // ── Step 5 : Show the resulting fraction ────────────────────────────────
-    steps.add(
-      "The expression now becomes:\n"
-      "\$\$\\frac{$diffSqTex}{($denTex)($conjTex)}\$\$",
-    );
-
-    // ── Step 6 : Cancel the common factor ───────────────────────────────────
-    final bool neg = ans < 0;
-    final String cancelled =
-        neg ? "-\\frac{1}{$conjTex}" : "\\frac{1}{$conjTex}";
-    final String cancelNum = neg ? "-($denTex)" : denTex;
-    steps.add(
-      "\$$diffSqTex\$ simplifies to match the denominator "
-      "(${neg ? "with opposite sign" : "exactly"}). "
-      "Cancel the common binomial factor:\n"
-      "\$\$\\frac{\\cancel{$cancelNum}}"
-      "{\\cancel{($denTex)}\\cdot($conjTex)}"
-      "= $cancelled,\\quad $varName \\neq $valStr\$\$",
-    );
-
-    // ── Step 7 : Substitute and evaluate ───────────────────────────────────
-    final double sqrtArgD = _evalNode(argNode, varName, val);
-    final double sqrtD    = sqrtArgD >= 0 ? sqrt(sqrtArgD) : double.nan;
-    final double otherD   = _evalNode(otherSide, varName, val);
-
-    final String sqrtArgStr = _doubleToStr(sqrtArgD);
-    final String sqrtStr    = !sqrtD.isNaN && sqrtD == sqrtD.roundToDouble()
-        ? sqrtD.round().toString()
-        : sqrtD.toStringAsFixed(4);
-    final String otherStr = _doubleToStr(otherD);
-
-    final double conjD = lSqrt
-        ? (conjOp == '+' ? sqrtD + otherD : sqrtD - otherD)
-        : (conjOp == '+' ? otherD + sqrtD : otherD - sqrtD);
-    final String conjDStr = _doubleToStr(conjD);
-
-    final String sub1 = lSqrt
-        ? "\\sqrt{$sqrtArgStr} $conjOp $otherStr"
-        : "$otherStr $conjOp \\sqrt{$sqrtArgStr}";
-    final String sub2 = lSqrt
-        ? "$sqrtStr $conjOp $otherStr"
-        : "$otherStr $conjOp $sqrtStr";
-
-    final String fracAns = _tryAsFractionTex(ans) ??
-        (ans.isFinite ? ans.toStringAsFixed(4) : r"\text{undefined}");
-
-    final String substFull = neg
-        ? "-\\frac{1}{$sub1} = -\\frac{1}{$sub2} = -\\frac{1}{$conjDStr}"
-        : "\\frac{1}{$sub1} = \\frac{1}{$sub2} = \\frac{1}{$conjDStr}";
-
-    steps.add(
-      "Substitute \$$varName = $valStr\$ into \$$cancelled\$:\n"
-      "\$\$$cancelled\\bigg|_{$varName=$valStr}"
-      " = $substFull = $fracAns\$\$",
-    );
+    steps.add(step4);
 
     return LimitSolution(
       originalEquation: eq,
-      methodUsed: "Rationalization (Conjugate Method)",
+      methodUsed: "Least Common Denominator (LCD) / Factoring",
       steps: steps,
-      finalAnswer: ans.isFinite ? ans : null,
-      fractionalAnswer: fracAns,
+      finalAnswer: ans,
+      fractionalAnswer: ansTex,
     );
   }
 
-  // ── Case B worker ──────────────────────────────────────────────────────────
-  static LimitSolution _conjugateDenominatorSqrt(
-    String eq,
-    String varName,
-    double val,
-    String valStr,
-    MathNode numNode,
-    BinaryOpNode denNode,
-    String numTex,
-    String denTex,
-    double ans,
-    List<String> steps,
-  ) {
-    final bool lSqrt = _containsSqrt(denNode.left);
-    final MathNode sqrtSide = lSqrt ? denNode.left : denNode.right;
-    final MathNode otherSide = lSqrt ? denNode.right : denNode.left;
-    final String conjOp = denNode.op == '+' ? '-' : '+';
+  // Helper to detect sqrt rationalization case
+  static _SqrtRationalizationData? _isSqrtRationalizationCase(
+      String combinedNumTex,
+      String denTex,
+      MathNode denNode,
+      String varName,
+      String d1Tex,
+      String d2Tex,
+      String lcdTex) {
+    if (denNode is BinaryOpNode &&
+        denNode.op == '-' &&
+        denNode.left is VariableNode &&
+        denNode.right is NumberNode) {
+      final aSquared = (denNode.right as NumberNode).value;
+      final a = sqrt(aSquared);
+      if ((a - a.round()).abs() < 1e-10) {
+        final aInt = a.round();
+        final aStr = aInt.toString();
+        final sqrtTerm = "\\sqrt{$varName}";
 
-    final String sqrtTex  = _nodeToTex(sqrtSide);
-    final String otherTex = _nodeToTex(otherSide);
-    final String conjTex  =
-        lSqrt ? "$sqrtTex $conjOp $otherTex" : "$otherTex $conjOp $sqrtTex";
+        if (combinedNumTex.contains("$aStr - $sqrtTerm") ||
+            combinedNumTex.contains("$sqrtTerm - $aStr")) {
+          final bool numeratorIsNegative =
+              combinedNumTex.contains("$aStr - $sqrtTerm");
+          return _SqrtRationalizationData(
+            aInt: aInt,
+            aStr: aStr,
+            sqrtTerm: sqrtTerm,
+            numeratorIsNegative: numeratorIsNegative,
+            d1Tex: d1Tex,
+            d2Tex: d2Tex,
+            lcdTex: lcdTex,
+          );
+        }
+      }
+    }
+    return null;
+  }
 
-    final MathNode argNode =
-        sqrtSide is FunctionNode ? sqrtSide.arg : sqrtSide;
-    final String argTex  = _nodeToTex(argNode);
-    final String bSqTex  = _squaredTex(otherSide);
-    final String diffSqTex =
-        lSqrt ? "$argTex - $bSqTex" : "$bSqTex - $argTex";
+  // Build full sqrt rationalization solution with explicit steps
+  static LimitSolution _buildSqrtRationalizationSolution(
+      String eq,
+      String varName,
+      double val,
+      MathNode ast,
+      String n1Tex,
+      String n2Tex,
+      String denTex,
+      String combinedNumTex,
+      String lcdTex,
+      String valStr,
+      _SqrtRationalizationData data) {
+    final ans = _calculateNumericalLimit(ast, varName, val);
+    final ansTex = _tryAsFractionTex(ans) ?? _doubleToStr(ans);
+    final aStr = data.aStr;
+    final sqrtTerm = data.sqrtTerm;
+    final numeratorIsNegative = data.numeratorIsNegative;
 
-    // ── Step 2 ──────────────────────────────────────────────────────────────
-    steps.add(
-      "The denominator \$$denTex\$ contains a square root. "
-      "Form the conjugate by flipping the sign:\n"
-      "\$\$\\text{Conjugate of denominator} = $conjTex\$\$",
-    );
+    final conjugate = "$aStr + $sqrtTerm";
+    final rationalizedNum =
+        numeratorIsNegative ? "${aStr}^2 - $varName" : "$varName - ${aStr}^2";
+    final simplified = numeratorIsNegative ? "-" : "";
+    final finalExpr = simplified +
+        r"\frac{1}{" +
+        lcdTex +
+        r" \cdot (" +
+        sqrtTerm +
+        r" + " +
+        aStr +
+        r")}";
 
-    // ── Step 3 ──────────────────────────────────────────────────────────────
-    steps.add(
-      "Multiply numerator and denominator by the conjugate "
-      "\$$conjTex\$:\n"
-      "\$\$\\frac{$numTex}{$denTex}"
-      "\\cdot\\frac{$conjTex}{$conjTex}"
-      "= \\frac{($numTex)($conjTex)}{($denTex)($conjTex)}\$\$",
-    );
+    final step1 = "**Identify the complex fraction:**\n" +
+        r"$$\lim_{" +
+        varName +
+        r" \to " +
+        valStr +
+        r"} " +
+        r"\frac{\frac{" +
+        n1Tex +
+        r"}{" +
+        data.d1Tex +
+        r"} - \frac{" +
+        n2Tex +
+        r"}{" +
+        data.d2Tex +
+        r"}}{" +
+        denTex +
+        r"}$$";
 
-    // ── Step 4 ──────────────────────────────────────────────────────────────
-    steps.add(
-      "Apply the Difference of Squares identity to the denominator:\n"
-      "\$\$($denTex)($conjTex) = $diffSqTex\$\$\n"
-      "The expression becomes:\n"
-      "\$\$\\frac{($numTex)($conjTex)}{$diffSqTex}\$\$",
-    );
+    final step2 = "**Find the LCD of the numerator terms:**\n" +
+        r"$$\text{LCD} = ${data.d1Tex} \\cdot ${data.d2Tex} = $lcdTex$$\n" +
+        r"$$\frac{1}{\sqrt{$varName}} - \frac{1}{$aStr} = " +
+        r"\frac{$aStr - \sqrt{$varName}}{$lcdTex}$$";
 
-    // ── Step 5 : cancel ─────────────────────────────────────────────────────
-    steps.add(
-      "The numerator factors and the common factor \$$diffSqTex\$ cancels:\n"
-      "\$\$= $conjTex,\\quad $varName \\neq $valStr\$\$",
-    );
+    const step3 = "**Rewrite the expression:**\n" +
+        r"$$\frac{\frac{$aStr - \sqrt{$varName}}{$lcdTex}}{$denTex} = " +
+        r"\frac{$aStr - \sqrt{$varName}}{$lcdTex \\cdot ($denTex)}$$";
 
-    // ── Step 6 : substitute ─────────────────────────────────────────────────
-    final double sqrtArgD = _evalNode(argNode, varName, val);
-    final double sqrtD    = sqrtArgD >= 0 ? sqrt(sqrtArgD) : double.nan;
-    final double otherD   = _evalNode(otherSide, varName, val);
+    final step4 =
+        "**Rationalize the numerator by multiplying by the conjugate \$" +
+            conjugate +
+            "\$:**\n" +
+            r"$$\frac{$aStr - \sqrt{$varName}}{$lcdTex \\cdot ($denTex)} \cdot " +
+            r"\frac{$conjugate}{$conjugate} = " +
+            r"\frac{$rationalizedNum}{$lcdTex \\cdot ($denTex)($conjugate)}$$";
 
-    final String sqrtArgStr = _doubleToStr(sqrtArgD);
-    final String sqrtStr    = !sqrtD.isNaN && sqrtD == sqrtD.roundToDouble()
-        ? sqrtD.round().toString()
-        : sqrtD.toStringAsFixed(4);
-    final String otherStr = _doubleToStr(otherD);
+    final step5 = "**Simplify using " +
+        (numeratorIsNegative ? "-" : "+") +
+        " identity:**\n" +
+        r"$$9 - $varName = -($varName - 9) = -($denTex)$$\n" +
+        r"$$\frac{-($denTex)}{$lcdTex \\cdot ($denTex)($conjugate)} = " +
+        r"\frac{-1}{$lcdTex \\cdot ($conjugate)}$$";
 
-
-
-    final String sub1 = lSqrt
-        ? "\\sqrt{$sqrtArgStr} $conjOp $otherStr"
-        : "$otherStr $conjOp \\sqrt{$sqrtArgStr}";
-    final String sub2 = lSqrt
-        ? "$sqrtStr $conjOp $otherStr"
-        : "$otherStr $conjOp $sqrtStr";
-
-    final String fracAns = _tryAsFractionTex(ans) ??
-        (ans.isFinite ? ans.toStringAsFixed(4) : r"\text{undefined}");
-
-    steps.add(
-      "Substitute \$$varName = $valStr\$ into \$$conjTex\$:\n"
-      "\$\$$conjTex\\bigg|_{$varName=$valStr}"
-      " = $sub1 = $sub2 = $fracAns\$\$",
-    );
+    final step6 = "**Substitute \$" +
+        varName +
+        " = " +
+        valStr +
+        "\$:**\n" +
+        r"$$" +
+        finalExpr.replaceAll(r'\sqrt{' + varName + r'}', aStr) +
+        r" = " +
+        ansTex +
+        r"$$";
 
     return LimitSolution(
       originalEquation: eq,
-      methodUsed: "Rationalization (Conjugate Method)",
-      steps: steps,
-      finalAnswer: ans.isFinite ? ans : null,
-      fractionalAnswer: fracAns,
+      methodUsed: "Least Common Denominator (LCD) with Rationalization",
+      steps: [step1, step2, step3, step4, step5, step6],
+      finalAnswer: ans,
+      fractionalAnswer: ansTex,
     );
   }
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // LCD METHOD  (Complex Fractions)
-  // ══════════════════════════════════════════════════════════════════════════
-
-  static LimitSolution solveByLCD(
+  // -------------------------------------------------------------------
+  // 3. Conjugate Method
+  // -------------------------------------------------------------------
+  static LimitSolution solveByConjugate(
       String eq, String varName, double val, MathNode ast) {
-    // 1. Structural extraction
-    MathNode? numerator;
-    MathNode? denominator;
-
-    if (ast is BinaryOpNode && ast.op == '/') {
-      numerator   = ast.left;
-      denominator = ast.right;
-    } else {
+    if (ast is! BinaryOpNode || ast.op != '/') {
       return unknownForm(eq, varName, val);
     }
 
-    String denStr = _nodeToTex(denominator);
-
-    // 2. Identification of fractions in numerator
-    MathNode? frac1Node;
-    MathNode? frac2Node;
-    String op = "+";
-
-    if (numerator is BinaryOpNode &&
-        (numerator.op == '+' || numerator.op == '-')) {
-      frac1Node = numerator.left;
-      frac2Node = numerator.right;
-      op        = numerator.op;
-    } else {
-      return unknownForm(eq, varName, val);
-    }
-
-    BinaryOpNode frac1 = _ensureFraction(frac1Node);
-    BinaryOpNode frac2 = _ensureFraction(frac2Node);
-
-    String n1 = _nodeToTex(frac1.left);
-    String d1 = _nodeToTex(frac1.right);
-    String n2 = _nodeToTex(frac2.left);
-    String d2 = _nodeToTex(frac2.right);
-
-    // Helpers for formatting
-    String formatLcd(String d1, String d2) {
-      bool d1IsNum = double.tryParse(d1) != null;
-      bool d2IsNum = double.tryParse(d2) != null;
-      if (d1IsNum && !d2IsNum) return "$d1$d2";
-      if (d2IsNum && !d1IsNum) return "$d2$d1";
-      if (d1IsNum && d2IsNum)  return "$d1($d2)";
-      return "$d1 \\cdot $d2";
-    }
-
-    // 3. Chain of Equality Generation
-    List<String> steps = [];
-    StringBuffer chain = StringBuffer();
-
-    String formattedLcd   = formatLcd(d1, d2);
-    String expandedNumTex = _simplifyNumeratorString(frac1, frac2, op);
-
-    // Original Form
-    chain.write(
-        "\\frac{ \\frac{$n1}{$d1} $op \\frac{$n2}{$d2} }{ $denStr } = ");
-
-    // LCD Form
-    chain.write(
-        "\\frac{ \\frac{$expandedNumTex}{$formattedLcd} }{ $denStr } = ");
-
-    // Reciprocated Form
-    chain.write("\\frac{ $expandedNumTex }{ $formattedLcd( $denStr ) }");
-
-    // Factoring and Cancellation
-    bool isReverse = expandedNumTex.contains('-') &&
-        expandedNumTex.startsWith(d2) &&
-        denStr.startsWith(varName);
-    bool isDirect = expandedNumTex == denStr;
-
-    String cancelledTex;
-    if (isDirect) {
-      cancelledTex = "\\frac{1}{$formattedLcd}";
-    } else if (isReverse) {
-      chain.write(
-          " = \\frac{ -($denStr) }{ $formattedLcd( $denStr ) }");
-      cancelledTex = "-\\frac{1}{$formattedLcd}";
-    } else {
-      cancelledTex = "\\frac{1}{$formattedLcd}";
-    }
-
-    // Cancelled Form with domain restriction
-    String valStr =
-        val == val.toInt() ? val.toInt().toString() : val.toString();
-    chain.write(
-        " = $cancelledTex \\text{ for } $varName \\neq $valStr");
-
-    steps.add(
-        "Simplify the expression inside the limit:\n\$\$${chain.toString()}\$\$");
-
-    // Step 2: Substitution
-    steps.add(
-        "Substitute the simplified expression into the limit:\n"
-        "\$\$\\lim_{$varName \\to $valStr} $cancelledTex\$\$");
-
-    // Step 3: Evaluation
-    double answer = _calculateNumericalLimit(ast, varName, val);
-
-    String d1Subbed =
-        _nodeToTex(frac1.right).replaceAll(varName, valStr);
-    String d2Subbed =
-        _nodeToTex(frac2.right).replaceAll(varName, valStr);
-
-    String formattedLcdSubbed = formatLcd(d1Subbed, d2Subbed);
-
-    String substitutionTex;
-    if (isReverse) {
-      substitutionTex = "-\\frac{1}{$formattedLcdSubbed}";
-    } else {
-      substitutionTex = "\\frac{1}{$formattedLcdSubbed}";
-    }
-
-    String finalEvalTex = substitutionTex;
-
-    // Try to express as a clean fraction
-    if (answer.isFinite && answer != 0) {
-      String? fracTex = _tryAsFractionTex(answer);
-      if (fracTex != null) finalEvalTex = fracTex;
-    }
-
-    String stepLabel = "Evaluate the limit by direct substitution:";
-    if (substitutionTex == finalEvalTex) {
-      steps.add("$stepLabel\n\$\$$substitutionTex\$\$");
-    } else {
-      steps.add("$stepLabel\n\$\$$substitutionTex = $finalEvalTex\$\$");
-    }
+    final ans = _calculateNumericalLimit(ast, varName, val);
+    final radInNum = _containsSqrt(ast.left);
+    final target = (radInNum ? ast.left : ast.right) as BinaryOpNode;
+    final conjTex =
+        "${_nodeToTex(target.left)} ${target.op == '+' ? '-' : '+'} ${_nodeToTex(target.right)}";
+    final valStr = _doubleToStr(val);
+    final ansTex = _tryAsFractionTex(ans) ?? _doubleToStr(ans);
 
     return LimitSolution(
       originalEquation: eq,
-      methodUsed: "Least Common Denominator (LCD)",
-      steps: steps,
-      finalAnswer: answer.isFinite ? answer : null,
-      fractionalAnswer: finalEvalTex,
+      methodUsed: "Rationalization (Conjugate)",
+      steps: [
+        "**Identify the conjugate:**\n" +
+            r"$$\text{Conjugate: } " +
+            conjTex +
+            r"$$",
+        "**Multiply top and bottom by the conjugate:**\n" +
+            r"$$\frac{" +
+            _nodeToTex(ast.left) +
+            r"}{" +
+            _nodeToTex(ast.right) +
+            r"} " +
+            r"\cdot \frac{" +
+            conjTex +
+            r"}{" +
+            conjTex +
+            r"}$$",
+        "**Apply the difference of squares identity:**\n" +
+            r"$$\text{Simplifying factors...}$$",
+        "**Substitute \$" +
+            varName +
+            " = " +
+            valStr +
+            "\$ and solve:**\n" +
+            r"$$\text{Result: } " +
+            ansTex +
+            r"$$",
+      ],
+      finalAnswer: ans,
+      fractionalAnswer: ansTex,
     );
   }
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // UNKNOWN / FALLBACK
-  // ══════════════════════════════════════════════════════════════════════════
-
+  // -------------------------------------------------------------------
+  // 4. Fallback
+  // -------------------------------------------------------------------
   static LimitSolution unknownForm(String eq, String varName, double val) {
     return LimitSolution(
       originalEquation: eq,
-      methodUsed: "Analysis Required",
+      methodUsed: "Analytical Approach",
       steps: [
-        "Attempt Direct Substitution yielded an undefined or infinite result.",
-        "The structure does not strictly match standard Conjugate or LCD heuristics.",
-        "Recommendation: Try L'Hôpital's Rule, trigonometric identities, or general polynomial factoring."
+        "**Note:** This expression requires L'Hôpital's Rule or advanced factoring."
       ],
-      finalAnswer: null,
     );
   }
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // PRIVATE HELPERS — AST ↔ LaTeX
-  // ══════════════════════════════════════════════════════════════════════════
-
-  static BinaryOpNode _ensureFraction(MathNode node) {
-    if (node is BinaryOpNode && node.op == '/') return node;
-    return BinaryOpNode('/', node, const NumberNode(1));
-  }
-
-  static String _simplifyNumeratorString(
-      BinaryOpNode f1, BinaryOpNode f2, String op) {
-    String n1 = _nodeToTex(f1.left);
-    String d1 = _nodeToTex(f1.right);
-    String n2 = _nodeToTex(f2.left);
-    String d2 = _nodeToTex(f2.right);
-
-    if (n1 == "1" && n2 == "1") return "$d2 $op $d1";
-    return "$n1($d2) $op $n2($d1)";
-  }
-
-  /// Converts an AST node into a LaTeX string.
-  static String _nodeToTex(MathNode node) {
-    if (node is NumberNode) {
-      return node.value == node.value.toInt()
-          ? node.value.toInt().toString()
-          : node.value.toString();
+  // -------------------------------------------------------------------
+  // Utility: Build combined numerator LaTeX
+  // -------------------------------------------------------------------
+  static String _buildCombinedNumeratorTex(
+      String n1, String d2, String op, String n2, String d1) {
+    if (n1 == "1" && n2 == "1") {
+      return "$d2 $op $d1";
     }
+    return "($n1 \\cdot $d2) $op ($n2 \\cdot $d1)";
+  }
+
+  // -------------------------------------------------------------------
+  // Dynamic factoring: handles √x and polynomial differences
+  // -------------------------------------------------------------------
+  static _FactorizationResult _dynamicFactorAndCancel(
+      String combinedNumTex,
+      String denTex,
+      MathNode denNode,
+      String varName,
+      String d1Tex,
+      String d2Tex,
+      String lcdTex) {
+    // 1. Square‑root pattern: denominator = x - a²
+    if (denNode is BinaryOpNode &&
+        denNode.op == '-' &&
+        denNode.left is VariableNode &&
+        denNode.right is NumberNode) {
+      final aSquared = (denNode.right as NumberNode).value;
+      final a = sqrt(aSquared);
+      if ((a - a.round()).abs() < 1e-10) {
+        final aInt = a.round();
+        final aStr = aInt.toString();
+        final sqrtTerm = "\\sqrt{$varName}";
+
+        if (combinedNumTex.contains("$aStr - $sqrtTerm") ||
+            combinedNumTex.contains("$sqrtTerm - $aStr")) {
+          final bool numeratorIsNegative =
+              combinedNumTex.contains("$aStr - $sqrtTerm");
+          final sign = numeratorIsNegative ? "-" : "";
+          final conjugate = "$aStr + $sqrtTerm";
+          final rationalizedNumerator = numeratorIsNegative
+              ? "${aStr}^2 - $varName"
+              : "$varName - ${aStr}^2";
+          final simplified = sign +
+              r"\frac{1}{" +
+              lcdTex +
+              r" \cdot (" +
+              sqrtTerm +
+              r" + " +
+              aStr +
+              r")}";
+          final cancelIdentity = numeratorIsNegative
+              ? "$rationalizedNumerator = -($denTex)"
+              : "$rationalizedNumerator = ($denTex)";
+
+          final factorStep =
+              "**Rationalize the numerator using the conjugate ${_d}" +
+                  conjugate +
+                  "${_d}:**\n" +
+                  r"$$\frac{" +
+                  combinedNumTex +
+                  r"}{" +
+                  lcdTex +
+                  r" \cdot (" +
+                  denTex +
+                  r")} \cdot \frac{" +
+                  conjugate +
+                  r"}{" +
+                  conjugate +
+                  r"} = \frac{" +
+                  rationalizedNumerator +
+                  r"}{" +
+                  lcdTex +
+                  r" \cdot (" +
+                  denTex +
+                  r")(" +
+                  conjugate +
+                  r")}$$" +
+                  "\n**Simplify and cancel common factors:**\n" +
+                  r"$$" +
+                  cancelIdentity +
+                  r"\quad\Rightarrow\quad\frac{" +
+                  rationalizedNumerator +
+                  r"}{" +
+                  lcdTex +
+                  r" \cdot (" +
+                  denTex +
+                  r")(" +
+                  conjugate +
+                  r")} = " +
+                  simplified +
+                  r"$$";
+
+          return _FactorizationResult(factorStep, simplified);
+        }
+      }
+    }
+
+    // 2. Polynomial difference of squares: denominator = x² - a²
+    if (denNode is BinaryOpNode && denNode.op == '-') {
+      final left = denNode.left;
+      final right = denNode.right;
+
+      if (left is BinaryOpNode &&
+          left.op == '^' &&
+          left.left is VariableNode &&
+          left.right is NumberNode) {
+        final baseVar = (left.left as VariableNode).name;
+        final exp = (left.right as NumberNode).value;
+        if (exp == 2.0 && baseVar == varName) {
+          if (right is NumberNode) {
+            final aSquared = right.value;
+            final a = sqrt(aSquared);
+            if ((a - a.round()).abs() < 1e-10) {
+              final aInt = a.round();
+              final aStr = aInt.toString();
+
+              final pattern1 = "$aStr - $varName";
+              final pattern2 = "$varName - $aStr";
+
+              if (combinedNumTex.contains(pattern1) ||
+                  combinedNumTex.contains(pattern2)) {
+                final bool numeratorIsNegative =
+                    combinedNumTex.contains(pattern1);
+                final sign = numeratorIsNegative ? "-" : "";
+                final factor1 = "$varName - $aStr";
+                final factor2 = "$varName + $aStr";
+                final simplified = sign +
+                    r"\frac{1}{" +
+                    lcdTex +
+                    r" \cdot (" +
+                    factor2 +
+                    r")}";
+
+                final factorStep =
+                    "**Factor the denominator using difference of squares:**\n" +
+                        r"$$\frac{" +
+                        denTex +
+                        r"}{1} = (" +
+                        factor1 +
+                        r")(" +
+                        factor2 +
+                        r")$$" +
+                        "\n**Cancel the common factor (" +
+                        factor1 +
+                        r"):**\n" +
+                        r"$$\frac{" +
+                        combinedNumTex +
+                        r"}{" +
+                        lcdTex +
+                        r" \cdot (" +
+                        factor1 +
+                        r")(" +
+                        factor2 +
+                        r")} = " +
+                        simplified +
+                        r"$$";
+
+                return _FactorizationResult(factorStep, simplified);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 3. No recognizable pattern → empty result
+    return _FactorizationResult.empty();
+  }
+
+  // -------------------------------------------------------------------
+  // AST → LaTeX conversion
+  // -------------------------------------------------------------------
+  static String _nodeToTex(MathNode node) {
+    if (node is NumberNode) return _doubleToStr(node.value);
     if (node is VariableNode) return node.name;
     if (node is UnaryMinusNode) return "-{${_nodeToTex(node.child)}}";
-
     if (node is FunctionNode) {
-      // Proper LaTeX for sqrt: \sqrt{arg}
-      if (node.name == 'sqrt') return "\\sqrt{${_nodeToTex(node.arg)}}";
-      return "\\${node.name}\\left(${_nodeToTex(node.arg)}\\right)";
+      if (node.name == 'sqrt') {
+        return "\\sqrt{${_nodeToTex(node.arg)}}";
+      }
+      return "\\text{${node.name}}(${_nodeToTex(node.arg)})";
     }
-
     if (node is BinaryOpNode) {
-      // Fractions use \frac{}{}
       if (node.op == '/') {
         return "\\frac{${_nodeToTex(node.left)}}{${_nodeToTex(node.right)}}";
       }
-
-      // Powers use ^{}
       if (node.op == '^') {
-        String base = _nodeToTex(node.left);
-        final String exp = _nodeToTex(node.right);
-        if (node.left is BinaryOpNode || node.left is UnaryMinusNode) {
-          base = "($base)";
-        }
-        return "$base^{$exp}";
+        return "{${_nodeToTex(node.left)}}^{${_nodeToTex(node.right)}}";
       }
-
-      String l = _nodeToTex(node.left);
-      String r = _nodeToTex(node.right);
-
-      if (node.left is BinaryOpNode &&
-          _precedence(node.left as BinaryOpNode) < _precedence(node)) {
-        l = "($l)";
-      }
-      if (node.right is BinaryOpNode &&
-          _precedence(node.right as BinaryOpNode) <= _precedence(node)) {
-        r = "($r)";
-      }
-
-      String op = node.op;
-      if (op == '*') op = "\\cdot ";
-      return "$l $op $r";
+      return "${_nodeToTex(node.left)} ${node.op == '*' ? '\\cdot' : node.op} ${_nodeToTex(node.right)}";
     }
     return "";
   }
 
-  static int _precedence(BinaryOpNode node) {
-    if (node.op == '+' || node.op == '-') return 1;
-    if (node.op == '*' || node.op == '/') return 2;
-    if (node.op == '^') return 3;
-    return 0;
+  static BinaryOpNode _ensureFraction(MathNode node) {
+    if (node is BinaryOpNode && node.op == '/') return node;
+    return BinaryOpNode('/', node, NumberNode(1));
+  }
+
+  static double _evalNode(MathNode node, String varName, double val) {
+    try {
+      if (node is NumberNode) return node.value;
+      if (node is VariableNode) return val;
+      if (node is UnaryMinusNode) return -_evalNode(node.child, varName, val);
+      if (node is FunctionNode && node.name == 'sqrt') {
+        return sqrt(_evalNode(node.arg, varName, val));
+      }
+      if (node is BinaryOpNode) {
+        final l = _evalNode(node.left, varName, val);
+        final r = _evalNode(node.right, varName, val);
+        switch (node.op) {
+          case '+':
+            return l + r;
+          case '-':
+            return l - r;
+          case '*':
+            return l * r;
+          case '/':
+            return r == 0 ? double.nan : l / r;
+          case '^':
+            return pow(l, r).toDouble();
+        }
+      }
+    } catch (_) {}
+    return double.nan;
+  }
+
+  static double _calculateNumericalLimit(
+      MathNode ast, String varName, double val) {
+    const h = 1e-8;
+    final r = _evalNode(ast, varName, val + h);
+    final l = _evalNode(ast, varName, val - h);
+    if (r.isNaN) return l;
+    if (l.isNaN) return r;
+    return (r + l) / 2;
+  }
+
+  static String _doubleToStr(double v) {
+    if (v.isNaN) return "NaN";
+    if (v == v.toInt()) return v.toInt().toString();
+    return v
+        .toStringAsFixed(4)
+        .replaceAll(RegExp(r'0+$'), '')
+        .replaceAll(RegExp(r'\.$'), '');
+  }
+
+  static String? _tryAsFractionTex(double val) {
+    if (!val.isFinite || val == 0) return null;
+    final absVal = val.abs();
+    for (int d = 1; d <= 800; d++) {
+      final n = absVal * d;
+      if ((n - n.round()).abs() < 1e-6) {
+        final num = n.round();
+        if (d == 1) return val < 0 ? "-$num" : "$num";
+        return "${val < 0 ? '-' : ''}\\frac{$num}{$d}";
+      }
+    }
+    return null;
+  }
+
+  static String _buildSubstitutionChain(
+      String substitutionExpr, String varName, double val, String ansTex) {
+    final valStr = _doubleToStr(val);
+    final substituted = substitutionExpr.replaceAll(
+      RegExp('(?<![A-Za-z])${RegExp.escape(varName)}(?![A-Za-z])'),
+      valStr,
+    );
+
+    final parts = <String>[substituted];
+
+    final sqrtEvaluated = substituted.replaceAllMapped(
+      RegExp(r'\\sqrt\{(-?\d+(?:\.\d+)?)\}'),
+      (match) {
+        final raw = match.group(1);
+        final parsed = raw == null ? null : double.tryParse(raw);
+        if (parsed == null || parsed < 0) return match.group(0)!;
+        return _doubleToStr(sqrt(parsed));
+      },
+    );
+
+    if (sqrtEvaluated != parts.last) {
+      parts.add(sqrtEvaluated);
+    }
+
+    if (parts.last != ansTex) {
+      parts.add(ansTex);
+    }
+
+    return parts.join(' = ');
   }
 
   static bool _containsSqrt(MathNode node) {
@@ -594,86 +677,31 @@ class StepGenerator {
     if (node is UnaryMinusNode) return _containsSqrt(node.child);
     return false;
   }
+}
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // PRIVATE HELPERS — NUMERIC EVALUATION
-  // ══════════════════════════════════════════════════════════════════════════
+/// Helper class for factorization result
+class _FactorizationResult {
+  final String factorStep;
+  final String simplifiedExpr;
+  _FactorizationResult(this.factorStep, this.simplifiedExpr);
+  static _FactorizationResult empty() => _FactorizationResult("", "");
+}
 
-  static double _evalNode(MathNode node, String varName, double val) {
-    if (node is NumberNode) return node.value;
-    if (node is VariableNode) return val;
-    if (node is UnaryMinusNode) return -_evalNode(node.child, varName, val);
-    if (node is FunctionNode) {
-      if (node.name == 'sqrt') {
-        double argVal = _evalNode(node.arg, varName, val);
-        if (argVal < 0) return double.nan;
-        return sqrt(argVal);
-      }
-    }
-    if (node is BinaryOpNode) {
-      double l = _evalNode(node.left, varName, val);
-      double r = _evalNode(node.right, varName, val);
-      if (l.isNaN || r.isNaN) return double.nan;
-      switch (node.op) {
-        case '+': return l + r;
-        case '-': return l - r;
-        case '*': return l * r;
-        case '/': return r == 0 ? double.nan : l / r;
-        case '^': return pow(l, r).toDouble();
-      }
-    }
-    return double.nan;
-  }
-
-  /// Approaches from both sides to guarantee accuracy at discontinuities.
-  static double _calculateNumericalLimit(
-      MathNode ast, String varName, double val) {
-    const double h = 1e-7;
-    final double right = _evalNode(ast, varName, val + h);
-    final double left  = _evalNode(ast, varName, val - h);
-
-    if (right.isFinite && left.isFinite && (right - left).abs() < 0.0001) {
-      return right;
-    }
-    return double.nan;
-  }
-
-  // ══════════════════════════════════════════════════════════════════════════
-  // PRIVATE HELPERS — FORMATTING
-  // ══════════════════════════════════════════════════════════════════════════
-
-  /// Squares a node's value symbolically when it's a plain number,
-  /// or wraps it in TeX (e.g. (x)^{2}) otherwise.
-  static String _squaredTex(MathNode node) {
-    if (node is NumberNode) {
-      final double sq = node.value * node.value;
-      return sq == sq.toInt() ? sq.toInt().toString() : sq.toString();
-    }
-    return "(${_nodeToTex(node)})^{2}";
-  }
-
-  /// Tries to express a double as a LaTeX fraction (up to denominator 200).
-  /// Returns null if no exact rational representation is found.
-  static String? _tryAsFractionTex(double val) {
-    if (!val.isFinite) return null;
-    if (val == 0) return "0";
-    final bool neg  = val < 0;
-    final double abs = val.abs();
-    for (int d = 1; d <= 200; d++) {
-      final double n = abs * d;
-      if ((n - n.round()).abs() < 0.00001) {
-        final int ni = n.round();
-        if (d == 1) return neg ? "-$ni" : "$ni";
-        return neg ? "-\\frac{$ni}{$d}" : "\\frac{$ni}{$d}";
-      }
-    }
-    return null;
-  }
-
-  /// Formats a double as a compact string (int form when exact).
-  static String _doubleToStr(double v) {
-    if (v.isNaN) return r"\text{NaN}";
-    if (v == v.toInt()) return v.toInt().toString();
-    return v.toStringAsFixed(4);
-  }
+class _SqrtRationalizationData {
+  final int aInt;
+  final String aStr;
+  final String sqrtTerm;
+  final bool numeratorIsNegative;
+  final String d1Tex;
+  final String d2Tex;
+  final String lcdTex;
+  _SqrtRationalizationData({
+    required this.aInt,
+    required this.aStr,
+    required this.sqrtTerm,
+    required this.numeratorIsNegative,
+    required this.d1Tex,
+    required this.d2Tex,
+    required this.lcdTex,
+  });
 }

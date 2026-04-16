@@ -36,7 +36,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
   Future<void> _solve() async {
     final expression = _exprController.text.trim();
     final approach = _approachController.text.trim();
-    
+
     if (expression.isEmpty || approach.isEmpty) return;
 
     setState(() {
@@ -66,7 +66,10 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
       // If solution found, scroll to steps when answer card is tapped
     } catch (e) {
       setState(() {
-        _error = e.toString().replaceFirst('Exception: ', '').replaceFirst('error: ', '');
+        _error = e
+            .toString()
+            .replaceFirst('Exception: ', '')
+            .replaceFirst('error: ', '');
         _isLoading = false;
       });
     }
@@ -87,40 +90,49 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: FinalsTheme.surface(context),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: FinalsTheme.primary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           controller: _scrollController,
           physics: const BouncingScrollPhysics(),
           slivers: [
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
-
-            // Header Section
+// Header Section
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: FinalsTheme.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        'LIMITS SOLVER',
-                        style: FinalsTheme.labelStyle(context).copyWith(fontSize: 10),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                    // Container(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    //   decoration: BoxDecoration(
+                    //     color: FinalsTheme.primary.withValues(alpha: 0.1),
+                    //     borderRadius: BorderRadius.circular(20),
+                    //   ),
+                    //   child: Text(
+                    //     'LIMITS SOLVER',
+                    //     style: FinalsTheme.labelStyle(context).copyWith(fontSize: 10),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 16),
                     Text(
                       'Infinity & Beyond',
-                      style: FinalsTheme.titleStyle(context).copyWith(fontSize: 32, height: 1.1),
+                      style: FinalsTheme.titleStyle(context)
+                          .copyWith(fontSize: 32, height: 1.1),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Solve limits approaching finite values or infinity with step-by-step algebraic breakdowns.',
-                      style: FinalsTheme.subtitleStyle(context).copyWith(fontSize: 15),
+                      style: FinalsTheme.subtitleStyle(context)
+                          .copyWith(fontSize: 15),
                     ),
                   ],
                 ),
@@ -166,7 +178,8 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
                   child: LimitsAnswerCard(
-                    problemNotation: 'lim($_variable → ${_approachController.text}) ${_exprController.text}',
+                    problemNotation:
+                        'lim($_variable → ${_approachController.text}) ${_exprController.text}',
                     resultString: '',
                     hasError: true,
                     errorMessage: _error,
@@ -179,7 +192,8 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
                   child: LimitsAnswerCard(
-                    problemNotation: 'lim($_variable → ${_solution!.problemNotation.split('→').last.split(')').first.trim()}) ${_exprController.text}',
+                    problemNotation:
+                        'lim($_variable → ${_solution!.problemNotation.split('→').last.split(')').first.trim()}) ${_exprController.text}',
                     resultString: _solution!.resultString,
                     onTap: _scrollToStepsSection,
                   ),
@@ -199,18 +213,23 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.auto_stories_rounded, size: 24, color: FinalsTheme.primary),
+                          Icon(Icons.auto_stories_rounded,
+                              size: 24, color: FinalsTheme.primary),
                           const SizedBox(width: 12),
-                          Text('Solution Steps', style: FinalsTheme.titleStyle(context).copyWith(fontSize: 20)),
+                          Text('Solution Steps',
+                              style: FinalsTheme.titleStyle(context)
+                                  .copyWith(fontSize: 20)),
                         ],
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Method: ${_solution!.methodUsed}',
-                        style: FinalsTheme.subtitleStyle(context).copyWith(fontWeight: FontWeight.w600, color: FinalsTheme.primary),
+                        style: FinalsTheme.subtitleStyle(context).copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: FinalsTheme.primary),
                       ),
                       const SizedBox(height: 32),
-                      
+
                       // Render Each Step
                       ..._solution!.steps.asMap().entries.map((entry) {
                         return LimitsStepTile(
@@ -221,7 +240,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                       }),
 
                       const SizedBox(height: 16),
-                      
+
                       // Final Conclusion
                       Container(
                         width: double.infinity,
@@ -229,7 +248,9 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                         decoration: BoxDecoration(
                           color: FinalsTheme.primary.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.2)),
+                          border: Border.all(
+                              color:
+                                  FinalsTheme.primary.withValues(alpha: 0.2)),
                         ),
                         child: Column(
                           children: [
@@ -241,12 +262,13 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                             Text(
                               'The limit is ${_solution!.resultString}',
                               textAlign: TextAlign.center,
-                              style: FinalsTheme.titleStyle(context).copyWith(fontSize: 18),
+                              style: FinalsTheme.titleStyle(context)
+                                  .copyWith(fontSize: 18),
                             ),
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 80),
                     ],
                   ),

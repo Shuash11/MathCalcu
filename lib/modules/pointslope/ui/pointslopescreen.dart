@@ -1,10 +1,10 @@
 // lib/ui/point_slope_screen.dart
 import 'package:calculus_system/modules/pointslope/Theme/pointslopetheme.dart';
 import 'package:calculus_system/modules/pointslope/solver/pointslopesolver.dart';
+import 'package:calculus_system/modules/pointslope/solver/pointslopesteps.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'pointslopesubwidget.dart';
-import 'package:calculus_system/modules/pointslope/solver/pointslopesteps.dart';
 
 class PointSlopeScreen extends StatefulWidget {
   const PointSlopeScreen({super.key});
@@ -22,6 +22,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   final _resultNotifier = ValueNotifier<_ResultData?>(null);
   final _badgesNotifier = ValueNotifier<Map<String, String>?>(null);
   final _graphStringsNotifier = ValueNotifier<_GraphStrings?>(null);
+  final _showStepsNotifier = ValueNotifier<bool>(false);
 
   late final AnimationController _pulseCtrl;
   late final Animation<double> _pulseAnim;
@@ -66,6 +67,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     _resultNotifier.dispose();
     _badgesNotifier.dispose();
     _graphStringsNotifier.dispose();
+    _showStepsNotifier.dispose();
 
     super.dispose();
   }
@@ -86,6 +88,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
       _resultNotifier.value = null;
       _badgesNotifier.value = null;
       _graphStringsNotifier.value = null;
+      _showStepsNotifier.value = false;
       return;
     }
 
@@ -126,6 +129,10 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
       pointSlopeEq: solver.pointSlopeForm,
       generalFormEq: solver.generalForm,
       standardFormEq: solver.standardForm,
+      m: solver.m.toString(),
+      x1: solver.x1.toString(),
+      y1: solver.y1.toString(),
+      b: solver.b.toString(),
     );
 
     _graphStringsNotifier.value = _GraphStrings(
@@ -141,22 +148,9 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     };
   }
 
-  void _openSteps() {
+  void _toggleSteps() {
     if (_resultNotifier.value == null) return;
-
-    final solver = PointSlopeSolver.tryParse(
-      mText: _mCtrl.text.trim(),
-      x1Text: _x1Ctrl.text.trim(),
-      y1Text: _y1Ctrl.text.trim(),
-    );
-
-    if (solver == null) return;
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => SolveStepsScreen(solver: solver),
-      ),
-    );
+    _showStepsNotifier.value = !_showStepsNotifier.value;
   }
 
   @override
@@ -189,17 +183,33 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                       const SizedBox(height: 20),
                       const PSDivider(),
                       const SizedBox(height: 20),
-                      ValueListenableBuilder<_ResultData?>(
-                        valueListenable: _resultNotifier,
-                        builder: (context, result, _) {
-                          return GestureDetector(
-                            onTap: result != null ? _openSteps : null,
-                            child: PSResultBanner(
-                              pointSlopeEq: result?.pointSlopeEq,
-                              generalFormEq: result?.generalFormEq,
-                              standardFormEq: result?.standardFormEq,
-                              tappable: result != null,
-                            ),
+                      _PSResultSection(
+                        resultNotifier: _resultNotifier,
+                        showStepsNotifier: _showStepsNotifier,
+                        onToggleSteps: _toggleSteps,
+                      ),
+                      const SizedBox(height: 14),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _showStepsNotifier,
+                        builder: (context, showSteps, _) {
+                          if (!showSteps) return const SizedBox.shrink();
+                          return ValueListenableBuilder<_ResultData?>(
+                            valueListenable: _resultNotifier,
+                            builder: (context, result, _) {
+                              if (result == null)
+                                return const SizedBox.shrink();
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: PointSlopeSteps(
+                                  m: result.m,
+                                  x1: result.x1,
+                                  y1: result.y1,
+                                  b: result.b,
+                                  generalForm: result.generalFormEq,
+                                  standardForm: result.standardFormEq,
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
@@ -274,11 +284,19 @@ class _ResultData {
   final String pointSlopeEq;
   final String generalFormEq;
   final String standardFormEq;
+  final String m;
+  final String x1;
+  final String y1;
+  final String b;
 
   const _ResultData({
     required this.pointSlopeEq,
     required this.generalFormEq,
     required this.standardFormEq,
+    required this.m,
+    required this.x1,
+    required this.y1,
+    required this.b,
   });
 }
 
@@ -302,4 +320,38 @@ class _GraphStrings {
 
   @override
   int get hashCode => Object.hash(mText, xText, yText);
+}
+
+class _PSResultSection extends StatelessWidget {
+  final ValueNotifier<_ResultData?> resultNotifier;
+  final ValueNotifier<bool> showStepsNotifier;
+  final VoidCallback onToggleSteps;
+
+  const _PSResultSection({
+    required this.resultNotifier,
+    required this.showStepsNotifier,
+    required this.onToggleSteps,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<_ResultData?>(
+      valueListenable: resultNotifier,
+      builder: (context, result, _) {
+        return ValueListenableBuilder<bool>(
+          valueListenable: showStepsNotifier,
+          builder: (context, showSteps, _) {
+            return PSResultBanner(
+              pointSlopeEq: result?.pointSlopeEq,
+              generalFormEq: result?.generalFormEq,
+              standardFormEq: result?.standardFormEq,
+              tappable: result != null,
+              onShowSteps: result != null ? onToggleSteps : null,
+              showSteps: showSteps,
+            );
+          },
+        );
+      },
+    );
+  }
 }

@@ -10,6 +10,11 @@ import 'package:fl_chart/fl_chart.dart';
 //   fl_chart: ^0.68.0
 // ─────────────────────────────────────────────────────────────
 
+String _fmt(double v) {
+  if (v == v.truncateToDouble()) return v.toInt().toString();
+  return v.toStringAsFixed(1);
+}
+
 class TwoPointSlopeGraph extends StatelessWidget {
   final TwoPointSlopeResult result;
 
@@ -55,14 +60,12 @@ class TwoPointSlopeGraph extends StatelessWidget {
               const SizedBox(width: 12),
               _LegendDot(
                 color: TwoPointSlopeTheme.stepBlue,
-                label:
-                    'P₁ (${result.x1.toStringAsFixed(1)}, ${result.y1.toStringAsFixed(1)})',
+                label: 'P1 (${_fmt(result.x1)}, ${_fmt(result.y1)})',
               ),
               const SizedBox(width: 12),
               _LegendDot(
                 color: TwoPointSlopeTheme.stepGreen,
-                label:
-                    'P₂ (${result.x2.toStringAsFixed(1)}, ${result.y2.toStringAsFixed(1)})',
+                label: 'P2 (${_fmt(result.x2)}, ${_fmt(result.y2)})',
               ),
             ],
           ),
@@ -114,6 +117,11 @@ class _LineGraph extends StatelessWidget {
     final point1 = FlSpot(result.x1, result.y1);
     final point2 = FlSpot(result.x2, result.y2);
 
+    // Capture colors before callbacks (avoid calling context.watch outside widget tree)
+    final bgColor = TwoPointSlopeTheme.background(context);
+    final stepBlue = TwoPointSlopeTheme.stepBlue;
+    final stepGreen = TwoPointSlopeTheme.stepGreen;
+
     return LineChart(
       LineChartData(
         backgroundColor: Colors.transparent,
@@ -148,7 +156,7 @@ class _LineGraph extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 32,
-              getTitlesWidget: (v, _) => _AxisLabel(v.toInt().toString()),
+              getTitlesWidget: (v, _) => _AxisLabel(v.toString()),
             ),
           ),
           bottomTitles: AxisTitles(
@@ -161,7 +169,7 @@ class _LineGraph extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 28,
-              getTitlesWidget: (v, _) => _AxisLabel(v.toInt().toString()),
+              getTitlesWidget: (v, _) => _AxisLabel(v.toString()),
             ),
           ),
           topTitles:
@@ -202,9 +210,9 @@ class _LineGraph extends StatelessWidget {
               show: true,
               getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(
                 radius: 6,
-                color: TwoPointSlopeTheme.stepBlue,
+                color: stepBlue,
                 strokeWidth: 2,
-                strokeColor: TwoPointSlopeTheme.background(context),
+                strokeColor: bgColor,
               ),
             ),
           ),
@@ -218,9 +226,9 @@ class _LineGraph extends StatelessWidget {
               show: true,
               getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(
                 radius: 6,
-                color: TwoPointSlopeTheme.stepGreen,
+                color: stepGreen,
                 strokeWidth: 2,
-                strokeColor: TwoPointSlopeTheme.background(context),
+                strokeColor: bgColor,
               ),
             ),
           ),
@@ -231,7 +239,7 @@ class _LineGraph extends StatelessWidget {
           touchTooltipData: LineTouchTooltipData(
             getTooltipItems: (spots) => spots.map((s) {
               return LineTooltipItem(
-                '(${s.x.toStringAsFixed(1)}, ${s.y.toStringAsFixed(1)})',
+                '(${_fmt(s.x)}, ${_fmt(s.y)})',
                 TextStyle(
                   color: TwoPointSlopeTheme.textPrimary(context),
                   fontFamily: 'monospace',
@@ -260,6 +268,11 @@ class _VerticalLineGraph extends StatelessWidget {
     final yMin = result.y1 < result.y2 ? result.y1 - 4 : result.y2 - 4;
     final yMax = result.y1 > result.y2 ? result.y1 + 4 : result.y2 + 4;
 
+    // Capture colors before callbacks (avoid calling context.watch outside widget tree)
+    final bgColor = TwoPointSlopeTheme.background(context);
+    final stepBlue = TwoPointSlopeTheme.stepBlue;
+    final stepGreen = TwoPointSlopeTheme.stepGreen;
+
     return LineChart(
       LineChartData(
         backgroundColor: Colors.transparent,
@@ -282,7 +295,7 @@ class _VerticalLineGraph extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 32,
-              getTitlesWidget: (v, _) => _AxisLabel(v.toInt().toString()),
+              getTitlesWidget: (v, _) => _AxisLabel(v.toString()),
             ),
           ),
           bottomTitles: AxisTitles(
@@ -295,7 +308,7 @@ class _VerticalLineGraph extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 28,
-              getTitlesWidget: (v, _) => _AxisLabel(v.toInt().toString()),
+              getTitlesWidget: (v, _) => _AxisLabel(v.toString()),
             ),
           ),
           topTitles:
@@ -324,9 +337,9 @@ class _VerticalLineGraph extends StatelessWidget {
               show: true,
               getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(
                 radius: 6,
-                color: TwoPointSlopeTheme.stepBlue,
+                color: stepBlue,
                 strokeWidth: 2,
-                strokeColor: TwoPointSlopeTheme.background(context),
+                strokeColor: bgColor,
               ),
             ),
           ),
@@ -337,9 +350,9 @@ class _VerticalLineGraph extends StatelessWidget {
               show: true,
               getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(
                 radius: 6,
-                color: TwoPointSlopeTheme.stepGreen,
+                color: stepGreen,
                 strokeWidth: 2,
-                strokeColor: TwoPointSlopeTheme.background(context),
+                strokeColor: bgColor,
               ),
             ),
           ),
@@ -358,14 +371,18 @@ class _AxisLabel extends StatelessWidget {
   const _AxisLabel(this.text);
 
   @override
-  Widget build(BuildContext context) => Text(
-        text,
-        style: TextStyle(
-          fontSize: 10,
-          color: TwoPointSlopeTheme.textMuted(context),
-          fontFamily: 'monospace',
-        ),
-      );
+  Widget build(BuildContext context) {
+    final v = double.tryParse(text);
+    final label = v != null ? _fmt(v) : text;
+    return Text(
+      label,
+      style: TextStyle(
+        fontSize: 10,
+        color: TwoPointSlopeTheme.textMuted(context),
+        fontFamily: 'monospace',
+      ),
+    );
+  }
 }
 
 class _LegendDot extends StatelessWidget {

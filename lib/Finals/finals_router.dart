@@ -1,3 +1,4 @@
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Substitution/UI/substitution_limit_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Derivatives/UI/derivatives_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/UI/factoring_limit_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_LCD/UI/lcd_limit_screen.dart';
@@ -37,8 +38,7 @@ final List<GoRoute> finalsRoutes = [
         routes: [
           GoRoute(
               path: 'substitution',
-              builder: (context, state) => const Scaffold(
-                  body: Center(child: Text('Substitution Screen')))),
+              builder: (context, state) => const SubstitutionLimitScreen()),
           GoRoute(
               path: 'conjugate',
               builder: (context, state) => const Scaffold(

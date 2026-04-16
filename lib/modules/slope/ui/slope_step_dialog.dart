@@ -3,7 +3,7 @@ import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
 import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
 
-import 'slope_step.dart';
+import 'slope_steps.dart';
 
 class SlopeStepDialog extends StatelessWidget {
   final SlopeSolverResult result;
@@ -12,13 +12,6 @@ class SlopeStepDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final steps = SlopeSolver.getSteps(
-      result.x1,
-      result.y1,
-      result.x2,
-      result.y2,
-    );
-
     return Dialog(
       backgroundColor: SlopeTheme.cardColor(context),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -64,15 +57,7 @@ class SlopeStepDialog extends StatelessWidget {
               const SizedBox(height: 24),
 
               // ── Steps ──
-              ...List.generate(
-                steps.length,
-                (i) => SlopeStepItem(
-                  number: i + 1,
-                  step: steps[i],
-                  isFinal: i == steps.length - 1,
-                  isLast: i == steps.length - 1,
-                ),
-              ),
+              SlopeSteps(result: result),
 
               const SizedBox(height: 24),
 

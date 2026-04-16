@@ -2,7 +2,7 @@ import 'package:calculus_system/modules/slope/graph/slopegraph.dart';
 import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
 import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
-import 'slope_step.dart';
+import 'slope_steps.dart';
 
 class SlopeComparisonDialog extends StatelessWidget {
   final SlopeComparisonResult comparisonResult;
@@ -30,7 +30,6 @@ class SlopeComparisonDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final steps = SlopeSolver.getComparisonSteps(comparisonResult);
     final color = _relationshipColor;
 
     return Dialog(
@@ -101,18 +100,10 @@ class SlopeComparisonDialog extends StatelessWidget {
               const SizedBox(height: 24),
 
               // ── Steps ──
-              ...List.generate(
-                steps.length,
-                (i) => Padding(
-                  padding: EdgeInsets.only(
-                    bottom: i < steps.length - 1 ? 10 : 0,
-                  ),
-                  child: SlopeStepItem(
-                    number: i + 1,
-                    step: steps[i],
-                    isFinal: i == steps.length - 1,
-                  ),
-                ),
+              SlopeComparisonSteps(
+                comparison: comparisonResult,
+                result1: result1,
+                result2: result2,
               ),
 
               const SizedBox(height: 24),

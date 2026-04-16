@@ -21,6 +21,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   late final TwoPointSlopeController _controller;
   late final AnimationController _headerAnim;
   late final Animation<double> _headerFade;
+  bool _showSteps = false;
 
   @override
   void initState() {
@@ -46,32 +47,45 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     super.dispose();
   }
 
+  void _toggleSteps() => setState(() => _showSteps = !_showSteps);
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    const space5xl = 28.0;
+    const space4xl = 24.0;
     return Scaffold(
       backgroundColor: TwoPointSlopeTheme.surface(context),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            _buildAppBar(),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  const SizedBox(height: 8),
-                  _buildInputCard(),
-                  const SizedBox(height: 20),
-                  if (_controller.hasSolved) ...[
-                    _buildResultCard(),
-                    const SizedBox(height: 20),
-                    TwoPointSlopeGraph(result: _controller.result!),
-                    const SizedBox(height: 20),
-                    TwoPointSlopeSteps(result: _controller.result!),
-                  ],
-                ]),
-              ),
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification is ScrollStartNotification) {
+              FocusScope.of(context).unfocus();
+            }
+            return false;
+          },
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              screenWidth < 360 ? 14 : 20,
+              28,
+              screenWidth < 360 ? 14 : 20,
+              40,
             ),
-          ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildAppBar(),
+                const SizedBox(height: space5xl),
+                _buildInputCard(),
+                const SizedBox(height: space4xl),
+                if (_controller.hasSolved) ...[
+                  _buildResultCard(),
+                  const SizedBox(height: space4xl),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -79,97 +93,59 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
 
   // ── App bar ───────────────────────────────────────────────
   Widget _buildAppBar() {
-    return SliverToBoxAdapter(
-      child: FadeTransition(
-        opacity: _headerFade,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-          child: Row(
-            children: [
-              // Back button
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: TwoPointSlopeTheme.cardBg(context),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: TwoPointSlopeTheme.border(0.2),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: TwoPointSlopeTheme.textSecondary(context),
-                    size: 16,
-                  ),
+    return FadeTransition(
+      opacity: _headerFade,
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: TwoPointSlopeTheme.cardBg(context),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: TwoPointSlopeTheme.border(0.2),
                 ),
               ),
-              const SizedBox(width: 16),
-
-              // Title
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: const BoxDecoration(
-                            color: TwoPointSlopeTheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'TWO-POINT SLOPE',
-                          style: TwoPointSlopeTheme.labelStyle(context),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Equation of the line',
-                      style: TwoPointSlopeTheme.headingStyle(context),
-                    ),
-                  ],
-                ),
+              child: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                color: TwoPointSlopeTheme.textSecondary(context),
+                size: 18,
               ),
-
-              // Example button
-              GestureDetector(
-                onTap: () {
-                  _controller.fillExample();
-                  try {
-                    HapticFeedback.lightImpact();
-                  } catch (_) {}
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: TwoPointSlopeTheme.border(0.3),
-                    ),
-                  ),
-                  child: const Text(
-                    'Example',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: TwoPointSlopeTheme.primary,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(width: 14),
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: TwoPointSlopeTheme.primary.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Icon(
+              Icons.show_chart_rounded,
+              color: TwoPointSlopeTheme.primary,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Two-Point Slope',
+                  style: TwoPointSlopeTheme.headingStyle(context),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -343,7 +319,18 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('RESULT', style: TwoPointSlopeTheme.labelStyle(context)),
+          Row(
+            children: [
+              Expanded(
+                child: Text('RESULT',
+                    style: TwoPointSlopeTheme.labelStyle(context)),
+              ),
+              GestureDetector(
+                onTap: _toggleSteps,
+                child: _buildShowStepsChip(),
+              ),
+            ],
+          ),
           const SizedBox(height: 20),
 
           // Slope + type row
@@ -421,6 +408,51 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               tagColor: TwoPointSlopeTheme.stepGreen,
             ),
           ],
+
+          if (_showSteps) ...[
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              height: 1,
+              margin: const EdgeInsets.only(bottom: 20),
+              color: TwoPointSlopeTheme.primary.withValues(alpha: 0.2),
+            ),
+            TwoPointSlopeSteps(result: _controller.result!),
+            const SizedBox(height: 20),
+            TwoPointSlopeGraph(result: _controller.result!),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShowStepsChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _showSteps
+            ? TwoPointSlopeTheme.primary.withValues(alpha: 0.2)
+            : TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            _showSteps ? 'Hide steps' : 'Show steps',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: TwoPointSlopeTheme.primary,
+            ),
+          ),
+          const SizedBox(width: 4),
+          AnimatedRotation(
+            turns: _showSteps ? 0.5 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: Icon(Icons.keyboard_arrow_down_rounded,
+                color: TwoPointSlopeTheme.primary, size: 16),
+          ),
         ],
       ),
     );
