@@ -1,3 +1,4 @@
+import 'package:calculus_system/modules/y-intercept/Graph/graph.dart';
 import 'package:calculus_system/modules/y-intercept/Theme/theme.dart';
 import 'package:calculus_system/modules/y-intercept/solver/y-intercpet_solver.dart';
 import 'package:calculus_system/modules/y-intercept/ui/slope_intercept_scr.dart';
@@ -150,6 +151,15 @@ class YInterceptTab extends StatelessWidget {
                           if (result != null) ...[
                             const SizedBox(height: 14),
                             _buildBadges(context, result),
+                            const SizedBox(height: 14),
+                            YInterceptGraph(
+                              mText: result.slope != null
+                                  ? result.slope!.toDouble().toString()
+                                  : '',
+                              bText: result.yIntercept != null
+                                  ? result.yIntercept!.toDouble().toString()
+                                  : '',
+                            ),
                           ],
                         ],
                       ),

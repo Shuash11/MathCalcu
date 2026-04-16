@@ -83,7 +83,8 @@ class SlopeGraphScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Slope Graph',
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
         ),
         backgroundColor: const Color(0xFF12121A),
         iconTheme: const IconThemeData(color: Color(0xFFFF6B6B)),
@@ -100,7 +101,8 @@ class SlopeGraphScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color.withValues(alpha: 0.35), width: 1.5),
+                border: Border.all(
+                    color: color.withValues(alpha: 0.35), width: 1.5),
               ),
               child: Row(
                 children: [
@@ -134,10 +136,12 @@ class SlopeGraphScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
             child: Row(
               children: [
-                _LegendDot(color: const Color(0xFFFF6B6B), label: result1.equation),
+                _LegendDot(
+                    color: const Color(0xFFFF6B6B), label: result1.equation),
                 if (result2 != null && !_isCoincident) ...[
                   const SizedBox(width: 16),
-                  _LegendDot(color: const Color(0xFF4ECDC4), label: result2!.equation),
+                  _LegendDot(
+                      color: const Color(0xFF4ECDC4), label: result2!.equation),
                 ],
                 if (_isCoincident) ...[
                   const SizedBox(width: 8),
@@ -159,7 +163,8 @@ class SlopeGraphScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final size = Size(constraints.maxWidth, constraints.maxHeight);
+                  final size =
+                      Size(constraints.maxWidth, constraints.maxHeight);
                   return CustomPaint(
                     size: size,
                     painter: _SlopePainter(
@@ -207,7 +212,8 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: 5),
         Text(
           label,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.75), fontSize: 12),
+          style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.75), fontSize: 12),
         ),
       ],
     );
@@ -233,11 +239,15 @@ class _SlopePainter extends CustomPainter {
 
   double _computeScale(Size size) {
     final pts = <double>[
-      result1.x1.abs(), result1.y1.abs(),
-      result1.x2.abs(), result1.y2.abs(),
+      result1.x1.abs(),
+      result1.y1.abs(),
+      result1.x2.abs(),
+      result1.y2.abs(),
       if (result2 != null) ...[
-        result2!.x1.abs(), result2!.y1.abs(),
-        result2!.x2.abs(), result2!.y2.abs(),
+        result2!.x1.abs(),
+        result2!.y1.abs(),
+        result2!.x2.abs(),
+        result2!.y2.abs(),
       ],
     ];
     final maxVal = pts.fold(1.0, (a, b) => b > a ? b : a);
@@ -250,7 +260,9 @@ class _SlopePainter extends CustomPainter {
     return Offset(size.width / 2 + x * scale, size.height / 2 - y * scale);
   }
 
-  String _fmt(double n) => n % 1 == 0 ? n.toInt().toString() : n.toStringAsFixed(1);
+  String _fmt(double n) => n == n.truncateToDouble()
+      ? n.toInt().toString()
+      : n.toStringAsFixed(1).replaceAll(RegExp(r'\.?0+$'), '');
 
   // ── Draw extended line ─────────────────────────────────────
 
@@ -445,7 +457,9 @@ class _SlopePainter extends CustomPainter {
     Size size,
     double scale,
   ) {
-    final dotPaint = Paint()..color = color..style = PaintingStyle.fill;
+    final dotPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
     final ringPaint = Paint()
       ..color = color.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke

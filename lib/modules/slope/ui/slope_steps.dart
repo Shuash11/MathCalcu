@@ -1,8 +1,275 @@
-import 'package:calculus_system/modules/pointslope/Theme/pointslopetheme.dart';
+import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
+import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
-enum _StepKind { single, dual }
+class SlopeSteps extends StatelessWidget {
+  final SlopeSolverResult result;
+
+  const SlopeSteps({super.key, required this.result});
+
+  List<StepSection> _buildSteps() {
+    final x1s = _fmtNum(result.x1);
+    final y1s = _fmtNum(result.y1);
+    final x2s = _fmtNum(result.x2);
+    final y2s = _fmtNum(result.y2);
+    final dy = result.deltaY;
+    final dx = result.deltaX;
+    final dys = _fmtNum(dy);
+    final dxs = _fmtNum(dx);
+    final slopeStr = result.slopeDisplay;
+
+    if (result.isVertical) {
+      return [
+        StepSection.single(
+          stepLabel: 'Step 1',
+          guide: 'Identify points',
+          plainContent: 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)',
+        ),
+        StepSection.single(
+          stepLabel: 'Step 2',
+          guide: 'Check Δx',
+          latexContent: r'\Delta x = x_2 - x_1 = ' '$x2s' r' - ' '$x1s' r' = 0',
+        ),
+        StepSection.single(
+          stepLabel: 'Step 3',
+          guide: 'Conclusion',
+          latexContent: r'\Delta x = 0 \implies \text{Vertical line}',
+        ),
+        StepSection.single(
+          stepLabel: 'Step 4',
+          guide: 'Line equation',
+          latexContent: r'x = ' '$x1s',
+        ),
+      ];
+    }
+
+    if (result.isHorizontal) {
+      return [
+        StepSection.single(
+          stepLabel: 'Step 1',
+          guide: 'Identify points',
+          plainContent: 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)',
+        ),
+        StepSection.single(
+          stepLabel: 'Step 2',
+          guide: 'Check Δy',
+          latexContent: r'\Delta y = y_2 - y_1 = ' '$y2s' r' - ' '$y1s' r' = 0',
+        ),
+        StepSection.single(
+          stepLabel: 'Step 3',
+          guide: 'Conclusion',
+          latexContent: r'\Delta y = 0 \implies m = 0',
+        ),
+        StepSection.single(
+          stepLabel: 'Step 4',
+          guide: 'Slope value',
+          latexContent: r'm = 0',
+        ),
+      ];
+    }
+
+    return [
+      StepSection.single(
+        stepLabel: 'Step 1',
+        guide: 'Identify points',
+        plainContent:
+            'A = ($x1s, $y1s)  →  (x₁, y₁)\nB = ($x2s, $y2s)  →  (x₂, y₂)',
+      ),
+      StepSection.single(
+        stepLabel: 'Step 2',
+        guide: 'Slope formula',
+        latexContent: r'm = \dfrac{y_2 - y_1}{x_2 - x_1}',
+      ),
+      StepSection.dual(
+        stepLabel: 'Step 3',
+        guide: 'Find differences',
+        leftLabel: 'Δy',
+        rightLabel: 'Δx',
+        leftLatex: r'\begin{aligned}'
+            r'y_2 - y_1 &= '
+            '$y2s'
+            r' - ('
+            '$y1s'
+            r') \\'
+            r'&= '
+            '$dys'
+            r'\end{aligned}',
+        rightLatex: r'\begin{aligned}'
+            r'x_2 - x_1 &= '
+            '$x2s'
+            r' - ('
+            '$x1s'
+            r') \\'
+            r'&= '
+            '$dxs'
+            r'\end{aligned}',
+      ),
+      StepSection.single(
+        stepLabel: 'Step 4',
+        guide: 'Calculate slope',
+        latexContent: r'\begin{aligned}'
+            r'm &= \dfrac{'
+            '$dys'
+            r'}{'
+            '$dxs'
+            r'} \\'
+            r'&= '
+            '$slopeStr'
+            r'\end{aligned}',
+      ),
+      StepSection.single(
+        stepLabel: 'Step 5',
+        guide: 'Result',
+        latexContent: r'm = ' '$slopeStr',
+      ),
+    ];
+  }
+
+  String _fmtNum(double n) {
+    if (n == n.truncateToDouble()) return n.toInt().toString();
+    return n.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = _buildSteps();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+    final isMedium = screenWidth < 400;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _Header(stepCount: steps.length, isSmall: isSmall),
+        SizedBox(height: isSmall ? 12 : 16),
+        _Timeline(
+          steps: steps,
+          isSmall: isSmall,
+          isMedium: isMedium,
+        ),
+      ],
+    );
+  }
+}
+
+class SlopeComparisonSteps extends StatelessWidget {
+  final SlopeComparisonResult comparison;
+  final SlopeSolverResult result1;
+  final SlopeSolverResult result2;
+
+  const SlopeComparisonSteps({
+    super.key,
+    required this.comparison,
+    required this.result1,
+    required this.result2,
+  });
+
+  List<StepSection> _buildSteps() {
+    final x1s1 = _fmtNum(result1.x1);
+    final y1s1 = _fmtNum(result1.y1);
+    final x2s1 = _fmtNum(result1.x2);
+    final y2s1 = _fmtNum(result1.y2);
+    final m1 = result1.slopeDisplay;
+
+    final x1s2 = _fmtNum(result2.x1);
+    final y1s2 = _fmtNum(result2.y1);
+    final x2s2 = _fmtNum(result2.x2);
+    final y2s2 = _fmtNum(result2.y2);
+    final m2 = result2.slopeDisplay;
+
+    final relLabel = comparison.isParallel
+        ? 'Parallel'
+        : comparison.isPerpendicular
+            ? 'Perpendicular'
+            : 'Neither';
+
+    return [
+      StepSection.dual(
+        stepLabel: 'Step 1',
+        guide: 'Line 1 points & slope',
+        leftLabel: 'Line 1 Points',
+        rightLabel: 'Slope',
+        leftLatex: r'\begin{aligned}'
+            r'&('
+            '$x1s1'
+            r', '
+            '$y1s1'
+            r') \\'
+            r'&('
+            '$x2s1'
+            r', '
+            '$y2s1'
+            r')'
+            r'\end{aligned}',
+        rightLatex: r'm_1 = ' '$m1',
+      ),
+      StepSection.dual(
+        stepLabel: 'Step 2',
+        guide: 'Line 2 points & slope',
+        leftLabel: 'Line 2 Points',
+        rightLabel: 'Slope',
+        leftLatex: r'\begin{aligned}'
+            r'&('
+            '$x1s2'
+            r', '
+            '$y1s2'
+            r') \\'
+            r'&('
+            '$x2s2'
+            r', '
+            '$y2s2'
+            r')'
+            r'\end{aligned}',
+        rightLatex: r'm_2 = ' '$m2',
+      ),
+      StepSection.single(
+        stepLabel: 'Step 3',
+        guide: 'Check relationship',
+        latexContent: comparison.isParallel
+            ? r'm_1 = m_2 \implies \text{Parallel}'
+            : comparison.isPerpendicular
+                ? r'm_1 \cdot m_2 = -1 \implies \text{Perpendicular}'
+                : r'm_1 \neq m_2 \text{ and } m_1 \cdot m_2 \neq -1',
+      ),
+      StepSection.single(
+        stepLabel: 'Step 4',
+        guide: 'Result',
+        latexContent: relLabel == 'Neither'
+            ? r'\text{Neither parallel nor perpendicular}'
+            : r'\text{' '$relLabel' r'}',
+      ),
+    ];
+  }
+
+  String _fmtNum(double n) {
+    if (n == n.truncateToDouble()) return n.toInt().toString();
+    return n.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = _buildSteps();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmall = screenWidth < 360;
+    final isMedium = screenWidth < 400;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _Header(stepCount: steps.length, isSmall: isSmall),
+        SizedBox(height: isSmall ? 12 : 16),
+        _Timeline(
+          steps: steps,
+          isSmall: isSmall,
+          isMedium: isMedium,
+        ),
+      ],
+    );
+  }
+}
 
 class StepSection {
   final String stepLabel;
@@ -38,210 +305,13 @@ class StepSection {
         plainContent = null;
 }
 
-class _StepBuilder {
-  const _StepBuilder._();
-
-  static List<StepSection> pointSlope({
-    required String m,
-    required String x1,
-    required String y1,
-    required String b,
-    required String generalForm,
-    required String standardForm,
-  }) {
-    final mSimplified = _simplifyFraction(m);
-    final bSimplified = _simplifyFraction(b);
-
-    final y1Abs = y1.startsWith('-') ? y1.substring(1) : y1;
-    final y1Sign = y1.startsWith('-') ? '+' : '-';
-    final x1Abs = x1.startsWith('-') ? x1.substring(1) : x1;
-    final x1Sign = x1.startsWith('-') ? '+' : '-';
-
-    return [
-      StepSection.single(
-        stepLabel: 'Step 1',
-        guide: 'Identify given values',
-        plainContent:
-            'Point: ($x1,  $y1)   →   (x₁, y₁)\nSlope: $m   →   m = $m',
-      ),
-      StepSection.single(
-        stepLabel: 'Step 2',
-        guide: 'Point-Slope formula',
-        latexContent: r'y - y_1 = m(x - x_1)',
-      ),
-      StepSection.single(
-        stepLabel: 'Step 3',
-        guide: 'Substitute values',
-        latexContent: r'y ' +
-            y1Sign +
-            r' ' +
-            y1Abs +
-            r' = ' +
-            mSimplified +
-            r'(x ' +
-            x1Sign +
-            r' ' +
-            x1Abs +
-            r')',
-      ),
-      StepSection.dual(
-        stepLabel: 'Step 4',
-        guide: 'Distribute slope (m)',
-        leftLabel: 'Expanded form',
-        rightLabel: 'Simplify',
-        leftLatex: r'\begin{aligned}'
-                r'y ' +
-            y1Sign +
-            r' ' +
-            y1Abs +
-            r' &= ' +
-            mSimplified +
-            r'x ' +
-            mSimplified +
-            r'(' +
-            x1Sign +
-            r' ' +
-            x1Abs +
-            r')'
-                r' \\'
-                r'y ' +
-            y1Sign +
-            r' ' +
-            y1Abs +
-            r' &= ' +
-            mSimplified +
-            r'x ' +
-            mSimplified +
-            r' \cdot (' +
-            x1 +
-            r')'
-                r'\end{aligned}',
-        rightLatex: _buildStep4RightLatex(m, x1, y1Sign, y1Abs, mSimplified),
-      ),
-      StepSection.single(
-        stepLabel: 'Step 5',
-        guide: 'Solve for y (Slope-Intercept)',
-        latexContent: r'y = ' +
-            mSimplified +
-            r'x ' +
-            (int.parse(b) >= 0 ? '+' : r'-') +
-            r' ' +
-            bSimplified.replaceAll('-', ''),
-      ),
-      StepSection.single(
-        stepLabel: 'Step 6',
-        guide: 'General Form (Ax + By + C = 0)',
-        latexContent: generalForm,
-      ),
-      StepSection.single(
-        stepLabel: 'Step 7',
-        guide: 'Standard Form (Ax + By = C)',
-        latexContent: standardForm,
-      ),
-    ];
-  }
-
-  static String _simplifyFraction(String frac) {
-    if (!frac.contains('/')) return frac;
-    final parts = frac.split('/');
-    if (parts.length == 2) {
-      final num = int.tryParse(parts[0]);
-      final den = int.tryParse(parts[1]);
-      if (num != null && den != null && den != 0) {
-        final gcd = _gcd(num.abs(), den.abs());
-        if (gcd > 1) {
-          return '${num ~/ gcd}/${den ~/ gcd}';
-        }
-      }
-    }
-    return frac;
-  }
-
-  static int _gcd(int a, int b) {
-    while (b != 0) {
-      final t = b;
-      b = a % b;
-      a = t;
-    }
-    return a;
-  }
-
-  static String _buildStep4RightLatex(
-      String m, String x1, String y1Sign, String y1Abs, String mSimplified) {
-    final mVal = int.tryParse(m) ?? 0;
-    final xVal = int.tryParse(x1) ?? 0;
-    final product = mVal * xVal;
-    final sign = product < 0 ? '+' : '-';
-    final absVal = product.abs().toString();
-    final latex = 'y $y1Sign $y1Abs &= $mSimplified x $sign $absVal';
-    return r'\begin{aligned}' + latex + r'\end{aligned}';
-  }
-}
-
-class PointSlopeSteps extends StatelessWidget {
-  final String m;
-  final String x1;
-  final String y1;
-  final String b;
-  final String generalForm;
-  final String standardForm;
-
-  const PointSlopeSteps({
-    super.key,
-    required this.m,
-    required this.x1,
-    required this.y1,
-    required this.b,
-    required this.generalForm,
-    required this.standardForm,
-  });
-
-  List<StepSection> _buildSteps() {
-    return _StepBuilder.pointSlope(
-      m: m,
-      x1: x1,
-      y1: y1,
-      b: b,
-      generalForm: generalForm,
-      standardForm: standardForm,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final steps = _buildSteps();
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmall = screenWidth < 360;
-    final isMedium = screenWidth < 400;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _Header(
-          stepCount: steps.length,
-          isSmall: isSmall,
-        ),
-        SizedBox(height: isSmall ? 12 : 16),
-        _Timeline(
-          steps: steps,
-          isSmall: isSmall,
-          isMedium: isMedium,
-        ),
-      ],
-    );
-  }
-}
+enum _StepKind { single, dual }
 
 class _Header extends StatelessWidget {
   final int stepCount;
   final bool isSmall;
 
-  const _Header({
-    required this.stepCount,
-    required this.isSmall,
-  });
+  const _Header({required this.stepCount, required this.isSmall});
 
   @override
   Widget build(BuildContext context) {
@@ -253,18 +323,19 @@ class _Header extends StatelessWidget {
         Icon(
           Icons.school_rounded,
           size: isSmall ? 12 : 13,
-          color: PSTheme.electricPurple.withValues(alpha: 0.6),
+          color: SlopeTheme.accentColor.withValues(alpha: 0.6),
         ),
         Text(
           'Solution',
           style: TextStyle(
             fontSize: isSmall ? 11 : 12,
             fontWeight: FontWeight.w700,
-            color: PSTheme.electricPurple.withValues(alpha: 0.6),
+            color: SlopeTheme.accentColor.withValues(alpha: 0.6),
             letterSpacing: 0.2,
           ),
         ),
         _Chip(label: '$stepCount steps', isSmall: isSmall),
+        _Chip(label: 'Find Slope', isSmall: isSmall),
       ],
     );
   }
@@ -284,7 +355,7 @@ class _Chip extends StatelessWidget {
         vertical: isSmall ? 1.5 : 2,
       ),
       decoration: BoxDecoration(
-        color: PSTheme.deepViolet.withValues(alpha: 0.1),
+        color: SlopeTheme.accentColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -292,7 +363,7 @@ class _Chip extends StatelessWidget {
         style: TextStyle(
           fontSize: isSmall ? 9 : 10,
           fontWeight: FontWeight.w700,
-          color: PSTheme.deepViolet.withValues(alpha: 0.7),
+          color: SlopeTheme.accentColor.withValues(alpha: 0.7),
         ),
       ),
     );
@@ -413,10 +484,10 @@ class _TimelineDot extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: PSTheme.deepViolet.withValues(alpha: 0.1),
+            color: SlopeTheme.accentColor.withValues(alpha: 0.1),
             shape: BoxShape.circle,
             border: Border.all(
-              color: PSTheme.deepViolet.withValues(alpha: 0.4),
+              color: SlopeTheme.accentColor.withValues(alpha: 0.4),
               width: isSmall ? 1.2 : 1.5,
             ),
           ),
@@ -426,7 +497,7 @@ class _TimelineDot extends StatelessWidget {
             style: TextStyle(
               fontSize: isSmall ? 10 : 12,
               fontWeight: FontWeight.w900,
-              color: PSTheme.deepViolet,
+              color: SlopeTheme.accentColor,
             ),
           ),
         ),
@@ -440,8 +511,8 @@ class _TimelineDot extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  PSTheme.deepViolet.withValues(alpha: 0.3),
-                  PSTheme.deepViolet.withValues(alpha: 0.04),
+                  SlopeTheme.accentColor.withValues(alpha: 0.3),
+                  SlopeTheme.accentColor.withValues(alpha: 0.04),
                 ],
               ),
             ),
@@ -472,7 +543,7 @@ class _GuideLabel extends StatelessWidget {
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
               fontWeight: FontWeight.w700,
-              color: PSTheme.electricPurple.withValues(alpha: 0.5),
+              color: SlopeTheme.accentColor.withValues(alpha: 0.5),
               letterSpacing: 0.6,
             ),
           ),
@@ -480,7 +551,7 @@ class _GuideLabel extends StatelessWidget {
             text: '  ·  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
-              color: PSTheme.softLavender.withValues(alpha: 0.4),
+              color: SlopeTheme.textSecondary(context).withValues(alpha: 0.4),
             ),
           ),
           TextSpan(
@@ -488,7 +559,7 @@ class _GuideLabel extends StatelessWidget {
             style: TextStyle(
               fontSize: isSmall ? 12 : 13,
               fontWeight: FontWeight.w700,
-              color: PSTheme.isLight(context) ? Colors.black87 : Colors.white,
+              color: SlopeTheme.textPrimary(context),
             ),
           ),
         ],
@@ -517,10 +588,10 @@ class _SingleMathBox extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
       decoration: BoxDecoration(
-        color: PSTheme.deepViolet.withValues(alpha: 0.06),
+        color: SlopeTheme.accentColor.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
         border: Border.all(
-          color: PSTheme.deepViolet.withValues(alpha: 0.2),
+          color: SlopeTheme.accentColor.withValues(alpha: 0.2),
         ),
       ),
       child: step.latexContent != null
@@ -530,8 +601,7 @@ class _SingleMathBox extends StatelessWidget {
                 step.latexContent!,
                 textStyle: TextStyle(
                   fontSize: fontSize,
-                  color:
-                      PSTheme.isLight(context) ? Colors.black87 : Colors.white,
+                  color: SlopeTheme.textPrimary(context),
                 ),
               ),
             )
@@ -540,9 +610,7 @@ class _SingleMathBox extends StatelessWidget {
               style: TextStyle(
                 fontSize: isSmall ? 12 : 13,
                 height: 1.75,
-                color: PSTheme.isLight(context)
-                    ? Colors.black54
-                    : Colors.white.withValues(alpha: 0.5),
+                color: SlopeTheme.textSecondary(context).withValues(alpha: 0.5),
                 fontWeight: FontWeight.w500,
                 fontFamily: 'monospace',
               ),
@@ -638,10 +706,10 @@ class _CasePanel extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: PSTheme.deepViolet.withValues(alpha: 0.06),
+        color: SlopeTheme.accentColor.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
         border: Border.all(
-          color: PSTheme.deepViolet.withValues(alpha: 0.2),
+          color: SlopeTheme.accentColor.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -650,14 +718,14 @@ class _CasePanel extends StatelessWidget {
           Container(
             padding: headerPadding,
             decoration: BoxDecoration(
-              color: PSTheme.deepViolet.withValues(alpha: 0.1),
+              color: SlopeTheme.accentColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(isSmall ? 8 : 10),
                 topRight: Radius.circular(isSmall ? 8 : 10),
               ),
               border: Border(
                 bottom: BorderSide(
-                  color: PSTheme.deepViolet.withValues(alpha: 0.2),
+                  color: SlopeTheme.accentColor.withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -667,7 +735,7 @@ class _CasePanel extends StatelessWidget {
               style: TextStyle(
                 fontSize: labelSize,
                 fontWeight: FontWeight.w700,
-                color: PSTheme.deepViolet,
+                color: SlopeTheme.accentColor,
                 letterSpacing: 0.3,
               ),
             ),
@@ -680,8 +748,7 @@ class _CasePanel extends StatelessWidget {
                 latex,
                 textStyle: TextStyle(
                   fontSize: fontSize,
-                  color:
-                      PSTheme.isLight(context) ? Colors.black87 : Colors.white,
+                  color: SlopeTheme.textPrimary(context),
                 ),
               ),
             ),

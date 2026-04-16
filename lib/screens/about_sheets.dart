@@ -84,7 +84,8 @@ const _developers = [
     contribution: 'Point Slope, Finding the Center Radius',
     facebook: 'Clifford Probetso',
     Phone: '09510069125',
-    groups: 'Angelie Jerusalem\nIvan Rabanzo',
+    groups:
+        'Angelie Jerusalem\nIvan Rabanzo\nLausa Dave\nJanwell Nacario\nRoynuj Plaza ',
   ),
   _Developer(
     name: 'Johnlin Redido',

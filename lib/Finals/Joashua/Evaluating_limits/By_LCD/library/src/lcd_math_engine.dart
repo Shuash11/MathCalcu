@@ -296,11 +296,11 @@ class LimitEngine {
 
   static LimitStrategy _identifyStrategy(
       MathNode node, String varName, double val) {
-    // Heuristic: Does the AST contain a sqrt function? Assume Conjugate.
-    if (_containsFunction(node, 'sqrt')) return LimitStrategy.conjugate;
-
     // Heuristic: Does the top-level structure have divisions inside the numerator or denominator? Assume LCD.
     if (_hasNestedFractions(node)) return LimitStrategy.lcd;
+
+    // Heuristic: Does the AST contain a sqrt function? Assume Conjugate.
+    if (_containsFunction(node, 'sqrt')) return LimitStrategy.conjugate;
 
     return LimitStrategy.unknown;
   }

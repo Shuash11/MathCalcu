@@ -311,6 +311,8 @@ class PSResultBanner extends StatelessWidget {
   final String? generalFormEq;
   final String? standardFormEq;
   final bool tappable;
+  final VoidCallback? onShowSteps;
+  final bool showSteps;
 
   const PSResultBanner({
     super.key,
@@ -318,6 +320,8 @@ class PSResultBanner extends StatelessWidget {
     this.generalFormEq,
     this.standardFormEq,
     this.tappable = false,
+    this.onShowSteps,
+    this.showSteps = false,
   });
 
   @override
@@ -383,29 +387,46 @@ class PSResultBanner extends StatelessWidget {
             Text('Enter values above',
                 style: PSTheme.placeholderStyle(context)),
           ],
-          if (tappable) ...[
+          if (tappable && onShowSteps != null) ...[
             const SizedBox(height: 12),
             const Divider(),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.touch_app_rounded,
-                  color: PSTheme.neonMagenta.withValues(alpha: 0.7),
-                  size: 13,
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  'Tap to see step-by-step solution',
-                  style: TextStyle(
-                    color: PSTheme.neonMagenta.withValues(alpha: 0.7),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.3,
+            GestureDetector(
+              onTap: onShowSteps,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: showSteps
+                      ? PSTheme.deepViolet.withValues(alpha: 0.2)
+                      : PSTheme.deepViolet.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: PSTheme.deepViolet.withValues(alpha: 0.3),
                   ),
                 ),
-              ],
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      showSteps
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: PSTheme.deepViolet,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      showSteps ? 'Hide steps' : 'Show steps',
+                      style: TextStyle(
+                        color: PSTheme.deepViolet,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ],

@@ -40,6 +40,7 @@ class SolverStep {
   final String substitution;
   final String result;
   final String explanation;
+  final String? guide;
 
   const SolverStep({
     required this.number,
@@ -48,6 +49,7 @@ class SolverStep {
     this.substitution = '',
     required this.result,
     this.explanation = '',
+    this.guide,
   });
 }
 
@@ -80,9 +82,9 @@ class TwoPointSlopeSolver {
     steps.add(SolverStep(
       number: 1,
       title: 'Identify Points',
-      formula: 'P\u2081 = (x\u2081, y\u2081)   P\u2082 = (x\u2082, y\u2082)',
+      formula: '',
       substitution:
-          'P\u2081 = (${_fmt(x1)}, ${_fmt(y1)})   P\u2082 = (${_fmt(x2)}, ${_fmt(y2)})',
+          'Point 1: (${_fmt(x1)}, ${_fmt(y1)})\nPoint 2: (${_fmt(x2)}, ${_fmt(y2)})',
       result: 'Points identified',
       explanation: 'Label the two coordinate points.',
     ));
@@ -91,11 +93,10 @@ class TwoPointSlopeSolver {
     steps.add(SolverStep(
       number: 2,
       title: 'Slope Formula',
-      formula: 'm = (y\u2082 - y\u2081) / (x\u2082 - x\u2081)',
-      substitution:
-          'm = (${_fmt(y2)} - ${_fmt(y1)}) / (${_fmt(x2)} - ${_fmt(x1)})'
-          ' = ${_fmt(dy)} / ${_fmt(dx)}',
-      result: 'm = ${_fmt(dy)} / ${_fmt(dx)}',
+      formula: r'm = \frac{y_2 - y_1}{x_2 - x_1}',
+      substitution: _toLatex(
+          'm = (${_fmt(y2)}-${_fmt(y1)})/(${_fmt(x2)}-${_fmt(x1)}) = ${_fmt(dy)}/${_fmt(dx)}'),
+      result: r'\frac{' + _fmt(dy) + '}{' + _fmt(dx) + '}',
       explanation: 'Rise over run.',
     ));
 
@@ -111,10 +112,11 @@ class TwoPointSlopeSolver {
       steps.add(SolverStep(
         number: 3,
         title: 'Vertical Line',
-        formula: 'm = \u0394y / 0',
+        formula: r'm = \frac{\Delta y}{0}',
         substitution: 'Division by zero — slope is undefined',
-        result: 'x = ${_fmt(x1)}',
+        result: _toLatex('x = ${_fmt(x1)}'),
         explanation: 'All points share the same x-value.',
+        guide: 'Handle vertical line',
       ));
     } else {
       slope = dy / dx;
@@ -124,10 +126,11 @@ class TwoPointSlopeSolver {
       steps.add(SolverStep(
         number: 3,
         title: 'Simplify Slope',
-        formula: 'm = ${_fmt(dy)} / ${_fmt(dx)}',
+        formula: _toLatex('m = ${_fmt(dy)} / ${_fmt(dx)}'),
         substitution: _fractionString(dy, dx),
-        result: 'm = $slopeDisplay',
+        result: _toLatex('m = $slopeDisplay'),
         explanation: _simplifyExplanation(dy, dx, slope),
+        guide: 'Simplify the fraction',
       ));
 
       // Step 4 — Y-intercept
@@ -135,11 +138,12 @@ class TwoPointSlopeSolver {
       steps.add(SolverStep(
         number: 4,
         title: 'Y-Intercept',
-        formula: 'b = y\u2081 - m \u00b7 x\u2081',
-        substitution:
-            'b = ${_fmt(y1)} - ($slopeDisplay)(${_fmt(x1)}) = ${_fmtSlope(yIntercept)}',
-        result: 'b = ${_fmtSlope(yIntercept)}',
-        explanation: 'Plug in point P\u2081 and the slope.',
+        formula: r'b = y_1 - m \cdot x_1',
+        substitution: _toLatex(
+            'b = ${_fmt(y1)} - (${_fmtSlope(slope)})(${_fmt(x1)}) = ${_fmtSlope(yIntercept)}'),
+        result: _toLatex('b = ${_fmtSlope(yIntercept)}'),
+        explanation: 'Plug in point P₁ and the slope.',
+        guide: 'Find y-intercept',
       ));
 
       // Step 5 — Slope-intercept form
@@ -147,10 +151,11 @@ class TwoPointSlopeSolver {
       steps.add(SolverStep(
         number: 5,
         title: 'Slope-Intercept Form',
-        formula: 'y = mx + b',
-        substitution: lineEquation,
-        result: lineEquation,
+        formula: r'y = mx + b',
+        substitution: _toLatex(lineEquation),
+        result: _toLatex(lineEquation),
         explanation: 'Shows slope and y-intercept directly.',
+        guide: 'Write in y = mx + b form',
       ));
 
       // ── Standard form  Ax + By = C ──────────────────────────
@@ -187,19 +192,21 @@ class TwoPointSlopeSolver {
       steps.add(SolverStep(
         number: 6,
         title: 'Standard Form',
-        formula: 'Ax + By = C',
-        substitution: 'A = $a, B = $b, C = $c',
-        result: standardForm,
+        formula: r'Ax + By = C',
+        substitution: _toLatex('A = $a, B = $b, C = $c'),
+        result: _toLatex(standardForm),
         explanation: 'Integer coefficients reduced by GCD($g).',
+        guide: 'Convert to Ax + By = C',
       ));
 
       steps.add(SolverStep(
         number: 7,
         title: 'General Form',
-        formula: 'Ax + By + C = 0',
+        formula: r'Ax + By + C = 0',
         substitution: 'Move C to the left — sign flips',
-        result: generalForm,
+        result: _toLatex(generalForm),
         explanation: 'All terms on the left, right side is zero.',
+        guide: 'Move constant to left side',
       ));
 
       slopeType = isHorizontal
@@ -242,13 +249,15 @@ class TwoPointSlopeSolver {
   /// Integer if whole, 2 dp otherwise.
   static String _fmt(double v) {
     if (v == v.truncateToDouble()) return v.toInt().toString();
-    return v.toStringAsFixed(2);
+    return v.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
   /// Fraction when possible, otherwise 3 dp.
   static String _fmtSlope(double v) {
     if (v == v.truncateToDouble()) return v.toInt().toString();
-    return _toFraction(v) ?? v.toStringAsFixed(3);
+    final frac = _toFraction(v);
+    if (frac != null) return frac;
+    return v.toStringAsFixed(3).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
   /// Returns "n/d" reduced to lowest terms, or null if denominator > 20.
@@ -265,16 +274,45 @@ class TwoPointSlopeSolver {
     return null;
   }
 
+  /// Returns LaTeX fraction format like \frac{1}{2}
+  static String? _toLatexFraction(double value) {
+    for (int d = 1; d <= 20; d++) {
+      final n = (value * d).round();
+      if ((value * d - n).abs() < 1e-9) {
+        final g = _gcd2(n.abs(), d);
+        final fn = n ~/ g;
+        final fd = d ~/ g;
+        if (fd == 1) return fn.toString();
+        return r'\frac{' + fn.toString() + '}{' + fd.toString() + '}';
+      }
+    }
+    return null;
+  }
+
   static String _fractionString(double dy, double dx) {
-    final frac = _toFraction(dy / dx);
-    return frac != null ? 'Simplified: $frac' : '${_fmt(dy)} / ${_fmt(dx)}';
+    final frac = _toLatexFraction(dy / dx);
+    if (frac != null) {
+      return r'm = \frac{' + _fmt(dy) + '}{' + _fmt(dx) + r'} = ' + frac;
+    }
+    return 'm = ${_fmt(dy)} / ${_fmt(dx)}';
   }
 
   static String _simplifyExplanation(double dy, double dx, double slope) {
-    final frac = _toFraction(slope);
-    return frac != null
-        ? 'Reduced fraction: $frac'
-        : 'Decimal: ${slope.toStringAsFixed(3)}';
+    final frac = _toLatexFraction(slope);
+    if (frac != null) return 'Reduced: $frac';
+    final s = slope.toStringAsFixed(3).replaceAll(RegExp(r'\.?0+$'), '');
+    return 'Decimal: $s';
+  }
+
+  /// Convert plain fraction string to LaTeX format
+  static String _toLatex(String input) {
+    final fractionRegex = RegExp(r'(-?\d+)\s*/\s*(-?\d+)');
+    return input.replaceAllMapped(fractionRegex, (match) {
+      final num = match.group(1) ?? '0';
+      final denom = match.group(2) ?? '1';
+      if (denom == '1') return num;
+      return r'\frac{' + num + '}{' + denom + '}';
+    });
   }
 
   // ── EQUATION STRING BUILDERS ──────────────────────────────
