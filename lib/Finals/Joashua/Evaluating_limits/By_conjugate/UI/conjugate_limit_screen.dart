@@ -1,8 +1,8 @@
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Conjugate/solver/solver_engine.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Conjugate/solver/solution_steps.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Conjugate/Widget/conjugate_answer_card.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Conjugate/Widget/conjugate_input_field.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Conjugate/Widget/conjugate_steps_view.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_conjugate/solver/solver_engine.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_conjugate/solver/solution_steps.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_conjugate/Widget/conjugate_answer_card.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_conjugate/Widget/conjugate_input_field.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_conjugate/Widget/conjugate_steps_view.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 
