@@ -1,5 +1,5 @@
 import 'package:calculus_system/Finals/finals_theme.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Conjugate/solver/solution_steps.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_conjugate/solver/solution_steps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
