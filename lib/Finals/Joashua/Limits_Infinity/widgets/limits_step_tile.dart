@@ -1,6 +1,7 @@
 import 'package:calculus_system/Finals/Joashua/Limits_Infinity/solver/solutions.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class LimitsStepTile extends StatelessWidget {
   final SolutionStep step;
@@ -102,22 +103,30 @@ class LimitsStepTile extends StatelessWidget {
                           width: 1,
                         ),
                       ),
-                      child: Text(
-                        'Using: ${step.formula!}',
-                        style: FinalsTheme.subtitleStyle(context).copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: FinalsTheme.secondary,
-                        ),
-                      ),
+                      child: _buildMathExpression(step.formula!),
                     ),
                     const SizedBox(height: 12),
                   ],
 
                   // Explanation
                   if (step.explanation != null)
-                    Text(
-                      step.explanation!,
-                      style: FinalsTheme.subtitleStyle(context),
+                    Builder(
+                      builder: (ctx) => Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: FinalsTheme.cardSecondary(ctx),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: FinalsTheme.primary.withValues(alpha: 0.1),
+                          ),
+                        ),
+                        child: Text(
+                          _formatExplanation(step.explanation!),
+                          style: FinalsTheme.subtitleStyle(ctx)
+                              .copyWith(height: 1.5),
+                        ),
+                      ),
                     ),
 
                   const SizedBox(height: 12),
@@ -126,20 +135,15 @@ class LimitsStepTile extends StatelessWidget {
                   if (step.expression != null) ...[
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: FinalsTheme.cardSecondary(context),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: SelectableText(
-                        step.expression.toString(),
-                        style: const TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: FinalsTheme.primary.withValues(alpha: 0.15),
                         ),
                       ),
+                      child: _buildMathExpression(step.expression.toString()),
                     ),
                   ],
                 ],
@@ -149,5 +153,98 @@ class LimitsStepTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatExplanation(String text) {
+    var formatted = text
+        .replaceAll('\\frac{', '⟪')
+        .replaceAll('}', '⟫')
+        .replaceAll('\\infty', '∞')
+        .replaceAll('\\lim', 'lim')
+        .replaceAll('\\rightarrow', '→')
+        .replaceAll('\\cdot', '·')
+        .replaceAll('x^2', 'x²')
+        .replaceAll('x^3', 'x³')
+        .replaceAll('x^4', 'x⁴')
+        .replaceAllMapped(
+            RegExp(r'(\d+)\^(\d+)'), (m) => '${m[1]}${_superscript(m[2]!)}');
+    return formatted;
+  }
+
+  String _superscript(String num) {
+    const superscripts = {
+      '0': '⁰',
+      '1': '¹',
+      '2': '²',
+      '3': '³',
+      '4': '⁴',
+      '5': '⁵',
+      '6': '⁶',
+      '7': '⁷',
+      '8': '⁸',
+      '9': '⁹'
+    };
+    return num.split('').map((c) => superscripts[c] ?? c).join('');
+  }
+
+  Widget _buildMathExpression(String expression) {
+    final latex = _convertToLatex(expression);
+
+    try {
+      return Math.tex(
+        latex,
+        textStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+        onErrorFallback: (error) {
+          return SelectableText(
+            expression,
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      return SelectableText(
+        expression,
+        style: const TextStyle(
+          fontFamily: 'monospace',
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
+  }
+
+  String _convertToLatex(String expr) {
+    var result = expr
+        .replaceAll('*', ' \\cdot ')
+        .replaceAll('+', ' + ')
+        .replaceAll(' - ', ' - ')
+        .replaceAll(' / ', ' / ')
+        .replaceAllMapped(
+            RegExp(r'(\w+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
+        .replaceAll('x ^ 2', 'x^{2}')
+        .replaceAll('x ^ 3', 'x^{3}')
+        .replaceAll('x ^ 4', 'x^{4}')
+        .replaceAllMapped(
+            RegExp(r'(\d+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}');
+
+    // Handle division - convert a/b to \frac{a}{b}
+    result = _convertDivision(result);
+
+    return result;
+  }
+
+  String _convertDivision(String expr) {
+    // Match pattern: something / something
+    final fractionRegex = RegExp(r'([^\s+-]+)\s*/\s*([^\s+-]+)');
+    return expr.replaceAllMapped(fractionRegex, (match) {
+      return '\\frac{${match[1]}}{${match[2]}}';
+    });
   }
 }

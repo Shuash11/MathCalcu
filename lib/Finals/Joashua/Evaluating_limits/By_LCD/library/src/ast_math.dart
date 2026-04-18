@@ -82,8 +82,9 @@ class AlgebraicSimplifier {
   /// Attempts to solve LCD forms: e.g., (1/x - 1/a) / (x - a)
   static SimplificationResult solveLCD(
       MathNode ast, String varName, double val) {
-    if (ast is! BinaryOpNode || ast.op != '/')
+    if (ast is! BinaryOpNode || ast.op != '/') {
       return SimplificationResult(false, null, null, null);
+    }
 
     MathNode numerator = ast.left;
     MathNode denominator = ast.right;
@@ -94,11 +95,13 @@ class AlgebraicSimplifier {
     }
 
     // Check if we have a fraction minus a fraction: (A/B) - (C/D)
-    if (numerator.left is! BinaryOpNode || numerator.right is! BinaryOpNode)
+    if (numerator.left is! BinaryOpNode || numerator.right is! BinaryOpNode) {
       return SimplificationResult(false, null, null, null);
+    }
     if ((numerator.left as BinaryOpNode).op != '/' ||
-        (numerator.right as BinaryOpNode).op != '/')
+        (numerator.right as BinaryOpNode).op != '/') {
       return SimplificationResult(false, null, null, null);
+    }
 
     BinaryOpNode frac1 = numerator.left as BinaryOpNode;
     BinaryOpNode frac2 = numerator.right as BinaryOpNode;
@@ -130,8 +133,9 @@ class AlgebraicSimplifier {
 
   static MathNode? _findSqrt(MathNode node) {
     if (node is FunctionNode && node.name == 'sqrt') return node;
-    if (node is BinaryOpNode)
+    if (node is BinaryOpNode) {
       return _findSqrt(node.left) ?? _findSqrt(node.right);
+    }
     return null;
   }
 
@@ -175,10 +179,11 @@ class AlgebraicSimplifier {
   }
 
   static String _nodeToString(MathNode node) {
-    if (node is NumberNode)
+    if (node is NumberNode) {
       return node.value == node.value.toInt()
           ? node.value.toInt().toString()
           : node.value.toString();
+    }
     if (node is VariableNode) return node.name;
     if (node is UnaryMinusNode) return "-${_nodeToString(node.child)}";
     if (node is FunctionNode) {
@@ -190,11 +195,13 @@ class AlgebraicSimplifier {
       String r = _nodeToString(node.right);
       // Add parentheses for clarity in output
       if (node.left is BinaryOpNode &&
-          _precedence(node.left as BinaryOpNode) < _precedence(node))
+          _precedence(node.left as BinaryOpNode) < _precedence(node)) {
         l = "($l)";
+      }
       if (node.right is BinaryOpNode &&
-          _precedence(node.right as BinaryOpNode) <= _precedence(node))
+          _precedence(node.right as BinaryOpNode) <= _precedence(node)) {
         r = "($r)";
+      }
       return "$l ${node.op} $r";
     }
     return "";

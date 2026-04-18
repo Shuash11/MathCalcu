@@ -51,15 +51,17 @@ class LimitsInputField extends StatelessWidget {
                       fontSize: 18,
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Enter expression (e.g. (x^2-1)/(x-1))',
+                      hintText:
+                          'Enter rational/polynomial (e.g. (3x^2+2)/(x^2+1))',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
-                        color: FinalsTheme.textSecondary(context).withValues(alpha: 0.4),
+                        color: FinalsTheme.textSecondary(context)
+                            .withValues(alpha: 0.4),
                       ),
                       border: InputBorder.none,
                     ),
                   ),
                 ),
-                
+
                 // Solve Button
                 Material(
                   color: Colors.transparent,
@@ -107,12 +109,13 @@ class LimitsInputField extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                
+
                 // Variable Selector
                 GestureDetector(
                   onTap: () => _showVariablePicker(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: FinalsTheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -128,10 +131,11 @@ class LimitsInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Icon(Icons.arrow_right_alt, size: 20, color: FinalsTheme.primary),
+                  child: Icon(Icons.arrow_right_alt,
+                      size: 20, color: FinalsTheme.primary),
                 ),
 
                 // Approach Value Input
@@ -146,25 +150,40 @@ class LimitsInputField extends StatelessWidget {
                       controller: approachController,
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
-                      style: FinalsTheme.titleStyle(context).copyWith(fontSize: 14),
+                      style: FinalsTheme.titleStyle(context)
+                          .copyWith(fontSize: 14),
                       decoration: InputDecoration(
                         hintText: 'value (e.g. 0, inf, -inf)',
-                        hintStyle: FinalsTheme.subtitleStyle(context).copyWith(fontSize: 12),
+                        hintStyle: FinalsTheme.subtitleStyle(context)
+                            .copyWith(fontSize: 12),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.only(bottom: 12),
                       ),
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(width: 8),
 
-                // Presets (inf, -inf)
+// Presets (inf, -inf)
                 _buildQuickChip(context, '0'),
                 const SizedBox(width: 4),
                 _buildQuickChip(context, '∞', val: 'inf'),
                 const SizedBox(width: 4),
                 _buildQuickChip(context, '-∞', val: '-inf'),
+              ],
+            ),
+          ),
+
+          const Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16),
+
+          // Power & Operators Row
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildOperatorButton(context, '^', 'Power'),
               ],
             ),
           ),
@@ -197,6 +216,49 @@ class LimitsInputField extends StatelessWidget {
     );
   }
 
+  Widget _buildOperatorButton(
+      BuildContext context, String value, String label) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _insertText(value),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: FinalsTheme.cardSecondary(context),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: FinalsTheme.primary.withValues(alpha: 0.15),
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: FinalsTheme.primary,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _insertText(String text) {
+    final currentText = expressionController.text;
+    final selection = expressionController.selection;
+    final newText = currentText.replaceRange(
+      selection.start,
+      selection.end,
+      text,
+    );
+    expressionController.text = newText;
+    expressionController.selection = TextSelection.collapsed(
+      offset: selection.start + text.length,
+    );
+  }
+
   void _showVariablePicker(BuildContext context) {
     final variables = ['x', 'y', 'z', 't', 'n', 'u'];
     showModalBottomSheet(
@@ -211,7 +273,8 @@ class LimitsInputField extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text('Select Variable', style: FinalsTheme.titleStyle(ctx)),
+              child:
+                  Text('Select Variable', style: FinalsTheme.titleStyle(ctx)),
             ),
             ...variables.map((v) {
               final isSelected = v == currentVariable;
@@ -227,8 +290,8 @@ class LimitsInputField extends StatelessWidget {
                   onVariableChanged(v);
                   Navigator.pop(ctx);
                 },
-                trailing: isSelected 
-                    ? const Icon(Icons.check, color: FinalsTheme.primary) 
+                trailing: isSelected
+                    ? const Icon(Icons.check, color: FinalsTheme.primary)
                     : null,
               );
             }).toList(),

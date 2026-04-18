@@ -574,7 +574,7 @@ class StepGenerator {
 
   static BinaryOpNode _ensureFraction(MathNode node) {
     if (node is BinaryOpNode && node.op == '/') return node;
-    return BinaryOpNode('/', node, NumberNode(1));
+    return BinaryOpNode('/', node, const NumberNode(1));
   }
 
   static double _evalNode(MathNode node, String varName, double val) {

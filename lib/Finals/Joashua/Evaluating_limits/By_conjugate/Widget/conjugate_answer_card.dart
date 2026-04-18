@@ -66,7 +66,7 @@ class ConjugateAnswerCard extends StatelessWidget {
                   ),
                   child: Text(
                     method,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: accentColor,
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
@@ -96,7 +96,7 @@ class ConjugateAnswerCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.linear_scale_rounded,
                   color: accentColor,
                   size: 20,

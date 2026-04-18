@@ -6,7 +6,6 @@ import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/deriviatives_solver.dart'; // Adjust path
 
-
 class DerivativeScreen extends StatefulWidget {
   const DerivativeScreen({super.key});
 
@@ -44,10 +43,10 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
 
     try {
       final steps = DerivativeSolver.getSteps(
-        _exprController.text.trim(), 
+        _exprController.text.trim(),
         _variable,
       );
-      
+
       setState(() {
         _solution = ClassroomStepFormatter.generateFullSolution(steps);
         _isLoading = false;
@@ -77,13 +76,20 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: FinalsTheme.surface(context),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: FinalsTheme.primary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           controller: _scrollController,
           physics: const BouncingScrollPhysics(),
           slivers: [
-            const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
             // Header
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -91,14 +97,18 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Differentiate', style: FinalsTheme.titleStyle(context).copyWith(fontSize: 28)),
+                    Text('Differentiate',
+                        style: FinalsTheme.titleStyle(context)
+                            .copyWith(fontSize: 28)),
                     const SizedBox(height: 4),
-                    Text('Enter a function to find its derivative step-by-step.', style: FinalsTheme.subtitleStyle(context)),
+                    Text(
+                        'Enter a function to find its derivative step-by-step.',
+                        style: FinalsTheme.subtitleStyle(context)),
                   ],
                 ),
               ),
             ),
-            
+
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
             // Input Field
@@ -165,11 +175,13 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                     key: _stepsKey,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Step-by-Step Solution', style: FinalsTheme.titleStyle(context)),
+                      Text('Step-by-Step Solution',
+                          style: FinalsTheme.titleStyle(context)),
                       const SizedBox(height: 8),
-                      Text('Understand the rules applied to reach the answer.', style: FinalsTheme.subtitleStyle(context)),
+                      Text('Understand the rules applied to reach the answer.',
+                          style: FinalsTheme.subtitleStyle(context)),
                       const SizedBox(height: 24),
-                      
+
                       // Render Steps
                       ..._solution!.steps.asMap().entries.map((entry) {
                         return DerivativeStepTile(
@@ -180,7 +192,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                       }),
 
                       const SizedBox(height: 32),
-                      
+
                       // Common Mistakes Section
                       _buildInfoCard(
                         context,
@@ -200,7 +212,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                         color: FinalsTheme.primary,
                         items: _solution!.relatedConcepts,
                       ),
-                      
+
                       const SizedBox(height: 60),
                     ],
                   ),
@@ -234,26 +246,33 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
             children: [
               Icon(icon, size: 20, color: color),
               const SizedBox(width: 8),
-              Text(title, style: FinalsTheme.titleStyle(context).copyWith(fontSize: 16, color: color)),
+              Text(title,
+                  style: FinalsTheme.titleStyle(context)
+                      .copyWith(fontSize: 16, color: color)),
             ],
           ),
           const SizedBox(height: 12),
-          ...items.map((item) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 6),
-                  width: 4,
-                  height: 4,
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                ),
-                const SizedBox(width: 12),
-                Expanded(child: Text(item, style: FinalsTheme.subtitleStyle(context))),
-              ],
-            ),
-          )).toList(),
+          ...items
+              .map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 6),
+                          width: 4,
+                          height: 4,
+                          decoration: BoxDecoration(
+                              color: color, shape: BoxShape.circle),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                            child: Text(item,
+                                style: FinalsTheme.subtitleStyle(context))),
+                      ],
+                    ),
+                  ))
+              .toList(),
         ],
       ),
     );

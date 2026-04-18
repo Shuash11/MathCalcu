@@ -3,7 +3,7 @@ import 'package:calculus_system/Finals/Joashua/Limits_Infinity/solver/limit_solv
 import 'package:calculus_system/Finals/Joashua/Limits_Infinity/solver/solutions.dart';
 import 'package:calculus_system/Finals/Joashua/Limits_Infinity/widgets/limits_answer_card.dart';
 import 'package:calculus_system/Finals/Joashua/Limits_Infinity/widgets/limits_input_field.dart';
-import 'package:calculus_system/Finals/Joashua/Limits_Infinity/widgets/limits_step_tile.dart';
+import 'package:calculus_system/Finals/Joashua/Limits_Infinity/widgets/limits_step_guide.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -94,7 +94,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded,
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
               color: FinalsTheme.primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -159,12 +159,12 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
 
             // Answer Card / Loading / Error
             if (_isLoading)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(32.0),
+                      padding: EdgeInsets.all(32.0),
                       child: CircularProgressIndicator(
                         color: FinalsTheme.primary,
                         strokeWidth: 3,
@@ -213,7 +213,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.auto_stories_rounded,
+                          const Icon(Icons.auto_stories_rounded,
                               size: 24, color: FinalsTheme.primary),
                           const SizedBox(width: 12),
                           Text('Solution Steps',
@@ -232,10 +232,17 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
 
                       // Render Each Step
                       ..._solution!.steps.asMap().entries.map((entry) {
-                        return LimitsStepTile(
-                          step: entry.value,
-                          index: entry.key,
-                          isLast: entry.key == _solution!.steps.length - 1,
+                        final step = entry.value;
+                        final isLast = entry.key == _solution!.steps.length - 1;
+                        final displayExpr =
+                            step.formula ?? step.expression?.toString();
+                        return LimitsStepGuide(
+                          title: step.description,
+                          subtitle: null,
+                          mathExpression: displayExpr,
+                          explanation: step.explanation,
+                          isConclusion: step.type == StepType.conclusion,
+                          stepNumber: entry.key + 1,
                         );
                       }),
 
