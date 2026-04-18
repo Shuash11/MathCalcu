@@ -2,7 +2,7 @@ import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Substitution
 import 'package:calculus_system/Finals/Joashua/Derivatives/UI/derivatives_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/UI/factoring_limit_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_LCD/UI/lcd_limit_screen.dart';
-import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Conjugate/UI/conjugate_limit_screen.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_conjugate/UI/conjugate_limit_screen.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/evaluating_limits_picker.dart';
 import 'package:calculus_system/Finals/Joashua/Limits_Infinity/Ui/limits_infinity_scr.dart';
 import 'package:calculus_system/Finals/Joashua/Slope_Using_derivatives/UI/slope_solver_screen.dart';
