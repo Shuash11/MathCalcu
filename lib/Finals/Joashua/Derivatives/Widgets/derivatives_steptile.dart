@@ -10,11 +10,11 @@ class DerivativeStepTile extends StatelessWidget {
   final bool isLast;
 
   const DerivativeStepTile({
-    Key? key,
+    super.key,
     required this.step,
     required this.index,
     this.isLast = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +150,7 @@ class DerivativeStepTile extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.lightbulb_outline,
+                          const Icon(Icons.lightbulb_outline,
                               size: 16, color: FinalsTheme.secondary),
                           const SizedBox(width: 8),
                           Expanded(

@@ -140,8 +140,8 @@ class _ConjugateLimitScreenState extends State<ConjugateLimitScreen>
                           onSolve: _solve,
                         ),
                         if (_isSolving)
-                          Padding(
-                            padding: const EdgeInsets.all(40.0),
+                          const Padding(
+                            padding: EdgeInsets.all(40.0),
                             child: Center(
                               child: CircularProgressIndicator(
                                   color: FinalsTheme.secondary),
@@ -174,7 +174,7 @@ class _ConjugateLimitScreenState extends State<ConjugateLimitScreen>
                                       children: [
                                         Row(
                                           children: [
-                                            Icon(Icons.list_alt_rounded,
+                                            const Icon(Icons.list_alt_rounded,
                                                 color: FinalsTheme.secondary,
                                                 size: 18),
                                             const SizedBox(width: 10),
@@ -251,11 +251,11 @@ class _ConjugateLimitScreenState extends State<ConjugateLimitScreen>
               border: Border.all(
                   color: FinalsTheme.secondary.withValues(alpha: 0.2)),
             ),
-            child: Row(
+            child: const Row(
               children: [
                 Icon(Icons.unfold_more_double_rounded,
                     size: 14, color: FinalsTheme.secondary),
-                const SizedBox(width: 6),
+                SizedBox(width: 6),
                 Text(
                   'By Conjugate',
                   style: TextStyle(

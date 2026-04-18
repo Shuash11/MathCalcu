@@ -214,7 +214,7 @@ class ConjugateStepsGenerator {
         explanation: result.errorMessage ??
             'Attempting to find a conjugate to rationalize...',
       ),
-      ConjugateStep(
+      const ConjugateStep(
         stepNumber: 4,
         title: 'Cannot Solve',
         explanation:

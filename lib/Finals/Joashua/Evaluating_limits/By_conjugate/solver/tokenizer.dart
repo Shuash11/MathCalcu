@@ -18,7 +18,7 @@ class Token {
   String toString() {
     switch (type) {
       case TokenType.number:
-        return 'NUM(${value})';
+        return 'NUM($value)';
       case TokenType.variable:
         return 'VAR($value)';
       case TokenType.operator:
