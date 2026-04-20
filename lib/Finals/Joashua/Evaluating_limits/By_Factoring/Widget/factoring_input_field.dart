@@ -19,7 +19,14 @@ class FactoringInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 380;
     const accentColor = FinalsTheme.primary;
+
+    final expressionFontSize = isCompact ? 16.0 : 18.0;
+    final limitTextSize = isCompact ? 16.0 : 22.0;
+    final variableFontSize = isCompact ? 13.0 : 15.0;
+    final inputHeight = isCompact ? 38.0 : 42.0;
 
     return Container(
       decoration: BoxDecoration(
@@ -50,18 +57,18 @@ class FactoringInputField extends StatelessWidget {
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
-                      fontSize: 19,
+                      fontSize: expressionFontSize,
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
-                      hintText: '(x^2 - 4) / (x - 2)',
+                      hintText: isCompact ? 'x²-4 / x-2' : '(x^2 - 4) / (x - 2)',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                         color: FinalsTheme.textSecondary(context)
                             .withValues(alpha: 0.3),
-                        fontSize: 14,
+                        fontSize: isCompact ? 12 : 14,
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      contentPadding: EdgeInsets.symmetric(vertical: isCompact ? 8 : 12),
                     ),
                   ),
                 ),
@@ -80,41 +87,42 @@ class FactoringInputField extends StatelessWidget {
 
           // ── Limit Meta Row
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
             child: Row(
               children: [
-                const SizedBox(width: 4),
                 Text(
                   'lim',
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontStyle: FontStyle.italic,
-                    fontSize: 22,
+                    fontSize: limitTextSize,
                     color: accentColor,
                     fontFamily: 'serif',
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: isCompact ? 4 : 8),
 
                 // Variable Selection Pill
                 _VariablePill(
                   variable: currentVariable,
                   onTap: () => _showVariablePicker(context),
                   accentColor: accentColor,
+                  fontSize: variableFontSize,
                 ),
 
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isCompact ? 4 : 8),
                   child: Icon(
                     Icons.arrow_forward_rounded,
-                    size: 16,
+                    size: isCompact ? 12 : 14,
                     color: accentColor,
                   ),
                 ),
 
                 // Approach Value Input
                 Expanded(
+                  flex: isCompact ? 3 : 2,
                   child: Container(
-                    height: 40,
+                    height: inputHeight,
                     decoration: BoxDecoration(
                       color: FinalsTheme.cardSecondary(context),
                       borderRadius: BorderRadius.circular(12),
@@ -145,12 +153,16 @@ class FactoringInputField extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 12),
+                SizedBox(width: isCompact ? 4 : 8),
 
                 // Quick Presets
                 _buildQuickChip(context, '0', accentColor),
-                const SizedBox(width: 6),
+                SizedBox(width: isCompact ? 4 : 6),
                 _buildQuickChip(context, '1', accentColor),
+                if (!isCompact) ...[
+                  SizedBox(width: 6),
+                  _buildQuickChip(context, '2', accentColor),
+                ],
               ],
             ),
           ),
@@ -372,11 +384,13 @@ class _VariablePill extends StatelessWidget {
   final String variable;
   final VoidCallback onTap;
   final Color accentColor;
+  final double fontSize;
 
   const _VariablePill({
     required this.variable,
     required this.onTap,
     required this.accentColor,
+    this.fontSize = 15,
   });
 
   @override
@@ -384,17 +398,17 @@ class _VariablePill extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: fontSize * 0.7, vertical: fontSize * 0.35),
         decoration: BoxDecoration(
           color: accentColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(fontSize * 0.5),
           border: Border.all(color: accentColor.withValues(alpha: 0.2)),
         ),
         child: Text(
           variable,
           style: TextStyle(
             fontFamily: 'serif',
-            fontSize: 17,
+            fontSize: fontSize,
             fontWeight: FontWeight.w900,
             color: accentColor,
           ),

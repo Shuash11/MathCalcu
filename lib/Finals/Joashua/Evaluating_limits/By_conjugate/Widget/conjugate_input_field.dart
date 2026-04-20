@@ -19,7 +19,14 @@ class ConjugateInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 380;
     const accentColor = FinalsTheme.secondary;
+
+    final expressionFontSize = isCompact ? 16.0 : 18.0;
+    final limitTextSize = isCompact ? 16.0 : 22.0;
+    final variableFontSize = isCompact ? 13.0 : 15.0;
+    final inputHeight = isCompact ? 38.0 : 42.0;
 
     return Container(
       decoration: BoxDecoration(
@@ -49,18 +56,18 @@ class ConjugateInputField extends StatelessWidget {
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
-                      fontSize: 19,
+                      fontSize: expressionFontSize,
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
-                      hintText: '(sqrt(x) - 2) / (x - 4)',
+                      hintText: isCompact ? '√x-2 / x-4' : '(sqrt(x) - 2) / (x - 4)',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                         color: FinalsTheme.textSecondary(context)
                             .withValues(alpha: 0.3),
-                        fontSize: 14,
+                        fontSize: isCompact ? 12 : 14,
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      contentPadding: EdgeInsets.symmetric(vertical: isCompact ? 8 : 12),
                     ),
                   ),
                 ),
@@ -75,36 +82,37 @@ class ConjugateInputField extends StatelessWidget {
           ),
           const Divider(height: 1, thickness: 0.8, indent: 20, endIndent: 20),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
             child: Row(
               children: [
-                const SizedBox(width: 4),
                 Text(
                   'lim',
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontStyle: FontStyle.italic,
-                    fontSize: 22,
+                    fontSize: limitTextSize,
                     color: accentColor,
                     fontFamily: 'serif',
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: isCompact ? 4 : 8),
                 _VariablePill(
                   variable: currentVariable,
                   onTap: () => _showVariablePicker(context),
                   accentColor: accentColor,
+                  fontSize: variableFontSize,
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isCompact ? 4 : 8),
                   child: Icon(
                     Icons.arrow_forward_rounded,
-                    size: 16,
+                    size: isCompact ? 12 : 14,
                     color: accentColor,
                   ),
                 ),
                 Expanded(
+                  flex: isCompact ? 3 : 2,
                   child: Container(
-                    height: 40,
+                    height: inputHeight,
                     decoration: BoxDecoration(
                       color: FinalsTheme.cardSecondary(context),
                       borderRadius: BorderRadius.circular(12),
@@ -117,26 +125,26 @@ class ConjugateInputField extends StatelessWidget {
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
-                        fontSize: 15,
+                        fontSize: expressionFontSize - 2,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'value (e.g. 4)',
+                        hintText: 'value',
                         hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
-                          fontSize: 13,
+                          fontSize: 11,
                           color: FinalsTheme.textSecondary(context)
                               .withValues(alpha: 0.4),
                         ),
                         border: InputBorder.none,
                         contentPadding:
-                            const EdgeInsets.symmetric(vertical: 10),
+                            EdgeInsets.symmetric(vertical: isCompact ? 6 : 10),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: isCompact ? 4 : 8),
                 _buildQuickChip(context, '0', accentColor),
-                const SizedBox(width: 6),
+                SizedBox(width: isCompact ? 4 : 6),
                 _buildQuickChip(context, '4', accentColor),
               ],
             ),
@@ -366,11 +374,13 @@ class _VariablePill extends StatelessWidget {
   final String variable;
   final VoidCallback onTap;
   final Color accentColor;
+  final double fontSize;
 
   const _VariablePill({
     required this.variable,
     required this.onTap,
     required this.accentColor,
+    this.fontSize = 15,
   });
 
   @override
@@ -378,17 +388,17 @@ class _VariablePill extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: fontSize * 0.7, vertical: fontSize * 0.35),
         decoration: BoxDecoration(
           color: accentColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(fontSize * 0.5),
           border: Border.all(color: accentColor.withValues(alpha: 0.2)),
         ),
         child: Text(
           variable,
           style: TextStyle(
             fontFamily: 'serif',
-            fontSize: 17,
+            fontSize: fontSize,
             fontWeight: FontWeight.w900,
             color: accentColor,
           ),
