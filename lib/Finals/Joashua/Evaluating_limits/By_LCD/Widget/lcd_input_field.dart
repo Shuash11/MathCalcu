@@ -19,8 +19,18 @@ class LCDInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 380;
+    final isTablet = screenWidth > 600;
     // We use the 'danger' color (rose red) as the primary accent for LCD
     const accentColor = FinalsTheme.danger;
+
+    final expressionFontSize = isCompact ? 16.0 : (isTablet ? 20.0 : 18.0);
+    final limitTextSize = isCompact ? 16.0 : (isTablet ? 24.0 : 18.0);
+    final variableFontSize = isCompact ? 13.0 : (isTablet ? 18.0 : 15.0);
+    final inputHeight = isCompact ? 38.0 : (isTablet ? 48.0 : 44.0);
+    final quickChipFontSize = isCompact ? 11.0 : 13.0;
+    final quickChipPadding = isCompact ? 6.0 : 10.0;
 
     return Container(
       decoration: BoxDecoration(
@@ -52,7 +62,7 @@ class LCDInputField extends StatelessWidget {
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
-                      fontSize: 18,
+                      fontSize: expressionFontSize,
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
@@ -80,22 +90,21 @@ class LCDInputField extends StatelessWidget {
 
           const Divider(height: 1, thickness: 0.8, indent: 20, endIndent: 20),
 
-          // ── Limit Meta Row
+// ── Limit Meta Row
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
             child: Row(
               children: [
-                const SizedBox(width: 4),
                 Text(
                   'lim',
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontStyle: FontStyle.italic,
-                    fontSize: 22,
+                    fontSize: limitTextSize,
                     color: accentColor,
                     fontFamily: 'serif',
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 6),
 
                 // Variable Selection Pill
                 _VariablePill(
@@ -105,19 +114,19 @@ class LCDInputField extends StatelessWidget {
                 ),
 
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 4),
                   child: Icon(
                     Icons.arrow_forward_rounded,
-                    size: 14,
+                    size: 12,
                     color: accentColor,
                   ),
                 ),
 
-                // Approach Value Input
+// Approach Value Input
                 Expanded(
-                  flex: 2,
+                  flex: isCompact ? 3 : 2,
                   child: Container(
-                    height: 44,
+                    height: inputHeight,
                     decoration: BoxDecoration(
                       color: FinalsTheme.cardSecondary(context),
                       borderRadius: BorderRadius.circular(12),
@@ -130,34 +139,36 @@ class LCDInputField extends StatelessWidget {
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
-                        fontSize: 16,
+                        fontSize: variableFontSize,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         hintText: 'value',
                         hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
-                          fontSize: 13,
+                          fontSize: 12,
                           color: FinalsTheme.textSecondary(context)
                               .withValues(alpha: 0.4),
                         ),
                         border: InputBorder.none,
                         contentPadding:
-                            const EdgeInsets.symmetric(vertical: 10),
+                            EdgeInsets.symmetric(vertical: isCompact ? 6 : 10),
                       ),
                     ),
                   ),
                 ),
 
-                const SizedBox(width: 8),
+                SizedBox(width: isCompact ? 4 : 8),
 
-                // Quick Presets - more prominent
-                _buildQuickChip(context, '0', accentColor),
-                const SizedBox(width: 6),
-                _buildQuickChip(context, '1', accentColor),
-                const SizedBox(width: 6),
-                _buildQuickChip(context, '2', accentColor),
-                const SizedBox(width: 6),
-                _buildQuickChip(context, '3', accentColor),
+                // Quick Presets
+                _buildQuickChip(context, '0', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
+                SizedBox(width: isCompact ? 4 : 6),
+                _buildQuickChip(context, '1', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
+                if (!isCompact) ...[
+                  SizedBox(width: 6),
+                  _buildQuickChip(context, '2', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
+                  SizedBox(width: 6),
+                  _buildQuickChip(context, '3', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
+                ],
               ],
             ),
           ),
@@ -166,22 +177,22 @@ class LCDInputField extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickChip(BuildContext context, String label, Color accent) {
+  Widget _buildQuickChip(BuildContext context, String label, Color accent, {double fontSize = 13, double padding = 10}) {
     return InkWell(
       onTap: () => approachController.text = label,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding * 0.7),
         decoration: BoxDecoration(
           color: accent.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: accent.withValues(alpha: 0.15)),
         ),
         child: Text(
           label,
           style: TextStyle(
             color: accent,
-            fontSize: 13,
+            fontSize: fontSize,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -394,10 +405,10 @@ class _VariablePill extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: accentColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: accentColor.withValues(alpha: 0.2)),
         ),
         child: Text(

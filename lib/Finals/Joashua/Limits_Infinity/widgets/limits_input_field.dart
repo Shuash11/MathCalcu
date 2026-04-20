@@ -19,6 +19,14 @@ class LimitsInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 380;
+    
+    final inputHeight = isCompact ? 34.0 : 40.0;
+    final quickChipFontSize = isCompact ? 11.0 : 13.0;
+    final quickChipPadding = isCompact ? 6.0 : 10.0;
+    final limitTextSize = isCompact ? 14.0 : 18.0;
+
     return Container(
       decoration: BoxDecoration(
         color: FinalsTheme.card(context),
@@ -43,12 +51,13 @@ class LimitsInputField extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
+                  flex: 3,
                   child: TextField(
                     controller: expressionController,
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
-                      fontSize: 18,
+                      fontSize: 17,
                     ),
                     decoration: InputDecoration(
                       hintText:
@@ -104,18 +113,18 @@ class LimitsInputField extends StatelessWidget {
                   'lim',
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontStyle: FontStyle.italic,
-                    fontSize: 20,
+                    fontSize: limitTextSize,
                     color: FinalsTheme.primary,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
 
                 // Variable Selector
                 GestureDetector(
                   onTap: () => _showVariablePicker(context),
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: FinalsTheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -124,7 +133,7 @@ class LimitsInputField extends StatelessWidget {
                       currentVariable,
                       style: const TextStyle(
                         fontFamily: 'serif',
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: FinalsTheme.primary,
                       ),
@@ -140,37 +149,38 @@ class LimitsInputField extends StatelessWidget {
 
                 // Approach Value Input
                 Expanded(
+                  flex: isCompact ? 3 : 2,
                   child: Container(
-                    height: 36,
+                    height: inputHeight,
                     decoration: BoxDecoration(
                       color: FinalsTheme.cardSecondary(context),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
                       controller: approachController,
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context)
-                          .copyWith(fontSize: 14),
+                          .copyWith(fontSize: limitTextSize - 4),
                       decoration: InputDecoration(
-                        hintText: 'value (e.g. 0, inf, -inf)',
+                        hintText: 'value',
                         hintStyle: FinalsTheme.subtitleStyle(context)
-                            .copyWith(fontSize: 12),
+                            .copyWith(fontSize: 11),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.only(bottom: 12),
+                        contentPadding: EdgeInsets.only(bottom: isCompact ? 8 : 12),
                       ),
                     ),
                   ),
                 ),
 
-                const SizedBox(width: 8),
+                SizedBox(width: isCompact ? 4 : 6),
 
 // Presets (inf, -inf)
-                _buildQuickChip(context, '0'),
-                const SizedBox(width: 4),
-                _buildQuickChip(context, '∞', val: 'inf'),
-                const SizedBox(width: 4),
-                _buildQuickChip(context, '-∞', val: '-inf'),
+                _buildQuickChip(context, '0', fontSize: quickChipFontSize, padding: quickChipPadding),
+                SizedBox(width: isCompact ? 3 : 4),
+                _buildQuickChip(context, '∞', val: 'inf', fontSize: quickChipFontSize, padding: quickChipPadding),
+                SizedBox(width: isCompact ? 3 : 4),
+                _buildQuickChip(context, '-∞', val: '-inf', fontSize: quickChipFontSize, padding: quickChipPadding),
               ],
             ),
           ),
@@ -192,14 +202,14 @@ class LimitsInputField extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickChip(BuildContext context, String label, {String? val}) {
+  Widget _buildQuickChip(BuildContext context, String label, {String? val, double fontSize = 13, double padding = 8}) {
     return InkWell(
       onTap: () {
         approachController.text = val ?? label;
       },
       borderRadius: BorderRadius.circular(6),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding * 0.7),
         decoration: BoxDecoration(
           border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.2)),
           borderRadius: BorderRadius.circular(6),
@@ -208,7 +218,7 @@ class LimitsInputField extends StatelessWidget {
           label,
           style: TextStyle(
             color: FinalsTheme.primary,
-            fontSize: 14,
+            fontSize: fontSize,
             fontWeight: FontWeight.bold,
           ),
         ),
