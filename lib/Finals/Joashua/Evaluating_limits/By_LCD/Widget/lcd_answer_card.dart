@@ -163,11 +163,49 @@ class _ValueDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String displayVal = answer == null
-        ? 'Undefined'
-        : (answer! == answer!.toInt() ? answer!.toInt().toString() : answer!.toStringAsFixed(4));
+    if (answer == null || answer!.isNaN) {
+      return _buildTextDisplay('Undefined', accentColor, context, wrapFlexible: true);
+    }
 
-    if (fractionalAnswer != null) {
+    if (fractionalAnswer != null && 
+        (fractionalAnswer!.contains(r'\frac') || fractionalAnswer!.contains(r'\approx'))) {
+      final parts = fractionalAnswer!.split(r'\approx');
+      if (parts.length > 1) {
+        return Flexible(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Math.tex(
+                parts[0].trim(),
+                textStyle: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  color: accentColor,
+                ),
+                onErrorFallback: (err) => Text(
+                  parts[0].trim(),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: accentColor,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '≈ ${parts[1].trim()}',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: accentColor.withValues(alpha: 0.7),
+                  fontFamily: 'serif',
+                ),
+              ),
+            ],
+          ),
+        );
+      }
       return Flexible(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -186,20 +224,30 @@ class _ValueDisplay extends StatelessWidget {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Math.tex(
-              fractionalAnswer!.replaceAll('\$', ''),
+              fractionalAnswer!,
               textStyle: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
                 color: accentColor,
               ),
-              onErrorFallback: (err) => _buildTextDisplay(displayVal, accentColor, context, wrapFlexible: false),
+              onErrorFallback: (err) => _buildTextDisplay(_formatAnswer(answer!), accentColor, context, wrapFlexible: false),
             ),
           ),
         ),
       );
     }
 
-    return _buildTextDisplay(displayVal, accentColor, context, wrapFlexible: true);
+    return _buildTextDisplay(_formatAnswer(answer!), accentColor, context, wrapFlexible: true);
+  }
+
+  String _formatAnswer(double val) {
+    if (!val.isFinite) {
+      return val.isInfinite ? (val > 0 ? '∞' : '-∞') : 'Undefined';
+    }
+    if (val == val.toInt()) {
+      return val.toInt().toString();
+    }
+    return val.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
   }
 
   Widget _buildTextDisplay(String displayVal, Color accentColor, BuildContext context, {required bool wrapFlexible}) {

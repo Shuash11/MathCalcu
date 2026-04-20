@@ -58,7 +58,6 @@ class TokenizerException implements Exception {
 /// - Absolute value notation (|x|)
 class SmartTokenizer {
   final String input;
-  int _position = 0;
 
   SmartTokenizer(this.input);
 
@@ -174,7 +173,7 @@ class _SimpleTokenizer {
         }
       }
 
-      tokens.add(currentToken!);
+      tokens.add(currentToken);
     }
 
     tokens.add(Token(TokenType.eof, '', _position));

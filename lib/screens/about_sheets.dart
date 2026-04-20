@@ -8,11 +8,9 @@ class _Developer {
   final String name;
   final String program;
   final String role;
-  // ─── ADD YOUR EXTRA INFO HERE ───
   final String email;
   final String contribution;
 
-  // ignore: non_constant_identifier_names
   final String Phone;
   final String groups;
   final String facebook;
@@ -21,9 +19,8 @@ class _Developer {
     required this.name,
     required this.program,
     required this.role,
-    this.email = '', // ← put email or leave blank
-    this.contribution = '', // ← what they worked on
-    // ignore: non_constant_identifier_names
+    this.email = '',
+    this.contribution = '',
     required this.Phone,
     this.groups = '',
     this.facebook = '',
@@ -116,158 +113,224 @@ void showAboutSheet(BuildContext context) {
 class _AboutSheet extends StatelessWidget {
   const _AboutSheet();
 
+  static const double _baseDesignWidth = 400.0;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
     const accent = Color(0xFF6C63FF);
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.75,
-      minChildSize: 0.4,
-      maxChildSize: 0.92,
+      initialChildSize: 0.85,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
       builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: theme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.18),
-                blurRadius: 32,
-                offset: const Offset(0, -8),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              // Drag handle
-              Padding(
-                padding: const EdgeInsets.only(top: 12, bottom: 4),
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.textSecondary.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final double s = (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
+
+            return Container(
+              decoration: BoxDecoration(
+                color: theme.surface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32 * s)),
+                boxShadow: [
+                  BoxShadow(
+                    color: accent.withValues(alpha: 0.2),
+                    blurRadius: 40 * s,
+                    offset: Offset(0, -10 * s),
                   ),
-                ),
+                ],
               ),
-
-              // Scrollable content
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.fromLTRB(28, 16, 28, 40),
-                  children: [
-                    // ── App badge ──────────────────────────────────────
-                    Center(
-                      child: Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          color: accent.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: accent.withValues(alpha: 0.25),
-                          ),
-                        ),
-                        child: Image.asset(
-                          'assets/images/app_icon.png',
-                          width: 42,
-                          height: 42,
-                        ),
+              child: Column(
+                children: [
+                  // Drag handle
+                  Padding(
+                    padding: EdgeInsets.only(top: 16 * s, bottom: 8 * s),
+                    child: Container(
+                      width: 48 * s,
+                      height: 5 * s,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(3 * s),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                  ),
 
-                    // ── App name & description ────────────────────────
-                    Center(
-                      child: Text(
-                        'MathCalc',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w700,
-                          color: theme.textPrimary,
-                          letterSpacing: -0.8,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        'A collaborative math solving app covering only \n'
-                        'slope, distance, inequalities, and more.\n'
-                        'It only solves Specific Discussions of Miss K class\n'
-                        'For more information Contact the Lead Developer.\n'
-                        'All The Glory and Honor Belongs To Jesus',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                          color: theme.textSecondary,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    // ── Divider label ─────────────────────────────────
-                    Row(
+                  // Header with icon
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 28 * s, vertical: 16 * s),
+                    child: Row(
                       children: [
-                        Expanded(
-                          child: Divider(
-                            color: theme.textSecondary.withValues(alpha: 0.15),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            'THE TEAM',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 1.5,
-                              color: accent,
+                        Container(
+                          width: 56 * s,
+                          height: 56 * s,
+                          decoration: BoxDecoration(
+                            color: accent.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(18 * s),
+                            border: Border.all(
+                              color: accent.withValues(alpha: 0.25),
                             ),
                           ),
+                          child: Image.asset(
+                            'assets/images/app_icon.png',
+                            width: 30 * s,
+                            height: 30 * s,
+                          ),
                         ),
+                        SizedBox(width: 16 * s),
                         Expanded(
-                          child: Divider(
-                            color: theme.textSecondary.withValues(alpha: 0.15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'MathCalc',
+                                style: TextStyle(
+                                  fontSize: 28 * s,
+                                  fontWeight: FontWeight.w800,
+                                  color: theme.textPrimary,
+                                  letterSpacing: -0.8 * s,
+                                ),
+                              ),
+                              SizedBox(height: 4 * s),
+                              Text(
+                                '${_developers.length} developers · Math Solving App',
+                                style: TextStyle(
+                                  fontSize: 14 * s,
+                                  color: theme.textSecondary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
+                  ),
 
-                    // ── Tap hint ──────────────────────────────────────
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        'Tap a card to see more info',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: theme.textSecondary.withValues(alpha: 0.5),
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // ── Developer cards ───────────────────────────────
-                    ..._developers.asMap().entries.map(
-                          (e) => _DeveloperTile(
-                            key: ValueKey(e.value.name),
-                            developer: e.value,
-                            index: e.key,
-                            accent: accent,
+                  // Scrollable content
+                  Expanded(
+                    child: ListView(
+                      controller: scrollController,
+                      padding: EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
+                      children: [
+                        // Description card
+                        Container(
+                          padding: EdgeInsets.all(20 * s),
+                          decoration: BoxDecoration(
+                            color: accent.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(20 * s),
+                            border: Border.all(
+                              color: accent.withValues(alpha: 0.2),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.emoji_events_rounded,
+                                    color: accent,
+                                    size: 20 * s,
+                                  ),
+                                  SizedBox(width: 8 * s),
+                                  Text(
+                                    'About MathCalc',
+                                    style: TextStyle(
+                                      fontSize: 14 * s,
+                                      fontWeight: FontWeight.w700,
+                                      color: theme.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10 * s),
+                              Text(
+                                'A collaborative math solving app covering slope, distance, inequalities, and more. '
+                                'All The Glory and Honor Belongs To Jesus.',
+                                style: TextStyle(
+                                  fontSize: 13 * s,
+                                  height: 1.5,
+                                  color: theme.textSecondary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                  ],
-                ),
+
+                        SizedBox(height: 24 * s),
+
+                        // Section divider
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.transparent,
+                                      accent.withValues(alpha: 0.3),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16 * s),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 14 * s,
+                                  vertical: 6 * s,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: accent,
+                                  borderRadius: BorderRadius.circular(20 * s),
+                                ),
+                                child: Text(
+                                  'DEVELOPERS',
+                                  style: TextStyle(
+                                    fontSize: 11 * s,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      accent.withValues(alpha: 0.3),
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 20 * s),
+
+                        // Developer cards
+                        ..._developers.asMap().entries.map(
+                              (e) => _DeveloperTile(
+                                key: ValueKey(e.value.name),
+                                developer: e.value,
+                                index: e.key,
+                                accent: accent,
+                                scale: s,
+                              ),
+                            ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -280,58 +343,22 @@ class _DeveloperTile extends StatefulWidget {
   final _Developer developer;
   final int index;
   final Color accent;
+  final double scale;
 
   const _DeveloperTile({
     super.key,
     required this.developer,
     required this.index,
     required this.accent,
+    required this.scale,
   });
 
   @override
   State<_DeveloperTile> createState() => _DeveloperTileState();
 }
 
-class _DeveloperTileState extends State<_DeveloperTile>
-    with SingleTickerProviderStateMixin {
+class _DeveloperTileState extends State<_DeveloperTile> {
   bool _expanded = false;
-
-  late final AnimationController _controller;
-  late final Animation<double> _expandAnimation;
-  late final Animation<double> _rotationAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _expandAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
-    _rotationAnimation = Tween<double>(begin: 0, end: 0.5).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _toggle() {
-    setState(() {
-      _expanded = !_expanded;
-      if (_expanded) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
-  }
 
   static const _avatarColors = [
     Color(0xFF6C63FF),
@@ -346,6 +373,7 @@ class _DeveloperTileState extends State<_DeveloperTile>
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
     final dev = widget.developer;
+    final s = widget.scale;
     final color = _avatarColors[widget.index % _avatarColors.length];
     final initials = dev.name
         .split(' ')
@@ -354,189 +382,230 @@ class _DeveloperTileState extends State<_DeveloperTile>
         .join();
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 14 * s),
       child: GestureDetector(
-        onTap: _toggle,
+        onTap: () => setState(() => _expanded = !_expanded),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
           decoration: BoxDecoration(
             color: _expanded ? color.withValues(alpha: 0.04) : theme.card,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24 * s),
             border: Border.all(
               color: _expanded
-                  ? color.withValues(alpha: 0.35)
+                  ? color.withValues(alpha: 0.6)
                   : color.withValues(alpha: 0.15),
-              width: _expanded ? 1.5 : 1,
+              width: _expanded ? 2.5 : 1.5,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: _expanded ? 0.25 : 0.08),
+                blurRadius: _expanded ? 24 * s : 16 * s,
+                offset: Offset(0, 8 * s),
+              ),
+            ],
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Column(
-            children: [
-              // ── Top row (always visible) ────────────────────────
-              Row(
-                children: [
-                  // Avatar
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        initials,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: color,
-                        ),
-                      ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24 * s),
+            child: Column(
+              children: [
+                // Top accent bar
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: _expanded ? 4 * s : 3 * s,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        color,
+                        color.withValues(alpha: 0.6),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 14),
+                ),
 
-                  // Name + program
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          dev.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: theme.textPrimary,
+                // Main content
+                Padding(
+                  padding: EdgeInsets.all(20 * s),
+                  child: Row(
+                    children: [
+                      // Avatar with ring
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        width: 56 * s,
+                        height: 56 * s,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _expanded
+                              ? color.withValues(alpha: 0.15)
+                              : color.withValues(alpha: 0.08),
+                          border: Border.all(
+                            color: _expanded
+                                ? color.withValues(alpha: 0.8)
+                                : color.withValues(alpha: 0.3),
+                            width: _expanded ? 3 : 2,
                           ),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          dev.program,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: theme.textSecondary,
+                        child: Center(
+                          child: Text(
+                            initials,
+                            style: TextStyle(
+                              fontSize: 18 * s,
+                              fontWeight: FontWeight.w800,
+                              color: color,
+                            ),
                           ),
+                        ),
+                      ),
+
+                      SizedBox(width: 16 * s),
+
+                      // Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              dev.name,
+                              style: TextStyle(
+                                fontSize: 16 * s,
+                                fontWeight: FontWeight.w700,
+                                color: theme.textPrimary,
+                                letterSpacing: -0.3 * s,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 4 * s),
+                            Text(
+                              dev.program,
+                              style: TextStyle(
+                                fontSize: 13 * s,
+                                color: theme.textSecondary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 8 * s),
+                            // Role pill
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12 * s,
+                                vertical: 5 * s,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12 * s),
+                                border: Border.all(
+                                  color: color.withValues(alpha: 0.4),
+                                ),
+                              ),
+                              child: Text(
+                                dev.role,
+                                style: TextStyle(
+                                  fontSize: 11 * s,
+                                  fontWeight: FontWeight.w700,
+                                  color: color,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Expand icon
+                      AnimatedRotation(
+                        turns: _expanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 300),
+                        child: Container(
+                          width: 36 * s,
+                          height: 36 * s,
+                          decoration: BoxDecoration(
+                            color: _expanded
+                                ? color.withValues(alpha: 0.15)
+                                : theme.card,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 20 * s,
+                            color: _expanded ? color : theme.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Expanded details
+                AnimatedCrossFade(
+                  firstChild: const SizedBox.shrink(),
+                  secondChild: Padding(
+                    padding: EdgeInsets.fromLTRB(20 * s, 0, 20 * s, 20 * s),
+                    child: Column(
+                      children: [
+                        Divider(
+                          color: color.withValues(alpha: 0.2),
+                          height: 1,
+                        ),
+                        SizedBox(height: 16 * s),
+
+                        // Details
+                        _InfoRow(
+                          icon: Icons.email_outlined,
+                          label: 'Email',
+                          value: dev.email.isNotEmpty ? dev.email : 'Not provided',
+                          color: color,
+                          theme: theme,
+                          scale: s,
+                        ),
+                        SizedBox(height: 12 * s),
+                        _InfoRow(
+                          icon: Icons.emoji_emotions,
+                          label: 'Facebook',
+                          value: dev.facebook.isNotEmpty ? dev.facebook : 'Not provided',
+                          color: color,
+                          theme: theme,
+                          scale: s,
+                        ),
+                        SizedBox(height: 12 * s),
+                        _InfoRow(
+                          icon: Icons.code_rounded,
+                          label: 'Contribution',
+                          value: dev.contribution.isNotEmpty ? dev.contribution : 'Not provided',
+                          color: color,
+                          theme: theme,
+                          scale: s,
+                          isMultiline: true,
+                        ),
+                        SizedBox(height: 12 * s),
+                        _InfoRow(
+                          icon: Icons.phone_android,
+                          label: 'Contact',
+                          value: dev.Phone,
+                          color: color,
+                          theme: theme,
+                          scale: s,
+                        ),
+                        SizedBox(height: 12 * s),
+                        _InfoRow(
+                          icon: Icons.groups_rounded,
+                          label: 'Members',
+                          value: dev.groups.isNotEmpty ? dev.groups : 'Not specified',
+                          color: color,
+                          theme: theme,
+                          scale: s,
+                          isMultiline: true,
                         ),
                       ],
                     ),
                   ),
-
-                  // Role badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      dev.role,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: color,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  // Arrow indicator
-                  RotationTransition(
-                    turns: _rotationAnimation,
-                    child: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: theme.textSecondary.withValues(alpha: 0.5),
-                      size: 22,
-                    ),
-                  ),
-                ],
-              ),
-
-              // ── Expandable section (dropdown info) ──────────────
-              SizeTransition(
-                sizeFactor: _expandAnimation,
-                axisAlignment: -1,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 14),
-
-                    // Thin divider
-                    Divider(
-                      color: color.withValues(alpha: 0.15),
-                      height: 1,
-                    ),
-                    const SizedBox(height: 14),
-
-                    // ─── INFO ROWS ── FILL IN YOUR DATA ───────────
-                    //
-                    // Each _InfoRow is one line of detail.
-                    // Change the labels or add/remove rows as needed.
-
-                    _InfoRow(
-                      icon: Icons.email_outlined,
-                      label: 'Email', // ← LABEL
-                      value: dev.email.isNotEmpty
-                          ? dev.email
-                          : 'Not provided', // ← VALUE
-                      color: color,
-                      theme: theme,
-                    ),
-                    const SizedBox(height: 10),
-                    _InfoRow(
-                      icon: Icons.emoji_emotions,
-                      label: 'Facebook', // ← LABEL
-                      value: dev.facebook.isNotEmpty
-                          ? dev.facebook
-                          : 'Not provided', // ← VALUE
-                      color: color,
-                      theme: theme,
-                    ),
-                    const SizedBox(height: 10),
-                    _InfoRow(
-                      icon: Icons.code_rounded,
-                      label: 'Contribution', // ← LABEL
-                      value: dev.contribution.isNotEmpty
-                          ? dev.contribution
-                          : 'Not provided', // ← VALUE
-                      color: color,
-                      theme: theme,
-                    ),
-
-                    const SizedBox(height: 10),
-                    _InfoRow(
-                      icon: Icons.phone_android,
-                      label: 'Phone', // ← LABEL
-                      value: dev.Phone.toString(), // ← VALUE
-                      color: color,
-                      theme: theme,
-                    ),
-
-                    const SizedBox(height: 10),
-                    _InfoRow(
-                      icon: Icons.group_add_outlined,
-                      label: 'Members', // ← LABEL
-                      value: dev.groups.toString(), // ← VALUE
-                      color: color,
-                      theme: theme,
-                    ),
-                    // ─── ADD MORE ROWS HERE IF NEEDED ─────────────
-                    // const SizedBox(height: 10),
-                    // _InfoRow(
-                    //   icon: Icons.link_rounded,
-                    //   label: 'GitHub',
-                    //   value: 'github.com/username',
-                    //   color: color,
-                    //   theme: theme,
-                    // ),
-                  ],
+                  crossFadeState: _expanded
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  duration: const Duration(milliseconds: 300),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -552,6 +621,8 @@ class _InfoRow extends StatelessWidget {
   final String value;
   final Color color;
   final ThemeProvider theme;
+  final double scale;
+  final bool isMultiline;
 
   const _InfoRow({
     required this.icon,
@@ -559,46 +630,51 @@ class _InfoRow extends StatelessWidget {
     required this.value,
     required this.color,
     required this.theme,
+    required this.scale,
+    this.isMultiline = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final s = scale;
+
     return Row(
+      crossAxisAlignment: isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
-        // Small icon
         Container(
-          width: 28,
-          height: 28,
+          width: 32 * s,
+          height: 32 * s,
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10 * s),
           ),
-          child: Icon(icon, size: 14, color: color),
+          child: Icon(icon, size: 16 * s, color: color),
         ),
+        SizedBox(width: 12 * s),
 
-        const SizedBox(width: 12),
-
-        // Label
-        SizedBox(
-          width: 85,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: theme.textSecondary,
+        Flexible(
+          flex: 0,
+          child: Container(
+            constraints: BoxConstraints(minWidth: 70 * s, maxWidth: 90 * s),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12 * s,
+                fontWeight: FontWeight.w600,
+                color: theme.textSecondary,
+              ),
             ),
           ),
         ),
 
-        // Value
         Expanded(
           child: Text(
             value,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13 * s,
               fontWeight: FontWeight.w500,
               color: theme.textPrimary,
+              height: isMultiline ? 1.5 : 1.2,
             ),
           ),
         ),

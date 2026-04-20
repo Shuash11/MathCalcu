@@ -35,9 +35,9 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
 
   Future<void> _solve() async {
     final expression = _exprController.text.trim();
-    final approach = _approachController.text.trim();
+    final approachText = _approachController.text.trim();
 
-    if (expression.isEmpty || approach.isEmpty) return;
+    if (expression.isEmpty || approachText.isEmpty) return;
 
     setState(() {
       _isLoading = true;
@@ -51,7 +51,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
     try {
       final problem = LimitProblem.fromNotation(
         expression: expression,
-        approach: approach,
+        approach: approachText,
         variable: _variable,
       );
 
@@ -192,8 +192,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
                   child: LimitsAnswerCard(
-                    problemNotation:
-                        'lim($_variable → ${_solution!.problemNotation.split('→').last.split(')').first.trim()}) ${_exprController.text}',
+                    problemNotation: _solution!.problemNotation,
                     resultString: _solution!.resultString,
                     onTap: _scrollToStepsSection,
                   ),
@@ -233,7 +232,6 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                       // Render Each Step
                       ..._solution!.steps.asMap().entries.map((entry) {
                         final step = entry.value;
-                        final isLast = entry.key == _solution!.steps.length - 1;
                         final displayExpr =
                             step.formula ?? step.expression?.toString();
                         return LimitsStepGuide(

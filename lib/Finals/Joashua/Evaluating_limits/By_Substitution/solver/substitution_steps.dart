@@ -130,7 +130,7 @@ class SubstitutionStepsGenerator {
             'Denominator at x = ${_fmt(result.approachValue)}: ${result.denominatorResult?.description ?? "0"}\n\n'
             'Result: 0/0',
       ),
-   const  SolutionStep(
+   SolutionStep(
         stepNumber: 3,
         title: 'Identify the Problem',
         explanation: 'We obtained 0/0, which is an indeterminate form.\n\n'
