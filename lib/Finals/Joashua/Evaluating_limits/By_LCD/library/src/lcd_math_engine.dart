@@ -230,32 +230,49 @@ class LimitEngine {
     final tokens = Tokenizer(equation).tokenize();
     final ast = Parser(tokens).parse();
 
-    // Step 1: Try Direct Substitution
-    double? directResult;
-    try {
-      directResult = _evaluate(ast, variable, approachValue);
-    } catch (e) {
-      // Catches division by zero or sqrt of negative number
-      // This means we likely have an indeterminate form
-    }
-
-    if (directResult != null && directResult.isFinite) {
-      return StepGenerator.directSubstitutionSuccess(
-          equation, variable, approachValue, directResult);
-    }
-
-    // Step 2: Identify Indeterminate Form (0/0) and Route Strategy
+    // Step 1: Identify the strategy FIRST (LCD or conjugate)
     final strategy = _identifyStrategy(ast, variable, approachValue);
 
-    // Step 3: Pass the AST to the StepGenerator so it can extract exact algebra strings
-    if (strategy == LimitStrategy.conjugate) {
-      return StepGenerator.solveByConjugate(
-          equation, variable, approachValue, ast);
-    } else if (strategy == LimitStrategy.lcd) {
-      return StepGenerator.solveByLCD(equation, variable, approachValue, ast);
+    // Step 2: Only use direct substitution if we don't have a specific strategy
+    // This ensures the By_LCD screen shows LCD steps when applicable
+    if (strategy == LimitStrategy.unknown) {
+      double? directResult;
+      try {
+        directResult = _evaluate(ast, variable, approachValue);
+      } catch (e) {
+        // Catches division by zero or sqrt of negative number
+      }
+
+      if (directResult != null && directResult.isFinite) {
+        return StepGenerator.directSubstitutionSuccess(
+            equation, variable, approachValue, directResult);
+      }
     }
 
-    return StepGenerator.unknownForm(equation, variable, approachValue);
+    // Step 3: Route to the appropriate solver based on strategy
+    LimitSolution solution;
+    if (strategy == LimitStrategy.conjugate) {
+      solution = StepGenerator.solveByConjugate(
+          equation, variable, approachValue, ast);
+    } else if (strategy == LimitStrategy.lcd) {
+      solution = StepGenerator.solveByLCD(equation, variable, approachValue, ast);
+    } else {
+      solution = StepGenerator.unknownForm(equation, variable, approachValue);
+    }
+
+    // DEBUG: Log solution details for development
+    assert(() {
+      print('LCD_DEBUG methodUsed: ${solution.methodUsed}, steps.length: ${solution.steps.length}');
+      for (int i = 0; i < solution.steps.length; i++) {
+        final stepPreview = solution.steps[i].length > 100 
+            ? solution.steps[i].substring(0, 100) 
+            : solution.steps[i];
+        print('LCD_DEBUG step $i: $stepPreview...');
+      }
+      return true;
+    }());
+
+    return solution;
   }
 
   static double _evaluate(MathNode node, String varName, double val) {

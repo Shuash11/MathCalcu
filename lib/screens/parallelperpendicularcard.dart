@@ -25,310 +25,288 @@ class _ParallelPerpendicularModuleCardState
   static const Color _indigo = Color(0xFF4F46E5);
   static const Color _cyan = Color(0xFF06B6D4);
   static const Color _sky = Color(0xFF7DD3FC);
+  static const double _baseDesignWidth = 400.0;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    
-    // Get screen width for responsive calculations
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 360;
-    final isMediumScreen = screenWidth >= 360 && screenWidth < 400;
-    
-    // Responsive sizing
-    final iconSize = isSmallScreen ? 48.0 : (isMediumScreen ? 54.0 : 60.0);
-    final titleSize = isSmallScreen ? 15.0 : (isMediumScreen ? 16.0 : 18.0);
-    final subtitleSize = isSmallScreen ? 11.0 : (isMediumScreen ? 12.0 : 13.0);
-    final tagPadding = isSmallScreen ? 6.0 : 8.0;
-    final horizontalPadding = isSmallScreen ? 16.0 : 24.0;
-    final verticalPadding = isSmallScreen ? 16.0 : 24.0;
-    final contentSpacing = isSmallScreen ? 12.0 : 18.0;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) {
-          setState(() => _pressed = false);
-          context.push(widget.module.route);
-        },
-        onTapCancel: () => setState(() => _pressed = false),
-        child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1.0,
-          duration: const Duration(milliseconds: 120),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeOutCubic,
-            decoration: BoxDecoration(
-              color: theme.card,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: _hovered
-                    ? _cyan.withValues(alpha: 0.45)
-                    : _indigo.withValues(alpha: 0.25),
-                width: _hovered ? 2 : 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: _hovered
-                      ? _cyan.withValues(alpha: 0.2)
-                      : _indigo.withValues(alpha: 0.1),
-                  blurRadius: _hovered ? 36 : 22,
-                  offset: const Offset(0, 8),
-                  spreadRadius: _hovered ? 2 : 0,
-                ),
-                BoxShadow(
-                  color: theme.shadowColor,
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                  spreadRadius: -4,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              // No fixed height - adapts to content
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // Decorative gradient orbs
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    top: _hovered ? -50 : -32,
-                    right: _hovered ? -40 : -20,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      width: _hovered ? 170 : 120,
-                      height: _hovered ? 170 : 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            _cyan.withValues(alpha: _hovered ? 0.14 : 0.07),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
-                    ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double effectiveWidth = constraints.hasInfiniteWidth
+            ? _baseDesignWidth
+            : constraints.maxWidth;
+        final double s = (effectiveWidth / _baseDesignWidth).clamp(0.7, 1.2);
+
+        Widget content = MouseRegion(
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() => _hovered = false),
+          child: GestureDetector(
+            onTapDown: (_) => setState(() => _pressed = true),
+            onTapUp: (_) {
+              setState(() => _pressed = false);
+              context.push(widget.module.route);
+            },
+            onTapCancel: () => setState(() => _pressed = false),
+            child: AnimatedScale(
+              scale: _pressed ? 0.97 : 1.0,
+              duration: const Duration(milliseconds: 120),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeOutCubic,
+                decoration: BoxDecoration(
+                  color: theme.card,
+                  borderRadius: BorderRadius.circular(20 * s),
+                  border: Border.all(
+                    color: _hovered
+                        ? _cyan.withValues(alpha: 0.45)
+                        : _indigo.withValues(alpha: 0.25),
+                    width: _hovered ? 2 * s : 1 * s,
                   ),
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 450),
-                    bottom: _hovered ? -36 : -20,
-                    left: _hovered ? -24 : -12,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 320),
-                      width: _hovered ? 150 : 100,
-                      height: _hovered ? 150 : 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            _indigo.withValues(alpha: _hovered ? 0.12 : 0.06),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _hovered
+                          ? _cyan.withValues(alpha: 0.2)
+                          : _indigo.withValues(alpha: 0.1),
+                      blurRadius: _hovered ? 36 * s : 22 * s,
+                      offset: Offset(0, 8 * s),
+                      spreadRadius: _hovered ? 2 : 0,
                     ),
-                  ),
-                  
-                  // Main content
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      horizontalPadding,
-                      verticalPadding,
-                      horizontalPadding,
-                      verticalPadding,
+                    BoxShadow(
+                      color: theme.shadowColor,
+                      blurRadius: 14 * s,
+                      offset: Offset(0, 4 * s),
+                      spreadRadius: -4 * s,
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Left accent bar
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 260),
-                          width: _hovered ? 4 : 2,
-                          height: iconSize + 20,
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20 * s),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 400),
+                        top: _hovered ? -50 * s : -32 * s,
+                        right: _hovered ? -40 * s : -20 * s,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: _hovered ? 170 * s : 120 * s,
+                          height: _hovered ? 170 * s : 120 * s,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
                               colors: [
-                                _indigo.withValues(alpha: 0.15),
-                                _cyan.withValues(alpha: 0.85),
-                                _sky.withValues(alpha: 0.95),
+                                _cyan.withValues(alpha: _hovered ? 0.14 : 0.07),
+                                Colors.transparent,
                               ],
                             ),
                           ),
                         ),
-                        SizedBox(width: contentSpacing),
-                        
-                        // Icon - scales with screen size
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 220),
-                          width: iconSize,
-                          height: iconSize,
+                      ),
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 450),
+                        bottom: _hovered ? -36 * s : -20 * s,
+                        left: _hovered ? -24 * s : -12 * s,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 320),
+                          width: _hovered ? 150 * s : 100 * s,
+                          height: _hovered ? 150 * s : 100 * s,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
                               colors: [
-                                _indigo.withValues(alpha: 0.22),
-                                _cyan.withValues(alpha: 0.1),
+                                _indigo.withValues(alpha: _hovered ? 0.12 : 0.06),
+                                Colors.transparent,
                               ],
                             ),
-                            border: Border.all(
-                              color: _hovered
-                                  ? _sky.withValues(alpha: 0.6)
-                                  : _cyan.withValues(alpha: 0.3),
-                              width: _hovered ? 2 : 1.5,
-                            ),
                           ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(
-                                Icons.align_vertical_center_rounded,
-                                color: _indigo.withValues(alpha: 0.35),
-                                size: iconSize * 0.5,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(20 * s),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 260),
+                              width: _hovered ? 4 * s : 2 * s,
+                              height: 80 * s,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3 * s),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    _indigo.withValues(alpha: 0.15),
+                                    _cyan.withValues(alpha: 0.85),
+                                    _sky.withValues(alpha: 0.95),
+                                  ],
+                                ),
                               ),
+                            ),
+                            SizedBox(width: 18 * s),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 220),
+                              width: 60 * s,
+                              height: 60 * s,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16 * s),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    _indigo.withValues(alpha: 0.22),
+                                    _cyan.withValues(alpha: 0.1),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: _hovered
+                                      ? _sky.withValues(alpha: 0.6)
+                                      : _cyan.withValues(alpha: 0.3),
+                                  width: _hovered ? 2 * s : 1.5 * s,
+                                ),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.align_vertical_center_rounded,
+                                    color: _indigo.withValues(alpha: 0.35),
+                                    size: 30 * s,
+                                  ),
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    transform: _hovered
+                                        ? (Matrix4.identity()
+                                          ..scale(1.12)
+                                          ..translate(0.0, -2.0 * s))
+                                        : Matrix4.identity(),
+                                    child: Icon(
+                                      widget.module.icon,
+                                      color: _hovered ? _sky : _cyan,
+                                      size: 25 * s,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 18 * s),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 200),
+                                    style: TextStyle(
+                                      fontSize: 16 * s,
+                                      fontWeight: FontWeight.w600,
+                                      color: _hovered ? _sky : theme.textPrimary,
+                                      letterSpacing: -0.4 * s,
+                                      height: 1.2,
+                                    ),
+                                    child: Text(
+                                      widget.module.label,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4 * s),
+                                  AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 200),
+                                    style: TextStyle(
+                                      fontSize: 12 * s,
+                                      color: _hovered
+                                          ? _sky.withValues(alpha: 0.72)
+                                          : theme.textSecondary,
+                                      height: 1.3,
+                                    ),
+                                    child: Text(
+                                      widget.module.subtitle,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10 * s),
+                                  Wrap(
+                                    spacing: 6 * s,
+                                    runSpacing: 6 * s,
+                                    children: [
+                                      _TagPill(
+                                        label: 'Two Lines',
+                                        color: _indigo,
+                                        s: s,
+                                      ),
+                                      _TagPill(
+                                        label: 'Slope Check',
+                                        color: _cyan,
+                                        s: s,
+                                      ),
+                                      _TagPill(
+                                        label: 'Compare',
+                                        color: _sky,
+                                        s: s,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 12 * s),
+                            if (s > 0.85)
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 transform: _hovered
-                                    ? (Matrix4.identity()
-                                      ..scale(1.12)
-                                      ..translate(0.0, -2.0))
+                                    ? (Matrix4.identity()..translate(6.0 * s, 0.0))
                                     : Matrix4.identity(),
-                                child: Icon(
-                                  widget.module.icon,
-                                  color: _hovered ? _sky : _cyan,
-                                  size: iconSize * 0.42,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: contentSpacing),
-                        
-                        // Text content - flexible and responsive
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Title with maxLines to prevent overflow
-                              AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 200),
-                                style: TextStyle(
-                                  fontSize: titleSize,
-                                  fontWeight: FontWeight.w600,
-                                  color: _hovered ? _sky : theme.textPrimary,
-                                  letterSpacing: -0.4,
-                                  height: 1.2,
-                                ),
-                                child: Text(
-                                  widget.module.label,
-                                  softWrap: true,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              SizedBox(height: isSmallScreen ? 2 : 4),
-                              
-                              // Subtitle
-                              AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 200),
-                                style: TextStyle(
-                                  fontSize: subtitleSize,
-                                  color: _hovered
-                                      ? _sky.withValues(alpha: 0.72)
-                                      : theme.textSecondary,
-                                  height: 1.3,
-                                ),
-                                child: Text(
-                                  widget.module.subtitle,
-                                  softWrap: true,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              SizedBox(height: isSmallScreen ? 6 : 10),
-                              
-                              // Tags - wrap to next line on small screens
-                              Wrap(
-                                spacing: isSmallScreen ? 4 : 6,
-                                runSpacing: isSmallScreen ? 4 : 6,
-                                children: [
-                                  _TagPill(
-                                    label: 'Two Lines',
-                                    color: _indigo,
-                                    fontSize: isSmallScreen ? 9 : 10,
-                                    padding: tagPadding,
+                                child: Container(
+                                  width: 40 * s,
+                                  height: 40 * s,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        _indigo.withValues(alpha: 0.12),
+                                        _cyan.withValues(alpha: 0.08),
+                                      ],
+                                    ),
+                                    border: Border.all(
+                                      color: _hovered
+                                          ? _sky.withValues(alpha: 0.55)
+                                          : _cyan.withValues(alpha: 0.22),
+                                      width: 1.5 * s,
+                                    ),
                                   ),
-                                  _TagPill(
-                                    label: 'Slope Check',
-                                    color: _cyan,
-                                    fontSize: isSmallScreen ? 9 : 10,
-                                    padding: tagPadding,
+                                  child: Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: _hovered
+                                        ? _sky
+                                        : _cyan.withValues(alpha: 0.75),
+                                    size: 20 * s,
                                   ),
-                                  _TagPill(
-                                    label: 'Compare',
-                                    color: _sky,
-                                    fontSize: isSmallScreen ? 9 : 10,
-                                    padding: tagPadding,
-                                  ),
-                                ],
+                                ),
                               ),
-                            ],
-                          ),
+                          ],
                         ),
-                        SizedBox(width: isSmallScreen ? 8 : 12),
-                        
-                        // Arrow button - smaller on small screens
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          transform: _hovered
-                              ? (Matrix4.identity()..translate(6.0, 0.0))
-                              : Matrix4.identity(),
-                          child: Container(
-                            width: isSmallScreen ? 32 : 40,
-                            height: isSmallScreen ? 32 : 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  _indigo.withValues(alpha: 0.12),
-                                  _cyan.withValues(alpha: 0.08),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: _hovered
-                                    ? _sky.withValues(alpha: 0.55)
-                                    : _cyan.withValues(alpha: 0.22),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.arrow_forward_rounded,
-                              color: _hovered
-                                  ? _sky
-                                  : _cyan.withValues(alpha: 0.75),
-                              size: isSmallScreen ? 16 : 20,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+
+        if (constraints.hasInfiniteWidth) {
+          return SizedBox(width: effectiveWidth, child: content);
+        }
+        return content;
+      },
     );
   }
 }
@@ -336,29 +314,27 @@ class _ParallelPerpendicularModuleCardState
 class _TagPill extends StatelessWidget {
   final String label;
   final Color color;
-  final double fontSize;
-  final double padding;
+  final double s;
 
   const _TagPill({
     required this.label,
     required this.color,
-    required this.fontSize,
-    required this.padding,
+    required this.s,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding * 0.5),
+      padding: EdgeInsets.symmetric(horizontal: 8 * s, vertical: 4 * s),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8 * s),
         border: Border.all(color: color.withValues(alpha: 0.28)),
       ),
       child: Text(
         label,
         style: TextStyle(
-          fontSize: fontSize,
+          fontSize: 10 * s,
           fontWeight: FontWeight.w600,
           color: color,
         ),

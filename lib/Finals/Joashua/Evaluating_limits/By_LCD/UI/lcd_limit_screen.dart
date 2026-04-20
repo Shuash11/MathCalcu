@@ -67,12 +67,40 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
       _showSteps = false;
     });
 
-    // parse approach value
-    double approachVal = 0;
-    try {
-      approachVal = double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
-    } catch (e) {
-      approachVal = 0;
+    // parse approach value with proper validation
+    final approachText = _approachController.text.trim().toLowerCase();
+    double? approachVal;
+
+    if (approachText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please enter an approach value.'),
+          backgroundColor: FinalsTheme.danger,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
+
+    if (approachText == 'inf' || approachText == '+inf' || approachText == 'infinity' || approachText == '+infinity') {
+      approachVal = double.infinity;
+    } else if (approachText == '-inf' || approachText == '-infinity') {
+      approachVal = double.negativeInfinity;
+    } else {
+      final parsed = double.tryParse(approachText);
+      if (parsed == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Invalid approach value "$approachText". Please enter a number or infinity.'),
+            backgroundColor: FinalsTheme.danger,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+        return;
+      }
+      approachVal = parsed;
     }
 
     // Call engine

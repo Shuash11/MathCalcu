@@ -9,17 +9,20 @@ class LCDStepsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: steps.length,
-      itemBuilder: (context, index) {
-        return _StepTile(
-          step: steps[index],
+    // This widget is already inside a parent scroll view.
+    // Using Column avoids nested scrolling/render edge cases.
+    final visibleSteps =
+        steps.where((step) => step.trim().isNotEmpty).toList(growable: false);
+
+    return Column(
+      children: List.generate(
+        visibleSteps.length,
+        (index) => _StepTile(
+          step: visibleSteps[index],
           index: index,
-          isLast: index == steps.length - 1,
-        );
-      },
+          isLast: index == visibleSteps.length - 1,
+        ),
+      ),
     );
   }
 }
@@ -41,22 +44,19 @@ class _StepTile extends StatelessWidget {
 
     return Stack(
       children: [
-        // Timeline line
         if (!isLast)
           Positioned(
-            left: 15.25, // 32/2 - 1.5/2
-            top: 28, // 24 height + 4 margin
-            bottom: 4, // 4 margin
+            left: 15.25,
+            top: 28,
+            bottom: 4,
             child: Container(
               width: 1.5,
               color: accentColor.withValues(alpha: 0.15),
             ),
           ),
-
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Timeline indicator
             SizedBox(
               width: 32,
               child: Container(
@@ -66,7 +66,9 @@ class _StepTile extends StatelessWidget {
                   color: accentColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                   border: Border.all(
-                      color: accentColor.withValues(alpha: 0.4), width: 1.5),
+                    color: accentColor.withValues(alpha: 0.4),
+                    width: 1.5,
+                  ),
                 ),
                 child: Center(
                   child: Text(
@@ -81,16 +83,10 @@ class _StepTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            // Step content
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _FormattedStepText(text: step),
-                  ],
-                ),
+                child: _FormattedStepText(text: step),
               ),
             ),
           ],
@@ -106,111 +102,61 @@ class _FormattedStepText extends StatelessWidget {
   const _FormattedStepText({required this.text});
 
   static const _doubleDollar = r'$$';
-  static const _singleDollar = r'$';
 
   @override
   Widget build(BuildContext context) {
-    final normalizedText = text
-        .replaceAll(_doubleDollar, _doubleDollar)
-        .replaceAll(_singleDollar, _singleDollar);
+    final normalizedText = text.trim();
+    if (normalizedText.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     if (!normalizedText.contains(_doubleDollar)) {
-      return Text(
-        normalizedText.trim(),
-        style: FinalsTheme.subtitleStyle(context).copyWith(
-          fontSize: 14,
-          color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
-          height: 1.5,
-        ),
-      );
+      return _InlineMathText(text: normalizedText);
     }
-    final List<String> blockParts = normalizedText.split(_doubleDollar);
-    final List<Widget> children = [];
+
+    final blockParts = normalizedText.split(_doubleDollar);
+    final children = <Widget>[];
 
     for (int i = 0; i < blockParts.length; i++) {
       final part = blockParts[i].trim();
       if (part.isEmpty) continue;
 
       if (i % 2 == 1) {
-        // == BLOCK MATH ($$) ==
-        children.add(Container(
-          width: double.infinity,
-          margin: const EdgeInsets.only(top: 8, bottom: 8),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: FinalsTheme.cardSecondary(context),
-            borderRadius: BorderRadius.circular(12),
-            border:
-                Border.all(color: FinalsTheme.danger.withValues(alpha: 0.1)),
-          ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Math.tex(
-              part,
-              textStyle: FinalsTheme.titleStyle(context).copyWith(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-              onErrorFallback: (err) => Text(part),
+        children.add(
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(top: 8, bottom: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: FinalsTheme.cardSecondary(context),
+              borderRadius: BorderRadius.circular(12),
+              border:
+                  Border.all(color: FinalsTheme.danger.withValues(alpha: 0.1)),
             ),
-          ),
-        ));
-      } else {
-        // == TEXT BLOCK (May contain inline math $ and bolding **) ==
-        final List<String> inlineParts = part.split(r'$');
-        final List<InlineSpan> spans = [];
-
-        for (int j = 0; j < inlineParts.length; j++) {
-          final inlinePart = inlineParts[j];
-          if (inlinePart.isEmpty) continue;
-
-          if (j % 2 == 1) {
-            // -- INLINE MATH ($) --
-            spans.add(WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Math.tex(
-                inlinePart,
-                textStyle: FinalsTheme.subtitleStyle(context).copyWith(
-                  fontSize: 14,
+                part,
+                textStyle: FinalsTheme.titleStyle(context).copyWith(
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: FinalsTheme.textPrimary(context),
                 ),
-                onErrorFallback: (err) => Text(inlinePart),
+                onErrorFallback: (err) {
+                  return Text(
+                    part,
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 13,
+                      color: FinalsTheme.danger.withValues(alpha: 0.8),
+                    ),
+                  );
+                },
               ),
-            ));
-          } else {
-            // -- PLAIN TEXT with optional ** bolding --
-            final regex = RegExp(r'\*\*(.*?)\*\*');
-            int lastIndex = 0;
-
-            for (final match in regex.allMatches(inlinePart)) {
-              if (match.start > lastIndex) {
-                spans.add(TextSpan(
-                    text: inlinePart.substring(lastIndex, match.start)));
-              }
-              spans.add(TextSpan(
-                text: match.group(1),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ));
-              lastIndex = match.end;
-            }
-            if (lastIndex < inlinePart.length) {
-              spans.add(TextSpan(text: inlinePart.substring(lastIndex)));
-            }
-          }
-        }
-
-        children.add(RichText(
-          text: TextSpan(
-            style: FinalsTheme.subtitleStyle(context).copyWith(
-              fontSize: 14,
-              color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
-              height: 1.5,
             ),
-            children: spans,
           ),
-        ));
+        );
+      } else {
+        children.add(_InlineMathText(text: part));
       }
     }
 
@@ -218,5 +164,88 @@ class _FormattedStepText extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
     );
+  }
+}
+
+class _InlineMathText extends StatelessWidget {
+  final String text;
+
+  const _InlineMathText({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final inlineParts = text.split(r'$');
+    final spans = <InlineSpan>[];
+
+    for (int i = 0; i < inlineParts.length; i++) {
+      final part = inlineParts[i];
+      if (part.isEmpty) continue;
+
+      if (i % 2 == 1) {
+        spans.add(
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Math.tex(
+              part,
+              textStyle: FinalsTheme.subtitleStyle(context).copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: FinalsTheme.textPrimary(context),
+              ),
+              onErrorFallback: (err) {
+                return Text(
+                  part,
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 13,
+                    color: FinalsTheme.danger.withValues(alpha: 0.7),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      } else {
+        spans.addAll(_buildBoldSpans(part));
+      }
+    }
+
+    if (spans.isEmpty) return const SizedBox.shrink();
+
+    return RichText(
+      text: TextSpan(
+        style: FinalsTheme.subtitleStyle(context).copyWith(
+          fontSize: 14,
+          color: FinalsTheme.textPrimary(context).withValues(alpha: 0.9),
+          height: 1.5,
+        ),
+        children: spans,
+      ),
+    );
+  }
+
+  List<InlineSpan> _buildBoldSpans(String source) {
+    final spans = <InlineSpan>[];
+    final regex = RegExp(r'\*\*(.*?)\*\*');
+    int lastIndex = 0;
+
+    for (final match in regex.allMatches(source)) {
+      if (match.start > lastIndex) {
+        spans.add(TextSpan(text: source.substring(lastIndex, match.start)));
+      }
+      spans.add(
+        TextSpan(
+          text: match.group(1),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      );
+      lastIndex = match.end;
+    }
+
+    if (lastIndex < source.length) {
+      spans.add(TextSpan(text: source.substring(lastIndex)));
+    }
+
+    return spans;
   }
 }

@@ -46,12 +46,13 @@ class LCDInputField extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
+                  flex: 3,
                   child: TextField(
                     controller: expressionController,
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
-                      fontSize: 19,
+                      fontSize: 18,
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
@@ -69,7 +70,7 @@ class LCDInputField extends StatelessWidget {
 
                 // Math Symbol Button
                 _buildMathSymbolChip(context, '√', '√()', accentColor, isFunction: true),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
 
                 // Solve Button
                 _SolveButton(onTap: onSolve, accentColor: accentColor),
@@ -104,18 +105,19 @@ class LCDInputField extends StatelessWidget {
                 ),
 
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 8),
                   child: Icon(
                     Icons.arrow_forward_rounded,
-                    size: 16,
+                    size: 14,
                     color: accentColor,
                   ),
                 ),
 
                 // Approach Value Input
                 Expanded(
+                  flex: 2,
                   child: Container(
-                    height: 40,
+                    height: 44,
                     decoration: BoxDecoration(
                       color: FinalsTheme.cardSecondary(context),
                       borderRadius: BorderRadius.circular(12),
@@ -128,11 +130,11 @@ class LCDInputField extends StatelessWidget {
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
-                        fontSize: 15,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'value (e.g. 2)',
+                        hintText: 'value',
                         hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                           fontSize: 13,
                           color: FinalsTheme.textSecondary(context)
@@ -146,12 +148,16 @@ class LCDInputField extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
 
-                // Quick Presets
+                // Quick Presets - more prominent
                 _buildQuickChip(context, '0', accentColor),
                 const SizedBox(width: 6),
                 _buildQuickChip(context, '1', accentColor),
+                const SizedBox(width: 6),
+                _buildQuickChip(context, '2', accentColor),
+                const SizedBox(width: 6),
+                _buildQuickChip(context, '3', accentColor),
               ],
             ),
           ),
@@ -327,7 +333,7 @@ class _SolveButtonState extends State<_SolveButton> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
