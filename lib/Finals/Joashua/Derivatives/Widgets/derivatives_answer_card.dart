@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 import 'package:calculus_system/Finals/finals_theme.dart';
 
@@ -67,17 +69,34 @@ class DerivativeAnswerCard extends StatelessWidget {
                   ),
                 ),
                 if (!hasError)
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: FinalsTheme.primary.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: FinalsTheme.primary,
-                      size: 18,
-                    ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.copy_rounded, size: 18),
+                        color: FinalsTheme.primary,
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: answerExpr));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Answer copied to clipboard'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: FinalsTheme.primary.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: FinalsTheme.primary,
+                          size: 18,
+                        ),
+                      ),
+                    ],
                   ),
               ],
             ),
@@ -89,26 +108,39 @@ class DerivativeAnswerCard extends StatelessWidget {
                     .copyWith(color: FinalsTheme.danger),
               )
             else ...[
-              Text(
-                'f(x) = $originalExpr',
-                style: FinalsTheme.subtitleStyle(context),
+              Row(
+                children: [
+                  Text(
+                    'f(x) = ',
+                    style: FinalsTheme.subtitleStyle(context),
+                  ),
+                  Expanded(
+                    child: _buildLatex(_toLatex(originalExpr), context),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Container(
-                width: double.infinity,
                 padding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 decoration: BoxDecoration(
                   color: FinalsTheme.surface(context).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  "f\'(x) = $answerExpr",
-                  style: FinalsTheme.titleStyle(context).copyWith(
-                    fontSize: 20,
-                    color: FinalsTheme.primary,
-                    fontWeight: FontWeight.w800,  
-                  ),
+                child: Row(
+                  children: [
+                    Text(
+                      "f'(x) = ",
+                      style: FinalsTheme.titleStyle(context).copyWith(
+                        fontSize: 20,
+                        color: FinalsTheme.primary,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Expanded(
+                      child: _buildLatex(_toLatex(answerExpr), context),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 8),
@@ -127,5 +159,37 @@ class DerivativeAnswerCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _toLatex(String expr) {
+    return expr
+        .replaceAll('/', r' \frac{}{')
+        .replaceAllMapped(RegExp(r'(\w+)\^(\d+)'), (m) => '^{${m[2]}}')
+        .replaceAll('sqrt(', r'\sqrt{')
+        .replaceAll('sin(', r'\sin{')
+        .replaceAll('cos(', r'\cos{')
+        .replaceAll('tan(', r'\tan{')
+        .replaceAll('ln(', r'\ln{')
+        .replaceAll('exp(', r'\exp{')
+        .replaceAllMapped(RegExp(r'(\w)\)'), (m) => '${m[1]}}');
+  }
+
+  Widget _buildLatex(String tex, BuildContext ctx) {
+    if (tex.isEmpty) return const SizedBox.shrink();
+    try {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SelectableMath.tex(
+          tex,
+          textStyle: TextStyle(
+            fontSize: 18,
+            color: FinalsTheme.primary,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      );
+    } catch (e) {
+      return Text(tex, style: TextStyle(fontSize: 18, color: FinalsTheme.primary, fontWeight: FontWeight.w800));
+    }
   }
 }
