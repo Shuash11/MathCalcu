@@ -1,8 +1,6 @@
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 
- // Adjust path as needed
-
 class DerivativeInputField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onVariableChanged;
@@ -19,96 +17,101 @@ class DerivativeInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: FinalsTheme.card(context),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: FinalsTheme.primary.withValues(alpha: 0.2),
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: FinalsTheme.shadowColor(context).withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Row(
-        children: [
-          // d/dx selector
-          GestureDetector(
-            onTap: () => _showVariablePicker(context),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              decoration: BoxDecoration(
-                color: FinalsTheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'd/d$currentVariable',
-                style: FinalsTheme.labelStyle(context).copyWith(
-                  color: FinalsTheme.primary,
-                  fontSize: 12,
-                ),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: FinalsTheme.card(context),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: FinalsTheme.primary.withValues(alpha: 0.2),
+              width: 1.5,
             ),
-          ),
-          const SizedBox(width: 12),
-          
-          // Input Field
-          Expanded(
-            child: TextField(
-              controller: controller,
-              onSubmitted: (_) => onSolve(),
-              style: FinalsTheme.titleStyle(context).copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+            boxShadow: [
+              BoxShadow(
+                color:
+                    FinalsTheme.shadowColor(context).withValues(alpha: 0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
               ),
-              decoration: InputDecoration(
-                hintText: 'e.g. x^2 + sin(x)',
-                hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
-                  color: FinalsTheme.textSecondary(context).withValues(alpha: 0.5),
-                ),
-                border: InputBorder.none,
-              ),
-            ),
+            ],
           ),
-
-          // Solve Button
-          Container(
-            margin: const EdgeInsets.all(4),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: onSolve,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () => _showVariablePicker(context),
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                   decoration: BoxDecoration(
-                    gradient: FinalsTheme.headerGradient,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: FinalsTheme.primary.withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    color: FinalsTheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.white,
-                    size: 20,
+                  child: Text(
+                    'd/d$currentVariable',
+                    style: FinalsTheme.labelStyle(context).copyWith(
+                      color: FinalsTheme.primary,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  onSubmitted: (_) => onSolve(),
+                  style: FinalsTheme.titleStyle(context).copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'e.g. x^2 + sin(x)',
+                    hintStyle:
+                        FinalsTheme.subtitleStyle(context).copyWith(
+                      color:
+                          FinalsTheme.textSecondary(context).withValues(alpha: 0.5),
+                    ),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.all(4),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: onSolve,
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: FinalsTheme.headerGradient,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                FinalsTheme.primary.withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -136,8 +139,8 @@ class DerivativeInputField extends StatelessWidget {
                 onVariableChanged(v);
                 Navigator.pop(ctx);
               },
-              trailing: isSelected 
-                  ? const Icon(Icons.check, color: FinalsTheme.primary) 
+              trailing: isSelected
+                  ? const Icon(Icons.check, color: FinalsTheme.primary)
                   : null,
             );
           }).toList(),

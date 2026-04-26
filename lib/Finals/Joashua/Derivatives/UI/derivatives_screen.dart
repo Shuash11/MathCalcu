@@ -4,7 +4,6 @@ import 'package:calculus_system/Finals/Joashua/Derivatives/Widgets/derivatives_s
 import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/derivatives_steps.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/deriviatives_solver.dart'; // Adjust path
 
 class DerivativeScreen extends StatefulWidget {
   const DerivativeScreen({super.key});
@@ -42,13 +41,11 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
     await Future.delayed(const Duration(milliseconds: 400));
 
     try {
-      final steps = DerivativeSolver.getSteps(
-        _exprController.text.trim(),
-        _variable,
-      );
-
       setState(() {
-        _solution = ClassroomStepFormatter.generateFullSolution(steps);
+        _solution = AdvancedStepGenerator.generateDetailedSolution(
+          _exprController.text.trim(),
+          _variable,
+        );
         _isLoading = false;
       });
 
