@@ -183,13 +183,16 @@ class _AnswerCardState extends State<AnswerCard> {
         children: [
           Icon(icon, size: 14, color: color),
           const SizedBox(width: 6),
-          Text(
-            text, 
-            style: TextStyle(
-              fontSize: 12, 
-              fontWeight: FontWeight.w700, 
-              color: color, 
-              letterSpacing: 0.3
+          Flexible(
+            child: Text(
+              text, 
+              style: TextStyle(
+                fontSize: 12, 
+                fontWeight: FontWeight.w700, 
+                color: color, 
+                letterSpacing: 0.3,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

@@ -15,6 +15,21 @@ class DerivativeInputField extends StatelessWidget {
     required this.onSolve,
   }) : super(key: key);
 
+  void _insertText(String text) {
+    final selection = controller.selection;
+    final newText = controller.text.replaceRange(
+      selection.start,
+      selection.end,
+      text,
+    );
+    controller.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(
+        offset: selection.start + text.length,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -68,7 +83,7 @@ class DerivativeInputField extends StatelessWidget {
                     fontSize: 16,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'e.g. x^2 + sin(x)',
+                    hintText: 'e.g. x² + 3x + ln(x)',
                     hintStyle:
                         FinalsTheme.subtitleStyle(context).copyWith(
                       color:
@@ -111,6 +126,16 @@ class DerivativeInputField extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            _QuickInputButton(label: 'x²', onTap: () => _insertText('^2')),
+            const SizedBox(width: 8),
+            _QuickInputButton(label: 'e^x', onTap: () => _insertText('e^')),
+            const SizedBox(width: 8),
+            _QuickInputButton(label: '√x', onTap: () => _insertText('√')),
+          ],
+        ),
       ],
     );
   }
@@ -144,6 +169,43 @@ class DerivativeInputField extends StatelessWidget {
                   : null,
             );
           }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickInputButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuickInputButton({
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: FinalsTheme.primary.withValues(alpha: 0.2),
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            label,
+            style: FinalsTheme.labelStyle(context).copyWith(
+              color: FinalsTheme.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );

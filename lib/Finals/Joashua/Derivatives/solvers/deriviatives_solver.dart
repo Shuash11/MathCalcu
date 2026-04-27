@@ -5,26 +5,7 @@
 
 import 'dart:math';
 
-// ============ HYPERBOLIC FUNCTION HELPERS ============
-
-double _sinh(double x) => (exp(x) - exp(-x)) / 2;
-double _cosh(double x) => (exp(x) + exp(-x)) / 2;
-double _tanh(double x) {
-  if (x.abs() > 20) return x > 0 ? 1.0 : -1.0;
-  final ex = exp(2 * x);
-  return (ex - 1) / (ex + 1);
-}
-
-double _sech(double x) => 2 / (exp(x) + exp(-x));
-double _csch(double x) => 2 / (exp(x) - exp(-x));
-double _coth(double x) {
-  if (x.abs() < 1e-10) throw ArgumentError('coth(0) is undefined');
-  final ex = exp(2 * x);
-  return (ex + 1) / (ex - 1);
-}
-
-// ============ EXPRESSION TYPES (AST NODES) ============
-
+// ============ EXPRESSION TYPES (AST NODES) ===========
 /// Abstract base class for all mathematical expressions
 abstract class Expr {
   const Expr();
@@ -167,6 +148,13 @@ class BinOp extends Expr {
               left.diff(variable));
         } else if (left.isConst) {
           // Exponential: (a^g(x))' = a^g(x) * ln(a) * g'(x)
+          // Handle e specially since ln(e) = 1
+          if (left is Var) {
+            final varName = (left as Var).name;
+            if (varName == 'e') {
+              return BinOp('*', this, right.diff(variable));
+            }
+          }
           return BinOp(
               '*', BinOp('*', this, Func('ln', left)), right.diff(variable));
         } else {
@@ -237,6 +225,26 @@ class BinOp extends Expr {
         if (_isZero(sLeft)) return const Num(0);
         if (_isOne(sRight)) return sLeft;
         if (sLeft == sRight) return const Num(1);
+        if (sLeft is BinOp && sLeft.op == '*' && sLeft.left is Num && sRight is Num) {
+          final numLeft = (sLeft.left as Num).value;
+          final numRight = sRight.value;
+          if (numLeft == numRight) {
+            return sLeft.right.simplify();
+          }
+          if (numRight != 0 && (numLeft / numRight).round() == numLeft / numRight) {
+            return BinOp('*', Num(numLeft / numRight), sLeft.right).simplify();
+          }
+        }
+        if (sLeft is BinOp && sLeft.op == '*' && sLeft.right is Num && sRight is Num) {
+          final numLeft = (sLeft.right as Num).value;
+          final numRight = sRight.value;
+          if (numLeft == numRight) {
+            return sLeft.left.simplify();
+          }
+          if (numRight != 0 && (numLeft / numRight).round() == numLeft / numRight) {
+            return BinOp('*', sLeft.left, Num(numLeft / numRight)).simplify();
+          }
+        }
 
       case '^':
         if (_isZero(sRight)) return const Num(1);
@@ -398,86 +406,11 @@ class Func extends Expr {
 
   const Func(this.name, this.arg);
 
-  @override
+@override
   Expr diff(String variable) {
     final inner = arg.diff(variable);
 
     switch (name) {
-      case 'sin':
-        // d/dx[sin(u)] = cos(u) * u'
-        return BinOp('*', Func('cos', arg), inner);
-      case 'cos':
-        // d/dx[cos(u)] = -sin(u) * u'
-        return BinOp('*', Neg(Func('sin', arg)), inner);
-      case 'tan':
-        // d/dx[tan(u)] = sec²(u) * u'
-        return BinOp('*', BinOp('^', Func('sec', arg), const Num(2)), inner);
-      case 'cot':
-        // d/dx[cot(u)] = -csc²(u) * u'
-        return BinOp(
-            '*', Neg(BinOp('^', Func('csc', arg), const Num(2))), inner);
-      case 'sec':
-        // d/dx[sec(u)] = sec(u)*tan(u) * u'
-        return BinOp(
-            '*', BinOp('*', Func('sec', arg), Func('tan', arg)), inner);
-      case 'csc':
-        // d/dx[csc(u)] = -csc(u)*cot(u) * u'
-        return BinOp(
-            '*', Neg(BinOp('*', Func('csc', arg), Func('cot', arg))), inner);
-      case 'arcsin':
-      case 'asin':
-        // d/dx[arcsin(u)] = u'/√(1-u²)
-        return BinOp(
-            '*',
-            BinOp('/', const Num(1),
-                Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2))))),
-            inner);
-      case 'arccos':
-      case 'acos':
-        // d/dx[arccos(u)] = -u'/√(1-u²)
-        return BinOp(
-            '*',
-            Neg(BinOp('/', const Num(1),
-                Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2)))))),
-            inner);
-      case 'arctan':
-      case 'atan':
-        // d/dx[arctan(u)] = u'/(1+u²)
-        return BinOp(
-            '*',
-            BinOp('/', const Num(1),
-                BinOp('+', const Num(1), BinOp('^', arg, const Num(2)))),
-            inner);
-      case 'sinh':
-        // d/dx[sinh(u)] = cosh(u) * u'
-        return BinOp('*', Func('cosh', arg), inner);
-      case 'cosh':
-        // d/dx[cosh(u)] = sinh(u) * u'
-        return BinOp('*', Func('sinh', arg), inner);
-      case 'tanh':
-        // d/dx[tanh(u)] = sech²(u) * u'
-        return BinOp('*', BinOp('^', Func('sech', arg), const Num(2)), inner);
-      case 'sech':
-        // d/dx[sech(u)] = -sech(u)*tanh(u) * u'
-        return BinOp(
-            '*', Neg(BinOp('*', Func('sech', arg), Func('tanh', arg))), inner);
-      case 'csch':
-        // d/dx[csch(u)] = -csch(u)*coth(u) * u'
-        return BinOp(
-            '*', Neg(BinOp('*', Func('csch', arg), Func('coth', arg))), inner);
-      case 'coth':
-        // d/dx[coth(u)] = -csch²(u) * u'
-        return BinOp(
-            '*', Neg(BinOp('^', Func('csch', arg), const Num(2))), inner);
-      case 'ln':
-      case 'log':
-        // d/dx[ln(u)] = u'/u
-        return BinOp('/', inner, arg);
-      case 'log10':
-      case 'log2':
-        // d/dx[log_b(u)] = u'/(u*ln(b))
-        final base = name == 'log10' ? 10.0 : 2.0;
-        return BinOp('/', inner, BinOp('*', arg, Func('ln', Num(base))));
       case 'exp':
         // d/dx[exp(u)] = exp(u) * u'
         return BinOp('*', this, inner);
@@ -487,12 +420,11 @@ class Func extends Expr {
       case 'abs':
         // d/dx[|u|] = u'*u/|u|
         return BinOp('/', BinOp('*', inner, arg), Func('abs', arg));
-      default:
-        throw ArgumentError('Unknown function: $name');
     }
+    throw ArgumentError('Unknown function: $name');
   }
 
-  @override
+@override
   Expr simplify() {
     final sArg = arg.simplify();
 
@@ -501,26 +433,6 @@ class Func extends Expr {
       final v = sArg.constValue!;
       try {
         switch (name) {
-          case 'sin':
-            return Num(sin(v));
-          case 'cos':
-            return Num(cos(v));
-          case 'tan':
-            if (cos(v).abs() < 1e-10) return this;
-            return Num(tan(v));
-          case 'sec':
-            if (cos(v).abs() < 1e-10) return this;
-            return Num(1 / cos(v));
-          case 'csc':
-            if (sin(v).abs() < 1e-10) return this;
-            return Num(1 / sin(v));
-          case 'cot':
-            if (sin(v).abs() < 1e-10) return this;
-            return Num(cos(v) / sin(v));
-          case 'ln':
-          case 'log':
-            if (v <= 0) return this;
-            return Num(log(v));
           case 'exp':
             return Num(exp(v));
           case 'sqrt':
@@ -528,51 +440,12 @@ class Func extends Expr {
             return Num(sqrt(v));
           case 'abs':
             return Num(v.abs());
-          case 'sinh':
-            return Num(_sinh(v));
-          case 'cosh':
-            return Num(_cosh(v));
-          case 'tanh':
-            return Num(_tanh(v));
-          case 'sech':
-            return Num(_sech(v));
-          case 'csch':
-            if (v.abs() < 1e-10) return this;
-            return Num(_csch(v));
-          case 'coth':
-            if (v.abs() < 1e-10) return this;
-            return Num(_coth(v));
-          case 'log10':
-            if (v <= 0) return this;
-            return Num(log(v) / log(10));
-          case 'log2':
-            if (v <= 0) return this;
-            return Num(log(v) / log(2));
-          case 'arcsin':
-          case 'asin':
-            if (v.abs() > 1) return this;
-            return Num(asin(v));
-          case 'arccos':
-          case 'acos':
-            if (v.abs() > 1) return this;
-            return Num(acos(v));
-          case 'arctan':
-          case 'atan':
-            return Num(atan(v));
         }
       } catch (e) {
         return this;
       }
     }
 
-    // ln(e^x) = x
-    if (name == 'ln' && sArg is Func && sArg.name == 'exp') {
-      return sArg.arg;
-    }
-    // exp(ln(x)) = x
-    if (name == 'exp' && sArg is Func && sArg.name == 'ln') {
-      return sArg.arg;
-    }
     // sqrt(x^2) = |x|
     if (name == 'sqrt' &&
         sArg is BinOp &&
@@ -580,7 +453,6 @@ class Func extends Expr {
         sArg.right == const Num(2)) {
       return Abs(sArg.left);
     }
-    // sin(0) = 0, cos(0) = 1, etc. (redundant but safe)
 
     return Func(name, sArg);
   }
@@ -609,63 +481,6 @@ class Func extends Expr {
       '$name(${arg.format(compact: compact)})';
 }
 
-/// Logarithm with explicit base: log_b(x)
-class LogBase extends Expr {
-  final Expr base;
-  final Expr arg;
-
-  const LogBase(this.base, this.arg);
-
-  @override
-  Expr diff(String variable) {
-    // d/dx[log_b(u)] = u' / (u * ln(b))
-    return BinOp('/', arg.diff(variable), BinOp('*', arg, Func('ln', base)));
-  }
-
-  @override
-  Expr simplify() {
-    final sBase = base.simplify();
-    final sArg = arg.simplify();
-
-    // If base is e, convert to ln
-    if (sBase is Num && (sBase.value - e).abs() < 1e-10) {
-      return Func('ln', sArg);
-    }
-    // If base is 10, use log10
-    if (sBase is Num && sBase.value == 10) {
-      return Func('log10', sArg);
-    }
-    // If base is 2, use log2
-    if (sBase is Num && sBase.value == 2) {
-      return Func('log2', sArg);
-    }
-
-    return LogBase(sBase, sArg);
-  }
-
-  @override
-  bool hasVar(String variable) => base.hasVar(variable) || arg.hasVar(variable);
-
-  @override
-  bool get isConst => base.isConst && arg.isConst;
-
-  @override
-  double? get constValue => null;
-
-  @override
-  bool operator ==(Object other) =>
-      other is LogBase && base == other.base && arg == other.arg;
-
-  @override
-  int get hashCode => Object.hash(base, arg);
-
-  @override
-  String toString() => 'log_${base}($arg)';
-
-  @override
-  String format({bool compact = false}) => toString();
-}
-
 /// Square root function (√x)
 class Sqrt extends Expr {
   final Expr arg;
@@ -675,7 +490,9 @@ class Sqrt extends Expr {
   @override
   Expr diff(String variable) {
     // d/dx[√u] = u'/(2√u)
-    return BinOp('/', arg.diff(variable), BinOp('*', const Num(2), Sqrt(arg)));
+    final innerDiff = arg.diff(variable);
+    final result = BinOp('/', innerDiff, BinOp('*', const Num(2), Sqrt(arg)));
+    return result;
   }
 
   @override
@@ -707,7 +524,7 @@ class Sqrt extends Expr {
   @override
   int get hashCode => arg.hashCode;
 
-  @override
+  @override 
   String toString() => '√($arg)';
 
   @override
@@ -765,7 +582,6 @@ enum TokenType {
   operator,
   lParen,
   rParen,
-  comma,
   function,
   eof
 }
@@ -812,7 +628,7 @@ class Tokenizer {
               _pos + 1 < input.length &&
               _isDigit(input[_pos + 1]))) {
         tokens.add(_readNumber(startPos));
-      } else if (_isLetter(char)) {
+      } else if (_isLetter(char) || char == '√') {
         tokens.add(_readIdentifier(startPos));
       } else if ('+-*/^'.contains(char)) {
         tokens.add(Token(TokenType.operator, char, startPos));
@@ -822,9 +638,6 @@ class Tokenizer {
         _pos++;
       } else if (char == ')') {
         tokens.add(Token(TokenType.rParen, ')', startPos));
-        _pos++;
-      } else if (char == ',') {
-        tokens.add(Token(TokenType.comma, ',', startPos));
         _pos++;
       } else {
         throw ParseException(
@@ -873,39 +686,22 @@ class Tokenizer {
     final buffer = StringBuffer();
 
     while (_pos < input.length &&
-        (_isLetter(input[_pos]) || _isDigit(input[_pos]))) {
+        (_isLetter(input[_pos]) || _isDigit(input[_pos]) || input[_pos] == '√')) {
       buffer.write(input[_pos]);
       _pos++;
     }
 
-    final value = buffer.toString().toLowerCase();
+    var value = buffer.toString().toLowerCase();
+    
+    // Convert √ to sqrt
+    if (value.contains('√')) {
+      value = value.replaceAll('√', 'sqrt');
+    }
+    
     const functions = {
-      'sin',
-      'cos',
-      'tan',
-      'cot',
-      'sec',
-      'csc',
-      'arcsin',
-      'arccos',
-      'arctan',
-      'asin',
-      'acos',
-      'atan',
-      'sinh',
-      'cosh',
-      'tanh',
-      'sech',
-      'csch',
-      'coth',
-      'ln',
-      'log',
-      'log10',
-      'log2',
       'exp',
       'sqrt',
       'abs',
-      'log_base'
     };
 
     final type =
@@ -1048,25 +844,19 @@ class Parser {
     final funcToken = _advance();
     final name = funcToken.value;
 
-    _expect(TokenType.lParen);
+_expect(TokenType.lParen);
     final arg = _parseExpression();
-
-    if (name == 'log_base' && _match(TokenType.comma)) {
-      final base = _parseExpression();
-      _expect(TokenType.rParen);
-      return LogBase(base, arg);
-    }
-
     _expect(TokenType.rParen);
 
     if (name == 'sqrt') {
       return Sqrt(arg);
     }
+
     if (name == 'abs') {
       return Abs(arg);
     }
 
-    return Func(name, arg);
+    return Func(name, arg); 
   }
 
   Token _peek() => tokens[_current];
@@ -1074,14 +864,6 @@ class Parser {
 
   bool _matchOperator(String op) {
     if (_peek().type == TokenType.operator && _peek().value == op) {
-      _advance();
-      return true;
-    }
-    return false;
-  }
-
-  bool _match(TokenType type) {
-    if (_peek().type == type) {
       _advance();
       return true;
     }
@@ -1135,10 +917,38 @@ class DerivativeSteps {
 class DerivativeSolver {
   /// Parse an expression string into an AST
   static Expr parse(String expression) {
-    final tokenizer = Tokenizer(expression);
+    String processed = _preprocessImplicitMultiplication(expression);
+    final tokenizer = Tokenizer(processed);
     final tokens = tokenizer.tokenize();
     final parser = Parser(tokens);
     return parser.parse();
+  }
+
+  static String _preprocessImplicitMultiplication(String input) {
+    String result = input;
+    // Handle )(  - parenthesis followed by parenthesis
+    result = result.replaceAllMapped(RegExp(r'(\))(\s*)(\()'), (m) => '${m[1]}*${m[3]}');
+    // Handle )(  with no space
+    result = result.replaceAllMapped(RegExp(r'(\))(\()'), (m) => '${m[1]}*${m[2]}');
+    // Handle )number
+    result = result.replaceAllMapped(RegExp(r'(\))(\d)'), (m) => '${m[1]}*${m[2]}');
+    // Handle number(
+    result = result.replaceAllMapped(RegExp(r'(\d)(\()'), (m) => '${m[1]}*${m[2]}');
+    // Handle variableletter and variablenumber (only for single letters, not function names like ln, log, exp)
+    result = result.replaceAllMapped(RegExp(r'(?<![a-zA-Z])([a-zA-Z])(\()'), (m) => '${m[1]}*${m[2]}');
+    result = result.replaceAllMapped(RegExp(r'(?<![a-zA-Z])([a-zA-Z])(\d)'), (m) => '${m[1]}*${m[2]}');
+    
+    // Handle sqrt without parentheses: sqrtx -> sqrt(x), sqrt2 -> sqrt(2)
+    result = result.replaceAllMapped(RegExp(r'sqrt([a-zA-Z])'), (m) => 'sqrt(${m[1]})');
+    result = result.replaceAllMapped(RegExp(r'sqrt(\d)'), (m) => 'sqrt(${m[1]})');
+    // Handle √ character directly: √x -> sqrt(x), √2 -> sqrt(2)
+    result = result.replaceAllMapped(RegExp(r'√([a-zA-Z])'), (m) => 'sqrt(${m[1]})');
+    result = result.replaceAllMapped(RegExp(r'√(\d)'), (m) => 'sqrt(${m[1]})');
+    result = result.replaceAllMapped(RegExp(r'√(\()'), (m) => 'sqrt(');
+    
+    // Remove extra spaces
+    result = result.replaceAll(RegExp(r'\s+'), '');
+    return result;
   }
 
   /// Compute the derivative of [expr] with respect to [variable]
@@ -1178,238 +988,111 @@ class DerivativeSolver {
     return _generateSteps(parsed, variable);
   }
 
+  /// Smart rule detection - find the main rule for this expression
+  static String _determineMainRule(Expr expr) {
+    // Check if it's a simple power (polynomial)
+    if (expr is BinOp && expr.op == '^' && expr.right.isConst) {
+      return 'Power Rule: \\frac{d}{dx}x^n = n \\cdot x^{n-1}';
+    }
+    // Check if it's exponential (a^x)
+    if (expr is BinOp && expr.op == '^' && expr.left.isConst && !expr.right.isConst) {
+      return 'Exponential Rule: \\frac{d}{dx}a^x = a^x \\ln(a)';
+    }
+    // Check primary operation (left to right priority)
+    if (expr is BinOp) {
+      switch (expr.op) {
+        case '/':
+          return 'Quotient Rule: \\frac{d}{dx}\\frac{f}{g} = \\frac{f\'g - fg\'}{g^2}';
+        case '*':
+          if (expr.left.isConst || expr.right.isConst) {
+            return 'Constant Multiple: \\frac{d}{dx}(c \\cdot f) = c \\cdot f\'';
+          }
+          return 'Product Rule: \\frac{d}{dx}(f \\cdot g) = f\'g + fg\'';
+        case '+':
+        case '-':
+          if (_containsPower(expr)) {
+            return 'Power Rule: \\frac{d}{dx}x^n = n \\cdot x^{n-1}';
+          }
+          return 'Sum Rule: \\frac{d}{dx}(f + g) = f\' + g\'';
+      }
+    }
+    if (expr is Func) {
+      if (expr.arg.hasVar('x')) {
+        return 'Chain Rule: (f \\circ g)\' = f\'(g) \\cdot g\'';
+      }
+      if (expr.name == 'exp') {
+        return 'Exponential: \\frac{d}{dx}e^u = e^u \\cdot u\'';
+      }
+      if (expr.name == 'sqrt') {
+        return 'Square Root: \\frac{d}{dx}\\sqrt{u} = \\frac{u\'}{2\\sqrt{u}}';
+      }
+      return 'Function Derivative';
+    }
+    if (expr is Sqrt) {
+      if (expr.arg.hasVar('x')) {
+        return 'Chain Rule';
+      }
+      return 'Square Root Derivative';
+    }
+    return 'Basic Derivative';
+  }
+
+  static bool _containsPower(Expr expr) {
+    if (expr is BinOp && expr.op == '^') return true;
+    if (expr is BinOp) {
+      return _containsPower(expr.left) || _containsPower(expr.right);
+    }
+    if (expr is Func) return _containsPower(expr.arg);
+    if (expr is Sqrt) return _containsPower(expr.arg);
+    return false;
+  }
+
   static DerivativeSteps _generateSteps(Expr expr, String variable) {
     final steps = <DerivativeStep>[];
+    final mainRule = _determineMainRule(expr);
 
     steps.add(DerivativeStep(
         type: StepType.original,
-        description:
-            'Find the derivative of the function with respect to $variable',
+        description: 'Find derivative of f($variable) = ${expr.toString()}',
         expression: expr,
         rule: null));
 
-    final rules = _identifyRules(expr);
-    for (final rule in rules) {
-      steps.add(DerivativeStep(
-          type: StepType.identifyRule,
-          description: 'Identify the differentiation rule: $rule',
-          expression: expr,
-          rule: rule));
-    }
+    // Step 1: Show the rule being applied
+    steps.add(DerivativeStep(
+        type: StepType.identifyRule,
+        description: 'Apply: $mainRule',
+        expression: expr,
+        rule: mainRule));
 
+    // Step 2: Compute derivative
     final rawDerivative = expr.diff(variable);
     steps.add(DerivativeStep(
         type: StepType.applyRule,
-        description: 'Apply the differentiation rule(s)',
+        description: 'Compute derivative',
         expression: rawDerivative,
         rule: null));
 
-    final simplifiedSteps = _generateSimplificationSteps(rawDerivative);
-    steps.addAll(simplifiedSteps);
+    // Step 3: Simplify (if needed)
+    final simplified = simplify(rawDerivative);
+    if (simplified != rawDerivative) {
+      steps.add(DerivativeStep(
+          type: StepType.simplify,
+          description: 'Simplify the result',
+          expression: simplified,
+          rule: null));
+    }
 
-    final finalResult = simplify(rawDerivative);
+    // Step 4: Final answer
     steps.add(DerivativeStep(
         type: StepType.finalResult,
-        description: 'Final answer',
-        expression: finalResult,
+        description: 'Derivative: f\'($variable) = ${simplified.toString()}',
+        expression: simplified,
         rule: null));
 
     return DerivativeSteps(
         original: expr,
         variable: variable,
-        derivative: finalResult,
+        derivative: simplified,
         steps: steps);
   }
-
-  static List<String> _identifyRules(Expr expr) {
-    final rules = <String>[];
-    _collectRules(expr, rules);
-    return rules.toSet().toList();
-  }
-
-  static void _collectRules(Expr expr, List<String> rules) {
-    if (expr is BinOp) {
-      switch (expr.op) {
-        case '+':
-          rules.add('Sum/Difference Rule: d/dx[f(x) + g(x)] = f\'(x) + g\'(x)');
-          _collectRules(expr.left, rules);
-          _collectRules(expr.right, rules);
-          break;
-        case '-':
-          rules.add('Sum/Difference Rule: d/dx[f(x) - g(x)] = f\'(x) - g\'(x)');
-          _collectRules(expr.left, rules);
-          _collectRules(expr.right, rules);
-          break;
-        case '*':
-          rules
-              .add('Product Rule: d/dx[f(x)·g(x)] = f\'(x)·g(x) + f(x)·g\'(x)');
-          _collectRules(expr.left, rules);
-          _collectRules(expr.right, rules);
-          break;
-        case '/':
-          rules.add(
-              'Quotient Rule: d/dx[f(x)/g(x)] = [f\'(x)·g(x) - f(x)·g\'(x)] / g²(x)');
-          _collectRules(expr.left, rules);
-          _collectRules(expr.right, rules);
-          break;
-        case '^':
-          if (expr.right.isConst) {
-            rules.add('Power Rule: d/dx[xⁿ] = n·xⁿ⁻¹');
-          } else if (expr.left.isConst) {
-            rules.add('Exponential Rule: d/dx[aᵍ⁽ˣ⁾] = aᵍ⁽ˣ⁾·ln(a)·g\'(x)');
-          } else {
-            rules
-                .add('General Power Rule: d/dx[fᵍ] = fᵍ·(g\'·ln(f) + g·f\'/f)');
-          }
-          _collectRules(expr.left, rules);
-          _collectRules(expr.right, rules);
-          break;
-      }
-    } else if (expr is Func) {
-      if (expr.arg.hasVar('x')) {
-        rules.add('Chain Rule: d/dx[f(g(x))] = f\'(g(x))·g\'(x)');
-      }
-      switch (expr.name) {
-        case 'sin':
-          rules.add('Derivative of Sine: d/dx[sin(u)] = cos(u)');
-          break;
-        case 'cos':
-          rules.add('Derivative of Cosine: d/dx[cos(u)] = -sin(u)');
-          break;
-        case 'tan':
-          rules.add('Derivative of Tangent: d/dx[tan(u)] = sec²(u)');
-          break;
-        case 'cot':
-          rules.add('Derivative of Cotangent: d/dx[cot(u)] = -csc²(u)');
-          break;
-        case 'sec':
-          rules.add('Derivative of Secant: d/dx[sec(u)] = sec(u)·tan(u)');
-          break;
-        case 'csc':
-          rules.add('Derivative of Cosecant: d/dx[csc(u)] = -csc(u)·cot(u)');
-          break;
-        case 'arcsin':
-        case 'asin':
-          rules.add('Derivative of Arcsine: d/dx[arcsin(u)] = 1/√(1-u²)');
-          break;
-        case 'arccos':
-        case 'acos':
-          rules.add('Derivative of Arccosine: d/dx[arccos(u)] = -1/√(1-u²)');
-          break;
-        case 'arctan':
-        case 'atan':
-          rules.add('Derivative of Arctangent: d/dx[arctan(u)] = 1/(1+u²)');
-          break;
-        case 'sinh':
-          rules.add('Derivative of Hyperbolic Sine: d/dx[sinh(u)] = cosh(u)');
-          break;
-        case 'cosh':
-          rules.add('Derivative of Hyperbolic Cosine: d/dx[cosh(u)] = sinh(u)');
-          break;
-        case 'tanh':
-          rules.add(
-              'Derivative of Hyperbolic Tangent: d/dx[tanh(u)] = sech²(u)');
-          break;
-        case 'sech':
-          rules.add(
-              'Derivative of Hyperbolic Secant: d/dx[sech(u)] = -sech(u)·tanh(u)');
-          break;
-        case 'csch':
-          rules.add(
-              'Derivative of Hyperbolic Cosecant: d/dx[csch(u)] = -csch(u)·coth(u)');
-          break;
-        case 'coth':
-          rules.add(
-              'Derivative of Hyperbolic Cotangent: d/dx[coth(u)] = -csch²(u)');
-          break;
-        case 'ln':
-        case 'log':
-          rules.add('Derivative of Natural Log: d/dx[ln(u)] = 1/u');
-          break;
-        case 'exp':
-          rules.add('Derivative of Exponential: d/dx[eᵘ] = eᵘ');
-          break;
-        case 'sqrt':
-          rules.add('Derivative of Square Root: d/dx[√u] = 1/(2√u)');
-          break;
-        case 'abs':
-          rules.add('Derivative of Absolute Value: d/dx[|u|] = u/|u|');
-          break;
-      }
-      _collectRules(expr.arg, rules);
-    } else if (expr is Sqrt) {
-      rules.add('Derivative of Square Root: d/dx[√u] = 1/(2√u)');
-      _collectRules(expr.arg, rules);
-    } else if (expr is Abs) {
-      rules.add('Derivative of Absolute Value: d/dx[|u|] = u/|u|');
-      _collectRules(expr.arg, rules);
-    } else if (expr is LogBase) {
-      rules.add('Logarithm Base Change: d/dx[log_b(u)] = 1/(u·ln(b))');
-      _collectRules(expr.arg, rules);
-    }
-  }
-
-  static List<DerivativeStep> _generateSimplificationSteps(Expr expr) {
-    final steps = <DerivativeStep>[];
-    var current = expr;
-
-    for (int i = 0; i < 10; i++) {
-      final simplified = current.simplify();
-      if (simplified == current) break;
-
-      steps.add(DerivativeStep(
-          type: StepType.simplify,
-          description: _describeSimplification(current, simplified),
-          expression: simplified,
-          rule: null));
-
-      current = simplified;
-    }
-
-    return steps;
-  }
-
-  static String _describeSimplification(Expr before, Expr after) {
-    if (before is BinOp && after is Num) {
-      return 'Evaluate the constant expression: $before = $after';
-    }
-    if (before is BinOp && before.op == '*' && _isZeroExpr(before.left)) {
-      return 'Any number multiplied by 0 equals 0';
-    }
-    if (before is BinOp && before.op == '*' && _isZeroExpr(before.right)) {
-      return 'Any number multiplied by 0 equals 0';
-    }
-    if (before is BinOp && before.op == '*' && _isOneExpr(before.left)) {
-      return 'Any number multiplied by 1 equals itself';
-    }
-    if (before is BinOp && before.op == '*' && _isOneExpr(before.right)) {
-      return 'Any number multiplied by 1 equals itself';
-    }
-    if (before is BinOp && before.op == '+' && _isZeroExpr(before.left)) {
-      return 'Adding 0 does not change the value';
-    }
-    if (before is BinOp && before.op == '+' && _isZeroExpr(before.right)) {
-      return 'Adding 0 does not change the value';
-    }
-    if (before is BinOp && before.op == '^' && _isOneExpr(before.right)) {
-      return 'Any number raised to power 1 equals itself';
-    }
-    if (before is BinOp && before.op == '^' && _isZeroExpr(before.right)) {
-      return 'Any non-zero number raised to power 0 equals 1';
-    }
-    if (before is BinOp && before.op == '-' && before.left == before.right) {
-      return 'A number minus itself equals 0';
-    }
-    if (before is Neg && after is Num) {
-      return 'Apply the negation: $before = $after';
-    }
-    if (before is Func && after is Num) {
-      return 'Evaluate ${before.name}(${before.arg}) = $after';
-    }
-
-    return 'Simplify: $before → $after';
-  }
-
-  static bool _isZeroExpr(Expr e) => e.isConst && e.constValue == 0;
-  static bool _isOneExpr(Expr e) => e.isConst && e.constValue == 1;
 }

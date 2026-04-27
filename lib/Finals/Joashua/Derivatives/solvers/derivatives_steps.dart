@@ -27,9 +27,7 @@ class ClassroomStepFormatter {
         title: _getTitle(step),
         explanation: _getExplanation(step, variable),
         expression: step.expression.toString(),
-        rule: step.rule,
-        tip: _getTip(step),
-        highlightedParts: _getHighlightedParts(step));
+        rule: step.rule);
   }
 
   static String _getTitle(DerivativeStep step) {
@@ -47,176 +45,20 @@ class ClassroomStepFormatter {
     }
   }
 
-  static String _getExplanation(DerivativeStep step, String variable) {
+static String _getExplanation(DerivativeStep step, String variable) {
     switch (step.type) {
       case StepType.original:
-        return 'We need to find d/d$variable [${step.expression}]';
-
+        return 'f($variable) = ${step.expression}';
       case StepType.identifyRule:
-        return _getRuleExplanation(step);
-
+        return step.rule ?? '';
       case StepType.applyRule:
-        return _getApplyExplanation(step, variable);
-
-      case StepType.simplify:
-        return step.description;
+        return "d/d$variable [${step.expression.toString()}]";
+case StepType.simplify:
+        return step.expression.toString();
 
       case StepType.finalResult:
-        return 'After differentiating and simplifying, we obtain the derivative.';
+        return "f'($variable) = ${step.expression.toString()}";
     }
-  }
-
-  static String _getRuleExplanation(DerivativeStep step) {
-    if (step.rule == null) return '';
-
-    final rule = step.rule!;
-
-    if (rule.contains('Sum/Difference')) {
-      return '$rule\n\nThis rule tells us that the derivative of a sum (or difference) is simply the sum (or difference) of the derivatives. We can differentiate each term independently.';
-    }
-    if (rule.contains('Product Rule')) {
-      return '$rule\n\nThe Product Rule is essential when differentiating two functions multiplied together. Remember: "first times derivative of second, plus second times derivative of first".';
-    }
-    if (rule.contains('Quotient Rule')) {
-      return '$rule\n\nThe Quotient Rule handles division of functions. A helpful mnemonic is "low d-high minus high d-low, over the square of what is below".';
-    }
-    if (rule.contains('Power Rule') && !rule.contains('General')) {
-      return '$rule\n\nThe Power Rule is one of the most fundamental rules in calculus. Simply bring the exponent down as a coefficient and reduce the exponent by 1.';
-    }
-    if (rule.contains('Chain Rule')) {
-      return '$rule\n\nThe Chain Rule is used for composite functions - functions inside functions. We differentiate the outer function, then multiply by the derivative of the inner function.';
-    }
-    if (rule.contains('Exponential Rule')) {
-      return '$rule\n\nWhen the base is constant and the exponent is variable, we use this rule. Note the presence of ln(base).';
-    }
-    if (rule.contains('General Power')) {
-      return '$rule\n\nWhen both the base and exponent are variable, we use logarithmic differentiation in disguise.';
-    }
-    if (rule.contains('Sine')) {
-      return '$rule\n\nThe derivative of sine is cosine - one of the most basic trigonometric derivatives to memorize.';
-    }
-    if (rule.contains('Cosine')) {
-      return '$rule\n\nNote the negative sign! The derivative of cosine is negative sine. This is a common source of errors.';
-    }
-    if (rule.contains('Tangent') && !rule.contains('Arctangent')) {
-      return '$rule\n\nRemember that sec^2(x) = 1 + tan^2(x) by the Pythagorean identity for tangent.';
-    }
-    if (rule.contains('Cotangent') && !rule.contains('Arccotangent')) {
-      return '$rule\n\nNote the negative sign! The derivative of cotangent is negative cosecant squared.';
-    }
-    if (rule.contains('Secant') && !rule.contains('Arcsecant')) {
-      return '$rule\n\nThe derivative of secant involves both secant and tangent.';
-    }
-    if (rule.contains('Cosecant') && !rule.contains('Arccosecant')) {
-      return '$rule\n\nNote the negative sign! The derivative of cosecant involves both cosecant and cotangent.';
-    }
-    if (rule.contains('Natural Log')) {
-      return '$rule\n\nThe derivative of the natural logarithm is simply 1/u. This is why natural logarithms are so important in calculus!';
-    }
-    if (rule.contains('Exponential') && rule.contains('e')) {
-      return '$rule\n\nThe exponential function e^x is special - it is its own derivative! This is a unique property of e.';
-    }
-    if (rule.contains('Arcsine')) {
-      return '$rule\n\nBe careful with the domain: arcsin(u) is only defined when |u| <= 1.';
-    }
-    if (rule.contains('Arccosine')) {
-      return '$rule\n\nNote the negative sign! Like cosine, arccosine derivative has a negative sign.';
-    }
-    if (rule.contains('Arctangent')) {
-      return '$rule\n\nThis is one of the "nicer" inverse trig derivatives - no square roots involved!';
-    }
-    if (rule.contains('Square Root')) {
-      return '$rule\n\nSquare roots can be thought of as x^(1/2), so this is actually a special case of the Power Rule with the Chain Rule.';
-    }
-    if (rule.contains('Absolute Value')) {
-      return '$rule\n\nBe careful! The absolute value function is not differentiable at 0. This formula assumes the input is not zero.';
-    }
-    if (rule.contains('Hyperbolic Sine')) {
-      return '$rule\n\nThe derivative of sinh is cosh - similar to regular sine/cosine but without the sign changes!';
-    }
-    if (rule.contains('Hyperbolic Cosine')) {
-      return '$rule\n\nThe derivative of cosh is sinh - notice there is no negative sign, unlike regular cosine!';
-    }
-    if (rule.contains('Hyperbolic Tangent')) {
-      return '$rule\n\nThe derivative of tanh is sech^2 - analogous to the regular tangent derivative.';
-    }
-    if (rule.contains('Hyperbolic Secant')) {
-      return '$rule\n\nNote the negative sign in the derivative of sech!';
-    }
-    if (rule.contains('Hyperbolic Cosecant')) {
-      return '$rule\n\nNote the negative sign in the derivative of csch!';
-    }
-    if (rule.contains('Hyperbolic Cotangent')) {
-      return '$rule\n\nNote the negative sign! The derivative of coth is negative csch squared.';
-    }
-    if (rule.contains('Logarithm Base')) {
-      return '$rule\n\nFor logarithms with any base, we can use the change of base formula or this direct rule.';
-    }
-
-    return rule;
-  }
-
-  static String _getApplyExplanation(DerivativeStep step, String variable) {
-    final expr = step.expression;
-    final buffer = StringBuffer();
-
-    buffer.writeln('Applying the differentiation rules:');
-    buffer.writeln('');
-    buffer.writeln('f\'($variable) = $expr');
-
-    return buffer.toString();
-  }
-
-  static String? _getTip(DerivativeStep step) {
-    switch (step.type) {
-      case StepType.identifyRule:
-        if (step.rule?.contains('Product Rule') == true) {
-          return 'Tip: Always write out f, g, f\', and g\' separately before applying the Product Rule to avoid mistakes.';
-        }
-        if (step.rule?.contains('Quotient Rule') == true) {
-          return 'Tip: Double-check your signs! The Quotient Rule has a minus in the numerator - this is where many students make errors.';
-        }
-        if (step.rule?.contains('Chain Rule') == true) {
-          return 'Tip: Identify the "inner" and "outer" functions first. The outer function is what you see first, the inner is what is inside the parentheses.';
-        }
-        if (step.rule?.contains('Power Rule') == true) {
-          return 'Tip: For fractional exponents like x^(1/2), the Power Rule still applies: (1/2)x^(-1/2).';
-        }
-        if (step.rule?.contains('Cosine') == true) {
-          return 'Tip: Do not forget the negative sign! This is the most common mistake with cosine derivatives.';
-        }
-        if (step.rule?.contains('Natural Log') == true) {
-          return 'Tip: Remember that ln(x) and log(x) usually mean the same thing in calculus - natural logarithm.';
-        }
-        return null;
-      case StepType.applyRule:
-        return 'Tip: Do not rush to simplify - first make sure your derivative is correct, then simplify.';
-      case StepType.simplify:
-        return null;
-      case StepType.original:
-        return 'Tip: Before differentiating, check if the expression can be simplified first - it might make differentiation easier.';
-      case StepType.finalResult:
-        return 'Tip: You can verify your answer by checking a few specific values or using numerical differentiation.';
-    }
-  }
-
-  static List<String> _getHighlightedParts(DerivativeStep step) {
-    final parts = <String>[];
-
-    if (step.rule != null) {
-      final rule = step.rule!;
-
-      if (rule.contains('f\'(x)')) {
-        parts.add("f'(x)");
-        parts.add("g'(x)");
-      }
-      if (rule.contains('n*x')) {
-        parts.add('n');
-        parts.add('x^(n-1)');
-      }
-    }
-
-    return parts;
   }
 
   /// Generate a complete classroom-style solution document
@@ -722,46 +564,10 @@ class AdvancedStepGenerator {
 
   static String _outerDerivative(String funcName) {
     switch (funcName) {
-      case 'sin':
-        return 'cos(u)';
-      case 'cos':
-        return '-sin(u)';
-      case 'tan':
-        return 'sec^2(u)';
-      case 'cot':
-        return '-csc^2(u)';
-      case 'sec':
-        return 'sec(u)tan(u)';
-      case 'csc':
-        return '-csc(u)cot(u)';
-      case 'ln':
-      case 'log':
-        return '1/u';
       case 'exp':
         return 'e^u';
       case 'sqrt':
         return '1/(2*sqrt(u))';
-      case 'arcsin':
-      case 'asin':
-        return '1/sqrt(1-u^2)';
-      case 'arccos':
-      case 'acos':
-        return '-1/sqrt(1-u^2)';
-      case 'arctan':
-      case 'atan':
-        return '1/(1+u^2)';
-      case 'sinh':
-        return 'cosh(u)';
-      case 'cosh':
-        return 'sinh(u)';
-      case 'tanh':
-        return 'sech^2(u)';
-      case 'sech':
-        return '-sech(u)tanh(u)';
-      case 'csch':
-        return '-csch(u)coth(u)';
-      case 'coth':
-        return '-csch^2(u)';
       default:
         return '?';
     }

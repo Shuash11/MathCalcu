@@ -88,7 +88,7 @@ class StepItemWidget extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10), // Tighter margin for mobile lists
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: FinalsTheme.card(context),
         borderRadius: BorderRadius.circular(14),
@@ -106,7 +106,7 @@ class StepItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8), // Tighter header
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: accentColor.withValues(alpha: 0.08),
               borderRadius: const BorderRadius.only(
@@ -123,7 +123,7 @@ class StepItemWidget extends StatelessWidget {
                   style: TextStyle(
                     color: accentColor, 
                     fontWeight: FontWeight.w800, 
-                    fontSize: 11, // Slightly smaller for mobile
+                    fontSize: 11,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -131,8 +131,8 @@ class StepItemWidget extends StatelessWidget {
             ),
           ),
           
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12), // Tighter body
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: step.lines.map((line) {
@@ -143,7 +143,7 @@ class StepItemWidget extends StatelessWidget {
                     line, 
                     TextStyle(
                       color: FinalsTheme.textPrimary(context), 
-                      fontSize: 15, // Optimal size to fit most equations on mobile
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),
                   );
@@ -153,7 +153,7 @@ class StepItemWidget extends StatelessWidget {
                     child: Text(
                       line, 
                       style: FinalsTheme.subtitleStyle(context).copyWith(
-                        fontSize: 13, // Readable but compact
+                        fontSize: 13,
                         height: 1.4,
                       ),
                     ),
@@ -238,7 +238,7 @@ class StepItemWidget extends StatelessWidget {
   Widget _buildResultBox(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(16), // Slightly tighter padding
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -258,33 +258,34 @@ class StepItemWidget extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            const Icon(Icons.check_circle, color: FinalsTheme.primary, size: 18),
-            const SizedBox(width: 8),
-            Text(
-              'FINAL FORM', 
-              style: TextStyle(
-                color: FinalsTheme.primary, 
-                fontWeight: FontWeight.w900, 
-                letterSpacing: 1.2, 
-                fontSize: 11,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Icon(Icons.check_circle, color: FinalsTheme.primary, size: 18),
+              const SizedBox(width: 8),
+              Text(
+                'FINAL FORM', 
+                style: TextStyle(
+                  color: FinalsTheme.primary, 
+                  fontWeight: FontWeight.w900, 
+                  letterSpacing: 1.2, 
+                  fontSize: 11,
+                ),
               ),
-            ),
-          ]),
-          const SizedBox(height: 12),
-          // Final answers are usually the most complex, so they DEFINITELY need the scroll view
-          ...step.lines.map((line) => _buildMathLine(
-            line, 
-            TextStyle(
-              color: FinalsTheme.textPrimary(context), 
-              fontSize: 17, // Make the final answer slightly larger
-              fontWeight: FontWeight.w700,
-            ),
-          )),
-        ],
+            ]),
+            const SizedBox(height: 12),
+            ...step.lines.map((line) => _buildMathLine(
+              line, 
+              TextStyle(
+                color: FinalsTheme.textPrimary(context), 
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+              ),
+            )),
+          ],
+        ),
       ),
     );
   }
