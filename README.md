@@ -1,781 +1,199 @@
-# Derivatives Solver — Agent README
-## File: `lib/Finals/Joashua/Derivatives/`
+# MathCalcu — AI-Powered Math System
 
-> **Who this is for:** Any agent (AI or human developer) working on the derivatives feature inside the `mathcalcu` Flutter project. Read this entire document before touching any file in this folder. Every class, every method, and every data flow is documented here with exact file locations and code-level detail.
-
----
-
-## 1. Folder Map
-
-```
-lib/Finals/Joashua/Derivatives/
-│
-├── solvers/
-│   ├── deriviatives_solver.dart      ← Core engine: AST, parser, differentiator, simplifier
-│   └── derivatives_steps.dart        ← Step formatter: classroom output, solution builder
-│
-├── UI/
-│   └── derivatives_screen.dart       ← Main screen widget (StatefulWidget)
-│
-└── Widgets/
-    ├── derivatives_input_field.dart   ← Expression text input + variable toggle + quick keys
-    ├── derivatives_answer_card.dart   ← Displays the final answer (f'(x) = ...)
-    └── derivatives_steptile.dart      ← Renders one step in the timeline UI
-```
-
-**Theme file used:** `lib/Finals/finals_theme.dart` (FinalsTheme — amber/gold palette)
+A Flutter math solver for calculus and analytic geometry topics, built with offline-first AI-powered step generation.
 
 ---
 
-## 2. Architecture Overview
+## Features
 
-The solver uses a **3-layer pipeline**:
+- **Derivatives** — Symbolic differentiation with step-by-step solutions
+- **Slope Using Derivatives** — Find slope at a point for explicit, implicit, and parametric equations
+- **Evaluating Limits** — By substitution, factoring, LCD, and conjugate
+- **Limits at Infinity** — Rational, radical, and trigonometric forms
+- **Inequalities** — Linear, quadratic, rational, radical, absolute value
+- **Circles** — Center, radius, standard/general form
+- **Distance & Midpoint** — With graphing support
+- **Slope & Intercept** — Point-slope, two-point, parallel/perpendicular lines
+
+---
+
+## Architecture
 
 ```
-User Input (string)
-       ↓
-   [PARSER]             — DerivativeSolver.parse()
-       ↓
-   Abstract Syntax Tree (AST)   — Expr subclasses
-       ↓
-   [DIFFERENTIATOR]     — expr.diff(variable)
-       ↓
-   Raw Derivative AST   (unsimplified)
-       ↓
-   [SIMPLIFIER]         — DerivativeSolver.simplify()
-       ↓
-   Simplified AST
-       ↓
-   [STEP GENERATOR]     — DerivativeSolver.getSteps()
-       ↓
-   DerivativeSteps object
-       ↓
-   [CLASSROOM FORMATTER]  — ClassroomStepFormatter.generateFullSolution()
-       ↓
-   ClassroomSolution object
-       ↓
-   [UI]                 — DerivativeScreen displays ClassroomStep list
+lib/
+├── Finals/                      # Calculus modules (Derivatives, Limits, Slope)
+│   └── Joashua/
+│       ├── Derivatives/
+│       │   ├── solvers/         # Symbolic engine + step generator
+│       │   ├── UI/              # Screen
+│       │   └── Widgets/         # StepTile, AnswerCard, InputField
+│       ├── Slope_Using_derivatives/
+│       │   ├── Solver/          # Math engine, parser, step narrator
+│       │   ├── UI/
+│       │   └── Widget/
+│       └── Evaluating_limits/
+│           ├── By_Substitution/
+│           ├── By_Factoring/
+│           ├── By_LCD/
+│           └── By_conjugate/
+└── modules/                     # Analytic geometry modules
+    ├── slope/
+    ├── inequalities/
+    ├── circles/
+    ├── Distance/
+    ├── midpoint/
+    └── y-intercept/
 ```
 
 ---
 
-## 3. Layer 1 — Core Engine (`deriviatives_solver.dart`)
+## Derivatives Solver
 
-> ⚠️ Note the typo in the filename: `deriviatives_solver.dart` (double `i`). Do NOT rename it — it is imported by multiple files with this exact spelling.
+### Input Format
 
-### 3.1 AST Node Classes (`Expr` subclasses)
-
-Every mathematical expression is represented as a tree of `Expr` objects. There are **8 node types**:
-
-| Class | What it represents | Example |
-|---|---|---|
-| `Num` | Numeric constant | `Num(3.0)` → `3` |
-| `Var` | Variable | `Var('x')` → `x` |
-| `BinOp` | Binary operation | `BinOp('+', Var('x'), Num(1))` → `x + 1` |
-| `Neg` | Unary negation | `Neg(Var('x'))` → `-x` |
-| `Func` | Named function | `Func('sin', Var('x'))` → `sin(x)` |
-| `Sqrt` | Square root | `Sqrt(Var('x'))` → `√x` |
-| `Abs` | Absolute value | `Abs(Var('x'))` → `|x|` |
-| `LogBase` | Logarithm with base | `LogBase(Num(2), Var('x'))` → `log_2(x)` |
-
-Every `Expr` subclass implements **5 required methods**:
-
-| Method | What it does |
+| Expression | Example |
 |---|---|
-| `diff(String variable)` | Returns a new AST that is the derivative of `this` |
-| `simplify()` | Returns a new AST with algebraic simplifications applied |
-| `hasVar(String variable)` | Returns `true` if this expression contains the given variable |
-| `isConst` (getter) | Returns `true` if this expression has no variables |
-| `constValue` (getter) | Returns the `double` numeric value if constant, or `null` |
+| Polynomial | `x^3 - 2x + 5` |
+| Trigonometric | `sin(x)*cos(x)` |
+| Exponential | `e^(2x)` or `exp(2*x)` |
+| Logarithmic | `ln(x^2 + 1)` |
+| Composite | `sin(x^2) + ln(cos(x))` |
+| Product | `x^2 * sin(x)` |
+| Quotient | `(x+1)/(x-1)` |
 
-### 3.2 Differentiation Rules (what `diff()` does per node type)
+### Rules Supported
 
-#### `Num.diff()` → always returns `Num(0)`
-Constants have zero derivative. No conditions.
+Power, Sum/Difference, Product, Quotient, Chain, Exponential (any base), Natural Log, Logarithm (any base), all 6 trig functions, all 6 inverse trig functions, all 6 hyperbolic functions, Square Root, Absolute Value.
 
-#### `Var.diff(variable)` → returns `Num(1)` if name matches, else `Num(0)`
-```dart
-// If variable is 'x' and this is Var('x') → 1
-// If variable is 'x' and this is Var('y') → 0
+### Step Structure
+
+Each solution produces steps in this order:
+
+1. **Problem Statement** — displays `f(x) = ...`
+2. **Identify the Rule(s)** — names the rule with its formula in LaTeX
+3. **Apply Differentiation** — shows the derivative expression
+4. **Simplify** *(if needed)* — algebraic simplification
+5. **Final Answer** — `f'(x) = ...`
+
+### AI Prompt (for the agent)
+
+```
+You are a calculus step solver. When given a derivative problem, respond ONLY with the solution steps. Do NOT add introductory sentences, commentary, or conclusions. Use only these section headers:
+
+- Problem Statement
+- Identify the Rule
+- Apply Differentiation
+- Simplify (only if needed)
+- Final Answer
+
+Each step must show the LaTeX expression. No extra words.
 ```
 
-#### `BinOp.diff(variable)` — switches on operator:
+---
 
-| Operator | Rule applied | Output expression |
-|---|---|---|
-| `+` or `-` | Sum/Difference Rule | `left.diff(v) + right.diff(v)` |
-| `*` | Product Rule: `(fg)' = f'g + fg'` | `BinOp('+', BinOp('*', left.diff(v), right), BinOp('*', left, right.diff(v)))` |
-| `/` | Quotient Rule: `(f/g)' = (f'g - fg') / g²` | `BinOp('/', BinOp('-', f'g, fg'), BinOp('^', g, Num(2)))` |
-| `^` with const right | Power Rule: `(x^n)' = n·x^(n-1)·x'` | `BinOp('*', BinOp('*', Num(n), BinOp('^', left, Num(n-1))), left.diff(v))` |
-| `^` with const left (exponential) | Exponential Rule: `(a^g)' = a^g·ln(a)·g'` | `BinOp('*', BinOp('*', this, Func('ln', left)), right.diff(v))` |
-| `^` with both variable | General Power Rule: `(f^g)' = f^g·(g'·ln(f) + g·f'/f)` | Full general form |
+## Slope Using Derivatives
 
-#### `Neg.diff(variable)` → `Neg(expr.diff(variable))`
+### Input Format
 
-#### `Func.diff(variable)` — all functions include **Chain Rule automatically**
-Every `Func.diff()` multiplies the outer derivative by `inner = arg.diff(variable)`. This means chain rule is **always embedded** — you never call it separately.
-
-Full list of supported functions and their derivatives:
-
-| Function name(s) | Derivative output |
+| Type | Example |
 |---|---|
-| `sin` | `cos(arg) * inner` |
-| `cos` | `-sin(arg) * inner` |
-| `tan` | `sec²(arg) * inner` |
-| `cot` | `-csc²(arg) * inner` |
-| `sec` | `sec(arg) * tan(arg) * inner` |
-| `csc` | `-csc(arg) * cot(arg) * inner` |
-| `arcsin` / `asin` | `inner / √(1 - arg²)` |
-| `arccos` / `acos` | `-inner / √(1 - arg²)` |
-| `arctan` / `atan` | `inner / (1 + arg²)` |
-| `sinh` | `cosh(arg) * inner` |
-| `cosh` | `sinh(arg) * inner` |
-| `tanh` | `sech²(arg) * inner` |
-| `sech` | `-sech(arg) * tanh(arg) * inner` |
-| `csch` | `-csch(arg) * coth(arg) * inner` |
-| `coth` | `-csch²(arg) * inner` |
-| `ln` / `log` | `inner / arg` |
-| `log10` | `inner / (arg * ln(10))` |
-| `log2` | `inner / (arg * ln(2))` |
-| `exp` | `this * inner` (e^u derivative is itself) |
-| `sqrt` | `inner / (2 * √arg)` |
-| `abs` | `inner * arg / abs(arg)` |
+| Explicit | `y = x^3 - 2x + 1`, `x = 2` |
+| Implicit | `x^2 + y^2 = 25`, `x = 3` |
+| Parametric | `x = cos(t), y = sin(t)`, `t = 1.5708` |
 
-#### `Sqrt.diff(variable)` → `arg.diff(v) / (2 * √arg)`
+### Step Structure
 
-#### `Abs.diff(variable)` → same formula as `Func('abs', ...)` above
+1. **Given** — the equation and point
+2. **Rule Statement** — which differentiation rule applies
+3. **Algebra** — derivative computation line by line
+4. **Substitution** — plugging in the x-value
+5. **Result** — slope value, tangent line, normal line
 
-#### `LogBase.diff(variable)` → `arg.diff(v) / (arg * ln(base))`
+### AI Prompt (for the agent)
 
-### 3.3 Simplification Rules
+```
+You are a slope solver using derivatives. Show only the solution steps with these headers:
 
-`simplify()` is called repeatedly (up to 10 iterations) until the expression stops changing. Each call to `simplify()` returns a new AST with one layer simplified. Rules applied by `BinOp.simplify()`:
+- Given
+- Differentiate
+- Substitute
+- Slope Result
+- Tangent Line (if requested)
 
-| Condition | Result |
+No introductions. No summaries. Each step shows only the formula and result.
+```
+
+---
+
+## Equation Solver (Basic to Intermediate)
+
+The solver accepts and solves the following equation types:
+
+### Supported Types
+
+| Category | Examples |
 |---|---|
-| Both children are constants | Evaluate numerically to `Num` |
-| `0 + x` or `x + 0` | Return `x` |
-| `x - 0` | Return `x` |
-| `0 - x` | Return `Neg(x)` |
-| `x - x` | Return `Num(0)` |
-| `x + x` | Return `2 * x` |
-| `0 * x` or `x * 0` | Return `Num(0)` |
-| `1 * x` or `x * 1` | Return `x` |
-| `0 / x` | Return `Num(0)` |
-| `x / 1` | Return `x` |
-| `x / x` | Return `Num(1)` |
-| `x ^ 0` | Return `Num(1)` |
-| `x ^ 1` | Return `x` |
-| `0 ^ n` (n > 0) | Return `Num(0)` |
-| `1 ^ x` | Return `Num(1)` |
-| `n * (n2 * x)` (nested coefficients) | Merge to `(n*n2) * x` |
+| Linear | `2x + 3 = 7`, `5x - 1 = 14` |
+| Quadratic | `x^2 - 5x + 6 = 0`, `2x^2 + 3x = 0` |
+| Rational | `(x+1)/(x-2) = 3` |
+| Radical | `sqrt(x+4) = 3` |
+| Absolute value | `abs(x - 2) = 5` |
+| Systems (2-var) | `2x + y = 5, x - y = 1` |
+| Polynomial (degree ≤ 4) | `x^3 - x = 0` |
 
-Special function simplifications in `Func.simplify()`:
-- `ln(exp(x))` → `x`
-- `exp(ln(x))` → `x`
-- `sqrt(x^2)` → `|x|`
-- Any constant-argument function → evaluates numerically (e.g. `sin(0)` → `Num(0)`)
+### Solve Steps Structure
 
-### 3.4 The Parser (`DerivativeSolver.parse()`)
-
-The parser converts a raw string like `"3*x^2 + sin(x)"` into an AST. It is a **recursive descent parser** with these token types:
-
-**Supported input syntax:**
-- Numbers: `3`, `3.14`, `-5`
-- Variables: `x`, `y`, `t` (single letter)
-- Operators: `+`, `-`, `*`, `/`, `^`
-- Parentheses: `(`, `)`
-- Functions (written as `name(...)`): all function names listed in Section 3.2 above
-- Implicit multiplication: `2x` → `2 * x`, `2(x+1)` → `2 * (x+1)`
-- Operator precedence: `^` > `*` `/` > `+` `-`
-
-**Input examples that work:**
-```
-x^2
-3*x^2 + sin(x)
-sin(x^2)
-(x^2 + 1) / (x - 1)
-sqrt(x^2 + 1)
-ln(x) * x^3
-e^x
-arctan(2*x)
-x^2 * cos(x) + x * sin(x)
-```
-
-**Input that will throw `ParseException`:**
-- Empty string
-- Unmatched parentheses: `sin(x`
-- Unknown function names: `foo(x)`
-- Completely malformed expressions: `x++2`
-
-### 3.5 Public API of `DerivativeSolver`
-
-```dart
-// Parse a string into an AST
-static Expr parse(String expression)
-
-// Differentiate an already-parsed AST
-static Expr differentiate(Expr expr, String variable)
-
-// Simplify an AST (runs up to 10 iterations)
-static Expr simplify(Expr expr)
-
-// Full one-shot pipeline: parse → differentiate → simplify
-static Expr solve(String expression, String variable)
-
-// Get all steps including rule identification and simplification steps
-static DerivativeSteps getSteps(String expression, String variable)
-```
-
-### 3.6 `DerivativeSteps` and `DerivativeStep` data models
-
-```dart
-class DerivativeSteps {
-  final Expr original;      // the parsed input expression
-  final String variable;    // 'x' or whatever was passed in
-  final Expr derivative;    // the final simplified derivative
-  final List<DerivativeStep> steps;  // ordered list of steps
-}
-
-class DerivativeStep {
-  final StepType type;        // enum: original, identifyRule, applyRule, simplify, finalResult
-  final String description;   // human-readable text for this step
-  final Expr expression;      // the expression at this step in the process
-  final String? rule;         // the rule string if type == identifyRule, else null
-}
-
-enum StepType {
-  original,      // Step 1: show the problem
-  identifyRule,  // Steps 2–N: name which rules apply (one step per rule)
-  applyRule,     // Next step: show the raw derivative before simplification
-  simplify,      // Steps for each simplification pass
-  finalResult    // Last step: show the final simplified answer
-}
-```
+1. **Identify type** — linear, quadratic, etc.
+2. **Rearrange** — move all terms to one side
+3. **Apply method** — factoring, quadratic formula, etc.
+4. **Simplify** — reduce the expression
+5. **Solution** — `x = ...`
 
 ---
 
-## 4. Layer 2 — Step Formatter (`derivatives_steps.dart`)
+## LaTeX Rendering
 
-### 4.1 `ClassroomStepFormatter` — formats `DerivativeSteps` into classroom output
+The app uses `flutter_math_fork` for all math rendering. Expressions from solvers are converted to LaTeX before display.
 
-**Primary entry point:**
-```dart
-static ClassroomSolution generateFullSolution(DerivativeSteps steps)
-```
+### Conversion Rules (in `_toLatex`)
 
-This method produces a `ClassroomSolution` object containing:
-- The problem statement as a plain string
-- The original expression as a string
-- The final answer as a string
-- A `List<ClassroomStep>` with full classroom formatting
-- A `summary` string (which rules were used)
-- A `List<String> commonMistakes` (rule-specific warnings)
-- A `List<String> relatedConcepts` (related math topics)
-
-**Internal methods called in sequence:**
-1. `formatSteps(steps)` → converts each `DerivativeStep` to a `ClassroomStep`
-2. `_formatStep(step, stepNum, variable)` → per-step conversion
-3. `_getTitle(step)` → returns the step header text
-4. `_getExplanation(step, variable)` → returns the main explanation text
-5. `_getRuleExplanation(step)` → for `identifyRule` steps, returns rule + educational paragraph
-6. `_getTip(step)` → returns a yellow "Tip:" string or null
-7. `_getHighlightedParts(step)` → returns parts to visually highlight in the UI
-
-### 4.2 Step types and what each produces in the classroom format
-
-| `StepType` | `_getTitle()` output | What `_getExplanation()` writes |
-|---|---|---|
-| `original` | `"Problem Statement"` | `"We need to find d/dx [expression]"` |
-| `identifyRule` | `"Identify the Rule(s)"` | Rule name + formula + full educational paragraph explaining the rule |
-| `applyRule` | `"Apply Differentiation"` | `"Applying the differentiation rules:\n\nf'(x) = [raw derivative]"` |
-| `simplify` | `"Simplify"` | The description from `DerivativeStep.description` (e.g. "Any number multiplied by 0 equals 0") |
-| `finalResult` | `"Final Answer"` | `"After differentiating and simplifying, we obtain the derivative."` |
-
-### 4.3 Rule explanations — what `_getRuleExplanation()` adds per rule
-
-Every `identifyRule` step appends an educational paragraph after the formula string. These are the exact paragraphs the solver writes (agent: do NOT rewrite these without updating the test cases):
-
-| Rule detected | Extra paragraph added |
+| Plain text | LaTeX output |
 |---|---|
-| Sum/Difference Rule | "...differentiate each term independently." |
-| Product Rule | "...first times derivative of second, plus second times derivative of first." |
-| Quotient Rule | "...low d-high minus high d-low, over the square of what is below." |
-| Power Rule | "...bring the exponent down as a coefficient and reduce the exponent by 1." |
-| Chain Rule | "...differentiate the outer function, then multiply by the derivative of the inner function." |
-| Exponential Rule | "...note the presence of ln(base)." |
-| General Power Rule | "...use logarithmic differentiation in disguise." |
-| Sine | "...one of the most basic trigonometric derivatives to memorize." |
-| Cosine | "...Note the negative sign! ...common source of errors." |
-| Natural Log | "...derivative of the natural logarithm is simply 1/u." |
-| exp (e^x) | "...The exponential function e^x is special - it is its own derivative!" |
-| Arcsine | "...Be careful with the domain: arcsin(u) is only defined when |u| <= 1." |
-| Arccosine | "...Note the negative sign!" |
-| Square Root | "...can be thought of as x^(1/2), so this is a special case of the Power Rule with the Chain Rule." |
-| Absolute Value | "...not differentiable at 0. This formula assumes the input is not zero." |
-| Hyperbolic Cosine | "...no negative sign, unlike regular cosine!" |
-| Hyperbolic Tangent | "...analogous to the regular tangent derivative." |
-
-### 4.4 Tips per step type (`_getTip()`)
-
-Tips are optional guidance strings displayed below the expression in the UI:
-
-| Condition | Tip text |
-|---|---|
-| `original` step always | "Before differentiating, check if the expression can be simplified first..." |
-| `applyRule` step always | "Do not rush to simplify - first make sure your derivative is correct..." |
-| `finalResult` step always | "You can verify your answer by checking a few specific values..." |
-| `identifyRule` + Product Rule | "Always write out f, g, f', and g' separately..." |
-| `identifyRule` + Quotient Rule | "Double-check your signs!..." |
-| `identifyRule` + Chain Rule | "Identify the 'inner' and 'outer' functions first..." |
-| `identifyRule` + Power Rule | "For fractional exponents like x^(1/2), the Power Rule still applies..." |
-| `identifyRule` + Cosine | "Do not forget the negative sign!..." |
-| `identifyRule` + Natural Log | "Remember that ln(x) and log(x) usually mean the same thing in calculus..." |
-| All other `identifyRule` steps | `null` (no tip rendered) |
-| `simplify` steps always | `null` (no tip rendered) |
-
-### 4.5 Common mistakes (`_getCommonMistakes()`)
-
-Mistakes are appended at the bottom of the solution. They are keyed by which rules were detected:
-
-| Rule detected | Mistake strings added |
-|---|---|
-| Product Rule | "Forgetting that the Product Rule has TWO terms, not one" + "Mixing up which derivative goes with which function" |
-| Quotient Rule | "Getting the order wrong..." + "Forgetting to square the denominator" |
-| Chain Rule | "Forgetting to multiply by the derivative of the inner function" + "Not correctly identifying what the 'inner' function is" |
-| Cosine | "Forgetting the negative sign in the derivative of cosine" |
-| Tangent | "Writing tan'(x) = 1/cos^2(x) instead of sec^2(x)..." |
-| Power Rule | "Forgetting to reduce the exponent by 1" + "Not bringing the exponent down as a coefficient" |
-| Natural Log | "Writing ln'(x) = 1/ln(x) instead of 1/x" |
-| Hyperbolic Cosine | "Adding a negative sign (cosh' = sinh, NOT -sinh)" |
-| Hyperbolic Tangent | "Using tanh' = sech^2 with a negative sign (there is no negative!)" |
-| No rules at all | Falls back to: "Always double-check your algebra when simplifying" |
-
-### 4.6 Related concepts (`_getRelatedConcepts()`)
-
-Always included regardless of rule:
-- "Definition of the Derivative as a Limit"
-- "Higher-Order Derivatives (second derivative, etc.)"
-- "Applications of Derivatives (optimization, related rates)"
-
-Added per rule detected:
-- Product Rule → "Logarithmic Differentiation (alternative for products)"
-- Quotient Rule → "Rewriting quotients as products with negative exponents"
-- Chain Rule → "Implicit Differentiation" + "Related Rates"
-- Any trig function → "Trigonometric Identities"
-- Inverse trig → "Inverse Function Theorem"
-- Exponential or Natural Log → "Logarithmic Differentiation"
-- Hyperbolic functions → "Relationship between hyperbolic and trigonometric functions"
-
-### 4.7 `AdvancedStepGenerator` — enhanced sub-steps
-
-`AdvancedStepGenerator.generateDetailedSolution(expression, variable)` wraps `ClassroomStepFormatter` and inserts **sub-steps** after every `applyRule` step. Sub-steps break down each complex operation individually:
-
-- **Product Rule sub-step:** Shows `f(x) = ...`, `g(x) = ...`, `f'(x) = ...`, `g'(x) = ...` labeled explicitly
-- **Quotient Rule sub-step:** Same breakdown with "numerator" and "denominator" labels. Mnemonic: "Low D-High minus High D-Low, over Low squared"
-- **Chain Rule sub-step:** Shows outer function name, inner function, derivative of outer, derivative of inner
-
-This class is available but the current `DerivativeScreen` uses `ClassroomStepFormatter.generateFullSolution()` — not `AdvancedStepGenerator`. Use `AdvancedStepGenerator` if you want richer sub-step detail in the UI.
-
-### 4.8 `ClassroomStep` and `ClassroomSolution` data models
-
-```dart
-class ClassroomStep {
-  final int stepNumber;           // 1-based index
-  final StepType type;            // from StepType enum
-  final String title;             // header shown in UI
-  final String explanation;       // body text
-  final String expression;        // the math expression at this step (empty string if none)
-  final String? rule;             // raw rule string, or null
-  final String? tip;              // tip text, or null
-  final List<String> highlightedParts;  // parts to highlight (currently limited use)
-}
-
-class ClassroomSolution {
-  final String problem;           // "Find f'(x) where f(x) = ..."
-  final String originalExpression;
-  final String finalAnswer;
-  final List<ClassroomStep> steps;
-  final String summary;
-  final List<String> commonMistakes;
-  final List<String> relatedConcepts;
-}
-```
-
-Both classes support `.toPlainText()`, `.toMarkdown()`, and `.toJson()`.
+| `x^2` | `x^{2}` |
+| `sqrt(x)` | `\sqrt{x}` |
+| `sin(x)` | `\sin{x}` |
+| `ln(x)` | `\ln{x}` |
+| `a/b` | `\frac{a}{b}` |
 
 ---
 
-## 5. Layer 3 — UI (`derivatives_screen.dart`, `Widgets/`)
+## Dependencies
 
-### 5.1 `DerivativeScreen` (StatefulWidget)
-
-**State variables:**
-| Variable | Type | Purpose |
-|---|---|---|
-| `_exprController` | `TextEditingController` | Holds user's typed expression |
-| `_scrollController` | `ScrollController` | For auto-scrolling to steps section |
-| `_stepsKey` | `GlobalKey` | Marks the steps section for scroll targeting |
-| `_variable` | `String` | Currently selected variable (`'x'` by default) |
-| `_solution` | `ClassroomSolution?` | Null until solve is successful |
-| `_isLoading` | `bool` | True during 400ms artificial delay before solve |
-| `_error` | `String?` | Non-null when `ParseException` is caught |
-
-**`_solve()` method flow:**
-1. Guard: returns immediately if `_exprController.text.trim().isEmpty`
-2. Sets `_isLoading = true`, clears `_error` and `_solution`
-3. Waits `400ms` (artificial delay for UX feel)
-4. Calls `DerivativeSolver.getSteps(expression, _variable)`
-5. Passes result to `ClassroomStepFormatter.generateFullSolution(steps)`
-6. Sets `_solution` and `_isLoading = false`
-7. Calls `_scrollToStepsSection()` to scroll the user to the results
-8. On catch: sets `_error` to the exception message (strips `'ParseException: '` prefix)
-
-**`_scrollToStepsSection()` method:**
-- Uses `Scrollable.ensureVisible()` with 600ms duration and `Curves.easeInOutCubic`
-- Target is the widget at `_stepsKey`
-
-**Layout structure (CustomScrollView with slivers):**
-1. Header text: "Differentiate" + subtitle
-2. `DerivativeInputField` widget
-3. Error display (if `_error != null`)
-4. Loading indicator (if `_isLoading`)
-5. `DerivativeAnswerCard` (if solution exists)
-6. Steps section header (keyed with `_stepsKey`)
-7. `ListView` of `DerivativeStepTile` widgets (one per `ClassroomStep`)
-8. Common mistakes section
-9. Related concepts section
-
-**Theme:** All colors come from `FinalsTheme` (amber/gold). No hardcoded colors in this file.
-
-### 5.2 `DerivativeInputField` widget
-
-Located at: `Widgets/derivatives_input_field.dart`
-
-Responsibilities:
-- Text input for the expression
-- Variable selector toggle (switches `_variable` between `'x'`, `'y'`, `'t'`)
-- Quick-key toolbar (inserts symbols like `^`, `*`, `sin(`, `cos(`, etc. into the text field at cursor position)
-- "Solve" button that calls back to `_solve()` in the parent screen
-
-### 5.3 `DerivativeAnswerCard` widget
-
-Located at: `Widgets/derivatives_answer_card.dart`
-
-Displays the final result. Receives the `ClassroomSolution` and shows:
-- The problem string
-- The final answer: `f'(x) = [finalAnswer]`
-- Styled with `FinalsTheme` colors (amber/gold border glow)
-
-### 5.4 `DerivativeStepTile` widget
-
-Located at: `Widgets/derivatives_steptile.dart`
-
-Renders one `ClassroomStep` inside a **vertical timeline layout**:
-- Left column: numbered circle (filled amber for `finalResult`, outlined for others) + vertical connecting line
-- Right column: step title, explanation text, expression block (if non-empty), tip block (if non-null)
-
-Timeline styling:
-- Circle diameter: `28px`
-- Circle border color: `FinalsTheme.primary.withValues(alpha: 0.5)` (outline steps) or `FinalsTheme.primary` (final result step)
-- Connecting line: `2px` wide, `FinalsTheme.primary.withValues(alpha: 0.2)` color
-- No connecting line rendered after the last step (`isLast = true`)
-
----
-
-## 6. What the Solver Can and Cannot Do
-
-### ✅ Supported — Basic (works correctly)
-
-| Expression type | Input example | Expected output |
-|---|---|---|
-| Constant | `5` | `0` |
-| Variable | `x` | `1` |
-| Power of variable | `x^3` | `3 * x^2` |
-| Linear | `3*x + 2` | `3` |
-| Polynomial | `x^4 - 2*x^2 + x` | `4*x^3 - 4*x + 1` |
-| Coefficient times power | `5*x^2` | `10*x` |
-| Negative exponent | `x^(-2)` | `-2 * x^(-3)` |
-| Fractional exponent | `x^(1/2)` | `(1/2) * x^(-1/2)` |
-| Sum of two terms | `x^2 + sin(x)` | `2*x + cos(x)` |
-| Subtraction | `x^3 - ln(x)` | `3*x^2 - 1/x` |
-
-### ✅ Supported — Intermediate (works correctly)
-
-| Expression type | Input example |
-|---|---|
-| Product Rule | `x^2 * sin(x)` |
-| Quotient Rule | `sin(x) / x` |
-| Chain Rule — trig | `sin(x^2)` |
-| Chain Rule — log | `ln(3*x + 1)` |
-| Chain Rule — sqrt | `sqrt(x^2 + 1)` |
-| Chain Rule — exp | `exp(x^2)` or `e^(x^2)` |
-| Nested chain | `sin(cos(x))` |
-| Product + Chain | `x^2 * sin(x^3)` |
-| Quotient + Chain | `ln(x) / (x^2 + 1)` |
-| Inverse trig | `arctan(x)`, `arcsin(2*x)` |
-| Hyperbolic | `sinh(x)`, `tanh(x^2)` |
-| General exponential | `2^x`, `3^(x^2)` |
-| Log base change | `log10(x)`, `log2(x+1)` |
-| Absolute value | `abs(x^2 - 1)` |
-
-### ❌ Not Supported — What the solver cannot handle
-
-| Limitation | What happens |
-|---|---|
-| Implicit functions (e.g., `x^2 + y^2 = r^2`) | Parser will fail — no equation parsing |
-| Multi-variable expressions differentiated w.r.t. multiple vars simultaneously | Only one variable per call |
-| Piecewise / conditional functions | Not supported — no conditional AST node |
-| Definite or indefinite integration | Completely out of scope — this is a differentiator only |
-| Limits (separate module: `Evaluating_limits/`) | Not handled here |
-| Second and higher-order derivatives | Must call `solve()` twice manually |
-| Implicit multiplication without `*` between two variables | `xy` is NOT parsed as `x * y` — must write `x*y` |
-| Greek letters (θ, φ, etc.) | Parser handles only single Latin letter variables |
-
----
-
-## 7. What Needs to Be Improved — Agent Task List
-
-These are the specific gaps the agent must address. Each item is a self-contained task.
-
----
-
-### TASK A — Add intermediate and advanced problem examples to the UI
-
-**Problem:** The input field shows a placeholder but no built-in example buttons. Students don't know what to type.
-
-**File to edit:** `Widgets/derivatives_input_field.dart`
-
-**What to add:**
-Add a horizontally scrollable row of example expression chips above the quick-key toolbar. Tapping a chip inserts that expression into `_exprController`.
-
-**Example expressions to include (minimum 8, in this order):**
-
-| Label shown | Expression inserted |
-|---|---|
-| `x³` | `x^3` |
-| `x² · sin x` | `x^2 * sin(x)` |
-| `sin(x²)` | `sin(x^2)` |
-| `ln(x)/x` | `ln(x) / x` |
-| `√(x²+1)` | `sqrt(x^2 + 1)` |
-| `eˣ · x²` | `exp(x) * x^2` |
-| `arctan(2x)` | `arctan(2*x)` |
-| `x²·cos(x³)` | `x^2 * cos(x^3)` |
-
-**Style:** Use `FinalsTheme.primary` for chip background at 15% opacity, `FinalsTheme.primary` text color. Rounded pill shape (`BorderRadius.circular(20)`).
-
----
-
-### TASK B — Show the complete classroom step breakdown for Product Rule and Quotient Rule
-
-**Problem:** Currently `ClassroomStepFormatter.generateFullSolution()` is called in `DerivativeScreen._solve()`. This uses the basic formatter. The `AdvancedStepGenerator.generateDetailedSolution()` in `derivatives_steps.dart` adds sub-steps that label `f`, `g`, `f'`, `g'` separately — but it is never called.
-
-**File to edit:** `UI/derivatives_screen.dart`
-
-**What to change:**
-
-In `_solve()`, replace:
-```dart
-_solution = ClassroomStepFormatter.generateFullSolution(steps);
-```
-
-With:
-```dart
-_solution = AdvancedStepGenerator.generateDetailedSolution(
-  _exprController.text.trim(),
-  _variable,
-);
-```
-
-**Required import to add:**
-```dart
-import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/derivatives_steps.dart';
-```
-(already imported — just confirm it is there)
-
-**Effect:** For any expression involving `*` or `/`, the solver will now insert sub-steps that explicitly label `f(x) = ...`, `g(x) = ...`, `f'(x) = ...`, `g'(x) = ...` in the classroom timeline between the "Apply Differentiation" step and the simplification steps.
-
----
-
-### TASK C — Add rule formula display inside the step tile
-
-**Problem:** `DerivativeStepTile` receives `step.rule` (the formula string like `"Power Rule: d/dx[xⁿ] = n·xⁿ⁻¹"`) but does not display it as a dedicated formula block. It is embedded inside `step.explanation`. Students benefit from seeing the formula visually separated.
-
-**File to edit:** `Widgets/derivatives_steptile.dart`
-
-**What to add:**
-For steps where `step.type == StepType.identifyRule` and `step.rule != null`:
-- Extract the part before the `:` as the **rule name** (e.g., `"Power Rule"`)
-- Extract the part after the `:` as the **formula** (e.g., `"d/dx[xⁿ] = n·xⁿ⁻¹"`)
-- Display the formula inside a styled container with:
-  - Background: `FinalsTheme.primary.withValues(alpha: 0.08)`
-  - Border left: `3px` solid `FinalsTheme.primary`
-  - Padding: `12px` horizontal, `8px` vertical
-  - Font: monospace, `FinalsTheme.textPrimary(context)` color, size `13`
-
-Place this formula block **between** the title and the explanation text in the right column.
-
-**How to split the rule string:**
-```dart
-final colonIndex = step.rule!.indexOf(':');
-final ruleName = colonIndex != -1 ? step.rule!.substring(0, colonIndex).trim() : step.rule!;
-final formula   = colonIndex != -1 ? step.rule!.substring(colonIndex + 1).trim() : '';
+```yaml
+dependencies:
+  flutter_math_fork: ^0.7.2     # LaTeX rendering
+  equations: ^6.0.0             # Equation solving
+  math_expressions: ^2.6.0      # Expression parsing and differentiation
+  fn_express: ^1.0.0            # Symbolic derivatives
+  provider: ^6.1.1              # State management
+  shared_preferences: ^2.2.2    # Local storage
 ```
 
 ---
 
-### TASK D — Fix the `StepType.simplify` steps showing redundant expressions
+## Running the Project
 
-**Problem:** When the solver generates simplification steps (e.g., "0 + 3*x^2 → 3*x^2"), the step tile renders both the `explanation` text AND the `expression` string. For simplification steps the expression string alone is sufficient and the explanation text duplicates it.
-
-**File to edit:** `Widgets/derivatives_steptile.dart`
-
-**What to change:**
-When rendering the right column content for a step where `step.type == StepType.simplify`:
-- Show ONLY the `expression` string in the expression block
-- Do NOT render the `explanation` text (it says "Simplify: [before] → [after]" which is already captured by showing the expression)
-
-Apply this conditionally:
-```dart
-// Only show explanation text if this is NOT a simplify step
-if (step.type != StepType.simplify)
-  Text(step.explanation, ...)
+```bash
+flutter pub get
+flutter run
 ```
+
+Supports Android, iOS, Web, and Desktop. All math computations run **offline** — no internet required after install.
 
 ---
 
-### TASK E — Add a "Copy Answer" button to `DerivativeAnswerCard`
+## Contributing
 
-**Problem:** Users cannot copy the derivative result. There is no copy button.
+Branch naming: `feature/YourName_feature_name`
 
-**File to edit:** `Widgets/derivatives_answer_card.dart`
-
-**What to add:**
-In the answer card, add an `IconButton` with `Icons.copy_rounded` icon positioned at the top-right of the card. On tap:
-```dart
-Clipboard.setData(ClipboardData(text: solution.finalAnswer));
-ScaffoldMessenger.of(context).showSnackBar(
-  const SnackBar(content: Text('Answer copied to clipboard')),
-);
-```
-
-**Import required:**
-```dart
-import 'package:flutter/services.dart';
-```
-
----
-
-### TASK F — Handle empty `expression` field in `ClassroomStep` more cleanly in the UI
-
-**Problem:** `ClassroomStep.expression` is an empty string `""` for sub-steps from `AdvancedStepGenerator`. `DerivativeStepTile` currently wraps every `expression` in an expression block even when it's empty, resulting in a blank padded box.
-
-**File to edit:** `Widgets/derivatives_steptile.dart`
-
-**What to change:**
-Wrap the expression block in a null check:
-```dart
-if (step.expression.isNotEmpty)
-  // render expression block
-```
-
-This is already partially described in the existing render logic — confirm it is guarded and fix if not.
-
----
-
-## 8. Complete Step-by-Step Classroom Example
-
-This is what the solver produces for `x^2 * sin(x)` (Product Rule + Chain Rule awareness). Use this to verify correct behavior after any change.
-
-**Input:** `x^2 * sin(x)` with variable `x`
-
-**Expected step sequence:**
-
-```
-Step 1: Problem Statement
-  We need to find d/dx [x^2 * sin(x)]
-  Tip: Before differentiating, check if the expression can be simplified first...
-
-Step 2: Identify the Rule(s)
-  Title: Identify the Rule(s)
-  Rule: Product Rule: d/dx[f(x)·g(x)] = f'(x)·g(x) + f(x)·g'(x)
-  Explanation: [rule text] + "first times derivative of second, plus second times derivative of first."
-  Tip: Always write out f, g, f', and g' separately before applying the Product Rule...
-
-Step 3: Identify the Rule(s)
-  Rule: Power Rule: d/dx[xⁿ] = n·xⁿ⁻¹
-  Explanation: [rule text] + "bring the exponent down as a coefficient and reduce the exponent by 1."
-  Tip: For fractional exponents like x^(1/2), the Power Rule still applies...
-
-Step 4: Identify the Rule(s)
-  Rule: Derivative of Sine: d/dx[sin(u)] = cos(u)
-  Explanation: [rule text] + "one of the most basic trigonometric derivatives to memorize."
-  Tip: null
-
-Step 5: Apply Differentiation
-  f'(x) = [raw derivative before simplification]
-  Tip: Do not rush to simplify...
-
-[Steps 6–N: Simplify steps — one per simplification pass]
-
-Final Step: Final Answer
-  Expression: 2*x * sin(x) + x^2 * cos(x)
-  Tip: You can verify your answer by checking a few specific values...
-
-Summary:
-  "To solve this problem, we used the Product Rule, Power Rule, and Sine Derivative."
-  "The final derivative is: f'(x) = 2*x * sin(x) + x^2 * cos(x)"
-
-Common Mistakes:
-  - "Forgetting that the Product Rule has TWO terms, not one"
-  - "Mixing up which derivative goes with which function"
-  - "Forgetting to reduce the exponent by 1"
-  - "Not bringing the exponent down as a coefficient"
-
-Related Concepts:
-  - "Definition of the Derivative as a Limit"
-  - "Logarithmic Differentiation (alternative for products)"
-  - "Trigonometric Identities"
-  - "Higher-Order Derivatives (second derivative, etc.)"
-  - "Applications of Derivatives (optimization, related rates)"
-```
-
----
-
-## 9. Import Reference
-
-Every file that needs to import from this module:
-
-```dart
-// Core solver (AST, parser, differentiator, simplifier, DerivativeSteps model)
-import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/deriviatives_solver.dart';
-
-// Step formatter (ClassroomStepFormatter, AdvancedStepGenerator, ClassroomSolution, ClassroomStep)
-import 'package:calculus_system/Finals/Joashua/Derivatives/solvers/derivatives_steps.dart';
-
-// Widgets (used only by derivatives_screen.dart)
-import 'package:calculus_system/Finals/Joashua/Derivatives/Widgets/derivatives_input_field.dart';
-import 'package:calculus_system/Finals/Joashua/Derivatives/Widgets/derivatives_answer_card.dart';
-import 'package:calculus_system/Finals/Joashua/Derivatives/Widgets/derivatives_steptile.dart';
-
-// Theme (used by all UI files in this module)
-import 'package:calculus_system/Finals/finals_theme.dart';
-```
-
-> ⚠️ **Spelling note:** `deriviatives_solver.dart` has a typo in the original filename (`deriviatives` not `derivatives`). Always use the exact spelling above in imports or you will get a compile error.
-
----
-
-## 10. Definition of Done (for any agent completing Tasks A–F)
-
-After making changes, the following must all be true:
-
-1. `flutter analyze` returns zero errors
-2. Entering `x^3` produces steps: Problem Statement → Power Rule identified → Apply → Simplify → Final Answer `3 * x^2`
-3. Entering `x^2 * sin(x)` shows a sub-step that explicitly labels `f(x) = x^2`, `g(x) = sin(x)`, `f'(x) = 2*x`, `g'(x) = cos(x)` (Task B)
-4. Identiy-rule steps show a left-bordered formula block (Task C)
-5. Simplify steps do NOT render explanation text (Task D)
-6. The answer card has a working copy button (Task E)
-7. Sub-steps from `AdvancedStepGenerator` with empty `expression` do not render a blank box (Task F)
-8. Example chips appear in the input field and insert the correct expression on tap (Task A)
-9. All colors use `FinalsTheme.*` — no hardcoded `Color(0xFF...)` in any of the 5 files in this folder
+All solver logic lives in the `solvers/` subfolder of each module. UI is separated from logic.

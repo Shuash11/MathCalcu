@@ -254,119 +254,58 @@ class SolutionBuilder {
 class ExplicitSolutionBuilder {
   static ClassroomSolution build(SlopeResult r) {
     final steps = <ClassroomStep>[];
-    final x = r.independentVar;
+final x = r.independentVar;
     final y = r.dependentVar ?? 'y';
     final f = r.functionExpr;
     final fStr = f.toMathString();
-    final rawStr = r.derivative.toMathString();
     final simpStr = r.simplifiedDerivative.toMathString();
 
-    // ── GIVEN ──────────────────────────────────────────────────────────────
+    // ── Given ──────────────────────────────────────────────────────────────
     steps.add(ClassroomStep(
       kind: StepKind.sectionHeader,
       label: 'Given',
       lines: [
         '$y = $fStr',
-        'Find:  d$y/d$x'
-            '${r.point.containsKey(x) ? ' at $x = ${_fmt(r.point[x]!)}' : ' as a function of $x'}',
+        'at $x = ${r.point.containsKey(x) ? '${_fmt(r.point[x]!)}' : 'x'}',
       ],
     ));
 
-    // ── STEP 1 — Identify the governing rule ──────────────────────────────
+    // ── Differentiate ─────────────────────────────────────────────────────────
     steps.add(ClassroomStep(
       kind: StepKind.ruleStatement,
-      label: 'Step 1',
+      label: 'Differentiate',
       lines: [
-        'Identify the differentiation rule for the top-level structure:',
-        '',
-        ...DerivativeNarrator.narrate(f, x),
+        'd$y/d$x = $simpStr',
       ],
     ));
 
-    // ── STEP 2 — Set up the derivative ────────────────────────────────────
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Step 2',
-      lines: [
-        'Write the derivative operator:',
-        '',
-        '  d$y/d$x  =  d/d$x [ $fStr ]',
-      ],
-    ));
-
-    // ── STEP 3 — Apply rules term by term ─────────────────────────────────
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Step 3',
-      lines: [
-        'Apply the rule — differentiate each component:',
-        '',
-        '  d$y/d$x  =  $rawStr',
-      ],
-    ));
-
-    // ── STEP 4 — Simplify ─────────────────────────────────────────────────
-    if (rawStr != simpStr) {
-      steps.add(ClassroomStep(
-        kind: StepKind.algebra,
-        label: 'Step 4',
-        lines: [
-          'Simplify — combine like terms, cancel factors:',
-          '',
-          '  d$y/d$x  =  $simpStr',
-        ],
-      ));
-    } else {
-      steps.add(ClassroomStep(
-        kind: StepKind.note,
-        label: 'Step 4',
-        lines: ['The derivative requires no further simplification.'],
-      ));
-    }
-
-    // ── STEP 5 — Evaluate at the given point ──────────────────────────────
+    // ── Substitute ─────────────────────────────────────────────────────────
     if (r.point.containsKey(x) && r.slopeValue != null) {
       final xVal = r.point[x]!;
       final yVal = _evalSafe(r.functionExpr, r.point);
 
       steps.add(ClassroomStep(
         kind: StepKind.substitution,
-        label: 'Step 5',
+        label: 'Substitute',
         lines: [
-          'Substitute $x = ${_fmt(xVal)} into the derivative:',
-          '',
-          '  d$y/d$x |_{$x = ${_fmt(xVal)}}  =  [ $simpStr ]_{$x = ${_fmt(xVal)}}',
-          '                         =  ${_fmt(r.slopeValue!)}',
-          '',
-          if (yVal != null)
-            'The curve passes through  (${_fmt(xVal)},  ${_fmt(yVal)}).',
+          'd$y/d$x = ${_fmt(r.slopeValue!)}',
         ],
       ));
 
-      // ── STEP 6 — Tangent line ────────────────────────────────────────────
+      // ── Tangent Line ───────────────────────────────────────────
       if (yVal != null && r.tangentLineEquation != null) {
         final m = r.slopeValue!;
         final b = yVal - m * xVal;
         steps.add(ClassroomStep(
           kind: StepKind.tangentNormal,
-          label: 'Step 6',
+          label: 'Tangent Line',
           lines: [
-            'Tangent line at  (${_fmt(xVal)}, ${_fmt(yVal)}):',
-            '',
-            '  Use point-slope form:  y − y₀ = m(x − x₀)',
-            '',
-            '  m  =  ${_fmt(m)}',
-            '  (x₀, y₀)  =  (${_fmt(xVal)}, ${_fmt(yVal)})',
-            '',
-            '  y − ${_fmt(yVal)}  =  ${_fmt(m)}(x − ${_fmt(xVal)})',
-            '  y  =  ${_fmt(m)}x + ${_fmt(b)}',
-            '',
-            '  Tangent line:  ${r.tangentLineEquation}',
+            'y = ${_fmt(m)}x + ${_fmt(b)}',
           ],
         ));
       }
 
-      // ── STEP 7 — Normal line ─────────────────────────────────────────────
+      // ── Normal Line ───────────────────────────────────────────
       if (yVal != null &&
           r.normalLineEquation != null &&
           r.normalSlope != null) {
@@ -374,27 +313,15 @@ class ExplicitSolutionBuilder {
         final bN = yVal - mN * xVal;
         steps.add(ClassroomStep(
           kind: StepKind.tangentNormal,
-          label: 'Step 7',
+          label: 'Normal Line',
           lines: [
-            'Normal line at  (${_fmt(xVal)}, ${_fmt(yVal)}):',
-            '',
-            '  The normal is perpendicular to the tangent.',
-            '  For two perpendicular lines:  m₁ · m₂ = −1',
-            '',
-            '  m_normal  =  −1 / m_tangent',
-            '            =  −1 / ${_fmt(r.slopeValue!)}',
-            '            =  ${_fmt(mN)}',
-            '',
-            '  y − ${_fmt(yVal)}  =  ${_fmt(mN)}(x − ${_fmt(xVal)})',
-            '  y  =  ${_fmt(mN)}x + ${_fmt(bN)}',
-            '',
-            '  Normal line:  ${r.normalLineEquation}',
+            'y = ${_fmt(mN)}x + ${_fmt(bN)}',
           ],
         ));
       }
     }
 
-    // ── RESULT ────────────────────────────────────────────────────────────
+    // ── Result ───────────────────────────────────────────────────────────
     steps.add(ClassroomStep(
       kind: StepKind.result,
       label: 'Answer',
