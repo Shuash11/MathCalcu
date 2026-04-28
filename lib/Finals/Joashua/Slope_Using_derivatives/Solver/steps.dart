@@ -252,21 +252,21 @@ class SolutionBuilder {
 // ══════════════════════════════════════════════════════════════════════════════
 
 class ExplicitSolutionBuilder {
-  static ClassroomSolution build(SlopeResult r) {
+static ClassroomSolution build(SlopeResult r) {
     final steps = <ClassroomStep>[];
-final x = r.independentVar;
+    final x = r.independentVar;
     final y = r.dependentVar ?? 'y';
     final f = r.functionExpr;
-    final fStr = f.toMathString();
-    final simpStr = r.simplifiedDerivative.toMathString();
+    final fLatex = f.toLatexString();
+    final simpLatex = r.simplifiedDerivative.toLatexString();
 
     // ── Given ──────────────────────────────────────────────────────────────
     steps.add(ClassroomStep(
       kind: StepKind.sectionHeader,
       label: 'Given',
       lines: [
-        '$y = $fStr',
-        'at $x = ${r.point.containsKey(x) ? '${_fmt(r.point[x]!)}' : 'x'}',
+        '$y = $fLatex',
+        'at $x = ${r.point.containsKey(x) ? _fmt(r.point[x]!) : 'x'}',
       ],
     ));
 
@@ -275,7 +275,7 @@ final x = r.independentVar;
       kind: StepKind.ruleStatement,
       label: 'Differentiate',
       lines: [
-        'd$y/d$x = $simpStr',
+        '\\frac{d$y}{d$x} = $simpLatex',
       ],
     ));
 
@@ -288,7 +288,7 @@ final x = r.independentVar;
         kind: StepKind.substitution,
         label: 'Substitute',
         lines: [
-          'd$y/d$x = ${_fmt(r.slopeValue!)}',
+          '\\frac{d$y}{d$x} = ${_fmt(r.slopeValue!)}',
         ],
       ));
 
@@ -321,14 +321,14 @@ final x = r.independentVar;
       }
     }
 
-    // ── Result ───────────────────────────────────────────────────────────
+// ── Result ───────────────────────────────────────────────────────────
     steps.add(ClassroomStep(
       kind: StepKind.result,
       label: 'Answer',
       lines: [
-        'd$y/d$x  =  $simpStr',
+        'dy/dx  =  $simpLatex',
         if (r.slopeValue != null)
-          'Slope at $x = ${_fmt(r.point[x]!)}:   m = ${_fmt(r.slopeValue!)}',
+          'Slope at x = ${_fmt(r.point[x]!)}:   m = ${_fmt(r.slopeValue!)}',
         if (r.tangentLineEquation != null)
           'Tangent line:  ${r.tangentLineEquation}',
         if (r.normalLineEquation != null)
@@ -352,13 +352,13 @@ final x = r.independentVar;
 class ImplicitSolutionBuilder {
   static ClassroomSolution build(SlopeResult r) {
     final steps = <ClassroomStep>[];
-    final lhsStr = r.leftSide?.toMathString() ?? '';
-    final rhsStr = r.rightSide?.toMathString() ?? '';
-    final dLStr = r.leftDerivative?.toMathString() ?? '';
-    final dRStr = r.rightDerivative?.toMathString() ?? '';
-    final diffStr = r.derivative.toMathString();
-    final slopeStr = r.implicitSlopeExpr?.toMathString() ??
-        r.simplifiedDerivative.toMathString();
+    final lhsLatex = r.leftSide?.toLatexString() ?? '';
+    final rhsLatex = r.rightSide?.toLatexString() ?? '';
+    final dLatex = r.leftDerivative?.toLatexString() ?? '';
+    final dRLatex = r.rightDerivative?.toLatexString() ?? '';
+    final diffLatex = r.derivative.toLatexString();
+    final slopeLatex = r.implicitSlopeExpr?.toLatexString() ??
+        r.simplifiedDerivative.toLatexString();
     final hasPoint = r.point.containsKey('x') && r.point.containsKey('y');
 
     // ── GIVEN ──────────────────────────────────────────────────────────────
@@ -366,8 +366,8 @@ class ImplicitSolutionBuilder {
       kind: StepKind.sectionHeader,
       label: 'Given',
       lines: [
-        '$lhsStr  =  $rhsStr',
-        'Find:  dy/dx  using Implicit Differentiation'
+        '$lhsLatex  =  $rhsLatex',
+        'Find:  \\frac{dy}{dx}  using Implicit Differentiation'
             '${hasPoint ? '  at  (${_fmt(r.point['x']!)}, ${_fmt(r.point['y']!)})' : ''}',
       ],
     ));
@@ -382,9 +382,9 @@ class ImplicitSolutionBuilder {
         '  y is implicitly defined as a function of x.',
         '  Differentiate both sides of the equation with respect to x.',
         '  Every time we differentiate a term containing y,',
-        '  the Chain Rule requires multiplying by  dy/dx.',
+        '  the Chain Rule requires multiplying by  \\frac{dy}{dx}.',
         '',
-        '  Key identity:  d/dx[f(y)]  =  f\'(y) · dy/dx',
+        '  Key identity:  \\frac{d}{dx}[f(y)]  =  f\'(y) \\cdot \\frac{dy}{dx}',
       ],
     ));
 
@@ -396,11 +396,11 @@ class ImplicitSolutionBuilder {
       kind: StepKind.algebra,
       label: 'Step 2',
       lines: [
-        'Differentiate the LEFT side  d/dx[$lhsStr]:',
+        'Differentiate the LEFT side  \\frac{d}{dx}[$lhsLatex]:',
         '',
         ...dLRuleLines.map((l) => '  → $l'),
         '',
-        '  d/dx[$lhsStr]  =  $dLStr',
+        '  \\frac{d}{dx}[$lhsLatex]  =  $dLatex',
       ],
     ));
 
@@ -412,11 +412,11 @@ class ImplicitSolutionBuilder {
       kind: StepKind.algebra,
       label: 'Step 3',
       lines: [
-        'Differentiate the RIGHT side  d/dx[$rhsStr]:',
+        'Differentiate the RIGHT side  \\frac{d}{dx}[$rhsLatex]:',
         '',
         ...dRRuleLines.map((l) => '  → $l'),
         '',
-        '  d/dx[$rhsStr]  =  $dRStr',
+        '  \\frac{d}{dx}[$rhsLatex]  =  $dRLatex',
       ],
     ));
 
@@ -427,11 +427,11 @@ class ImplicitSolutionBuilder {
       lines: [
         'Set the differentiated sides equal:',
         '',
-        '  $dLStr  =  $dRStr',
+        '  $dLatex  =  $dRLatex',
         '',
         'Move all terms to one side:',
         '',
-        '  $diffStr  =  0',
+        '  $diffLatex  =  0',
       ],
     ));
 
@@ -440,10 +440,10 @@ class ImplicitSolutionBuilder {
       kind: StepKind.algebra,
       label: 'Step 5',
       lines: [
-        'Group all dy/dx terms on the left, everything else on the right.',
-        'Factor out dy/dx and divide:',
+        'Group all \\frac{dy}{dx} terms on the left, everything else on the right.',
+        'Factor out \\frac{dy}{dx} and divide:',
         '',
-        '  dy/dx  =  $slopeStr',
+        '  \\frac{dy}{dx}  =  $slopeLatex',
       ],
     ));
 
@@ -457,7 +457,7 @@ class ImplicitSolutionBuilder {
         lines: [
           'Substitute  x = ${_fmt(xVal)},  y = ${_fmt(yVal)}:',
           '',
-          '  dy/dx  =  [ $slopeStr ]_{x=${_fmt(xVal)}, y=${_fmt(yVal)}}',
+          '  \\frac{dy}{dx}  =  [ $slopeLatex ]_{x=${_fmt(xVal)}, y=${_fmt(yVal)}}',
           '         =  ${_fmt(r.slopeValue!)}',
         ],
       ));
@@ -513,7 +513,7 @@ class ImplicitSolutionBuilder {
       kind: StepKind.result,
       label: 'Answer',
       lines: [
-        'dy/dx  =  $slopeStr',
+        'dy/dx  =  $slopeLatex',
         if (r.slopeValue != null)
           'Slope at (${_fmt(r.point['x']!)}, ${_fmt(r.point['y']!)}):   m = ${_fmt(r.slopeValue!)}',
         if (r.tangentLineEquation != null)
@@ -540,21 +540,20 @@ class ParametricSolutionBuilder {
   static ClassroomSolution build(SlopeResult r) {
     final steps = <ClassroomStep>[];
     final t = r.independentVar;
-    final xStr = r.paramXExpr?.toMathString() ?? '';
-    final yStr = r.paramYExpr?.toMathString() ?? '';
-    final dxStr = r.dxDt?.toMathString() ?? '';
-    final dyStr = r.dyDt?.toMathString() ?? '';
-    final slopeStr = r.simplifiedDerivative.toMathString();
+    final xLatex = r.paramXExpr?.toLatexString() ?? '';
+    final yLatex = r.paramYExpr?.toLatexString() ?? '';
+    final dxLatex = r.dxDt?.toLatexString() ?? '';
+    final dyLatex = r.dyDt?.toLatexString() ?? '';
+    final slopeLatex = r.simplifiedDerivative.toLatexString();
 
     // ── GIVEN ──────────────────────────────────────────────────────────────
     steps.add(ClassroomStep(
       kind: StepKind.sectionHeader,
       label: 'Given',
       lines: [
-        'x($t)  =  $xStr',
-        'y($t)  =  $yStr',
-        'Find:  dy/dx  using Parametric Differentiation'
-            '${r.point.containsKey(t) ? '  at  $t = ${_fmt(r.point[t]!)}' : ''}',
+        'x(t)  =  $xLatex',
+        'y(t)  =  $yLatex',
+        'Find:  dy/dx  using Parametric Differentiation${r.point.containsKey(t) ? '  at  t = ${_fmt(r.point[t]!)}' : ''}',
       ],
     ));
 
@@ -568,12 +567,10 @@ class ParametricSolutionBuilder {
         '  x and y are not directly related — both depend on the parameter $t.',
         '  By the Chain Rule:',
         '',
-        '    dy     dy/d$t',
-        '    ──  =  ──────',
-        '    dx     dx/d$t',
+        '    \\frac{dy}{dx} = \\frac{dy/dt}{dx/dt}',
         '',
-        '  This is valid whenever  dx/d$t ≠ 0.',
-        '  When dx/d$t = 0 and dy/d$t ≠ 0, the tangent is vertical.',
+        '  This is valid whenever  dx/dt ≠ 0.',
+        '  When dx/dt = 0 and dy/dt ≠ 0, the tangent is vertical.',
         '  When both are 0, the point is singular — further analysis needed.',
       ],
     ));
@@ -586,11 +583,11 @@ class ParametricSolutionBuilder {
       kind: StepKind.algebra,
       label: 'Step 2',
       lines: [
-        'Differentiate  x($t) = $xStr  with respect to $t:',
+        'Differentiate  x($t) = $xLatex  with respect to $t:',
         '',
         ...dxRuleLines.map((l) => '  → $l'),
         '',
-        '  dx/d$t  =  $dxStr',
+        '  dx/dt  =  $dxLatex',
       ],
     ));
 
@@ -602,11 +599,11 @@ class ParametricSolutionBuilder {
       kind: StepKind.algebra,
       label: 'Step 3',
       lines: [
-        'Differentiate  y($t) = $yStr  with respect to $t:',
+        'Differentiate  y(t) = $yLatex  with respect to $t:',
         '',
         ...dyRuleLines.map((l) => '  → $l'),
         '',
-        '  dy/d$t  =  $dyStr',
+        '  dy/dt  =  $dyLatex',
       ],
     ));
 
@@ -617,11 +614,10 @@ class ParametricSolutionBuilder {
       lines: [
         'Apply the parametric slope formula:',
         '',
-        '  dy     dy/d$t     $dyStr',
-        '  ──  =  ──────  =  ──────────────────',
-        '  dx     dx/d$t     $dxStr',
+        '  dy/dx = dy/dt / dx/dt',
+        '       = $dyLatex / $dxLatex',
         '',
-        '  dy/dx  =  $slopeStr',
+        '  dy/dx  =  $slopeLatex',
       ],
     ));
 
@@ -642,19 +638,19 @@ class ParametricSolutionBuilder {
           'Substitute  $t = ${_fmt(tVal)}:',
           '',
           if (xVal != null)
-            '  x  =  $xStr |_{$t=${_fmt(tVal)}}  =  ${_fmt(xVal)}',
+            '  x  =  $xLatex |_{$t=${_fmt(tVal)}}  =  ${_fmt(xVal)}',
           if (yVal != null)
-            '  y  =  $yStr |_{$t=${_fmt(tVal)}}  =  ${_fmt(yVal)}',
+            '  y  =  $yLatex |_{$t=${_fmt(tVal)}}  =  ${_fmt(yVal)}',
           '',
           if (dxVal != null)
-            '  dx/d$t  =  $dxStr |_{$t=${_fmt(tVal)}}  =  ${_fmt(dxVal)}',
+            '  dx/dt  =  $dxLatex |_{t=${_fmt(tVal)}}  =  ${_fmt(dxVal)}',
           if (dyVal != null)
-            '  dy/d$t  =  $dyStr |_{$t=${_fmt(tVal)}}  =  ${_fmt(dyVal)}',
+            '  dy/dt  =  $dyLatex |_{t=${_fmt(tVal)}}  =  ${_fmt(dyVal)}',
           '',
           if (verticalTangent)
-            '  dx/d$t = 0  →  VERTICAL TANGENT at this point.'
+            '  dx/dt = 0  →  VERTICAL TANGENT at this point.'
           else
-            '  dy/dx  =  ${dyVal != null ? _fmt(dyVal) : '?'} / ${dxVal != null ? _fmt(dxVal) : '?'}  =  ${_fmt(r.slopeValue!)}',
+            '  dy/dx = $dyLatex / $dxLatex = ${_fmt(r.slopeValue!)}',
           '',
           if (xVal != null && yVal != null)
             '  Point on curve:  (${_fmt(xVal)},  ${_fmt(yVal)})  at $t = ${_fmt(tVal)}',
@@ -719,9 +715,9 @@ class ParametricSolutionBuilder {
       kind: StepKind.result,
       label: 'Answer',
       lines: [
-        'dy/dx  =  $slopeStr',
+        'dy/dx  =  $slopeLatex',
         if (r.slopeValue != null)
-          'Slope at $t = ${_fmt(r.point[t]!)}:   m = ${_fmt(r.slopeValue!)}',
+          'Slope at t = ${_fmt(r.point[t]!)}:   m = ${_fmt(r.slopeValue!)}',
         if (r.tangentLineEquation != null)
           'Tangent line:  ${r.tangentLineEquation}',
         if (r.normalLineEquation != null)

@@ -55,6 +55,13 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
   }
 
   @override
+  void dispose() {
+    _eqController.dispose();
+    _varsController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
 
