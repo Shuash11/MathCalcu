@@ -3,11 +3,9 @@
 // Nothing here does any mathematics — it only formats and prints.
 //   StepExplainer  — builds a list of step-by-step explanation strings
 //   PrettyPrinter  — renders a SlopeResult to the terminal with ANSI colour
-
 import 'dart:io';
 import 'models.dart';
 import 'math_engine.dart';
-
 // ==================== STEP EXPLAINER ====================
 
 class StepExplainer {

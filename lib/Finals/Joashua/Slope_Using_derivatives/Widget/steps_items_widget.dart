@@ -9,6 +9,8 @@ class StepItemWidget extends StatelessWidget {
 
   bool _isMathExpression(String line) {
     if (line.trim().isEmpty) return false;
+    // Check for LaTeX delimiters (e.g., {x}^{2})
+    if (line.contains('{') && line.contains('}')) return true;
     if (line.contains('\\') && RegExp(r'[\\{}]').hasMatch(line)) return true;
     if (line.contains('dy/dx') || line.contains('d/dx')) return true;
     
@@ -220,15 +222,46 @@ class StepItemWidget extends StatelessWidget {
           ),
           if (step.lines.isNotEmpty) ...[
             const SizedBox(height: 4),
-            Text(
-              step.lines.join(' '), 
-              style: TextStyle(
-                color: FinalsTheme.textPrimary(context).withValues(alpha: 0.8), 
-                fontSize: 13, 
-                height: 1.4, 
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            ...step.lines.map((line) {
+              if (line.contains('{') && line.contains('}')) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Math.tex(
+                      line,
+                      textStyle: TextStyle(
+                        color: FinalsTheme.textPrimary(context).withValues(alpha: 0.8),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      mathStyle: MathStyle.text,
+                      onErrorFallback: (err) => Text(
+                        line,
+                        style: TextStyle(
+                          color: FinalsTheme.danger,
+                          fontSize: 13,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  line, 
+                  style: TextStyle(
+                    color: FinalsTheme.textPrimary(context).withValues(alpha: 0.8), 
+                    fontSize: 13, 
+                    height: 1.4, 
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+            }),
           ],
         ],
       ),

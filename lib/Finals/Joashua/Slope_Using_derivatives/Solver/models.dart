@@ -34,6 +34,7 @@ class Token {
 abstract class Expr {
   const Expr();
   String toMathString();
+  String toLatexString();
   Expr clone();
 
   @override
@@ -54,6 +55,9 @@ class Num extends Expr {
   }
 
   @override
+  String toLatexString() => toMathString();
+
+  @override
   Expr clone() => Num(value);
 
   bool get isZero => value == 0;
@@ -71,6 +75,9 @@ class Var extends Expr {
   String toMathString() => name;
 
   @override
+  String toLatexString() => name;
+
+  @override
   Expr clone() => Var(name);
 }
 
@@ -82,6 +89,13 @@ class Const extends Expr {
 
   @override
   String toMathString() => name;
+
+  @override
+  String toLatexString() {
+    if (name == 'e') return r'{e}';
+    if (name == 'pi' || name == 'π') return r'{\pi}';
+    return name;
+  }
 
   @override
   Expr clone() => Const(name, numericValue);
@@ -116,6 +130,34 @@ class BinOp extends Expr {
     return '$l $op $r';
   }
 
+  @override
+  String toLatexString() {
+    String l = left.toLatexString();
+    String r = right.toLatexString();
+    
+    switch (op) {
+      case '+':
+        return '$l + $r';
+      case '-':
+        return '$l - $r';
+      case '*':
+        // For Num * Var or Num * Pow: use LaTeX thin space (e.g., 2 \, x, 3x²)
+        // This ensures LaTeX detection (contains backslash) AND renders correctly
+        if ((left is Num && (right is Var || right is Pow)) ||
+            (right is Num && (left is Var || left is Pow))) {
+          return '$l \\, $r';
+        }
+        if (left is Num || right is Num) {
+          return '$l \\cdot $r';
+        }
+        return '$l \\, $r';
+      case '/':
+        return '\\frac{$l}{$r}';
+      default:
+        return toMathString();
+    }
+  }
+
   static int prec(String op) => const {'+': 1, '-': 1, '*': 2, '/': 2}[op] ?? 0;
   int _prec(String op) => prec(op);
 
@@ -139,6 +181,23 @@ class Pow extends Expr {
   }
 
   @override
+  String toLatexString() {
+    String b = base.toLatexString();
+    String e = exponent.toLatexString();
+    
+    if (exponent is Num && (exponent as Num).isInteger && (exponent as Num).value == 2) {
+      return '{$b}^{2}';
+    }
+    if (exponent is Num && (exponent as Num).isInteger && (exponent as Num).value == 3) {
+      return '{$b}^{3}';
+    }
+    if (exponent is Num) {
+      return '{$b}^{$e}';
+    }
+    return '{$b}^{$e}';
+  }
+
+  @override
   Expr clone() => Pow(base.clone(), exponent.clone());
 }
 
@@ -155,6 +214,14 @@ class UnaryNeg extends Expr {
   }
 
   @override
+  String toLatexString() {
+    if (operand is BinOp || operand is Pow || operand is Func) {
+      return '-(${operand.toLatexString()})';
+    }
+    return '-${operand.toLatexString()}';
+  }
+
+  @override
   Expr clone() => UnaryNeg(operand.clone());
 }
 
@@ -168,6 +235,37 @@ class Func extends Expr {
   String toMathString() => '$name(${arg.toMathString()})';
 
   @override
+  String toLatexString() {
+    final argStr = arg.toLatexString();
+    switch (name) {
+      case 'sin':
+        return '\\sin($argStr)';
+      case 'cos':
+        return '\\cos($argStr)';
+      case 'tan':
+        return '\\tan($argStr)';
+      case 'cot':
+        return '\\cot($argStr)';
+      case 'sec':
+        return '\\sec($argStr)';
+      case 'csc':
+        return '\\csc($argStr)';
+      case 'ln':
+        return '\\ln($argStr)';
+      case 'log':
+        return '\\log($argStr)';
+      case 'exp':
+        return '\\exp($argStr)';
+      case 'sqrt':
+        return '\\sqrt{$argStr}';
+      case 'abs':
+        return '|$argStr|';
+      default:
+        return '$name($argStr)';
+    }
+  }
+
+  @override
   Expr clone() => Func(name, arg.clone());
 }
 
@@ -178,6 +276,12 @@ class DerivSym extends Expr {
 
   @override
   String toMathString() => varName == 'y' ? 'dy/dx' : 'd$varName/dx';
+
+  @override
+  String toLatexString() {
+    if (varName == 'y') return '\\frac{dy}{dx}';
+    return '\\frac{d$varName}{dx}';
+  }
 
   @override
   Expr clone() => DerivSym(varName);
