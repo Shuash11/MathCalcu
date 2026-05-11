@@ -130,13 +130,17 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 380;
+    final padding = isCompact ? 16.0 : 24.0;
+
     return Scaffold(
       backgroundColor: FinalsTheme.surface(context),
       body: SafeArea(
         child: Column(
           children: [
             // ── Header ──────────────────────────────────────────
-            _buildHeader(context),
+            _buildHeader(context, padding),
 
             // ── Scrollable Content ──────────────────────────────
             Expanded(
@@ -146,7 +150,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                   position: _slideAnim,
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 40),
+                    padding: EdgeInsets.fromLTRB(padding, 8, padding, 40),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -219,9 +223,9 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, double padding) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+      padding: EdgeInsets.fromLTRB(padding, 24, padding, 16),
       child: Row(
         children: [
           // Back Button

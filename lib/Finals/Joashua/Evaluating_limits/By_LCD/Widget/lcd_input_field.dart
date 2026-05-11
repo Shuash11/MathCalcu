@@ -31,6 +31,9 @@ class LCDInputField extends StatelessWidget {
     final inputHeight = isCompact ? 38.0 : (isTablet ? 48.0 : 44.0);
     final quickChipFontSize = isCompact ? 11.0 : 13.0;
     final quickChipPadding = isCompact ? 6.0 : 10.0;
+    final expressionPadding = isCompact
+        ? const EdgeInsets.fromLTRB(12, 8, 8, 4)
+        : const EdgeInsets.fromLTRB(20, 12, 12, 4);
 
     return Container(
       decoration: BoxDecoration(
@@ -52,7 +55,7 @@ class LCDInputField extends StatelessWidget {
         children: [
           // ── Expression Input Row
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 12, 4),
+            padding: expressionPadding,
             child: Row(
               children: [
                 Expanded(

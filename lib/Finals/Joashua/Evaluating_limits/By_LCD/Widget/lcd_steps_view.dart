@@ -42,14 +42,16 @@ class _StepTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 380;
     const accentColor = FinalsTheme.danger;
 
     return Stack(
       children: [
         if (!isLast)
           Positioned(
-            left: 15.25,
-            top: 28,
+            left: isCompact ? 12.25 : 15.25,
+            top: isCompact ? 22 : 28,
             bottom: 4,
             child: Container(
               width: 1.5,
@@ -60,10 +62,10 @@ class _StepTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 32,
+              width: isCompact ? 28 : 32,
               child: Container(
-                width: 24,
-                height: 24,
+                width: isCompact ? 20 : 24,
+                height: isCompact ? 20 : 24,
                 decoration: BoxDecoration(
                   color: accentColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
@@ -76,7 +78,7 @@ class _StepTile extends StatelessWidget {
                   child: Text(
                     (index + 1).toString(),
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: isCompact ? 9 : 11,
                       fontWeight: FontWeight.w900,
                       color: accentColor,
                     ),
@@ -84,7 +86,7 @@ class _StepTile extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: isCompact ? 12 : 16),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 24),

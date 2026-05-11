@@ -20,15 +20,17 @@ class LCDAnswerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 380;
     const accentColor = FinalsTheme.danger;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutCubic,
         margin: const EdgeInsets.only(top: 24),
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(isCompact ? 16 : 24),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -55,7 +57,7 @@ class LCDAnswerCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                _StatusIcon(isShowingSteps: isShowingSteps, accentColor: accentColor),
+                _StatusIcon(isShowingSteps: isShowingSteps, accentColor: accentColor, size: isCompact ? 40 : 48),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -124,15 +126,16 @@ class LCDAnswerCard extends StatelessWidget {
 class _StatusIcon extends StatelessWidget {
   final bool isShowingSteps;
   final Color accentColor;
+  final double size;
 
-  const _StatusIcon({required this.isShowingSteps, required this.accentColor});
+  const _StatusIcon({required this.isShowingSteps, required this.accentColor, this.size = 48});
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      width: 48,
-      height: 48,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: isShowingSteps ? accentColor : accentColor.withValues(alpha: 0.1),
         shape: BoxShape.circle,
@@ -144,7 +147,7 @@ class _StatusIcon extends StatelessWidget {
       child: Icon(
         isShowingSteps ? Icons.auto_awesome_rounded : Icons.check_rounded,
         color: isShowingSteps ? Colors.white : accentColor,
-        size: 24,
+        size: size * 0.5,
       ),
     );
   }
