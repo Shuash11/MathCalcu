@@ -155,7 +155,7 @@ class _FormattedStepContent extends StatelessWidget {
                 ),
                 onErrorFallback: (err) => Text(
                   mathExpression!,
-                  style: const TextStyle(fontFamily: 'serif', color: accentColor),
+                  style: const TextStyle(color: accentColor),
                 ),
               ),
             ),

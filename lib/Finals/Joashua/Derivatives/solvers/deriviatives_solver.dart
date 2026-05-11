@@ -926,6 +926,28 @@ class DerivativeSolver {
 
   static String _preprocessImplicitMultiplication(String input) {
     String result = input;
+    
+    // ====== NORMALIZE UNICODE CHARACTERS ======
+    // Handle superscript numbers: ² → ^2, ³ → ^3, etc.
+    final superscriptMap = {
+      '⁰': '^0', '¹': '^1', '²': '^2', '³': '^3', '⁴': '^4', '⁵': '^5',
+      '⁶': '^6', '⁷': '^7', '⁸': '^8', '⁹': '^9'
+    };
+    superscriptMap.forEach((superscript, caret) {
+      result = result.replaceAll(superscript, caret);
+    });
+    
+    // Handle Unicode minus signs (−, −, ‐, etc.) → ASCII minus (-)
+    result = result.replaceAll('−', '-'); // Unicode minus U+2212
+    result = result.replaceAll('‐', '-'); // Hyphen U+2010
+    result = result.replaceAll('–', '-'); // En dash U+2013
+    result = result.replaceAll('—', '-'); // Em dash U+2014
+    
+    // Handle other common unicode operators if needed
+    result = result.replaceAll('×', '*'); // Multiplication sign
+    result = result.replaceAll('÷', '/'); // Division sign
+    
+    // ====== IMPLICIT MULTIPLICATION HANDLING ======
     // Handle )(  - parenthesis followed by parenthesis
     result = result.replaceAllMapped(RegExp(r'(\))(\s*)(\()'), (m) => '${m[1]}*${m[3]}');
     // Handle )(  with no space
@@ -934,6 +956,8 @@ class DerivativeSolver {
     result = result.replaceAllMapped(RegExp(r'(\))(\d)'), (m) => '${m[1]}*${m[2]}');
     // Handle number(
     result = result.replaceAllMapped(RegExp(r'(\d)(\()'), (m) => '${m[1]}*${m[2]}');
+    // Handle )letter
+    result = result.replaceAllMapped(RegExp(r'(\))([a-zA-Z])'), (m) => '${m[1]}*${m[2]}');
     // Handle variableletter and variablenumber (only for single letters, not function names like ln, log, exp)
     result = result.replaceAllMapped(RegExp(r'(?<![a-zA-Z])([a-zA-Z])(\()'), (m) => '${m[1]}*${m[2]}');
     result = result.replaceAllMapped(RegExp(r'(?<![a-zA-Z])([a-zA-Z])(\d)'), (m) => '${m[1]}*${m[2]}');

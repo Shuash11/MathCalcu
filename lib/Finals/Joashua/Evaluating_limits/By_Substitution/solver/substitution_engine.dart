@@ -165,20 +165,20 @@ class SubstitutionEngine {
 
         // Normal fraction evaluation
         final value = numResult.value / denResult.value;
+        final fractionResult = EvaluationResult.fromValue(value);
         return SubstitutionResult(
           originalExpression: problem.expression,
           approachValue: problem.approachValue,
           normalizedExpression: normalizedExpr,
           ast: ast,
-          fullEvaluation:
-              ExpressionEvaluator.safeEvaluate(ast, problem.approachValue),
+          fullEvaluation: fractionResult,
           substitutionSucceeded: true,
           isFraction: true,
           numeratorResult: numResult,
           denominatorResult: denResult,
           classification: ExpressionEvaluator.classifyResult(value),
           finalValue: value,
-          finalValueDescription: fullResult.description,
+          finalValueDescription: fractionResult.description,
           needsDifferentMethod: false,
           suggestedMethod: null,
           errorMessage: null,
