@@ -9,6 +9,8 @@
 //   dart slope_solver.dart "x^2 + y^2 = 25" x=3
 //   dart slope_solver.dart "x=cos(t),y=sin(t)" t=1.5708
 
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:math' as math;
 import 'dart:io';
 
@@ -285,8 +287,9 @@ class UnaryNeg extends Expr {
 
   @override
   String toMathString() {
-    if (operand is BinOp || operand is Pow)
+    if (operand is BinOp || operand is Pow) {
       return '-(${operand.toMathString()})';
+    }
     return '-${operand.toMathString()}';
   }
 
@@ -455,7 +458,7 @@ class Parser {
           advance();
         }
         if (current.type == TokenType.rparen) advance();
-        return Var('y');
+        return const Var('y');
       }
 
       return Var(name);
@@ -487,10 +490,12 @@ class ExprUtils {
   static bool containsVar(Expr e, String varName) {
     if (e is Var) return e.name == varName;
     if (e is Num || e is Const || e is DerivSym) return false;
-    if (e is BinOp)
+    if (e is BinOp) {
       return containsVar(e.left, varName) || containsVar(e.right, varName);
-    if (e is Pow)
+    }
+    if (e is Pow) {
       return containsVar(e.base, varName) || containsVar(e.exponent, varName);
+    }
     if (e is UnaryNeg) return containsVar(e.operand, varName);
     if (e is Func) return containsVar(e.arg, varName);
     return false;
@@ -499,10 +504,12 @@ class ExprUtils {
   static bool containsDerivSym(Expr e) {
     if (e is DerivSym) return true;
     if (e is Num || e is Const || e is Var) return false;
-    if (e is BinOp)
+    if (e is BinOp) {
       return containsDerivSym(e.left) || containsDerivSym(e.right);
-    if (e is Pow)
+    }
+    if (e is Pow) {
       return containsDerivSym(e.base) || containsDerivSym(e.exponent);
+    }
     if (e is UnaryNeg) return containsDerivSym(e.operand);
     if (e is Func) return containsDerivSym(e.arg);
     return false;
@@ -535,9 +542,12 @@ class ExprUtils {
         substitute(e.exponent, varName, replacement),
       );
     }
-    if (e is UnaryNeg)
+    if (e is UnaryNeg) {
       return UnaryNeg(substitute(e.operand, varName, replacement));
-    if (e is Func) return Func(e.name, substitute(e.arg, varName, replacement));
+    }
+    if (e is Func) {
+      return Func(e.name, substitute(e.arg, varName, replacement));
+    }
     return e.clone();
   }
 
@@ -662,23 +672,27 @@ class Simplifier {
       final inner = _simplifyOnce(e.operand);
       if (inner is UnaryNeg) return inner.operand;
       if (inner is Num) return Num(-inner.value);
-      if (inner is BinOp && inner.op == '-')
+      if (inner is BinOp && inner.op == '-') {
         return BinOp(inner.right, '-', inner.left);
+      }
       if (inner is BinOp && inner.op == '*' && inner.left is Num) {
         return BinOp(Num(-(inner.left as Num).value), '*', inner.right);
       }
       return UnaryNeg(inner);
     }
 
-    if (e is Func) return Func(e.name, _simplifyOnce(e.arg));
+    if (e is Func) {
+      return Func(e.name, _simplifyOnce(e.arg));
+    }
 
     if (e is Pow) {
       final b = _simplifyOnce(e.base);
       final exp = _simplifyOnce(e.exponent);
       if (exp is Num && exp.isZero) return const Num(1);
       if (exp is Num && exp.isOne) return b;
-      if (b is Num && b.isZero && exp is Num && exp.value > 0)
+      if (b is Num && b.isZero && exp is Num && exp.value > 0) {
         return const Num(0);
+      }
       if (b is Num && b.isOne) return const Num(1);
       if (b is Num && exp is Num) {
         final result = math.pow(b.value, exp.value);
@@ -756,10 +770,12 @@ class Simplifier {
         if (left is BinOp && left.op == '/') {
           return _simplifyBinOp(BinOp(left.left, '*', right), '/', left.right);
         }
-        if (left is UnaryNeg)
+        if (left is UnaryNeg) {
           return UnaryNeg(_simplifyBinOp(left.operand, '*', right));
-        if (right is UnaryNeg)
+        }
+        if (right is UnaryNeg) {
           return UnaryNeg(_simplifyBinOp(left, '*', right.operand));
+        }
         break;
 
       case '/':
@@ -768,7 +784,9 @@ class Simplifier {
         if (left.toMathString() == right.toMathString()) return const Num(1);
         if (left is BinOp &&
             left.op == '*' &&
-            left.right.toMathString() == right.toMathString()) return left.left;
+            left.right.toMathString() == right.toMathString()) {
+          return left.left;
+        }
         if (left is BinOp &&
             left.op == '*' &&
             right is BinOp &&
@@ -801,9 +819,12 @@ class Simplifier {
   /// Separate an expression into the coefficient of DerivSym and the remainder.
   /// Returns (coeffOfDeriv, remainder) such that e = coeffOfDeriv * dy/dx + remainder
   static (Expr, Expr) extractDerivCoeff(Expr e, String derivVar) {
-    if (e is DerivSym && e.varName == derivVar)
+    if (e is DerivSym && e.varName == derivVar) {
       return (const Num(1), const Num(0));
-    if (!ExprUtils.containsDerivSym(e)) return (const Num(0), e);
+    }
+    if (!ExprUtils.containsDerivSym(e)) {
+      return (const Num(0), e);
+    }
 
     if (e is UnaryNeg) {
       final (c, r) = extractDerivCoeff(e.operand, derivVar);
@@ -1192,7 +1213,7 @@ class SlopeSolver {
 
     if (right == null) {
       // Expression only — treat as y = expr
-      return _solveExplicit(Var('y'), left, trimmed, pointValues ?? {});
+      return _solveExplicit(const Var('y'), left, trimmed, pointValues ?? {});
     }
 
     // left = right form
@@ -1228,11 +1249,13 @@ class SlopeSolver {
     // Must have exactly one top-level comma separating two equations
     int depth = 0;
     for (int i = 0; i < s.length; i++) {
-      if (s[i] == '(')
+      if (s[i] == '(') {
         depth++;
-      else if (s[i] == ')')
+      } else if (s[i] == ')') {
         depth--;
-      else if (s[i] == ',' && depth == 0) return true;
+      } else if (s[i] == ',' && depth == 0) {
+        return true;
+      }
     }
     return false;
   }
@@ -1245,7 +1268,7 @@ class SlopeSolver {
     String originalInput,
     Map<String, double> pointValues,
   ) {
-    final indepVar = 'x'; // always x for explicit
+    const indepVar = 'x'; // always x for explicit
     final depVar = (lhsVar is Var) ? lhsVar.name : 'y';
 
     // Symbolic derivative dy/dx = d(rhs)/dx
@@ -1514,11 +1537,11 @@ class SlopeSolver {
     int depth = 0;
     int start = 0;
     for (int i = 0; i < s.length; i++) {
-      if (s[i] == '(')
+      if (s[i] == '(') {
         depth++;
-      else if (s[i] == ')')
+      } else if (s[i] == ')') {
         depth--;
-      else if (s[i] == ',' && depth == 0) {
+      } else if (s[i] == ',' && depth == 0) {
         parts.add(s.substring(start, i).trim());
         start = i + 1;
       }
@@ -1529,8 +1552,9 @@ class SlopeSolver {
 
   /// Format a double for display.
   static String _fmt(double v) {
-    if (v == v.truncateToDouble() && v.abs() < 1e10)
+    if (v == v.truncateToDouble() && v.abs() < 1e10) {
       return v.toInt().toString();
+    }
     return v.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
@@ -1687,8 +1711,9 @@ class StepExplainer {
   }
 
   static String _fmt(double v) {
-    if (v == v.truncateToDouble() && v.abs() < 1e10)
+    if (v == v.truncateToDouble() && v.abs() < 1e10) {
       return v.toInt().toString();
+    }
     return v.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
   }
 }
@@ -1706,7 +1731,7 @@ class PrettyPrinter {
 
 
   static void print(SlopeResult result) {
-    final w = 62;
+    const w = 62;
     final bar = '═' * w;
 
     _writeln('$_bold$_cyan╔$bar╗$_reset');
@@ -1881,7 +1906,7 @@ void main(List<String> args) {
     stdout.writeln();
   }
 
-  stdout.writeln('${'═' * 64}');
+  stdout.writeln('═' * 64);
   stdout.writeln(
       '  RESULTS: $passed passed, $failed failed out of ${demos.length} demos');
   stdout.writeln('${'═' * 64}\n');

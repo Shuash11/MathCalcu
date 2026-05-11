@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Substitution/solver/substitution_engine.dart';
 import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Substitution/solver/expressions_evaluator.dart';
+import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Substitution/solver/substitution_steps.dart';
 
 void main() {
   group('SubstitutionEngine', () {
@@ -33,6 +34,13 @@ void main() {
             .solve(const LimitProblem(expression: 'x^2-2x+1', approachValue: 4));
         expect(result.substitutionSucceeded, isTrue);
         expect(result.finalValue, equals(9.0));
+      });
+
+      test('x -> 3 of x² + 2x − 1 should equal 14 (Unicode superscript)', () {
+        final result = engine
+            .solve(const LimitProblem(expression: 'x² + 2x − 1', approachValue: 3));
+        expect(result.substitutionSucceeded, isTrue);
+        expect(result.finalValue, equals(14.0));
       });
     });
 

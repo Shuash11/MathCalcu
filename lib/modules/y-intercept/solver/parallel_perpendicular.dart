@@ -702,10 +702,15 @@ class ParallelPerpendicularSolver {
       mp = 'x';
     } else if (m == const YIFraction(numerator: -1, denominator: 1)) {
       mp = '-x';
-    } else
+    } else {
       mp = '${m}x  ';
-    if (b.isZero) return 'y = $mp';
-    if (b.numerator > 0) return 'y = $mp + $b';
+    }
+    if (b.isZero) {
+      return 'y = $mp';
+    }
+    if (b.numerator > 0) {
+      return 'y = $mp + $b';
+    }
     return 'y = $mp - ${b.abs()}';
   }
 

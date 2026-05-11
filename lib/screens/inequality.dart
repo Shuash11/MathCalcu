@@ -133,7 +133,7 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                     child: AnimatedContainer(
                                       duration: const Duration(milliseconds: 200),
                                       transform: _hovered
-                                          ? (Matrix4.identity()..scale(1.15))
+                                          ? Matrix4.diagonal3Values(1.15, 1.15, 1.0)
                                           : Matrix4.identity(),
                                       child: Icon(
                                         widget.module.icon,
@@ -206,7 +206,7 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
                                     transform: _hovered
-                                        ? (Matrix4.identity()..translate(4.0 * s, 0.0))
+                                        ? Matrix4.translationValues(4.0 * s, 0.0, 0.0)
                                         : Matrix4.identity(),
                                     child: Container(
                                       width: 36 * s,

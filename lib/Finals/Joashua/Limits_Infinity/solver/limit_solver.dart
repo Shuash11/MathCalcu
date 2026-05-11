@@ -32,7 +32,7 @@ class LimitSolver {
       );
     }
 
-    steps.add(SolutionStep(
+    steps.add(const SolutionStep(
       description: 'Analyze the limit at infinity',
       type: StepType.analysis,
       formula: '\\lim_{x \\to \\infty} f(x)',
@@ -88,8 +88,8 @@ class LimitSolver {
     ));
 
     if (numDegree < denDegree) {
-      final result = 0.0;
-      final resultStr = '0';
+      const result = 0.0;
+      const resultStr = '0';
 
       steps.add(SolutionStep(
         description: 'Step 1: Identify highest power of x in denominator',
@@ -273,7 +273,7 @@ class LimitSolver {
         description: 'Final answer',
         type: StepType.conclusion,
         formula:
-            '\\lim_{x \\to ${isNegInf ? "-\infty" : "\\infty"}} $expr = $resultStr',
+            '\\lim_{x \\to ${isNegInf ? "-infty" : "infty"}} $expr = $resultStr',
         expression: '= $resultStr',
       ));
 
@@ -327,7 +327,7 @@ class LimitSolver {
         ));
 
         if (numAtPoint.abs() < 1e-9 && denAtPoint.abs() < 1e-9) {
-          steps.add(SolutionStep(
+          steps.add(const SolutionStep(
             description: 'Indeterminate form 0/0 detected',
             type: StepType.transformation,
             formula: '0/0 is undefined',

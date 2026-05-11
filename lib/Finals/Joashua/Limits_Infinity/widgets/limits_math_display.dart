@@ -126,14 +126,14 @@ class LimitsSolutionStep extends StatelessWidget {
           ),
           child: Center(
             child: isConclusion
-                ? Icon(
+                ? const Icon(
                     Icons.check_rounded,
                     size: 16,
                     color: Colors.white,
                   )
                 : Text(
                     '${stepIndex + 1}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: FinalsTheme.primary,

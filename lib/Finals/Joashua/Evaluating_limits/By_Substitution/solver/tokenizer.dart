@@ -65,6 +65,21 @@ class SmartTokenizer {
   String _preprocess() {
     String result = input;
 
+    // Normalize Unicode minus to ASCII minus
+    result = result.replaceAll('−', '-');
+
+    // Normalize superscript numbers to ^ notation
+    result = result.replaceAll('⁰', '^0');
+    result = result.replaceAll('¹', '^1');
+    result = result.replaceAll('²', '^2');
+    result = result.replaceAll('³', '^3');
+    result = result.replaceAll('⁴', '^4');
+    result = result.replaceAll('⁵', '^5');
+    result = result.replaceAll('⁶', '^6');
+    result = result.replaceAll('⁷', '^7');
+    result = result.replaceAll('⁸', '^8');
+    result = result.replaceAll('⁹', '^9');
+
     // Replace √ with sqrt(
     result = result.replaceAll('√', 'sqrt(');
 
@@ -167,8 +182,9 @@ class _SimpleTokenizer {
       }
 
       // Insert implicit multiplication
-      if (tokens.isNotEmpty && currentToken != null) {
-        if (_needsImplicitMultiply(tokens.last, currentToken)) {
+      if (tokens.isNotEmpty) {
+        final lastToken = tokens.last;
+        if (_needsImplicitMultiply(lastToken, currentToken)) {
           tokens.add(Token(TokenType.multiply, '*', currentToken.position));
         }
       }

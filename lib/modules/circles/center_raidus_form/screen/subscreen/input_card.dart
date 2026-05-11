@@ -3,6 +3,7 @@ import 'package:calculus_system/modules/circles/center_raidus_form/models/field_
 import 'package:calculus_system/modules/circles/center_raidus_form/screen/subscreen/widgets_inputcard/compute_button.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/screen/subscreen/widgets_inputcard/quick_key_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class InputCard extends StatelessWidget {
   final String title;
@@ -68,9 +69,9 @@ class InputCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: color.withValues(alpha: 0.3)),
           ),
-          child: Text(
-            formula,
-            style: TextStyle(
+          child: Math.tex(
+            _convertToLatex(formula),
+            textStyle: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
               color: color,
@@ -79,6 +80,14 @@ class InputCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _convertToLatex(String formula) {
+    return formula
+        .replaceAll('²', '^2')
+        .replaceAll('³', '^3')
+        .replaceAll('(', r'\left(')
+        .replaceAll(')', r'\right)');
   }
 
   Widget _buildFieldsRow() {

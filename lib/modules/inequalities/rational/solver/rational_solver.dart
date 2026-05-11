@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_declarations, prefer_interpolation_to_compose_strings
+
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/modules/inequalities/core/inequality_core_solver.dart';
@@ -19,8 +21,9 @@ class RationalSolver {
       }
 
       final intervalNotation = intervals.join(' ∪ ');
+      final inequalityAnswer = _intervalsToInequalityAnswer(intervals);
       return SolveResult(
-        answer: intervalNotation,
+        answer: inequalityAnswer,
         points: _criticalPoints(p),
         intervalNotation: intervalNotation,
       );
@@ -41,11 +44,26 @@ class RationalSolver {
     final rhsFmt = f(p.rhs);
     final combStr = _ll(p.combA, p.combC);
 
+    final numZero = p.combA != 0 ? -p.combC / p.combA : double.nan;
+    final denZero = p.denA != 0 ? -p.denC / p.denA : double.nan;
+    final pts = _criticalPoints(p)..sort();
+
+    int criticalCount = 0;
+    if (!numZero.isNaN) criticalCount++;
+    if (!denZero.isNaN) criticalCount++;
+
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Start with the given rational inequality.',
-      latex: r'\frac{' + numStr + r'}{' + denStr + r'} ${_tex(p.op)} ' + rhsFmt,
+      title: 'Given Inequality',
+      explanation: 'Original inequality to solve.',
+      latex: r'\frac{' + numStr + r'}{' + denStr + r'} ' + _tex(p.op) + ' ' + rhsFmt,
+    ));
+
+    steps.add(StepModel(
+      stepNumber: n++,
+      title: 'Step 1 — Find $criticalCount Critical Points',
+      explanation: 'Find where numerator and denominator equal zero.',
+      subLatex: _buildCriticalPointsStep(p, numZero, denZero),
     ));
 
     if (p.rhs != 0) {
@@ -59,10 +77,8 @@ class RationalSolver {
             r'}{' +
             denStr +
             r'} - ' +
-            // ignore: prefer_interpolation_to_compose_strings
             rhsFmt +
             ' ' +
-            // ignore: prefer_interpolation_to_compose_strings
             _tex(p.op) +
             ' 0',
       ));
@@ -82,7 +98,6 @@ class RationalSolver {
             r'}{' +
             denStr +
             r'} ' +
-            // ignore: prefer_interpolation_to_compose_strings
             _tex(p.op) +
             ' 0',
       ));
@@ -99,7 +114,6 @@ class RationalSolver {
             r')}{' +
             denStr +
             r'} ' +
-            // ignore: prefer_interpolation_to_compose_strings
             _tex(p.op) +
             ' 0',
       ));
@@ -107,82 +121,137 @@ class RationalSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Standard Form',
-      explanation: 'Simplify the numerator to reach standard form.',
-      // ignore: prefer_interpolation_to_compose_strings
+      title: 'Set Inequality to Zero',
+      explanation: 'Rearrange so the right side equals zero.',
       latex: r'\frac{' + combStr + r'}{' + denStr + r'} ' + _tex(p.op) + ' 0',
     ));
 
-    final numZero = p.combA != 0 ? -p.combC / p.combA : double.nan;
-    if (!numZero.isNaN) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Numerator Zero',
-        explanation:
-            'Find the points where the expression equals zero (the roots).',
-        latex: '$combStr = 0 \\implies x = ${f(numZero)}',
-      ));
-    }
-
-    final denZero = p.denA != 0 ? -p.denC / p.denA : double.nan;
-    if (!denZero.isNaN) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Denominator Zero',
-        explanation:
-            'Find where the expression is undefined (vertical asymptotes).',
-        latex: '$denStr = 0 \\implies x = ${f(denZero)}',
-      ));
-    }
-
-    final pts = _criticalPoints(p)..sort();
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Sign Analysis',
-      explanation:
-          'Test each interval on the number line to find where the inequality holds true.',
-      latex: _buildSignChart(p, pts),
+      title: 'Step 3 — ${pts.length + 1} Regions on the Number Line',
+      explanation: 'Divide the number line at each critical point.',
+      subLatex: _buildRegionsStep(pts),
+    ));
+
+    steps.add(StepModel(
+      stepNumber: n++,
+      title: 'Step 4 — Test Each Region',
+      explanation: 'Pick a test point from each region and evaluate.',
+      subLatex: _buildTestRegionsStep(p, pts),
+    ));
+
+    steps.add(StepModel(
+      stepNumber: n++,
+      title: 'Step 5 — Check $criticalCount Critical Points',
+      explanation: 'Check if critical points satisfy the inequality.',
+      subLatex: _buildCriticalPointsCheckStep(p, numZero, denZero),
     ));
 
     final intervals = _buildIntervals(p);
+    final inequalityAnswer = _intervalsToInequalityAnswer(intervals);
+    final intervalNotation = intervals.isEmpty ? '∅' : intervals.join(' ∪ ');
+
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Interval Notation',
-      explanation:
-          'Combine the successful intervals into the final solution set.',
-      latex: intervals.isEmpty ? r'\emptyset' : intervals.join(' \\cup '),
+      title: 'Final Answer',
+      explanation: 'Combine the valid regions.',
+      latex: inequalityAnswer,
+      subLatex: [intervalNotation],
     ));
 
     return steps;
   }
 
-  // ─── Internal helpers ─────────────────────────────────────────────────────
+  static List<String> _buildCriticalPointsStep(_Parsed p, double numZero, double denZero) {
+    final results = <String>[];
+    final f = InequalityCoreSolver.fmt;
 
-  static String _buildSignChart(_Parsed p, List<double> pts) {
-    const f = InequalityCoreSolver.fmt;
+    if (!numZero.isNaN) {
+      results.add(_ll(p.numA, p.numC) + ' = 0  →  x = ' + f(numZero));
+    }
+    if (!denZero.isNaN) {
+      results.add(_ll(p.denA, p.denC) + ' = 0  →  x = ' + f(denZero));
+    }
+
+    if (results.isEmpty) {
+      return [r'\text{No critical points}'];
+    }
+    return results;
+  }
+
+  static List<String> _buildRegionsStep(List<double> pts) {
+    if (pts.isEmpty) {
+      return [r'\text{No regions}'];
+    }
+
+    final f = InequalityCoreSolver.fmt;
+    final regions = <String>[];
+
+    final regionCount = pts.length + 1;
+    if (regionCount == 2) {
+      regions.add('x < ' + f(pts[0]));
+      regions.add('x > ' + f(pts[0]));
+    } else {
+      regions.add('x < ' + f(pts[0]));
+      for (int i = 0; i < pts.length - 1; i++) {
+        regions.add(f(pts[i]) + ' < x < ' + f(pts[i + 1]));
+      }
+      regions.add('x > ' + f(pts.last));
+    }
+
+    return regions;
+  }
+
+  static List<String> _buildTestRegionsStep(_Parsed p, List<double> pts) {
+    if (pts.isEmpty) return [r'\text{No regions to test}'];
+
+    final f = InequalityCoreSolver.fmt;
     final testPts = <double>[
       pts.first - 1,
       for (int i = 0; i < pts.length - 1; i++) (pts[i] + pts[i + 1]) / 2,
       pts.last + 1,
     ];
 
-    final buffer = StringBuffer();
-    buffer.write(r'\begin{aligned} ');
+    final results = <String>[];
+
     for (int i = 0; i < testPts.length; i++) {
       final tx = testPts[i];
       final denVal = p.denA * tx + p.denC;
       if (denVal == 0) continue;
       final numVal = p.combA * tx + p.combC;
       final satisfies = InequalityCoreSolver.evalOp(numVal / denVal, p.op, 0);
-      final mark = satisfies ? r'\text{ \checkmark}' : r'\text{ \times}';
+      final mark = satisfies ? '✓' : '✗';
 
-      buffer.write(
-          'x = ${f(tx)}: \\quad \\frac{${f(numVal)}}{${f(denVal)}} ${_tex(p.op)} 0 \\implies $mark');
-      if (i < testPts.length - 1) buffer.write(r' \\ ');
+      results.add('x = ' + f(tx) + r': \frac{' + f(numVal) + '}{' + f(denVal) + '} = ' + f(numVal / denVal) + ' ' + mark);
     }
-    buffer.write(r' \end{aligned}');
-    return buffer.toString();
+
+    return results;
   }
+
+  static List<String> _buildCriticalPointsCheckStep(_Parsed p, double numZero, double denZero) {
+    final results = <String>[];
+    final f = InequalityCoreSolver.fmt;
+    final op = p.op;
+
+    if (!numZero.isNaN) {
+      final numVal = p.combA * numZero + p.combC;
+      final satisfies = numVal == 0 && (op == '≥' || op == '≤');
+      final result = satisfies ? '✓' : '✗';
+      results.add('x = ' + f(numZero) + ': = 0, ' + _tex(op) + ' 0 ' + result);
+    }
+
+    if (!denZero.isNaN) {
+      results.add('x = ' + f(denZero) + ': undefined ✗');
+    }
+
+    if (results.isEmpty) {
+      return [r'\text{No critical points to check}'];
+    }
+
+    return results;
+  }
+
+  // ─── Internal helpers ─────────────────────────────────────────────────────
 
   static String _tex(String op) => switch (op) {
         '≥' => '\\geq',
@@ -247,6 +316,34 @@ class RationalSolver {
     if (den == 0) return false;
     final val = (p.combA * x + p.combC) / den;
     return InequalityCoreSolver.evalOp(val, p.op, 0);
+  }
+
+  static String _intervalToInequality(String interval) {
+    final isOpenLeft = !interval.startsWith('[');
+    final isOpenRight = !interval.endsWith(']');
+
+    final inner = interval.substring(1, interval.length - 1).trim();
+    final innerParts = inner.split(',');
+
+    if (innerParts.length == 2) {
+      final lo = innerParts[0].trim();
+      final hi = innerParts[1].trim();
+
+      if (lo == '-∞') {
+        return isOpenRight ? ' x < $hi' : ' x ≤ $hi';
+      } else if (hi == '+∞') {
+        return isOpenLeft ? ' x > $lo' : ' x ≥ $lo';
+      } else {
+        final loOp = isOpenLeft ? ' < ' : ' ≤ ';
+        final hiOp = isOpenRight ? ' < ' : ' ≤ ';
+        return '$lo$loOp x $hiOp$hi';
+      }
+    }
+    return interval;
+  }
+
+  static String _intervalsToInequalityAnswer(List<String> intervals) {
+    return intervals.map(_intervalToInequality).join(' or ');
   }
 
   static List<String> _buildIntervals(_Parsed p) {

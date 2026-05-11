@@ -139,41 +139,85 @@ class QuadraticSolver {
     final bound = math.sqrt(rhsVal);
     final bStr = InequalityCoreSolver.fmt(bound);
     final op = p.op;
+    final flipOp = InequalityCoreSolver.flipOp(op);
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Identify the square root on both sides.',
+      title: 'Write the inequality',
+      explanation: 'Start with the original inequality.',
       latex: p.original,
     ));
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Simplify √(x²) = |x|',
-      explanation:
-          'Since √(x²) = |x| for all real x, the inequality becomes an absolute value inequality.',
+      title: 'Simplify both sides',
+      explanation: 'Since √(x²) = |x| for all real x, the inequality becomes an absolute value inequality.',
       latex: '|x| ${_tex(op)} \\sqrt{${p.sqrtRhs}} = $bStr',
     ));
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Apply Absolute Property',
+      title: 'Rewrite without absolute value',
       explanation: op == '≤' || op == '<'
-          ? 'An absolute value less than k means x is between -k and k.'
-          : 'An absolute value greater than k means x is outside -k and k.',
+          ? 'An absolute value less than or equal to k means x is between -k and k.'
+          : 'An absolute value greater than or equal to k means x is outside -k and k.',
       latex: op == '≤' || op == '<'
           ? '-$bStr ${_tex(op)} x ${_tex(op)} $bStr'
-          : 'x ${_tex(InequalityCoreSolver.flipOp(op))} -$bStr \\text{ or } x ${_tex(op)} $bStr',
+          : 'x ${_tex(flipOp)} -$bStr \\text{ or } x ${_tex(op)} $bStr',
     ));
+
+    steps.addAll(_buildSqrtTestSteps(bound, n));
+    n += 3;
+
+    final sqrtResult = _solveSqrt(p);
+    final answer = sqrtResult.answer;
+    final interval = (sqrtResult.intervalNotation ?? '')
+        .replaceAll('∞', r'\infty')
+        .replaceAll('∪', r'\cup');
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution Set',
-      explanation: 'Represent the valid input range in interval notation.',
-      latex: _solveSqrt(p).intervalNotation,
+      title: 'Final Answer',
+      explanation: 'The solution set is: $answer',
+      latex: '\\text{S.S} = $interval',
     ));
 
     return steps;
+  }
+
+  static List<StepModel> _buildSqrtTestSteps(double bound, int startN) {
+    final rhsInner = (bound * bound).toInt();
+    const insidePoint = 0.0;
+    final outsideLeft = -bound - 1;
+    final outsideRight = bound + 1;
+
+    final testValues = [outsideLeft, insidePoint, outsideRight];
+    final steps = <StepModel>[];
+
+    for (int i = 0; i < testValues.length; i++) {
+      final x = testValues[i];
+      final xSquared = (x * x).toInt();
+      final sqrtVal = math.sqrt(xSquared).toInt();
+      final result = sqrtVal <= bound;
+      final check = result ? '\\checkmark' : '\\times';
+      final status = result ? 'passes' : 'fails';
+
+      steps.add(StepModel(
+        stepNumber: startN + i,
+        title: 'Test x = ${_fmt(x)}',
+        explanation: 'x = ${_fmt(x)} $status the inequality',
+        latex: 'x = ${_fmt(x)}: \\sqrt{$xSquared} \\leq \\sqrt{$rhsInner} \\rightarrow $sqrtVal \\leq ${_fmt(bound)} $check',
+      ));
+    }
+
+    return steps;
+  }
+
+  static String _fmt(double x) {
+    if (x == x.roundToDouble()) {
+      return x.toInt().toString();
+    }
+    return x.toStringAsFixed(2);
   }
 
   // ── standard quadratic solution ────────────────────────────────────────────
@@ -254,7 +298,7 @@ class QuadraticSolver {
     }
   }
 
-  static List<StepModel> _stepsStandard(_Prep p) {
+static List<StepModel> _stepsStandard(_Prep p) {
     final steps = <StepModel>[];
     final a = p.a!, b = p.b!, c = p.c!;
     final op = p.op;
@@ -263,42 +307,30 @@ class QuadraticSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Begin with the given quadratic inequality.',
+      title: 'Write the inequality',
+      explanation: 'Start with the given quadratic inequality.',
       latex: p.original,
     ));
 
-    final bStr = b >= 0 ? '+ ${f(b)}' : '- ${f(b.abs())}';
-    final cStr = c >= 0 ? '+ ${f(c)}' : '- ${f(c.abs())}';
-    steps.add(StepModel(
-      stepNumber: n++,
-      title: 'Standard Form',
-      explanation: 'Rearrange into the form ax² + bx + c ${_tex(op)} 0.',
-      latex:
-          '\\begin{aligned} ${_coefStr(a)}x^2 ${b != 0 ? "$bStr x" : ""} ${c != 0 ? cStr : ""} &${_tex(op)} 0 \\end{aligned}',
-    ));
-
     final disc = b * b - 4 * a * c;
-    steps.add(StepModel(
-      stepNumber: n++,
-      title: 'Calculate Discriminant',
-      explanation: 'Calculate Δ = b² - 4ac to determine the roots.',
-      latex:
-          '\\begin{aligned} \\Delta &= (${f(b)})^2 - 4(${f(a)})(${f(c)}) \\\\ &= ${f(disc)} \\end{aligned}',
-    ));
 
     if (disc < 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Analyze Roots',
-        explanation: 'The discriminant is negative, so there are no real roots.',
-        latex: '\\Delta < 0 \\implies \\text{No real zeros}',
+        title: 'Analyze discriminant',
+        explanation: 'Δ < 0 means no real roots exist.',
+        latex: '\\Delta = ${f(disc)} < 0 \\implies \\text{No real roots}',
       ));
+      final discResult = _solveStandard(p);
+      final discInterval = discResult.intervalNotation ?? '';
+      final discLatexInterval = discInterval
+          .replaceAll('∞', r'\infty')
+          .replaceAll('∪', r'\cup');
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Interval Notation',
-        explanation: 'Represent the solution based on the parabola direction.',
-        latex: _solveStandard(p).intervalNotation,
+        title: 'Final Answer',
+        explanation: 'Solution: ${discResult.answer}',
+        latex: '\\text{S.S} = $discLatexInterval',
       ));
       return steps;
     }
@@ -309,71 +341,93 @@ class QuadraticSolver {
     final lo = r1 < r2 ? r1 : r2;
     final hi = r1 < r2 ? r2 : r1;
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      title: 'Quadratic Formula',
-      explanation: 'Apply the formula to find the critical values.',
-      latex:
-          'x = \\frac{-(${f(b)}) \\pm \\sqrt{${f(disc)}}}{2(${f(a)})} \\\\ \\implies x = \\frac{-${f(b)} \\pm ${f(sqrtD)}}{${f(2 * a)}}',
-    ));
-
-    if (disc == 0) {
-      final root = -b / (2 * a);
+    final factored = _tryFactor(a, b, c);
+    if (factored != null) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Find Root',
-        explanation: 'One double root at the vertex.',
-        latex: 'x = ${f(root)}',
+        title: 'Factor',
+        explanation: 'Write as a product of linear factors.',
+        latex: '($factored) ${_tex(op)} 0',
       ));
-    } else {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Find Zeros',
-        explanation: 'Critical points where the expression equals zero.',
-        latex: 'x_1 = ${f(lo)}, \\quad x_2 = ${f(hi)}',
-      ));
-
-      final factored = _tryFactor(a, b, c);
-      if (factored != null) {
-        steps.add(StepModel(
-          stepNumber: n++,
-          title: 'Factored Form',
-          explanation: 'Express as a product of linear factors.',
-          latex: '($factored) ${_tex(op)} 0',
-        ));
-      }
     }
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Sign Chart Analysis',
-      explanation: 'Test values in each interval to find solutions.',
-      latex: _buildSignChart(a, lo, hi, op),
+      title: 'Critical points',
+      explanation: 'From factored form, critical points are where each factor equals zero.',
+      latex: 'x_1 = ${f(lo)}, \\quad x_2 = ${f(hi)}',
     ));
+
+    steps.addAll(_buildQuadraticTestSteps(a, lo, hi, op, n));
+    n += 4;
+
+    final solveResult = _solveStandard(p);
+    final answer = solveResult.answer;
+    final interval = (solveResult.intervalNotation ?? '')
+        .replaceAll('∞', r'\infty')
+        .replaceAll('∪', r'\cup');
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Interval Notation',
-      explanation: 'Identify the intervals that satisfy the condition.',
-      latex: _solveStandard(p).intervalNotation,
+      title: 'Final Answer',
+      explanation: 'Solution: $answer',
+      latex: '\\text{S.S} = $interval',
     ));
 
     return steps;
   }
 
-  static String _buildSignChart(double a, double lo, double hi, String op) {
-    const f = InequalityCoreSolver.fmt;
-    final t1 = lo - 1;
-    final t2 = (lo + hi) / 2;
-    final t3 = hi + 1;
+  static List<StepModel> _buildQuadraticTestSteps(double a, double lo, double hi, String op, int startN) {
+    final steps = <StepModel>[];
+    final regionA = lo - 1;
+    final regionB = (lo + hi) / 2;
+    final regionC = hi + 1;
 
-    String testLine(double t) {
-      final expr = a * (t - lo) * (t - hi);
-      final passes = InequalityCoreSolver.evalOp(expr, op, 0);
-      return 'x = ${f(t)}: \\quad (${a > 0 ? "+" : "-"})(${t - lo > 0 ? "+" : "-"})(${t - hi > 0 ? "+" : "-"}) = ${expr > 0 ? "+" : "-"} \\implies ${passes ? r"\text{\checkmark}" : r"\text{\times}"}';
+    final factorA1 = regionA - lo;
+    final factorA2 = regionA - hi;
+    final factorB1 = regionB - lo;
+    final factorB2 = regionB - hi;
+    final factorC1 = regionC - lo;
+    final factorC2 = regionC - hi;
+
+    String fmt(double x) => InequalityCoreSolver.fmt(x);
+    String fmtSigned(double x) {
+      if (x >= 0) return '+${x.toInt()}';
+      return x.toInt().toString();
     }
 
-    return '\\begin{aligned} ${testLine(t1)} \\\\ ${testLine(t2)} \\\\ ${testLine(t3)} \\end{aligned}';
+    steps.add(StepModel(
+      stepNumber: startN,
+      title: 'Regions',
+      explanation: 'Critical points divide the number line into three regions.',
+      latex: '\\text{A: } x < ${fmt(lo)}, \\quad \\text{B: } ${fmt(lo)} < x < ${fmt(hi)}, \\quad \\text{C: } x > ${fmt(hi)}',
+    ));
+
+    final resA = factorA1 * factorA2;
+    steps.add(StepModel(
+      stepNumber: startN + 1,
+      title: 'Test Region A',
+      explanation: 'A: x < ${fmt(lo)} → (${fmtSigned(factorA1)})(${fmtSigned(factorA2)}) = ${resA.toInt()} ${resA > 0 ? "\\checkmark" : "\\times"}',
+      latex: 'A: x < ${fmt(lo)} \\rightarrow (${fmtSigned(factorA1)})(${fmtSigned(factorA2)}) = ${resA.toInt()} ${resA > 0 ? "\\checkmark" : "\\times"}',
+    ));
+
+    final resB = factorB1 * factorB2;
+    steps.add(StepModel(
+      stepNumber: startN + 2,
+      title: 'Test Region B',
+      explanation: 'B: ${fmt(lo)} < x < ${fmt(hi)} → (${fmtSigned(factorB1)})(${fmtSigned(factorB2)}) = ${resB.toInt()} ${resB > 0 ? "\\checkmark" : "\\times"}',
+      latex: 'B: ${fmt(lo)} < x < ${fmt(hi)} \\rightarrow (${fmtSigned(factorB1)})(${fmtSigned(factorB2)}) = ${resB.toInt()} ${resB > 0 ? "\\checkmark" : "\\times"}',
+    ));
+
+    final resC = factorC1 * factorC2;
+    steps.add(StepModel(
+      stepNumber: startN + 3,
+      title: 'Test Region C',
+      explanation: 'C: x > ${fmt(hi)} → (${fmtSigned(factorC1)})(${fmtSigned(factorC2)}) = ${resC.toInt()} ${resC > 0 ? "\\checkmark" : "\\times"}',
+      latex: 'C: x > ${fmt(hi)} \\rightarrow (${fmtSigned(factorC1)})(${fmtSigned(factorC2)}) = ${resC.toInt()} ${resC > 0 ? "\\checkmark" : "\\times"}',
+    ));
+
+    return steps;
   }
 
   static String _tex(String op) => switch (op) {
@@ -406,12 +460,6 @@ class QuadraticSolver {
 
     final aStr = a == 1 ? '' : (a == -1 ? '-' : InequalityCoreSolver.fmt(a));
     return '$aStr(${binomial(r1)})(${binomial(r2)})';
-  }
-
-  static String _coefStr(double a) {
-    if (a == 1) return '';
-    if (a == -1) return '-';
-    return InequalityCoreSolver.fmt(a);
   }
 
   static bool _noRealRootsAnswer(double a, String op) {

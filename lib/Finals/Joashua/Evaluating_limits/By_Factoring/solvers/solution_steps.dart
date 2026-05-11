@@ -27,7 +27,6 @@ class SolutionStep {
     return buffer.toString();
   }
 
-  /// Get a simple text version without box drawing
   String toPlainText() {
     final buffer = StringBuffer();
     buffer.writeln('Step $stepNumber: $title');
@@ -64,36 +63,45 @@ class SolutionStepsGenerator {
   /// Steps for when direct substitution works
   List<SolutionStep> _generateDirectSubstitutionSteps(SolutionResult result) {
     final approachStr = _fmt(result.approachValue);
+    final varName = 'x';
+
     return [
       SolutionStep(
         stepNumber: 1,
-        title: 'Identify the Problem',
-        explanation: 'We need to evaluate the following limit:',
+        title: 'Write the equation',
+        explanation: 'We need to evaluate the limit:',
         mathematicalExpression:
-            '\\lim_{x \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
+            '\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
       ),
       SolutionStep(
         stepNumber: 2,
-        title: 'Apply Direct Substitution',
+        title: 'Try Substitution',
         explanation:
-            'Since the function is defined at x = $approachStr, we substitute the value directly into the expression.',
+            'Since the function is defined at $varName = $approachStr, we substitute the value directly.',
         mathematicalExpression:
-            '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} \\bigg|_{x=$approachStr} = '
-            '\\frac{${_fmt(result.numAtPoint)}}{${_fmt(result.denAtPoint)}}',
+            '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}\\bigg|_{$varName=$approachStr} = \\frac{${_fmt(result.numAtPoint)}}{${_fmt(result.denAtPoint)}}',
       ),
       SolutionStep(
         stepNumber: 3,
-        title: 'Simplify',
+        title: 'Check if denominator is zero',
         explanation:
-            'The result is not an indeterminate form, so the value we found is the limit.',
-        mathematicalExpression: '= ${_fmt(result.finalValue)}',
+            'The denominator is ${_fmt(result.denAtPoint)}, which is not zero. We can proceed with direct substitution.',
+        mathematicalExpression:
+            '\\frac{${_fmt(result.numAtPoint)}}{${_fmt(result.denAtPoint)}} = ${_fmt(result.finalValue)}',
       ),
       SolutionStep(
         stepNumber: 4,
-        title: 'Final Answer',
-        explanation: 'The limit exists and equals the computed value.',
+        title: 'Substitute x = $approachStr',
+        explanation: 'Now substitute the value into the expression.',
         mathematicalExpression:
-            '\\lim_{x \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = ${_fmt(result.finalValue)}',
+            '= ${_fmt(result.finalValue)}',
+      ),
+      SolutionStep(
+        stepNumber: 5,
+        title: 'Write the limit properly',
+        explanation: 'The limit exists and equals:',
+        mathematicalExpression:
+            '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = ${_fmt(result.finalValue)}}',
       ),
     ];
   }
@@ -102,63 +110,73 @@ class SolutionStepsGenerator {
   List<SolutionStep> _generateFactoringSteps(SolutionResult result) {
     final steps = <SolutionStep>[];
     final approachStr = _fmt(result.approachValue);
+    final varName = 'x';
 
-    // Step 1: Factor
-    final numIsFactored = result.originalNumerator.degree > 1;
-    final denIsFactored = result.originalDenominator.degree > 1;
-
-    String factorTitle = 'Factor the expression';
-    if (numIsFactored && !denIsFactored) {
-      factorTitle = 'Factor the numerator';
-    } else if (!numIsFactored && denIsFactored) {
-      factorTitle = 'Factor the denominator';
-    } else if (numIsFactored && denIsFactored) {
-      factorTitle = 'Factor both parts';
-    }
-
+    // Step 1: Write the equation
     steps.add(SolutionStep(
       stepNumber: 1,
-      title: factorTitle,
-      explanation:
-          'Since direct substitution gives 0/0, we factor to reveal the hidden common factors that cause the zero in the denominator.',
+      title: 'Write the equation',
+      explanation: 'We need to evaluate the limit:',
       mathematicalExpression:
-          '\\lim_{x \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = '
-          '\\lim_{x \\to $approachStr} \\frac{${result.factoredNumerator.toTex()}}{${result.factoredDenominator.toTex()}}',
+          '\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
     ));
 
-    // Step 2: Cancel
-    final commonStr = result.commonFactors.map((f) => f.toTex()).join(' ');
+    // Step 2: Try Substitution
     steps.add(SolutionStep(
       stepNumber: 2,
-      title: 'Cancel the common factor',
+      title: 'Try Substitution',
       explanation:
-          'We can divide both the numerator and the denominator by ($commonStr) because x approaches $approachStr but never actually equals it.',
+          'Substituting $varName = $approachStr gives 0/0 (indeterminate form).',
       mathematicalExpression:
-          '\\lim_{x \\to $approachStr} \\frac{${result.factoredNumerator.toTex()}}{${result.factoredDenominator.toTex()}} = '
-          '\\lim_{x \\to $approachStr} \\frac{${result.simplifiedNumerator.toTex()}}{${result.simplifiedDenominator.toTex()}}',
+          '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}\\bigg|_{$varName=$approachStr} = \\frac{0}{0}',
     ));
 
-    // Step 3: Evaluate
-    final simplifiedResult = result.finalValue;
-    final simpNum = result.simplifiedNumerator.toTex();
-    final simpDen = result.simplifiedDenominator.toTex();
-
-    String evalExpr;
-    if (result.simplifiedDenominator.isConstant &&
-        result.simplifiedDenominator.constantTerm == 1) {
-      evalExpr =
-          '\\lim_{x \\to $approachStr} ($simpNum) = ${_fmt(result.simplifiedNumerator.evaluate(result.approachValue))} = ${_fmt(simplifiedResult)}';
-    } else {
-      evalExpr =
-          '\\lim_{x \\to $approachStr} \\frac{$simpNum}{$simpDen} = \\frac{${_fmt(result.simplifiedNumerator.evaluate(result.approachValue))}}{${_fmt(result.simplifiedDenominator.evaluate(result.approachValue))}} = ${_fmt(simplifiedResult)}';
-    }
-
+    // Step 3: Factor the numerator
     steps.add(SolutionStep(
       stepNumber: 3,
-      title: 'Evaluate the limit by direct substitution',
-      explanation:
-          'Now that the indeterminate form is resolved, we substitute x = $approachStr to find the final value.',
-      mathematicalExpression: evalExpr,
+      title: 'Factor the numerator',
+      explanation: 'Factor the numerator to reveal common factors.',
+      mathematicalExpression:
+          '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = \\frac{${result.factoredNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
+    ));
+
+    // Step 4: Rewrite the whole fraction
+    steps.add(SolutionStep(
+      stepNumber: 4,
+      title: 'Rewrite the whole fraction',
+      explanation: 'Express with all factors visible.',
+      mathematicalExpression:
+          '= \\frac{${result.factoredNumerator.toTex()}}{${result.factoredDenominator.toTex()}}',
+    ));
+
+    // Step 5: Cancel common factors
+    final commonStr = result.commonFactors.map((f) => f.toTex()).join(' × ');
+    steps.add(SolutionStep(
+      stepNumber: 5,
+      title: 'Cancel common factors',
+      explanation: 'Cancel ($commonStr) from numerator and denominator.',
+      mathematicalExpression:
+          '= \\frac{${result.simplifiedNumerator.toTex()}}{${result.simplifiedDenominator.toTex()}}',
+    ));
+
+    // Step 6: Substitute x = {value}
+    final evalNum = result.simplifiedNumerator.evaluate(result.approachValue);
+    final evalDen = result.simplifiedDenominator.evaluate(result.approachValue);
+    steps.add(SolutionStep(
+      stepNumber: 6,
+      title: 'Substitute x = $approachStr',
+      explanation: 'Now substitute the value into the simplified expression.',
+      mathematicalExpression:
+          '= \\frac{${_fmt(evalNum)}}{${_fmt(evalDen)}} = ${_fmt(result.finalValue)}',
+    ));
+
+    // Step 7: Write the limit properly (Final Answer)
+    steps.add(SolutionStep(
+      stepNumber: 7,
+      title: 'Write the limit properly',
+      explanation: 'The limit has been evaluated successfully.',
+      mathematicalExpression:
+          '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = ${_fmt(result.finalValue)}}',
     ));
 
     return steps;
@@ -167,19 +185,21 @@ class SolutionStepsGenerator {
   /// Steps for when factoring doesn't work
   List<SolutionStep> _generateUnsolvableSteps(SolutionResult result) {
     final approachStr = _fmt(result.approachValue);
+    final varName = 'x';
+    
     return [
       SolutionStep(
         stepNumber: 1,
-        title: 'Problem Setup',
+        title: 'Write the equation',
         explanation: 'We need to evaluate:',
         mathematicalExpression:
-            '\\lim_{x \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
+            '\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
       ),
       SolutionStep(
         stepNumber: 2,
-        title: 'Check Indeterminacy',
+        title: 'Try Substitution',
         explanation:
-            'Substituting x = $approachStr gives 0/0 (indeterminate form).',
+            'Substituting $varName = $approachStr gives 0/0 (indeterminate form).',
         mathematicalExpression: '\\frac{0}{0}',
       ),
       SolutionStep(
@@ -191,9 +211,9 @@ class SolutionStepsGenerator {
       ),
       const SolutionStep(
         stepNumber: 4,
-        title: 'Result: No common factors',
-        explanation: 'After factoring, we find no common factors to cancel. '
-            'This limit cannot be resolved by factoring.',
+        title: 'Cannot Solve',
+        explanation:
+            'After factoring, we find no common factors to cancel. This limit cannot be resolved by factoring.',
       ),
     ];
   }
@@ -209,22 +229,29 @@ class SolutionStepsGenerator {
     ];
   }
 
-  /// Format a number for display
+  /// Format a number for display - shows fraction if exact, otherwise decimal
   String _fmt(double n) {
-    if (n.isNaN) return 'undefined';
-    if (n.isInfinite) return n > 0 ? '∞' : '-∞';
-    if (n == n.toInt()) return n.toInt().toString();
+    if (n.isNaN) return '\\text{undefined}';
+    if (n.isInfinite) return n > 0 ? '\\infty' : '-\\infty';
 
-    // Try simple fractions
-    for (int denom = 2; denom <= 12; denom++) {
+    const tolerance = 1e-9;
+    if ((n - n.round()).abs() < tolerance) {
+      return n.round().toString();
+    }
+
+    for (int denom = 2; denom <= 64; denom++) {
       final numer = n * denom;
-      if ((numer - numer.round()).abs() < 1e-9) {
+      if ((numer - numer.round()).abs() < tolerance) {
         final intNumer = numer.round();
-        // Simplify the fraction
+        if (intNumer == 0) return '0';
         final gcdVal = _gcd(intNumer.abs(), denom);
         final simpleNum = intNumer ~/ gcdVal;
         final simpleDen = denom ~/ gcdVal;
         if (simpleDen == 1) return simpleNum.toString();
+        if (simpleDen == -1) return (-simpleNum).toString();
+        if (simpleNum < 0 && simpleDen < 0) {
+          return '${(-simpleNum)}/${(-simpleDen)}';
+        }
         return '$simpleNum/$simpleDen';
       }
     }
@@ -236,6 +263,8 @@ class SolutionStepsGenerator {
   }
 
   int _gcd(int a, int b) {
+    a = a.abs();
+    b = b.abs();
     while (b != 0) {
       final t = b;
       b = a % b;

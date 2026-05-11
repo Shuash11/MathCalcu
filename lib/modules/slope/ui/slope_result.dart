@@ -1,18 +1,8 @@
 import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
 import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
-// ─────────────────────────────────────────────────────────────
-// SLOPE RESULT CARDS
-//
-// Three public widgets exported from this file:
-//   • SlopeAnswerCard      – shows single-line slope result
-//   • SlopeComparisonCard  – shows parallel/perpendicular verdict
-//   • SlopeInfoChip        – small chip showing "Line N / slope"
-// ─────────────────────────────────────────────────────────────
-
-/// Tappable card showing the slope of a single line.
-/// [onTap] opens the steps dialog (wired in the parent screen).
 class SlopeAnswerCard extends StatelessWidget {
   final SlopeSolverResult result;
   final VoidCallback onTap;
@@ -26,6 +16,8 @@ class SlopeAnswerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final slopeStr = result.slopeDisplay;
+    final isVertical = result.isVertical;
+    final isHorizontal = result.isHorizontal;
 
     return GestureDetector(
       onTap: onTap,
@@ -60,18 +52,11 @@ class SlopeAnswerCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Text(
-              slopeStr,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: SlopeTheme.textPrimary(context),
-              ),
-            ),
+            _SlopeDisplay(slopeStr: slopeStr, isVertical: isVertical, isHorizontal: isHorizontal),
             const SizedBox(height: 4),
-            Text(
-              'm = $slopeStr',
-              style: TextStyle(
+            Math.tex(
+              isVertical ? r'x = c' : (isHorizontal ? r'm = 0' : r'm = ' + _toLatexSlope(slopeStr)),
+              textStyle: TextStyle(
                 fontSize: 11,
                 color: SlopeTheme.textSecondary(context).withValues(alpha: 0.5),
                 fontWeight: FontWeight.w500,
@@ -82,11 +67,61 @@ class SlopeAnswerCard extends StatelessWidget {
       ),
     );
   }
+
+  String _toLatexSlope(String slopeStr) {
+    if (slopeStr.contains('/')) {
+      final parts = slopeStr.split('/');
+      // ignore: prefer_interpolation_to_compose_strings
+      return r'\frac{' + parts[0] + '}{' + parts[1] + '}';
+    }
+    return slopeStr;
+  }
 }
 
-/// Tappable card showing the parallel/perpendicular/neither verdict
-/// together with each line's slope chip.
-/// [onTap] opens the comparison dialog (wired in the parent screen).
+class _SlopeDisplay extends StatelessWidget {
+  final String slopeStr;
+  final bool isVertical;
+  final bool isHorizontal;
+
+  const _SlopeDisplay({
+    required this.slopeStr,
+    required this.isVertical,
+    required this.isHorizontal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String latex;
+    if (isVertical) {
+      latex = r'x = c';
+    } else if (isHorizontal) {
+      latex = r'0';
+    } else {
+      latex = _toLatexFrac(slopeStr);
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Math.tex(
+        latex,
+        textStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: SlopeTheme.textPrimary(context),
+        ),
+      ),
+    );
+  }
+
+  String _toLatexFrac(String slopeStr) {
+    if (slopeStr.contains('/')) {
+      final parts = slopeStr.split('/');
+      return r'\frac{' + parts[0] + '}{' + parts[1] + '}';
+    }
+    return slopeStr;
+  }
+}
+
 class SlopeComparisonCard extends StatelessWidget {
   final SlopeComparisonResult result;
   final VoidCallback onTap;
@@ -203,6 +238,7 @@ class SlopeComparisonCard extends StatelessWidget {
                   child: SlopeInfoChip(
                     label: 'Line 1',
                     slope: result.slope1.slopeDisplay,
+                    isVertical: result.slope1.isVertical,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -210,6 +246,7 @@ class SlopeComparisonCard extends StatelessWidget {
                   child: SlopeInfoChip(
                     label: 'Line 2',
                     slope: result.slope2.slopeDisplay,
+                    isVertical: result.slope2.isVertical,
                   ),
                 ),
               ],
@@ -221,15 +258,16 @@ class SlopeComparisonCard extends StatelessWidget {
   }
 }
 
-/// Small chip showing a label (e.g. "Line 1") and its slope value.
 class SlopeInfoChip extends StatelessWidget {
   final String label;
   final String slope;
+  final bool isVertical;
 
   const SlopeInfoChip({
     super.key,
     required this.label,
     required this.slope,
+    this.isVertical = false,
   });
 
   @override
@@ -255,16 +293,27 @@ class SlopeInfoChip extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            slope,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: SlopeTheme.textPrimary(context),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Math.tex(
+              isVertical ? r'\infty' : _toLatexFrac(slope),
+              textStyle: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: SlopeTheme.textPrimary(context),
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _toLatexFrac(String slopeStr) {
+    if (slopeStr.contains('/')) {
+      final parts = slopeStr.split('/');
+      return r'\frac{' + parts[0] + '}{' + parts[1] + '}';
+    }
+    return slopeStr;
   }
 }

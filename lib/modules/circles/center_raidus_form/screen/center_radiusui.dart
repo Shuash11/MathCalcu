@@ -191,7 +191,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
     if (_controller.activeTab == 0) {
       return InputCard(
         title: 'Enter Center & Radius',
-        formula: '(x - h)² + (y - k)² = r²',
+        formula: r'(x - h)^2 + (y - k)^2 = r^2',
         color: FindingCenterRadiusTheme.teal,
         fields: [
           FieldDef(ctrl: _controller.hCtrl, label: 'h', hint: 'x of center'),

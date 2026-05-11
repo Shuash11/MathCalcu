@@ -8,12 +8,12 @@ class DerivativeInputField extends StatelessWidget {
   final VoidCallback onSolve;
 
   const DerivativeInputField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.onVariableChanged,
     required this.currentVariable,
     required this.onSolve,
-  }) : super(key: key);
+  });
 
   void _insertText(String text) {
     final selection = controller.selection;

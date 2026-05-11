@@ -61,8 +61,7 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify given values',
-        plainContent:
-            'Point: ($x1,  $y1)   →   (x₁, y₁)\nSlope: $m   →   m = $m',
+        plainContent: 'Point:  ($x1, $y1)\nSlope:  m = $m',
       ),
       StepSection.single(
         stepLabel: 'Step 2',
@@ -77,7 +76,9 @@ class _StepBuilder {
             r' ' +
             y1Abs +
             r' = ' +
+            (mSimplified.contains('/') ? '(' : '') +
             mSimplified +
+            (mSimplified.contains('/') ? ')' : '') +
             r'(x ' +
             x1Sign +
             r' ' +
@@ -95,10 +96,14 @@ class _StepBuilder {
             r' ' +
             y1Abs +
             r' &= ' +
+            (mSimplified.contains('/') ? '(' : '') +
             mSimplified +
-            r'x ' +
+            (mSimplified.contains('/') ? ')' : '') +
+            (mSimplified.contains('/') ? r' \cdot x + ' : r'x + ') +
+            (mSimplified.contains('/') ? '(' : '') +
             mSimplified +
-            r'(' +
+            (mSimplified.contains('/') ? ')' : '') +
+            r' \cdot (' +
             x1Sign +
             r' ' +
             x1Abs +
@@ -109,9 +114,13 @@ class _StepBuilder {
             r' ' +
             y1Abs +
             r' &= ' +
+            (mSimplified.contains('/') ? '(' : '') +
             mSimplified +
-            r'x ' +
+            (mSimplified.contains('/') ? ')' : '') +
+            (mSimplified.contains('/') ? r' \cdot x + ' : r'x + ') +
+            (mSimplified.contains('/') ? '(' : '') +
             mSimplified +
+            (mSimplified.contains('/') ? ')' : '') +
             r' \cdot (' +
             x1 +
             r')'
@@ -122,7 +131,10 @@ class _StepBuilder {
         stepLabel: 'Step 5',
         guide: 'Solve for y (Slope-Intercept)',
         latexContent: r'y = ' +
+            (mSimplified.contains('/') ? '(' : '') +
             mSimplified +
+            (mSimplified.contains('/') ? ')' : '') +
+            (mSimplified.contains('/') ? r' \cdot ' : '') +
             r'x ' +
             (int.parse(b) >= 0 ? '+' : r'-') +
             r' ' +
@@ -173,7 +185,9 @@ class _StepBuilder {
     final product = mVal * xVal;
     final sign = product < 0 ? '+' : '-';
     final absVal = product.abs().toString();
-    final latex = 'y $y1Sign $y1Abs &= $mSimplified x $sign $absVal';
+    final mWithParens = mSimplified.contains('/') ? '($mSimplified)' : mSimplified;
+    final mulSymbol = mSimplified.contains('/') ? r' \cdot ' : ' ';
+    final latex = 'y $y1Sign $y1Abs &= $mWithParens$mulSymbol x $sign $absVal';
     return r'\begin{aligned}' + latex + r'\end{aligned}';
   }
 }

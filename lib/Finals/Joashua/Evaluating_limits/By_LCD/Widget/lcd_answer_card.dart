@@ -20,7 +20,7 @@ class LCDAnswerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = FinalsTheme.danger;
+    const accentColor = FinalsTheme.danger;
     
     return GestureDetector(
       onTap: onTap,
@@ -167,45 +167,50 @@ class _ValueDisplay extends StatelessWidget {
       return _buildTextDisplay('Undefined', accentColor, context, wrapFlexible: true);
     }
 
-    if (fractionalAnswer != null && 
-        (fractionalAnswer!.contains(r'\frac') || fractionalAnswer!.contains(r'\approx'))) {
-      final parts = fractionalAnswer!.split(r'\approx');
-      if (parts.length > 1) {
-        return Flexible(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Math.tex(
-                parts[0].trim(),
-                textStyle: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: accentColor,
-                ),
-                onErrorFallback: (err) => Text(
+    // Always use fractionalAnswer if provided - this is the authoritative answer from steps.dart
+    if (fractionalAnswer != null) {
+      // Handle approximation notation (exact ≈ decimal)
+      if (fractionalAnswer!.contains(r'\approx')) {
+        final parts = fractionalAnswer!.split(r'\approx');
+        if (parts.length > 1) {
+          return Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Math.tex(
                   parts[0].trim(),
-                  style: TextStyle(
+                  textStyle: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
                     color: accentColor,
                   ),
+                  onErrorFallback: (err) => Text(
+                    parts[0].trim(),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      color: accentColor,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '≈ ${parts[1].trim()}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: accentColor.withValues(alpha: 0.7),
-                  fontFamily: 'serif',
+                const SizedBox(width: 8),
+                Text(
+                  '≈ ${parts[1].trim()}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: accentColor.withValues(alpha: 0.7),
+                    fontFamily: 'serif',
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        }
       }
+      
+      // Display fractionalAnswer as-is (whether it's a fraction, constant, or other format)
       return Flexible(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -223,20 +228,40 @@ class _ValueDisplay extends StatelessWidget {
           ),
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: Math.tex(
-              fractionalAnswer!,
-              textStyle: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                color: accentColor,
-              ),
-              onErrorFallback: (err) => _buildTextDisplay(_formatAnswer(answer!), accentColor, context, wrapFlexible: false),
-            ),
+            child: fractionalAnswer!.contains(r'\frac') || fractionalAnswer!.contains(r'\sqrt')
+                ? Math.tex(
+                    fractionalAnswer!,
+                    textStyle: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      color: accentColor,
+                    ),
+                    onErrorFallback: (err) => Text(
+                      fractionalAnswer!,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: accentColor,
+                        fontFamily: 'serif',
+                      ),
+                    ),
+                  )
+                : Text(
+                    fractionalAnswer!,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      color: accentColor,
+                      fontFamily: 'serif',
+                      letterSpacing: -0.5,
+                    ),
+                  ),
           ),
         ),
       );
     }
 
+    // Fallback: if no fractionalAnswer, format the numerical answer
     return _buildTextDisplay(_formatAnswer(answer!), accentColor, context, wrapFlexible: true);
   }
 
@@ -247,7 +272,58 @@ class _ValueDisplay extends StatelessWidget {
     if (val == val.toInt()) {
       return val.toInt().toString();
     }
-    return val.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+    
+    // Try to find a good fraction representation
+    final absVal = val.abs();
+    for (int d = 1; d <= 1000; d++) {
+      final n = absVal * d;
+      if ((n - n.round()).abs() < 1e-4) {
+        final num = n.round();
+        int numerator = num;
+        int denominator = d;
+        int gcd = _gcd(numerator, denominator);
+        numerator = numerator ~/ gcd;
+        denominator = denominator ~/ gcd;
+        if (denominator == 1) {
+          return val < 0 ? "-$numerator" : "$numerator";
+        }
+        return "${val < 0 ? '-' : ''}\\frac{$numerator}{$denominator}";
+      }
+    }
+    
+    // Fallback: try higher tolerance range
+    for (int d = 1001; d <= 10000; d += 100) {
+      final n = absVal * d;
+      if ((n - n.round()).abs() < 1.0) {
+        final num = n.round();
+        int numerator = num;
+        int denominator = d;
+        int gcd = _gcd(numerator, denominator);
+        numerator = numerator ~/ gcd;
+        denominator = denominator ~/ gcd;
+        if (denominator <= 1000 && denominator > 1) {
+          return "${val < 0 ? '-' : ''}\\frac{$numerator}{$denominator}";
+        }
+      }
+    }
+    
+    // Absolute last resort: return as integer if very close
+    final rounded = val.round();
+    if ((val - rounded).abs() < 0.01) {
+      return rounded.toInt().toString();
+    }
+    
+    // Never return decimals - return the value as-is in string form without decimal places
+    return val.toInt().toString();
+  }
+
+  static int _gcd(int a, int b) {
+    while (b != 0) {
+      final t = b;
+      b = a % b;
+      a = t;
+    }
+    return a;
   }
 
   Widget _buildTextDisplay(String displayVal, Color accentColor, BuildContext context, {required bool wrapFlexible}) {
@@ -267,16 +343,35 @@ class _ValueDisplay extends StatelessWidget {
       ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
-        child: Text(
-          displayVal,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w900,
-            color: accentColor,
-            fontFamily: 'serif',
-            letterSpacing: -0.5,
-          ),
-        ),
+        child: displayVal.contains(r'\frac')
+            ? Math.tex(
+                displayVal,
+                textStyle: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  color: accentColor,
+                ),
+                onErrorFallback: (err) => Text(
+                  displayVal,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    color: accentColor,
+                    fontFamily: 'serif',
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              )
+            : Text(
+                displayVal,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  color: accentColor,
+                  fontFamily: 'serif',
+                  letterSpacing: -0.5,
+                ),
+              ),
       ),
     );
     return wrapFlexible ? Flexible(child: container) : container;

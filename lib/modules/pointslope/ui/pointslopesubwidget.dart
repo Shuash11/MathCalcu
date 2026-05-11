@@ -5,29 +5,31 @@ import 'package:flutter/material.dart';
 /// ── Card shell ────────────────────────────────
 class PSCard extends StatelessWidget {
   final Widget child;
-  const PSCard({super.key, required this.child});
+  final double s;
+
+  const PSCard({super.key, required this.child, required this.s});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         gradient: PSTheme.cardGradient(context),
-        borderRadius: BorderRadius.circular(PSTheme.radiusCard),
+        borderRadius: BorderRadius.circular(PSTheme.radiusCard * s),
         border: Border.all(
             color: PSTheme.glowPurple(0.25).withValues(alpha: 0.15),
-            width: 1.5),
-        boxShadow: PSTheme.cardShadow(context),
+            width: 1.5 * s),
+        boxShadow: PSTheme.cardShadow(context, s),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(PSTheme.radiusCard),
+        borderRadius: BorderRadius.circular(PSTheme.radiusCard * s),
         child: Stack(
           children: [
             Positioned(
-              top: -60,
-              right: -60,
+              top: -60 * s,
+              right: -60 * s,
               child: Container(
-                width: 260,
-                height: 260,
+                width: 260 * s,
+                height: 260 * s,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(colors: [
@@ -38,11 +40,11 @@ class PSCard extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: -40,
-              left: -40,
+              bottom: -40 * s,
+              left: -40 * s,
               child: Container(
-                width: 200,
-                height: 200,
+                width: 200 * s,
+                height: 200 * s,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(colors: [
@@ -52,18 +54,18 @@ class PSCard extends StatelessWidget {
                 ),
               ),
             ),
-            const Positioned(
+            Positioned(
               top: 0,
               right: 0,
               child: Opacity(
                 opacity: 0.15,
                 child: CustomPaint(
-                  size: Size(110, 110),
-                  painter: DiagonalLinesPainter(PSTheme.electricPurple),
+                  size: Size(110 * s, 110 * s),
+                  painter: const DiagonalLinesPainter(PSTheme.electricPurple),
                 ),
               ),
             ),
-            Padding(padding: const EdgeInsets.all(24), child: child),
+            Padding(padding: EdgeInsets.all(24 * s), child: child),
           ],
         ),
       ),
@@ -74,30 +76,32 @@ class PSCard extends StatelessWidget {
 /// ── Header ────────────────────────────────────
 class PSHeader extends StatelessWidget {
   final Animation<double> pulseAnim;
-  const PSHeader({super.key, required this.pulseAnim});
+  final double s;
+
+  const PSHeader({super.key, required this.pulseAnim, required this.s});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Container(
-          width: 52,
-          height: 52,
+          width: 52 * s,
+          height: 52 * s,
           decoration: BoxDecoration(
             gradient: PSTheme.iconBoxGradient,
-            borderRadius: BorderRadius.circular(PSTheme.radiusIconBox),
-            border: Border.all(color: PSTheme.glowPurple(0.4), width: 2),
-            boxShadow: PSTheme.iconBoxShadow,
+            borderRadius: BorderRadius.circular(PSTheme.radiusIconBox * s),
+            border: Border.all(color: PSTheme.glowPurple(0.4), width: 2 * s),
+            boxShadow: PSTheme.iconBoxShadow(s),
           ),
-          child: const Center(
+          child: Center(
             child: Icon(
               Icons.show_chart_rounded,
               color: PSTheme.electricPurple,
-              size: 26,
+              size: 26 * s,
             ),
           ),
         ),
-        const SizedBox(width: 14),
+        SizedBox(width: 14 * s),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,21 +109,21 @@ class PSHeader extends StatelessWidget {
               Row(
                 children: [
                   Text('Equation of a line',
-                      style: PSTheme.titleStyle(context)),
-                  const SizedBox(width: 10),
+                      style: PSTheme.titleStyle(context, s)),
+                  SizedBox(width: 10 * s),
                   AnimatedBuilder(
                     animation: pulseAnim,
                     builder: (_, __) => Container(
-                      width: 8,
-                      height: 8,
+                      width: 8 * s,
+                      height: 8 * s,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: PSTheme.neonMagenta,
                         boxShadow: [
                           BoxShadow(
                             color: PSTheme.glowMagenta(pulseAnim.value),
-                            blurRadius: pulseAnim.value * 14,
-                            spreadRadius: pulseAnim.value * 2,
+                            blurRadius: pulseAnim.value * 14 * s,
+                            spreadRadius: pulseAnim.value * 2 * s,
                           ),
                         ],
                       ),
@@ -127,10 +131,10 @@ class PSHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 3),
+              SizedBox(height: 3 * s),
               Text(
                 'Linear equation builder & visualiser',
-                style: PSTheme.subtitleStyle(context),
+                style: PSTheme.subtitleStyle(context, s),
               ),
             ],
           ),
@@ -162,11 +166,11 @@ class PSFormulaBanner extends StatelessWidget {
               style: PSTheme.formulaStyle(context),
               children: [
                 const TextSpan(text: 'y − '),
-                TextSpan(text: 'y₁', style: PSTheme.highlightVarStyle),
+                TextSpan(text: 'y₁', style: PSTheme.highlightVarStyle()),
                 const TextSpan(text: ' = '),
-                TextSpan(text: 'm', style: PSTheme.highlightVarStyle),
+                TextSpan(text: 'm', style: PSTheme.highlightVarStyle()),
                 const TextSpan(text: '(x − '),
-                TextSpan(text: 'x₁', style: PSTheme.highlightVarStyle),
+                TextSpan(text: 'x₁', style: PSTheme.highlightVarStyle()),
                 const TextSpan(text: ')'),
               ],
             ),
@@ -180,12 +184,14 @@ class PSFormulaBanner extends StatelessWidget {
 /// ── Inputs row ────────────────────────────────
 class PSInputsRow extends StatelessWidget {
   final TextEditingController mCtrl, x1Ctrl, y1Ctrl;
+  final double s;
 
   const PSInputsRow({
     super.key,
     required this.mCtrl,
     required this.x1Ctrl,
     required this.y1Ctrl,
+    required this.s,
   });
 
   @override
@@ -197,22 +203,25 @@ class PSInputsRow extends StatelessWidget {
             label: 'SLOPE',
             variable: 'm',
             controller: mCtrl,
+            s: s,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12 * s),
         Expanded(
           child: PSInputField(
             label: 'POINT',
             variable: 'x₁',
             controller: x1Ctrl,
+            s: s,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12 * s),
         Expanded(
           child: PSInputField(
             label: 'POINT',
             variable: 'y₁',
             controller: y1Ctrl,
+            s: s,
           ),
         ),
       ],
@@ -223,12 +232,14 @@ class PSInputsRow extends StatelessWidget {
 class PSInputField extends StatelessWidget {
   final String label, variable;
   final TextEditingController controller;
+  final double s;
 
   const PSInputField({
     super.key,
     required this.label,
     required this.variable,
     required this.controller,
+    required this.s,
   });
 
   @override
@@ -238,12 +249,12 @@ class PSInputField extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('$label  ', style: PSTheme.inputLabelStyle(context)),
-            Text(variable, style: PSTheme.inputVarStyle),
+            Text('$label  ', style: PSTheme.inputLabelStyle(context, s)),
+            Text(variable, style: PSTheme.inputVarStyle(s)),
           ],
         ),
-        const SizedBox(height: 6),
-        PSTextField(controller: controller),
+        SizedBox(height: 6 * s),
+        PSTextField(controller: controller, s: s),
       ],
     );
   }
@@ -252,10 +263,12 @@ class PSInputField extends StatelessWidget {
 /// ── Text Field ─────────────────
 class PSTextField extends StatelessWidget {
   final TextEditingController controller;
+  final double s;
 
   const PSTextField({
     super.key,
     required this.controller,
+    required this.s,
   });
 
   @override
@@ -265,27 +278,25 @@ class PSTextField extends StatelessWidget {
         color: PSTheme.isLight(context)
             ? Colors.black.withValues(alpha: 0.03)
             : Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(PSTheme.radiusInput),
+        borderRadius: BorderRadius.circular(PSTheme.radiusInput * s),
         border: Border.all(
           color: PSTheme.glowPurple(0.2).withValues(alpha: 0.15),
-          width: 1.5,
+          width: 1.5 * s,
         ),
       ),
       child: TextField(
         controller: controller,
-        // Show full keyboard for flexible input including slashes, spaces, etc.
         keyboardType: TextInputType.text,
-        // Allow digits, spaces, slashes, dots, and minus signs
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'[\d\s./-]')),
         ],
-        style: PSTheme.inputTextStyle(context),
+        style: PSTheme.inputTextStyle(context, s),
         decoration: InputDecoration(
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              EdgeInsets.symmetric(horizontal: 14 * s, vertical: 10 * s),
           border: InputBorder.none,
           hintText: '3/4 or 1.5',
-          hintStyle: PSTheme.inputHintStyle(context),
+          hintStyle: PSTheme.inputHintStyle(context, s),
         ),
       ),
     );
@@ -313,6 +324,7 @@ class PSResultBanner extends StatelessWidget {
   final bool tappable;
   final VoidCallback? onShowSteps;
   final bool showSteps;
+  final double s;
 
   const PSResultBanner({
     super.key,
@@ -322,6 +334,7 @@ class PSResultBanner extends StatelessWidget {
     this.tappable = false,
     this.onShowSteps,
     this.showSteps = false,
+    required this.s,
   });
 
   @override
@@ -331,76 +344,71 @@ class PSResultBanner extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
+      padding: EdgeInsets.fromLTRB(20 * s, 18 * s, 20 * s, 14 * s),
       decoration: BoxDecoration(
         gradient: PSTheme.resultBannerGradient(context, active: hasResult),
-        borderRadius: BorderRadius.circular(PSTheme.radiusInner),
+        borderRadius: BorderRadius.circular(PSTheme.radiusInner * s),
         border: Border.all(
           color: hasResult ? PSTheme.glowMagenta(0.5) : PSTheme.glowPurple(0.3),
-          width: 1.5,
+          width: 1.5 * s,
         ),
-        boxShadow: hasResult ? PSTheme.resultActiveShadow : [],
+        boxShadow: hasResult ? PSTheme.resultActiveShadow(s) : [],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (hasResult) ...[
-            // Point-Slope Form (Input)
             Text('POINT-SLOPE FORM', style: PSTheme.monoCaptionStyle(context)),
-            const SizedBox(height: 4),
+            SizedBox(height: 4 * s),
             Text(
               pointSlopeEq!,
-              style: PSTheme.resultEquationStyle(context).copyWith(
+              style: PSTheme.resultEquationStyle(context, s).copyWith(
                 color: PSTheme.electricPurple,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12 * s),
             const Divider(),
-            const SizedBox(height: 12),
-
-            // General Form (Answer 1)
+            SizedBox(height: 12 * s),
             Text('GENERAL FORM', style: PSTheme.monoCaptionStyle(context)),
-            const SizedBox(height: 4),
+            SizedBox(height: 4 * s),
             Text(
               generalFormEq!,
-              style: PSTheme.resultEquationStyle(context).copyWith(
+              style: PSTheme.resultEquationStyle(context, s).copyWith(
                 color: PSTheme.neonMagenta,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12 * s),
             const Divider(),
-            const SizedBox(height: 12),
-
-            // Standard Form (Answer 2)
+            SizedBox(height: 12 * s),
             Text('STANDARD FORM', style: PSTheme.monoCaptionStyle(context)),
-            const SizedBox(height: 4),
+            SizedBox(height: 4 * s),
             Text(
               standardFormEq!,
-              style: PSTheme.resultEquationStyle(context).copyWith(
-                color: const Color(0xFF10B981), // Emerald green
+              style: PSTheme.resultEquationStyle(context, s).copyWith(
+                color: const Color(0xFF10B981),
               ),
               textAlign: TextAlign.center,
             ),
           ] else ...[
             Text('Enter values above',
-                style: PSTheme.placeholderStyle(context)),
+                style: PSTheme.placeholderStyle(context, s)),
           ],
           if (tappable && onShowSteps != null) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12 * s),
             const Divider(),
-            const SizedBox(height: 10),
+            SizedBox(height: 10 * s),
             GestureDetector(
               onTap: onShowSteps,
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    EdgeInsets.symmetric(horizontal: 12 * s, vertical: 6 * s),
                 decoration: BoxDecoration(
                   color: showSteps
                       ? PSTheme.deepViolet.withValues(alpha: 0.2)
                       : PSTheme.deepViolet.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8 * s),
                   border: Border.all(
                     color: PSTheme.deepViolet.withValues(alpha: 0.3),
                   ),
@@ -413,14 +421,14 @@ class PSResultBanner extends StatelessWidget {
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
                       color: PSTheme.deepViolet,
-                      size: 14,
+                      size: 14 * s,
                     ),
-                    const SizedBox(width: 6),
+                    SizedBox(width: 6 * s),
                     Text(
                       showSteps ? 'Hide steps' : 'Show steps',
                       style: TextStyle(
                         color: PSTheme.deepViolet,
-                        fontSize: 12,
+                        fontSize: 12 * s,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -440,31 +448,34 @@ class PSGraph extends StatelessWidget {
   final String mText;
   final String xText;
   final String yText;
+  final double s;
 
   const PSGraph({
     super.key,
     this.mText = '',
     this.xText = '',
     this.yText = '',
+    required this.s,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 200 * s,
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(PSTheme.radiusInner),
+        borderRadius: BorderRadius.circular(PSTheme.radiusInner * s),
         border: Border.all(color: PSTheme.glowViolet(0.25)),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(PSTheme.radiusInner),
+        borderRadius: BorderRadius.circular(PSTheme.radiusInner * s),
         child: CustomPaint(
-          size: const Size(double.infinity, 200),
+          size: Size(double.infinity, 200 * s),
           painter: SimpleGraphPainter(
             mText: mText,
             xText: xText,
             yText: yText,
+            s: s,
           ),
         ),
       ),
@@ -477,11 +488,13 @@ class SimpleGraphPainter extends CustomPainter {
   final String mText;
   final String xText;
   final String yText;
+  final double s;
 
   SimpleGraphPainter({
     required this.mText,
     required this.xText,
     required this.yText,
+    required this.s,
   });
 
   @override
@@ -503,7 +516,7 @@ class SimpleGraphPainter extends CustomPainter {
       return;
     }
 
-    const padding = 36.0;
+    final padding = 36.0 * s;
     final innerW = size.width - padding * 2;
     final innerH = size.height - padding * 2;
 
@@ -523,56 +536,56 @@ class SimpleGraphPainter extends CustomPainter {
 
     final gridPaint = Paint()
       ..color = const Color(0x1AA855F7)
-      ..strokeWidth = 0.5;
+      ..strokeWidth = 0.5 * s;
 
     for (int gx = xMin.ceil(); gx <= xMax.floor(); gx++) {
-      final s = toScreen(gx.toDouble(), 0);
+      final sg = toScreen(gx.toDouble(), 0);
       canvas.drawLine(
-        Offset(s.dx, padding),
-        Offset(s.dx, size.height - padding),
+        Offset(sg.dx, padding),
+        Offset(sg.dx, size.height - padding),
         gridPaint,
       );
     }
 
     for (int gy = yMin.ceil(); gy <= yMax.floor(); gy++) {
-      final s = toScreen(0, gy.toDouble());
+      final sg = toScreen(0, gy.toDouble());
       canvas.drawLine(
-        Offset(padding, s.dy),
-        Offset(size.width - padding, s.dy),
+        Offset(padding, sg.dy),
+        Offset(size.width - padding, sg.dy),
         gridPaint,
       );
     }
 
     final axisPaint = Paint()
       ..color = const Color(0x40C4B5FD)
-      ..strokeWidth = 1;
+      ..strokeWidth = 1 * s;
 
     if (yMin <= 0 && yMax >= 0) {
-      final s = toScreen(0, 0);
+      final sg = toScreen(0, 0);
       canvas.drawLine(
-        Offset(padding, s.dy),
-        Offset(size.width - padding, s.dy),
+        Offset(padding, sg.dy),
+        Offset(size.width - padding, sg.dy),
         axisPaint,
       );
     }
 
     if (xMin <= 0 && xMax >= 0) {
-      final s = toScreen(0, 0);
+      final sg = toScreen(0, 0);
       canvas.drawLine(
-        Offset(s.dx, padding),
-        Offset(s.dx, size.height - padding),
+        Offset(sg.dx, padding),
+        Offset(sg.dx, size.height - padding),
         axisPaint,
       );
     }
 
     final glowPaint = Paint()
       ..color = const Color(0x99E879F9)
-      ..strokeWidth = 4
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+      ..strokeWidth = 4 * s
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6 * s);
 
     final linePaint = Paint()
       ..color = const Color(0xFFE879F9)
-      ..strokeWidth = 1.8
+      ..strokeWidth = 1.8 * s
       ..strokeCap = StrokeCap.round;
 
     final p0 = toScreen(xMin, m * xMin + b);
@@ -582,31 +595,31 @@ class SimpleGraphPainter extends CustomPainter {
     canvas.drawLine(p0, p1, linePaint);
 
     final rp = toScreen(x1, y1);
-    canvas.drawCircle(rp, 6, Paint()..color = const Color(0xFFA855F7));
+    canvas.drawCircle(rp, 6 * s, Paint()..color = const Color(0xFFA855F7));
 
     final tp = TextPainter(
       text: TextSpan(
         text: '(${formatCoordinate(x1)}, ${formatCoordinate(y1)})',
-        style: const TextStyle(
-          fontSize: 10,
-          color: Color(0xFFC4B5FD),
+        style: TextStyle(
+          fontSize: 10 * s,
+          color: const Color(0xFFC4B5FD),
           fontFamily: 'monospace',
         ),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
 
-    tp.paint(canvas, Offset(rp.dx + 8, rp.dy - 14));
+    tp.paint(canvas, Offset(rp.dx + 8 * s, rp.dy - 14 * s));
   }
 
   void _drawEmptyState(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = const Color(0x30C4B5FD)
-      ..strokeWidth = 1
+      ..strokeWidth = 1 * s
       ..style = PaintingStyle.stroke;
 
     canvas.drawRect(
-      Rect.fromLTWH(36, 36, size.width - 72, size.height - 72),
+      Rect.fromLTWH(36 * s, 36 * s, size.width - 72 * s, size.height - 72 * s),
       paint,
     );
   }
@@ -623,23 +636,25 @@ class PSBadges extends StatelessWidget {
   final String direction;
   final String angle;
   final String riseRun;
+  final double s;
 
   const PSBadges({
     super.key,
     required this.direction,
     required this.angle,
     required this.riseRun,
+    required this.s,
   });
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: 8 * s,
+      runSpacing: 8 * s,
       children: [
-        PSBadge(key_: 'Direction', value: direction),
-        PSBadge(key_: 'Angle', value: angle),
-        PSBadge(key_: 'Rise/Run', value: riseRun),
+        PSBadge(key_: 'Direction', value: direction, s: s),
+        PSBadge(key_: 'Angle', value: angle, s: s),
+        PSBadge(key_: 'Rise/Run', value: riseRun, s: s),
       ],
     );
   }
@@ -647,23 +662,24 @@ class PSBadges extends StatelessWidget {
 
 class PSBadge extends StatelessWidget {
   final String key_, value;
+  final double s;
 
-  const PSBadge({super.key, required this.key_, required this.value});
+  const PSBadge({super.key, required this.key_, required this.value, required this.s});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 5 * s, horizontal: 12 * s),
       decoration: BoxDecoration(
         color: PSTheme.glowViolet(0.15),
-        borderRadius: BorderRadius.circular(PSTheme.radiusBadge),
+        borderRadius: BorderRadius.circular(PSTheme.radiusBadge * s),
         border: Border.all(color: PSTheme.glowPurple(0.3)),
       ),
       child: RichText(
         text: TextSpan(
           children: [
-            TextSpan(text: '$key_: ', style: PSTheme.badgeKeyStyle),
-            TextSpan(text: value, style: PSTheme.badgeValueStyle(context)),
+            TextSpan(text: '$key_: ', style: PSTheme.badgeKeyStyle(s)),
+            TextSpan(text: value, style: PSTheme.badgeValueStyle(context, s)),
           ],
         ),
       ),
@@ -681,11 +697,11 @@ class DiagonalLinesPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color.withValues(alpha: 0.4)
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 1.5 * (size.width / 110);
 
     for (int i = -2; i < 6; i++) {
-      final sx = i * 20.0;
-      canvas.drawLine(Offset(sx, 0), Offset(sx + 40, size.height), paint);
+      final sx = i * 20.0 * (size.width / 110);
+      canvas.drawLine(Offset(sx, 0), Offset(sx + 40 * (size.width / 110), size.height), paint);
     }
   }
 

@@ -122,7 +122,7 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: FinalsTheme.danger.withValues(alpha: 0.3)),
                 ),
-                child: Text(_error!, style: TextStyle(color: FinalsTheme.danger, fontSize: 13, fontWeight: FontWeight.w600)),
+                child: Text(_error!, style: const TextStyle(color: FinalsTheme.danger, fontSize: 13, fontWeight: FontWeight.w600)),
               ),
             ],
 

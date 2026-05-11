@@ -4,6 +4,8 @@
 //   Simplifier   — algebraic reduction of Expr trees
 //   Differentiator — symbolic differentiation rules
 // Nothing here parses text or builds SlopeResults.
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:math' as math;
 import 'models.dart';
 // ==================== EXPRESSION UTILITIES ====================
@@ -13,10 +15,12 @@ class ExprUtils {
   static bool containsVar(Expr e, String varName) {
     if (e is Var) return e.name == varName;
     if (e is Num || e is Const || e is DerivSym) return false;
-    if (e is BinOp)
+    if (e is BinOp) {
       return containsVar(e.left, varName) || containsVar(e.right, varName);
-    if (e is Pow)
+    }
+    if (e is Pow) {
       return containsVar(e.base, varName) || containsVar(e.exponent, varName);
+    }
     if (e is UnaryNeg) return containsVar(e.operand, varName);
     if (e is Func) return containsVar(e.arg, varName);
     return false;
@@ -26,10 +30,12 @@ class ExprUtils {
   static bool containsDerivSym(Expr e) {
     if (e is DerivSym) return true;
     if (e is Num || e is Const || e is Var) return false;
-    if (e is BinOp)
+    if (e is BinOp) {
       return containsDerivSym(e.left) || containsDerivSym(e.right);
-    if (e is Pow)
+    }
+    if (e is Pow) {
       return containsDerivSym(e.base) || containsDerivSym(e.exponent);
+    }
     if (e is UnaryNeg) return containsDerivSym(e.operand);
     if (e is Func) return containsDerivSym(e.arg);
     return false;
@@ -64,8 +70,9 @@ class ExprUtils {
         substitute(e.exponent, varName, replacement),
       );
     }
-    if (e is UnaryNeg)
+    if (e is UnaryNeg) {
       return UnaryNeg(substitute(e.operand, varName, replacement));
+    }
     if (e is Func) return Func(e.name, substitute(e.arg, varName, replacement));
     return e.clone();
   }
@@ -178,8 +185,9 @@ class Simplifier {
       final inner = _simplifyOnce(e.operand);
       if (inner is UnaryNeg) return inner.operand;
       if (inner is Num) return Num(-inner.value);
-      if (inner is BinOp && inner.op == '-')
+      if (inner is BinOp && inner.op == '-') {
         return BinOp(inner.right, '-', inner.left);
+      }
       if (inner is BinOp && inner.op == '*' && inner.left is Num) {
         return BinOp(Num(-(inner.left as Num).value), '*', inner.right);
       }
@@ -193,8 +201,9 @@ class Simplifier {
       final exp = _simplifyOnce(e.exponent);
       if (exp is Num && exp.isZero) return const Num(1);
       if (exp is Num && exp.isOne) return b;
-      if (b is Num && b.isZero && exp is Num && exp.value > 0)
+      if (b is Num && b.isZero && exp is Num && exp.value > 0) {
         return const Num(0);
+      }
       if (b is Num && b.isOne) return const Num(1);
       if (b is Num && exp is Num) {
         final result = math.pow(b.value, exp.value);
@@ -269,10 +278,12 @@ class Simplifier {
         if (left is BinOp && left.op == '/') {
           return _simplifyBinOp(BinOp(left.left, '*', right), '/', left.right);
         }
-        if (left is UnaryNeg)
+        if (left is UnaryNeg) {
           return UnaryNeg(_simplifyBinOp(left.operand, '*', right));
-        if (right is UnaryNeg)
+        }
+        if (right is UnaryNeg) {
           return UnaryNeg(_simplifyBinOp(left, '*', right.operand));
+        }
         break;
 
       case '/':
@@ -281,7 +292,9 @@ class Simplifier {
         if (left.toMathString() == right.toMathString()) return const Num(1);
         if (left is BinOp &&
             left.op == '*' &&
-            left.right.toMathString() == right.toMathString()) return left.left;
+            left.right.toMathString() == right.toMathString()) {
+          return left.left;
+        }
         if (left is BinOp &&
             left.op == '*' &&
             right is BinOp &&
@@ -315,8 +328,9 @@ class Simplifier {
   ///   e  =  coeffOfDeriv * dy/dx  +  remainder
   /// Used by the implicit solver to isolate and solve for dy/dx.
   static (Expr, Expr) extractDerivCoeff(Expr e, String derivVar) {
-    if (e is DerivSym && e.varName == derivVar)
+    if (e is DerivSym && e.varName == derivVar) {
       return (const Num(1), const Num(0));
+    }
     if (!ExprUtils.containsDerivSym(e)) return (const Num(0), e);
 
     if (e is UnaryNeg) {

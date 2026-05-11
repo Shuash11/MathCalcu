@@ -176,7 +176,7 @@ class _CircleModuleCardState extends State<CircleModuleCard> {
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 transform: _hovered
-                                    ? (Matrix4.identity()..translate(4.0 * s, 0.0))
+                                    ? Matrix4.translationValues(4.0 * s, 0.0, 0.0)
                                     : Matrix4.identity(),
                                 child: Container(
                                   width: 36 * s,

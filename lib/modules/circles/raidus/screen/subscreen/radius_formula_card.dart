@@ -1,5 +1,6 @@
 import 'package:calculus_system/modules/circles/raidus/Theme/radiustheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class RadiusFormulaCard extends StatelessWidget {
   const RadiusFormulaCard({super.key});
@@ -39,18 +40,17 @@ class RadiusFormulaCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          const Text(
-            'r = √( (x − h)² + (y − k)² )',
-            style: TextStyle(
+          Math.tex(
+            r'r = \sqrt{(x - h)^2 + (y - k)^2}',
+            textStyle: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: FindingRadiusTheme.textPrimary,
-              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            '(x, y) = point on the circle     (h, k) = center',
+            r'(x, y) = point on the circle     (h, k) = center',
             style: TextStyle(
               fontSize: 12,
               color: FindingRadiusTheme.textSecondary.withValues(alpha: 0.7),

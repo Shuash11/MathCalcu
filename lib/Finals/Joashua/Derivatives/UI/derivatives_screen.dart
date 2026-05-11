@@ -97,7 +97,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
             ),
             child: Row(
               children: [
-                Icon(Icons.check_circle_outline_rounded, color: FinalsTheme.primary, size: 24),
+                const Icon(Icons.check_circle_outline_rounded, color: FinalsTheme.primary, size: 24),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -137,7 +137,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: FinalsTheme.primary),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: FinalsTheme.primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),

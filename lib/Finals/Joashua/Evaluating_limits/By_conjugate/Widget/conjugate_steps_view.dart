@@ -10,18 +10,28 @@ class ConjugateStepsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: steps.asMap().entries.map((entry) {
-        final index = entry.key;
-        final step = entry.value;
-        final isLast = index == steps.length - 1;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = constraints.maxWidth;
+        final isCompact = screenWidth < 380;
+        final isMedium = screenWidth >= 380 && screenWidth < 600;
 
-        return _ConjugateStepTile(
-          step: step,
-          isLast: isLast,
-          accentColor: FinalsTheme.secondary,
+        return Column(
+          children: steps.asMap().entries.map((entry) {
+            final index = entry.key;
+            final step = entry.value;
+            final isLast = index == steps.length - 1;
+
+            return _ConjugateStepTile(
+              step: step,
+              isLast: isLast,
+              accentColor: FinalsTheme.secondary,
+              isCompact: isCompact,
+              isMedium: isMedium,
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 }
@@ -30,25 +40,38 @@ class _ConjugateStepTile extends StatelessWidget {
   final ConjugateStep step;
   final bool isLast;
   final Color accentColor;
+  final bool isCompact;
+  final bool isMedium;
 
   const _ConjugateStepTile({
     required this.step,
     required this.isLast,
     required this.accentColor,
+    required this.isCompact,
+    required this.isMedium,
   });
 
   @override
   Widget build(BuildContext context) {
+    final stepPaddingBottom = isCompact ? 16.0 : (isMedium ? 18.0 : 20.0);
+    final stepIndicatorSize = isCompact ? 28.0 : (isMedium ? 32.0 : 36.0);
+    final stepIndicatorFontSize = isCompact ? 12.0 : (isMedium ? 13.0 : 14.0);
+    final stepShadowBlur = isCompact ? 6.0 : (isMedium ? 7.0 : 8.0);
+    final stepContainerPadding = isCompact ? 12.0 : (isMedium ? 14.0 : 16.0);
+    final stepTitleFontSize = isCompact ? 14.0 : (isMedium ? 15.0 : 16.0);
+    final stepExplanationFontSize = isCompact ? 12.0 : (isMedium ? 12.5 : 13.0);
+    final stepLatexFontSize = isCompact ? 13.0 : (isMedium ? 14.0 : 15.0);
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.only(bottom: stepPaddingBottom),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
             children: [
               Container(
-                width: 36,
-                height: 36,
+                width: stepIndicatorSize,
+                height: stepIndicatorSize,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -62,7 +85,7 @@ class _ConjugateStepTile extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: accentColor.withValues(alpha: 0.3),
-                      blurRadius: 8,
+                      blurRadius: stepShadowBlur,
                       offset: const Offset(0, 3),
                     ),
                   ],
@@ -70,10 +93,10 @@ class _ConjugateStepTile extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '${step.stepNumber}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
-                      fontSize: 14,
+                      fontSize: stepIndicatorFontSize,
                     ),
                   ),
                 ),
@@ -99,7 +122,7 @@ class _ConjugateStepTile extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(stepContainerPadding),
               decoration: BoxDecoration(
                 color: FinalsTheme.card(context),
                 borderRadius: BorderRadius.circular(16),
@@ -113,7 +136,7 @@ class _ConjugateStepTile extends StatelessWidget {
                   Text(
                     step.title,
                     style: FinalsTheme.titleStyle(context).copyWith(
-                      fontSize: 16,
+                      fontSize: stepTitleFontSize,
                       fontWeight: FontWeight.w700,
                       color: accentColor,
                     ),
@@ -122,7 +145,7 @@ class _ConjugateStepTile extends StatelessWidget {
                   Text(
                     step.explanation,
                     style: FinalsTheme.subtitleStyle(context).copyWith(
-                      fontSize: 13,
+                      fontSize: stepExplanationFontSize,
                       height: 1.4,
                     ),
                   ),
@@ -130,7 +153,7 @@ class _ConjugateStepTile extends StatelessWidget {
                     const SizedBox(height: 12),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(stepContainerPadding),
                       decoration: BoxDecoration(
                         color: accentColor.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(10),
@@ -141,7 +164,7 @@ class _ConjugateStepTile extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
-                        child: _buildLatex(step.latexExpression!, accentColor),
+                        child: _buildLatex(step.latexExpression!, accentColor, fontSize: stepLatexFontSize),
                       ),
                     ),
                   ],
@@ -154,12 +177,12 @@ class _ConjugateStepTile extends StatelessWidget {
     );
   }
 
-  Widget _buildLatex(String latex, Color color) {
+  Widget _buildLatex(String latex, Color color, {double fontSize = 15}) {
     try {
       return Math.tex(
         latex,
         textStyle: TextStyle(
-          fontSize: 15,
+          fontSize: fontSize,
           fontWeight: FontWeight.w600,
           color: color,
         ),
@@ -167,7 +190,7 @@ class _ConjugateStepTile extends StatelessWidget {
           latex,
           style: TextStyle(
             fontFamily: 'serif',
-            fontSize: 14,
+            fontSize: fontSize,
             color: color,
           ),
         ),
@@ -177,7 +200,7 @@ class _ConjugateStepTile extends StatelessWidget {
         latex,
         style: TextStyle(
           fontFamily: 'serif',
-          fontSize: 14,
+          fontSize: fontSize,
           color: color,
         ),
       );

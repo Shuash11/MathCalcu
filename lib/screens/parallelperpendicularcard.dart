@@ -178,9 +178,8 @@ class _ParallelPerpendicularModuleCardState
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
                                     transform: _hovered
-                                        ? (Matrix4.identity()
-                                          ..scale(1.12)
-                                          ..translate(0.0, -2.0 * s))
+                                        ? (Matrix4.translationValues(0.0, -2.0 * s, 0.0)
+                                          ..scaleByDouble(1.12, 1.12, 1.0, 1.0))
                                         : Matrix4.identity(),
                                     child: Icon(
                                       widget.module.icon,
@@ -260,7 +259,7 @@ class _ParallelPerpendicularModuleCardState
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 transform: _hovered
-                                    ? (Matrix4.identity()..translate(6.0 * s, 0.0))
+                                    ? Matrix4.translationValues(6.0 * s, 0.0, 0.0)
                                     : Matrix4.identity(),
                                 child: Container(
                                   width: 40 * s,

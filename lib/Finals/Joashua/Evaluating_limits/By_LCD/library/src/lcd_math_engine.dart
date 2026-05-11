@@ -73,7 +73,7 @@ class Tokenizer {
         tokens.add(Token(TokenType.rparen, ch));
         _pos++;
       } else if (ch == '√' || ch == '\u221A') {
-        tokens.add(Token(TokenType.function, 'sqrt'));
+        tokens.add(const Token(TokenType.function, 'sqrt'));
         _pos++;
       } else if (RegExp(r'[+\-*/^]').hasMatch(ch)) {
         tokens.add(Token(TokenType.operator, ch));
@@ -223,6 +223,9 @@ class LimitEngine {
     // Clean up input
     equation = equation.replaceAll(' ', '').replaceAll('lim', '');
     
+    // Normalize Unicode characters to ASCII equivalents
+    equation = _normalizeUnicode(equation);
+    
     // Smart Preprocessing: If user types "1/x - 1/3 / x-3", help them by wrapping 
     // the likely numerator and denominator.
     equation = _smartPreprocess(equation);
@@ -245,7 +248,7 @@ class LimitEngine {
 
       if (directResult != null && directResult.isFinite) {
         return StepGenerator.directSubstitutionSuccess(
-            equation, variable, approachValue, directResult);
+            equation, variable, approachValue, directResult, ast);
       }
     }
 
@@ -262,11 +265,13 @@ class LimitEngine {
 
     // DEBUG: Log solution details for development
     assert(() {
+      // ignore: avoid_print
       print('LCD_DEBUG methodUsed: ${solution.methodUsed}, steps.length: ${solution.steps.length}');
       for (int i = 0; i < solution.steps.length; i++) {
-        final stepPreview = solution.steps[i].length > 100 
-            ? solution.steps[i].substring(0, 100) 
+        final stepPreview = solution.steps[i].length > 100
+            ? solution.steps[i].substring(0, 100)
             : solution.steps[i];
+        // ignore: avoid_print
         print('LCD_DEBUG step $i: $stepPreview...');
       }
       return true;
@@ -387,5 +392,17 @@ class LimitEngine {
     }
 
     return input; 
+  }
+
+  static String _normalizeUnicode(String input) {
+    return input
+      .replaceAll('−', '-')
+      .replaceAll('–', '-')
+      .replaceAll('—', '-')
+      .replaceAll('×', '*')
+      .replaceAll('÷', '/')
+      .replaceAll('√', 'sqrt')
+      .replaceAll('²', '^2')
+      .replaceAll('³', '^3');
   }
 }

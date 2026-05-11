@@ -224,9 +224,8 @@ class _YInterceptModuleCardState extends State<YInterceptModuleCard>
                                   child: AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
                                     transform: _hovered
-                                        ? (Matrix4.identity()
-                                          ..scale(1.15 * s)
-                                          ..translate(0.0, -3.0 * s))
+                                        ? (Matrix4.translationValues(0.0, -3.0 * s, 0.0)
+                                          ..scaleByDouble(1.15 * s, 1.15 * s, 1.0, 1.0))
                                         : Matrix4.identity(),
                                     child: Stack(
                                       alignment: Alignment.center,
@@ -298,7 +297,7 @@ class _YInterceptModuleCardState extends State<YInterceptModuleCard>
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 transform: _hovered
-                                    ? (Matrix4.identity()..translate(6.0 * s, 0.0))
+                                    ? Matrix4.translationValues(6.0 * s, 0.0, 0.0)
                                     : Matrix4.identity(),
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 250),

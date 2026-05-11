@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'tokenizer.dart';
 
 abstract class ASTNode {
@@ -69,8 +71,8 @@ class BinaryOpNode extends ASTNode {
 
   @override
   String toTex() {
-    final leftTex = left.toTex();
-    final rightTex = right.toTex();
+    final leftTex = _wrapIfNeeded(left, isRight: false);
+    final rightTex = _wrapIfNeeded(right, isRight: true);
     return switch (operator) {
       '+' => '$leftTex + $rightTex',
       '-' => '$leftTex - $rightTex',
@@ -79,6 +81,19 @@ class BinaryOpNode extends ASTNode {
       '^' => '($leftTex)^{$rightTex}',
       _ => '($leftTex)$operator($rightTex)',
     };
+  }
+
+  String _wrapIfNeeded(ASTNode node, {required bool isRight}) {
+    final tex = node.toTex();
+    if (node is! BinaryOpNode) return tex;
+
+    final needsWrap = switch (operator) {
+      '*' || '/' => node.operator == '+' || node.operator == '-',
+      '-' => isRight && (node.operator == '+' || node.operator == '-'),
+      '^' => true,
+      _ => false,
+    };
+    return needsWrap ? '($tex)' : tex;
   }
 
   @override
@@ -96,14 +111,7 @@ class BinaryOpNode extends ASTNode {
   }
 
   double _pow(double base, double exp) {
-    if (exp == exp.toInt() && exp >= 0) {
-      double result = 1;
-      for (int i = 0; i < exp.toInt(); i++) {
-        result *= base;
-      }
-      return result;
-    }
-    return double.nan;
+    return math.pow(base, exp).toDouble();
   }
 
   @override
@@ -112,11 +120,40 @@ class BinaryOpNode extends ASTNode {
     final simpRight = right.simplify();
 
     if (simpLeft is NumberNode && simpRight is NumberNode) {
-      final result = evaluate(0, variable: 'x');
-      return NumberNode(result);
+      return NumberNode(BinaryOpNode(operator, simpLeft, simpRight)
+          .evaluate(0, variable: 'x'));
+    }
+
+    if (operator == '+') {
+      if (_isZero(simpLeft)) return simpRight;
+      if (_isZero(simpRight)) return simpLeft;
+    }
+    if (operator == '-') {
+      if (_isZero(simpRight)) return simpLeft;
+    }
+    if (operator == '*') {
+      if (_isZero(simpLeft) || _isZero(simpRight)) return NumberNode(0);
+      if (_isOne(simpLeft)) return simpRight;
+      if (_isOne(simpRight)) return simpLeft;
+    }
+    if (operator == '/') {
+      if (_isZero(simpLeft)) return NumberNode(0);
+      if (_isOne(simpRight)) return simpLeft;
+    }
+    if (operator == '^') {
+      if (_isZero(simpRight)) return NumberNode(1);
+      if (_isOne(simpRight)) return simpLeft;
+      if (simpLeft is SqrtNode &&
+          simpRight is NumberNode &&
+          (simpRight.value - 2).abs() < 1e-12) {
+        return simpLeft.argument.simplify();
+      }
     }
     return BinaryOpNode(operator, simpLeft, simpRight);
   }
+
+  bool _isZero(ASTNode node) => node is NumberNode && node.value.abs() < 1e-12;
+  bool _isOne(ASTNode node) => node is NumberNode && (node.value - 1).abs() < 1e-12;
 }
 
 class SqrtNode extends ASTNode {
@@ -129,40 +166,76 @@ class SqrtNode extends ASTNode {
   @override
   double evaluate(double x, {String? variable}) {
     final arg = argument.evaluate(x, variable: variable);
-    return arg >= 0 ? _sqrt(arg) : double.nan;
-  }
-
-  double _sqrt(double n) {
-    if (n == 0) return 0;
-    double guess = n / 2;
-    for (int i = 0; i < 20; i++) {
-      guess = (guess + n / guess) / 2;
-    }
-    return guess;
+    if (arg < 0 && arg > -1e-12) return 0;
+    return arg >= 0 ? math.sqrt(arg) : double.nan;
   }
 
   @override
   ASTNode simplify() {
     final simpArg = argument.simplify();
     if (simpArg is NumberNode && simpArg.value >= 0) {
-      return NumberNode(_sqrt(simpArg.value));
+      return NumberNode(math.sqrt(simpArg.value));
     }
     return SqrtNode(simpArg);
+  }
+}
+
+class AbsNode extends ASTNode {
+  final ASTNode argument;
+  AbsNode(this.argument);
+
+  @override
+  String toTex() => '|${argument.toTex()}|';
+
+  @override
+  double evaluate(double x, {String? variable}) {
+    return argument.evaluate(x, variable: variable).abs();
+  }
+
+  @override
+  ASTNode simplify() {
+    final simpArg = argument.simplify();
+    if (simpArg is NumberNode) {
+      return NumberNode(simpArg.value.abs());
+    }
+    return AbsNode(simpArg);
   }
 }
 
 class Parser {
   final List<Token> tokens;
   int pos = 0;
+  List<int> _parenStack = [];
 
   Parser(this.tokens);
 
   ASTNode parse() {
+    _parenStack = [];
     final result = _parseExpression();
     if (pos < tokens.length - 1) {
-      throw ParserException('Unexpected token at position $pos');
+      final token = tokens[pos];
+      final context = _getTokenContext(token);
+      if (token.type == TokenType.rparen) {
+        throw ParserException('Unexpected ")". There\'s an extra closing parenthesis or a missing opening "("$context');
+      }
+      if (_parenStack.isNotEmpty) {
+        final mismatchedPos = _parenStack.removeLast();
+        throw ParserException('Mismatched parenthesis: extra ")" found near position $mismatchedPos. Did you forget an opening "("$context?');
+      }
+      throw ParserException('Unexpected token "$token" at position $pos$context');
     }
     return result;
+  }
+
+  String _getTokenContext(Token token) {
+    if (pos > 0 && pos < tokens.length) {
+      final before = tokens[pos - 1];
+      final after = pos + 1 < tokens.length ? tokens[pos + 1] : null;
+      final beforeStr = before.type == TokenType.end ? '' : '$before ';
+      final afterStr = after != null ? ' $after' : '';
+      return '\nNear: ...$beforeStr$token$afterStr...';
+    }
+    return '';
   }
 
   ASTNode _parseExpression() => _parseAddSub();
@@ -239,26 +312,57 @@ class Parser {
 
     if (token.type == TokenType.sqrt) {
       pos++;
-      if (tokens[pos].type != TokenType.lparen) {
-        throw ParserException('Expected ( after sqrt');
+      if (tokens[pos].type == TokenType.lparen) {
+        _parenStack.add(pos);
+        pos++;
+        final arg = _parseExpression();
+        if (tokens[pos].type != TokenType.rparen) {
+          final openingPos = _parenStack.isNotEmpty ? _parenStack.removeLast() : 0;
+          throw ParserException('Missing closing ")". The opening "(" at position $openingPos was never closed.');
+        }
+        _parenStack.removeLast();
+        pos++;
+        return SqrtNode(arg);
       }
+      return SqrtNode(_parseUnary());
+    }
+
+    if (token.type == TokenType.abs) {
+      pos++;
+      if (tokens[pos].type != TokenType.lparen) {
+        throw ParserException('Expected ( after abs');
+      }
+      _parenStack.add(pos);
       pos++;
       final arg = _parseExpression();
       if (tokens[pos].type != TokenType.rparen) {
-        throw ParserException('Expected ) after sqrt argument');
+        final openingPos = _parenStack.isNotEmpty ? _parenStack.removeLast() : 0;
+        throw ParserException('Missing closing ")". The opening "(" at position $openingPos was never closed.');
       }
+      _parenStack.removeLast();
       pos++;
-      return SqrtNode(arg);
+      return AbsNode(arg);
     }
 
     if (token.type == TokenType.lparen) {
+      _parenStack.add(pos);
       pos++;
       final expr = _parseExpression();
       if (tokens[pos].type != TokenType.rparen) {
-        throw ParserException('Expected closing parenthesis');
+        if (_parenStack.isNotEmpty) {
+          final openingPos = _parenStack.last;
+          _parenStack.removeLast();
+          throw ParserException('Missing closing ")". The opening "(" at position $openingPos was never closed.');
+        }
+        throw ParserException('Missing closing ")"');
       }
+      _parenStack.removeLast();
       pos++;
       return expr;
+    }
+
+    if (token.type == TokenType.rparen) {
+      throw ParserException('Unexpected ")". There\'s an extra closing parenthesis or a missing opening "("');
     }
 
     throw ParserException('Unexpected token: $token');

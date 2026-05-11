@@ -19,14 +19,63 @@ class ConjugateInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isCompact = screenWidth < 380;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = constraints.maxWidth;
+        final isCompact = screenWidth < 380;
+        final isMedium = screenWidth >= 380 && screenWidth < 600;
+
+        return _ConjugateInputFieldContent(
+          isCompact: isCompact,
+          isMedium: isMedium,
+          expressionController: expressionController,
+          approachController: approachController,
+          currentVariable: currentVariable,
+          onVariableChanged: onVariableChanged,
+          onSolve: onSolve,
+        );
+      },
+    );
+  }
+}
+
+class _ConjugateInputFieldContent extends StatelessWidget {
+  final bool isCompact;
+  final bool isMedium;
+  final TextEditingController expressionController;
+  final TextEditingController approachController;
+  final String currentVariable;
+  final ValueChanged<String> onVariableChanged;
+  final VoidCallback onSolve;
+
+  const _ConjugateInputFieldContent({
+    required this.isCompact,
+    required this.isMedium,
+    required this.expressionController,
+    required this.approachController,
+    required this.currentVariable,
+    required this.onVariableChanged,
+    required this.onSolve,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     const accentColor = FinalsTheme.secondary;
 
-    final expressionFontSize = isCompact ? 16.0 : 18.0;
-    final limitTextSize = isCompact ? 16.0 : 22.0;
-    final variableFontSize = isCompact ? 13.0 : 15.0;
-    final inputHeight = isCompact ? 38.0 : 42.0;
+    final expressionFontSize = isCompact ? 16.0 : (isMedium ? 17.0 : 18.0);
+    final limitTextSize = isCompact ? 16.0 : (isMedium ? 20.0 : 22.0);
+    final variableFontSize = isCompact ? 13.0 : (isMedium ? 14.0 : 15.0);
+    final inputHeight = isCompact ? 38.0 : (isMedium ? 40.0 : 42.0);
+    final solveButtonPaddingH = isCompact ? 14.0 : (isMedium ? 17.0 : 20.0);
+    final solveButtonPaddingV = isCompact ? 10.0 : (isMedium ? 11.0 : 12.0);
+    final solveButtonFontSize = isCompact ? 13.0 : (isMedium ? 14.0 : 15.0);
+    final solveButtonIconSize = isCompact ? 16.0 : (isMedium ? 18.0 : 20.0);
+    final mathChipPaddingH = isCompact ? 8.0 : (isMedium ? 9.0 : 10.0);
+    final mathChipPaddingV = isCompact ? 5.0 : (isMedium ? 5.5 : 6.0);
+    final mathChipFontSize = isCompact ? 12.0 : (isMedium ? 13.0 : 14.0);
+    final quickChipPaddingH = isCompact ? 8.0 : (isMedium ? 10.0 : 12.0);
+    final quickChipPaddingV = isCompact ? 6.0 : (isMedium ? 7.0 : 8.0);
+    final quickChipFontSize = isCompact ? 11.0 : (isMedium ? 12.0 : 13.0);
 
     return Container(
       decoration: BoxDecoration(
@@ -47,7 +96,7 @@ class ConjugateInputField extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 12, 4),
+            padding: EdgeInsets.fromLTRB(isCompact ? 16 : 20, 12, 12, 4),
             child: Row(
               children: [
                 Expanded(
@@ -71,16 +120,21 @@ class ConjugateInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-                _buildMathSymbolChip(context, '^', '^', accentColor),
-                const SizedBox(width: 8),
-                _buildMathSymbolChip(context, 'sqrt', 'sqrt(', accentColor,
-                    isFunction: true),
-                const SizedBox(width: 8),
-                _SolveButton(onTap: onSolve, accentColor: accentColor),
+                _buildMathSymbolChip(context, '^', '^', accentColor, paddingH: mathChipPaddingH, paddingV: mathChipPaddingV, fontSize: mathChipFontSize),
+                SizedBox(width: isCompact ? 6 : 8),
+                _buildMathSymbolChip(context, 'sqrt', '√(', accentColor, paddingH: mathChipPaddingH, paddingV: mathChipPaddingV, isFunction: true, fontSize: mathChipFontSize),
+                _SolveButton(
+                  onTap: onSolve,
+                  accentColor: accentColor,
+                  paddingH: solveButtonPaddingH,
+                  paddingV: solveButtonPaddingV,
+                  fontSize: solveButtonFontSize,
+                  iconSize: solveButtonIconSize,
+                ),
               ],
             ),
           ),
-          const Divider(height: 1, thickness: 0.8, indent: 20, endIndent: 20),
+          Divider(height: 1, thickness: 0.8, indent: isCompact ? 16 : 20, endIndent: isCompact ? 16 : 20),
           Padding(
             padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
             child: Row(
@@ -143,9 +197,9 @@ class ConjugateInputField extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: isCompact ? 4 : 8),
-                _buildQuickChip(context, '0', accentColor),
+                _buildQuickChip(context, '0', accentColor, fontSize: quickChipFontSize, paddingH: quickChipPaddingH, paddingV: quickChipPaddingV),
                 SizedBox(width: isCompact ? 4 : 6),
-                _buildQuickChip(context, '4', accentColor),
+                _buildQuickChip(context, '4', accentColor, fontSize: quickChipFontSize, paddingH: quickChipPaddingH, paddingV: quickChipPaddingV),
               ],
             ),
           ),
@@ -154,12 +208,12 @@ class ConjugateInputField extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickChip(BuildContext context, String label, Color accent) {
+  Widget _buildQuickChip(BuildContext context, String label, Color accent, {double fontSize = 13, double paddingH = 12, double paddingV = 8}) {
     return InkWell(
       onTap: () => approachController.text = label,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
         decoration: BoxDecoration(
           color: accent.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(10),
@@ -169,7 +223,7 @@ class ConjugateInputField extends StatelessWidget {
           label,
           style: TextStyle(
             color: accent,
-            fontSize: 13,
+            fontSize: fontSize,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -257,7 +311,7 @@ class ConjugateInputField extends StatelessWidget {
 
   Widget _buildMathSymbolChip(
       BuildContext context, String label, String inputStr, Color accent,
-      {bool isFunction = false}) {
+      {bool isFunction = false, double paddingH = 10, double paddingV = 6, double fontSize = 14}) {
     return InkWell(
       onTap: () {
         final text = expressionController.text;
@@ -284,7 +338,7 @@ class ConjugateInputField extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
         decoration: BoxDecoration(
           color: accent.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(8),
@@ -294,7 +348,7 @@ class ConjugateInputField extends StatelessWidget {
           label,
           style: TextStyle(
             color: accent,
-            fontSize: 14,
+            fontSize: fontSize,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -306,8 +360,19 @@ class ConjugateInputField extends StatelessWidget {
 class _SolveButton extends StatefulWidget {
   final VoidCallback onTap;
   final Color accentColor;
+  final double paddingH;
+  final double paddingV;
+  final double fontSize;
+  final double iconSize;
 
-  const _SolveButton({required this.onTap, required this.accentColor});
+  const _SolveButton({
+    required this.onTap,
+    required this.accentColor,
+    this.paddingH = 20,
+    this.paddingV = 12,
+    this.fontSize = 15,
+    this.iconSize = 20,
+  });
 
   @override
   State<_SolveButton> createState() => _SolveButtonState();
@@ -325,7 +390,7 @@ class _SolveButtonState extends State<_SolveButton> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: widget.paddingH, vertical: widget.paddingV),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -345,7 +410,7 @@ class _SolveButtonState extends State<_SolveButton> {
               ),
             ],
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -353,14 +418,14 @@ class _SolveButtonState extends State<_SolveButton> {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
-                  fontSize: 15,
+                  fontSize: widget.fontSize,
                 ),
               ),
-              SizedBox(width: 8),
+              SizedBox(width: widget.fontSize * 0.5),
               Icon(
                 Icons.bolt_rounded,
                 color: Colors.white,
-                size: 20,
+                size: widget.iconSize,
               ),
             ],
           ),

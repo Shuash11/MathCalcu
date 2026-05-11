@@ -5,6 +5,8 @@
 // Nothing here prints, formats, or parses raw text beyond calling
 // Tokenizer/Parser to turn the input string into an Expr tree.
 
+// ignore_for_file: prefer_const_constructors
+
 import 'models.dart';
 import 'parser.dart';
 import 'math_engine.dart';
@@ -63,11 +65,13 @@ class SlopeSolver {
   static bool _isParametric(String s) {
     int depth = 0;
     for (int i = 0; i < s.length; i++) {
-      if (s[i] == '(')
+      if (s[i] == '(') {
         depth++;
-      else if (s[i] == ')')
+      } else if (s[i] == ')') {
         depth--;
-      else if (s[i] == ',' && depth == 0) return true;
+      } else if (s[i] == ',' && depth == 0) {
+        return true;
+      }
     }
     return false;
   }
@@ -80,6 +84,7 @@ class SlopeSolver {
     String originalInput,
     Map<String, double> pointValues,
   ) {
+    // ignore: prefer_const_declarations
     final indepVar = 'x';
     final depVar = (lhsVar is Var) ? lhsVar.name : 'y';
 
@@ -208,6 +213,7 @@ class SlopeSolver {
   ) {
     final parts = _splitTopLevel(input);
     if (parts.length != 2) {
+      
       throw FormatException(
           'Parametric input must have exactly two expressions: "x=..., y=..."');
     }
@@ -235,7 +241,7 @@ class SlopeSolver {
     }
 
     if (xExpr == null || yExpr == null) {
-      throw FormatException(
+      throw const FormatException (
           'Could not find both x(t) and y(t) in parametric input');
     }
 
@@ -325,11 +331,11 @@ class SlopeSolver {
     int depth = 0;
     int start = 0;
     for (int i = 0; i < s.length; i++) {
-      if (s[i] == '(')
+      if (s[i] == '(') {
         depth++;
-      else if (s[i] == ')')
+      } else if (s[i] == ')') {
         depth--;
-      else if (s[i] == ',' && depth == 0) {
+      } else if (s[i] == ',' && depth == 0) {
         parts.add(s.substring(start, i).trim());
         start = i + 1;
       }
@@ -340,8 +346,9 @@ class SlopeSolver {
 
   /// Formats a double for use inside line equations.
   static String _fmt(double v) {
-    if (v == v.truncateToDouble() && v.abs() < 1e10)
+    if (v == v.truncateToDouble() && v.abs() < 1e10) {
       return v.toInt().toString();
+    }
     return v.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
