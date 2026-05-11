@@ -1,6 +1,7 @@
 // lib/Screens/SubScreens/formula_card.dart
 import 'package:calculus_system/modules/circles/center/Theme/centertheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class CenterFormulaCard extends StatelessWidget {
   const CenterFormulaCard({super.key});
@@ -40,28 +41,26 @@ class CenterFormulaCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          const Text(
-            'h = (x₁ + x₂) / 2',
-            style: TextStyle(
+          Math.tex(
+            r'h = \frac{x_1 + x_2}{2}',
+            textStyle: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
               color: FindingCenterTheme.textPrimary,
-              letterSpacing: 0.3,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'k = (y₁ + y₂) / 2',
-            style: TextStyle(
+          Math.tex(
+            r'k = \frac{y_1 + y_2}{2}',
+            textStyle: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
               color: FindingCenterTheme.textPrimary,
-              letterSpacing: 0.3,
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            'A(x₁, y₁) and B(x₂, y₂) are the endpoints of the diameter',
+            r'A(x₁, y₁) and B(x₂, y₂) are the endpoints of the diameter',
             style: TextStyle(
               fontSize: 12,
               color: FindingCenterTheme.textSecondary.withValues(alpha: 0.65),

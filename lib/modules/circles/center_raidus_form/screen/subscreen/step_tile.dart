@@ -1,6 +1,8 @@
 import 'package:calculus_system/modules/circles/center_raidus_form/Theme/center_radius_theme.dart';
 import 'package:calculus_system/modules/circles/center_raidus_form/solver/center_radius_solver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class StepTile extends StatelessWidget {
   final SolverStep step;
@@ -22,11 +24,21 @@ class StepTile extends StatelessWidget {
     };
   }
 
+  void _copyToClipboard(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Copied to clipboard'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final accentColor = _resolveColor(step.color);
 
-    if (step.isFinal) return _FinalBox(step: step, accentColor: accentColor);
+    if (step.isFinal) return _FinalBox(step: step, accentColor: accentColor, onCopy: _copyToClipboard);
 
     return IntrinsicHeight(
       child: Row(
@@ -55,26 +67,31 @@ class StepTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: FindingCenterRadiusTheme.inputBg,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: accentColor.withValues(alpha: 0.15)),
-                    ),
-                    child: Text(
-                      step.equation,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: step.color != null
-                            ? accentColor
-                            : FindingCenterRadiusTheme.textPrimary
-                                .withValues(alpha: 0.9),
-                        fontFamily: 'monospace',
+                  GestureDetector(
+                    onLongPress: () => _copyToClipboard(context, step.equation),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: FindingCenterRadiusTheme.inputBg,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: accentColor.withValues(alpha: 0.15)),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Math.tex(
+                          step.equation,
+                          textStyle: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: step.color != null
+                                ? accentColor
+                                : FindingCenterRadiusTheme.textPrimary
+                                    .withValues(alpha: 0.9),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -143,8 +160,13 @@ class _TimelineRail extends StatelessWidget {
 class _FinalBox extends StatelessWidget {
   final SolverStep step;
   final Color accentColor;
+  final Function(BuildContext, String) onCopy;
 
-  const _FinalBox({required this.step, required this.accentColor});
+  const _FinalBox({
+    required this.step,
+    required this.accentColor,
+    required this.onCopy,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -172,26 +194,44 @@ class _FinalBox extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: accentColor.withValues(alpha: 0.35)),
             ),
-            child: Text(
-              step.label.toUpperCase(),
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w800,
-                color: accentColor,
-                letterSpacing: 1.2,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  step.label.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: accentColor,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () => onCopy(context, step.equation),
+                  child: Icon(
+                    Icons.copy_rounded,
+                    size: 14,
+                    color: accentColor.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 14),
-          Text(
-            step.equation,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-              color: accentColor,
-              fontFamily: 'monospace',
+          GestureDetector(
+            onLongPress: () => onCopy(context, step.equation),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Math.tex(
+                step.equation,
+                textStyle: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: accentColor,
+                ),
+              ),
             ),
-            textAlign: TextAlign.center,
           ),
           if (step.subLines.isNotEmpty) ...[
             const SizedBox(height: 14),
@@ -204,15 +244,18 @@ class _FinalBox extends StatelessWidget {
             ...step.subLines.map(
               (s) => Padding(
                 padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
-                  s,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: FindingCenterRadiusTheme.textPrimary
-                        .withValues(alpha: 0.85),
+                child: GestureDetector(
+                  onLongPress: () => onCopy(context, s),
+                  child: Text(
+                    s,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: FindingCenterRadiusTheme.textPrimary
+                          .withValues(alpha: 0.85),
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),

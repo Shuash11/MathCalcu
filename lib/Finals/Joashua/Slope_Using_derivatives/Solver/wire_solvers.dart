@@ -107,7 +107,7 @@ void main(List<String> args) {
     stdout.writeln();
   }
 
-  stdout.writeln('${'═' * 64}');
+  stdout.writeln('═' * 64);
   stdout.writeln(
       '  RESULTS: $passed passed, $failed failed out of ${_demos.length} demos');
   stdout.writeln('${'═' * 64}\n');

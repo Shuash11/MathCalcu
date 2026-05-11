@@ -230,16 +230,17 @@ class DerivativeStepTile extends StatelessWidget {
           color: FinalsTheme.textPrimary(ctx),
         ),
         mathStyle: MathStyle.text,
-        onErrorFallback: (err) => Text(
-          tex,
-          style: TextStyle(
-            fontSize: 14,
-            color: FinalsTheme.danger,
-            fontStyle: FontStyle.italic,
+onErrorFallback: (err) => Text(
+            tex,
+            style: const TextStyle(
+              fontSize: 14,
+              color: FinalsTheme.danger,
+              fontStyle: FontStyle.italic,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    
   }
 
 String _toLatex(String expr) {
@@ -474,7 +475,7 @@ String _convertMultiplication(String expr) {
           mathStyle: MathStyle.text,
           onErrorFallback: (err) => Text(
             tex,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: FinalsTheme.danger,
               fontStyle: FontStyle.italic,

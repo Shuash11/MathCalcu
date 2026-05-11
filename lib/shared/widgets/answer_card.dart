@@ -96,38 +96,43 @@ class _AnswerCardState extends State<AnswerCard>
                     ),
                     const SizedBox(height: 6),
                     widget.result.latex != null
-                        ? SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
+                        ? FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
                             child: SelectableMath.tex(
                               widget.result.latex!,
                               mathStyle: MathStyle.display,
                               textStyle: TextStyle(
-                                fontSize: 22,
+                                fontSize: 24,
                                 color:
                                     context.watch<ThemeProvider>().textPrimary,
                               ),
                             ),
                           )
-                        : Text(
-                            widget.result.answer,
-                            style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w700,
-                              color: context.watch<ThemeProvider>().textPrimary,
-                              letterSpacing: -0.5,
+                        : FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.result.answer,
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w700,
+                                color: context.watch<ThemeProvider>().textPrimary,
+                                letterSpacing: -0.5,
+                              ),
                             ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            softWrap: true,
                           ),
                     if (widget.result.intervalNotation != null) ...[
                       const SizedBox(height: 4),
-                      Text(
-                        widget.result.intervalNotation!,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: context.watch<ThemeProvider>().textSecondary,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.result.intervalNotation!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: context.watch<ThemeProvider>().textSecondary,
+                          ),
                         ),
                       ),
                     ],

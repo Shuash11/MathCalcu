@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:calculus_system/modules/circles/center_raidus_form/Theme/center_radius_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class EquationInputCard extends StatefulWidget {
   final TextEditingController ctrl;
@@ -137,9 +138,9 @@ class _EquationInputCardState extends State<EquationInputCard> {
                   border:
                       Border.all(color: widget.color.withValues(alpha: 0.3)),
                 ),
-                child: Text(
-                  'x² + y² + Dx + Ey + F = 0',
-                  style: TextStyle(
+                child: Math.tex(
+                  r'x^2 + y^2 + Dx + Ey + F = 0',
+                  textStyle: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     color: widget.color,

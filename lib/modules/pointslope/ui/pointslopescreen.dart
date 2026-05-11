@@ -33,6 +33,8 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   String _lastX = '';
   String _lastY = '';
 
+  static const double _baseDesignWidth = 400.0;
+
   @override
   void initState() {
     super.initState();
@@ -163,82 +165,97 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
             _buildHeader(),
             const SizedBox(height: 12),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                child: PSCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      PSHeader(pulseAnim: _pulseAnim),
-                      const SizedBox(height: 20),
-                      const PSFormulaBanner(),
-                      const SizedBox(height: 20),
-                      RepaintBoundary(
-                        child: PSInputsRow(
-                          mCtrl: _mCtrl,
-                          x1Ctrl: _x1Ctrl,
-                          y1Ctrl: _y1Ctrl,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const PSDivider(),
-                      const SizedBox(height: 20),
-                      _PSResultSection(
-                        resultNotifier: _resultNotifier,
-                        showStepsNotifier: _showStepsNotifier,
-                        onToggleSteps: _toggleSteps,
-                      ),
-                      const SizedBox(height: 14),
-                      ValueListenableBuilder<bool>(
-                        valueListenable: _showStepsNotifier,
-                        builder: (context, showSteps, _) {
-                          if (!showSteps) return const SizedBox.shrink();
-                          return ValueListenableBuilder<_ResultData?>(
-                            valueListenable: _resultNotifier,
-                            builder: (context, result, _) {
-                              if (result == null)
-                                return const SizedBox.shrink();
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 16),
-                                child: PointSlopeSteps(
-                                  m: result.m,
-                                  x1: result.x1,
-                                  y1: result.y1,
-                                  b: result.b,
-                                  generalForm: result.generalFormEq,
-                                  standardForm: result.standardFormEq,
-                                ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final double effectiveWidth = constraints.hasInfiniteWidth
+                      ? _baseDesignWidth
+                      : constraints.maxWidth;
+                  final double s = (effectiveWidth / _baseDesignWidth).clamp(0.7, 1.2);
+
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(20 * s, 0, 20 * s, 20 * s),
+                    child: PSCard(
+                      s: s,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          PSHeader(pulseAnim: _pulseAnim, s: s),
+                          SizedBox(height: 20 * s),
+                          const PSFormulaBanner(),
+                          SizedBox(height: 20 * s),
+                          RepaintBoundary(
+                            child: PSInputsRow(
+                              mCtrl: _mCtrl,
+                              x1Ctrl: _x1Ctrl,
+                              y1Ctrl: _y1Ctrl,
+                              s: s,
+                            ),
+                          ),
+                          SizedBox(height: 20 * s),
+                          const PSDivider(),
+                          SizedBox(height: 20 * s),
+                          _PSResultSection(
+                            resultNotifier: _resultNotifier,
+                            showStepsNotifier: _showStepsNotifier,
+                            onToggleSteps: _toggleSteps,
+                            s: s,
+                          ),
+                          SizedBox(height: 14 * s),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _showStepsNotifier,
+                            builder: (context, showSteps, _) {
+                              if (!showSteps) return const SizedBox.shrink();
+                              return ValueListenableBuilder<_ResultData?>(
+                                valueListenable: _resultNotifier,
+                                builder: (context, result, _) {
+                                  if (result == null) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Padding(
+                                    padding: EdgeInsets.only(top: 16 * s),
+                                    child: PointSlopeSteps(
+                                      m: result.m,
+                                      x1: result.x1,
+                                      y1: result.y1,
+                                      b: result.b,
+                                      generalForm: result.generalFormEq,
+                                      standardForm: result.standardFormEq,
+                                    ),
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
+                          ),
+                          SizedBox(height: 14 * s),
+                          ValueListenableBuilder<_GraphStrings?>(
+                            valueListenable: _graphStringsNotifier,
+                            builder: (context, strings, _) {
+                              return PSGraph(
+                                mText: strings?.mText ?? '',
+                                xText: strings?.xText ?? '',
+                                yText: strings?.yText ?? '',
+                                s: s,
+                              );
+                            },
+                          ),
+                          SizedBox(height: 12 * s),
+                          ValueListenableBuilder<Map<String, String>?>(
+                            valueListenable: _badgesNotifier,
+                            builder: (context, badges, _) {
+                              if (badges == null) return const SizedBox.shrink();
+                              return PSBadges(
+                                direction: badges['direction']!,
+                                angle: badges['angle']!,
+                                riseRun: badges['riseRun']!,
+                                s: s,
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 14),
-                      ValueListenableBuilder<_GraphStrings?>(
-                        valueListenable: _graphStringsNotifier,
-                        builder: (context, strings, _) {
-                          return PSGraph(
-                            mText: strings?.mText ?? '',
-                            xText: strings?.xText ?? '',
-                            yText: strings?.yText ?? '',
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      ValueListenableBuilder<Map<String, String>?>(
-                        valueListenable: _badgesNotifier,
-                        builder: (context, badges, _) {
-                          if (badges == null) return const SizedBox.shrink();
-                          return PSBadges(
-                            direction: badges['direction']!,
-                            angle: badges['angle']!,
-                            riseRun: badges['riseRun']!,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -326,11 +343,13 @@ class _PSResultSection extends StatelessWidget {
   final ValueNotifier<_ResultData?> resultNotifier;
   final ValueNotifier<bool> showStepsNotifier;
   final VoidCallback onToggleSteps;
+  final double s;
 
   const _PSResultSection({
     required this.resultNotifier,
     required this.showStepsNotifier,
     required this.onToggleSteps,
+    required this.s,
   });
 
   @override
@@ -348,6 +367,7 @@ class _PSResultSection extends StatelessWidget {
               tappable: result != null,
               onShowSteps: result != null ? onToggleSteps : null,
               showSteps: showSteps,
+              s: s,
             );
           },
         );

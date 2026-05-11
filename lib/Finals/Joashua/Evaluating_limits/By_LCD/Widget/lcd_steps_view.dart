@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -40,7 +42,7 @@ class _StepTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = FinalsTheme.danger;
+    const accentColor = FinalsTheme.danger;
 
     return Stack(
       children: [

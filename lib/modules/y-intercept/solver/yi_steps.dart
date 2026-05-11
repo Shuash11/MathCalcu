@@ -1,4 +1,6 @@
 // ignore: file_names
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'fraction.dart';
 import 'yi_helpers.dart';
 

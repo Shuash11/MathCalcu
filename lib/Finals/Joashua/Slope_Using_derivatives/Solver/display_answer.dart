@@ -148,8 +148,9 @@ class StepExplainer {
   }
 
   static String _fmt(double v) {
-    if (v == v.truncateToDouble() && v.abs() < 1e10)
+    if (v == v.truncateToDouble() && v.abs() < 1e10) {
       return v.toInt().toString();
+    }
     return v.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
   }
 }
@@ -245,8 +246,9 @@ class PrettyPrinter {
   }
 
   static String _fmtD(double v) {
-    if (v == v.truncateToDouble() && v.abs() < 1e10)
+    if (v == v.truncateToDouble() && v.abs() < 1e10) {
       return v.toInt().toString();
+    }
     return v.toStringAsFixed(8).replaceAll(RegExp(r'\.?0+$'), '');
   }
 }

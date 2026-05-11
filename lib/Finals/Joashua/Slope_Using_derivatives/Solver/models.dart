@@ -208,8 +208,9 @@ class UnaryNeg extends Expr {
 
   @override
   String toMathString() {
-    if (operand is BinOp || operand is Pow)
+    if (operand is BinOp || operand is Pow) {
       return '-(${operand.toMathString()})';
+    }
     return '-${operand.toMathString()}';
   }
 

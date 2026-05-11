@@ -244,7 +244,7 @@ class LimitsInputField extends StatelessWidget {
           ),
           child: Text(
             label,
-            style: TextStyle(
+style: const TextStyle(
               color: FinalsTheme.primary,
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -304,7 +304,7 @@ class LimitsInputField extends StatelessWidget {
                     ? const Icon(Icons.check, color: FinalsTheme.primary)
                     : null,
               );
-            }).toList(),
+            })
           ],
         ),
       ),

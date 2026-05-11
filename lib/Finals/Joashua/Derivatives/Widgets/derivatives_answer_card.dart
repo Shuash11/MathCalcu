@@ -366,7 +366,7 @@ String _convertMultiplication(String expr) {
         scrollDirection: Axis.horizontal,
         child: SelectableMath.tex(
           tex,
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
             fontSize: 18,
             color: FinalsTheme.primary,
             fontWeight: FontWeight.w800,
@@ -374,7 +374,7 @@ String _convertMultiplication(String expr) {
         ),
       );
     } catch (e) {
-      return Text(tex, style: TextStyle(fontSize: 18, color: FinalsTheme.primary, fontWeight: FontWeight.w800));
+      return Text(tex, style: const TextStyle(fontSize: 18, color: FinalsTheme.primary, fontWeight: FontWeight.w800));
     }
   }
 }

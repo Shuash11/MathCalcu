@@ -33,8 +33,9 @@ class NumberNode extends ASTNode {
 
   @override
   String toString() {
-    if (value == value.toInt() && value.abs() < 1e15)
+    if (value == value.toInt() && value.abs() < 1e15) {
       return value.toInt().toString();
+    }
     return value.toString();
   }
 

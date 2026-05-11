@@ -50,20 +50,47 @@ class TokenizerException implements Exception {
 }
 
 /// Converts a mathematical expression string into a list of tokens.
-/// 
+///
 /// Handles implicit multiplication (e.g., "2x" → "2 * x", "(x+1)(x-1)" → "(x+1) * (x-1)")
 class Tokenizer {
   final String input;
   int _position = 0;
+  late final String _processed;
 
   Tokenizer(this.input);
 
+  /// Preprocess input to normalize Unicode characters
+  String _preprocess() {
+    var result = input
+        .replaceAll('−', '-')
+        .replaceAll('–', '-')
+        .replaceAll('—', '-')
+        .replaceAll('×', '*')
+        .replaceAll('÷', '/');
+
+    result = result
+        .replaceAll('⁰', '^0')
+        .replaceAll('¹', '^1')
+        .replaceAll('²', '^2')
+        .replaceAll('³', '^3')
+        .replaceAll('⁴', '^4')
+        .replaceAll('⁵', '^5')
+        .replaceAll('⁶', '^6')
+        .replaceAll('⁷', '^7')
+        .replaceAll('⁸', '^8')
+        .replaceAll('⁹', '^9');
+
+    return result;
+  }
+
   /// Tokenize the entire input string
   List<Token> tokenize() {
+    _processed = _preprocess();
+    _position = 0;
     final tokens = <Token>[];
 
-    while (_position < input.length) {
-      final char = input[_position];
+    while (_position < _processed.length) {
+      final char = _processed[_position];
 
       // Skip whitespace characters
       if (_isWhitespace(char)) {
@@ -76,8 +103,8 @@ class Tokenizer {
 
       if (_isDigit(char) ||
           (char == '.' &&
-              _position + 1 < input.length &&
-              _isDigit(input[_position + 1]))) {
+              _position + 1 < _processed.length &&
+              _isDigit(_processed[_position + 1]))) {
         currentToken = _readNumber();
       }
       // Read variable 'x'
@@ -120,17 +147,17 @@ class Tokenizer {
     final buffer = StringBuffer();
 
     // Read integer part
-    while (_position < input.length && _isDigit(input[_position])) {
-      buffer.write(input[_position]);
+    while (_position < _processed.length && _isDigit(_processed[_position])) {
+      buffer.write(_processed[_position]);
       _position++;
     }
 
     // Read decimal part if present
-    if (_position < input.length && input[_position] == '.') {
+    if (_position < _processed.length && _processed[_position] == '.') {
       buffer.write('.');
       _position++;
-      while (_position < input.length && _isDigit(input[_position])) {
-        buffer.write(input[_position]);
+      while (_position < _processed.length && _isDigit(_processed[_position])) {
+        buffer.write(_processed[_position]);
         _position++;
       }
     }

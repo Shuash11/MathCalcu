@@ -179,7 +179,7 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered
-                              ? (Matrix4.identity()..translate(3.0, 0.0))
+                              ? Matrix4.translationValues(3.0, 0.0, 0.0)
                               : Matrix4.identity(),
                           child: Container(
                             width: 32,

@@ -160,8 +160,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
                                   transform: _hovered
-                                      ? (Matrix4.identity()
-                                        ..scale(1.15)
+                                      ? (Matrix4.diagonal3Values(1.15, 1.15, 1.0)
                                         ..rotateZ(0.1))
                                       : Matrix4.identity(),
                                   child: Icon(
@@ -262,7 +261,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 transform: _hovered
-                                    ? (Matrix4.identity()..translate(4.0 * s, 0.0))
+                                    ? Matrix4.translationValues(4.0 * s, 0.0, 0.0)
                                     : Matrix4.identity(),
                                 child: Container(
                                   width: 34 * s,

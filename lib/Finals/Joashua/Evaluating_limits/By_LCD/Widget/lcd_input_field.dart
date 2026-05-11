@@ -164,9 +164,9 @@ class LCDInputField extends StatelessWidget {
                 SizedBox(width: isCompact ? 4 : 6),
                 _buildQuickChip(context, '1', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
                 if (!isCompact) ...[
-                  SizedBox(width: 6),
+                  const SizedBox(width: 6),
                   _buildQuickChip(context, '2', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                  SizedBox(width: 6),
+                  const SizedBox(width: 6),
                   _buildQuickChip(context, '3', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
                 ],
               ],

@@ -76,40 +76,40 @@ class PSTheme {
       );
 
   // ── Box Shadows ───────────────────────────
-  static List<BoxShadow> cardShadow(BuildContext context) => [
+  static List<BoxShadow> cardShadow(BuildContext context, [double s = 1]) => [
         BoxShadow(
           color: deepViolet.withValues(alpha: 0.15),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
+          blurRadius: 24 * s,
+          offset: Offset(0, 8 * s),
         ),
         BoxShadow(
           color: shadowColor(context),
-          blurRadius: 16,
-          offset: const Offset(0, -4),
+          blurRadius: 16 * s,
+          offset: Offset(0, -4 * s),
         ),
       ];
 
-  static List<BoxShadow> iconBoxShadow = [
-    BoxShadow(
-      color: electricPurple.withValues(alpha: 0.15),
-      blurRadius: 16,
-      offset: const Offset(0, 4),
-    ),
-  ];
+  static List<BoxShadow> iconBoxShadow([double s = 1]) => [
+        BoxShadow(
+          color: electricPurple.withValues(alpha: 0.15),
+          blurRadius: 16 * s,
+          offset: Offset(0, 4 * s),
+        ),
+      ];
 
-  static List<BoxShadow> focusedInputShadow = [
-    BoxShadow(
-      color: electricPurple.withValues(alpha: 0.12),
-      blurRadius: 16,
-    ),
-  ];
+  static List<BoxShadow> focusedInputShadow([double s = 1]) => [
+        BoxShadow(
+          color: electricPurple.withValues(alpha: 0.12),
+          blurRadius: 16 * s,
+        ),
+      ];
 
-  static List<BoxShadow> resultActiveShadow = [
-    BoxShadow(
-      color: neonMagenta.withValues(alpha: 0.1),
-      blurRadius: 24,
-    ),
-  ];
+  static List<BoxShadow> resultActiveShadow([double s = 1]) => [
+        BoxShadow(
+          color: neonMagenta.withValues(alpha: 0.1),
+          blurRadius: 24 * s,
+        ),
+      ];
 
   // ── Border Radii ──────────────────────────
   static const double radiusCard = 20;
@@ -120,122 +120,122 @@ class PSTheme {
   static const double radiusBadge = 8;
   static const double radiusStatChip = 10;
 
-  // ── Text Styles ───────────────────────────
-  static TextStyle titleStyle(BuildContext context) => TextStyle(
-        fontSize: 18,
+  // ── Text Styles (with optional scale factor) ───────────
+  static TextStyle titleStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 18 * s,
         fontWeight: FontWeight.w600,
         color: textPrimary(context),
-        letterSpacing: -0.4,
+        letterSpacing: -0.4 * s,
       );
 
-  static TextStyle subtitleStyle(BuildContext context) => TextStyle(
-        fontSize: 13,
+  static TextStyle subtitleStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 13 * s,
         color: isLight(context)
             ? deepViolet.withValues(alpha: 0.7)
             : softLavender.withValues(alpha: 0.5),
       );
 
-  static TextStyle monoCaptionStyle(BuildContext context) => TextStyle(
-        fontSize: 11,
-        letterSpacing: 1.5,
+  static TextStyle monoCaptionStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 11 * s,
+        letterSpacing: 1.5 * s,
         color: isLight(context)
             ? deepViolet.withValues(alpha: 0.6)
             : softLavender.withValues(alpha: 0.5),
         fontFamily: 'monospace',
       );
 
-  static TextStyle formulaStyle(BuildContext context) => TextStyle(
-        fontSize: 22,
+  static TextStyle formulaStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 22 * s,
         color: isLight(context) ? deepViolet : softLavender,
         fontStyle: FontStyle.italic,
       );
 
-  static TextStyle highlightVarStyle = const TextStyle(
-    fontSize: 22,
-    color: neonMagenta,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.normal,
-    shadows: [
-      Shadow(color: Color(0x66E879F9), blurRadius: 10),
-    ],
-  );
-
-  static TextStyle resultEquationStyle(BuildContext context) => TextStyle(
-        fontSize: 20,
-        color: isLight(context) ? deepViolet : softLavender,
-        fontStyle: FontStyle.italic,
-        letterSpacing: 0.5,
+  static TextStyle highlightVarStyle([double s = 1]) => TextStyle(
+        fontSize: 22 * s,
+        color: neonMagenta,
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.normal,
+        shadows: [
+          Shadow(color: Color(0x66E879F9), blurRadius: 10 * s),
+        ],
       );
 
-  static TextStyle placeholderStyle(BuildContext context) => TextStyle(
-        fontSize: 14,
+  static TextStyle resultEquationStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 20 * s,
+        color: isLight(context) ? deepViolet : softLavender,
+        fontStyle: FontStyle.italic,
+        letterSpacing: 0.5 * s,
+      );
+
+  static TextStyle placeholderStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 14 * s,
         fontStyle: FontStyle.italic,
         color: isLight(context)
             ? deepViolet.withValues(alpha: 0.3)
             : softLavender.withValues(alpha: 0.25),
       );
 
-  static TextStyle inputTextStyle(BuildContext context) => TextStyle(
-        fontSize: 16,
+  static TextStyle inputTextStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 16 * s,
         color: textPrimary(context),
       );
 
-  static TextStyle inputHintStyle(BuildContext context) => TextStyle(
+  static TextStyle inputHintStyle(BuildContext context, [double s = 1]) => TextStyle(
         color: isLight(context)
             ? deepViolet.withValues(alpha: 0.3)
             : softLavender.withValues(alpha: 0.25),
       );
 
-  static TextStyle statChipLabelStyle(BuildContext context) => TextStyle(
-        fontSize: 9,
-        letterSpacing: 0.8,
+  static TextStyle statChipLabelStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 9 * s,
+        letterSpacing: 0.8 * s,
         color: isLight(context)
             ? deepViolet.withValues(alpha: 0.6)
             : softLavender.withValues(alpha: 0.5),
         fontFamily: 'monospace',
       );
 
-  static TextStyle statChipValueStyle(BuildContext context) => TextStyle(
-        fontSize: 13,
+  static TextStyle statChipValueStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 13 * s,
         color: isLight(context) ? deepViolet : softLavender,
         fontStyle: FontStyle.italic,
       );
 
-  static TextStyle statChipEmptyStyle(BuildContext context) => TextStyle(
-        fontSize: 13,
+  static TextStyle statChipEmptyStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 13 * s,
         color: isLight(context)
             ? deepViolet.withValues(alpha: 0.2)
             : softLavender.withValues(alpha: 0.2),
         fontStyle: FontStyle.italic,
       );
 
-  static const TextStyle badgeKeyStyle = TextStyle(
-    fontSize: 12,
-    color: neonMagenta,
-    fontWeight: FontWeight.bold,
-    fontFamily: 'monospace',
-  );
+  static TextStyle badgeKeyStyle([double s = 1]) => TextStyle(
+        fontSize: 12 * s,
+        color: neonMagenta,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'monospace',
+      );
 
-  static TextStyle badgeValueStyle(BuildContext context) => TextStyle(
-        fontSize: 12,
+  static TextStyle badgeValueStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 12 * s,
         color: isLight(context) ? deepViolet : softLavender,
         fontFamily: 'monospace',
       );
 
-  static TextStyle inputLabelStyle(BuildContext context) => TextStyle(
-        fontSize: 11,
-        letterSpacing: 1.2,
+  static TextStyle inputLabelStyle(BuildContext context, [double s = 1]) => TextStyle(
+        fontSize: 11 * s,
+        letterSpacing: 1.2 * s,
         color: electricPurple.withValues(alpha: 0.7),
         fontFamily: 'monospace',
       );
 
-  static TextStyle inputVarStyle = TextStyle(
-    fontSize: 14,
-    color: neonMagenta,
-    fontStyle: FontStyle.italic,
-    fontWeight: FontWeight.bold,
-    shadows: [
-      Shadow(color: neonMagenta.withValues(alpha: 0.3), blurRadius: 6),
-    ],
-  );
+  static TextStyle inputVarStyle([double s = 1]) => TextStyle(
+        fontSize: 14 * s,
+        color: neonMagenta,
+        fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.bold,
+        shadows: [
+          Shadow(color: neonMagenta.withValues(alpha: 0.3), blurRadius: 6 * s),
+        ],
+      );
 }

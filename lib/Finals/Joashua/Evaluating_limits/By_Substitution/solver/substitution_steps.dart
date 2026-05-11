@@ -41,8 +41,10 @@ class SubstitutionStepsGenerator {
 
     if (result.needsDifferentMethod) {
       if (result.isFraction && 
-          (result.numeratorResult?.value?.abs() ?? 1.0) < 1e-9 &&
-          (result.denominatorResult?.value?.abs() ?? 1.0) < 1e-9) {
+          result.numeratorResult != null &&
+          result.denominatorResult != null &&
+          (result.numeratorResult!.value.abs()) < 1e-9 &&
+          (result.denominatorResult!.value.abs()) < 1e-9) {
         return _generateIndeterminateSteps(result);
       }
       return _generateUndefinedSteps(result);
@@ -62,55 +64,57 @@ class SubstitutionStepsGenerator {
 
     steps.add(SolutionStep(
       stepNumber: 1,
-      title: 'Identify the Problem',
-      explanation: 'We need to evaluate:\n'
-          'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
+      title: 'Write the Limit',
+      explanation: 'Write the original limit problem.',
+      mathExpression: r'\lim_{x \to ' + _fmt(result.approachValue) + r'} \left( ' + _toLatexOriginal(result.normalizedExpression) + r'\right)',
     ));
 
-    if (result.isFraction && result.numeratorResult != null && result.denominatorResult != null) {
-      steps.add(SolutionStep(
-        stepNumber: 2,
-        title: 'Check the Denominator First',
-        explanation: 'Before substituting, we should check if the denominator '
-            'will be zero (which would make the function undefined).',
-        mathExpression: 'Denominator at x = ${_fmt(result.approachValue)}:\n'
-            '${result.denominatorResult!.description}',
-      ));
-
-      steps.add(SolutionStep(
-        stepNumber: 3,
-        title: 'Substitute into the Numerator',
-        explanation: 'Now substitute x = ${_fmt(result.approachValue)} into the numerator.',
-        mathExpression: 'Numerator = ${result.numeratorResult!.description}',
-      ));
-
-      steps.add(SolutionStep(
-        stepNumber: 4,
-        title: 'Divide',
-        explanation: 'Since the denominator is not zero, we can divide.',
-        mathExpression: 'Result = ${result.numeratorResult!.description} / '
-            '${result.denominatorResult!.description}\n'
-            '= ${result.finalValueDescription}',
-      ));
-    } else {
-      steps.add(SolutionStep(
-        stepNumber: 2,
-        title: 'Apply Direct Substitution',
-        explanation: 'The function appears to be continuous at x = ${_fmt(result.approachValue)}, '
-            'so we can substitute directly.',
-        mathExpression: 'f(${_fmt(result.approachValue)}) = ${result.finalValueDescription}',
-      ));
-    }
+    steps.add(SolutionStep(
+      stepNumber: 2,
+      title: 'Substitute the Value Directly',
+      explanation: 'Replace x with ${_fmt(result.approachValue)} in the expression.',
+      mathExpression: 'f(${_fmt(result.approachValue)}) = ' + _toLatexExpression(result.normalizedExpression, result.approachValue),
+    ));
 
     steps.add(SolutionStep(
-      stepNumber: result.isFraction ? 5 : 3,
+      stepNumber: 3,
+      title: 'Simplify',
+      explanation: 'Evaluate the expression by computing the arithmetic.',
+      mathExpression: result.fullEvaluation.description,
+    ));
+
+    steps.add(SolutionStep(
+      stepNumber: 4,
       title: 'Final Answer',
-      explanation: 'Direct substitution worked! The limit exists and equals the computed value.',
-      mathExpression: 'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression} '
-          '= ${result.finalValueDescription}',
+      explanation: 'The limit exists and equals the computed value.',
+      mathExpression: r'\lim_{x \to ' + _fmt(result.approachValue) + r'} \left( ' + _toLatexOriginal(result.normalizedExpression) + r'\right) = ' + (result.finalValue?.toString() ?? 'undefined'),
     ));
 
     return steps;
+  }
+
+  String _toLatexOriginal(String expr) {
+    String result = expr.replaceAll('*', '');
+    result = result.replaceAll(RegExp(r'\s+'), ' ');
+    result = result.replaceAllMapped(RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
+    return result.trim();
+  }
+
+  String _toLatexExpression(String expr, double x) {
+    String result = expr.replaceAll('^', '^');
+
+    result = result.replaceAll('x', _fmt(x));
+
+    result = result.replaceAllMapped(
+      RegExp(r'(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)'),
+      (m) => '${m.group(1)} \\cdot ${m.group(2)}',
+    );
+
+    result = result.replaceAll('*', '');
+
+    result = result.replaceAllMapped(RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
+
+    return result;
   }
 
   /// Steps for 0/0 indeterminate form
@@ -130,7 +134,7 @@ class SubstitutionStepsGenerator {
             'Denominator at x = ${_fmt(result.approachValue)}: ${result.denominatorResult?.description ?? "0"}\n\n'
             'Result: 0/0',
       ),
-   SolutionStep(
+      const SolutionStep(
         stepNumber: 3,
         title: 'Identify the Problem',
         explanation: 'We obtained 0/0, which is an indeterminate form.\n\n'

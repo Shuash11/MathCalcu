@@ -238,15 +238,12 @@ class _StepTile extends StatelessWidget {
                 ],
                 if (step.subLatex != null && step.subLatex!.isNotEmpty) ...[
                   const SizedBox(height: 12),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: step.subLatex!
-                        .map((l) => Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  right: l == step.subLatex!.last ? 0 : 8,
-                                ),
-                                child: _buildMathContainer(context, l),
-                              ),
+                        .map((l) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: _buildMathContainer(context, l),
                             ))
                         .toList(),
                   ),

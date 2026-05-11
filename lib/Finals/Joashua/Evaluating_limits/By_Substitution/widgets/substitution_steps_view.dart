@@ -148,7 +148,7 @@ class _FormattedStepContent extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Math.tex(
                 mathExpression!,
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: accentColor,

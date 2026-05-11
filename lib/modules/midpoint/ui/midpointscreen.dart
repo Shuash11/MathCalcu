@@ -19,11 +19,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
   final _bXCtrl = TextEditingController();
   final _bYCtrl = TextEditingController();
 
-  final _aXFocus = FocusNode();
-  final _aYFocus = FocusNode();
-  final _bXFocus = FocusNode();
-  final _bYFocus = FocusNode();
-
   String? _resX;
   String? _resY;
   String? _formulaX;
@@ -46,10 +41,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
     _aYCtrl.dispose();
     _bXCtrl.dispose();
     _bYCtrl.dispose();
-    _aXFocus.dispose();
-    _aYFocus.dispose();
-    _bXFocus.dispose();
-    _bYFocus.dispose();
     super.dispose();
   }
 
@@ -243,8 +234,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
   Widget _buildInputField({
     required String label,
     required TextEditingController controller,
-    required FocusNode focusNode,
-    FocusNode? nextFocus,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,8 +244,8 @@ class _MidpointScreenState extends State<MidpointScreen> {
           decoration: MidpointTheme.inputDecoration(context),
           child: TextField(
             controller: controller,
-            focusNode: focusNode,
-            keyboardType: TextInputType.text,
+            keyboardType: const TextInputType.numberWithOptions(
+                decimal: true, signed: true),
             style: MidpointTheme.inputText(context),
             decoration: InputDecoration(
               hintText: '0',
@@ -265,14 +254,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
-            onEditingComplete: () {
-              if (nextFocus != null) {
-                nextFocus.requestFocus();
-              } else {
-                focusNode.unfocus();
-                _onCalculate();
-              }
-            },
+            onChanged: null,
             autocorrect: false,
             enableSuggestions: false,
             cursorWidth: 2,
@@ -461,24 +443,21 @@ class _MidpointScreenState extends State<MidpointScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final hPad = screenWidth < 360 ? 14.0 : 20.0;
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return Scaffold(
       backgroundColor: MidpointTheme.surface(context),
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: NotificationListener<ScrollNotification>(
-          onNotification: (notification) {
-            // Unfocus when scrolling starts
-            if (notification is ScrollStartNotification) {
-              FocusScope.of(context).unfocus();
-            }
-            return false;
-          },
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             physics: const ClampingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(hPad, 28, hPad, 40),
+            padding: EdgeInsets.fromLTRB(hPad, 28, hPad, 40 + keyboardInset),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -527,27 +506,23 @@ class _MidpointScreenState extends State<MidpointScreen> {
                 const SizedBox(height: MidpointTheme.space5xl),
                 _buildSegmentedControl(),
                 const SizedBox(height: MidpointTheme.space5xl),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: Container(
-                    key: ValueKey(_formulaHint),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: MidpointTheme.spaceMd),
-                    decoration: MidpointTheme.formulaHintDecoration(context),
-                    child: Row(
-                      children: [
-                        Icon(Icons.functions_rounded,
-                            color: MidpointTheme.accent50(context), size: 16),
-                        const SizedBox(width: MidpointTheme.spaceXl),
-                        Expanded(
-                          child: Text(
-                            _formulaHint,
-                            style: MidpointTheme.formulaText(context),
-                            softWrap: true,
-                          ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: MidpointTheme.spaceMd),
+                  decoration: MidpointTheme.formulaHintDecoration(context),
+                  child: Row(
+                    children: [
+                      Icon(Icons.functions_rounded,
+                          color: MidpointTheme.accent50(context), size: 16),
+                      const SizedBox(width: MidpointTheme.spaceXl),
+                      Expanded(
+                        child: Text(
+                          _formulaHint,
+                          style: MidpointTheme.formulaText(context),
+                          softWrap: true,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: MidpointTheme.space5xl),
@@ -564,15 +539,11 @@ class _MidpointScreenState extends State<MidpointScreen> {
                           _buildInputField(
                             label: _fieldAX,
                             controller: _aXCtrl,
-                            focusNode: _aXFocus,
-                            nextFocus: _aYFocus,
                           ),
                           const SizedBox(height: MidpointTheme.spaceMd),
                           _buildInputField(
                             label: _fieldAY,
                             controller: _aYCtrl,
-                            focusNode: _aYFocus,
-                            nextFocus: _bXFocus,
                           ),
                         ],
                       ),
@@ -613,14 +584,11 @@ class _MidpointScreenState extends State<MidpointScreen> {
                           _buildInputField(
                             label: _fieldBX,
                             controller: _bXCtrl,
-                            focusNode: _bXFocus,
-                            nextFocus: _bYFocus,
                           ),
                           const SizedBox(height: MidpointTheme.spaceMd),
                           _buildInputField(
                             label: _fieldBY,
                             controller: _bYCtrl,
-                            focusNode: _bYFocus,
                           ),
                         ],
                       ),
@@ -672,7 +640,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
                   else
                     _buildResultCard(screenWidth),
                 ],
-                const SizedBox(height: 300),
               ],
             ),
           ),

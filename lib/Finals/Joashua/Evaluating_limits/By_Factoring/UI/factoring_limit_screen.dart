@@ -6,18 +6,45 @@ import 'package:calculus_system/Finals/Joashua/Evaluating_limits/By_Factoring/so
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 
-class FactoringLimitScreen extends StatefulWidget {
+class FactoringLimitScreen extends StatelessWidget {
   const FactoringLimitScreen({super.key});
 
   @override
-  State<FactoringLimitScreen> createState() => _FactoringLimitScreenState();
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = constraints.maxWidth;
+        final isCompact = screenWidth < 380;
+        final isMedium = screenWidth >= 380 && screenWidth < 600;
+
+        return _FactoringLimitScreenContent(
+          isCompact: isCompact,
+          isMedium: isMedium,
+        );
+      },
+    );
+  }
 }
 
-class _FactoringLimitScreenState extends State<FactoringLimitScreen> with TickerProviderStateMixin {
+class _FactoringLimitScreenContent extends StatefulWidget {
+  final bool isCompact;
+  final bool isMedium;
+
+  const _FactoringLimitScreenContent({
+    required this.isCompact,
+    required this.isMedium,
+  });
+
+  @override
+  State<_FactoringLimitScreenContent> createState() => _FactoringLimitScreenContentState();
+}
+
+class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenContent>
+    with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   String _currentVariable = 'x';
-  
+
   SolutionResult? _result;
   List<SolutionStep> _steps = [];
   bool _showSteps = false;
@@ -69,7 +96,6 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
       _showSteps = false;
     });
 
-    // parse approach value
     double approachVal = 0;
     try {
       approachVal = double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
@@ -77,17 +103,16 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
       approachVal = 0;
     }
 
-    // Call engine
     try {
       final engine = LimitSolverEngine();
       final result = engine.solve(LimitProblem(
         expression: _expressionController.text,
         approachValue: approachVal,
       ));
-      
+
       final stepsGen = SolutionStepsGenerator();
       final steps = stepsGen.generate(result);
-      
+
       setState(() {
         _result = result;
         _steps = steps;
@@ -108,15 +133,27 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = widget.isCompact;
+    final isMedium = widget.isMedium;
+
+    final screenPaddingH = isCompact ? 16.0 : (isMedium ? 20.0 : 24.0);
+    final screenPaddingBottom = isCompact ? 24.0 : (isMedium ? 32.0 : 40.0);
+    final headerPaddingH = isCompact ? 16.0 : (isMedium ? 20.0 : 24.0);
+    final headerTitleFontSize = isCompact ? 20.0 : (isMedium ? 22.0 : 24.0);
+    final headerBackSpacing = isCompact ? 12.0 : (isMedium ? 16.0 : 20.0);
+    final headerBadgePaddingH = isCompact ? 8.0 : (isMedium ? 10.0 : 12.0);
+    final headerBadgePaddingV = isCompact ? 4.0 : (isMedium ? 5.0 : 6.0);
+    final headerBadgeIconSize = isCompact ? 12.0 : (isMedium ? 13.0 : 14.0);
+    final headerBadgeFontSize = isCompact ? 9.0 : (isMedium ? 9.5 : 10.0);
+    final headerBackPadding = isCompact ? 10.0 : (isMedium ? 11.0 : 12.0);
+    final stepsPaddingTop = isCompact ? 24.0 : (isMedium ? 28.0 : 32.0);
+
     return Scaffold(
       backgroundColor: FinalsTheme.surface(context),
       body: SafeArea(
         child: Column(
           children: [
-            // ── Header ──────────────────────────────────────────
-            _buildHeader(context),
-
-            // ── Scrollable Content ──────────────────────────────
+            _buildHeader(context, headerPaddingH: headerPaddingH, titleFontSize: headerTitleFontSize, backSpacing: headerBackSpacing, badgePaddingH: headerBadgePaddingH, badgePaddingV: headerBadgePaddingV, backPadding: headerBackPadding, badgeIconSize: headerBadgeIconSize, badgeFontSize: headerBadgeFontSize),
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -124,11 +161,10 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
                   position: _slideAnim,
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 40),
+                    padding: EdgeInsets.fromLTRB(screenPaddingH, 8, screenPaddingH, screenPaddingBottom),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Input Section
                         FactoringInputField(
                           expressionController: _expressionController,
                           approachController: _approachController,
@@ -137,15 +173,15 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
                           onSolve: _solve,
                         ),
 
-                        // Animated Result Section
                         if (_isSolving)
-                          const Padding(
-                            padding: EdgeInsets.all(40.0),
+                          Padding(
+                            padding: EdgeInsets.all(isCompact ? 32.0 : 40.0),
                             child: Center(
                               child: CircularProgressIndicator(color: FinalsTheme.primary),
                             ),
                           )
                         else if (_result != null) ...[
+                          SizedBox(height: isCompact ? 16.0 : 24.0),
                           FactoringAnswerCard(
                             answer: _result!.finalValue,
                             method: 'Factoring Method',
@@ -153,31 +189,35 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
                             onTap: () => setState(() => _showSteps = !_showSteps),
                             error: _result!.errorMessage,
                           ),
-
-                          // Steps Section
                           AnimatedSize(
                             duration: const Duration(milliseconds: 400),
                             curve: Curves.fastOutSlowIn,
                             child: _showSteps
                                 ? Padding(
-                                    padding: const EdgeInsets.only(top: 32, left: 8, right: 8),
+                                    padding: EdgeInsets.only(
+                                        top: stepsPaddingTop, left: isCompact ? 4 : 8, right: isCompact ? 4 : 8),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
-                                            const Icon(Icons.list_alt_rounded, color: FinalsTheme.primary, size: 18),
-                                            const SizedBox(width: 10),
+                                            Icon(Icons.list_alt_rounded,
+                                                color: FinalsTheme.primary,
+                                                size: isCompact ? 16 : 18),
+                                            SizedBox(width: isCompact ? 8 : 10),
                                             Text(
                                               'SOLUTION STEPS',
-                                              style: FinalsTheme.labelStyle(context).copyWith(
+                                              style: FinalsTheme.labelStyle(
+                                                      context)
+                                                  .copyWith(
                                                 color: FinalsTheme.primary,
                                                 letterSpacing: 1.5,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 24),
+                                        SizedBox(height: isCompact ? 16 : 24),
                                         FactoringStepsView(steps: _steps),
                                       ],
                                     ),
@@ -197,32 +237,32 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, {double headerPaddingH = 24, double titleFontSize = 24, double backSpacing = 20, double badgePaddingH = 12, double badgePaddingV = 6, double backPadding = 12, double badgeIconSize = 14, double badgeFontSize = 10}) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+      padding: EdgeInsets.fromLTRB(headerPaddingH, 24, headerPaddingH, 16),
       child: Row(
         children: [
-          // Back Button
           IconButton(
             onPressed: () => Navigator.of(context).maybePop(),
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             style: IconButton.styleFrom(
               backgroundColor: FinalsTheme.card(context),
               foregroundColor: FinalsTheme.textPrimary(context),
-              padding: const EdgeInsets.all(12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              side: BorderSide(color: FinalsTheme.primary.withValues(alpha: 0.1)),
+              padding: EdgeInsets.all(backPadding),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              side: BorderSide(
+                  color: FinalsTheme.primary.withValues(alpha: 0.1)),
             ),
           ),
-          const SizedBox(width: 20),
-          // Title
+          SizedBox(width: backSpacing),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Factoring Method',
-                  style: FinalsTheme.titleStyle(context).copyWith(fontSize: 24),
+                  style: FinalsTheme.titleStyle(context).copyWith(fontSize: titleFontSize),
                 ),
                 Text(
                   'Evaluating Limits',
@@ -231,24 +271,25 @@ class _FactoringLimitScreenState extends State<FactoringLimitScreen> with Ticker
               ],
             ),
           ),
-          // Status Badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: badgePaddingH, vertical: badgePaddingV),
             decoration: BoxDecoration(
               color: FinalsTheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.2)),
+              border: Border.all(
+                  color: FinalsTheme.primary.withValues(alpha: 0.2)),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.layers_rounded, size: 14, color: FinalsTheme.primary),
-                SizedBox(width: 6),
+                Icon(Icons.layers_rounded,
+                    size: badgeIconSize, color: FinalsTheme.primary),
+                SizedBox(width: badgePaddingH * 0.5),
                 Text(
                   'By Factoring',
                   style: TextStyle(
                     color: FinalsTheme.primary,
                     fontWeight: FontWeight.w800,
-                    fontSize: 10,
+                    fontSize: badgeFontSize,
                   ),
                 ),
               ],

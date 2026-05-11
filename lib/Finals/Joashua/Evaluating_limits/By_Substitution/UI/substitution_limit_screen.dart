@@ -143,8 +143,8 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
 
                         // Animated Result Section
                         if (_isSolving)
-                          Padding(
-                            padding: const EdgeInsets.all(40.0),
+                          const Padding(
+                            padding: EdgeInsets.all(40.0),
                             child: Center(
                               child: CircularProgressIndicator(color: FinalsTheme.primary),
                             ),
@@ -170,7 +170,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                                       children: [
                                         Row(
                                           children: [
-                                            Icon(Icons.list_alt_rounded, color: FinalsTheme.primary, size: 18),
+                                            const Icon(Icons.list_alt_rounded, color: FinalsTheme.primary, size: 18),
                                             const SizedBox(width: 10),
                                             Text(
                                               'SOLUTION STEPS',
@@ -243,10 +243,10 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.2)),
             ),
-            child: Row(
+            child: const Row(
               children: [
                 Icon(Icons.swap_horiz_rounded, size: 14, color: FinalsTheme.primary),
-                const SizedBox(width: 6),
+                SizedBox(width: 6),
                 Text(
                   'BY SUBSTITUTION',
                   style: TextStyle(

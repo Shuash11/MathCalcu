@@ -8,6 +8,8 @@
 //   dart solution_steps.dart "x^2 + y^2 = 25" x=3 y=4
 //   dart solution_steps.dart "x=cos(t), y=sin(t)" t=1.5708
 
+// ignore_for_file: constant_identifier_names, prefer_const_constructors
+
 import 'dart:math' as math;
 import 'dart:io';
 

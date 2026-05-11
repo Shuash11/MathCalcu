@@ -656,33 +656,34 @@ class _DistancescreenState extends State<Distancescreen>
                                 ),
                               ),
                             ],
-                            AnimatedCrossFade(
-                              firstChild: const SizedBox.shrink(),
-                              secondChild: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 20),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: DistanceTheme.accent
-                                        .withValues(alpha: 0.2),
-                                    margin: const EdgeInsets.only(bottom: 20),
-                                  ),
-                                  DistanceSteps(
-                                    is2D: _is2D,
-                                    x1: _parsedX1,
-                                    y1: _parsedY1,
-                                    x2: _parsedX2,
-                                    y2: _parsedY2,
-                                    distance: _calculatedDistance,
-                                  ),
-                                ],
-                              ),
-                              crossFadeState: _showSteps
-                                  ? CrossFadeState.showSecond
-                                  : CrossFadeState.showFirst,
+                            AnimatedOpacity(
+                              opacity: _showSteps ? 1.0 : 0.0,
                               duration: const Duration(milliseconds: 250),
+                              child: _showSteps
+                                  ? SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 20),
+                                          Container(
+                                            width: double.infinity,
+                                            height: 1,
+                                            color: DistanceTheme.accent
+                                                .withValues(alpha: 0.2),
+                                            margin: const EdgeInsets.only(bottom: 20),
+                                          ),
+                                          DistanceSteps(
+                                            is2D: _is2D,
+                                            x1: _parsedX1,
+                                            y1: _parsedY1,
+                                            x2: _parsedX2,
+                                            y2: _parsedY2,
+                                            distance: _calculatedDistance,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
                           ],
                         ),
@@ -691,7 +692,7 @@ class _DistancescreenState extends State<Distancescreen>
                   ],
                 ],
 
-                const SizedBox(height: 300),
+                const SizedBox(height: 50),
               ],
             ),
           ),

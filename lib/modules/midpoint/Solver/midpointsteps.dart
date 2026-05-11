@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:calculus_system/modules/midpoint/Solver/midpointsolver.dart';
 import 'package:calculus_system/modules/midpoint/Theme/midpointtheme.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +7,12 @@ import 'package:flutter_math_fork/flutter_math.dart';
 
 enum StepMode { midpoint, endpoint }
 
-enum _StepKind { single, dual }
+enum StepKind { single, dual }
 
 class StepSection {
   final String stepLabel;
   final String guide;
-  final _StepKind kind;
+  final StepKind kind;
   final String? latexContent;
   final String? plainContent;
   final String? leftLabel;
@@ -23,7 +25,7 @@ class StepSection {
     required this.guide,
     this.latexContent,
     this.plainContent,
-  })  : kind = _StepKind.single,
+  })  : kind = StepKind.single,
         leftLabel = null,
         rightLabel = null,
         leftLatex = null,
@@ -40,7 +42,7 @@ class StepSection {
     required String this.rightLabel,
     required String this.leftLatex,
     required String this.rightLatex,
-  })  : kind = _StepKind.dual,
+  })  : kind = StepKind.dual,
         latexContent = null,
         plainContent = null;
 }
@@ -453,7 +455,7 @@ class _StepRow extends StatelessWidget {
                   isSmall: isSmall,
                 ),
                 SizedBox(height: isSmall ? 6 : 8),
-                if (step.kind == _StepKind.single)
+                if (step.kind == StepKind.single)
                   _SingleMathBox(
                     step: step,
                     isSmall: isSmall,

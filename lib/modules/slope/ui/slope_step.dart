@@ -2,6 +2,7 @@ import 'package:calculus_system/modules/slope/theme/slope_theme.dart';
 import 'package:calculus_system/modules/slope/types/slope_solver.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
 
 class SlopeStepItem extends StatelessWidget {
@@ -56,16 +57,18 @@ class SlopeStepItem extends StatelessWidget {
                         color: SlopeTheme.accentColor.withValues(alpha: 0.2),
                       ),
                     ),
-                    child: Text(
-                      step.equation,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: context
-                            .watch<ThemeProvider>()
-                            .textPrimary
-                            .withValues(alpha: 0.9),
-                        fontFamily: 'monospace',
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SelectableMath.tex(
+                        _convertToLatex(step.equation),
+                        textStyle: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: context
+                              .watch<ThemeProvider>()
+                              .textPrimary
+                              .withValues(alpha: 0.9),
+                        ),
                       ),
                     ),
                   ),
@@ -76,6 +79,41 @@ class SlopeStepItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _convertToLatex(String text) {
+    String result = text;
+
+    result = result.replaceAllMapped(
+      RegExp(r'\(([^,]+),\s*([^)]+)\)'),
+      (m) => r'\left(' + m.group(1)! + r',\,' + m.group(2)! + r'\right)',
+    );
+
+    result = result.replaceAll('−', '-');
+    result = result.replaceAll('×', r'\times');
+    result = result.replaceAll('÷', r'\div');
+
+    if (result.contains('=') && !result.contains(r'\=')) {
+      if (result.contains(r'\implies') || result.contains(r'\rightarrow')) {
+      } else {
+        result = result.replaceAll(' = ', r' = ');
+      }
+    }
+
+    if (result.contains('/') && !result.contains(r'\frac')) {
+      final fractionMatch = RegExp(r'(\d+)/(\d+)').allMatches(result);
+      for (final match in fractionMatch.toList().reversed) {
+        final num = match.group(1)!;
+        final den = match.group(2)!;
+        result = result.replaceRange(
+          match.start,
+          match.end,
+          r'\frac{' + num + '}{' + den + '}',
+        );
+      }
+    }
+
+    return result;
   }
 }
 
@@ -167,18 +205,54 @@ class _FinalBox extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          Text(
-            step.equation,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: context.watch<ThemeProvider>().textPrimary,
-              fontFamily: 'monospace',
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Math.tex(
+              _convertToLatex(step.equation),
+              textStyle: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: context.watch<ThemeProvider>().textPrimary,
+              ),
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
+  }
+
+  String _convertToLatex(String text) {
+    String result = text;
+
+    result = result.replaceAllMapped(
+      RegExp(r'\(([^,]+),\s*([^)]+)\)'),
+      (m) => r'\left(' + m.group(1)! + r',\,' + m.group(2)! + r'\right)',
+    );
+
+    result = result.replaceAll('−', '-');
+    result = result.replaceAll('×', r'\times');
+    result = result.replaceAll('÷', r'\div');
+
+    if (result.contains('=') && !result.contains(r'\=')) {
+      if (result.contains(r'\implies') || result.contains(r'\rightarrow')) {
+      } else {
+        result = result.replaceAll(' = ', r' = ');
+      }
+    }
+
+    if (result.contains('/') && !result.contains(r'\frac')) {
+      final fractionMatch = RegExp(r'(\d+)/(\d+)').allMatches(result);
+      for (final match in fractionMatch.toList().reversed) {
+        final num = match.group(1)!;
+        final den = match.group(2)!;
+        result = result.replaceRange(
+          match.start,
+          match.end,
+          r'\frac{' + num + '}{' + den + '}',
+        );
+      }
+    }
+
+    return result;
   }
 }

@@ -213,7 +213,7 @@ class StepItemWidget extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             step.label.toUpperCase(), 
-            style: TextStyle(
+            style: const TextStyle(
               color: FinalsTheme.primary, 
               fontWeight: FontWeight.w900, 
               fontSize: 16, 
@@ -239,7 +239,7 @@ class StepItemWidget extends StatelessWidget {
                       mathStyle: MathStyle.text,
                       onErrorFallback: (err) => Text(
                         line,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: FinalsTheme.danger,
                           fontSize: 13,
                           fontStyle: FontStyle.italic,
@@ -295,9 +295,9 @@ class StepItemWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(children: [
-              const Icon(Icons.check_circle, color: FinalsTheme.primary, size: 18),
-              const SizedBox(width: 8),
+            const Row(children: [
+              Icon(Icons.check_circle, color: FinalsTheme.primary, size: 18),
+              SizedBox(width: 8),
               Text(
                 'FINAL FORM', 
                 style: TextStyle(

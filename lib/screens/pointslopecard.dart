@@ -161,8 +161,7 @@ class _PointSlopeModuleCardState extends State<PointSlopeModuleCard> {
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
                                   transform: _hovered
-                                      ? (Matrix4.identity()
-                                        ..scale(1.15)
+                                      ? (Matrix4.diagonal3Values(1.15, 1.15, 1.0)
                                         ..rotateZ(0.1))
                                       : Matrix4.identity(),
                                   child: Icon(
@@ -237,7 +236,7 @@ class _PointSlopeModuleCardState extends State<PointSlopeModuleCard> {
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 transform: _hovered
-                                    ? (Matrix4.identity()..translate(6.0 * s, 0.0))
+                                    ? Matrix4.translationValues(6.0 * s, 0.0, 0.0)
                                     : Matrix4.identity(),
                                 child: Container(
                                   width: 40 * s,
@@ -281,7 +280,7 @@ class _PointSlopeModuleCardState extends State<PointSlopeModuleCard> {
                           opacity: _hovered ? 0.4 : 0.15,
                           child: CustomPaint(
                             size: Size(100 * s, 100 * s),
-                            painter: _LinePatternPainter(_electricPurple),
+                            painter: const _LinePatternPainter(_electricPurple),
                           ),
                         ),
                       ),

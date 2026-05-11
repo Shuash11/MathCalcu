@@ -34,6 +34,7 @@ class _AnimatedInequalityCardState extends State<AnimatedInequalityCard>
   late AnimationController _orbitCtrl;
 
   static const Color _purple = Color(0xFF6C63FF);
+  static const double _baseDesignWidth = 400.0;
 
   @override
   void initState() {
@@ -52,102 +53,116 @@ class _AnimatedInequalityCardState extends State<AnimatedInequalityCard>
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() {
-        _hovered = true;
-        _orbitCtrl.repeat();
-      }),
-      onExit: (_) => setState(() {
-        _hovered = false;
-        _orbitCtrl.stop();
-      }),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) => setState(() => _pressed = false),
-        onTapCancel: () => setState(() => _pressed = false),
-        onTap: () => context.go(widget.route),
-        child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1.0,
-          duration: const Duration(milliseconds: 110),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeOutCubic,
-            decoration: BoxDecoration(
-              color: InequalityTheme.card(context),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: _hovered
-                    ? widget.accentColor.withValues(alpha: 0.5)
-                    : _purple.withValues(alpha: 0.3),
-                width: _hovered ? 2 : 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: _hovered
-                      ? widget.accentColor.withValues(alpha: 0.25)
-                      : _purple.withValues(alpha: 0.15),
-                  blurRadius: _hovered ? 40 : 24,
-                  offset: const Offset(0, 8),
-                  spreadRadius: _hovered ? 4 : 0,
-                ),
-                BoxShadow(
-                  color: context.watch<ThemeProvider>().shadowColor,
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                  spreadRadius: -4,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Row(
-                  children: [
-                    _IconOrbit(
-                      icon: widget.icon,
-                      accent: widget.accentColor,
-                      hovered: _hovered,
-                      controller: _orbitCtrl,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double effectiveWidth = constraints.hasInfiniteWidth
+            ? _baseDesignWidth
+            : constraints.maxWidth;
+        final double s = (effectiveWidth / _baseDesignWidth).clamp(0.7, 1.2);
+
+        return MouseRegion(
+          onEnter: (_) => setState(() {
+            _hovered = true;
+            _orbitCtrl.repeat();
+          }),
+          onExit: (_) => setState(() {
+            _hovered = false;
+            _orbitCtrl.stop();
+          }),
+          child: GestureDetector(
+            onTapDown: (_) => setState(() => _pressed = true),
+            onTapUp: (_) => setState(() => _pressed = false),
+            onTapCancel: () => setState(() => _pressed = false),
+            onTap: () => context.go(widget.route),
+            child: AnimatedScale(
+              scale: _pressed ? 0.97 : 1.0,
+              duration: const Duration(milliseconds: 110),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutCubic,
+                decoration: BoxDecoration(
+                  color: InequalityTheme.card(context),
+                  borderRadius: BorderRadius.circular(20 * s),
+                  border: Border.all(
+                    color: _hovered
+                        ? widget.accentColor.withValues(alpha: 0.5)
+                        : _purple.withValues(alpha: 0.3),
+                    width: _hovered ? 2 * s : 1 * s,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _hovered
+                          ? widget.accentColor.withValues(alpha: 0.25)
+                          : _purple.withValues(alpha: 0.15),
+                      blurRadius: _hovered ? 40 * s : 24 * s,
+                      offset: Offset(0, 8 * s),
+                      spreadRadius: _hovered ? 4 * s : 0,
                     ),
-                    const SizedBox(width: 18),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Title — full width, no sibling widgets stealing space
-                          AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 200),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: _hovered
-                                  ? widget.accentColor
-                                  : InequalityTheme.text(context),
-                              letterSpacing: -0.4,
-                            ),
-                            child: Text(widget.title),
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 4,
-                            children: widget.tags
-                                .map((t) => _TagPill(
-                                    label: t, color: widget.accentColor))
-                                .toList(),
-                          ),
-                        ],
-                      ),
+                    BoxShadow(
+                      color: context.watch<ThemeProvider>().shadowColor,
+                      blurRadius: 16 * s,
+                      offset: Offset(0, 6 * s),
+                      spreadRadius: -4 * s,
                     ),
-                    _ArrowButton(hovered: _hovered, accent: widget.accentColor),
                   ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20 * s),
+                  child: Padding(
+                    padding: EdgeInsets.all(24 * s),
+                    child: Row(
+                      children: [
+                        _IconOrbit(
+                          icon: widget.icon,
+                          accent: widget.accentColor,
+                          hovered: _hovered,
+                          controller: _orbitCtrl,
+                          s: s,
+                        ),
+                        SizedBox(width: 18 * s),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 200),
+                                style: TextStyle(
+                                  fontSize: 18 * s,
+                                  fontWeight: FontWeight.w600,
+                                  color: _hovered
+                                      ? widget.accentColor
+                                      : InequalityTheme.text(context),
+                                  letterSpacing: -0.4 * s,
+                                ),
+                                child: Text(widget.title),
+                              ),
+                              SizedBox(height: 8 * s),
+                              Wrap(
+                                spacing: 6 * s,
+                                runSpacing: 4 * s,
+                                children: widget.tags
+                                    .map((t) => _TagPill(
+                                        label: t,
+                                        color: widget.accentColor,
+                                        s: s))
+                                    .toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        _ArrowButton(
+                            hovered: _hovered,
+                            accent: widget.accentColor,
+                            s: s),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -157,6 +172,7 @@ class _IconOrbit extends StatelessWidget {
   final Color accent;
   final bool hovered;
   final AnimationController controller;
+  final double s;
 
   static const Color _purple = Color(0xFF6C63FF);
 
@@ -165,13 +181,14 @@ class _IconOrbit extends StatelessWidget {
     required this.accent,
     required this.hovered,
     required this.controller,
+    required this.s,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 64,
-      height: 64,
+      width: 64 * s,
+      height: 64 * s,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -179,22 +196,22 @@ class _IconOrbit extends StatelessWidget {
             AnimatedBuilder(
               animation: controller,
               builder: (_, __) => CustomPaint(
-                size: const Size(64, 64),
+                size: Size(64 * s, 64 * s),
                 painter:
                     _OrbitPainter(progress: controller.value, color: accent),
               ),
             ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 250),
-            width: 52,
-            height: 52,
+            width: 52 * s,
+            height: 52 * s,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
                 color: hovered
                     ? accent.withValues(alpha: 0.5)
                     : _purple.withValues(alpha: 0.3),
-                width: 2,
+                width: 2 * s,
               ),
               gradient: RadialGradient(colors: [
                 _purple.withValues(alpha: hovered ? 0.3 : 0.15),
@@ -203,8 +220,8 @@ class _IconOrbit extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: accent.withValues(alpha: hovered ? 0.3 : 0.15),
-                  blurRadius: hovered ? 20 : 12,
-                  offset: const Offset(0, 4),
+                  blurRadius: hovered ? 20 * s : 12 * s,
+                  offset: Offset(0, 4 * s),
                 ),
               ],
             ),
@@ -213,19 +230,19 @@ class _IconOrbit extends StatelessWidget {
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
-                  width: hovered ? 50 : 44,
-                  height: hovered ? 50 : 44,
+                  width: hovered ? 50 * s : 44 * s,
+                  height: hovered ? 50 * s : 44 * s,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: accent.withValues(alpha: hovered ? 0.4 : 0.2),
-                      width: 2,
+                      width: 2 * s,
                     ),
                   ),
                 ),
                 Icon(icon,
                     color: hovered ? const Color(0xFFF5EBF5) : accent,
-                    size: 24),
+                    size: 24 * s),
               ],
             ),
           ),
@@ -238,28 +255,33 @@ class _IconOrbit extends StatelessWidget {
 class _ArrowButton extends StatelessWidget {
   final bool hovered;
   final Color accent;
+  final double s;
 
   static const Color _purple = Color(0xFF6C63FF);
 
-  const _ArrowButton({required this.hovered, required this.accent});
+  const _ArrowButton({
+    required this.hovered,
+    required this.accent,
+    required this.s,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       transform: hovered
-          ? (Matrix4.identity()..translate(6.0, 0.0))
+          ? Matrix4.translationValues(6.0 * s, 0.0, 0.0)
           : Matrix4.identity(),
       child: Container(
-        width: 40,
-        height: 40,
+        width: 40 * s,
+        height: 40 * s,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
             color: hovered
                 ? accent.withValues(alpha: 0.4)
                 : _purple.withValues(alpha: 0.2),
-            width: 1.5,
+            width: 1.5 * s,
           ),
           gradient: LinearGradient(colors: [
             _purple.withValues(alpha: hovered ? 0.2 : 0.05),
@@ -270,7 +292,7 @@ class _ArrowButton extends StatelessWidget {
           Icons.arrow_forward_rounded,
           color:
               hovered ? const Color(0xFFF5EBF5) : accent.withValues(alpha: 0.7),
-          size: 20,
+          size: 20 * s,
         ),
       ),
     );
@@ -280,22 +302,23 @@ class _ArrowButton extends StatelessWidget {
 class _TagPill extends StatelessWidget {
   final String label;
   final Color color;
+  final double s;
 
-  const _TagPill({required this.label, required this.color});
+  const _TagPill({required this.label, required this.color, required this.s});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: 8 * s, vertical: 3 * s),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8 * s),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: 10 * s,
           fontWeight: FontWeight.w600,
           color: color.withValues(alpha: 0.9),
         ),

@@ -3,6 +3,8 @@
 // Parser:    converts the token list into an Expr AST.
 // Nothing here differentiates, simplifies, or evaluates — it only reads text.
 
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:math' as math;
 import 'models.dart';
 

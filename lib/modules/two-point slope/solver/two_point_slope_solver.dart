@@ -96,7 +96,7 @@ class TwoPointSlopeSolver {
       formula: r'm = \frac{y_2 - y_1}{x_2 - x_1}',
       substitution: _toLatex(
           'm = (${_fmt(y2)}-${_fmt(y1)})/(${_fmt(x2)}-${_fmt(x1)}) = ${_fmt(dy)}/${_fmt(dx)}'),
-      result: r'\frac{' + _fmt(dy) + '}{' + _fmt(dx) + '}',
+      result: r'\frac{${_fmt(dy)}}{${_fmt(dx)}}',
       explanation: 'Rise over run.',
     ));
 
@@ -283,7 +283,7 @@ class TwoPointSlopeSolver {
         final fn = n ~/ g;
         final fd = d ~/ g;
         if (fd == 1) return fn.toString();
-        return r'\frac{' + fn.toString() + '}{' + fd.toString() + '}';
+        return r'\frac{$fn}{$fd}';
       }
     }
     return null;
@@ -292,6 +292,7 @@ class TwoPointSlopeSolver {
   static String _fractionString(double dy, double dx) {
     final frac = _toLatexFraction(dy / dx);
     if (frac != null) {
+      // ignore: prefer_interpolation_to_compose_strings
       return r'm = \frac{' + _fmt(dy) + '}{' + _fmt(dx) + r'} = ' + frac;
     }
     return 'm = ${_fmt(dy)} / ${_fmt(dx)}';
@@ -311,7 +312,7 @@ class TwoPointSlopeSolver {
       final num = match.group(1) ?? '0';
       final denom = match.group(2) ?? '1';
       if (denom == '1') return num;
-      return r'\frac{' + num + '}{' + denom + '}';
+      return r'\frac{$num}{$denom}';
     });
   }
 
