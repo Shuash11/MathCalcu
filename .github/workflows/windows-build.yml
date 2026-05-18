@@ -1,0 +1,57 @@
+name: Build Windows Desktop
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (e.g., v1.0.0)'
+        required: false
+        default: 'latest'
+        type: string
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.41.6'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate launcher icons
+        run: dart run flutter_launcher_icons
+        continue-on-error: true
+
+      - name: Build Windows Release
+        run: flutter build windows --release
+
+      - name: Compress build artifacts
+        shell: powershell
+        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath MathCalcu-Windows.zip
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.release_tag || 'latest' }}
+          name: MathCalcu Windows Desktop ${{ github.event.inputs.release_tag || 'Latest Build' }}
+          files: MathCalcu-Windows.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: true
+          body: |
+            ## MathCalcu for Windows
+            
+            ### 📥 How to install
+            1. Download **MathCalcu-Windows.zip**
+            2. Extract the ZIP file
+            3. Run **mathcalcu.exe**
+            
+            No installation required — just unzip and run!
