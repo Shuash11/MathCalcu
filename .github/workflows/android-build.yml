@@ -20,7 +20,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.41.6'   # ← ADDED
+          flutter-version: '3.41.6'
 
       - name: Install dependencies
         run: flutter pub get
@@ -39,6 +39,7 @@ jobs:
         with:
           tag_name: latest
           name: MathCalcu Latest
-          files: build/app/outputs/flutter-apk/MathCalcu.apk
+          make_latest: true
+          prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: true             # ← ADDEDflutter --version
+          files: build/app/outputs/flutter-apk/MathCalcu.apk
