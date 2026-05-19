@@ -1,4 +1,4 @@
-# MathCalcu — AI-Powered Math System
+# MathCalcu — Powered Math System
 
 A Flutter math solver for calculus and analytic geometry topics, built with offline-first AI-powered step generation.
 
