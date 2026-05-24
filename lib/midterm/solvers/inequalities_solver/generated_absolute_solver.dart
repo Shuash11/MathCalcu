@@ -75,8 +75,6 @@ class GeneratedAbsoluteSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Start with the absolute value inequality.',
       latex: input.trim(),
     ));
 
@@ -90,24 +88,28 @@ class GeneratedAbsoluteSolver {
       final nkStr = _fmtLatex(-p.k);
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Apply |X| < k Property',
-        explanation: 'Rewrite as a compound inequality.',
+        hint: 'Write as -${_fmt(p.k)} < ... < ${_fmt(p.k)}',
+        details: [
+          r'\text{If } |X| < k \text{ then } -k < X < k',
+          '$nkStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+        ],
         latex: '$nkStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
       ));
     } else {
       final flipOp = _flipOp(effectiveOp);
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Apply |X| > k Property',
-        explanation: 'Split into two cases.',
-        latex: '$innerStr ${_texOp(flipOp)} -$kStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+        hint: 'Split into two separate inequalities',
+        details: [
+          r'\text{If } |X| > k \text{ then } X < -k \text{ or } X > k',
+          '$innerStr ${_texOp(flipOp)} -$kStr \text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+        ],
+        latex: '$innerStr ${_texOp(flipOp)} -$kStr \text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
       ));
     }
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution',
-      explanation: 'The complete solution set.',
       latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
     ));
 

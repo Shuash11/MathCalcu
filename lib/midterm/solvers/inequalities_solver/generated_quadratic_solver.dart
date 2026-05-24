@@ -83,8 +83,6 @@ class GeneratedQuadraticSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Start with the given quadratic inequality.',
       latex: input.trim(),
     ));
 
@@ -93,15 +91,16 @@ class GeneratedQuadraticSolver {
     if (disc < 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Discriminant',
-        explanation: 'Δ = ${_fmt(disc)} < 0 means no real roots.',
-        latex: '\\Delta = ${_fmtLatex(disc)} < 0 \\implies \\text{No real roots}',
+        hint: 'Discriminant \\Delta = ${_fmt(disc)} < 0 — no real roots',
+        details: [
+          r'\Delta = b^2 - 4ac = ' + '${_fmtLatex(p.b)}^2 - 4(${_fmtLatex(p.a)})(${_fmtLatex(p.c)}) = ${_fmtLatex(disc)} < 0',
+          r'\text{No real roots, inequality is either always true or always false}',
+        ],
+        latex: '\\Delta = ${_fmtLatex(disc)} < 0 \\implies \text{No real roots}',
       ));
       final result = solve(input);
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Solution',
-        explanation: result.answer,
         latex: r'\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
       ));
       return steps;
@@ -109,8 +108,13 @@ class GeneratedQuadraticSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Critical Points',
-      explanation: 'Find the roots of the quadratic equation.',
+      hint: disc == 0 ? 'One repeated root' : 'Two distinct roots',
+      details: [
+        r'x = \frac{-b \pm \sqrt{\Delta}}{2a} = \frac{' + '${_fmtLatex(-p.b)} \pm \sqrt{${_fmtLatex(disc)}}' + r'}{2(' + '${_fmtLatex(p.a)}' + r')}',
+        disc == 0
+          ? r'x = ' + _fmtLatex(-p.b / (2 * p.a))
+          : r'x_1 = ' + _fmtLatex((-p.b - math.sqrt(disc)) / (2 * p.a)) + r',\; x_2 = ' + _fmtLatex((-p.b + math.sqrt(disc)) / (2 * p.a)),
+      ],
       latex: disc == 0
           ? r'x = ' + _fmtLatex(-p.b / (2 * p.a))
           : r'x_1 = ' + _fmtLatex((-p.b - math.sqrt(disc)) / (2 * p.a)) + ', x_2 = ' + _fmtLatex((-p.b + math.sqrt(disc)) / (2 * p.a)),
@@ -124,8 +128,7 @@ class GeneratedQuadraticSolver {
       final hi = r1 < r2 ? r2 : r1;
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Test Intervals',
-        explanation: 'Test each region of the number line.',
+        hint: 'Test each region separated by the roots',
         latex: 'A: x < ${_fmtLatex(lo)}, B: ${_fmtLatex(lo)} < x < ${_fmtLatex(hi)}, C: x > ${_fmtLatex(hi)}',
       ));
     }
@@ -133,8 +136,6 @@ class GeneratedQuadraticSolver {
     final result = solve(input);
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution',
-      explanation: result.answer,
       latex: r'\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
     ));
 

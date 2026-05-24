@@ -91,33 +91,30 @@ class GeneratedRadicalSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Start with the radical inequality.',
       latex: input.trim(),
     ));
 
-    final radStr = _linearStr(p.b, p.c);
     final radStrLatex = _linearStrLatex(p.b, p.c);
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Domain',
-      explanation: 'Radicand must be non-negative: $radStr ≥ 0',
+      hint: 'Radicand must be non-negative for real solutions',
       latex: r'\text{' + radStrLatex + r'} \geq 0',
     ));
 
     if (p.k >= 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Square Both Sides',
-        explanation: 'Square to eliminate the radical.',
+        hint: 'Square both sides to eliminate the radical',
+        details: [
+          r'(' + radStrLatex + r')^2 ' + '${_texOp(p.op)} ' + '${_fmtLatex(p.k)}^2',
+          '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
+        ],
         latex: '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
       ));
     }
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution',
-      explanation: 'Combine conditions.',
       latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
     ));
 
@@ -211,13 +208,6 @@ class GeneratedRadicalSolver {
       }
     }
     return {'x': xCoef, 'c': constant};
-  }
-
-  static String _linearStr(double a, double c) {
-    if (a == 0) return _fmt(c);
-    final aStr = a == 1 ? 'x' : (a == -1 ? '-x' : '${_fmt(a)}x');
-    if (c == 0) return aStr;
-    return '$aStr ${c > 0 ? "+" : "-"} ${_fmt(c.abs())}';
   }
 
   static String _linearStrLatex(double a, double c) {
