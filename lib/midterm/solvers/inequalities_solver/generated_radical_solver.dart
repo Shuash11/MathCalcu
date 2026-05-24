@@ -97,11 +97,12 @@ class GeneratedRadicalSolver {
     ));
 
     final radStr = _linearStr(p.b, p.c);
+    final radStrLatex = _linearStrLatex(p.b, p.c);
     steps.add(StepModel(
       stepNumber: n++,
       title: 'Domain',
       explanation: 'Radicand must be non-negative: $radStr ≥ 0',
-      latex: '$radStr \\geq 0',
+      latex: r'\text{' + radStrLatex + r'} \geq 0',
     ));
 
     if (p.k >= 0) {
@@ -109,7 +110,7 @@ class GeneratedRadicalSolver {
         stepNumber: n++,
         title: 'Square Both Sides',
         explanation: 'Square to eliminate the radical.',
-        latex: '$radStr ${_texOp(p.op)} ${_fmt(p.k * p.k)}',
+        latex: '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
       ));
     }
 
@@ -117,7 +118,7 @@ class GeneratedRadicalSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: 'Combine conditions.',
-      latex: solve(input).intervalNotation ?? '',
+      latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
     ));
 
     return steps;
@@ -219,6 +220,13 @@ class GeneratedRadicalSolver {
     return '$aStr ${c > 0 ? "+" : "-"} ${_fmt(c.abs())}';
   }
 
+  static String _linearStrLatex(double a, double c) {
+    if (a == 0) return _fmtLatex(c);
+    final aStr = a == 1 ? 'x' : (a == -1 ? '-x' : '${_fmtLatex(a)}x');
+    if (c == 0) return aStr;
+    return '$aStr ${c > 0 ? "+" : "-"} ${_fmtLatex(c.abs())}';
+  }
+
 
   static String _fmt(double n) {
     if (n == 0) return '0';
@@ -238,6 +246,31 @@ class GeneratedRadicalSolver {
   }
 
   static int _gcd(int a, int b) => b == 0 ? a : _gcd(b, a % b);
+
+  static String _fmtLatex(double n) {
+    if (n == 0) return '0';
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    if (n == n.roundToDouble()) return n.toInt().toString();
+    for (int d = 2; d <= 20; d++) {
+      final num = (n * d).round();
+      if ((num / d - n).abs() < 1e-9) {
+        int g = _gcd(num.abs(), d);
+        final sn = num ~/ g;
+        final sd = d ~/ g;
+        if (sd == 1) return sn.toString();
+        if (sn < 0) return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
+      }
+    }
+    return n.toStringAsFixed(4);
+  }
+
+  static String _toLatexInterval(String s) {
+    return s
+        .replaceAll('\u221e', r'\infty')
+        .replaceAll('\u2205', r'\emptyset')
+        .replaceAll('\u222a', r'\cup');
+  }
 
   static String _texOp(String op) {
     switch (op) {
