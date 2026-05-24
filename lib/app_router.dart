@@ -1,28 +1,28 @@
 import 'package:calculus_system/Finals/finals_router.dart';
-import 'package:calculus_system/modules/circles/center/screen/subscreens/center_screen.dart';
-import 'package:calculus_system/modules/circles/raidus/screen/radiusui.dart';
-import 'package:calculus_system/modules/y-intercept/ui/slope_intercept_scr.dart';
-import 'package:calculus_system/modules/y-intercept/ui/parallel_perpendicular_screen.dart';
+import 'midterm/screens/circles_screen/center/center_screen.dart';
+import 'midterm/screens/circles_screen/radius/radiusui.dart';
+import 'package:calculus_system/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
+import 'package:calculus_system/midterm/screens/yintercept_screen/parallel_perpendicular_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/modules/Distance/ui/distancescreen.dart';
+import 'package:calculus_system/midterm/screens/distance_screen/distancescreen.dart';
 import 'package:go_router/go_router.dart';
 import 'screens/category_picker_screen.dart';
 import 'screens/activation_screen.dart'; 
-import 'modules/inequalities/card_picker_screen.dart';
-import 'modules/inequalities/strict/screen/strict_screen.dart';
-import 'modules/inequalities/non_strict/screen/non_strict_screen.dart';
-import 'modules/inequalities/absolute/screen/absolute_screen.dart';
-import 'modules/inequalities/continued/screen/continued_screen.dart';
-import 'modules/inequalities/simple/screen/simple_screen.dart';
-import 'modules/inequalities/rational/screen/rational_screen.dart';
-import 'modules/inequalities/quadratic/screen/quadratic_screen.dart';
-import 'modules/inequalities/radical/screen/radical_screen.dart';
-import 'modules/slope/ui/slopescreen.dart';
-import 'modules/midpoint/ui/midpointscreen.dart';
-import 'modules/pointslope/ui/pointslopescreen.dart';
-import 'modules/two-point slope/ui/twopointslopescreen.dart';
-import 'modules/circles/card_picker_screen.dart';
-import 'modules/circles/center_raidus_form/screen/center_radiusui.dart';
+import 'midterm/screens/inequalities_screen/card_picker_screen.dart';
+import 'midterm/screens/inequalities_screen/strict_screen.dart';
+import 'midterm/screens/inequalities_screen/non_strict_screen.dart';
+import 'midterm/screens/inequalities_screen/absolute_screen.dart';
+import 'midterm/screens/inequalities_screen/continued_screen.dart';
+import 'midterm/screens/inequalities_screen/simple_screen.dart';
+import 'midterm/screens/inequalities_screen/rational_screen.dart';
+import 'midterm/screens/inequalities_screen/quadratic_screen.dart';
+import 'midterm/screens/inequalities_screen/radical_screen.dart';
+import 'midterm/screens/slope_screen/slopescreen.dart';
+import 'midterm/screens/midpoint_screen/midpointscreen.dart';
+import 'midterm/screens/pointslope_screen/pointslopescreen.dart';
+import 'midterm/screens/two_point_slope_screen/twopointslopescreen.dart';
+import 'midterm/cards/circles/card_picker_screen.dart';
+import 'midterm/screens/circles_screen/center_radius_form/center_radiusui.dart';
 
 class AppRouter {
   static CustomTransitionPage _fadeRoute(LocalKey key, Widget child) {

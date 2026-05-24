@@ -1,11 +1,11 @@
 import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
-import 'package:calculus_system/Finals/widgetsScreens/derevatives_card.dart';
-import 'package:calculus_system/Finals/widgetsScreens/evaluationg_limits.dart';
+import 'package:calculus_system/Finals/cards/derivatives/derevatives_card.dart';
+import 'package:calculus_system/Finals/cards/evaluating_limits/evaluationg_limits.dart';
 import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart'
     as finals_about_sheets;
-import 'package:calculus_system/Finals/widgetsScreens/finding_slope_derevatives_card.dart';
-import 'package:calculus_system/Finals/widgetsScreens/limits_and_infinity_card.dart';
+import 'package:calculus_system/Finals/cards/slope_using_derivatives/finding_slope_derevatives_card.dart';
+import 'package:calculus_system/Finals/cards/limits_infinity/limits_and_infinity_card.dart';
 import 'package:calculus_system/screens/category_picker_screen.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';

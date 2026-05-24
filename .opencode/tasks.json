@@ -1,6 +1,13 @@
 {
   "tasks": [
-    { "id": 1, "description": "Wrap SingleChildScrollView in Expanded in distancescreen.dart", "status": "pending" }
+    { "id": 1, "description": "Run flutter analyze to capture all broken import errors", "status": "done" },
+    { "id": 2, "description": "Fix all broken imports in app_router.dart", "status": "done" },
+    { "id": 3, "description": "Fix all broken imports in center screen files", "status": "done" },
+    { "id": 4, "description": "Fix all broken imports in radius screen files", "status": "done" },
+    { "id": 5, "description": "Fix all broken imports in center_radius_form files", "status": "done" },
+    { "id": 6, "description": "Fix all broken imports in theme files", "status": "done" },
+    { "id": 7, "description": "Fix all broken imports in solver files", "status": "done" },
+    { "id": 8, "description": "Run flutter analyze to verify zero errors", "status": "done" }
   ],
-  "completed": false
+  "completed": true
 }
