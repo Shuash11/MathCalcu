@@ -44,8 +44,6 @@ class GeneratedLinearSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Start with the given inequality.',
       latex: input.trim(),
     ));
 
@@ -53,51 +51,99 @@ class GeneratedLinearSolver {
     final b = p.b - p.rb;
 
     if (p.ra != 0 || p.rb != 0) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: 'Move All Terms to One Side',
-        explanation: 'Bring all terms to one side to compare with zero.',
-        latex: '${_coefLatex(a)}x ${b >= 0 ? "+ ${_fmtLatex(b)}" : "- ${_fmtLatex(b.abs())}"} ${_texOp(p.op)} 0',
-      ));
+      final leftExpr = '${_coefLatex(p.a)}x ${p.b >= 0 ? "+ ${_fmtLatex(p.b)}" : "- ${_fmtLatex(p.b.abs())}"}';
+      String rightMove = '';
+      if (p.ra != 0) {
+        rightMove += p.ra > 0 ? ' - ${_coefLatex(p.ra)}x' : ' + ${_coefLatex(-p.ra)}x';
+      }
+      if (p.rb != 0) {
+        rightMove += p.rb > 0 ? ' - ${_fmtLatex(p.rb)}' : ' + ${_fmtLatex(-p.rb)}';
+      }
+      final intermediate = '$leftExpr$rightMove ${_texOp(p.op)} 0';
+      final simplified = '${_coefLatex(a)}x ${b >= 0 ? "+ ${_fmtLatex(b)}" : "- ${_fmtLatex(b.abs())}"} ${_texOp(p.op)} 0';
+
+      List<String> _parts = [];
+      if (p.ra != 0) {
+        final absRa = p.ra.abs();
+        final term = absRa == 1 ? 'x' : '${_fmt(absRa)}x';
+        _parts.add(p.ra > 0 ? 'subtract $term' : 'add $term');
+      }
+      if (p.rb != 0) {
+        _parts.add(p.rb > 0 ? 'subtract ${_fmt(p.rb.abs())}' : 'add ${_fmt(p.rb.abs())}');
+      }
+      final hint = '${_parts.join(', ')} from both sides';
+
+      List<String>? _moveDetails;
+      if (p.rb != 0) {
+        _moveDetails = [
+          '${_fmtLatex(p.b)} ${p.rb > 0 ? "-" : "+"} ${_fmtLatex(p.rb.abs())} = ${_fmtLatex(b)}'
+        ];
+      }
+
+      if (intermediate != simplified) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: hint,
+          details: _moveDetails,
+          latex: intermediate,
+          subLatex: [simplified],
+        ));
+      } else {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: hint,
+          details: _moveDetails,
+          latex: simplified,
+        ));
+      }
     }
 
     if (a == 0) {
       final sat = _evalOp(b, p.op, 0);
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Evaluate Truth',
-        explanation: sat ? 'The statement is always true.' : 'The statement is always false.',
+        hint: sat ? 'Always true — no x term remains' : 'Always false — no x term remains',
         latex: sat ? r'(-\infty, \infty)' : r'\emptyset',
       ));
       return steps;
     }
 
     if (b != 0) {
+      final isoDetails = <String>[
+        b > 0
+          ? '${_coefLatex(a)}x + ${_fmtLatex(b)} - ${_fmtLatex(b)} ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} 0 - ${_fmtLatex(b)}'
+          : '${_coefLatex(a)}x - ${_fmtLatex(-b)} + ${_fmtLatex(-b)} ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} 0 + ${_fmtLatex(-b)}',
+        '${_coefLatex(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b)}',
+      ];
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Isolate Term',
-        explanation: 'Move the constant to the other side.',
+        hint: b > 0 ? 'Subtract ${_fmt(b)} from both sides' : 'Add ${_fmt(-b)} to both sides',
+        details: isoDetails,
         latex: '${_coefLatex(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b)}',
       ));
     }
 
     if (a != 1 && a != -1) {
       final flip = a < 0;
+      final divOp = flip ? _flipOp(p.op) : p.op;
+      final divDetails = <String>[
+        r'\frac{' + '${_coefLatex(a)}x' + r'}{' + '${_fmtLatex(a)}' + r'} ' + '${_texOp(divOp)} ' + r'\frac{' + '${_fmtLatex(-b)}' + r'}{' + '${_fmtLatex(a)}' + r'}',
+        'x ${_texOp(divOp)} ${_fmtLatex(-b / a)}',
+      ];
+      if (flip) {
+        divDetails.add(r'\text{Dividing by }' + '${_fmt(a)}' + r'\text{ flips }' + '${_texOp(p.op)}' + r'\text{ to }' + '${_texOp(divOp)}');
+      }
       steps.add(StepModel(
         stepNumber: n++,
-        title: 'Divide by ${_fmt(a)}',
-        explanation: flip
-            ? 'Divide by ${_fmt(a)} and flip the sign (negative coefficient).'
-            : 'Divide by ${_fmt(a)} to isolate x.',
-        latex: 'x ${_texOp(flip ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b / a)}',
+        hint: flip ? 'Divide both sides by ${_fmt(a.abs())} and flip the inequality sign' : 'Divide both sides by ${_fmt(a)}',
+        details: divDetails,
+        latex: 'x ${_texOp(divOp)} ${_fmtLatex(-b / a)}',
       ));
     }
 
     final finalOp = a < 0 ? _flipOp(p.op) : p.op;
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution',
-      explanation: 'The complete solution set.',
       latex: _intervalLatex(finalOp, -b / a),
     ));
 
@@ -252,10 +298,10 @@ class GeneratedLinearSolver {
   static String _intervalLatex(String op, double b) {
     final bs = _fmtLatex(b);
     switch (op) {
-      case '>': return '($bs, \infty)';
-      case '≥': return '[$bs, \infty)';
-      case '<': return '(-\infty, $bs)';
-      case '≤': return '(-\infty, $bs]';
+      case '>': return '($bs, \\infty)';
+      case '≥': return '[$bs, \\infty)';
+      case '<': return '(-\\infty, $bs)';
+      case '≤': return '(-\\infty, $bs]';
       default: return '';
     }
   }

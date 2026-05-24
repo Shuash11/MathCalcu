@@ -35,8 +35,6 @@ class GeneratedRationalSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Original Inequality',
-      explanation: 'Start with the rational inequality.',
       latex: input.trim(),
     ));
 
@@ -45,15 +43,13 @@ class GeneratedRationalSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Set to Zero',
-      explanation: 'Move all terms to one side.',
+      hint: 'Combine into a single fraction, set to zero',
       latex: r'\frac{' + combStr + r'}{' + denStr + r'} ' + _texOp(p.op) + ' 0',
     ));
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Critical Points',
-      explanation: 'Find zeros of numerator and denominator.',
+      hint: 'Find critical points from numerator and denominator',
       latex: (p.combA != 0 ? '$combStr = 0' : '') + r' \text{ and } ' + (p.denA != 0 ? '$denStr = 0' : ''),
     ));
 
@@ -62,8 +58,6 @@ class GeneratedRationalSolver {
 
     steps.add(StepModel(
       stepNumber: n++,
-      title: 'Solution',
-      explanation: 'Valid intervals.',
       latex: _toLatexInterval(intervalStr),
     ));
 

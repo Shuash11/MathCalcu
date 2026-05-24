@@ -1,14 +1,9 @@
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
-
-// ─────────────────────────────────────────────────────────────
-// STEPS DRAWER — shared modal bottom sheet
-// Call showStepsDrawer() from any module screen.
-// Receives the steps list from the equation's getSteps().
-// ─────────────────────────────────────────────────────────────
 
 Future<void> showStepsDrawer({
   required BuildContext context,
@@ -28,7 +23,7 @@ Future<void> showStepsDrawer({
   );
 }
 
-class StepsDrawer extends StatelessWidget {
+class StepsDrawer extends StatefulWidget {
   final List<StepModel> steps;
   final Color accentColor;
   final String title;
@@ -39,6 +34,35 @@ class StepsDrawer extends StatelessWidget {
     required this.accentColor,
     required this.title,
   });
+
+  @override
+  State<StepsDrawer> createState() => _StepsDrawerState();
+}
+
+class _StepsDrawerState extends State<StepsDrawer> {
+  final Set<int> _expanded = {};
+
+  String _buildCopyText() {
+    final buf = StringBuffer();
+    buf.writeln(widget.title);
+    buf.writeln('-' * widget.title.length);
+    buf.writeln();
+    for (final s in widget.steps) {
+      buf.write('${s.stepNumber}. ');
+      if (s.hint != null && s.hint!.isNotEmpty) {
+        buf.writeln(s.hint);
+        buf.write('   ');
+      }
+      buf.writeln(s.latex ?? '');
+      if (s.subLatex != null) {
+        for (final sub in s.subLatex!) {
+          buf.writeln('   $sub');
+        }
+      }
+      buf.writeln();
+    }
+    return buf.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,234 +79,252 @@ class StepsDrawer extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Handle bar
               Container(
                 margin: const EdgeInsets.only(top: 12),
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: context.watch<ThemeProvider>().textSecondary,
+                  color: theme.textSecondary,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-
-              // Header
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: accentColor.withValues(alpha: 0.12),
+                        color: widget.accentColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '${steps.length} steps',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: accentColor,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        '${widget.steps.length} steps',
+                        style: TextStyle(fontSize: 12, color: widget.accentColor, fontWeight: FontWeight.w600),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        title,
+                        widget.title,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: context.watch<ThemeProvider>().textPrimary,
+                          color: theme.textPrimary,
                           letterSpacing: -0.3,
                         ),
                       ),
                     ),
                     GestureDetector(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: _buildCopyText()));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Solution copied to clipboard'),
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.copy_rounded, color: theme.textSecondary, size: 20),
+                    ),
+                    const SizedBox(width: 16),
+                    GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.close_rounded,
-                        color: context.watch<ThemeProvider>().textSecondary,
-                        size: 20,
-                      ),
+                      child: Icon(Icons.close_rounded, color: theme.textSecondary, size: 20),
                     ),
                   ],
                 ),
               ),
-
-              // Divider
-              Divider(
-                height: 1,
-                color: context
-                    .watch<ThemeProvider>()
-                    .textSecondary
-                    .withValues(alpha: 0.1),
-              ),
-
-              // Steps list
+              Divider(height: 1, color: theme.textSecondary.withValues(alpha: 0.1)),
               Expanded(
-                child: ListView.builder(
+                child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-                  itemCount: steps.length,
-                  itemBuilder: (context, index) {
-                    return _StepTile(
-                      step: steps[index],
-                      accentColor: accentColor,
-                      isLast: index == steps.length - 1,
-                    );
-                  },
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: theme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: widget.accentColor.withValues(alpha: 0.2)),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(widget.steps.length, (i) {
+                        final s = widget.steps[i];
+                        final last = i == widget.steps.length - 1;
+                        final hasDetails = s.details != null && s.details!.isNotEmpty;
+                        final isExpanded = _expanded.contains(i);
+
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: last ? 0 : 16),
+                          child: GestureDetector(
+                            onTap: hasDetails
+                                ? () => setState(() {
+                                      if (isExpanded) {
+                                        _expanded.remove(i);
+                                      } else {
+                                        _expanded.add(i);
+                                      }
+                                    })
+                                : null,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(top: 2),
+                                  width: 22,
+                                  height: 22,
+                                  decoration: BoxDecoration(
+                                    color: widget.accentColor.withValues(alpha: 0.1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${s.stepNumber}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        color: widget.accentColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SelectableMath.tex(
+                                        s.latex ?? '',
+                                        mathStyle: MathStyle.text,
+                                        textStyle: TextStyle(
+                                          fontSize: 16,
+                                          color: theme.textPrimary,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                      if (s.subLatex != null && s.subLatex!.isNotEmpty)
+                                        ...s.subLatex!.map((l) => Padding(
+                                          padding: const EdgeInsets.only(top: 8),
+                                          child: SelectableMath.tex(
+                                            l,
+                                            mathStyle: MathStyle.text,
+                                            textStyle: TextStyle(
+                                              fontSize: 16,
+                                              color: theme.textPrimary,
+                                              height: 1.5,
+                                            ),
+                                          ),
+                                        )),
+                                      if (s.hint != null && s.hint!.isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 6),
+                                          child: Text(
+                                            s.hint!,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: theme.textSecondary,
+                                              fontStyle: FontStyle.italic,
+                                              height: 1.3,
+                                            ),
+                                          ),
+                                        ),
+                                      if (hasDetails)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 4),
+                                          child: Row(
+                                            children: [
+                                              AnimatedRotation(
+                                                turns: isExpanded ? 0.5 : 0,
+                                                duration: const Duration(milliseconds: 200),
+                                                child: Icon(
+                                                  Icons.expand_more_rounded,
+                                                  size: 16,
+                                                  color: theme.textSecondary,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                isExpanded ? 'Hide work' : 'Show work',
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: widget.accentColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      AnimatedSize(
+                                        duration: const Duration(milliseconds: 250),
+                                        curve: Curves.easeInOut,
+                                        alignment: Alignment.topCenter,
+                                        child: isExpanded && hasDetails
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(top: 10),
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  padding: const EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    color: theme.surface,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    border: Border.all(
+                                                      color: widget.accentColor.withValues(alpha: 0.12),
+                                                    ),
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: s.details!.map((d) => Padding(
+                                                      padding: const EdgeInsets.only(bottom: 6),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            '\u2022',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: widget.accentColor,
+                                                              height: 1.8,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 6),
+                                                          Expanded(
+                                                            child: SelectableMath.tex(
+                                                              d,
+                                                              mathStyle: MathStyle.text,
+                                                              textStyle: TextStyle(
+                                                                fontSize: 13,
+                                                                color: theme.textSecondary,
+                                                                height: 1.6,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )).toList(),
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class _StepTile extends StatelessWidget {
-  final StepModel step;
-  final Color accentColor;
-  final bool isLast;
-
-  const _StepTile({
-    required this.step,
-    required this.accentColor,
-    required this.isLast,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Timeline column
-        SizedBox(
-          width: 36,
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              // Connecting line (draws first so it's behind the circle)
-              if (!isLast)
-                Positioned(
-                  top: 28, // Start below circle center/bottom
-                  bottom: 0,
-                  width: 2,
-                  child: Container(
-                    color: accentColor.withValues(alpha: 0.12),
-                  ),
-                ),
-              // Step number circle
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: accentColor.withValues(alpha: 0.4),
-                    width: 1,
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    '${step.stepNumber}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: accentColor,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(width: 14),
-
-        // Content
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  step.title,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: context.watch<ThemeProvider>().textPrimary,
-                    letterSpacing: -0.2,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  step.explanation,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: context.watch<ThemeProvider>().textSecondary,
-                    height: 1.55,
-                  ),
-                ),
-                if (step.latex != null) ...[
-                  const SizedBox(height: 12),
-                  _buildMathContainer(context, step.latex!),
-                ],
-                if (step.subLatex != null && step.subLatex!.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: step.subLatex!
-                        .map((l) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: _buildMathContainer(context, l),
-                            ))
-                        .toList(),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMathContainer(BuildContext context, String tex) {
-    final theme = context.watch<ThemeProvider>();
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: theme.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: accentColor.withValues(alpha: 0.15),
-        ),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        child: SelectableMath.tex(
-          tex,
-          mathStyle: MathStyle.text,
-          textStyle: TextStyle(
-            fontSize: 15,
-            color: accentColor,
-          ),
-        ),
-      ),
     );
   }
 }

@@ -6,14 +6,18 @@ class StepModel {
   final int stepNumber;
   final String title;
   final String explanation;
-  final String? latex; // optional: rendered math expression
-  final List<String>? subLatex; // optional: stacked math blocks (vertical list)
+  final String? hint; // brief operation hint (e.g. "Subtract 5 from both sides")
+  final String? latex;
+  final List<String>? subLatex;
+  final List<String>? details; // expanded arithmetic work (LaTeX strings)
 
   const StepModel({
     required this.stepNumber,
-    required this.title,
-    required this.explanation,
+    this.title = '',
+    this.explanation = '',
+    this.hint,
     this.latex,
     this.subLatex,
+    this.details,
   });
 }
