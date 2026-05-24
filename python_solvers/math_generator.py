@@ -20,8 +20,11 @@ DART_LIB_DIR.mkdir(parents=True, exist_ok=True)
 
 # Unicode chars used in Dart output
 U_INFINITY = '\u221e'
+U_INFINITY_LATEX = r'\infty'  # LaTeX-compatible infinity
 U_EMPTY = '\u2205'
+U_EMPTY_LATEX = r'\emptyset'  # LaTeX-compatible empty set
 U_UNION = '\u222a'
+U_UNION_LATEX = r'\cup'  # LaTeX-compatible union
 U_SQUARED = '\u00b2'
 U_GEQ = '\u2265'
 U_LEQ = '\u2264'
@@ -133,6 +136,51 @@ FMT_EVALOP = """
   }
 """.replace('{GEQ}', U_GEQ).replace('{LEQ}', U_LEQ)
 
+# LaTeX-compatible number formatter
+FMT_COMMON_LATEX = """
+  static String _fmtLatex(double n) {
+    if (n == 0) return '0';
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? r'-{INF}' : r'{INF}');
+    if (n == n.roundToDouble()) return n.toInt().toString();
+    for (int d = 2; d <= 20; d++) {
+      final num = (n * d).round();
+      if ((num / d - n).abs() < 1e-9) {
+        int g = _gcd(num.abs(), d);
+        final sn = num ~/ g;
+        final sd = d ~/ g;
+        if (sd == 1) return sn.toString();
+        if (sn < 0) return r'-\\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        return r'\\frac{' + sn.toString() + '}{' + sd.toString() + '}';
+      }
+    }
+    return n.toStringAsFixed(4);
+  }
+""".replace('{INF}', U_INFINITY_LATEX)
+
+# LaTeX interval converter (converts plain-text intervals to LaTeX)
+FMT_TOLATEX = """
+  static String _toLatexInterval(String s) {
+    return s
+        .replaceAll('\\u221e', r'{INF}')
+        .replaceAll('\\u2205', r'{EMPTY}')
+        .replaceAll('\\u222a', r'{UNION}');
+  }
+""".replace('{INF}', U_INFINITY_LATEX).replace('{EMPTY}', U_EMPTY_LATEX).replace('{UNION}', U_UNION_LATEX)
+
+# LaTeX-compatible interval notation
+FMT_INTERVAL_LATEX = """
+  static String _intervalLatex(String op, double b) {
+    final bs = _fmtLatex(b);
+    switch (op) {
+      case '>': return '($bs, {INF})';
+      case '{GEQ}': return '[$bs, {INF})';
+      case '<': return '(-{INF}, $bs)';
+      case '{LEQ}': return '(-{INF}, $bs]';
+      default: return '';
+    }
+  }
+""".replace('{INF}', U_INFINITY_LATEX).replace('{GEQ}', U_GEQ).replace('{LEQ}', U_LEQ)
+
 # ─── LINEAR SOLVER ─────────────────────────────────────────────────
 
 LINEAR_CODE = DART_HEADER + """
@@ -188,7 +236,7 @@ class GeneratedLinearSolver {
         stepNumber: n++,
         title: 'Move All Terms to One Side',
         explanation: 'Bring all terms to one side to compare with zero.',
-        latex: '${_coef(a)}x ${b >= 0 ? "+ ${_fmt(b)}" : "- ${_fmt(b.abs())}"} ${_texOp(p.op)} 0',
+        latex: '${_coefLatex(a)}x ${b >= 0 ? "+ ${_fmtLatex(b)}" : "- ${_fmtLatex(b.abs())}"} ${_texOp(p.op)} 0',
       ));
     }
 
@@ -208,7 +256,7 @@ class GeneratedLinearSolver {
         stepNumber: n++,
         title: 'Isolate Term',
         explanation: 'Move the constant to the other side.',
-        latex: '${_coef(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmt(-b)}',
+        latex: '${_coefLatex(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b)}',
       ));
     }
 
@@ -220,7 +268,7 @@ class GeneratedLinearSolver {
         explanation: flip
             ? 'Divide by ${_fmt(a)} and flip the sign (negative coefficient).'
             : 'Divide by ${_fmt(a)} to isolate x.',
-        latex: 'x ${_texOp(flip ? _flipOp(p.op) : p.op)} ${_fmt(-b / a)}',
+        latex: 'x ${_texOp(flip ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b / a)}',
       ));
     }
 
@@ -229,7 +277,7 @@ class GeneratedLinearSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: 'The complete solution set.',
-      latex: _interval(finalOp, -b / a),
+      latex: _intervalLatex(finalOp, -b / a),
     ));
 
     return steps;
@@ -306,13 +354,13 @@ class GeneratedLinearSolver {
     return {'x': xCoef, 'c': constant};
   }
 
-  static String _coef(double a) {
+  static String _coefLatex(double a) {
     if (a == 1) return '';
     if (a == -1) return '-';
-    return _fmt(a);
+    return _fmtLatex(a);
   }
 
-""" + FMT_COMMON + FMT_TEXOP + FMT_FLIPOP + FMT_EVALOP + """
+""" + FMT_COMMON + FMT_COMMON_LATEX + FMT_TEXOP + FMT_FLIPOP + FMT_EVALOP + FMT_INTERVAL_LATEX + """
 
   static String _interval(String op, double b) {
     final bs = _fmt(b);
@@ -426,14 +474,14 @@ class GeneratedQuadraticSolver {
         stepNumber: n++,
         title: 'Discriminant',
         explanation: '""" + U_DELTA + """ = ${_fmt(disc)} < 0 means no real roots.',
-        latex: '\\\\Delta = ${_fmt(disc)} < 0 \\\\implies \\\\text{No real roots}',
+        latex: '\\\\Delta = ${_fmtLatex(disc)} < 0 \\\\implies \\\\text{No real roots}',
       ));
       final result = solve(input);
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Solution',
         explanation: result.answer,
-        latex: '\\\\text{S.S} = ${result.intervalNotation ?? ""}',
+        latex: r'\\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
       ));
       return steps;
     }
@@ -443,8 +491,9 @@ class GeneratedQuadraticSolver {
       title: 'Critical Points',
       explanation: 'Find the roots of the quadratic equation.',
       latex: disc == 0
-          ? 'x = ${_fmt(-p.b / (2 * p.a))}'
-          : 'x_1 = ${_fmt((-p.b - math.sqrt(disc)) / (2 * p.a))}, x_2 = ${_fmt((-p.b + math.sqrt(disc)) / (2 * p.a))}',
+          ? r'x = ' + _fmtLatex(-p.b / (2 * p.a))
+          : r'x_1 = ' + _fmtLatex((-p.b - math.sqrt(disc)) / (2 * p.a)) + ', x_2 = ' + _fmtLatex((-p.b + math.sqrt(disc)) / (2 * p.a)),
+
     ));
 
     if (disc > 0) {
@@ -456,7 +505,7 @@ class GeneratedQuadraticSolver {
         stepNumber: n++,
         title: 'Test Intervals',
         explanation: 'Test each region of the number line.',
-        latex: 'A: x < ${_fmt(lo)}, B: ${_fmt(lo)} < x < ${_fmt(hi)}, C: x > ${_fmt(hi)}',
+        latex: 'A: x < ${_fmtLatex(lo)}, B: ${_fmtLatex(lo)} < x < ${_fmtLatex(hi)}, C: x > ${_fmtLatex(hi)}',
       ));
     }
 
@@ -465,7 +514,7 @@ class GeneratedQuadraticSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: result.answer,
-      latex: '\\\\text{S.S} = ${result.intervalNotation ?? ""}',
+      latex: r'\\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
     ));
 
     return steps;
@@ -570,7 +619,7 @@ class GeneratedQuadraticSolver {
     );
   }
 
-""" + FMT_COMMON + FMT_FLIPOP + FMT_EVALOP + """
+""" + FMT_COMMON + FMT_COMMON_LATEX + FMT_TOLATEX + FMT_FLIPOP + FMT_EVALOP + """
 
   static String _interval(String op, double b) {
     final bs = _fmt(b);
@@ -670,14 +719,14 @@ class GeneratedAbsoluteSolver {
       latex: input.trim(),
     ));
 
-    final innerStr = '${_coef(p.a)}x ${p.b >= 0 ? "+ ${_fmt(p.b)}" : "- ${_fmt(p.b.abs())}"}';
-    final kStr = _fmt(p.k);
+    final innerStr = '${_coefLatex(p.a)}x ${p.b >= 0 ? "+ ${_fmtLatex(p.b)}" : "- ${_fmtLatex(p.b.abs())}"}';
+    final kStr = _fmtLatex(p.k);
     bool absOnLeft = p.absOnLeft;
     String effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
     final isNarrow = effectiveOp == '<' || effectiveOp == '""" + U_LEQ + """';
 
     if (isNarrow) {
-      final nkStr = _fmt(-p.k);
+      final nkStr = _fmtLatex(-p.k);
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Apply |X| < k Property',
@@ -698,7 +747,7 @@ class GeneratedAbsoluteSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: 'The complete solution set.',
-      latex: solve(input).intervalNotation ?? '',
+      latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
     ));
 
     return steps;
@@ -778,13 +827,13 @@ class GeneratedAbsoluteSolver {
     return {'x': xCoef, 'c': constant};
   }
 
-  static String _coef(double a) {
+  static String _coefLatex(double a) {
     if (a == 1) return '';
     if (a == -1) return '-';
-    return _fmt(a);
+    return _fmtLatex(a);
   }
 
-""" + FMT_COMMON + FMT_TEXOP + FMT_FLIPOP + """
+""" + FMT_COMMON + FMT_COMMON_LATEX + FMT_TOLATEX + FMT_TEXOP + FMT_FLIPOP + """
 }
 
 class _Parsed {
@@ -834,8 +883,8 @@ class GeneratedRationalSolver {
       latex: input.trim(),
     ));
 
-    final combStr = _linearStr(p.combA, p.combC);
-    final denStr = _linearStr(p.denA, p.denC);
+    final combStr = _linearStrLatex(p.combA, p.combC);
+    final denStr = _linearStrLatex(p.denA, p.denC);
 
     steps.add(StepModel(
       stepNumber: n++,
@@ -848,7 +897,7 @@ class GeneratedRationalSolver {
       stepNumber: n++,
       title: 'Critical Points',
       explanation: 'Find zeros of numerator and denominator.',
-      latex: (p.combA != 0 ? '$combStr = 0' : '') + ' and ' + (p.denA != 0 ? '$denStr = 0' : ''),
+      latex: (p.combA != 0 ? '$combStr = 0' : '') + r' \\text{ and } ' + (p.denA != 0 ? '$denStr = 0' : ''),
     ));
 
     final intervals = _buildIntervals(p);
@@ -858,7 +907,7 @@ class GeneratedRationalSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: 'Valid intervals.',
-      latex: intervalStr,
+      latex: _toLatexInterval(intervalStr),
     ));
 
     return steps;
@@ -952,13 +1001,13 @@ class GeneratedRationalSolver {
     return _evalOp(val, p.op, 0);
   }
 
-""" + FMT_COMMON + FMT_TEXOP + FMT_EVALOP + """
+""" + FMT_COMMON + FMT_COMMON_LATEX + FMT_TOLATEX + FMT_TEXOP + FMT_EVALOP + """
 
-  static String _linearStr(double a, double c) {
-    if (a == 0) return _fmt(c);
-    final aStr = a == 1 ? 'x' : (a == -1 ? '-x' : '${_fmt(a)}x');
+  static String _linearStrLatex(double a, double c) {
+    if (a == 0) return _fmtLatex(c);
+    final aStr = a == 1 ? 'x' : (a == -1 ? '-x' : '${_fmtLatex(a)}x');
     if (c == 0) return aStr;
-    return '$aStr ${c > 0 ? "+" : "-"} ${_fmt(c.abs())}';
+    return '$aStr ${c > 0 ? "+" : "-"} ${_fmtLatex(c.abs())}';
   }
 
   static List<String> _buildIntervals(_Parsed p) {
@@ -1103,11 +1152,12 @@ class GeneratedRadicalSolver {
     ));
 
     final radStr = _linearStr(p.b, p.c);
+    final radStrLatex = _linearStrLatex(p.b, p.c);
     steps.add(StepModel(
       stepNumber: n++,
       title: 'Domain',
       explanation: 'Radicand must be non-negative: $radStr """ + U_GEQ + """ 0',
-      latex: '$radStr \\\\geq 0',
+      latex: r'\\text{' + radStrLatex + r'} \\geq 0',
     ));
 
     if (p.k >= 0) {
@@ -1115,7 +1165,7 @@ class GeneratedRadicalSolver {
         stepNumber: n++,
         title: 'Square Both Sides',
         explanation: 'Square to eliminate the radical.',
-        latex: '$radStr ${_texOp(p.op)} ${_fmt(p.k * p.k)}',
+        latex: '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
       ));
     }
 
@@ -1123,7 +1173,7 @@ class GeneratedRadicalSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: 'Combine conditions.',
-      latex: solve(input).intervalNotation ?? '',
+      latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
     ));
 
     return steps;
@@ -1225,7 +1275,14 @@ class GeneratedRadicalSolver {
     return '$aStr ${c > 0 ? "+" : "-"} ${_fmt(c.abs())}';
   }
 
-""" + FMT_COMMON + FMT_TEXOP + """
+  static String _linearStrLatex(double a, double c) {
+    if (a == 0) return _fmtLatex(c);
+    final aStr = a == 1 ? 'x' : (a == -1 ? '-x' : '${_fmtLatex(a)}x');
+    if (c == 0) return aStr;
+    return '$aStr ${c > 0 ? "+" : "-"} ${_fmtLatex(c.abs())}';
+  }
+
+""" + FMT_COMMON + FMT_COMMON_LATEX + FMT_TOLATEX + FMT_TEXOP + """
 }
 
 class _Parsed {

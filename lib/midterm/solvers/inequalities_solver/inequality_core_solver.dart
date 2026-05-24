@@ -289,13 +289,13 @@ class InequalityCoreSolver {
     final b = fmt(boundary);
     switch (op) {
       case '>':
-        return '($b, ∞)';
+        return '($b, \\infty)';
       case '≥':
-        return '[$b, ∞)';
+        return '[$b, \\infty)';
       case '<':
-        return '(-∞, $b)';
+        return '(-\\infty, $b)';
       case '≤':
-        return '(-∞, $b]';
+        return '(-\\infty, $b]';
       default:
         return '';
     }

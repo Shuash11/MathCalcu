@@ -57,7 +57,7 @@ class GeneratedLinearSolver {
         stepNumber: n++,
         title: 'Move All Terms to One Side',
         explanation: 'Bring all terms to one side to compare with zero.',
-        latex: '${_coef(a)}x ${b >= 0 ? "+ ${_fmt(b)}" : "- ${_fmt(b.abs())}"} ${_texOp(p.op)} 0',
+        latex: '${_coefLatex(a)}x ${b >= 0 ? "+ ${_fmtLatex(b)}" : "- ${_fmtLatex(b.abs())}"} ${_texOp(p.op)} 0',
       ));
     }
 
@@ -77,7 +77,7 @@ class GeneratedLinearSolver {
         stepNumber: n++,
         title: 'Isolate Term',
         explanation: 'Move the constant to the other side.',
-        latex: '${_coef(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmt(-b)}',
+        latex: '${_coefLatex(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b)}',
       ));
     }
 
@@ -89,7 +89,7 @@ class GeneratedLinearSolver {
         explanation: flip
             ? 'Divide by ${_fmt(a)} and flip the sign (negative coefficient).'
             : 'Divide by ${_fmt(a)} to isolate x.',
-        latex: 'x ${_texOp(flip ? _flipOp(p.op) : p.op)} ${_fmt(-b / a)}',
+        latex: 'x ${_texOp(flip ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b / a)}',
       ));
     }
 
@@ -98,7 +98,7 @@ class GeneratedLinearSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: 'The complete solution set.',
-      latex: _interval(finalOp, -b / a),
+      latex: _intervalLatex(finalOp, -b / a),
     ));
 
     return steps;
@@ -175,10 +175,10 @@ class GeneratedLinearSolver {
     return {'x': xCoef, 'c': constant};
   }
 
-  static String _coef(double a) {
+  static String _coefLatex(double a) {
     if (a == 1) return '';
     if (a == -1) return '-';
-    return _fmt(a);
+    return _fmtLatex(a);
   }
 
 
@@ -200,6 +200,24 @@ class GeneratedLinearSolver {
   }
 
   static int _gcd(int a, int b) => b == 0 ? a : _gcd(b, a % b);
+
+  static String _fmtLatex(double n) {
+    if (n == 0) return '0';
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    if (n == n.roundToDouble()) return n.toInt().toString();
+    for (int d = 2; d <= 20; d++) {
+      final num = (n * d).round();
+      if ((num / d - n).abs() < 1e-9) {
+        int g = _gcd(num.abs(), d);
+        final sn = num ~/ g;
+        final sd = d ~/ g;
+        if (sd == 1) return sn.toString();
+        if (sn < 0) return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
+      }
+    }
+    return n.toStringAsFixed(4);
+  }
 
   static String _texOp(String op) {
     switch (op) {
@@ -228,6 +246,17 @@ class GeneratedLinearSolver {
       case '≥': return left >= right;
       case '≤': return left <= right;
       default: return false;
+    }
+  }
+
+  static String _intervalLatex(String op, double b) {
+    final bs = _fmtLatex(b);
+    switch (op) {
+      case '>': return '($bs, \infty)';
+      case '≥': return '[$bs, \infty)';
+      case '<': return '(-\infty, $bs)';
+      case '≤': return '(-\infty, $bs]';
+      default: return '';
     }
   }
 

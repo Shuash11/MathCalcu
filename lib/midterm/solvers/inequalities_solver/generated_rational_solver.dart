@@ -40,8 +40,8 @@ class GeneratedRationalSolver {
       latex: input.trim(),
     ));
 
-    final combStr = _linearStr(p.combA, p.combC);
-    final denStr = _linearStr(p.denA, p.denC);
+    final combStr = _linearStrLatex(p.combA, p.combC);
+    final denStr = _linearStrLatex(p.denA, p.denC);
 
     steps.add(StepModel(
       stepNumber: n++,
@@ -54,7 +54,7 @@ class GeneratedRationalSolver {
       stepNumber: n++,
       title: 'Critical Points',
       explanation: 'Find zeros of numerator and denominator.',
-      latex: (p.combA != 0 ? '$combStr = 0' : '') + ' and ' + (p.denA != 0 ? '$denStr = 0' : ''),
+      latex: (p.combA != 0 ? '$combStr = 0' : '') + r' \text{ and } ' + (p.denA != 0 ? '$denStr = 0' : ''),
     ));
 
     final intervals = _buildIntervals(p);
@@ -64,7 +64,7 @@ class GeneratedRationalSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: 'Valid intervals.',
-      latex: intervalStr,
+      latex: _toLatexInterval(intervalStr),
     ));
 
     return steps;
@@ -178,6 +178,31 @@ class GeneratedRationalSolver {
 
   static int _gcd(int a, int b) => b == 0 ? a : _gcd(b, a % b);
 
+  static String _fmtLatex(double n) {
+    if (n == 0) return '0';
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    if (n == n.roundToDouble()) return n.toInt().toString();
+    for (int d = 2; d <= 20; d++) {
+      final num = (n * d).round();
+      if ((num / d - n).abs() < 1e-9) {
+        int g = _gcd(num.abs(), d);
+        final sn = num ~/ g;
+        final sd = d ~/ g;
+        if (sd == 1) return sn.toString();
+        if (sn < 0) return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
+      }
+    }
+    return n.toStringAsFixed(4);
+  }
+
+  static String _toLatexInterval(String s) {
+    return s
+        .replaceAll('\u221e', r'\infty')
+        .replaceAll('\u2205', r'\emptyset')
+        .replaceAll('\u222a', r'\cup');
+  }
+
   static String _texOp(String op) {
     switch (op) {
       case '≥': return '\\geq';
@@ -199,11 +224,11 @@ class GeneratedRationalSolver {
   }
 
 
-  static String _linearStr(double a, double c) {
-    if (a == 0) return _fmt(c);
-    final aStr = a == 1 ? 'x' : (a == -1 ? '-x' : '${_fmt(a)}x');
+  static String _linearStrLatex(double a, double c) {
+    if (a == 0) return _fmtLatex(c);
+    final aStr = a == 1 ? 'x' : (a == -1 ? '-x' : '${_fmtLatex(a)}x');
     if (c == 0) return aStr;
-    return '$aStr ${c > 0 ? "+" : "-"} ${_fmt(c.abs())}';
+    return '$aStr ${c > 0 ? "+" : "-"} ${_fmtLatex(c.abs())}';
   }
 
   static List<String> _buildIntervals(_Parsed p) {

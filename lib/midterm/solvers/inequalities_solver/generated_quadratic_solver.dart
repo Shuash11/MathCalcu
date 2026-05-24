@@ -95,14 +95,14 @@ class GeneratedQuadraticSolver {
         stepNumber: n++,
         title: 'Discriminant',
         explanation: 'Δ = ${_fmt(disc)} < 0 means no real roots.',
-        latex: '\\Delta = ${_fmt(disc)} < 0 \\implies \\text{No real roots}',
+        latex: '\\Delta = ${_fmtLatex(disc)} < 0 \\implies \\text{No real roots}',
       ));
       final result = solve(input);
       steps.add(StepModel(
         stepNumber: n++,
         title: 'Solution',
         explanation: result.answer,
-        latex: '\\text{S.S} = ${result.intervalNotation ?? ""}',
+        latex: r'\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
       ));
       return steps;
     }
@@ -112,8 +112,9 @@ class GeneratedQuadraticSolver {
       title: 'Critical Points',
       explanation: 'Find the roots of the quadratic equation.',
       latex: disc == 0
-          ? 'x = ${_fmt(-p.b / (2 * p.a))}'
-          : 'x_1 = ${_fmt((-p.b - math.sqrt(disc)) / (2 * p.a))}, x_2 = ${_fmt((-p.b + math.sqrt(disc)) / (2 * p.a))}',
+          ? r'x = ' + _fmtLatex(-p.b / (2 * p.a))
+          : r'x_1 = ' + _fmtLatex((-p.b - math.sqrt(disc)) / (2 * p.a)) + ', x_2 = ' + _fmtLatex((-p.b + math.sqrt(disc)) / (2 * p.a)),
+
     ));
 
     if (disc > 0) {
@@ -125,7 +126,7 @@ class GeneratedQuadraticSolver {
         stepNumber: n++,
         title: 'Test Intervals',
         explanation: 'Test each region of the number line.',
-        latex: 'A: x < ${_fmt(lo)}, B: ${_fmt(lo)} < x < ${_fmt(hi)}, C: x > ${_fmt(hi)}',
+        latex: 'A: x < ${_fmtLatex(lo)}, B: ${_fmtLatex(lo)} < x < ${_fmtLatex(hi)}, C: x > ${_fmtLatex(hi)}',
       ));
     }
 
@@ -134,7 +135,7 @@ class GeneratedQuadraticSolver {
       stepNumber: n++,
       title: 'Solution',
       explanation: result.answer,
-      latex: '\\text{S.S} = ${result.intervalNotation ?? ""}',
+      latex: r'\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
     ));
 
     return steps;
@@ -258,6 +259,31 @@ class GeneratedQuadraticSolver {
   }
 
   static int _gcd(int a, int b) => b == 0 ? a : _gcd(b, a % b);
+
+  static String _fmtLatex(double n) {
+    if (n == 0) return '0';
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    if (n == n.roundToDouble()) return n.toInt().toString();
+    for (int d = 2; d <= 20; d++) {
+      final num = (n * d).round();
+      if ((num / d - n).abs() < 1e-9) {
+        int g = _gcd(num.abs(), d);
+        final sn = num ~/ g;
+        final sd = d ~/ g;
+        if (sd == 1) return sn.toString();
+        if (sn < 0) return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
+      }
+    }
+    return n.toStringAsFixed(4);
+  }
+
+  static String _toLatexInterval(String s) {
+    return s
+        .replaceAll('\u221e', r'\infty')
+        .replaceAll('\u2205', r'\emptyset')
+        .replaceAll('\u222a', r'\cup');
+  }
 
   static String _flipOp(String op) {
     switch (op) {
