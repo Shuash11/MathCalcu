@@ -5,6 +5,7 @@ import 'package:calculus_system/midterm/graph/yintercept_graph/perpenparallel_gr
 import 'package:calculus_system/midterm/theme/yintercept_theme/theme.dart';
 import 'package:calculus_system/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/midterm/solvers/yintercept_solver/yi_steps.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'pp_stepblock_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,10 @@ class _ParallelPerpendicularScreenState
     extends State<ParallelPerpendicularScreen> {
   final _line1Ctrl = TextEditingController();
   final _line2Ctrl = TextEditingController();
+  final _line1Focus = FocusNode();
+  final _line2Focus = FocusNode();
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
   final _resultNotifier = ValueNotifier<PPResult?>(null);
   final _errorNotifier = ValueNotifier<String?>(null);
   Timer? _debounce;
@@ -46,8 +51,11 @@ class _ParallelPerpendicularScreenState
     _line2Ctrl
       ..removeListener(_onChanged)
       ..dispose();
+    _line1Focus.dispose();
+    _line2Focus.dispose();
     _resultNotifier.dispose();
     _errorNotifier.dispose();
+    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
@@ -56,7 +64,13 @@ class _ParallelPerpendicularScreenState
     _debounce = Timer(const Duration(milliseconds: 400), _compute);
   }
 
+  void _onFieldFocus(TextEditingController ctrl, FocusNode node) {
+    node.requestFocus();
+    setState(() => _activeController = ctrl);
+  }
+
   void _compute() {
+    _hideKeyboardSignal.value++;
     final l1 = _line1Ctrl.text.trim();
     final l2 = _line2Ctrl.text.trim();
     if (l1.isEmpty || l2.isEmpty) {
@@ -138,16 +152,20 @@ class _ParallelPerpendicularScreenState
                     const SizedBox(height: 14),
                     _EquationField(
                       controller: _line1Ctrl,
+                      focusNode: _line1Focus,
                       label: 'LINE 1',
                       hint: 'e.g. 2x + 3y = 6',
                       accent: _cyan,
+                      onFieldTap: () => _onFieldFocus(_line1Ctrl, _line1Focus),
                     ),
                     const SizedBox(height: 10),
                     _EquationField(
                       controller: _line2Ctrl,
+                      focusNode: _line2Focus,
                       label: 'LINE 2',
                       hint: 'e.g. 4x - 6y + 1 = 0',
                       accent: emerald,
+                      onFieldTap: () => _onFieldFocus(_line2Ctrl, _line2Focus),
                     ),
                     const SizedBox(height: 8),
 
@@ -183,6 +201,12 @@ class _ParallelPerpendicularScreenState
                           onGraphTap: () => showGraphSheet(context, result),
                         );
                       },
+                    ),
+                    const SizedBox(height: 16),
+                    MathKeyboard(
+                      controller: _activeController ?? _line1Ctrl,
+                      accentColor: _cyan,
+                      hideSignal: _hideKeyboardSignal,
                     ),
                   ],
                 ),
@@ -233,56 +257,64 @@ class _HintBanner extends StatelessWidget {
 
 class _EquationField extends StatelessWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
   final String label;
   final String hint;
   final Color accent;
+  final VoidCallback? onFieldTap;
 
   const _EquationField({
     required this.controller,
+    required this.focusNode,
     required this.label,
     required this.hint,
     required this.accent,
+    this.onFieldTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: YITheme.inputLabelStyle(context)
-                .copyWith(color: accent, fontSize: 10)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: controller,
-          style: YITheme.resultEquationStyle(context).copyWith(
-            color: YITheme.textPrimary(context),
-            fontSize: 16,
+    return GestureDetector(
+      onTap: onFieldTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: YITheme.inputLabelStyle(context)
+                  .copyWith(color: accent, fontSize: 10)),
+          const SizedBox(height: 6),
+          TextField(
+            controller: controller,
+            focusNode: focusNode,
+            style: YITheme.resultEquationStyle(context).copyWith(
+              color: YITheme.textPrimary(context),
+              fontSize: 16,
+            ),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: YITheme.subtitleStyle(context).copyWith(
+                color: YITheme.textSecondary(context).withValues(alpha: 0.5),
+              ),
+              filled: true,
+              fillColor: YITheme.surface(context).withValues(alpha: 0.8),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: accent, width: 1.5),
+              ),
+            ),
           ),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: YITheme.subtitleStyle(context).copyWith(
-              color: YITheme.textSecondary(context).withValues(alpha: 0.5),
-            ),
-            filled: true,
-            fillColor: YITheme.surface(context).withValues(alpha: 0.8),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: accent, width: 1.5),
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

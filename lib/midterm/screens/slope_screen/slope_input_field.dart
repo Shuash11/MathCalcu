@@ -1,49 +1,91 @@
 import 'package:calculus_system/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:flutter/material.dart';
 
-/// A labelled text field used for coordinate inputs.
-/// Uses [TextInputType.text] so the full keyboard (including `/`) is available.
-class SlopeInputField extends StatelessWidget {
+class SlopeInputField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
+  final ValueChanged<TextEditingController> onFocus;
 
   const SlopeInputField({
     super.key,
     required this.label,
     required this.controller,
+    required this.onFocus,
   });
 
   @override
+  State<SlopeInputField> createState() => _SlopeInputFieldState();
+}
+
+class _SlopeInputFieldState extends State<SlopeInputField> {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_onFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_onFocusChange);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (_focusNode.hasFocus) {
+      widget.onFocus(widget.controller);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isFocused = _focusNode.hasFocus;
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: SlopeTheme.labelStyle(context)),
+          Text(
+            widget.label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: isFocused
+                  ? SlopeTheme.accentColor
+                  : SlopeTheme.textSecondary(context),
+            ),
+          ),
           const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
               color: SlopeTheme.cardColor(context),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: SlopeTheme.accentColor.withValues(alpha: 0.2),
-                width: 1.5,
+                color: isFocused
+                    ? SlopeTheme.accentColor
+                    : SlopeTheme.accentColor.withValues(alpha: 0.2),
+                width: isFocused ? 2 : 1.5,
               ),
             ),
-            child: TextField(
-              controller: controller,
-              keyboardType: TextInputType.text,
-              style: TextStyle(
-                color: SlopeTheme.textPrimary(context),
-                fontWeight: FontWeight.w500,
-                fontSize: 15,
+            child: GestureDetector(
+              onTap: () => _focusNode.requestFocus(),
+              child: TextField(
+                controller: widget.controller,
+                focusNode: _focusNode,
+                keyboardType: TextInputType.none,
+                style: TextStyle(
+                  color: SlopeTheme.textPrimary(context),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+                cursorColor: SlopeTheme.accentColor,
               ),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              ),
-              cursorColor: SlopeTheme.accentColor,
             ),
           ),
         ],

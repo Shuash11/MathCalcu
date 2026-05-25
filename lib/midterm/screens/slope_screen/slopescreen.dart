@@ -1,5 +1,6 @@
 import 'package:calculus_system/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:calculus_system/midterm/solvers/slope_solver/slope_solver.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'slope_comparison.dart';
 import 'slope_input_field.dart';
@@ -31,6 +32,8 @@ class _SlopeScreenState extends State<SlopeScreen> {
   bool _error = false;
   String? _errorMessage;
   bool _showCompareSection = false;
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
 
   // ── Lifecycle ─────────────────────────────────────────────
   @override
@@ -38,12 +41,14 @@ class _SlopeScreenState extends State<SlopeScreen> {
     for (final c in [_x1, _y1, _x2, _y2, _x3, _y3, _x4, _y4]) {
       c.dispose();
     }
+    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
   // ── Logic ─────────────────────────────────────────────────
 
   void _calculate() {
+    _hideKeyboardSignal.value++;
     if (_x1.text.trim().isEmpty ||
         _y1.text.trim().isEmpty ||
         _x2.text.trim().isEmpty ||
@@ -104,6 +109,10 @@ class _SlopeScreenState extends State<SlopeScreen> {
       _error = false;
       _errorMessage = null;
     });
+  }
+
+  void _onFieldFocus(TextEditingController ctrl) {
+    setState(() => _activeController = ctrl);
   }
 
   void _setError(String message) {
@@ -178,6 +187,13 @@ class _SlopeScreenState extends State<SlopeScreen> {
                 const SizedBox(height: 28),
                 _results(),
               ],
+              const SizedBox(height: 20),
+              MathKeyboard(
+                controller: _activeController ?? _x1,
+                accentColor: SlopeTheme.accentColor,
+                hideSignal: _hideKeyboardSignal,
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -235,9 +251,9 @@ class _SlopeScreenState extends State<SlopeScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              SlopeInputField(label: xLabel, controller: xCtrl),
+              SlopeInputField(label: xLabel, controller: xCtrl, onFocus: _onFieldFocus),
               const SizedBox(width: 12),
-              SlopeInputField(label: yLabel, controller: yCtrl),
+              SlopeInputField(label: yLabel, controller: yCtrl, onFocus: _onFieldFocus),
             ],
           ),
         ],

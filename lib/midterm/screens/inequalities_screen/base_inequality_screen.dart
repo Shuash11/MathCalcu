@@ -7,6 +7,7 @@ import 'package:calculus_system/midterm/theme/inequalities_theme/inequality_them
 import 'package:calculus_system/shared/widgets/answer_card.dart';
 import 'package:calculus_system/shared/widgets/graph_widget.dart';
 import 'package:calculus_system/shared/widgets/math_input_field.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/steps_drawer.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -36,6 +37,7 @@ class BaseInequalityScreen extends StatefulWidget {
 
 class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   final TextEditingController _inputCtrl = TextEditingController();
+  final ValueNotifier<int> _hideKeyboardSignal = ValueNotifier(0);
 
   SolveResult? _result;
   bool _loading = false;
@@ -80,6 +82,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
         _result = result;
         _solved = true;
       });
+      _hideKeyboardSignal.value++;
     } catch (e) {
       if (!mounted || currentRequest != _requestId) return;
 
@@ -87,6 +90,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
         _result = SolveResult.error(e.toString());
         _solved = true;
       });
+      _hideKeyboardSignal.value++;
     } finally {
       if (mounted && currentRequest == _requestId) {
         setState(() => _loading = false);
@@ -114,6 +118,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   void dispose() {
     _inputCtrl.dispose();
     _debounce?.cancel();
+    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
@@ -202,6 +207,11 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           hint: widget.hint,
           onChanged: _onInputChanged,
           onSolve: _solve,
+        ),
+        MathKeyboard(
+          controller: _inputCtrl,
+          accentColor: InequalityTheme.accentColor,
+          hideSignal: _hideKeyboardSignal,
         ),
         if (_result != null && !_result!.hasError && _detectedType != null) ...[
           const SizedBox(height: 8),

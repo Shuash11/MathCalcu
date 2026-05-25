@@ -470,16 +470,29 @@ class GeneratedQuadraticSolver {
 
       if (disc == 0) {
         final root = -p.b / (2 * p.a);
-        if (p.op == '""" + U_LEQ + """' || p.op == '""" + U_GEQ + """') {
-          final ans = p.op == '""" + U_LEQ + """' ? 'x = ${_fmt(root)}' : 'All real numbers';
-          final interval = p.op == '""" + U_LEQ + """' ? '{${_fmt(root)}}' : '(-""" + U_INFINITY + """, """ + U_INFINITY + """)';
-          return SolveResult(answer: ans, points: [root], intervalNotation: interval);
+        final opensUp = p.a > 0;
+        if (opensUp) {
+          if (p.op == '<') {
+            return SolveResult(answer: 'No solution', points: [], intervalNotation: '""" + U_EMPTY + """');
+          } else if (p.op == '""" + U_LEQ + """') {
+            return SolveResult(answer: 'x = ${_fmt(root)}', points: [root], intervalNotation: '{${_fmt(root)}}');
+          } else if (p.op == '>') {
+            return SolveResult(answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}', points: [root],
+              intervalNotation: '(-""" + U_INFINITY + """, ${_fmt(root)}) """ + U_UNION + """ (${_fmt(root)}, """ + U_INFINITY + """)');
+          } else {
+            return SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-""" + U_INFINITY + """, """ + U_INFINITY + """)');
+          }
         } else {
-          final ans = p.op == '<' ? 'No solution' : 'x """ + U_GEQ + """ ${_fmt(root)}';
-          final interval = p.op == '<'
-              ? '""" + U_EMPTY + """'
-              : '(-""" + U_INFINITY + """, ${_fmt(root)}) """ + U_UNION + """ (${_fmt(root)}, """ + U_INFINITY + """)';
-          return SolveResult(answer: ans, points: [root], intervalNotation: interval);
+          if (p.op == '<') {
+            return SolveResult(answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}', points: [root],
+              intervalNotation: '(-""" + U_INFINITY + """, ${_fmt(root)}) """ + U_UNION + """ (${_fmt(root)}, """ + U_INFINITY + """)');
+          } else if (p.op == '""" + U_LEQ + """') {
+            return SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-""" + U_INFINITY + """, """ + U_INFINITY + """)');
+          } else if (p.op == '>') {
+            return SolveResult(answer: 'No solution', points: [], intervalNotation: '""" + U_EMPTY + """');
+          } else {
+            return SolveResult(answer: 'x = ${_fmt(root)}', points: [root], intervalNotation: '{${_fmt(root)}}');
+          }
         }
       }
 
@@ -489,17 +502,17 @@ class GeneratedQuadraticSolver {
       final between = (p.op == '<' || p.op == '""" + U_LEQ + """') ? p.a > 0 : p.a < 0;
 
       if (between) {
+        final innerOp = strict ? '<' : '""" + U_LEQ + """';
         return SolveResult(
-          answer: '${_fmt(lo)} ${p.op} x ${p.op} ${_fmt(hi)}',
+          answer: '${_fmt(lo)} $innerOp x $innerOp ${_fmt(hi)}',
           points: [lo, hi],
           intervalNotation: '$lb${_fmt(lo)}, ${_fmt(hi)}$rb',
         );
       } else {
-        final flipOp = _flipOp(p.op);
         return SolveResult(
-          answer: 'x $flipOp ${_fmt(lo)} or x ${p.op} ${_fmt(hi)}',
+          answer: 'x ${strict ? '<' : '""" + U_LEQ + """'} ${_fmt(lo)} or x ${strict ? '>' : '""" + U_GEQ + """'} ${_fmt(hi)}',
           points: [lo, hi],
-          intervalNotation: '(-""" + U_INFINITY + """, ${_fmt(lo)})$rb """ + U_UNION + """ $lb${_fmt(hi)}, """ + U_INFINITY + """)',
+          intervalNotation: '(-""" + U_INFINITY + """, ${_fmt(lo)}$rb """ + U_UNION + """ $lb${_fmt(hi)}, """ + U_INFINITY + """)',
         );
       }
     } catch (e) {
@@ -514,6 +527,7 @@ class GeneratedQuadraticSolver {
 
     int n = 1;
 
+    // Step 1: Original inequality
     steps.add(StepModel(
       stepNumber: n++,
       latex: input.trim(),
@@ -521,55 +535,156 @@ class GeneratedQuadraticSolver {
 
     final disc = p.b * p.b - 4 * p.a * p.c;
 
-    if (disc < 0) {
+    // Step 2: Standard form (if input wasn't already ax\\u00b2+bx+c op 0)
+    final aCoef = _coefLatex(p.a);
+    final bCoef = p.b == 0 ? '' : (p.b > 0 ? '+ ${_fmtLatex(p.b)}x' : '- ${_fmtLatex(-p.b)}x');
+    final cCoef = p.c == 0 ? '' : (p.c > 0 ? '+ ${_fmtLatex(p.c)}' : '- ${_fmtLatex(-p.c)}');
+    final stdForm = '${aCoef}x^2 $bCoef $cCoef ${p.op} 0'.replaceAll('  ', ' ').trim();
+    final inputNorm = input.trim().replaceAll(' ', '');
+    if (stdForm.replaceAll(' ', '') != inputNorm) {
+      final dets = [input.trim()];
+      final opStr = _extractOp(inputNorm);
+      if (opStr != null) {
+        final opIdx = _findOpIndex(inputNorm, opStr);
+        if (opIdx != -1) {
+          final lhs = inputNorm.substring(0, opIdx).trim();
+          final rhs = inputNorm.substring(opIdx + opStr.length).trim();
+          if (rhs != '0') {
+            final pRhs = rhs.contains('x') ? '($rhs)' : rhs;
+            dets.add('$lhs - $pRhs ${p.op} $rhs - $pRhs');
+            dets.add('$lhs - $pRhs ${p.op} 0');
+          }
+        }
+      }
+      if (dets.last != stdForm) dets.add(stdForm);
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'Discriminant \\\\Delta = ${_fmt(disc)} < 0 — no real roots',
-        details: [
-          r'\Delta = b^2 - 4ac = ' + '${_fmtLatex(p.b)}^2 - 4(${_fmtLatex(p.a)})(${_fmtLatex(p.c)}) = ${_fmtLatex(disc)} < 0',
-          r'\\text{No real roots, inequality is either always true or always false}',
-        ],
-        latex: '\\\\Delta = ${_fmtLatex(disc)} < 0 \\\\implies \\text{No real roots}',
+        hint: 'Move all terms to one side',
+        details: dets,
+        latex: stdForm,
       ));
-      final result = solve(input);
+    }
+
+    // Step 3: Discriminant
+    final bSq = p.b * p.b;
+    final ac4 = 4 * p.a * p.c;
+    steps.add(StepModel(
+      stepNumber: n++,
+      hint: disc < 0
+          ? 'Negative discriminant \\\\Delta = ${_fmt(disc)} — no real roots'
+          : disc == 0
+              ? 'Zero discriminant \\\\Delta = 0 — one repeated root'
+              : 'Positive discriminant \\\\Delta = ${_fmt(disc)} — two real roots',
+      details: [
+        r'\\Delta = b^2 - 4ac',
+        r'\\Delta = (' + _fmtLatex(p.b) + ')^2 - 4(' + _fmtLatex(p.a) + ')(' + _fmtLatex(p.c) + ')',
+        r'\\Delta = ' + _fmtLatex(bSq) + ' - ' + _fmtLatex(ac4),
+        r'\\Delta = ' + _fmtLatex(disc),
+      ],
+      latex: r'\\Delta = ' + _fmtLatex(disc),
+    ));
+
+    if (disc < 0) {
+      final allSat = p.a > 0
+          ? (p.op == '>' || p.op == '""" + U_GEQ + """')
+          : (p.op == '<' || p.op == '""" + U_LEQ + """');
       steps.add(StepModel(
         stepNumber: n++,
-        latex: r'\\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
+        hint: allSat
+            ? 'Always true — parabola never crosses x-axis'
+            : 'Always false — parabola never crosses x-axis',
+        details: [
+          r'\\Delta < 0 \\implies \\text{no real roots}',
+          p.a > 0
+              ? r'a > 0 \\implies \\text{parabola opens up, entirely above x-axis}'
+              : r'a < 0 \\implies \\text{parabola opens down, entirely below x-axis}',
+          allSat
+              ? r'\\text{Inequality holds for all } x'
+              : r'\\text{Inequality never holds}',
+        ],
+        latex: allSat ? r'(-\\infty, \\infty)' : r'\\emptyset',
       ));
       return steps;
     }
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: disc == 0 ? 'One repeated root' : 'Two distinct roots',
-      details: [
-        r'x = \\frac{-b \pm \sqrt{\Delta}}{2a} = \\frac{' + '${_fmtLatex(-p.b)} \\pm \\sqrt{${_fmtLatex(disc)}}' + r'}{2(' + '${_fmtLatex(p.a)}' + r')}',
-        disc == 0
-          ? r'x = ' + _fmtLatex(-p.b / (2 * p.a))
-          : r'x_1 = ' + _fmtLatex((-p.b - math.sqrt(disc)) / (2 * p.a)) + r',\; x_2 = ' + _fmtLatex((-p.b + math.sqrt(disc)) / (2 * p.a)),
-      ],
-      latex: disc == 0
-          ? r'x = ' + _fmtLatex(-p.b / (2 * p.a))
-          : r'x_1 = ' + _fmtLatex((-p.b - math.sqrt(disc)) / (2 * p.a)) + ', x_2 = ' + _fmtLatex((-p.b + math.sqrt(disc)) / (2 * p.a)),
-
-    ));
-
-    if (disc > 0) {
-      final r1 = (-p.b - math.sqrt(disc)) / (2 * p.a);
-      final r2 = (-p.b + math.sqrt(disc)) / (2 * p.a);
-      final lo = r1 < r2 ? r1 : r2;
-      final hi = r1 < r2 ? r2 : r1;
+    if (disc == 0) {
+      final root = -p.b / (2 * p.a);
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'Test each region separated by the roots',
-        latex: 'A: x < ${_fmtLatex(lo)}, B: ${_fmtLatex(lo)} < x < ${_fmtLatex(hi)}, C: x > ${_fmtLatex(hi)}',
+        hint: 'Repeated root at x = ${_fmt(root)}',
+        details: [
+          r'x = \\frac{-b}{2a}',
+          r'x = \\frac{' + _fmtLatex(-p.b) + '}{2(' + _fmtLatex(p.a) + ')}',
+          r'x = ' + _fmtLatex(root),
+        ],
+        latex: r'x = ' + _fmtLatex(root),
       ));
+      final result = solve(input);
+      steps.add(StepModel(
+        stepNumber: n++,
+        latex: _toLatexInterval(result.intervalNotation ?? ''),
+      ));
+      return steps;
     }
+
+    // --- disc > 0: Two distinct real roots ---
+
+    final sqrtD = math.sqrt(disc);
+    final r1Val = (-p.b - sqrtD) / (2 * p.a);
+    final r2Val = (-p.b + sqrtD) / (2 * p.a);
+    final loLatex = r1Val < r2Val
+        ? _fmtSurd(p.a, p.b, disc.round(), false)
+        : _fmtSurd(p.a, p.b, disc.round(), true);
+    final hiLatex = r1Val < r2Val
+        ? _fmtSurd(p.a, p.b, disc.round(), true)
+        : _fmtSurd(p.a, p.b, disc.round(), false);
+
+    // Step 4: Quadratic formula -- find roots
+    final negB = _fmtLatex(-p.b);
+    final twoA = _fmtLatex(2 * p.a);
+    final sqrtDisc = _sqrtSimplify(disc.round());
+    final root1 = _fmtSurd(p.a, p.b, disc.round(), false);
+    final root2 = _fmtSurd(p.a, p.b, disc.round(), true);
+    steps.add(StepModel(
+      stepNumber: n++,
+      hint: 'Find the roots',
+      details: [
+        r'x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}',
+        r'x = \\frac{' + negB + r' \\pm \\sqrt{' + _fmtLatex(disc) + '}}{' + twoA + '}',
+        r'x_1 = \\frac{' + negB + r' - ' + sqrtDisc + '}{' + twoA + '} = ' + root1,
+        r'x_2 = \\frac{' + negB + r' + ' + sqrtDisc + '}{' + twoA + '} = ' + root2,
+      ],
+      latex: r'x_1 = ' + root1 + r',\\quad x_2 = ' + root2,
+    ));
+
+    // Step 5: Sign and solution
+    final opensUp = p.a > 0;
+    final between = (p.op == '<' || p.op == '""" + U_LEQ + """') ? opensUp : !opensUp;
+
+    String solLatex;
+    if (between) {
+      solLatex = loLatex + r' < x < ' + hiLatex;
+    } else {
+      solLatex = r'x < ' + loLatex + r' \\quad\\text{or}\\quad x > ' + hiLatex;
+    }
+
+    steps.add(StepModel(
+      stepNumber: n++,
+      hint: opensUp ? 'Parabola opens upward' : 'Parabola opens downward',
+      details: [
+        opensUp
+            ? r'\\text{Positive outside, negative between}'
+            : r'\\text{Negative outside, positive between}',
+        solLatex,
+      ],
+      latex: solLatex,
+    ));
 
     final result = solve(input);
     steps.add(StepModel(
       stepNumber: n++,
-      latex: r'\\text{S.S} = ' + _toLatexInterval(result.intervalNotation ?? ''),
+      hint: 'Solution in interval notation',
+      latex: _toLatexInterval(result.intervalNotation ?? ''),
     ));
 
     return steps;
@@ -656,6 +771,12 @@ class GeneratedQuadraticSolver {
     return {'a': a, 'b': b, 'c': c};
   }
 
+  static String _coefLatex(double a) {
+    if (a == 1) return '';
+    if (a == -1) return '-';
+    return _fmtLatex(a);
+  }
+
   static SolveResult _solveLinear(double b, double c, String op) {
     if (b == 0) {
       final sat = _evalOp(c, op, 0);
@@ -675,6 +796,48 @@ class GeneratedQuadraticSolver {
   }
 
 """ + FMT_COMMON + FMT_COMMON_LATEX + FMT_TOLATEX + FMT_FLIPOP + FMT_EVALOP + """
+
+  /// Simplify sqrt(n) into a\\sqrt{b} form, e.g. sqrt(32) -> 4\\sqrt{2}
+  static String _sqrtSimplify(int n) {
+    if (n <= 0) return '0';
+    int sq = 1, rem = n;
+    for (int i = 2; i * i <= rem; i++) {
+      while (rem % (i * i) == 0) {
+        sq *= i;
+        rem ~/= (i * i);
+      }
+    }
+    if (rem == 1) return sq.toString();
+    if (sq == 1) return r'\\sqrt{' + rem.toString() + '}';
+    return sq.toString() + r'\\sqrt{' + rem.toString() + '}';
+  }
+
+  /// Format a root (-b +/- sqrt(Delta))/(2a) in simplified radical form.
+  /// Falls back to _fmtLatex for rational roots.
+  static String _fmtSurd(double a, double b, int disc, bool plus) {
+    final sqrtVal = math.sqrt(disc);
+    if (sqrtVal == sqrtVal.roundToDouble()) {
+      return _fmtLatex((-b + (plus ? 1 : -1) * sqrtVal) / (2 * a));
+    }
+    final sqrtStr = _sqrtSimplify(disc);
+    final sign = plus ? '+' : '-';
+    if (b == 0) {
+      final den = (2 * a).round();
+      final m = RegExp(r'^(\d+)\\\\sqrt\{').firstMatch(sqrtStr);
+      if (m != null) {
+        final coeff = int.parse(m[1]!);
+        if (den != 0 && coeff % den.abs() == 0) {
+          final c = coeff ~/ den.abs();
+          final rem = sqrtStr.substring(m[1]!.length);
+          if (a < 0) return (plus ? '-' : '') + (c == 1 ? '' : c.toString()) + rem;
+          return (plus ? '' : '-') + (c == 1 ? '' : c.toString()) + rem;
+        }
+      }
+      if (den == 1 || den == -1) return (plus ? '' : '-') + sqrtStr;
+      return r'\\frac{' + (a < 0 == plus ? '' : '-') + sqrtStr + '}{' + _fmtLatex(2 * a) + '}';
+    }
+    return r'\\frac{' + _fmtLatex(-b) + ' ' + sign + ' ' + sqrtStr + '}{' + _fmtLatex(2 * a) + '}';
+  }
 
   static String _interval(String op, double b) {
     final bs = _fmt(b);
@@ -737,7 +900,7 @@ class GeneratedAbsoluteSolver {
         if (p.k == 0 && effectiveOp == '>') {
           final root = -p.b / p.a;
           final fR = _fmt(root);
-          return SolveResult(answer: 'x """ + U_GEQ + """ $fR', points: [root], intervalNotation: '(-""" + U_INFINITY + """, $fR) """ + U_UNION + """ ($fR, """ + U_INFINITY + """)');
+          return SolveResult(answer: 'x < $fR or x > $fR', points: [root], intervalNotation: '(-""" + U_INFINITY + """, $fR) """ + U_UNION + """ ($fR, """ + U_INFINITY + """)');
         }
 
         final v1 = (-p.k - p.b) / p.a;
@@ -767,45 +930,265 @@ class GeneratedAbsoluteSolver {
 
     int n = 1;
 
+    // Step 1: Show the original inequality with proper absolute value delimiters
     steps.add(StepModel(
       stepNumber: n++,
-      latex: input.trim(),
+      latex: _absToLatex(input.trim()),
     ));
 
-    final innerStr = '${_coefLatex(p.a)}x ${p.b >= 0 ? "+ ${_fmtLatex(p.b)}" : "- ${_fmtLatex(p.b.abs())}"}';
+    final innerStr = p.b == 0 ? '${_coefLatex(p.a)}x' : '${_coefLatex(p.a)}x ${p.b >= 0 ? "+ ${_fmtLatex(p.b)}" : "- ${_fmtLatex(p.b.abs())}"}';
     final kStr = _fmtLatex(p.k);
-    bool absOnLeft = p.absOnLeft;
-    String effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
+    final absOnLeft = p.absOnLeft;
+    final effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
     final isNarrow = effectiveOp == '<' || effectiveOp == '""" + U_LEQ + """';
 
-    if (isNarrow) {
-      final nkStr = _fmtLatex(-p.k);
+    // ---- Edge cases ----
+    if (p.a == 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'Write as -${_fmt(p.k)} < ... < ${_fmt(p.k)}',
+        hint: 'No variable term — evaluate the constant directly',
+        latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
+      ));
+      return steps;
+    }
+
+    if (p.k < 0) {
+      if (isNarrow) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Absolute value is always \\u2265 0, so it can never be < ${_fmt(p.k)}',
+          latex: r'\emptyset',
+        ));
+      } else {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Absolute value is always \\u2265 0, which is always \\u2265 ${_fmt(p.k)}',
+          latex: r'(-\infty, \infty)',
+        ));
+      }
+      return steps;
+    }
+
+    if (p.k == 0 && effectiveOp == '<') {
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Absolute value is always \\u2265 0, so |expr| < 0 has no solution',
+        latex: r'\emptyset',
+      ));
+      return steps;
+    }
+
+    if (p.k == 0 && effectiveOp == '>') {
+      // |ax+b| > 0  =>  ax+b \u2260 0  =>  x \u2260 -b/a
+      final root = _fmtLatex(-p.b / p.a);
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Absolute value is always \\u2265 0, so |expr| > 0 means expr \\u2260 0',
+        latex: r'x \\neq ' + root,
+      ));
+      steps.add(StepModel(
+        stepNumber: n++,
+        latex: r'(-\infty, ' + root + r') \cup (' + root + r', \infty)',
+      ));
+      return steps;
+    }
+
+    // ---- Common computations ----
+    final flipOp = _flipOp(effectiveOp);
+    final negKStr = _fmtLatex(-p.k);
+    final v1 = (-p.k - p.b) / p.a;
+    final v2 = (p.k - p.b) / p.a;
+    final l = v1 < v2 ? v1 : v2;
+    final h = v1 < v2 ? v2 : v1;
+    final result = solve(input);
+
+    // Pre-compute formatted strings for reuse
+    final leftConst = _fmtLatex(-p.k - p.b);
+    final rightConst = _fmtLatex(p.k - p.b);
+
+    if (isNarrow) {
+      // ──────────────────────────────────────────────────────────
+      // NARROW CASE  |ax+b| < k  \u2192  -k < ax+b < k
+      // Steps: Rule \u2192 Isolate x-term \u2192 Divide \u2192 Interval
+      // ──────────────────────────────────────────────────────────
+
+      // ──────────────────────────────────────────────────────────
+      // Step 2: Apply Theorem 1 — |X| < k  =>  -k < X < k
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Apply Theorem 1',
         details: [
-          r'\\text{If } |X| < k \\text{ then } -k < X < k',
-          '$nkStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+          _absToLatex(input.trim()),
+          r'\\Downarrow',
+          r'\\text{Theorem 1: } |X| ' + _texOp(effectiveOp) + r' k \\Rightarrow -k ' + _texOp(effectiveOp) + r' X ' + _texOp(effectiveOp) + r' k',
+          '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
         ],
-        latex: '$nkStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+        latex: '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+      ));
+
+      // ──────────────────────────────────────────────────────────
+      // Step 3: Isolate x-term — subtract/add constant
+      if (p.b != 0) {
+        final bAbs = _fmtLatex(p.b.abs());
+        final bStr = _fmtLatex(p.b);
+        final amount = p.b > 0 ? _fmt(p.b) : _fmt(-p.b);
+        final opWord = p.b > 0 ? 'Subtract' : 'Add';
+        final leftArith = p.b > 0
+            ? '$negKStr - $bAbs'
+            : '$negKStr + $bAbs';
+        final midArith = p.b > 0
+            ? '${_coefLatex(p.a)}x + $bStr - $bAbs'
+            : '${_coefLatex(p.a)}x - $bAbs + $bAbs';
+        final rightArith = p.b > 0
+            ? '$kStr - $bAbs'
+            : '$kStr + $bAbs';
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: '$opWord $amount from all three parts',
+          details: [
+            '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+            r'\\Downarrow',
+            '$leftArith ${_texOp(effectiveOp)} $midArith ${_texOp(effectiveOp)} $rightArith',
+            r'\\Downarrow',
+            '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+          ],
+          latex: '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+        ));
+      }
+
+      // ──────────────────────────────────────────────────────────
+      // Step 4: Divide by x-coefficient
+      if (p.a != 1 && p.a != -1) {
+        final finalOpNarrow = p.a < 0 ? _flipOp(effectiveOp) : effectiveOp;
+        final aStr = _fmtLatex(p.a);
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: p.a < 0
+              ? 'Divide all parts by ${_fmt(p.a.abs())}, flip inequality signs'
+              : 'Divide all parts by ${_fmt(p.a)}',
+          details: [
+            '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+            r'\\Downarrow',
+            r'\\frac{' + _fmtLatex(-p.k - p.b) + '}{' + aStr + '} ' + _texOp(finalOpNarrow) + r' \\frac{' + _coefLatex(p.a) + 'x}{' + aStr + '} ' + _texOp(finalOpNarrow) + r' \\frac{' + _fmtLatex(p.k - p.b) + '}{' + aStr + '}',
+            r'\\Downarrow',
+            '${_fmtLatex(l)} ${_texOp(finalOpNarrow)} x ${_texOp(finalOpNarrow)} ${_fmtLatex(h)}',
+          ],
+          latex: '${_fmtLatex(l)} ${_texOp(finalOpNarrow)} x ${_texOp(finalOpNarrow)} ${_fmtLatex(h)}',
+        ));
+      } else if (p.a == -1) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Multiply all parts by -1, flip signs',
+          details: [
+            '$leftConst ${_texOp(effectiveOp)} -x ${_texOp(effectiveOp)} $rightConst',
+            r'\\Downarrow',
+            '${_fmtLatex(l)} ${_texOp(effectiveOp)} x ${_texOp(effectiveOp)} ${_fmtLatex(h)}',
+          ],
+          latex: '${_fmtLatex(l)} ${_texOp(effectiveOp)} x ${_texOp(effectiveOp)} ${_fmtLatex(h)}',
+        ));
+      }
+
+      // ──────────────────────────────────────────────────────────
+      // Final: Interval notation
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Write solution in interval notation',
+        latex: _toLatexInterval(result.intervalNotation ?? ''),
       ));
     } else {
-      final flipOp = _flipOp(effectiveOp);
+      // ──────────────────────────────────────────────────────────
+      // WIDE CASE  |ax+b| > k  \u2192  ax+b < -k  OR  ax+b > k
+      // Steps: Rule \u2192 Solve Left \u2192 Solve Right \u2192 Combine \u2192 Interval
+      // ──────────────────────────────────────────────────────────
+
+      // ──────────────────────────────────────────────────────────
+      // Step 2: Apply Theorem 2 — |X| > k  =>  X < -k  or  X > k
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'Split into two separate inequalities',
+        hint: 'Apply Theorem 2',
         details: [
-          r'\\text{If } |X| > k \\text{ then } X < -k \\text{ or } X > k',
-          '$innerStr ${_texOp(flipOp)} -$kStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+          _absToLatex(input.trim()),
+          r'\\Downarrow',
+          r'\\text{Theorem 2: } |X| ' + _texOp(effectiveOp) + r' k \\Rightarrow X ' + _texOp(flipOp) + r' -k \\text{ or } X ' + _texOp(effectiveOp) + r' k',
+          '$innerStr ${_texOp(flipOp)} $negKStr \\\\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
         ],
-        latex: '$innerStr ${_texOp(flipOp)} -$kStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+        latex: '$innerStr ${_texOp(flipOp)} $negKStr \\\\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+      ));
+
+      final leftOp = p.a < 0 ? _flipOp(flipOp) : flipOp;
+      final leftVal = _fmtLatex((-p.k - p.b) / p.a);
+      final rightOp = p.a < 0 ? _flipOp(effectiveOp) : effectiveOp;
+      final rightVal = _fmtLatex((p.k - p.b) / p.a);
+
+      // ──────────────────────────────────────────────────────────
+      // Step 3: Isolate x-term in both branches
+      if (p.b != 0) {
+        final lConst = _fmtLatex(-p.k - p.b);
+        final rConst = _fmtLatex(p.k - p.b);
+        final bAbs = _fmtLatex(p.b.abs());
+        final bStr = _fmtLatex(p.b);
+        final amount = p.b > 0 ? _fmt(p.b) : _fmt(-p.b);
+        final opWord = p.b > 0 ? 'Subtract' : 'Add';
+        final leftArith = p.b > 0
+            ? '$negKStr - $bAbs'
+            : '$negKStr + $bAbs';
+        final rightArith = p.b > 0
+            ? '$kStr - $bAbs'
+            : '$kStr + $bAbs';
+        final midArith = p.b > 0
+            ? '${_coefLatex(p.a)}x + $bStr - $bAbs'
+            : '${_coefLatex(p.a)}x - $bAbs + $bAbs';
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: '$opWord $amount from both sides of each inequality',
+          details: [
+            '$innerStr ${_texOp(flipOp)} $negKStr \\\\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+            r'\\Downarrow',
+            '$midArith ${_texOp(flipOp)} $leftArith \\\\text{ or } $midArith ${_texOp(effectiveOp)} $rightArith',
+            r'\\Downarrow',
+            '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lConst \\\\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rConst',
+          ],
+          latex: '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lConst \\\\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rConst',
+        ));
+      }
+
+      // Step 4: Divide by coefficient in both branches
+      if (p.a != 1 && p.a != -1) {
+        final aStr = _fmtLatex(p.a);
+        final lcStr = _fmtLatex(-p.k - p.b);
+        final rcStr = _fmtLatex(p.k - p.b);
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: p.a < 0 ? 'Divide both sides by ${_fmt(p.a.abs())}, flip signs' : 'Divide both sides by ${_fmt(p.a)}',
+          details: [
+            '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lcStr \\\\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rcStr',
+            r'\\Downarrow',
+            r'\\frac{' + _coefLatex(p.a) + 'x}{' + aStr + '} ' + _texOp(leftOp) + r' \\frac{' + lcStr + '}{' + aStr + '} \\\\text{ or } ' + r'\\frac{' + _coefLatex(p.a) + 'x}{' + aStr + '} ' + _texOp(rightOp) + r' \\frac{' + rcStr + '}{' + aStr + '}',
+            r'\\Downarrow',
+            'x ${_texOp(leftOp)} ${leftVal} \\\\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+          ],
+          latex: 'x ${_texOp(leftOp)} ${leftVal} \\\\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+        ));
+      } else if (p.a == -1) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Multiply by -1, flip signs',
+          details: [
+            'x ${_texOp(leftOp)} ${leftVal} \\\\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+          ],
+          latex: 'x ${_texOp(leftOp)} ${leftVal} \\\\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+        ));
+      }
+
+      // ──────────────────────────────────────────────────────────
+      // Step 5: Interval notation
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Combine into solution set',
+        latex: _toLatexInterval(result.intervalNotation ?? ''),
       ));
     }
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
-    ));
 
     return steps;
   }
@@ -813,6 +1196,7 @@ class GeneratedAbsoluteSolver {
   static _Parsed? _parse(String input) {
     String s = input
         .trim()
+        .replaceAll('\u2212', '-')
         .replaceAll('""" + U_SQUARED + """', '^2')
         .replaceAll(' ', '')
         .replaceAll('>=', '""" + U_GEQ + """')
@@ -891,6 +1275,26 @@ class GeneratedAbsoluteSolver {
   }
 
 """ + FMT_COMMON + FMT_COMMON_LATEX + FMT_TOLATEX + FMT_TEXOP + FMT_FLIPOP + """
+
+  /// Replace |...| with \\lvert...\\rvert for proper LaTeX absolute value rendering
+  static String _absToLatex(String s) {
+    final buf = StringBuffer();
+    bool inAbs = false;
+    for (int i = 0; i < s.length; i++) {
+      if (s[i] == '|') {
+        if (!inAbs) {
+          buf.write(r'\lvert ');
+          inAbs = true;
+        } else {
+          buf.write(r' \\rvert');
+          inAbs = false;
+        }
+      } else {
+        buf.write(s[i]);
+      }
+    }
+    return buf.toString();
+  }
 }
 
 class _Parsed {
@@ -1356,6 +1760,12 @@ def main():
     sympy_run_tests("Absolute", [
         ("Abs(x) < 3", "-3 < x < 3"),
         ("Abs(2*x - 1) >= 3", "x <= -1 or x >= 2"),
+        ("Abs(x) > 0", "x < 0 or x > 0"),
+        ("Abs(x) >= 0", "All real numbers"),
+        ("Abs(x) < 0", "No solution"),
+        ("Abs(x) <= 0", "x = 0"),
+        ("Abs(2*x - 3) <= 5", "-1 <= x <= 4"),
+        ("Abs(4 - 3*x) > 7", "x < -1 or x > 11/3"),
     ])
     sympy_run_tests("Rational", [
         ("(x+1)/(x-2) > 0", "x < -1 or x > 2"),

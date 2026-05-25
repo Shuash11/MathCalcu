@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:calculus_system/midterm/graph/distance_graph/distance_graph.dart';
 import 'package:calculus_system/midterm/theme/distance_theme/distancetheme.dart';
 import 'package:calculus_system/midterm/solvers/distance_solver/distancesolver.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'distancesteps.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,8 @@ class _DistancescreenState extends State<Distancescreen>
   final _y1Focus = FocusNode();
   final _x2Focus = FocusNode();
   final _y2Focus = FocusNode();
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
 
   // Result state
   String? _distance;
@@ -51,6 +54,11 @@ class _DistancescreenState extends State<Distancescreen>
 
   void _onTextChanged() {}
 
+  void _onFieldFocus(TextEditingController ctrl, FocusNode node) {
+    node.requestFocus();
+    setState(() => _activeController = ctrl);
+  }
+
   @override
   void dispose() {
     _x1Ctrl.removeListener(_onTextChanged);
@@ -66,6 +74,7 @@ class _DistancescreenState extends State<Distancescreen>
     _y1Focus.dispose();
     _x2Focus.dispose();
     _y2Focus.dispose();
+    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
@@ -146,8 +155,7 @@ class _DistancescreenState extends State<Distancescreen>
   }
 
   void _onCalculate() {
-    FocusScope.of(context).unfocus();
-
+    _hideKeyboardSignal.value++;
     final result = DistanceSolver.solve(
       x1: _x1Ctrl.text,
       x2: _x2Ctrl.text,
@@ -190,35 +198,24 @@ class _DistancescreenState extends State<Distancescreen>
       children: [
         Text(label, style: DistanceTheme.inputLabel(context)),
         const SizedBox(height: DistanceTheme.spaceXs),
-        Container(
-          decoration: DistanceTheme.inputDecoration(context),
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            keyboardType: const TextInputType.numberWithOptions(
-                decimal: true, signed: true),
-            style: DistanceTheme.inputText(context),
-            decoration: InputDecoration(
-              hintText: '0',
-              hintStyle: DistanceTheme.inputHint(context),
-              border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        GestureDetector(
+          onTap: () => _onFieldFocus(controller, focusNode),
+          child: Container(
+            decoration: DistanceTheme.inputDecoration(context),
+            child: TextField(
+              controller: controller,
+              focusNode: focusNode,
+              keyboardType: TextInputType.none,
+              style: DistanceTheme.inputText(context),
+              decoration: InputDecoration(
+                hintText: '0',
+                hintStyle: DistanceTheme.inputHint(context),
+                border: InputBorder.none,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              ),
+              onChanged: null,
             ),
-            onChanged: null,
-            onEditingComplete: () {
-              if (nextFocus != null) {
-                nextFocus.requestFocus();
-              } else {
-                focusNode.unfocus();
-                _onCalculate();
-              }
-            },
-            autocorrect: false,
-            enableSuggestions: false,
-            enableInteractiveSelection: true,
-            cursorWidth: 2,
-            cursorColor: DistanceTheme.accent,
           ),
         ),
       ],
@@ -253,16 +250,7 @@ class _DistancescreenState extends State<Distancescreen>
     return SafeArea(
       child: Scaffold(
         backgroundColor: DistanceTheme.surface(context),
-        resizeToAvoidBottomInset: false,
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (notification) {
-            if (notification is ScrollStartNotification) {
-              FocusScope.of(context).unfocus();
-            }
-            return false;
-          },
-          child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
+        body: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 28, 20, 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,6 +480,13 @@ class _DistancescreenState extends State<Distancescreen>
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                MathKeyboard(
+                  controller: _activeController ?? _x1Ctrl,
+                  accentColor: DistanceTheme.accent,
+                  hideSignal: _hideKeyboardSignal,
+                ),
+                const SizedBox(height: 24),
 
                 // ── Results Section ──────────────────────────────
                 if (_solved) ...[
@@ -697,7 +692,6 @@ class _DistancescreenState extends State<Distancescreen>
             ),
           ),
         ),
-      ),
     );
   }
 }

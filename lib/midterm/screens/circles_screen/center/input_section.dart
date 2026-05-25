@@ -2,12 +2,23 @@
 import 'package:calculus_system/midterm/theme/circles_theme/centertheme.dart';
 import 'centercontroller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class CenterInputSection extends StatelessWidget {
   final CenterController controller;
+  final FocusNode x1Focus, y1Focus, x2Focus, y2Focus;
+  final void Function(TextEditingController, FocusNode) onFieldFocus;
+  final VoidCallback? onCalculate;
 
-  const CenterInputSection({super.key, required this.controller});
+  const CenterInputSection({
+    super.key,
+    required this.controller,
+    required this.x1Focus,
+    required this.y1Focus,
+    required this.x2Focus,
+    required this.y2Focus,
+    required this.onFieldFocus,
+    this.onCalculate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +30,11 @@ class CenterInputSection extends StatelessWidget {
           color: FindingCenterTheme.indigo,
           xCtrl: controller.x1Ctrl,
           yCtrl: controller.y1Ctrl,
+          xFocus: x1Focus,
+          yFocus: y1Focus,
           xHint: 'e.g. −2',
           yHint: 'e.g. 3',
+          onFieldFocus: onFieldFocus,
         ),
         const SizedBox(height: 16),
         _PointCard(
@@ -29,13 +43,16 @@ class CenterInputSection extends StatelessWidget {
           color: FindingCenterTheme.purple,
           xCtrl: controller.x2Ctrl,
           yCtrl: controller.y2Ctrl,
+          xFocus: x2Focus,
+          yFocus: y2Focus,
           xHint: 'e.g. 4',
           yHint: 'e.g. 5',
+          onFieldFocus: onFieldFocus,
         ),
         const SizedBox(height: 32),
         _ActionButtons(
           onClear: controller.clear,
-          onCalculate: controller.calculate,
+          onCalculate: onCalculate ?? controller.calculate,
         ),
       ],
     );
@@ -48,8 +65,11 @@ class _PointCard extends StatelessWidget {
   final Color color;
   final TextEditingController xCtrl;
   final TextEditingController yCtrl;
+  final FocusNode xFocus;
+  final FocusNode yFocus;
   final String xHint;
   final String yHint;
+  final void Function(TextEditingController, FocusNode) onFieldFocus;
 
   const _PointCard({
     required this.label,
@@ -57,8 +77,11 @@ class _PointCard extends StatelessWidget {
     required this.color,
     required this.xCtrl,
     required this.yCtrl,
+    required this.xFocus,
+    required this.yFocus,
     required this.xHint,
     required this.yHint,
+    required this.onFieldFocus,
   });
 
   @override
@@ -115,18 +138,22 @@ class _PointCard extends StatelessWidget {
               Expanded(
                 child: _Field(
                   controller: xCtrl,
+                  focusNode: xFocus,
                   label: 'x',
                   hint: xHint,
                   color: color,
+                  onFieldTap: () => onFieldFocus(xCtrl, xFocus),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _Field(
                   controller: yCtrl,
+                  focusNode: yFocus,
                   label: 'y',
                   hint: yHint,
                   color: color,
+                  onFieldTap: () => onFieldFocus(yCtrl, yFocus),
                 ),
               ),
             ],
@@ -140,15 +167,19 @@ class _PointCard extends StatelessWidget {
 // ── Now stateful to support the slash button ──────────────────────────────────
 class _Field extends StatefulWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
   final String label;
   final String hint;
   final Color color;
+  final VoidCallback? onFieldTap;
 
   const _Field({
     required this.controller,
+    required this.focusNode,
     required this.label,
     required this.hint,
     required this.color,
+    this.onFieldTap,
   });
 
   @override
@@ -156,23 +187,33 @@ class _Field extends StatefulWidget {
 }
 
 class _FieldState extends State<_Field> {
-  final FocusNode _focusNode = FocusNode();
   bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() {
-      setState(() {
-        _isFocused = _focusNode.hasFocus;
-      });
-    });
+    widget.focusNode.addListener(_onFocusChange);
+  }
+
+  @override
+  void didUpdateWidget(_Field old) {
+    super.didUpdateWidget(old);
+    if (old.focusNode != widget.focusNode) {
+      old.focusNode.removeListener(_onFocusChange);
+      widget.focusNode.addListener(_onFocusChange);
+    }
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    widget.focusNode.removeListener(_onFocusChange);
     super.dispose();
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _isFocused = widget.focusNode.hasFocus;
+    });
   }
 
   void _insertCharacter(String char) {
@@ -218,65 +259,62 @@ class _FieldState extends State<_Field> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Label row — shows quick-key buttons when focused
-        Row(
-          children: [
-            Text(
-              widget.label,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: FindingCenterTheme.textSecondary,
+    return GestureDetector(
+      onTap: widget.onFieldTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Label row — shows quick-key buttons when focused
+          Row(
+            children: [
+              Text(
+                widget.label,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: FindingCenterTheme.textSecondary,
+                ),
+              ),
+              if (_isFocused) ...[
+                const Spacer(),
+                _quickKey('/'),
+                const SizedBox(width: 6),
+                _quickKey('-'),
+              ],
+            ],
+          ),
+          const SizedBox(height: 6),
+          TextField(
+            controller: widget.controller,
+            focusNode: widget.focusNode,
+            keyboardType: TextInputType.none,
+            style: const TextStyle(
+              color: FindingCenterTheme.textPrimary,
+              fontSize: 16,
+            ),
+            decoration: InputDecoration(
+              hintText: widget.hint,
+              hintStyle: TextStyle(
+                color: FindingCenterTheme.textSecondary.withValues(alpha: 0.4),
+              ),
+              filled: true,
+              fillColor: FindingCenterTheme.inputBg,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: widget.color, width: 1.5),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 14,
               ),
             ),
-            if (_isFocused) ...[
-              const Spacer(),
-              _quickKey('/'),
-              const SizedBox(width: 6),
-              _quickKey('-'),
-            ],
-          ],
-        ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: widget.controller,
-          focusNode: _focusNode,
-          keyboardType: const TextInputType.numberWithOptions(
-            signed: true,
-            decimal: true,
           ),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[-0-9./]')),
-          ],
-          style: const TextStyle(
-            color: FindingCenterTheme.textPrimary,
-            fontSize: 16,
-          ),
-          decoration: InputDecoration(
-            hintText: widget.hint,
-            hintStyle: TextStyle(
-              color: FindingCenterTheme.textSecondary.withValues(alpha: 0.4),
-            ),
-            filled: true,
-            fillColor: FindingCenterTheme.inputBg,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: widget.color, width: 1.5),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 14,
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
