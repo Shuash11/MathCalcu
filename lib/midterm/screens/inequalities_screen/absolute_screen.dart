@@ -10,7 +10,7 @@ class AbsoluteScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Absolute Value Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. |x − 4| < 2',
+      hint: 'e.g. |x − 4| < 2  or  |2x + 1| ≥ 5',
       solveFunction: GeneratedAbsoluteSolver.solve,
       stepsFunction: GeneratedAbsoluteSolver.getSteps,
     );

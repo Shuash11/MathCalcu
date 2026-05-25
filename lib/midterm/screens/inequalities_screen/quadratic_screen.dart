@@ -10,7 +10,7 @@ class QuadraticScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Quadratic Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. x² − 5x + 6 < 0',
+      hint: 'e.g. x² − 5x + 6 < 0  or  x² + 2x ≥ 3',
       solveFunction: GeneratedQuadraticSolver.solve,
       stepsFunction: GeneratedQuadraticSolver.getSteps,
     );

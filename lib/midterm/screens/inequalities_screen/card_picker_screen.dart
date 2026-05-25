@@ -3,11 +3,9 @@ import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import '../../cards/inequalities/absolute_card.dart';
 import '../../cards/inequalities/continued_card.dart';
-import '../../cards/inequalities/non_strict_card.dart';
+import '../../cards/inequalities/linear_card.dart';
 import '../../cards/inequalities/quadratic_card.dart';
 import '../../cards/inequalities/rational_card.dart';
-import '../../cards/inequalities/simple_card.dart';
-import '../../cards/inequalities/strict_card.dart';
 import '../../cards/inequalities/radical_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -62,11 +60,7 @@ class InequalityCardPickerScreen extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // ── Cards wired in from their own files ──
-                    const SimpleCard(),
-                    const SizedBox(height: 12),
-                    const StrictCard(),
-                    const SizedBox(height: 12),
-                    const NonStrictCard(),
+                    const LinearCard(),
                     const SizedBox(height: 12),
                     const AbsoluteCard(),
                     const SizedBox(height: 12),

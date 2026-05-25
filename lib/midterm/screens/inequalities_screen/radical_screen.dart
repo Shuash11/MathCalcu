@@ -10,7 +10,7 @@ class RadicalScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Radical Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. sqrt x + 4 < 3  or  sqrt(x+3)/(x-1) > 0',
+      hint: 'e.g. sqrt(x + 4) < 3  (type sqrt(...) for square root)',
       solveFunction: GeneratedRadicalSolver.solve,
       stepsFunction: GeneratedRadicalSolver.getSteps,
     );

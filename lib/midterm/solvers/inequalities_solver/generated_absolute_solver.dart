@@ -43,7 +43,7 @@ class GeneratedAbsoluteSolver {
         if (p.k == 0 && effectiveOp == '>') {
           final root = -p.b / p.a;
           final fR = _fmt(root);
-          return SolveResult(answer: 'x ≥ $fR', points: [root], intervalNotation: '(-∞, $fR) ∪ ($fR, ∞)');
+          return SolveResult(answer: 'x < $fR or x > $fR', points: [root], intervalNotation: '(-∞, $fR) ∪ ($fR, ∞)');
         }
 
         final v1 = (-p.k - p.b) / p.a;
@@ -73,45 +73,265 @@ class GeneratedAbsoluteSolver {
 
     int n = 1;
 
+    // Step 1: Show the original inequality with proper absolute value delimiters
     steps.add(StepModel(
       stepNumber: n++,
-      latex: input.trim(),
+      latex: _absToLatex(input.trim()),
     ));
 
-    final innerStr = '${_coefLatex(p.a)}x ${p.b >= 0 ? "+ ${_fmtLatex(p.b)}" : "- ${_fmtLatex(p.b.abs())}"}';
+    final innerStr = p.b == 0 ? '${_coefLatex(p.a)}x' : '${_coefLatex(p.a)}x ${p.b >= 0 ? "+ ${_fmtLatex(p.b)}" : "- ${_fmtLatex(p.b.abs())}"}';
     final kStr = _fmtLatex(p.k);
-    bool absOnLeft = p.absOnLeft;
-    String effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
+    final absOnLeft = p.absOnLeft;
+    final effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
     final isNarrow = effectiveOp == '<' || effectiveOp == '≤';
 
-    if (isNarrow) {
-      final nkStr = _fmtLatex(-p.k);
+    // ---- Edge cases ----
+    if (p.a == 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'Write as -${_fmt(p.k)} < ... < ${_fmt(p.k)}',
+        hint: 'No variable term — evaluate the constant directly',
+        latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
+      ));
+      return steps;
+    }
+
+    if (p.k < 0) {
+      if (isNarrow) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Absolute value is always \u2265 0, so it can never be < ${_fmt(p.k)}',
+          latex: r'\emptyset',
+        ));
+      } else {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Absolute value is always \u2265 0, which is always \u2265 ${_fmt(p.k)}',
+          latex: r'(-\infty, \infty)',
+        ));
+      }
+      return steps;
+    }
+
+    if (p.k == 0 && effectiveOp == '<') {
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Absolute value is always \u2265 0, so |expr| < 0 has no solution',
+        latex: r'\emptyset',
+      ));
+      return steps;
+    }
+
+    if (p.k == 0 && effectiveOp == '>') {
+      // |ax+b| > 0  =>  ax+b ≠ 0  =>  x ≠ -b/a
+      final root = _fmtLatex(-p.b / p.a);
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Absolute value is always \u2265 0, so |expr| > 0 means expr \u2260 0',
+        latex: r'x \neq ' + root,
+      ));
+      steps.add(StepModel(
+        stepNumber: n++,
+        latex: r'(-\infty, ' + root + r') \cup (' + root + r', \infty)',
+      ));
+      return steps;
+    }
+
+    // ---- Common computations ----
+    final flipOp = _flipOp(effectiveOp);
+    final negKStr = _fmtLatex(-p.k);
+    final v1 = (-p.k - p.b) / p.a;
+    final v2 = (p.k - p.b) / p.a;
+    final l = v1 < v2 ? v1 : v2;
+    final h = v1 < v2 ? v2 : v1;
+    final result = solve(input);
+
+    // Pre-compute formatted strings for reuse
+    final leftConst = _fmtLatex(-p.k - p.b);
+    final rightConst = _fmtLatex(p.k - p.b);
+
+    if (isNarrow) {
+      // ──────────────────────────────────────────────────────────
+      // NARROW CASE  |ax+b| < k  →  -k < ax+b < k
+      // Steps: Rule → Isolate x-term → Divide → Interval
+      // ──────────────────────────────────────────────────────────
+
+      // ──────────────────────────────────────────────────────────
+      // Step 2: Apply Theorem 1 — |X| < k  =>  -k < X < k
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Apply Theorem 1',
         details: [
-          r'\text{If } |X| < k \text{ then } -k < X < k',
-          '$nkStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+          _absToLatex(input.trim()),
+          r'\Downarrow',
+          r'\text{Theorem 1: } |X| ' + _texOp(effectiveOp) + r' k \Rightarrow -k ' + _texOp(effectiveOp) + r' X ' + _texOp(effectiveOp) + r' k',
+          '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
         ],
-        latex: '$nkStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+        latex: '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+      ));
+
+      // ──────────────────────────────────────────────────────────
+      // Step 3: Isolate x-term — subtract/add constant
+      if (p.b != 0) {
+        final bAbs = _fmtLatex(p.b.abs());
+        final bStr = _fmtLatex(p.b);
+        final amount = p.b > 0 ? _fmt(p.b) : _fmt(-p.b);
+        final opWord = p.b > 0 ? 'Subtract' : 'Add';
+        final leftArith = p.b > 0
+            ? '$negKStr - $bAbs'
+            : '$negKStr + $bAbs';
+        final midArith = p.b > 0
+            ? '${_coefLatex(p.a)}x + $bStr - $bAbs'
+            : '${_coefLatex(p.a)}x - $bAbs + $bAbs';
+        final rightArith = p.b > 0
+            ? '$kStr - $bAbs'
+            : '$kStr + $bAbs';
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: '$opWord $amount from all three parts',
+          details: [
+            '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+            r'\Downarrow',
+            '$leftArith ${_texOp(effectiveOp)} $midArith ${_texOp(effectiveOp)} $rightArith',
+            r'\Downarrow',
+            '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+          ],
+          latex: '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+        ));
+      }
+
+      // ──────────────────────────────────────────────────────────
+      // Step 4: Divide by x-coefficient
+      if (p.a != 1 && p.a != -1) {
+        final finalOpNarrow = p.a < 0 ? _flipOp(effectiveOp) : effectiveOp;
+        final aStr = _fmtLatex(p.a);
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: p.a < 0
+              ? 'Divide all parts by ${_fmt(p.a.abs())}, flip inequality signs'
+              : 'Divide all parts by ${_fmt(p.a)}',
+          details: [
+            '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+            r'\Downarrow',
+            r'\frac{' + _fmtLatex(-p.k - p.b) + '}{' + aStr + '} ' + _texOp(finalOpNarrow) + r' \frac{' + _coefLatex(p.a) + 'x}{' + aStr + '} ' + _texOp(finalOpNarrow) + r' \frac{' + _fmtLatex(p.k - p.b) + '}{' + aStr + '}',
+            r'\Downarrow',
+            '${_fmtLatex(l)} ${_texOp(finalOpNarrow)} x ${_texOp(finalOpNarrow)} ${_fmtLatex(h)}',
+          ],
+          latex: '${_fmtLatex(l)} ${_texOp(finalOpNarrow)} x ${_texOp(finalOpNarrow)} ${_fmtLatex(h)}',
+        ));
+      } else if (p.a == -1) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Multiply all parts by -1, flip signs',
+          details: [
+            '$leftConst ${_texOp(effectiveOp)} -x ${_texOp(effectiveOp)} $rightConst',
+            r'\Downarrow',
+            '${_fmtLatex(l)} ${_texOp(effectiveOp)} x ${_texOp(effectiveOp)} ${_fmtLatex(h)}',
+          ],
+          latex: '${_fmtLatex(l)} ${_texOp(effectiveOp)} x ${_texOp(effectiveOp)} ${_fmtLatex(h)}',
+        ));
+      }
+
+      // ──────────────────────────────────────────────────────────
+      // Final: Interval notation
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Write solution in interval notation',
+        latex: _toLatexInterval(result.intervalNotation ?? ''),
       ));
     } else {
-      final flipOp = _flipOp(effectiveOp);
+      // ──────────────────────────────────────────────────────────
+      // WIDE CASE  |ax+b| > k  →  ax+b < -k  OR  ax+b > k
+      // Steps: Rule → Solve Left → Solve Right → Combine → Interval
+      // ──────────────────────────────────────────────────────────
+
+      // ──────────────────────────────────────────────────────────
+      // Step 2: Apply Theorem 2 — |X| > k  =>  X < -k  or  X > k
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'Split into two separate inequalities',
+        hint: 'Apply Theorem 2',
         details: [
-          r'\text{If } |X| > k \text{ then } X < -k \text{ or } X > k',
-          '$innerStr ${_texOp(flipOp)} -$kStr \text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+          _absToLatex(input.trim()),
+          r'\Downarrow',
+          r'\text{Theorem 2: } |X| ' + _texOp(effectiveOp) + r' k \Rightarrow X ' + _texOp(flipOp) + r' -k \text{ or } X ' + _texOp(effectiveOp) + r' k',
+          '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
         ],
-        latex: '$innerStr ${_texOp(flipOp)} -$kStr \text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+        latex: '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+      ));
+
+      final leftOp = p.a < 0 ? _flipOp(flipOp) : flipOp;
+      final leftVal = _fmtLatex((-p.k - p.b) / p.a);
+      final rightOp = p.a < 0 ? _flipOp(effectiveOp) : effectiveOp;
+      final rightVal = _fmtLatex((p.k - p.b) / p.a);
+
+      // ──────────────────────────────────────────────────────────
+      // Step 3: Isolate x-term in both branches
+      if (p.b != 0) {
+        final lConst = _fmtLatex(-p.k - p.b);
+        final rConst = _fmtLatex(p.k - p.b);
+        final bAbs = _fmtLatex(p.b.abs());
+        final bStr = _fmtLatex(p.b);
+        final amount = p.b > 0 ? _fmt(p.b) : _fmt(-p.b);
+        final opWord = p.b > 0 ? 'Subtract' : 'Add';
+        final leftArith = p.b > 0
+            ? '$negKStr - $bAbs'
+            : '$negKStr + $bAbs';
+        final rightArith = p.b > 0
+            ? '$kStr - $bAbs'
+            : '$kStr + $bAbs';
+        final midArith = p.b > 0
+            ? '${_coefLatex(p.a)}x + $bStr - $bAbs'
+            : '${_coefLatex(p.a)}x - $bAbs + $bAbs';
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: '$opWord $amount from both sides of each inequality',
+          details: [
+            '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+            r'\Downarrow',
+            '$midArith ${_texOp(flipOp)} $leftArith \\text{ or } $midArith ${_texOp(effectiveOp)} $rightArith',
+            r'\Downarrow',
+            '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lConst \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rConst',
+          ],
+          latex: '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lConst \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rConst',
+        ));
+      }
+
+      // Step 4: Divide by coefficient in both branches
+      if (p.a != 1 && p.a != -1) {
+        final aStr = _fmtLatex(p.a);
+        final lcStr = _fmtLatex(-p.k - p.b);
+        final rcStr = _fmtLatex(p.k - p.b);
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: p.a < 0 ? 'Divide both sides by ${_fmt(p.a.abs())}, flip signs' : 'Divide both sides by ${_fmt(p.a)}',
+          details: [
+            '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lcStr \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rcStr',
+            r'\Downarrow',
+            r'\frac{' + _coefLatex(p.a) + 'x}{' + aStr + '} ' + _texOp(leftOp) + r' \frac{' + lcStr + '}{' + aStr + '} \\text{ or } ' + r'\frac{' + _coefLatex(p.a) + 'x}{' + aStr + '} ' + _texOp(rightOp) + r' \frac{' + rcStr + '}{' + aStr + '}',
+            r'\Downarrow',
+            'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+          ],
+          latex: 'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+        ));
+      } else if (p.a == -1) {
+        steps.add(StepModel(
+          stepNumber: n++,
+          hint: 'Multiply by -1, flip signs',
+          details: [
+            'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+          ],
+          latex: 'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+        ));
+      }
+
+      // ──────────────────────────────────────────────────────────
+      // Step 5: Interval notation
+      steps.add(StepModel(
+        stepNumber: n++,
+        hint: 'Combine into solution set',
+        latex: _toLatexInterval(result.intervalNotation ?? ''),
       ));
     }
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
-    ));
 
     return steps;
   }
@@ -119,6 +339,7 @@ class GeneratedAbsoluteSolver {
   static _Parsed? _parse(String input) {
     String s = input
         .trim()
+        .replaceAll('−', '-')
         .replaceAll('²', '^2')
         .replaceAll(' ', '')
         .replaceAll('>=', '≥')
@@ -261,6 +482,26 @@ class GeneratedAbsoluteSolver {
     }
   }
 
+
+  /// Replace |...| with \lvert...\rvert for proper LaTeX absolute value rendering
+  static String _absToLatex(String s) {
+    final buf = StringBuffer();
+    bool inAbs = false;
+    for (int i = 0; i < s.length; i++) {
+      if (s[i] == '|') {
+        if (!inAbs) {
+          buf.write(r'\lvert ');
+          inAbs = true;
+        } else {
+          buf.write(r' \rvert');
+          inAbs = false;
+        }
+      } else {
+        buf.write(s[i]);
+      }
+    }
+    return buf.toString();
+  }
 }
 
 class _Parsed {

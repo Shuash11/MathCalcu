@@ -44,24 +44,32 @@ class _StepsDrawerState extends State<StepsDrawer> {
 
   String _buildCopyText() {
     final buf = StringBuffer();
-    buf.writeln(widget.title);
-    buf.writeln('-' * widget.title.length);
-    buf.writeln();
     for (final s in widget.steps) {
-      buf.write('${s.stepNumber}. ');
-      if (s.hint != null && s.hint!.isNotEmpty) {
-        buf.writeln(s.hint);
-        buf.write('   ');
+      if (s.latex != null && s.latex!.isNotEmpty) {
+        buf.writeln(_stripLatex(s.latex!));
       }
-      buf.writeln(s.latex ?? '');
-      if (s.subLatex != null) {
-        for (final sub in s.subLatex!) {
-          buf.writeln('   $sub');
-        }
-      }
-      buf.writeln();
     }
     return buf.toString();
+  }
+
+  String _stripLatex(String s) {
+    s = s.replaceAllMapped(RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}'), (m) => '${m[1]}/${m[2]}');
+    s = s
+        .replaceAll(r'\lvert ', '|')
+        .replaceAll(r'\lvert', '|')
+        .replaceAll(r'\rvert ', '|')
+        .replaceAll(r'\rvert', '|')
+        .replaceAll(r'\infty', '\u221e')
+        .replaceAll(r'\cup', '\u222a')
+        .replaceAll(r'\neq', '\u2260')
+        .replaceAll(r'\geq', '\u2265')
+        .replaceAll(r'\leq', '\u2264')
+        .replaceAll(r'\emptyset', '\u2205')
+        .replaceAll(r'\Downarrow', '')
+        .replaceAll(r'\downarrow', '');
+    s = s.replaceAllMapped(RegExp(r'\\text\{([^}]*)\}'), (m) => m[1] ?? '');
+    s = s.replaceAll(RegExp(r'[\{\}]'), '');
+    return s.trim();
   }
 
   @override
