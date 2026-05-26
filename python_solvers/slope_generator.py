@@ -691,7 +691,7 @@ class SlopeSolver {
     final (l, r) = Parser(toks).parse();
     if (r == null) return _solveExplicit(const Var('y'), l, t, pointValues ?? {});
     if (l is Var && l.name == 'y') return _solveExplicit(l, r, t, pointValues ?? {});
-    final lV = ExprUtils.collectVars(l), rV = ExprUtils.collectVars(r);
+    final rV = ExprUtils.collectVars(r);
     if (l is Var && (l.name == 'y' || !rV.contains('y'))) return _solveExplicit(l, r, t, pointValues ?? {});
     return _solveImplicit(l, r, t, pointValues ?? {});
   }

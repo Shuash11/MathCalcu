@@ -63,6 +63,21 @@ class StepItemWidget extends StatelessWidget {
     }
   }
 
+  Widget _buildHint(BuildContext context, String hint) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),
+      child: Text(
+        hint,
+        style: TextStyle(
+          fontSize: 12,
+          color: FinalsTheme.textSecondary(context),
+          fontStyle: FontStyle.italic,
+          height: 1.3,
+        ),
+      ),
+    );
+  }
+
   Widget _buildStandardStep(BuildContext context) {
     Color accentColor;
     IconData icon;
@@ -133,6 +148,8 @@ class StepItemWidget extends StatelessWidget {
             ),
           ),
           
+          if (step.hint != null) _buildHint(context, step.hint!),
+          
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Column(
@@ -163,7 +180,7 @@ class StepItemWidget extends StatelessWidget {
                 }
               }).toList(),
             ),
-          )
+          ),
         ],
       ),
     );
