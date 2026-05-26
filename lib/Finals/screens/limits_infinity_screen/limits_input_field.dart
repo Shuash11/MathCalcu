@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 class LimitsInputField extends StatelessWidget {
   final TextEditingController expressionController;
   final TextEditingController approachController;
+  final FocusNode expressionFocus;
+  final FocusNode approachFocus;
   final String currentVariable;
   final ValueChanged<String> onVariableChanged;
   final VoidCallback onSolve;
@@ -12,6 +14,8 @@ class LimitsInputField extends StatelessWidget {
     super.key,
     required this.expressionController,
     required this.approachController,
+    required this.expressionFocus,
+    required this.approachFocus,
     required this.currentVariable,
     required this.onVariableChanged,
     required this.onSolve,
@@ -23,8 +27,7 @@ class LimitsInputField extends StatelessWidget {
     final isCompact = screenWidth < 380;
     
     final inputHeight = isCompact ? 34.0 : 40.0;
-    final quickChipFontSize = isCompact ? 11.0 : 13.0;
-    final quickChipPadding = isCompact ? 6.0 : 10.0;
+
     final limitTextSize = isCompact ? 14.0 : 18.0;
 
     return Container(
@@ -54,6 +57,8 @@ class LimitsInputField extends StatelessWidget {
                   flex: 3,
                   child: TextField(
                     controller: expressionController,
+                    focusNode: expressionFocus,
+                    keyboardType: TextInputType.none,
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
@@ -158,6 +163,8 @@ class LimitsInputField extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: approachController,
+                      focusNode: approachFocus,
+                      keyboardType: TextInputType.none,
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context)
@@ -173,99 +180,14 @@ class LimitsInputField extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(width: isCompact ? 4 : 6),
 
-// Presets (inf, -inf)
-                _buildQuickChip(context, '0', fontSize: quickChipFontSize, padding: quickChipPadding),
-                SizedBox(width: isCompact ? 3 : 4),
-                _buildQuickChip(context, '∞', val: 'inf', fontSize: quickChipFontSize, padding: quickChipPadding),
-                SizedBox(width: isCompact ? 3 : 4),
-                _buildQuickChip(context, '-∞', val: '-inf', fontSize: quickChipFontSize, padding: quickChipPadding),
               ],
             ),
           ),
 
-          const Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16),
 
-          // Power & Operators Row
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildOperatorButton(context, '^', 'Power'),
-              ],
-            ),
-          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildQuickChip(BuildContext context, String label, {String? val, double fontSize = 13, double padding = 8}) {
-    return InkWell(
-      onTap: () {
-        approachController.text = val ?? label;
-      },
-      borderRadius: BorderRadius.circular(6),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding * 0.7),
-        decoration: BoxDecoration(
-          border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.2)),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: FinalsTheme.primary,
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOperatorButton(
-      BuildContext context, String value, String label) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _insertText(value),
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: FinalsTheme.cardSecondary(context),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: FinalsTheme.primary.withValues(alpha: 0.15),
-            ),
-          ),
-          child: Text(
-            label,
-style: const TextStyle(
-              color: FinalsTheme.primary,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _insertText(String text) {
-    final currentText = expressionController.text;
-    final selection = expressionController.selection;
-    final newText = currentText.replaceRange(
-      selection.start,
-      selection.end,
-      text,
-    );
-    expressionController.text = newText;
-    expressionController.selection = TextSelection.collapsed(
-      offset: selection.start + text.length,
     );
   }
 

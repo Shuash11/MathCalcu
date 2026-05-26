@@ -3,6 +3,7 @@ import 'package:calculus_system/Finals/screens/limits_infinity_screen/limits_ans
 import 'package:calculus_system/Finals/screens/limits_infinity_screen/limits_input_field.dart';
 import 'package:calculus_system/Finals/screens/limits_infinity_screen/limits_step_guide.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:flutter/material.dart';
 
 class LimitsInfinityScreen extends StatefulWidget {
@@ -18,20 +19,50 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _stepsKey = GlobalKey();
 
+  final _expressionFocus = FocusNode();
+  final _approachFocus = FocusNode();
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
+
   String _variable = 'x';
   LimitSolution? _solution;
   bool _isLoading = false;
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    _expressionFocus.addListener(_onExpressionFocusChange);
+    _approachFocus.addListener(_onApproachFocusChange);
+  }
+
+  void _onExpressionFocusChange() {
+    if (_expressionFocus.hasFocus) {
+      setState(() => _activeController = _exprController);
+    }
+  }
+
+  void _onApproachFocusChange() {
+    if (_approachFocus.hasFocus) {
+      setState(() => _activeController = _approachController);
+    }
+  }
+
+  @override
   void dispose() {
     _exprController.dispose();
     _approachController.dispose();
     _scrollController.dispose();
+    _expressionFocus.removeListener(_onExpressionFocusChange);
+    _approachFocus.removeListener(_onApproachFocusChange);
+    _expressionFocus.dispose();
+    _approachFocus.dispose();
+    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
   Future<void> _solve() async {
+    _hideKeyboardSignal.value++;
     final expression = _exprController.text.trim();
     final approachText = _approachController.text.trim();
 
@@ -99,7 +130,10 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
         ),
       ),
       body: SafeArea(
-        child: CustomScrollView(
+        child: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
           controller: _scrollController,
           physics: const BouncingScrollPhysics(),
           slivers: [
@@ -147,6 +181,8 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                 child: LimitsInputField(
                   expressionController: _exprController,
                   approachController: _approachController,
+                  expressionFocus: _expressionFocus,
+                  approachFocus: _approachFocus,
                   currentVariable: _variable,
                   onVariableChanged: (v) => setState(() => _variable = v),
                   onSolve: _solve,
@@ -278,6 +314,14 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                   ),
                 ),
               ),
+          ],
+        ),
+            ),
+            MathKeyboard(
+              controller: _activeController ?? _exprController,
+              accentColor: FinalsTheme.primary,
+              hideSignal: _hideKeyboardSignal,
+            ),
           ],
         ),
       ),

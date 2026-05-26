@@ -4,6 +4,7 @@ import 'substitution_steps_view.dart';
 import 'package:calculus_system/Finals/solvers/evaluating_limits_solver/by_substitution/substitution_engine.dart';
 import 'package:calculus_system/Finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:flutter/material.dart';
 
 class SubstitutionLimitScreen extends StatefulWidget {
@@ -16,6 +17,10 @@ class SubstitutionLimitScreen extends StatefulWidget {
 class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
+  final _expressionFocus = FocusNode();
+  final _approachFocus = FocusNode();
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
   String _currentVariable = 'x';
   
   SubstitutionResult? _result;
@@ -41,17 +46,38 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
     ).animate(CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic));
 
     _contentController.forward();
+
+    _expressionFocus.addListener(_onExpressionFocusChange);
+    _approachFocus.addListener(_onApproachFocusChange);
   }
 
   @override
   void dispose() {
+    _expressionFocus.removeListener(_onExpressionFocusChange);
+    _approachFocus.removeListener(_onApproachFocusChange);
     _expressionController.dispose();
     _approachController.dispose();
+    _expressionFocus.dispose();
+    _approachFocus.dispose();
+    _hideKeyboardSignal.dispose();
     _contentController.dispose();
     super.dispose();
   }
 
+  void _onExpressionFocusChange() {
+    if (_expressionFocus.hasFocus) {
+      setState(() => _activeController = _expressionController);
+    }
+  }
+
+  void _onApproachFocusChange() {
+    if (_approachFocus.hasFocus) {
+      setState(() => _activeController = _approachController);
+    }
+  }
+
   void _solve() {
+    _hideKeyboardSignal.value++;
     if (_expressionController.text.isEmpty || _approachController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -136,6 +162,8 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                         SubstitutionInputField(
                           expressionController: _expressionController,
                           approachController: _approachController,
+                          expressionFocus: _expressionFocus,
+                          approachFocus: _approachFocus,
                           currentVariable: _currentVariable,
                           onVariableChanged: (v) => setState(() => _currentVariable = v),
                           onSolve: _solve,
@@ -194,6 +222,11 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                   ),
                 ),
               ),
+            ),
+            MathKeyboard(
+              controller: _activeController ?? _expressionController,
+              accentColor: FinalsTheme.primary,
+              hideSignal: _hideKeyboardSignal,
             ),
           ],
         ),

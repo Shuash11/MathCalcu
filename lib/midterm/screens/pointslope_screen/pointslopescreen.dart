@@ -1,7 +1,6 @@
 // lib/ui/point_slope_screen.dart
 import 'package:calculus_system/midterm/theme/pointslope_theme/pointslopetheme.dart';
 import 'package:calculus_system/midterm/solvers/pointslope_solver/pointslopesolver.dart';
-import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'pointslopesteps.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -22,8 +21,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   final _mFocus = FocusNode();
   final _x1Focus = FocusNode();
   final _y1Focus = FocusNode();
-  TextEditingController? _activeController;
-  final _hideKeyboardSignal = ValueNotifier<int>(0);
 
   final _resultNotifier = ValueNotifier<_ResultData?>(null);
   final _badgesNotifier = ValueNotifier<Map<String, String>?>(null);
@@ -79,7 +76,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     _badgesNotifier.dispose();
     _graphStringsNotifier.dispose();
     _showStepsNotifier.dispose();
-    _hideKeyboardSignal.dispose();
 
     super.dispose();
   }
@@ -108,13 +104,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     _debounceTimer = Timer(const Duration(milliseconds: 400), _computeResult);
   }
 
-  void _onFieldFocus(TextEditingController ctrl, FocusNode node) {
-    node.requestFocus();
-    setState(() => _activeController = ctrl);
-  }
-
   void _computeResult() {
-    _hideKeyboardSignal.value++;
     final mText = _mCtrl.text.trim();
     final xText = _x1Ctrl.text.trim();
     final yText = _y1Ctrl.text.trim();
@@ -208,7 +198,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                               x1Focus: _x1Focus,
                               y1Focus: _y1Focus,
                               s: s,
-                              onFieldFocus: _onFieldFocus,
                             ),
                           ),
                           SizedBox(height: 20 * s),
@@ -272,12 +261,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                             },
                           ),
                           SizedBox(height: 16 * s),
-                          MathKeyboard(
-                            controller: _activeController ?? _mCtrl,
-                            accentColor: PSTheme.electricPurple,
-                            hideSignal: _hideKeyboardSignal,
-                          ),
-                          SizedBox(height: 10 * s),
                         ],
                       ),
                     ),

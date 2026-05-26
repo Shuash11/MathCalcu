@@ -7,6 +7,8 @@ class LCDInputField extends StatelessWidget {
   final String currentVariable;
   final ValueChanged<String> onVariableChanged;
   final VoidCallback onSolve;
+  final FocusNode expressionFocus;
+  final FocusNode approachFocus;
 
   const LCDInputField({
     super.key,
@@ -15,6 +17,8 @@ class LCDInputField extends StatelessWidget {
     required this.currentVariable,
     required this.onVariableChanged,
     required this.onSolve,
+    required this.expressionFocus,
+    required this.approachFocus,
   });
 
   @override
@@ -29,8 +33,6 @@ class LCDInputField extends StatelessWidget {
     final limitTextSize = isCompact ? 16.0 : (isTablet ? 24.0 : 18.0);
     final variableFontSize = isCompact ? 13.0 : (isTablet ? 18.0 : 15.0);
     final inputHeight = isCompact ? 38.0 : (isTablet ? 48.0 : 44.0);
-    final quickChipFontSize = isCompact ? 11.0 : 13.0;
-    final quickChipPadding = isCompact ? 6.0 : 10.0;
     final expressionPadding = isCompact
         ? const EdgeInsets.fromLTRB(12, 8, 8, 4)
         : const EdgeInsets.fromLTRB(20, 12, 12, 4);
@@ -62,6 +64,8 @@ class LCDInputField extends StatelessWidget {
                   flex: 3,
                   child: TextField(
                     controller: expressionController,
+                    focusNode: expressionFocus,
+                    keyboardType: TextInputType.text,
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
@@ -80,10 +84,6 @@ class LCDInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Math Symbol Button
-                _buildMathSymbolChip(context, '√', '√()', accentColor, isFunction: true),
-                const SizedBox(width: 6),
 
                 // Solve Button
                 _SolveButton(onTap: onSolve, accentColor: accentColor),
@@ -139,6 +139,8 @@ class LCDInputField extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: approachController,
+                      focusNode: approachFocus,
+                      keyboardType: TextInputType.text,
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
@@ -161,17 +163,6 @@ class LCDInputField extends StatelessWidget {
                 ),
 
                 SizedBox(width: isCompact ? 4 : 8),
-
-                // Quick Presets
-                _buildQuickChip(context, '0', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                SizedBox(width: isCompact ? 4 : 6),
-                _buildQuickChip(context, '1', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                if (!isCompact) ...[
-                  const SizedBox(width: 6),
-                  _buildQuickChip(context, '2', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                  const SizedBox(width: 6),
-                  _buildQuickChip(context, '3', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                ],
               ],
             ),
           ),
@@ -180,28 +171,7 @@ class LCDInputField extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickChip(BuildContext context, String label, Color accent, {double fontSize = 13, double padding = 10}) {
-    return InkWell(
-      onTap: () => approachController.text = label,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding * 0.7),
-        decoration: BoxDecoration(
-          color: accent.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: accent.withValues(alpha: 0.15)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: accent,
-            fontSize: fontSize,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-    );
-  }
+
 
   void _showVariablePicker(BuildContext context) {
     final variables = ['x', 'y', 'z', 't', 'n', 'u'];
@@ -280,49 +250,7 @@ class LCDInputField extends StatelessWidget {
       ),
     );
   }
-  Widget _buildMathSymbolChip(BuildContext context, String label, String inputStr, Color accent, {bool isFunction = false}) {
-    return InkWell(
-      onTap: () {
-        final text = expressionController.text;
-        final selection = expressionController.selection;
-        
-        // If there's no selection or cursor, just append to the end
-        if (selection.baseOffset == -1 || selection.extentOffset == -1) {
-          expressionController.text = text + inputStr;
-          if (isFunction) {
-            expressionController.selection = TextSelection.collapsed(offset: expressionController.text.length - 1);
-          }
-        } else {
-          // Insert at cursor position
-          final start = selection.start;
-          final end = selection.end;
-          final newText = text.replaceRange(start, end, inputStr);
-          expressionController.text = newText;
-          
-          // Place cursor perfectly inside the () for functions, or after the inserted text
-          final newOffset = isFunction ? start + inputStr.length - 1 : start + inputStr.length;
-          expressionController.selection = TextSelection.collapsed(offset: newOffset);
-        }
-      },
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: accent.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: accent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: accent,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
+
 }
 
 class _SolveButton extends StatefulWidget {

@@ -40,6 +40,8 @@ class _ParallelPerpendicularScreenState
     super.initState();
     _line1Ctrl.addListener(_onChanged);
     _line2Ctrl.addListener(_onChanged);
+    _line1Focus.addListener(_onLine1FocusChange);
+    _line2Focus.addListener(_onLine2FocusChange);
   }
 
   @override
@@ -51,8 +53,12 @@ class _ParallelPerpendicularScreenState
     _line2Ctrl
       ..removeListener(_onChanged)
       ..dispose();
-    _line1Focus.dispose();
-    _line2Focus.dispose();
+    _line1Focus
+      ..removeListener(_onLine1FocusChange)
+      ..dispose();
+    _line2Focus
+      ..removeListener(_onLine2FocusChange)
+      ..dispose();
     _resultNotifier.dispose();
     _errorNotifier.dispose();
     _hideKeyboardSignal.dispose();
@@ -64,9 +70,16 @@ class _ParallelPerpendicularScreenState
     _debounce = Timer(const Duration(milliseconds: 400), _compute);
   }
 
-  void _onFieldFocus(TextEditingController ctrl, FocusNode node) {
-    node.requestFocus();
-    setState(() => _activeController = ctrl);
+  void _onLine1FocusChange() {
+    if (_line1Focus.hasFocus) {
+      setState(() => _activeController = _line1Ctrl);
+    }
+  }
+
+  void _onLine2FocusChange() {
+    if (_line2Focus.hasFocus) {
+      setState(() => _activeController = _line2Ctrl);
+    }
   }
 
   void _compute() {
@@ -156,7 +169,6 @@ class _ParallelPerpendicularScreenState
                       label: 'LINE 1',
                       hint: 'e.g. 2x + 3y = 6',
                       accent: _cyan,
-                      onFieldTap: () => _onFieldFocus(_line1Ctrl, _line1Focus),
                     ),
                     const SizedBox(height: 10),
                     _EquationField(
@@ -165,7 +177,6 @@ class _ParallelPerpendicularScreenState
                       label: 'LINE 2',
                       hint: 'e.g. 4x - 6y + 1 = 0',
                       accent: emerald,
-                      onFieldTap: () => _onFieldFocus(_line2Ctrl, _line2Focus),
                     ),
                     const SizedBox(height: 8),
 
@@ -255,13 +266,12 @@ class _HintBanner extends StatelessWidget {
   }
 }
 
-class _EquationField extends StatelessWidget {
+class _EquationField extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final String label;
   final String hint;
   final Color accent;
-  final VoidCallback? onFieldTap;
 
   const _EquationField({
     required this.controller,
@@ -269,52 +279,59 @@ class _EquationField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.accent,
-    this.onFieldTap,
   });
 
   @override
+  State<_EquationField> createState() => _EquationFieldState();
+}
+
+class _EquationFieldState extends State<_EquationField> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onFieldTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label,
-              style: YITheme.inputLabelStyle(context)
-                  .copyWith(color: accent, fontSize: 10)),
-          const SizedBox(height: 6),
-          TextField(
-            controller: controller,
-            focusNode: focusNode,
-            style: YITheme.resultEquationStyle(context).copyWith(
-              color: YITheme.textPrimary(context),
-              fontSize: 16,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.label,
+            style: YITheme.inputLabelStyle(context)
+                .copyWith(color: widget.accent, fontSize: 10)),
+        const SizedBox(height: 6),
+        TextField(
+          controller: widget.controller,
+          focusNode: widget.focusNode,
+          keyboardType: TextInputType.none,
+          style: YITheme.resultEquationStyle(context).copyWith(
+            color: YITheme.textPrimary(context),
+            fontSize: 16,
+          ),
+          decoration: InputDecoration(
+            hintText: widget.hint,
+            hintStyle: YITheme.subtitleStyle(context).copyWith(
+              color: YITheme.textSecondary(context).withValues(alpha: 0.5),
             ),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: YITheme.subtitleStyle(context).copyWith(
-                color: YITheme.textSecondary(context).withValues(alpha: 0.5),
-              ),
-              filled: true,
-              fillColor: YITheme.surface(context).withValues(alpha: 0.8),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: accent.withValues(alpha: 0.3)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: accent, width: 1.5),
-              ),
+            filled: true,
+            fillColor: YITheme.surface(context).withValues(alpha: 0.8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: widget.accent.withValues(alpha: 0.3)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: widget.accent.withValues(alpha: 0.3)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: widget.accent, width: 1.5),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

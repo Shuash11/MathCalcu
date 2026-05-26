@@ -1,7 +1,6 @@
 import 'package:calculus_system/midterm/theme/two_point_slope_theme/two_point_slope_theme.dart';
 import 'two_point_slope_controller.dart';
 import 'package:calculus_system/midterm/graph/two_point_slope_graph/two_point_slope_graph.dart';
-import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'two_point_slope_steps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,8 +25,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   final _y1Focus = FocusNode();
   final _x2Focus = FocusNode();
   final _y2Focus = FocusNode();
-  TextEditingController? _activeController;
-  final _hideKeyboardSignal = ValueNotifier<int>(0);
   bool _showSteps = false;
 
   @override
@@ -55,13 +52,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     _y1Focus.dispose();
     _x2Focus.dispose();
     _y2Focus.dispose();
-    _hideKeyboardSignal.dispose();
     super.dispose();
-  }
-
-  void _onFieldFocus(TextEditingController ctrl, FocusNode node) {
-    node.requestFocus();
-    setState(() => _activeController = ctrl);
   }
 
   void _toggleSteps() => setState(() => _showSteps = !_showSteps);
@@ -88,12 +79,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               const SizedBox(height: space5xl),
               _buildInputCard(),
               const SizedBox(height: 20),
-              MathKeyboard(
-                controller: _activeController ?? _controller.x1Controller,
-                accentColor: TwoPointSlopeTheme.primary,
-                hideSignal: _hideKeyboardSignal,
-              ),
-              const SizedBox(height: 24),
               if (_controller.hasSolved) ...[
                 _buildResultCard(),
                 const SizedBox(height: space4xl),
@@ -194,7 +179,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'x₁',
                     hint: '0',
                     validator: _controller.validateNumber,
-                    onTap: () => _onFieldFocus(_controller.x1Controller, _x1Focus),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -205,7 +189,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'y₁',
                     hint: '0',
                     validator: _controller.validateNumber,
-                    onTap: () => _onFieldFocus(_controller.y1Controller, _y1Focus),
                   ),
                 ),
               ],
@@ -258,7 +241,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'x₂',
                     hint: '0',
                     validator: _controller.validateNumber,
-                    onTap: () => _onFieldFocus(_controller.x2Controller, _x2Focus),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -269,7 +251,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'y₂',
                     hint: '0',
                     validator: _controller.validateNumber,
-                    onTap: () => _onFieldFocus(_controller.y2Controller, _y2Focus),
                   ),
                 ),
               ],
@@ -312,9 +293,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
 
                 // Solve button
                 Expanded(
-                  child: _SolveButton(
+                  child:                   _SolveButton(
                     onTap: () {
-                      _hideKeyboardSignal.value++;
                       _controller.solve();
                       try {
                         HapticFeedback.mediumImpact();
@@ -518,7 +498,6 @@ class _CoordField extends StatelessWidget {
   final String label;
   final String hint;
   final String? Function(String?) validator;
-  final VoidCallback? onTap;
 
   const _CoordField({
     required this.controller,
@@ -526,25 +505,21 @@ class _CoordField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.validator,
-    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: TextFormField(
-        controller: controller,
-        focusNode: focusNode,
-        validator: validator,
-        keyboardType: TextInputType.none,
-        style: TextStyle(
-          color: TwoPointSlopeTheme.textPrimary(context),
-          fontSize: 16,
-          fontFamily: 'monospace',
-        ),
-        decoration: TwoPointSlopeTheme.inputDecoration(context, label, hint),
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      validator: validator,
+      keyboardType: TextInputType.text,
+      style: TextStyle(
+        color: TwoPointSlopeTheme.textPrimary(context),
+        fontSize: 16,
+        fontFamily: 'monospace',
       ),
+      decoration: TwoPointSlopeTheme.inputDecoration(context, label, hint),
     );
   }
 }

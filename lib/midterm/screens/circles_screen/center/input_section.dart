@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 class CenterInputSection extends StatelessWidget {
   final CenterController controller;
   final FocusNode x1Focus, y1Focus, x2Focus, y2Focus;
-  final void Function(TextEditingController, FocusNode) onFieldFocus;
   final VoidCallback? onCalculate;
 
   const CenterInputSection({
@@ -16,7 +15,6 @@ class CenterInputSection extends StatelessWidget {
     required this.y1Focus,
     required this.x2Focus,
     required this.y2Focus,
-    required this.onFieldFocus,
     this.onCalculate,
   });
 
@@ -34,7 +32,6 @@ class CenterInputSection extends StatelessWidget {
           yFocus: y1Focus,
           xHint: 'e.g. −2',
           yHint: 'e.g. 3',
-          onFieldFocus: onFieldFocus,
         ),
         const SizedBox(height: 16),
         _PointCard(
@@ -47,7 +44,6 @@ class CenterInputSection extends StatelessWidget {
           yFocus: y2Focus,
           xHint: 'e.g. 4',
           yHint: 'e.g. 5',
-          onFieldFocus: onFieldFocus,
         ),
         const SizedBox(height: 32),
         _ActionButtons(
@@ -69,7 +65,6 @@ class _PointCard extends StatelessWidget {
   final FocusNode yFocus;
   final String xHint;
   final String yHint;
-  final void Function(TextEditingController, FocusNode) onFieldFocus;
 
   const _PointCard({
     required this.label,
@@ -81,7 +76,6 @@ class _PointCard extends StatelessWidget {
     required this.yFocus,
     required this.xHint,
     required this.yHint,
-    required this.onFieldFocus,
   });
 
   @override
@@ -142,7 +136,6 @@ class _PointCard extends StatelessWidget {
                   label: 'x',
                   hint: xHint,
                   color: color,
-                  onFieldTap: () => onFieldFocus(xCtrl, xFocus),
                 ),
               ),
               const SizedBox(width: 12),
@@ -153,7 +146,6 @@ class _PointCard extends StatelessWidget {
                   label: 'y',
                   hint: yHint,
                   color: color,
-                  onFieldTap: () => onFieldFocus(yCtrl, yFocus),
                 ),
               ),
             ],
@@ -164,14 +156,12 @@ class _PointCard extends StatelessWidget {
   }
 }
 
-// ── Now stateful to support the slash button ──────────────────────────────────
 class _Field extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final String label;
   final String hint;
   final Color color;
-  final VoidCallback? onFieldTap;
 
   const _Field({
     required this.controller,
@@ -179,7 +169,6 @@ class _Field extends StatefulWidget {
     required this.label,
     required this.hint,
     required this.color,
-    this.onFieldTap,
   });
 
   @override
@@ -259,63 +248,60 @@ class _FieldState extends State<_Field> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onFieldTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Label row — shows quick-key buttons when focused
-          Row(
-            children: [
-              Text(
-                widget.label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: FindingCenterTheme.textSecondary,
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Label row — shows quick-key buttons when focused
+        Row(
+          children: [
+            Text(
+              widget.label,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: FindingCenterTheme.textSecondary,
               ),
-              if (_isFocused) ...[
-                const Spacer(),
-                _quickKey('/'),
-                const SizedBox(width: 6),
-                _quickKey('-'),
-              ],
+            ),
+            if (_isFocused) ...[
+              const Spacer(),
+              _quickKey('/'),
+              const SizedBox(width: 6),
+              _quickKey('-'),
             ],
+          ],
+        ),
+        const SizedBox(height: 6),
+        TextField(
+          controller: widget.controller,
+          focusNode: widget.focusNode,
+          keyboardType: TextInputType.text,
+          style: const TextStyle(
+            color: FindingCenterTheme.textPrimary,
+            fontSize: 16,
           ),
-          const SizedBox(height: 6),
-          TextField(
-            controller: widget.controller,
-            focusNode: widget.focusNode,
-            keyboardType: TextInputType.none,
-            style: const TextStyle(
-              color: FindingCenterTheme.textPrimary,
-              fontSize: 16,
+          decoration: InputDecoration(
+            hintText: widget.hint,
+            hintStyle: TextStyle(
+              color: FindingCenterTheme.textSecondary.withValues(alpha: 0.4),
             ),
-            decoration: InputDecoration(
-              hintText: widget.hint,
-              hintStyle: TextStyle(
-                color: FindingCenterTheme.textSecondary.withValues(alpha: 0.4),
-              ),
-              filled: true,
-              fillColor: FindingCenterTheme.inputBg,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: widget.color, width: 1.5),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 14,
-              ),
+            filled: true,
+            fillColor: FindingCenterTheme.inputBg,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: widget.color, width: 1.5),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 14,
             ),
           ),
+        ),
         ],
-      ),
-    );
+      );
   }
 }
 

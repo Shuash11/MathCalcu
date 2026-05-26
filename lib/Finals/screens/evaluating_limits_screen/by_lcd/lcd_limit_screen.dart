@@ -3,6 +3,7 @@ import 'lcd_input_field.dart';
 import 'lcd_steps_view.dart';
 import 'package:calculus_system/Finals/solvers/evaluating_limits_solver/by_lcd/math_limits_library.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:flutter/material.dart';
 
 class LCDLimitScreen extends StatefulWidget {
@@ -15,6 +16,10 @@ class LCDLimitScreen extends StatefulWidget {
 class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
+  final _expressionFocus = FocusNode();
+  final _approachFocus = FocusNode();
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
   String _currentVariable = 'x';
   
   LimitSolution? _solution;
@@ -39,6 +44,9 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
     ).animate(CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic));
 
     _contentController.forward();
+
+    _expressionFocus.addListener(_onExpressionFocusChange);
+    _approachFocus.addListener(_onApproachFocusChange);
   }
 
   @override
@@ -46,10 +54,28 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
     _expressionController.dispose();
     _approachController.dispose();
     _contentController.dispose();
+    _expressionFocus.removeListener(_onExpressionFocusChange);
+    _approachFocus.removeListener(_onApproachFocusChange);
+    _expressionFocus.dispose();
+    _approachFocus.dispose();
+    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
+  void _onExpressionFocusChange() {
+    if (_expressionFocus.hasFocus) {
+      setState(() => _activeController = _expressionController);
+    }
+  }
+
+  void _onApproachFocusChange() {
+    if (_approachFocus.hasFocus) {
+      setState(() => _activeController = _approachController);
+    }
+  }
+
   void _solve() {
+    _hideKeyboardSignal.value++;
     if (_expressionController.text.isEmpty || _approachController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -156,6 +182,9 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                       children: [
                         // Input Section
                         LCDInputField(
+                          expressionFocus: _expressionFocus,
+                          approachFocus: _approachFocus,
+
                           expressionController: _expressionController,
                           approachController: _approachController,
                           currentVariable: _currentVariable,
@@ -216,6 +245,11 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                   ),
                 ),
               ),
+            ),
+            MathKeyboard(
+              controller: _activeController ?? _expressionController,
+              accentColor: FinalsTheme.danger,
+              hideSignal: _hideKeyboardSignal,
             ),
           ],
         ),
