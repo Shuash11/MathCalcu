@@ -1,8 +1,0 @@
-﻿{
-  "tasks": [
-    { "id": 1, "description": "Edit limits_infinity_screen.dart - add import, fields, initState, focus methods, dispose changes, _hideKeyboardSignal, Column wrapper, MathKeyboard, expressionFocus params", "status": "done" },
-    { "id": 2, "description": "Edit limits_input_field.dart - add focusNode fields to class+constructor, add focusNode+keyboardType to TextFields, remove quick chips, operators row, unused vars, unused methods", "status": "done" },
-    { "id": 3, "description": "Run flutter analyze --no-fatal-infos --no-fatal-warnings to verify", "status": "done" }
-  ],
-  "completed": true
-}
