@@ -6,6 +6,7 @@ class DerivativeInputField extends StatelessWidget {
   final ValueChanged<String> onVariableChanged;
   final String currentVariable;
   final VoidCallback onSolve;
+  final FocusNode focusNode;
 
   const DerivativeInputField({
     super.key,
@@ -13,22 +14,8 @@ class DerivativeInputField extends StatelessWidget {
     required this.onVariableChanged,
     required this.currentVariable,
     required this.onSolve,
+    required this.focusNode,
   });
-
-  void _insertText(String text) {
-    final selection = controller.selection;
-    final newText = controller.text.replaceRange(
-      selection.start,
-      selection.end,
-      text,
-    );
-    controller.value = TextEditingValue(
-      text: newText,
-      selection: TextSelection.collapsed(
-        offset: selection.start + text.length,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +64,8 @@ class DerivativeInputField extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: controller,
+                  focusNode: focusNode,
+                  keyboardType: TextInputType.none,
                   onSubmitted: (_) => onSolve(),
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontWeight: FontWeight.w500,
@@ -126,16 +115,7 @@ class DerivativeInputField extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            _QuickInputButton(label: 'x²', onTap: () => _insertText('^2')),
-            const SizedBox(width: 8),
-            _QuickInputButton(label: 'e^x', onTap: () => _insertText('e^')),
-            const SizedBox(width: 8),
-            _QuickInputButton(label: '√x', onTap: () => _insertText('√')),
-          ],
-        ),
+
       ],
     );
   }
@@ -175,39 +155,4 @@ class DerivativeInputField extends StatelessWidget {
   }
 }
 
-class _QuickInputButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
 
-  const _QuickInputButton({
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: FinalsTheme.primary.withValues(alpha: 0.2),
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            label,
-            style: FinalsTheme.labelStyle(context).copyWith(
-              color: FinalsTheme.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

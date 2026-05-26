@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 class SubstitutionInputField extends StatelessWidget {
   final TextEditingController expressionController;
   final TextEditingController approachController;
+  final FocusNode expressionFocus;
+  final FocusNode approachFocus;
   final String currentVariable;
   final ValueChanged<String> onVariableChanged;
   final VoidCallback onSolve;
-
   const SubstitutionInputField({
     super.key,
     required this.expressionController,
     required this.approachController,
+    required this.expressionFocus,
+    required this.approachFocus,
     required this.currentVariable,
     required this.onVariableChanged,
     required this.onSolve,
@@ -27,8 +30,6 @@ class SubstitutionInputField extends StatelessWidget {
     final expressionFontSize = isCompact ? 16.0 : (isTablet ? 20.0 : 18.0);
     final variableFontSize = isCompact ? 13.0 : (isTablet ? 18.0 : 15.0);
     final inputHeight = isCompact ? 38.0 : (isTablet ? 48.0 : 44.0);
-    final quickChipFontSize = isCompact ? 12.0 : 13.0;
-    final quickChipPadding = isCompact ? 8.0 : 12.0;
     final limitTextSize = isCompact ? 14.0 : (isTablet ? 22.0 : 18.0);
 
     return Container(
@@ -58,7 +59,9 @@ class SubstitutionInputField extends StatelessWidget {
                   flex: 3,
                   child: TextField(
                     controller: expressionController,
+                    focusNode: expressionFocus,
                     onSubmitted: (_) => onSolve(),
+                    keyboardType: TextInputType.text,
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: expressionFontSize,
@@ -76,10 +79,6 @@ class SubstitutionInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Math Symbol Button
-                _buildMathSymbolChip(context, '^', '^', accentColor),
-                const SizedBox(width: 6),
 
                 // Solve Button
                 _SolveButton(onTap: onSolve, accentColor: accentColor),
@@ -136,7 +135,9 @@ class SubstitutionInputField extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: approachController,
+                      focusNode: approachFocus,
                       onSubmitted: (_) => onSolve(),
+                      keyboardType: TextInputType.text,
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
                         fontSize: limitTextSize - 2,
@@ -157,43 +158,10 @@ class SubstitutionInputField extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(width: isCompact ? 4 : 8),
-
-                // Quick Presets
-                _buildQuickChip(context, '0', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                SizedBox(width: isCompact ? 4 : 6),
-                _buildQuickChip(context, '1', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                if (!isCompact) ...[
-                  const SizedBox(width: 6),
-                  _buildQuickChip(context, '2', accentColor, fontSize: quickChipFontSize, padding: quickChipPadding),
-                ],
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildQuickChip(BuildContext context, String label, Color accent, {double fontSize = 13, double padding = 12}) {
-    return InkWell(
-      onTap: () => approachController.text = label,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding / 2),
-        decoration: BoxDecoration(
-          color: accent.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: accent.withValues(alpha: 0.15)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: accent,
-            fontSize: fontSize,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
       ),
     );
   }
@@ -276,46 +244,6 @@ class SubstitutionInputField extends StatelessWidget {
     );
   }
 
-  Widget _buildMathSymbolChip(BuildContext context, String label, String inputStr, Color accent, {bool isFunction = false}) {
-    return InkWell(
-      onTap: () {
-        final text = expressionController.text;
-        final selection = expressionController.selection;
-        
-        if (selection.baseOffset == -1 || selection.extentOffset == -1) {
-          expressionController.text = text + inputStr;
-          if (isFunction) {
-            expressionController.selection = TextSelection.collapsed(offset: expressionController.text.length - 1);
-          }
-        } else {
-          final start = selection.start;
-          final end = selection.end;
-          final newText = text.replaceRange(start, end, inputStr);
-          expressionController.text = newText;
-          
-          final newOffset = isFunction ? start + inputStr.length - 1 : start + inputStr.length;
-          expressionController.selection = TextSelection.collapsed(offset: newOffset);
-        }
-      },
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: accent.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: accent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: accent,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class _SolveButton extends StatefulWidget {

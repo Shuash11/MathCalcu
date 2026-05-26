@@ -4,6 +4,7 @@ import 'derivatives_steptile.dart';
 import 'package:calculus_system/Finals/solvers/derivatives_solver/derivatives_steps.dart';
 import 'package:calculus_system/Finals/solvers/derivatives_solver/deriviatives_solver.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:flutter/material.dart';
 
 class DerivativeScreen extends StatefulWidget {
@@ -18,19 +19,39 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _stepsKey = GlobalKey();
 
+  final _expressionFocus = FocusNode();
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
+
   String _variable = 'x';
   ClassroomSolution? _solution;
   bool _isLoading = false;
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    _expressionFocus.addListener(_onExpressionFocusChange);
+  }
+
+  @override
   void dispose() {
     _exprController.dispose();
     _scrollController.dispose();
+    _expressionFocus.removeListener(_onExpressionFocusChange);
+    _expressionFocus.dispose();
+    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
+  void _onExpressionFocusChange() {
+    if (_expressionFocus.hasFocus) {
+      setState(() => _activeController = _exprController);
+    }
+  }
+
   Future<void> _solve() async {
+    _hideKeyboardSignal.value++;
     if (_exprController.text.trim().isEmpty) return;
 
     setState(() {
@@ -142,7 +163,10 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
         ),
       ),
       body: SafeArea(
-        child: CustomScrollView(
+        child: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
           controller: _scrollController,
           physics: const BouncingScrollPhysics(),
           slivers: [
@@ -168,6 +192,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
               sliver: SliverToBoxAdapter(
                 child: DerivativeInputField(
                   controller: _exprController,
+                  focusNode: _expressionFocus,
                   currentVariable: _variable,
                   onVariableChanged: (v) => setState(() => _variable = v),
                   onSolve: _solve,
@@ -220,6 +245,14 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                   child: _buildStepsSection(context, _solution!),
                 ),
               ),
+          ],
+        ),
+            ),
+            MathKeyboard(
+              controller: _activeController ?? _exprController,
+              accentColor: FinalsTheme.primary,
+              hideSignal: _hideKeyboardSignal,
+            ),
           ],
         ),
       ),

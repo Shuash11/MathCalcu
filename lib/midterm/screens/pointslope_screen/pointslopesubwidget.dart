@@ -186,7 +186,6 @@ class PSInputsRow extends StatelessWidget {
   final TextEditingController mCtrl, x1Ctrl, y1Ctrl;
   final FocusNode mFocus, x1Focus, y1Focus;
   final double s;
-  final void Function(TextEditingController, FocusNode) onFieldFocus;
 
   const PSInputsRow({
     super.key,
@@ -197,7 +196,6 @@ class PSInputsRow extends StatelessWidget {
     required this.x1Focus,
     required this.y1Focus,
     required this.s,
-    required this.onFieldFocus,
   });
 
   @override
@@ -211,7 +209,6 @@ class PSInputsRow extends StatelessWidget {
             controller: mCtrl,
             focusNode: mFocus,
             s: s,
-            onFieldTap: () => onFieldFocus(mCtrl, mFocus),
           ),
         ),
         SizedBox(width: 12 * s),
@@ -222,7 +219,6 @@ class PSInputsRow extends StatelessWidget {
             controller: x1Ctrl,
             focusNode: x1Focus,
             s: s,
-            onFieldTap: () => onFieldFocus(x1Ctrl, x1Focus),
           ),
         ),
         SizedBox(width: 12 * s),
@@ -233,7 +229,6 @@ class PSInputsRow extends StatelessWidget {
             controller: y1Ctrl,
             focusNode: y1Focus,
             s: s,
-            onFieldTap: () => onFieldFocus(y1Ctrl, y1Focus),
           ),
         ),
       ],
@@ -246,7 +241,6 @@ class PSInputField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final double s;
-  final VoidCallback? onFieldTap;
 
   const PSInputField({
     super.key,
@@ -255,7 +249,6 @@ class PSInputField extends StatelessWidget {
     required this.controller,
     required this.focusNode,
     required this.s,
-    this.onFieldTap,
   });
 
   @override
@@ -274,7 +267,6 @@ class PSInputField extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           s: s,
-          onTap: onFieldTap,
         ),
       ],
     );
@@ -286,46 +278,41 @@ class PSTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final double s;
-  final VoidCallback? onTap;
 
   const PSTextField({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.s,
-    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: PSTheme.isLight(context)
-              ? Colors.black.withValues(alpha: 0.03)
-              : Colors.white.withValues(alpha: 0.04),
-          borderRadius: BorderRadius.circular(PSTheme.radiusInput * s),
-          border: Border.all(
-            color: PSTheme.glowPurple(0.2).withValues(alpha: 0.15),
-            width: 1.5 * s,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: PSTheme.isLight(context)
+            ? Colors.black.withValues(alpha: 0.03)
+            : Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(PSTheme.radiusInput * s),
+        border: Border.all(
+          color: PSTheme.glowPurple(0.2).withValues(alpha: 0.15),
+          width: 1.5 * s,
         ),
-        child: TextField(
-          controller: controller,
-          focusNode: focusNode,
-          keyboardType: TextInputType.none,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[\d\s./-]')),
-          ],
-          style: PSTheme.inputTextStyle(context, s),
-          decoration: InputDecoration(
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 14 * s, vertical: 10 * s),
-            border: InputBorder.none,
-            hintText: '3/4 or 1.5',
-            hintStyle: PSTheme.inputHintStyle(context, s),
-          ),
+      ),
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        keyboardType: TextInputType.text,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[\d\s./-]')),
+        ],
+        style: PSTheme.inputTextStyle(context, s),
+        decoration: InputDecoration(
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 14 * s, vertical: 10 * s),
+          border: InputBorder.none,
+          hintText: '3/4 or 1.5',
+          hintStyle: PSTheme.inputHintStyle(context, s),
         ),
       ),
     );

@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:calculus_system/midterm/graph/distance_graph/distance_graph.dart';
 import 'package:calculus_system/midterm/theme/distance_theme/distancetheme.dart';
 import 'package:calculus_system/midterm/solvers/distance_solver/distancesolver.dart';
-import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'distancesteps.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +25,6 @@ class _DistancescreenState extends State<Distancescreen>
   final _y1Focus = FocusNode();
   final _x2Focus = FocusNode();
   final _y2Focus = FocusNode();
-  TextEditingController? _activeController;
-  final _hideKeyboardSignal = ValueNotifier<int>(0);
 
   // Result state
   String? _distance;
@@ -54,9 +51,8 @@ class _DistancescreenState extends State<Distancescreen>
 
   void _onTextChanged() {}
 
-  void _onFieldFocus(TextEditingController ctrl, FocusNode node) {
+  void _onFieldFocus(FocusNode node) {
     node.requestFocus();
-    setState(() => _activeController = ctrl);
   }
 
   @override
@@ -74,7 +70,6 @@ class _DistancescreenState extends State<Distancescreen>
     _y1Focus.dispose();
     _x2Focus.dispose();
     _y2Focus.dispose();
-    _hideKeyboardSignal.dispose();
     super.dispose();
   }
 
@@ -155,7 +150,6 @@ class _DistancescreenState extends State<Distancescreen>
   }
 
   void _onCalculate() {
-    _hideKeyboardSignal.value++;
     final result = DistanceSolver.solve(
       x1: _x1Ctrl.text,
       x2: _x2Ctrl.text,
@@ -199,13 +193,13 @@ class _DistancescreenState extends State<Distancescreen>
         Text(label, style: DistanceTheme.inputLabel(context)),
         const SizedBox(height: DistanceTheme.spaceXs),
         GestureDetector(
-          onTap: () => _onFieldFocus(controller, focusNode),
+          onTap: () => _onFieldFocus(focusNode),
           child: Container(
             decoration: DistanceTheme.inputDecoration(context),
             child: TextField(
               controller: controller,
               focusNode: focusNode,
-              keyboardType: TextInputType.none,
+              keyboardType: TextInputType.text,
               style: DistanceTheme.inputText(context),
               decoration: InputDecoration(
                 hintText: '0',
@@ -481,12 +475,6 @@ class _DistancescreenState extends State<Distancescreen>
                   ),
                 ),
                 const SizedBox(height: 20),
-                MathKeyboard(
-                  controller: _activeController ?? _x1Ctrl,
-                  accentColor: DistanceTheme.accent,
-                  hideSignal: _hideKeyboardSignal,
-                ),
-                const SizedBox(height: 24),
 
                 // ── Results Section ──────────────────────────────
                 if (_solved) ...[

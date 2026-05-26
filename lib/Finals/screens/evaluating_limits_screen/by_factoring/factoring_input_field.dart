@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 class FactoringInputField extends StatelessWidget {
   final TextEditingController expressionController;
   final TextEditingController approachController;
+  final FocusNode expressionFocus;
+  final FocusNode approachFocus;
   final String currentVariable;
   final ValueChanged<String> onVariableChanged;
   final VoidCallback onSolve;
@@ -12,6 +14,8 @@ class FactoringInputField extends StatelessWidget {
     super.key,
     required this.expressionController,
     required this.approachController,
+    required this.expressionFocus,
+    required this.approachFocus,
     required this.currentVariable,
     required this.onVariableChanged,
     required this.onSolve,
@@ -30,6 +34,8 @@ class FactoringInputField extends StatelessWidget {
           isMedium: isMedium,
           expressionController: expressionController,
           approachController: approachController,
+          expressionFocus: expressionFocus,
+          approachFocus: approachFocus,
           currentVariable: currentVariable,
           onVariableChanged: onVariableChanged,
           onSolve: onSolve,
@@ -44,6 +50,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
   final bool isMedium;
   final TextEditingController expressionController;
   final TextEditingController approachController;
+  final FocusNode expressionFocus;
+  final FocusNode approachFocus;
   final String currentVariable;
   final ValueChanged<String> onVariableChanged;
   final VoidCallback onSolve;
@@ -53,6 +61,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
     required this.isMedium,
     required this.expressionController,
     required this.approachController,
+    required this.expressionFocus,
+    required this.approachFocus,
     required this.currentVariable,
     required this.onVariableChanged,
     required this.onSolve,
@@ -70,12 +80,7 @@ class _FactoringInputFieldContent extends StatelessWidget {
     final solveButtonPaddingV = isCompact ? 10.0 : (isMedium ? 11.0 : 12.0);
     final solveButtonFontSize = isCompact ? 13.0 : (isMedium ? 14.0 : 15.0);
     final solveButtonIconSize = isCompact ? 16.0 : (isMedium ? 18.0 : 20.0);
-    final mathChipPaddingH = isCompact ? 8.0 : (isMedium ? 9.0 : 10.0);
-    final mathChipPaddingV = isCompact ? 5.0 : (isMedium ? 5.5 : 6.0);
-    final mathChipFontSize = isCompact ? 12.0 : (isMedium ? 13.0 : 14.0);
-    final quickChipPaddingH = isCompact ? 8.0 : (isMedium ? 10.0 : 12.0);
-    final quickChipPaddingV = isCompact ? 6.0 : (isMedium ? 7.0 : 8.0);
-    final quickChipFontSize = isCompact ? 11.0 : (isMedium ? 12.0 : 13.0);
+
 
     return Container(
       decoration: BoxDecoration(
@@ -102,6 +107,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: expressionController,
+                    focusNode: expressionFocus,
+                    keyboardType: TextInputType.text,
                     onSubmitted: (_) => onSolve(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
@@ -120,8 +127,6 @@ class _FactoringInputFieldContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                _buildMathSymbolChip(context, '^', '^', accentColor, paddingH: mathChipPaddingH, paddingV: mathChipPaddingV, fontSize: mathChipFontSize),
-                SizedBox(width: isCompact ? 6 : 8),
                 _SolveButton(
                   onTap: onSolve,
                   accentColor: accentColor,
@@ -175,6 +180,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: approachController,
+                      focusNode: approachFocus,
+                      keyboardType: TextInputType.text,
                       onSubmitted: (_) => onSolve(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
@@ -195,41 +202,10 @@ class _FactoringInputFieldContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: isCompact ? 4 : 8),
-                _buildQuickChip(context, '0', accentColor, fontSize: quickChipFontSize, paddingH: quickChipPaddingH, paddingV: quickChipPaddingV),
-                SizedBox(width: isCompact ? 4 : 6),
-                _buildQuickChip(context, '1', accentColor, fontSize: quickChipFontSize, paddingH: quickChipPaddingH, paddingV: quickChipPaddingV),
-                if (!isCompact) ...[
-                  SizedBox(width: 6),
-                  _buildQuickChip(context, '2', accentColor, fontSize: quickChipFontSize, paddingH: quickChipPaddingH, paddingV: quickChipPaddingV),
-                ],
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildQuickChip(BuildContext context, String label, Color accent, {double fontSize = 13, double paddingH = 12, double paddingV = 8}) {
-    return InkWell(
-      onTap: () => approachController.text = label,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-        decoration: BoxDecoration(
-          color: accent.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: accent.withValues(alpha: 0.15)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: accent,
-            fontSize: fontSize,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
       ),
     );
   }
@@ -312,50 +288,6 @@ class _FactoringInputFieldContent extends StatelessWidget {
     );
   }
 
-  Widget _buildMathSymbolChip(BuildContext context, String label, String inputStr, Color accent, {bool isFunction = false, double paddingH = 10, double paddingV = 6, double fontSize = 14}) {
-    return InkWell(
-      onTap: () {
-        final text = expressionController.text;
-        final selection = expressionController.selection;
-
-        if (selection.baseOffset == -1 || selection.extentOffset == -1) {
-          expressionController.text = text + inputStr;
-          if (isFunction) {
-            expressionController.selection = TextSelection.collapsed(
-                offset: expressionController.text.length - 1);
-          }
-        } else {
-          final start = selection.start;
-          final end = selection.end;
-          final newText = text.replaceRange(start, end, inputStr);
-          expressionController.text = newText;
-
-          final newOffset = isFunction
-              ? start + inputStr.length - 1
-              : start + inputStr.length;
-          expressionController.selection =
-              TextSelection.collapsed(offset: newOffset);
-        }
-      },
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-        decoration: BoxDecoration(
-          color: accent.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: accent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: accent,
-            fontSize: fontSize,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class _SolveButton extends StatefulWidget {

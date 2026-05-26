@@ -1,13 +1,8 @@
-  {
+﻿{
   "tasks": [
-    { "id": 1, "description": "Run flutter analyze to capture all broken import errors", "status": "done" },
-    { "id": 2, "description": "Fix all broken imports in app_router.dart", "status": "done" },
-    { "id": 3, "description": "Fix all broken imports in center screen files", "status": "done" },
-    { "id": 4, "description": "Fix all broken imports in radius screen files", "status": "done" },
-    { "id": 5, "description": "Fix all broken imports in center_radius_form files", "status": "done" },
-    { "id": 6, "description": "Fix all broken imports in theme files", "status": "done" },
-    { "id": 7, "description": "Fix all broken imports in solver files", "status": "done" },
-    { "id": 8, "description": "Run flutter analyze to verify zero errors", "status": "done" }
+    { "id": 1, "description": "Edit limits_infinity_screen.dart - add import, fields, initState, focus methods, dispose changes, _hideKeyboardSignal, Column wrapper, MathKeyboard, expressionFocus params", "status": "done" },
+    { "id": 2, "description": "Edit limits_input_field.dart - add focusNode fields to class+constructor, add focusNode+keyboardType to TextFields, remove quick chips, operators row, unused vars, unused methods", "status": "done" },
+    { "id": 3, "description": "Run flutter analyze --no-fatal-infos --no-fatal-warnings to verify", "status": "done" }
   ],
   "completed": true
 }

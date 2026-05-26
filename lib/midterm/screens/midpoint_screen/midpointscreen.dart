@@ -2,7 +2,6 @@ import 'package:calculus_system/midterm/graph/midpoint_graph/midpoint_graph.dart
 import 'package:calculus_system/midterm/solvers/midpoint_solver/midpointsolver.dart';
 import 'package:calculus_system/midterm/screens/midpoint_screen/midpointsteps.dart';
 import 'package:calculus_system/midterm/theme/midpoint_theme/midpointtheme.dart';
-import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:flutter/material.dart';
 
 class MidpointScreen extends StatefulWidget {
@@ -23,8 +22,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
   final _aYFocus = FocusNode();
   final _bXFocus = FocusNode();
   final _bYFocus = FocusNode();
-  TextEditingController? _activeController;
-  final _hideKeyboardSignal = ValueNotifier<int>(0);
 
   String? _resX;
   String? _resY;
@@ -52,13 +49,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
     _aYFocus.dispose();
     _bXFocus.dispose();
     _bYFocus.dispose();
-    _hideKeyboardSignal.dispose();
     super.dispose();
-  }
-
-  void _onFieldFocus(TextEditingController ctrl, FocusNode node) {
-    node.requestFocus();
-    setState(() => _activeController = ctrl);
   }
 
   void _switchMode(StepMode mode) {
@@ -77,7 +68,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
   void _toggleSteps() => setState(() => _showSteps = !_showSteps);
 
   void _onCalculate() {
-    _hideKeyboardSignal.value++;
     final MidpointResult result;
 
     if (_mode == StepMode.midpoint) {
@@ -259,28 +249,25 @@ class _MidpointScreenState extends State<MidpointScreen> {
       children: [
         Text(label, style: MidpointTheme.inputLabel(context)),
         const SizedBox(height: MidpointTheme.spaceXs),
-        GestureDetector(
-          onTap: () => _onFieldFocus(controller, focusNode),
-          child: Container(
-            decoration: MidpointTheme.inputDecoration(context),
-            child: TextField(
-              controller: controller,
-              focusNode: focusNode,
-              keyboardType: TextInputType.none,
-              style: MidpointTheme.inputText(context),
-              decoration: InputDecoration(
-                hintText: '0',
-                hintStyle: MidpointTheme.inputHint(context),
-                border: InputBorder.none,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              ),
-              onChanged: null,
-              autocorrect: false,
-              enableSuggestions: false,
-              cursorWidth: 2,
-              cursorColor: MidpointTheme.accent(context),
+        Container(
+          decoration: MidpointTheme.inputDecoration(context),
+          child: TextField(
+            controller: controller,
+            focusNode: focusNode,
+            keyboardType: TextInputType.text,
+            style: MidpointTheme.inputText(context),
+            decoration: InputDecoration(
+              hintText: '0',
+              hintStyle: MidpointTheme.inputHint(context),
+              border: InputBorder.none,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
+            onChanged: null,
+            autocorrect: false,
+            enableSuggestions: false,
+            cursorWidth: 2,
+            cursorColor: MidpointTheme.accent(context),
           ),
         ),
       ],
@@ -640,12 +627,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                MathKeyboard(
-                  controller: _activeController ?? _aXCtrl,
-                  accentColor: MidpointTheme.accent(context),
-                  hideSignal: _hideKeyboardSignal,
-                ),
-                const SizedBox(height: 24),
                 if (_solved) ...[
                   const SizedBox(height: MidpointTheme.space4xl),
                   if (_hasError)

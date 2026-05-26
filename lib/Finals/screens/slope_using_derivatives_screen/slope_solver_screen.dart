@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/Finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/Finals/solvers/slope_using_derivatives_solver/slope_using_derivatives_solver.dart';
 
@@ -18,11 +19,36 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
   final TextEditingController _eqController = TextEditingController(text: 'y = x^3 - 2x + 1');
   final TextEditingController _varsController = TextEditingController(text: 'x=2');
   
+  final _eqFocus = FocusNode();
+  final _varsFocus = FocusNode();
+  TextEditingController? _activeController;
+  final _hideKeyboardSignal = ValueNotifier<int>(0);
+
   bool _isLoading = false;
   ClassroomSolution? _solution;
   String? _error;
 
+  @override
+  void initState() {
+    super.initState();
+    _eqFocus.addListener(_onEqFocusChange);
+    _varsFocus.addListener(_onVarsFocusChange);
+  }
+
+  void _onEqFocusChange() {
+    if (_eqFocus.hasFocus) {
+      setState(() => _activeController = _eqController);
+    }
+  }
+
+  void _onVarsFocusChange() {
+    if (_varsFocus.hasFocus) {
+      setState(() => _activeController = _varsController);
+    }
+  }
+
   void _solve() {
+    _hideKeyboardSignal.value++;
     setState(() {
       _isLoading = true;
       _error = null;
@@ -56,6 +82,11 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
 
   @override
   void dispose() {
+    _eqFocus.removeListener(_onEqFocusChange);
+    _varsFocus.removeListener(_onVarsFocusChange);
+    _eqFocus.dispose();
+    _varsFocus.dispose();
+    _hideKeyboardSignal.dispose();
     _eqController.dispose();
     _varsController.dispose();
     super.dispose();
@@ -76,69 +107,80 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
         ),
         title: Text('Slope Solver', style: FinalsTheme.titleStyle(context)),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildInputField(controller: _eqController, hint: 'e.g. y = x^2 + 1, x^2 + y^2 = 25', label: 'EQUATION', theme: theme),
-            const SizedBox(height: 16),
-            _buildInputField(controller: _varsController, hint: 'e.g. x=2 or x=3 y=4', label: 'POINT VALUES', theme: theme),
-            const SizedBox(height: 24),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildInputField(controller: _eqController, hint: 'e.g. y = x^2 + 1, x^2 + y^2 = 25', label: 'EQUATION', theme: theme, focusNode: _eqFocus),
+                  const SizedBox(height: 16),
+                  _buildInputField(controller: _varsController, hint: 'e.g. x=2 or x=3 y=4', label: 'POINT VALUES', theme: theme, focusNode: _varsFocus),
+                  const SizedBox(height: 24),
 
-            // Solve Button
-            GestureDetector(
-              onTap: _isLoading ? null : _solve,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  gradient: _isLoading 
-                      ? LinearGradient(colors: [FinalsTheme.primary.withValues(alpha: 0.3), FinalsTheme.secondary.withValues(alpha: 0.3)])
-                      : FinalsTheme.headerGradient,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: FinalsTheme.primary.withValues(alpha: 0.4),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
+                  // Solve Button
+                  GestureDetector(
+                    onTap: _isLoading ? null : _solve,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                        gradient: _isLoading 
+                            ? LinearGradient(colors: [FinalsTheme.primary.withValues(alpha: 0.3), FinalsTheme.secondary.withValues(alpha: 0.3)])
+                            : FinalsTheme.headerGradient,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: FinalsTheme.primary.withValues(alpha: 0.4),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: _isLoading 
+                            ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                            : const Text('SOLVE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 1.2)),
+                      ),
+                    ),
+                  ),
+
+                  if (_error != null) ...[
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: FinalsTheme.danger.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: FinalsTheme.danger.withValues(alpha: 0.3)),
+                      ),
+                      child: Text(_error!, style: const TextStyle(color: FinalsTheme.danger, fontSize: 13, fontWeight: FontWeight.w600)),
                     ),
                   ],
-                ),
-                child: Center(
-                  child: _isLoading 
-                      ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('SOLVE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 1.2)),
-                ),
+
+                  if (_solution != null) ...[
+                    const SizedBox(height: 32),
+                    AnswerCard(solution: _solution!),
+                    const SizedBox(height: 12),
+                    Center(
+                      child: Text(
+                        'Tap the card to view step-by-step solution',
+                        style: TextStyle(color: FinalsTheme.textSecondary(context).withValues(alpha: 0.5), fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ]
+                ],
               ),
             ),
-
-            if (_error != null) ...[
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: FinalsTheme.danger.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: FinalsTheme.danger.withValues(alpha: 0.3)),
-                ),
-                child: Text(_error!, style: const TextStyle(color: FinalsTheme.danger, fontSize: 13, fontWeight: FontWeight.w600)),
-              ),
-            ],
-
-            if (_solution != null) ...[
-              const SizedBox(height: 32),
-              AnswerCard(solution: _solution!),
-              const SizedBox(height: 12),
-              Center(
-                child: Text(
-                  'Tap the card to view step-by-step solution',
-                  style: TextStyle(color: FinalsTheme.textSecondary(context).withValues(alpha: 0.5), fontSize: 12, fontWeight: FontWeight.w500),
-                ),
-              ),
-            ]
-          ],
-        ),
+          ),
+          MathKeyboard(
+            controller: _activeController ?? _eqController,
+            accentColor: FinalsTheme.primary,
+            hideSignal: _hideKeyboardSignal,
+          ),
+        ],
       ),
     );
   }
@@ -148,6 +190,7 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
     required String hint,
     required String label,
     required ThemeProvider theme,
+    FocusNode? focusNode,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,6 +205,8 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
           ),
           child: TextField(
             controller: controller,
+            focusNode: focusNode,
+            keyboardType: TextInputType.none,
             style: TextStyle(color: FinalsTheme.textPrimary(context), fontWeight: FontWeight.w600),
             decoration: InputDecoration(
               hintText: hint,
