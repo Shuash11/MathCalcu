@@ -21,28 +21,39 @@ A Flutter math solver for calculus and analytic geometry topics, built with offl
 
 ```
 lib/
-├── Finals/                      # Calculus modules (Derivatives, Limits, Slope)
-│   └── Joashua/
-│       ├── Derivatives/
-│       │   ├── solvers/         # Symbolic engine + step generator
-│       │   ├── UI/              # Screen
-│       │   └── Widgets/         # StepTile, AnswerCard, InputField
-│       ├── Slope_Using_derivatives/
-│       │   ├── Solver/          # Math engine, parser, step narrator
-│       │   ├── UI/
-│       │   └── Widget/
-│       └── Evaluating_limits/
-│           ├── By_Substitution/
-│           ├── By_Factoring/
-│           ├── By_LCD/
-│           └── By_conjugate/
-└── modules/                     # Analytic geometry modules
-    ├── slope/
-    ├── inequalities/
-    ├── circles/
-    ├── Distance/
-    ├── midpoint/
-    └── y-intercept/
+├── Finals/                          # Calculus (Derivatives, Limits, Slope)
+│   ├── screens/                     # Per-topic screens
+│   │   ├── derivatives_screen/
+│   │   ├── evaluating_limits_screen/
+│   │   │   ├── by_substitution/
+│   │   │   ├── by_factoring/
+│   │   │   ├── by_conjugate/
+│   │   │   └── by_lcd/
+│   │   ├── limits_infinity_screen/
+│   │   └── slope_using_derivatives_screen/
+│   ├── solvers/                     # Math engines per topic
+│   └── finals_theme.dart
+│
+├── midterm/                         # Analytic geometry
+│   ├── screens/
+│   │   ├── circles_screen/          # Center, radius, general form
+│   │   ├── distance_screen/
+│   │   ├── inequalities_screen/
+│   │   ├── midpoint_screen/
+│   │   ├── pointslope_screen/
+│   │   ├── slope_screen/
+│   │   ├── two_point_slope_screen/
+│   │   └── yintercept_screen/
+│   ├── solvers/
+│   ├── graph/                       # Shared graph widgets
+│   └── theme/
+│
+├── shared/
+│   └── widgets/
+│       └── math_keyboard.dart       # Custom math input keyboard
+│
+├── screens/                         # General screens (about, etc.)
+└── theme/
 ```
 
 ---
