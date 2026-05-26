@@ -44,7 +44,6 @@ class ConjugateAnswerCard extends StatelessWidget {
     );
   }
 }
-
 class _ConjugateAnswerCardContent extends StatelessWidget {
   final bool isCompact;
   final bool isMedium;
