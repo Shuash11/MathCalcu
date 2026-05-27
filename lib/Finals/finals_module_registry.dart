@@ -50,7 +50,6 @@ class FinalsModuleRegistry {
     // ─────────────────────────────────────────────────────
   ];
 }
-
 class FinalsModuleEntry {
   final String label;
   final String subtitle;
