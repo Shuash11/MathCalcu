@@ -115,9 +115,25 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildInputField(controller: _eqController, hint: 'e.g. y = x^2 + 1, x^2 + y^2 = 25', label: 'EQUATION', theme: theme, focusNode: _eqFocus),
+                  _buildInputField(
+                    controller: _eqController,
+                    hint: 'e.g. y = x^2 + 1, x^2 + y^2 = 25',
+                    label: 'EQUATION',
+                    theme: theme,
+                    focusNode: _eqFocus,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => _varsFocus.requestFocus(),
+                  ),
                   const SizedBox(height: 16),
-                  _buildInputField(controller: _varsController, hint: 'e.g. x=2 or x=3 y=4', label: 'POINT VALUES', theme: theme, focusNode: _varsFocus),
+                  _buildInputField(
+                    controller: _varsController,
+                    hint: 'e.g. x=2 or x=3 y=4',
+                    label: 'POINT VALUES',
+                    theme: theme,
+                    focusNode: _varsFocus,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => _varsFocus.unfocus(),
+                  ),
                   const SizedBox(height: 24),
 
                   // Solve Button
@@ -191,6 +207,8 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
     required String label,
     required ThemeProvider theme,
     FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    VoidCallback? onEditingComplete,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,6 +225,8 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
             controller: controller,
             focusNode: focusNode,
             keyboardType: TextInputType.none,
+            textInputAction: textInputAction,
+            onEditingComplete: onEditingComplete,
             style: TextStyle(color: FinalsTheme.textPrimary(context), fontWeight: FontWeight.w600),
             decoration: InputDecoration(
               hintText: hint,

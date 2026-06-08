@@ -110,6 +110,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
                     focusNode: expressionFocus,
                     keyboardType: TextInputType.text,
                     onSubmitted: (_) => onSolve(),
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => approachFocus.requestFocus(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: expressionFontSize,
@@ -183,6 +185,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
                       focusNode: approachFocus,
                       keyboardType: TextInputType.text,
                       onSubmitted: (_) => onSolve(),
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => approachFocus.unfocus(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
                         fontSize: expressionFontSize - 2,

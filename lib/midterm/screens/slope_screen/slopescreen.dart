@@ -24,6 +24,16 @@ class _SlopeScreenState extends State<SlopeScreen> {
   final _x4 = TextEditingController();
   final _y4 = TextEditingController();
 
+  // ── Focus Nodes ──────────────────────────────────────────
+  final _x1Focus = FocusNode();
+  final _y1Focus = FocusNode();
+  final _x2Focus = FocusNode();
+  final _y2Focus = FocusNode();
+  final _x3Focus = FocusNode();
+  final _y3Focus = FocusNode();
+  final _x4Focus = FocusNode();
+  final _y4Focus = FocusNode();
+
   // ── State ─────────────────────────────────────────────────
   SlopeSolverResult? _result1;
   SlopeSolverResult? _result2;
@@ -37,6 +47,18 @@ class _SlopeScreenState extends State<SlopeScreen> {
   void dispose() {
     for (final c in [_x1, _y1, _x2, _y2, _x3, _y3, _x4, _y4]) {
       c.dispose();
+    }
+    for (final f in [
+      _x1Focus,
+      _y1Focus,
+      _x2Focus,
+      _y2Focus,
+      _x3Focus,
+      _y3Focus,
+      _x4Focus,
+      _y4Focus
+    ]) {
+      f.dispose();
     }
     super.dispose();
   }
@@ -157,16 +179,68 @@ class _SlopeScreenState extends State<SlopeScreen> {
               const SizedBox(height: 28),
               _header(),
               const SizedBox(height: 32),
-              _pointRow('Point 1: (x₁, y₁)', 'x₁', _x1, 'y₁', _y1),
+              _pointRow(
+                'Point 1: (x₁, y₁)',
+                'x₁',
+                _x1,
+                _x1Focus,
+                'y₁',
+                _y1,
+                _y1Focus,
+                xTextInputAction: TextInputAction.next,
+                xOnEditingComplete: () => _y1Focus.requestFocus(),
+                yTextInputAction: TextInputAction.next,
+                yOnEditingComplete: () => _x2Focus.requestFocus(),
+              ),
               const SizedBox(height: 20),
-              _pointRow('Point 2: (x₂, y₂)', 'x₂', _x2, 'y₂', _y2),
+              _pointRow(
+                'Point 2: (x₂, y₂)',
+                'x₂',
+                _x2,
+                _x2Focus,
+                'y₂',
+                _y2,
+                _y2Focus,
+                xTextInputAction: TextInputAction.next,
+                xOnEditingComplete: () => _y2Focus.requestFocus(),
+                yTextInputAction: TextInputAction.next,
+                yOnEditingComplete: () {
+                  if (_showCompareSection) {
+                    _x3Focus.requestFocus();
+                  }
+                },
+              ),
               const SizedBox(height: 20),
               _compareToggle(),
               if (_showCompareSection) ...[
                 const SizedBox(height: 28),
-                _pointRow('Point 3: (x₃, y₃)', 'x₃', _x3, 'y₃', _y3),
+                _pointRow(
+                  'Point 3: (x₃, y₃)',
+                  'x₃',
+                  _x3,
+                  _x3Focus,
+                  'y₃',
+                  _y3,
+                  _y3Focus,
+                  xTextInputAction: TextInputAction.next,
+                  xOnEditingComplete: () => _y3Focus.requestFocus(),
+                  yTextInputAction: TextInputAction.next,
+                  yOnEditingComplete: () => _x4Focus.requestFocus(),
+                ),
                 const SizedBox(height: 20),
-                _pointRow('Point 4: (x₄, y₄)', 'x₄', _x4, 'y₄', _y4),
+                _pointRow(
+                  'Point 4: (x₄, y₄)',
+                  'x₄',
+                  _x4,
+                  _x4Focus,
+                  'y₄',
+                  _y4,
+                  _y4Focus,
+                  xTextInputAction: TextInputAction.next,
+                  xOnEditingComplete: () => _y4Focus.requestFocus(),
+                  yTextInputAction: TextInputAction.done,
+                  yOnEditingComplete: () => _y4Focus.unfocus(),
+                ),
               ],
               const SizedBox(height: 28),
               _calculateButton(),
@@ -219,9 +293,15 @@ class _SlopeScreenState extends State<SlopeScreen> {
     String sectionLabel,
     String xLabel,
     TextEditingController xCtrl,
+    FocusNode xFocus,
     String yLabel,
     TextEditingController yCtrl,
-  ) =>
+    FocusNode yFocus,
+    {TextInputAction? xTextInputAction,
+    VoidCallback? xOnEditingComplete,
+    TextInputAction? yTextInputAction,
+    VoidCallback? yOnEditingComplete,
+  }) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -236,9 +316,21 @@ class _SlopeScreenState extends State<SlopeScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              SlopeInputField(label: xLabel, controller: xCtrl),
+              SlopeInputField(
+                label: xLabel,
+                controller: xCtrl,
+                focusNode: xFocus,
+                textInputAction: xTextInputAction,
+                onEditingComplete: xOnEditingComplete,
+              ),
               const SizedBox(width: 12),
-              SlopeInputField(label: yLabel, controller: yCtrl),
+              SlopeInputField(
+                label: yLabel,
+                controller: yCtrl,
+                focusNode: yFocus,
+                textInputAction: yTextInputAction,
+                onEditingComplete: yOnEditingComplete,
+              ),
             ],
           ),
         ],

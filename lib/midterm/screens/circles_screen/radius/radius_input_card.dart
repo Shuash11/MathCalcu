@@ -9,31 +9,50 @@ class RadiusInputField extends StatefulWidget {
     required this.controller,
     required this.label,
     required this.hint,
+    this.focusNode,
+    this.textInputAction,
+    this.onEditingComplete,
   });
 
   final TextEditingController controller;
   final String label;
   final String hint;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   @override
   State<RadiusInputField> createState() => _RadiusInputFieldState();
 }
 
 class _RadiusInputFieldState extends State<RadiusInputField> {
-  final FocusNode _focusNode = FocusNode();
+  late final FocusNode _internalFocusNode;
+  FocusNode get _focusNode => widget.focusNode ?? _internalFocusNode;
   bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
+    _internalFocusNode = FocusNode();
     _focusNode.addListener(() {
       setState(() => _isFocused = _focusNode.hasFocus);
     });
   }
 
   @override
+  void didUpdateWidget(RadiusInputField old) {
+    super.didUpdateWidget(old);
+    if (old.focusNode != widget.focusNode) {
+      old.focusNode?.removeListener(() {});
+      _focusNode.addListener(() {
+        setState(() => _isFocused = _focusNode.hasFocus);
+      });
+    }
+  }
+
+  @override
   void dispose() {
-    _focusNode.dispose();
+    _internalFocusNode.dispose();
     super.dispose();
   }
 
@@ -105,6 +124,8 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
             signed: true,
             decimal: true,
           ),
+          textInputAction: widget.textInputAction,
+          onEditingComplete: widget.onEditingComplete,
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[-0-9./]')),
           ],
@@ -154,6 +175,12 @@ class RadiusInputCard extends StatelessWidget {
     required this.rightController,
     required this.rightLabel,
     required this.rightHint,
+    this.leftFocusNode,
+    this.rightFocusNode,
+    this.leftTextInputAction,
+    this.leftOnEditingComplete,
+    this.rightTextInputAction,
+    this.rightOnEditingComplete,
   });
 
   final String label;
@@ -163,10 +190,16 @@ class RadiusInputCard extends StatelessWidget {
   final TextEditingController leftController;
   final String leftLabel;
   final String leftHint;
+  final FocusNode? leftFocusNode;
+  final TextInputAction? leftTextInputAction;
+  final VoidCallback? leftOnEditingComplete;
 
   final TextEditingController rightController;
   final String rightLabel;
   final String rightHint;
+  final FocusNode? rightFocusNode;
+  final TextInputAction? rightTextInputAction;
+  final VoidCallback? rightOnEditingComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -204,6 +237,9 @@ class RadiusInputCard extends StatelessWidget {
                   controller: leftController,
                   label: leftLabel,
                   hint: leftHint,
+                  focusNode: leftFocusNode,
+                  textInputAction: leftTextInputAction,
+                  onEditingComplete: leftOnEditingComplete,
                 ),
               ),
               const SizedBox(width: 12),
@@ -212,6 +248,9 @@ class RadiusInputCard extends StatelessWidget {
                   controller: rightController,
                   label: rightLabel,
                   hint: rightHint,
+                  focusNode: rightFocusNode,
+                  textInputAction: rightTextInputAction,
+                  onEditingComplete: rightOnEditingComplete,
                 ),
               ),
             ],

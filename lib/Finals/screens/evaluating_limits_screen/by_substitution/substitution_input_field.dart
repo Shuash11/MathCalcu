@@ -62,6 +62,8 @@ class SubstitutionInputField extends StatelessWidget {
                     focusNode: expressionFocus,
                     onSubmitted: (_) => onSolve(),
                     keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => approachFocus.requestFocus(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: expressionFontSize,
@@ -138,6 +140,8 @@ class SubstitutionInputField extends StatelessWidget {
                       focusNode: approachFocus,
                       onSubmitted: (_) => onSolve(),
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => approachFocus.unfocus(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context).copyWith(
                         fontSize: limitTextSize - 2,

@@ -32,6 +32,7 @@ class CenterInputSection extends StatelessWidget {
           yFocus: y1Focus,
           xHint: 'e.g. −2',
           yHint: 'e.g. 3',
+          onYEditingComplete: () => x2Focus.requestFocus(),
         ),
         const SizedBox(height: 16),
         _PointCard(
@@ -44,6 +45,7 @@ class CenterInputSection extends StatelessWidget {
           yFocus: y2Focus,
           xHint: 'e.g. 4',
           yHint: 'e.g. 5',
+          onYEditingComplete: () => y2Focus.unfocus(),
         ),
         const SizedBox(height: 32),
         _ActionButtons(
@@ -65,6 +67,7 @@ class _PointCard extends StatelessWidget {
   final FocusNode yFocus;
   final String xHint;
   final String yHint;
+  final VoidCallback? onYEditingComplete;
 
   const _PointCard({
     required this.label,
@@ -76,6 +79,7 @@ class _PointCard extends StatelessWidget {
     required this.yFocus,
     required this.xHint,
     required this.yHint,
+    this.onYEditingComplete,
   });
 
   @override
@@ -136,6 +140,8 @@ class _PointCard extends StatelessWidget {
                   label: 'x',
                   hint: xHint,
                   color: color,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => yFocus.requestFocus(),
                 ),
               ),
               const SizedBox(width: 12),
@@ -146,6 +152,8 @@ class _PointCard extends StatelessWidget {
                   label: 'y',
                   hint: yHint,
                   color: color,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: onYEditingComplete ?? () {},
                 ),
               ),
             ],
@@ -162,6 +170,8 @@ class _Field extends StatefulWidget {
   final String label;
   final String hint;
   final Color color;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   const _Field({
     required this.controller,
@@ -169,6 +179,8 @@ class _Field extends StatefulWidget {
     required this.label,
     required this.hint,
     required this.color,
+    this.textInputAction,
+    this.onEditingComplete,
   });
 
   @override
@@ -275,6 +287,8 @@ class _FieldState extends State<_Field> {
           controller: widget.controller,
           focusNode: widget.focusNode,
           keyboardType: TextInputType.text,
+          textInputAction: widget.textInputAction,
+          onEditingComplete: widget.onEditingComplete,
           style: const TextStyle(
             color: FindingCenterTheme.textPrimary,
             fontSize: 16,

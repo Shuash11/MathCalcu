@@ -60,6 +60,8 @@ class LimitsInputField extends StatelessWidget {
                     focusNode: expressionFocus,
                     keyboardType: TextInputType.none,
                     onSubmitted: (_) => onSolve(),
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => approachFocus.requestFocus(),
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: 17,
@@ -166,6 +168,8 @@ class LimitsInputField extends StatelessWidget {
                       focusNode: approachFocus,
                       keyboardType: TextInputType.none,
                       onSubmitted: (_) => onSolve(),
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => approachFocus.unfocus(),
                       textAlign: TextAlign.center,
                       style: FinalsTheme.titleStyle(context)
                           .copyWith(fontSize: limitTextSize - 4),
