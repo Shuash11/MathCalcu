@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 class SlopeInputField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   const SlopeInputField({
     super.key,
     required this.label,
     required this.controller,
+    this.focusNode,
+    this.textInputAction,
+    this.onEditingComplete,
   });
 
   @override
@@ -16,11 +22,18 @@ class SlopeInputField extends StatefulWidget {
 }
 
 class _SlopeInputFieldState extends State<SlopeInputField> {
-  final FocusNode _focusNode = FocusNode();
+  late final FocusNode _internalFocusNode;
+  FocusNode get _focusNode => widget.focusNode ?? _internalFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _internalFocusNode = FocusNode();
+  }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    _internalFocusNode.dispose();
     super.dispose();
   }
 
@@ -59,6 +72,8 @@ class _SlopeInputFieldState extends State<SlopeInputField> {
                 controller: widget.controller,
                 focusNode: _focusNode,
                 keyboardType: TextInputType.text,
+                textInputAction: widget.textInputAction,
+                onEditingComplete: widget.onEditingComplete,
                 style: TextStyle(
                   color: SlopeTheme.textPrimary(context),
                   fontWeight: FontWeight.w500,

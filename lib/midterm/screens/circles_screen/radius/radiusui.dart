@@ -19,6 +19,11 @@ class FindingRadiusScreen extends StatefulWidget {
 class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
   late final FindingRadiusController _ctrl;
 
+  final _xFocus = FocusNode();
+  final _yFocus = FocusNode();
+  final _hFocus = FocusNode();
+  final _kFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +37,9 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
     _ctrl
       ..removeListener(_onStateChanged)
       ..dispose();
+    for (final f in [_xFocus, _yFocus, _hFocus, _kFocus]) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -61,6 +69,12 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
                 rightController: _ctrl.yCtrl,
                 rightLabel: 'y',
                 rightHint: 'e.g. 3',
+                leftFocusNode: _xFocus,
+                rightFocusNode: _yFocus,
+                leftTextInputAction: TextInputAction.next,
+                leftOnEditingComplete: () => _yFocus.requestFocus(),
+                rightTextInputAction: TextInputAction.next,
+                rightOnEditingComplete: () => _hFocus.requestFocus(),
               ),
               const SizedBox(height: 16),
 
@@ -75,6 +89,12 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
                 rightController: _ctrl.kCtrl,
                 rightLabel: 'k',
                 rightHint: 'e.g. 4',
+                leftFocusNode: _hFocus,
+                rightFocusNode: _kFocus,
+                leftTextInputAction: TextInputAction.next,
+                leftOnEditingComplete: () => _kFocus.requestFocus(),
+                rightTextInputAction: TextInputAction.done,
+                rightOnEditingComplete: () => _kFocus.unfocus(),
               ),
               const SizedBox(height: 32),
 

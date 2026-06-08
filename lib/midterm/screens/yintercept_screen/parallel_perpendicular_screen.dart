@@ -169,6 +169,8 @@ class _ParallelPerpendicularScreenState
                       label: 'LINE 1',
                       hint: 'e.g. 2x + 3y = 6',
                       accent: _cyan,
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () => _line2Focus.requestFocus(),
                     ),
                     const SizedBox(height: 10),
                     _EquationField(
@@ -177,6 +179,8 @@ class _ParallelPerpendicularScreenState
                       label: 'LINE 2',
                       hint: 'e.g. 4x - 6y + 1 = 0',
                       accent: emerald,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () => _line2Focus.unfocus(),
                     ),
                     const SizedBox(height: 8),
 
@@ -272,6 +276,8 @@ class _EquationField extends StatefulWidget {
   final String label;
   final String hint;
   final Color accent;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   const _EquationField({
     required this.controller,
@@ -279,6 +285,8 @@ class _EquationField extends StatefulWidget {
     required this.label,
     required this.hint,
     required this.accent,
+    this.textInputAction,
+    this.onEditingComplete,
   });
 
   @override
@@ -304,6 +312,8 @@ class _EquationFieldState extends State<_EquationField> {
           controller: widget.controller,
           focusNode: widget.focusNode,
           keyboardType: TextInputType.none,
+          textInputAction: widget.textInputAction,
+          onEditingComplete: widget.onEditingComplete,
           style: YITheme.resultEquationStyle(context).copyWith(
             color: YITheme.textPrimary(context),
             fontSize: 16,

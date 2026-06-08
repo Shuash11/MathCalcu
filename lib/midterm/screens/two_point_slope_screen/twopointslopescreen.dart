@@ -179,6 +179,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'x₁',
                     hint: '0',
                     validator: _controller.validateNumber,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => _y1Focus.requestFocus(),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -189,6 +191,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'y₁',
                     hint: '0',
                     validator: _controller.validateNumber,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => _x2Focus.requestFocus(),
                   ),
                 ),
               ],
@@ -241,6 +245,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'x₂',
                     hint: '0',
                     validator: _controller.validateNumber,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () => _y2Focus.requestFocus(),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -251,6 +257,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                     label: 'y₂',
                     hint: '0',
                     validator: _controller.validateNumber,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => _y2Focus.unfocus(),
                   ),
                 ),
               ],
@@ -498,6 +506,8 @@ class _CoordField extends StatelessWidget {
   final String label;
   final String hint;
   final String? Function(String?) validator;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   const _CoordField({
     required this.controller,
@@ -505,6 +515,8 @@ class _CoordField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.validator,
+    this.textInputAction,
+    this.onEditingComplete,
   });
 
   @override
@@ -514,6 +526,8 @@ class _CoordField extends StatelessWidget {
       focusNode: focusNode,
       validator: validator,
       keyboardType: TextInputType.text,
+      textInputAction: textInputAction,
+      onEditingComplete: onEditingComplete,
       style: TextStyle(
         color: TwoPointSlopeTheme.textPrimary(context),
         fontSize: 16,

@@ -209,6 +209,8 @@ class PSInputsRow extends StatelessWidget {
             controller: mCtrl,
             focusNode: mFocus,
             s: s,
+            textInputAction: TextInputAction.next,
+            onEditingComplete: () => x1Focus.requestFocus(),
           ),
         ),
         SizedBox(width: 12 * s),
@@ -219,6 +221,8 @@ class PSInputsRow extends StatelessWidget {
             controller: x1Ctrl,
             focusNode: x1Focus,
             s: s,
+            textInputAction: TextInputAction.next,
+            onEditingComplete: () => y1Focus.requestFocus(),
           ),
         ),
         SizedBox(width: 12 * s),
@@ -229,6 +233,8 @@ class PSInputsRow extends StatelessWidget {
             controller: y1Ctrl,
             focusNode: y1Focus,
             s: s,
+            textInputAction: TextInputAction.done,
+            onEditingComplete: () => y1Focus.unfocus(),
           ),
         ),
       ],
@@ -241,6 +247,8 @@ class PSInputField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final double s;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   const PSInputField({
     super.key,
@@ -249,6 +257,8 @@ class PSInputField extends StatelessWidget {
     required this.controller,
     required this.focusNode,
     required this.s,
+    this.textInputAction,
+    this.onEditingComplete,
   });
 
   @override
@@ -267,6 +277,8 @@ class PSInputField extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           s: s,
+          textInputAction: textInputAction,
+          onEditingComplete: onEditingComplete,
         ),
       ],
     );
@@ -278,12 +290,16 @@ class PSTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final double s;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   const PSTextField({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.s,
+    this.textInputAction,
+    this.onEditingComplete,
   });
 
   @override
@@ -303,6 +319,8 @@ class PSTextField extends StatelessWidget {
         controller: controller,
         focusNode: focusNode,
         keyboardType: TextInputType.text,
+        textInputAction: textInputAction,
+        onEditingComplete: onEditingComplete,
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'[\d\s./-]')),
         ],

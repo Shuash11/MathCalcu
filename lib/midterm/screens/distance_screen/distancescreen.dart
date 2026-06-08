@@ -200,6 +200,10 @@ class _DistancescreenState extends State<Distancescreen>
               controller: controller,
               focusNode: focusNode,
               keyboardType: TextInputType.text,
+              textInputAction: nextFocus != null ? TextInputAction.next : TextInputAction.done,
+              onEditingComplete: nextFocus != null
+                  ? () => nextFocus!.requestFocus()
+                  : () => focusNode.unfocus(),
               style: DistanceTheme.inputText(context),
               decoration: InputDecoration(
                 hintText: '0',

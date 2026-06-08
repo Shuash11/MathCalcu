@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 class YInterceptTab extends StatelessWidget {
   final TextEditingController mCtrl, bCtrl, sfCtrl;
+  final FocusNode mFocus, bFocus, sfFocus;
   final InputMode mode;
   final void Function(InputMode) onSwitchMode;
   final ValueNotifier<YIResult?> resultNotifier;
@@ -26,6 +27,9 @@ class YInterceptTab extends StatelessWidget {
     required this.mCtrl,
     required this.bCtrl,
     required this.sfCtrl,
+    required this.mFocus,
+    required this.bFocus,
+    required this.sfFocus,
     required this.mode,
     required this.onSwitchMode,
     required this.resultNotifier,
@@ -99,6 +103,9 @@ class YInterceptTab extends StatelessWidget {
                                     'm',
                                     mCtrl,
                                     '0',
+                                    mFocus,
+                                    textInputAction: TextInputAction.next,
+                                    onEditingComplete: () => bFocus.requestFocus(),
                                   ),
                                 ),
                                 const SizedBox(width: 16),
@@ -109,6 +116,9 @@ class YInterceptTab extends StatelessWidget {
                                     'b',
                                     bCtrl,
                                     '0',
+                                    bFocus,
+                                    textInputAction: TextInputAction.done,
+                                    onEditingComplete: () => bFocus.unfocus(),
                                   ),
                                 ),
                               ],
@@ -119,6 +129,9 @@ class YInterceptTab extends StatelessWidget {
                               'Ax + By = C',
                               sfCtrl,
                               '6x - 3y = -3',
+                              sfFocus,
+                              textInputAction: TextInputAction.done,
+                              onEditingComplete: () => sfFocus.unfocus(),
                               key: const ValueKey(InputMode.standardForm),
                             ),
                     ),
@@ -441,8 +454,11 @@ class YInterceptTab extends StatelessWidget {
     String label,
     String variable,
     TextEditingController ctrl,
-    String hint, {
+    String hint,
+    FocusNode focusNode, {
     Key? key,
+    TextInputAction? textInputAction,
+    VoidCallback? onEditingComplete,
   }) {
     final isLight = YITheme.isLight(context);
     return Column(
@@ -469,7 +485,10 @@ class YInterceptTab extends StatelessWidget {
           ),
           child: TextField(
             controller: ctrl,
+            focusNode: focusNode,
             keyboardType: TextInputType.text,
+            textInputAction: textInputAction,
+            onEditingComplete: onEditingComplete,
             style: YITheme.inputTextStyle(context),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(

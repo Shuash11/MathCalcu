@@ -22,6 +22,10 @@ class _YInterceptScreenState extends State<YInterceptScreen>
   final _bCtrl = TextEditingController();
   final _sfCtrl = TextEditingController();
 
+  final _mFocus = FocusNode();
+  final _bFocus = FocusNode();
+  final _sfFocus = FocusNode();
+
   InputMode _mode = InputMode.slopeIntercept;
   final _resultNotifier = ValueNotifier<YIResult?>(null);
   final _errorNotifier = ValueNotifier<String?>(null);
@@ -52,6 +56,9 @@ class _YInterceptScreenState extends State<YInterceptScreen>
     for (final c in [_mCtrl, _bCtrl, _sfCtrl]) {
       c.removeListener(_onChanged);
       c.dispose();
+    }
+    for (final f in [_mFocus, _bFocus, _sfFocus]) {
+      f.dispose();
     }
     _resultNotifier.dispose();
     _errorNotifier.dispose();
@@ -148,6 +155,9 @@ class _YInterceptScreenState extends State<YInterceptScreen>
                 mCtrl: _mCtrl,
                 bCtrl: _bCtrl,
                 sfCtrl: _sfCtrl,
+                mFocus: _mFocus,
+                bFocus: _bFocus,
+                sfFocus: _sfFocus,
                 mode: _mode,
                 onSwitchMode: _switchMode,
                 resultNotifier: _resultNotifier,
