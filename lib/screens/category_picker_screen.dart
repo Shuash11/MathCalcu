@@ -1,5 +1,6 @@
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/screens/about_sheets.dart';
+import 'package:calculus_system/widgets/donate_sheet.dart';
 import 'package:calculus_system/screens/inequality.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -209,6 +210,25 @@ class _CategoryHeader extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  // Donate
+                  GestureDetector(
+                    onTap: () => showDonateSheet(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: theme.card,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.coffee_rounded,
+                        size: 20,
+                        color: accent,
                       ),
                     ),
                   ),
