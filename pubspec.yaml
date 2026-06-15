@@ -42,6 +42,10 @@ dependencies:
   # ── Local storage (activation gate) ─────────────────────────
   shared_preferences: ^2.5.3
 
+  # ── Auto-updater ────────────────────────────────────────────
+  http: ^1.2.0
+  url_launcher: ^6.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
