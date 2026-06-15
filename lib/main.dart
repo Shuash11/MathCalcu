@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'app_router.dart';
 import 'package:provider/provider.dart';
 import 'theme/theme_provider.dart';
+import 'services/update_service.dart';
+import 'widgets/update_dialog.dart';
 
 void main() async {
   // ── PRE-RUN INITIALIZATION ──
@@ -33,8 +35,30 @@ void main() async {
   );
 }
 
-class CalculusApp extends StatelessWidget {
+const String appVersion = '1.0.0+1';
+
+class CalculusApp extends StatefulWidget {
   const CalculusApp({super.key});
+
+  @override
+  State<CalculusApp> createState() => _CalculusAppState();
+}
+
+class _CalculusAppState extends State<CalculusApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkForUpdates());
+  }
+
+  Future<void> _checkForUpdates() async {
+    if (!mounted) return;
+    final info = await UpdateService.checkForUpdate(appVersion);
+    if (!mounted) return;
+    if (info != null && info.hasUpdate) {
+      showUpdateDialog(context, info);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +70,6 @@ class CalculusApp extends StatelessWidget {
       theme: themeProvider.isLight ? AppTheme.light() : AppTheme.dark(),
       routerConfig: AppRouter.router,
       builder: (context, child) {
-        // Global error handler for unhandled exceptions
         return child ?? const Scaffold(body: Center(child: Text('Error loading app')));
       },
     );
