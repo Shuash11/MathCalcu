@@ -19,6 +19,46 @@ class _DonateSheet extends StatelessWidget {
   static const _gcashNumber = '09334375611';
   static const _baseDesignWidth = 400.0;
 
+  void _showZoomedQR(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(20),
+        child: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Image.asset(
+                  'assets/images/qr.jpeg',
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.width * 0.8,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              SizedBox(height: 12),
+              Text(
+                'Tap anywhere to close',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
@@ -118,26 +158,41 @@ class _DonateSheet extends StatelessWidget {
 
                   SizedBox(height: 24 * s),
 
-                  // QR Code
+                  // QR Code (tap to zoom)
                   Center(
-                    child: Container(
-                      width: 200 * s,
-                      height: 200 * s,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20 * s),
-                        border: Border.all(
-                          color: _accent.withValues(alpha: 0.2),
-                          width: 2,
+                    child: GestureDetector(
+                      onTap: () => _showZoomedQR(context),
+                      child: Container(
+                        width: 200 * s,
+                        height: 200 * s,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20 * s),
+                          border: Border.all(
+                            color: _accent.withValues(alpha: 0.2),
+                            width: 2,
+                          ),
+                        ),
+                        padding: EdgeInsets.all(12 * s),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10 * s),
+                          child: Image.asset(
+                            'assets/images/qr.jpeg',
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
-                      padding: EdgeInsets.all(12 * s),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10 * s),
-                        child: Image.asset(
-                          'assets/images/qr.jpeg',
-                          fit: BoxFit.contain,
-                        ),
+                    ),
+                  ),
+
+                  SizedBox(height: 8 * s),
+                  Center(
+                    child: Text(
+                      'Tap image to zoom',
+                      style: TextStyle(
+                        fontSize: 11 * s,
+                        color: theme.textSecondary.withValues(alpha: 0.6),
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ),
