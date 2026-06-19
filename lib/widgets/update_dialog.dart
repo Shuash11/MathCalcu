@@ -81,6 +81,24 @@ class _UpdateDialog extends StatelessWidget {
               ),
             ),
           ],
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _accent.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              'Download the new version from the release page, then run the installer to update.',
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.4,
+                color: theme.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ),
       actions: [
@@ -99,8 +117,8 @@ class _UpdateDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
             ),
           ),
-          icon: const Icon(Icons.download_rounded, size: 18),
-          label: const Text('Download'),
+          icon: const Icon(Icons.open_in_new_rounded, size: 18),
+          label: const Text('Open Download Page'),
         ),
       ],
     );
