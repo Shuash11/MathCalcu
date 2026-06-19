@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'app_router.dart';
 import 'package:provider/provider.dart';
 import 'theme/theme_provider.dart';
@@ -35,8 +36,6 @@ void main() async {
   );
 }
 
-const String appVersion = '1.0.0+1';
-
 class CalculusApp extends StatefulWidget {
   const CalculusApp({super.key});
 
@@ -53,7 +52,9 @@ class _CalculusAppState extends State<CalculusApp> {
 
   Future<void> _checkForUpdates() async {
     if (!mounted) return;
-    final info = await UpdateService.checkForUpdate(appVersion);
+    final packageInfo = await PackageInfo.fromPlatform();
+    final currentVersion = packageInfo.version;
+    final info = await UpdateService.checkForUpdate(currentVersion);
     if (!mounted) return;
     if (info != null && info.hasUpdate) {
       showUpdateDialog(context, info);
