@@ -6,7 +6,7 @@ import 'package:calculus_system/midterm/screens/yintercept_screen/parallel_perpe
 import 'package:flutter/material.dart';
 import 'package:calculus_system/midterm/screens/distance_screen/distancescreen.dart';
 import 'package:go_router/go_router.dart';
-import 'screens/category_picker_screen.dart';
+import 'package:calculus_system/widgets/app_shell.dart';
 
 import 'midterm/screens/inequalities_screen/card_picker_screen.dart';
 import 'midterm/screens/inequalities_screen/strict_screen.dart';
@@ -43,7 +43,7 @@ class AppRouter {
     GoRoute(
       path: '/',
       name: 'home',
-      builder: (context, state) => const CategoryPickerScreen(),
+      builder: (context, state) => const AppShell(),
     ),
 
     // ── Finals routes (mounted from finals_router.dart) ─
@@ -56,11 +56,11 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: '/',
     routes: [
-      // ── Home ───────────────────────────────────────────
+      // ── Home — AppShell with bottom nav ───────────────
       GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) => const CategoryPickerScreen(),
+        builder: (context, state) => const AppShell(),
       ),
 
       ...finalsRoutes,
