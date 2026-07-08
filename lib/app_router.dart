@@ -38,20 +38,6 @@ class AppRouter {
     );
   }
 
-  static final GoRouter router1 = GoRouter(initialLocation: '/', routes: [
-    // ── Home ────────────────────────────────────────────
-    GoRoute(
-      path: '/',
-      name: 'home',
-      builder: (context, state) => const AppShell(),
-    ),
-
-    // ── Finals routes (mounted from finals_router.dart) ─
-    ...finalsRoutes,
-
-    // ..
-  ]);
-
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: '/',
