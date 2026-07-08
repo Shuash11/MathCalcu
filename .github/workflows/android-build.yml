@@ -54,6 +54,5 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: MathCalcu v${{ steps.version.outputs.version }}
           make_latest: true
-          prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           files: build/app/outputs/flutter-apk/MathCalcu.apk
