@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  testWidgets('App launches and shows the home screen', (WidgetTester tester) async {
+  testWidgets('App launches with bottom navigation bar', (WidgetTester tester) async {
     await tester.pumpWidget(
       ChangeNotifierProvider.value(
         value: ThemeProvider(),
@@ -15,7 +15,8 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
-    // Should show the main app content (no activation gate)
-    expect(find.text('Finals'), findsOneWidget);
+    // Should show bottom nav tabs
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Settings'), findsOneWidget);
   });
 }
