@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:calculus_system/midterm/screens/distance_screen/distancescreen.dart';
 import 'package:go_router/go_router.dart';
 import 'screens/category_picker_screen.dart';
-import 'screens/activation_screen.dart'; 
+
 import 'midterm/screens/inequalities_screen/card_picker_screen.dart';
 import 'midterm/screens/inequalities_screen/strict_screen.dart';
 import 'midterm/screens/inequalities_screen/non_strict_screen.dart';
@@ -43,9 +43,7 @@ class AppRouter {
     GoRoute(
       path: '/',
       name: 'home',
-      builder: (context, state) => const ActivationGate(
-        child: CategoryPickerScreen(),
-      ),
+      builder: (context, state) => const CategoryPickerScreen(),
     ),
 
     // ── Finals routes (mounted from finals_router.dart) ─
@@ -58,13 +56,11 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: '/',
     routes: [
-      // ── Home — wrapped with activation gate ────────────
+      // ── Home ───────────────────────────────────────────
       GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) => const ActivationGate(
-          child: CategoryPickerScreen(), // ← WRAPPED HERE
-        ),
+        builder: (context, state) => const CategoryPickerScreen(),
       ),
 
       ...finalsRoutes,
