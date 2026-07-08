@@ -11,6 +11,7 @@
 #endif
 
 [Setup]
+AppId={{92DDFA9F-7E35-41AB-8A77-C8093E9B8B37}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
@@ -24,6 +25,7 @@ Compression=lzma2
 SolidCompression=yes
 DisableProgramGroupPage=yes
 PrivilegesRequired=admin
+ArchitecturesInstallIn64BitMode=x64compatible
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
