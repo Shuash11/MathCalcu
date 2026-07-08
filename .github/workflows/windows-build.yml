@@ -32,9 +32,16 @@ jobs:
       - name: Build Windows Release
         run: flutter build windows --release
 
-      - name: Compress build artifacts
+      - name: Install Inno Setup
         shell: powershell
-        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath MathCalcu-Windows.zip
+        run: choco install innosetup --no-progress --confirm
+
+      - name: Compile Installer
+        shell: powershell
+        run: |
+          $tag = "${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.tag }}"
+          $version = $tag -replace '^v', ''
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\installer.iss /DMyAppVersion=$version
 
       - name: Determine tag
         id: tag
@@ -50,5 +57,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          files: MathCalcu-Windows.zip
+          files: build\installer\MathCalcu-Setup-*.exe
           token: ${{ secrets.GITHUB_TOKEN }}
