@@ -25,6 +25,9 @@ import 'midterm/cards/circles/card_picker_screen.dart';
 import 'midterm/screens/circles_screen/center_radius_form/center_radiusui.dart';
 
 class AppRouter {
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'mainNav');
+
   static CustomTransitionPage _fadeRoute(LocalKey key, Widget child) {
     return CustomTransitionPage(
       key: key,
@@ -52,6 +55,7 @@ class AppRouter {
   ]);
 
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: '/',
     routes: [
       // ── Home — wrapped with activation gate ────────────

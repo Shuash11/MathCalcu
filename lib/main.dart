@@ -57,7 +57,10 @@ class _CalculusAppState extends State<CalculusApp> {
     final info = await UpdateService.checkForUpdate(currentVersion);
     if (!mounted) return;
     if (info != null && info.hasUpdate) {
-      showUpdateDialog(context, info);
+      final dialogContext = AppRouter.navigatorKey.currentContext;
+      if (dialogContext != null && dialogContext.mounted) {
+        showUpdateDialog(dialogContext, info);
+      }
     }
   }
 

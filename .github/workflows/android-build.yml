@@ -34,18 +34,25 @@ jobs:
       - name: Rename APK
         run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/MathCalcu.apk
 
-      - name: Create or update latest tag
+      - name: Extract version from pubspec.yaml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //g' | sed 's/+.*//g')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create or update versioned tag
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git tag -f latest
-          git push origin latest --force
+          git tag -f v${{ steps.version.outputs.version }}
+          git push origin v${{ steps.version.outputs.version }} --force
 
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: MathCalcu Latest
+          tag_name: v${{ steps.version.outputs.version }}
+          name: MathCalcu v${{ steps.version.outputs.version }}
           make_latest: true
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
