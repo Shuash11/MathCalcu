@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
 class ActivationGate extends StatefulWidget {
@@ -88,6 +89,7 @@ class _ActivationScreenState extends State<_ActivationScreen>
   bool _showError = false;
   bool _obscure = true;
   String _errorMessage = '';
+  String _appVersion = '';
 
   late final AnimationController _shakeController;
   late final Animation<double> _shakeAnimation;
@@ -129,6 +131,20 @@ class _ActivationScreenState extends State<_ActivationScreen>
     ));
 
     _fadeController.forward();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() => _appVersion = 'MathCalc v${info.version}');
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _appVersion = 'MathCalc v1.0.0');
+      }
+    }
   }
 
   @override
@@ -493,7 +509,7 @@ class _ActivationScreenState extends State<_ActivationScreen>
 
                     // ── Version footer ────────────────────────────────
                     Text(
-                      'MathCalc v1.0.0',
+                      _appVersion.isNotEmpty ? _appVersion : 'MathCalc v1.0.0',
                       style: TextStyle(
                         fontSize: 11,
                         color: theme.textSecondary.withValues(alpha: 0.4),

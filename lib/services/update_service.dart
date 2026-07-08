@@ -41,6 +41,8 @@ class UpdateService {
       final releaseNotes = data['body'] as String? ?? 'No release notes available.';
       final currentClean = currentVersion.split('+').first;
 
+      if (tagName.isEmpty || latestVersion.isEmpty) return null;
+
       final hasUpdate = _compareVersions(latestVersion, currentClean) > 0;
 
       return UpdateInfo(
@@ -55,11 +57,16 @@ class UpdateService {
     }
   }
 
+  /// Compare two semver strings (e.g. "1.2.3" vs "2.0.1").
+  /// Handles pre-release suffixes (e.g. "1.0.2-rc1" → major=1, minor=0, patch=2).
+  /// Handles variable-length segments (covers all, not just 3).
   static int _compareVersions(String a, String b) {
-    final aParts = a.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-    final bParts = b.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    final _clean = (String s) => int.tryParse(s.replaceAll(RegExp(r'[^0-9].*$'), '')) ?? 0;
+    final aParts = a.split('.').map(_clean).toList();
+    final bParts = b.split('.').map(_clean).toList();
+    final maxLen = aParts.length > bParts.length ? aParts.length : bParts.length;
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < maxLen; i++) {
       final aVal = i < aParts.length ? aParts[i] : 0;
       final bVal = i < bParts.length ? bParts[i] : 0;
       if (aVal != bVal) return aVal - bVal;
