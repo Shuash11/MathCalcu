@@ -36,13 +36,6 @@ jobs:
         shell: powershell
         run: choco install innosetup --no-progress --confirm
 
-      - name: Compile Installer
-        shell: powershell
-        run: |
-          $tag = "${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.tag }}"
-          $version = $tag -replace '^v', ''
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\installer.iss /DMyAppVersion=$version
-
       - name: Determine tag
         id: tag
         shell: powershell
@@ -52,6 +45,12 @@ jobs:
           } else {
             echo "tag=${{ github.event.inputs.tag }}" >> $env:GITHUB_OUTPUT
           }
+
+      - name: Compile Installer
+        shell: powershell
+        run: |
+          $version = "${{ steps.tag.outputs.tag }}" -replace '^v', ''
+          iscc windows\installer.iss /DMyAppVersion=$version
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
