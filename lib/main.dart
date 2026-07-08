@@ -56,11 +56,18 @@ class _CalculusAppState extends State<CalculusApp> {
     final currentVersion = packageInfo.version;
     final info = await UpdateService.checkForUpdate(currentVersion);
     if (!mounted) return;
+    final ctx = AppRouter.navigatorKey.currentContext;
+    if (ctx == null || !ctx.mounted) return;
     if (info != null && info.hasUpdate) {
-      final dialogContext = AppRouter.navigatorKey.currentContext;
-      if (dialogContext != null && dialogContext.mounted) {
-        showUpdateDialog(dialogContext, info);
-      }
+      showUpdateDialog(ctx, info);
+    } else if (info != null) {
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text('\u2713 MathCalcu is up to date (v${info.currentVersion})'),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 
