@@ -34,7 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         children: [
-          _sectionHeader('Appearance'),
+          _sectionHeader('Theme'),
           Card(
             child: ListTile(
               leading: Icon(themeProvider.isLight ? Icons.dark_mode_rounded : Icons.light_mode_rounded),
@@ -85,6 +85,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: const Icon(Icons.person_rounded),
               title: const Text('Developer'),
               subtitle: const Text('Joashua Marl Barimbao'),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.email_outlined),
+              title: const Text('Contact'),
+              subtitle: const Text('joashuabarimbao10@gmail.com'),
+              onTap: () async {
+                final uri = Uri.parse('mailto:joashuabarimbao10@gmail.com');
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                }
+              },
             ),
           ),
           const SizedBox(height: 32),
