@@ -169,52 +169,6 @@ class _CategoryHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-
-              // Right-side buttons
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Finals pill
-                  GestureDetector(
-                    onTap: () => StatefulNavigationShell.of(context).goBranch(1),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        border: Border.all(
-                          color: accent.withValues(alpha: 0.45),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.school_rounded,
-                            size: 15,
-                            color: accent.withValues(alpha: 0.85),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Finals',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: accent.withValues(alpha: 0.85),
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-
-                ],
-              ),
             ],
           ),
 

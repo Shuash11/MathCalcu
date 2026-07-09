@@ -137,54 +137,6 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-
-                // Right controls
-                Row(
-                  children: [
-                    // Back to Mid Term pill
-                    GestureDetector(
-                      onTap: () =>
-                          StatefulNavigationShell.of(context).goBranch(0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: FinalsTheme.primary.withValues(alpha: 0.45),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              size: 13,
-                              color:
-                                  FinalsTheme.primary.withValues(alpha: 0.85),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Mid Term',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color:
-                                    FinalsTheme.primary.withValues(alpha: 0.85),
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
               ],
             ),
 
