@@ -2,8 +2,6 @@ import 'package:calculus_system/Finals/finals_theme.dart';
 import 'package:calculus_system/Finals/finals_module_registry.dart';
 import 'package:calculus_system/Finals/cards/derivatives/derevatives_card.dart';
 import 'package:calculus_system/Finals/cards/evaluating_limits/evaluationg_limits.dart';
-import 'package:calculus_system/Finals/widgetsScreens/finals_about_sheets.dart'
-    as finals_about_sheets;
 import 'package:calculus_system/Finals/cards/slope_using_derivatives/finding_slope_derevatives_card.dart';
 import 'package:calculus_system/Finals/cards/limits_infinity/limits_and_infinity_card.dart';
 import 'package:calculus_system/screens/category_picker_screen.dart';
@@ -121,8 +119,6 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   // ── Header ────────────────────────────────────────────────
 
   Widget _buildHeader() {
-    final theme = context.watch<ThemeProvider>();
-
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(28, 48, 28, 0),
@@ -190,48 +186,6 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                       ),
                     ),
 
-                    const SizedBox(width: 10),
-
-                    // 👤 HUMAN ICON BUTTON (About button)
-                    GestureDetector(
-                      onTap: () =>
-                          finals_about_sheets.showFinalsAboutSheet(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.card,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.person_rounded,
-                          size: 20,
-                          color: FinalsTheme.primary,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    // Theme toggle
-                    GestureDetector(
-                      onTap: () => context.read<ThemeProvider>().toggle(),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.card,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          theme.isLight
-                              ? Icons.dark_mode_rounded
-                              : Icons.light_mode_rounded,
-                          size: 20,
-                          color: theme.isLight
-                              ? FinalsTheme.primary
-                              : Colors.amber,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],
