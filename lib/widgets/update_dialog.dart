@@ -20,11 +20,24 @@ class _UpdateDialog extends StatefulWidget {
 }
 
 class _UpdateDialogState extends State<_UpdateDialog> {
-  bool _downloading = false;
   double _progress = 0;
-  String? _error;
 
   static const _accent = Color(0xFF6C63FF);
+
+  @override
+  void initState() {
+    super.initState();
+    _startDownload();
+  }
+
+  void _startDownload() {
+    UpdateService.downloadAndInstall((p) {
+      if (mounted) setState(() => _progress = p);
+    }).then((error) {
+      if (!mounted) return;
+      if (error == null) Navigator.of(context).pop();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,103 +56,40 @@ class _UpdateDialogState extends State<_UpdateDialog> {
               color: _accent.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: _downloading
-                ? SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: CircularProgressIndicator(
-                      value: _progress > 0 ? _progress : null,
-                      strokeWidth: 3,
-                      color: _accent,
-                    ),
-                  )
-                : const Icon(Icons.system_update_rounded, size: 32, color: _accent),
+            child: SizedBox(
+              width: 32,
+              height: 32,
+              child: CircularProgressIndicator(
+                value: _progress > 0 ? _progress : null,
+                strokeWidth: 3,
+                color: _accent,
+              ),
+            ),
           ),
           const SizedBox(height: 16),
           Text(
-            _downloading ? 'Downloading...' : 'Update Available',
+            'Updating...',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
               color: theme.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
-          if (_downloading)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: LinearProgressIndicator(
-                  value: _progress,
-                  minHeight: 6,
-                  backgroundColor: theme.card,
-                  color: _accent,
-                ),
-              ),
-            )
-          else
-            Text(
-              'v${widget.info.latestVersion} is now available',
-              style: const TextStyle(
-                fontSize: 14,
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: LinearProgressIndicator(
+                value: _progress,
+                minHeight: 6,
+                backgroundColor: theme.card,
                 color: _accent,
-                fontWeight: FontWeight.w600,
               ),
             ),
-          if (_error != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              _error!,
-              style: const TextStyle(fontSize: 12, color: Colors.red),
-              textAlign: TextAlign.center,
-            ),
-          ],
+          ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: _downloading ? null : () => Navigator.of(context).pop(),
-          child: Text(
-            _downloading ? 'Downloading...' : 'Later',
-            style: TextStyle(color: theme.textSecondary),
-          ),
-        ),
-        if (!_downloading)
-          FilledButton.icon(
-            onPressed: () => _error != null ? _startDownload() : _startDownload(),
-            style: FilledButton.styleFrom(
-              backgroundColor: _accent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-            ),
-            icon: Icon(_error != null ? Icons.refresh_rounded : Icons.download_rounded, size: 18),
-            label: Text(_error != null ? 'Retry' : 'Update Now'),
-          ),
-      ],
     );
-  }
-
-  void _startDownload() {
-    setState(() {
-      _downloading = true;
-      _error = null;
-      _progress = 0;
-    });
-
-    UpdateService.downloadAndInstall((p) {
-      if (mounted) setState(() => _progress = p);
-    }).then((error) {
-      if (!mounted) return;
-      if (error != null) {
-        setState(() {
-          _downloading = false;
-          _error = error;
-        });
-      } else {
-        Navigator.of(context).pop();
-      }
-    });
   }
 }
