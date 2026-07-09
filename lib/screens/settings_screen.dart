@@ -233,10 +233,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Widget _buildTappableCard({required Widget child, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: _TappableCard(child: child),
-    );
+    return _TappableCard(onTap: onTap, child: child);
   }
 
   Widget _sectionHeader(String text) {
@@ -275,7 +272,8 @@ class _SettingsScreenState extends State<SettingsScreen>
 
 class _TappableCard extends StatefulWidget {
   final Widget child;
-  const _TappableCard({required this.child});
+  final VoidCallback onTap;
+  const _TappableCard({required this.onTap, required this.child});
 
   @override
   State<_TappableCard> createState() => _TappableCardState();
@@ -291,6 +289,7 @@ class _TappableCardState extends State<_TappableCard> {
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
+      onTap: widget.onTap,
       child: AnimatedScale(
         scale: _pressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: 80),
