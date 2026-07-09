@@ -89,6 +89,8 @@ class MainActivity : FlutterActivity() {
                     outputStream.close()
                 }
 
+                val installIntent = Intent(ACTION_INSTALL_RESULT)
+                    .setPackage(context.packageName)
                 val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     PendingIntent.FLAG_MUTABLE
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -99,7 +101,7 @@ class MainActivity : FlutterActivity() {
                 val pendingIntent = PendingIntent.getBroadcast(
                     context,
                     0,
-                    Intent(ACTION_INSTALL_RESULT),
+                    installIntent,
                     flags
                 )
 
