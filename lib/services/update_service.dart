@@ -203,8 +203,6 @@ class UpdateService {
         );
 
         return await completer.future;
-      } finally {
-        client.close();
       }
     } catch (e) {
       return e.toString();

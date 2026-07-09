@@ -81,7 +81,9 @@ class _UpdateDialogState extends State<_UpdateDialog>
       } else {
         debugPrint('Update error: $error');
         setState(() {
-          _error = error;
+          _error =
+              'Something went wrong while updating.\n'
+              'Please try again later or download manually from the website.';
           _downloading = false;
         });
       }

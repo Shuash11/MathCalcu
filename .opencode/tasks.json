@@ -1,9 +1,12 @@
 {
   "tasks": [
-    { "id": 1, "description": "Create settings_screen.dart", "status": "done" },
-    { "id": 2, "description": "Create app_shell.dart", "status": "done" },
-    { "id": 3, "description": "Run flutter analyze", "status": "done" },
-    { "id": 4, "description": "Commit both files separately", "status": "done" }
+    { "id": 1, "description": "Read update_service.dart completely (especially downloadAndInstall method)", "status": "done" },
+    { "id": 2, "description": "Check recent git changes to update_service.dart", "status": "done" },
+    { "id": 3, "description": "Analyze download URL behavior and redirect handling", "status": "done" },
+    { "id": 4, "description": "Check http package version in pubspec.yaml and pubspec.lock", "status": "done" },
+    { "id": 5, "description": "Trace ALL error return paths in downloadAndInstall", "status": "done" },
+    { "id": 6, "description": "Check MainActivity.kt for installApk method channel errors", "status": "done" },
+    { "id": 7, "description": "Synthesize findings and identify root cause", "status": "done" }
   ],
-  "completed": true
+  "completed": false
 }
