@@ -114,10 +114,17 @@ class UpdateService {
       final client = http.Client();
       try {
         final request = http.Request('GET', Uri.parse(url));
+        request.headers['Accept'] = 'application/octet-stream';
         final response = await client.send(request);
 
         if (response.statusCode != 200) {
           return 'Server returned ${response.statusCode}';
+        }
+
+        // Verify we're getting binary content, not HTML
+        final contentType = response.headers['content-type'] ?? '';
+        if (contentType.contains('text/html')) {
+          return 'Download failed: got HTML instead of APK. Please try again.';
         }
 
         final contentLength = response.contentLength ?? 0;
@@ -133,11 +140,37 @@ class UpdateService {
           },
           onDone: () async {
             try {
+              if (bytes.isEmpty) {
+                completer.complete('Download failed: file is empty');
+                client.close();
+                return;
+              }
               final dir = await getTemporaryDirectory();
               final file = File('${dir.path}/$binaryName');
               await file.writeAsBytes(bytes);
+              final fileSize = await file.length();
+              if (fileSize == 0) {
+                completer.complete('Download failed: file is empty');
+                client.close();
+                return;
+              }
 
               if (Platform.isAndroid) {
+                // Check if we downloaded HTML (GitHub redirect/error page) instead of APK
+                if (fileSize < 1000) {
+                  completer.complete('Download failed: file too small. Please try again.');
+                  client.close();
+                  return;
+                }
+                // Check for HTML content (first few bytes)
+                final header = await file.openRead(0, 20).toList();
+                final firstBytes = header.expand((b) => b).take(20).toList();
+                final head = String.fromCharCodes(firstBytes);
+                if (head.contains('<!') || head.contains('<html') || head.contains('Not Found')) {
+                  completer.complete('Download failed: got error page instead of APK. Please try again.');
+                  client.close();
+                  return;
+                }
                 try {
                   await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
                   completer.complete(null);
