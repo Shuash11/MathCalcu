@@ -89,11 +89,18 @@ class MainActivity : FlutterActivity() {
                     outputStream.close()
                 }
 
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_MUTABLE
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    0
+                } else {
+                    0
+                }
                 val pendingIntent = PendingIntent.getBroadcast(
                     context,
                     0,
                     Intent(ACTION_INSTALL_RESULT),
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+                    flags
                 )
 
                 val receiver = object : BroadcastReceiver() {
