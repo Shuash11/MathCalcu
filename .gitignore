@@ -47,3 +47,7 @@ app.*.map.json
 # Signing
 *.jks
 key.properties
+
+# Build logs
+build_log.txt
+build_output.txt
