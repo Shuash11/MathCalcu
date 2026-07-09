@@ -6,7 +6,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 void showUpdateDialog(BuildContext context, UpdateInfo info) {
   showDialog(
     context: context,
-    barrierDismissible: false,
+    barrierDismissible: true,
     builder: (_) => _UpdateDialog(info: info),
   );
 }
@@ -19,10 +19,11 @@ class _UpdateDialog extends StatefulWidget {
   State<_UpdateDialog> createState() => _UpdateDialogState();
 }
 
-class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserver {
+class _UpdateDialogState extends State<_UpdateDialog>
+    with WidgetsBindingObserver {
   double _progress = 0;
   String? _error;
-  bool _installing = false;
+  bool _downloading = false;
   bool _waitingForPermission = false;
 
   static const _accent = Color(0xFF6C63FF);
@@ -31,7 +32,6 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkPermissionThenDownload();
   }
 
   @override
@@ -54,7 +54,7 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
       setState(() {
         _waitingForPermission = true;
         _error = 'NEED_PERMISSION';
-        _installing = false;
+        _downloading = false;
       });
       return;
     }
@@ -64,7 +64,7 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
 
   void _startDownload() {
     _error = null;
-    _installing = true;
+    _downloading = true;
     UpdateService.downloadAndInstall((p) {
       if (mounted) setState(() => _progress = p);
     }).then((error) {
@@ -76,7 +76,7 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
           _error =
               'MathCalcu needs permission to install updates.\n'
               'Tap "Open Settings" and enable "Allow from this source"';
-          _installing = false;
+          _downloading = false;
         });
       } else {
         debugPrint('Update error: $error');
@@ -84,7 +84,7 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
           _error =
               'Something went wrong while updating.\n'
               'Please try again later or download manually from the website.';
-          _installing = false;
+          _downloading = false;
         });
       }
     });
@@ -99,42 +99,37 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
 
-    return AlertDialog(
-      backgroundColor: theme.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: _error != null
-                  ? Colors.red.withValues(alpha: 0.12)
-                  : _accent.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
+    // Error state
+    if (_error != null) {
+      return AlertDialog(
+        backgroundColor: theme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.error_outline_rounded,
+                size: 32,
+                color: Colors.red,
+              ),
             ),
-            child: Icon(
-              _error != null ? Icons.error_outline_rounded : Icons.system_update_rounded,
-              size: 32,
-              color: _error != null ? Colors.red : _accent,
+            const SizedBox(height: 16),
+            Text(
+              _error == 'NEED_PERMISSION' ? 'Permission required' : 'Update failed',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: theme.textPrimary,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _error == 'NEED_PERMISSION'
-                ? 'Permission required'
-                : _error != null
-                    ? 'Update failed'
-                    : 'Updating...',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              color: theme.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          if (_error != null) ...[
+            const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
@@ -162,19 +157,54 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
                 const SizedBox(width: 12),
                 if (_error == 'NEED_PERMISSION')
                   FilledButton(
-                    onPressed: _installing ? null : _openSettings,
+                    onPressed: _openSettings,
                     style: FilledButton.styleFrom(backgroundColor: _accent),
                     child: const Text('Open Settings'),
                   )
                 else
                   FilledButton(
-                    onPressed: _installing ? null : _startDownload,
+                    onPressed: _startDownload,
                     style: FilledButton.styleFrom(backgroundColor: _accent),
                     child: const Text('Retry'),
                   ),
               ],
             ),
-          ] else ...[
+          ],
+        ),
+      );
+    }
+
+    // Downloading state
+    if (_downloading) {
+      return AlertDialog(
+        backgroundColor: theme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: _accent.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.system_update_rounded,
+                size: 32,
+                color: _accent,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Updating...',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: theme.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ClipRRect(
@@ -187,7 +217,107 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(foregroundColor: theme.textSecondary),
+              child: const Text('Cancel'),
+            ),
           ],
+        ),
+      );
+    }
+
+    // Initial state — show update info with Update/Later buttons
+    final releaseNotes = widget.info.releaseNotes;
+    return AlertDialog(
+      backgroundColor: theme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: _accent.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.system_update_rounded,
+              size: 32,
+              color: _accent,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Update available',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: theme.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'v${widget.info.latestVersion}',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: _accent,
+            ),
+          ),
+          if (releaseNotes.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Container(
+              width: double.maxFinite,
+              constraints: const BoxConstraints(maxHeight: 200),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.card,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: SingleChildScrollView(
+                child: Text(
+                  releaseNotes,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: theme.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.textSecondary,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text('Later'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    setState(() => _downloading = true);
+                    _checkPermissionThenDownload();
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: _accent,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text('Update'),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
