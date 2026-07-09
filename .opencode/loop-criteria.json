@@ -1,0 +1,13 @@
+{
+    "criteria":  [
+                     "Update dialog NOT shown on web/desktop — shows snackbar with Open button instead",
+                     "_checkForUpdates() has try-catch covering PackageInfo.fromPlatform()",
+                     "_installing flag is set to true in _startDownload()",
+                     "http.Client() is properly closed after stream consumption",
+                     "No dead code (checkInstallPermission removed)",
+                     "flutter analyze clean — zero errors, zero warnings on changed files"
+                 ],
+    "maxIterations":  3,
+    "escalationMessage":  "Unable to meet all criteria after {iterations} iterations",
+    "noProgressLimit":  2
+}

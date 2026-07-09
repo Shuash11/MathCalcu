@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/widgets/donate_sheet.dart';
-import 'package:calculus_system/models/developer.dart';
+
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -169,22 +169,19 @@ class _SettingsScreenState extends State<SettingsScreen>
           )),
           sectionDivider(),
           _sectionHeader('Team'),
-          buildAnimatedRow(6, _buildCard(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                children: [
-                  for (final dev in developers) ...[
-                    if (dev != developers.first)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Container(height: 1, color: theme.card),
-                      ),
-                    _TeamMemberRow(dev: dev),
-                  ],
-                ],
-              ),
+          buildAnimatedRow(6, _buildTappableCard(
+            child: const _SettingsRow(
+              icon: Icons.group_rounded,
+              label: 'Meet the Team',
+              subtitle: 'mathcalcu-build.netlify.app',
+              trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
             ),
+            onTap: () async {
+              final uri = Uri.parse('https://mathcalcu-build.netlify.app/');
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            },
           )),
           const SizedBox(height: 32),
         ],
@@ -356,59 +353,4 @@ class _SettingsRow extends StatelessWidget {
   }
 }
 
-class _TeamMemberRow extends StatelessWidget {
-  final Developer dev;
-  const _TeamMemberRow({required this.dev});
 
-  String get _initials {
-    final parts = dev.name.split(' ');
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    return dev.name[0].toUpperCase();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.watch<ThemeProvider>();
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 18,
-          backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.15),
-          child: Text(
-            _initials,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF6C63FF),
-            ),
-          ),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                dev.name,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: theme.textPrimary,
-                ),
-              ),
-              Text(
-                dev.role.replaceAll('\n', ' '),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: theme.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
