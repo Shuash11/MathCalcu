@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
 import 'package:provider/provider.dart';
 import 'theme/theme_provider.dart';
@@ -49,7 +50,81 @@ class _CalculusAppState extends State<CalculusApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkForUpdates());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _requestInstallPermission();
+      _checkForUpdates();
+    });
+  }
+
+  Future<void> _requestInstallPermission() async {
+    if (!Platform.isAndroid) return;
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('asked_install_permission') == true) return;
+    await prefs.setBool('asked_install_permission', true);
+
+    final canInstall = await UpdateService.canInstallPackages();
+    if (canInstall || !mounted) return;
+
+    final ctx = AppRouter.navigatorKey.currentContext;
+    if (ctx == null || !ctx.mounted) return;
+
+    await showDialog(
+      context: ctx,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        backgroundColor: ctx.watch<ThemeProvider>().surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFB020).withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFFFFB020)),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Allow app updates',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 12),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                'MathCalcu needs permission to install updates automatically.\n'
+                'Grant this once and future updates will work seamlessly.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, height: 1.4),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: TextButton.styleFrom(foregroundColor: ctx.watch<ThemeProvider>().textSecondary),
+                  child: const Text('Not now'),
+                ),
+                const SizedBox(width: 12),
+                FilledButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    UpdateService.openInstallSettings();
+                  },
+                  style: FilledButton.styleFrom(backgroundColor: const Color(0xFFFFB020)),
+                  child: const Text('Open Settings'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _checkForUpdates() async {
