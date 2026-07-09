@@ -37,6 +37,13 @@ class MainActivity : FlutterActivity() {
                         else result.error("INSTALL_ERROR", err, null)
                     }
                 }
+                "canInstallPackages" -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        result.success(packageManager.canRequestPackageInstalls())
+                    } else {
+                        result.success(true)
+                    }
+                }
                 "openInstallSettings" -> {
                     try {
                         val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)

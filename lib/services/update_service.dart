@@ -81,6 +81,17 @@ class UpdateService {
   static const MethodChannel _installerChannel =
       MethodChannel('com.mathcalcu/installer');
 
+  /// Check if the app has permission to install packages (Android 8+).
+  /// Always returns true on other platforms.
+  static Future<bool> canInstallPackages() async {
+    if (!Platform.isAndroid) return true;
+    try {
+      return await _installerChannel.invokeMethod('canInstallPackages');
+    } catch (_) {
+      return true;
+    }
+  }
+
   /// Open system settings for "Install unknown apps" permission.
   static Future<bool> openInstallSettings() async {
     if (!Platform.isAndroid) return false;

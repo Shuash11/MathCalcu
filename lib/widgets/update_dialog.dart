@@ -31,7 +31,7 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _startDownload();
+    _checkPermissionThenDownload();
   }
 
   @override
@@ -43,9 +43,23 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && _waitingForPermission) {
-      _waitingForPermission = false;
-      _startDownload();
+      _checkPermissionThenDownload();
     }
+  }
+
+  Future<void> _checkPermissionThenDownload() async {
+    final canInstall = await UpdateService.canInstallPackages();
+    if (!mounted) return;
+    if (!canInstall) {
+      setState(() {
+        _waitingForPermission = true;
+        _error = 'NEED_PERMISSION';
+        _installing = false;
+      });
+      return;
+    }
+    _waitingForPermission = false;
+    _startDownload();
   }
 
   void _startDownload() {
@@ -105,7 +119,11 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
           ),
           const SizedBox(height: 16),
           Text(
-            _error != null ? 'Update failed' : 'Updating...',
+            _error == 'NEED_PERMISSION'
+                ? 'Permission required'
+                : _error != null
+                    ? 'Update failed'
+                    : 'Updating...',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
@@ -117,7 +135,10 @@ class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserve
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
-                _error!,
+                _error == 'NEED_PERMISSION'
+                    ? 'MathCalcu needs permission to install updates.\n'
+                        'Tap "Open Settings" and enable "Allow from this source"'
+                    : _error!,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
