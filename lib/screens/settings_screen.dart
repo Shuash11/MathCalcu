@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/widgets/donate_sheet.dart';
+import 'package:calculus_system/models/developer.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -11,14 +12,26 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen>
+    with SingleTickerProviderStateMixin {
   static const _accent = Color(0xFF6C63FF);
   String _appVersion = '';
+  late final AnimationController _staggerController;
 
   @override
   void initState() {
     super.initState();
+    _staggerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    )..forward();
     _loadVersion();
+  }
+
+  @override
+  void dispose() {
+    _staggerController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadVersion() async {
@@ -26,108 +39,254 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final info = await PackageInfo.fromPlatform();
       if (mounted) setState(() => _appVersion = 'v${info.version}');
     } catch (_) {
-      if (mounted) setState(() => _appVersion = 'v1.2.0');
+      if (mounted) setState(() => _appVersion = 'v1.3.0');
     }
+  }
+
+  Animation<double> _fadeFor(int index) {
+    final start = (index * 0.07).clamp(0.0, 0.8);
+    final end = (start + 0.25).clamp(0.0, 1.0);
+    return CurvedAnimation(
+      parent: _staggerController,
+      curve: Interval(start, end, curve: Curves.easeOut),
+    );
+  }
+
+  Animation<Offset> _slideFor(int index) {
+    final start = (index * 0.07).clamp(0.0, 0.8);
+    final end = (start + 0.3).clamp(0.0, 1.0);
+    return Tween<Offset>(
+      begin: const Offset(0, 0.12),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _staggerController,
+        curve: Interval(start, end, curve: Curves.easeOutCubic),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
+
+    Widget buildAnimatedRow(int index, Widget row) {
+      return FadeTransition(
+        opacity: _fadeFor(index),
+        child: SlideTransition(
+          position: _slideFor(index),
+          child: row,
+        ),
+      );
+    }
+
+    Widget sectionDivider() {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Container(
+          height: 1,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.transparent,
+                _accent.withValues(alpha: 0.2),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: theme.surface,
       appBar: AppBar(
         title: const Text('Settings'),
         centerTitle: true,
+        backgroundColor: theme.surface,
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         children: [
           _sectionHeader('Theme'),
-          _SettingsRow(
-            icon: theme.isLight ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-            label: 'Dark Mode',
-            trailing: Switch.adaptive(
-              value: !theme.isLight,
-              onChanged: (_) => theme.toggle(),
+          buildAnimatedRow(0, _buildCard(
+            child: _SettingsRow(
+              icon: theme.isLight ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+              label: 'Dark Mode',
+              trailing: Switch.adaptive(
+                value: !theme.isLight,
+                onChanged: (_) => theme.toggle(),
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
+          )),
+          sectionDivider(),
           _sectionHeader('Support'),
-          _SettingsRow(
-            icon: Icons.coffee_rounded,
-            label: 'Donate',
-            subtitle: 'Support the developer',
-            trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: _accent.withValues(alpha: 0.6)),
+          buildAnimatedRow(1, _buildTappableCard(
+            child: _SettingsRow(
+              icon: Icons.coffee_rounded,
+              label: 'Donate',
+              subtitle: 'Support the developer',
+              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: _accent.withValues(alpha: 0.6)),
+            ),
             onTap: () => showDonateSheet(context),
-          ),
-          const SizedBox(height: 24),
-          _sectionHeader('GitHub'),
-          _SettingsRow(
-            icon: Icons.code_rounded,
-            label: 'Shuash11',
-            subtitle: 'View developer profile & repos',
-            trailing: const Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
-            onTap: () async {
-              final uri = Uri.parse('https://github.com/Shuash11');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
-          ),
-          const SizedBox(height: 24),
+          )),
+          sectionDivider(),
           _sectionHeader('About'),
-          _SettingsRow(
-            icon: Icons.info_outline_rounded,
-            label: 'MathCalcu',
-            subtitle: _appVersion,
-          ),
-          const SizedBox(height: 12),
-          const _SettingsRow(
-            icon: Icons.person_rounded,
-            label: 'Developer',
-            subtitle: 'Joashua Marl Barimbao',
-          ),
-          const SizedBox(height: 12),
-          _SettingsRow(
-            icon: Icons.email_outlined,
-            label: 'Contact',
-            subtitle: 'joashuabarimbao10@gmail.com',
-            onTap: () async {
-              final uri = Uri.parse('mailto:joashuabarimbao10@gmail.com');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              }
-            },
-          ),
-          const SizedBox(height: 12),
-          _SettingsRow(
-            icon: Icons.language_rounded,
-            label: 'Website',
-            subtitle: 'mathcalc-calculus.netlify.app',
-            trailing: const Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+          buildAnimatedRow(3, _buildCard(
+            child: _SettingsRow(
+              icon: Icons.info_outline_rounded,
+              label: 'MathCalcu',
+              subtitle: _appVersion,
+            ),
+          )),
+          buildAnimatedRow(4, _buildTappableCard(
+            child: const _SettingsRow(
+              icon: Icons.language_rounded,
+              label: 'Website',
+              subtitle: 'mathcalc-calculus.netlify.app',
+              trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+            ),
             onTap: () async {
               final uri = Uri.parse('https://mathcalc-calculus.netlify.app/');
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
               }
             },
-          ),
+          )),
+          buildAnimatedRow(5, _buildTappableCard(
+            child: const _SettingsRow(
+              icon: Icons.code_rounded,
+              label: 'GitHub',
+              subtitle: 'Shuash11',
+              trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+            ),
+            onTap: () async {
+              final uri = Uri.parse('https://github.com/Shuash11');
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            },
+          )),
+          sectionDivider(),
+          _sectionHeader('Team'),
+          buildAnimatedRow(6, _buildCard(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                children: [
+                  for (final dev in developers) ...[
+                    if (dev != developers.first)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Container(height: 1, color: theme.card),
+                      ),
+                    _TeamMemberRow(dev: dev),
+                  ],
+                ],
+              ),
+            ),
+          )),
           const SizedBox(height: 32),
         ],
       ),
     );
   }
 
+  Widget _buildCard({required Widget child}) {
+    final theme = context.watch<ThemeProvider>();
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        color: theme.card,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: _accent.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildTappableCard({required Widget child, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: _TappableCard(child: child),
+    );
+  }
+
   Widget _sectionHeader(String text) {
     return Padding(
-      padding: const EdgeInsets.only(left: 4, bottom: 12),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: _accent,
-          letterSpacing: 0.5,
+      padding: const EdgeInsets.only(left: 4, bottom: 4, top: 8),
+      child: Row(
+        children: [
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: _accent,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              height: 1.5,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    _accent.withValues(alpha: 0.3),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TappableCard extends StatefulWidget {
+  final Widget child;
+  const _TappableCard({required this.child});
+
+  @override
+  State<_TappableCard> createState() => _TappableCardState();
+}
+
+class _TappableCardState extends State<_TappableCard> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 80),
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          decoration: BoxDecoration(
+            color: theme.card,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: _SettingsScreenState._accent.withValues(alpha: 0.06),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: widget.child,
         ),
       ),
     );
@@ -139,65 +298,117 @@ class _SettingsRow extends StatelessWidget {
   final String label;
   final String? subtitle;
   final Widget? trailing;
-  final VoidCallback? onTap;
 
   const _SettingsRow({
     required this.icon,
     required this.label,
     this.subtitle,
     this.trailing,
-    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: theme.card,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, size: 20, color: const Color(0xFF6C63FF)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: theme.card,
+              shape: BoxShape.circle,
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: theme.textPrimary,
-                    ),
+            child: Icon(icon, size: 20, color: const Color(0xFF6C63FF)),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: theme.textPrimary,
                   ),
-                  if (subtitle != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: theme.textSecondary,
-                        ),
+                ),
+                if (subtitle != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      subtitle!,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: theme.textSecondary,
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-            if (trailing != null) trailing!,
-          ],
-        ),
+          ),
+          if (trailing != null) trailing!,
+        ],
       ),
+    );
+  }
+}
+
+class _TeamMemberRow extends StatelessWidget {
+  final Developer dev;
+  const _TeamMemberRow({required this.dev});
+
+  String get _initials {
+    final parts = dev.name.split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return dev.name[0].toUpperCase();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 18,
+          backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.15),
+          child: Text(
+            _initials,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF6C63FF),
+            ),
+          ),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                dev.name,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: theme.textPrimary,
+                ),
+              ),
+              Text(
+                dev.role.replaceAll('\n', ' '),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: theme.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
