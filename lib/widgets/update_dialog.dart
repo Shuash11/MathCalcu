@@ -19,30 +19,33 @@ class _UpdateDialog extends StatefulWidget {
   State<_UpdateDialog> createState() => _UpdateDialogState();
 }
 
-class _UpdateDialogState extends State<_UpdateDialog> {
+class _UpdateDialogState extends State<_UpdateDialog> with WidgetsBindingObserver {
   double _progress = 0;
   String? _error;
   bool _installing = false;
+  bool _waitingForPermission = false;
 
   static const _accent = Color(0xFF6C63FF);
 
   @override
   void initState() {
     super.initState();
-    _checkPermissionAndDownload();
+    WidgetsBinding.instance.addObserver(this);
+    _startDownload();
   }
 
-  Future<void> _checkPermissionAndDownload() async {
-    if (await UpdateService.hasInstallPermission() == false) {
-      if (mounted) setState(() {
-        _error =
-            'MathCalcu needs permission to install updates.\n'
-            'Tap "Open Settings" and enable "Allow from this source"';
-        _installing = false;
-      });
-      return;
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _waitingForPermission) {
+      _waitingForPermission = false;
+      _startDownload();
     }
-    _startDownload();
   }
 
   void _startDownload() {
@@ -70,10 +73,9 @@ class _UpdateDialogState extends State<_UpdateDialog> {
     });
   }
 
-  void _openSettings() async {
+  Future<void> _openSettings() async {
+    _waitingForPermission = true;
     await UpdateService.openInstallSettings();
-    if (!mounted) return;
-    _checkPermissionAndDownload();
   }
 
   @override
@@ -142,7 +144,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
                   )
                 else
                   FilledButton(
-                    onPressed: _installing ? null : _checkPermissionAndDownload,
+                    onPressed: _installing ? null : _startDownload,
                     style: FilledButton.styleFrom(backgroundColor: _accent),
                     child: const Text('Retry'),
                   ),

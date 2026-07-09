@@ -36,13 +36,6 @@ class MainActivity : FlutterActivity() {
                         else result.error("INSTALL_ERROR", err, null)
                     }
                 }
-                "checkInstallPermission" -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        result.success(packageManager.canRequestPackageInstalls())
-                    } else {
-                        result.success(true)
-                    }
-                }
                 "openInstallSettings" -> {
                     try {
                         val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
@@ -64,13 +57,6 @@ class MainActivity : FlutterActivity() {
             if (!apkFile.exists()) {
                 callback("APK file not found at $apkPath")
                 return
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (!packageManager.canRequestPackageInstalls()) {
-                    callback("NEED_PERMISSION")
-                    return
-                }
             }
 
             val packageInstaller = context.packageManager.packageInstaller

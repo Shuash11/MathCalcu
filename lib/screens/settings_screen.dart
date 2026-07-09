@@ -45,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       final info = await PackageInfo.fromPlatform();
       if (mounted) setState(() => _appVersion = 'v${info.version}');
     } catch (_) {
-      if (mounted) setState(() => _appVersion = 'v1.3.0');
+      if (mounted) setState(() => _appVersion = 'v1.4.2');
     }
   }
 
@@ -156,14 +156,14 @@ class _SettingsScreenState extends State<SettingsScreen>
           )),
           sectionDivider(),
           _sectionHeader('About'),
-          buildAnimatedRow(3, _buildCard(
+          buildAnimatedRow(2, _buildCard(
             child: _SettingsRow(
               icon: Icons.info_outline_rounded,
               label: 'MathCalcu',
               subtitle: _versionSubtitle,
             ),
           )),
-          buildAnimatedRow(4, _buildTappableCard(
+          buildAnimatedRow(3, _buildTappableCard(
             child: const _SettingsRow(
               icon: Icons.language_rounded,
               label: 'Website',
@@ -171,13 +171,12 @@ class _SettingsScreenState extends State<SettingsScreen>
               trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
             ),
             onTap: () async {
-              final uri = Uri.parse('https://mathcalc-calculus.netlify.app/');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
+              try {
+                await launchUrl(Uri.parse('https://mathcalc-calculus.netlify.app/'), mode: LaunchMode.externalApplication);
+              } catch (_) {}
             },
           )),
-          buildAnimatedRow(5, _buildTappableCard(
+          buildAnimatedRow(4, _buildTappableCard(
             child: const _SettingsRow(
               icon: Icons.code_rounded,
               label: 'GitHub',
@@ -185,15 +184,14 @@ class _SettingsScreenState extends State<SettingsScreen>
               trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
             ),
             onTap: () async {
-              final uri = Uri.parse('https://github.com/Shuash11');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
+              try {
+                await launchUrl(Uri.parse('https://github.com/Shuash11'), mode: LaunchMode.externalApplication);
+              } catch (_) {}
             },
           )),
           sectionDivider(),
           _sectionHeader('Team'),
-          buildAnimatedRow(6, _buildTappableCard(
+          buildAnimatedRow(5, _buildTappableCard(
             child: const _SettingsRow(
               icon: Icons.group_rounded,
               label: 'Meet the Team',
@@ -201,10 +199,9 @@ class _SettingsScreenState extends State<SettingsScreen>
               trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
             ),
             onTap: () async {
-              final uri = Uri.parse('https://mathcalcu-build.netlify.app/');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
+              try {
+                await launchUrl(Uri.parse('https://mathcalcu-build.netlify.app/'), mode: LaunchMode.externalApplication);
+              } catch (_) {}
             },
           )),
           const SizedBox(height: 32),
@@ -337,7 +334,7 @@ class _SettingsRow extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: theme.card,
+              color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, size: 20, color: const Color(0xFF6C63FF)),

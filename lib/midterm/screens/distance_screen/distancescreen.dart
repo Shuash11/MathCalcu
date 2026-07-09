@@ -202,7 +202,7 @@ class _DistancescreenState extends State<Distancescreen>
               keyboardType: TextInputType.text,
               textInputAction: nextFocus != null ? TextInputAction.next : TextInputAction.done,
               onEditingComplete: nextFocus != null
-                  ? () => nextFocus!.requestFocus()
+                  ? () => nextFocus.requestFocus()
                   : () => focusNode.unfocus(),
               style: DistanceTheme.inputText(context),
               decoration: InputDecoration(
