@@ -73,17 +73,13 @@ class _UpdateDialogState extends State<_UpdateDialog>
         Navigator.of(context).pop();
       } else if (error == 'NEED_PERMISSION') {
         setState(() {
-          _error =
-              'MathCalcu needs permission to install updates.\n'
-              'Tap "Open Settings" and enable "Allow from this source"';
+          _error = 'NEED_PERMISSION';
           _downloading = false;
         });
       } else {
         debugPrint('Update error: $error');
         setState(() {
-          _error =
-              'Something went wrong while updating.\n'
-              'Please try again later or download manually from the website.';
+          _error = 'FAILED';
           _downloading = false;
         });
       }
@@ -122,7 +118,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
             ),
             const SizedBox(height: 16),
             Text(
-              _error == 'NEED_PERMISSION' ? 'Permission required' : 'Update failed',
+              _error == 'NEED_PERMISSION' ? 'Permission needed' : 'Update failed',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -130,19 +126,15 @@ class _UpdateDialogState extends State<_UpdateDialog>
               ),
             ),
             const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                _error == 'NEED_PERMISSION'
-                    ? 'MathCalcu needs permission to install updates.\n'
-                        'Tap "Open Settings" and enable "Allow from this source"'
-                    : _error!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: theme.textSecondary,
-                  height: 1.4,
-                ),
+            Text(
+              _error == 'NEED_PERMISSION'
+                  ? 'Allow MathCalcu to install updates in your phone settings, then try again.'
+                  : 'Something went wrong. Please try again later.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: theme.textSecondary,
+                height: 1.4,
               ),
             ),
             const SizedBox(height: 20),
@@ -155,18 +147,11 @@ class _UpdateDialogState extends State<_UpdateDialog>
                   child: const Text('Cancel'),
                 ),
                 const SizedBox(width: 12),
-                if (_error == 'NEED_PERMISSION')
-                  FilledButton(
-                    onPressed: _openSettings,
-                    style: FilledButton.styleFrom(backgroundColor: _accent),
-                    child: const Text('Open Settings'),
-                  )
-                else
-                  FilledButton(
-                    onPressed: _startDownload,
-                    style: FilledButton.styleFrom(backgroundColor: _accent),
-                    child: const Text('Retry'),
-                  ),
+                FilledButton(
+                  onPressed: _error == 'NEED_PERMISSION' ? _openSettings : _startDownload,
+                  style: FilledButton.styleFrom(backgroundColor: _accent),
+                  child: Text(_error == 'NEED_PERMISSION' ? 'Open Settings' : 'Retry'),
+                ),
               ],
             ),
           ],
@@ -197,7 +182,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
             ),
             const SizedBox(height: 16),
             Text(
-              'Updating...',
+              'Installing update...',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -205,31 +190,31 @@ class _UpdateDialogState extends State<_UpdateDialog>
               ),
             ),
             const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: LinearProgressIndicator(
-                  value: _progress,
-                  minHeight: 6,
-                  backgroundColor: theme.card,
-                  color: _accent,
-                ),
+            Text(
+              'The app will close after installation.\nOpen it again to use the new version.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: theme.textSecondary,
+                height: 1.4,
               ),
             ),
             const SizedBox(height: 16),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(foregroundColor: theme.textSecondary),
-              child: const Text('Cancel'),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: LinearProgressIndicator(
+                value: _progress,
+                minHeight: 6,
+                backgroundColor: theme.card,
+                color: _accent,
+              ),
             ),
           ],
         ),
       );
     }
 
-    // Initial state — show update info with Update/Later buttons
-    final releaseNotes = widget.info.releaseNotes;
+    // Initial state — simple "Update available" with Update/Later
     return AlertDialog(
       backgroundColor: theme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
@@ -260,35 +245,12 @@ class _UpdateDialogState extends State<_UpdateDialog>
           ),
           const SizedBox(height: 8),
           Text(
-            'v${widget.info.latestVersion}',
+            'Version ${widget.info.latestVersion}',
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: _accent,
+              color: theme.textSecondary,
             ),
           ),
-          if (releaseNotes.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Container(
-              width: double.maxFinite,
-              constraints: const BoxConstraints(maxHeight: 200),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: theme.card,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: SingleChildScrollView(
-                child: Text(
-                  releaseNotes,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: theme.textSecondary,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-            ),
-          ],
           const SizedBox(height: 20),
           Row(
             children: [
