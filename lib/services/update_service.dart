@@ -1,5 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
 
 class UpdateInfo {
   final String latestVersion;
@@ -72,5 +76,56 @@ class UpdateService {
       if (aVal != bVal) return aVal - bVal;
     }
     return 0;
+  }
+
+  /// Download the APK from the latest release and open the system installer.
+  /// Returns null on success, or an error message string on failure.
+  static Future<String?> downloadAndInstall(void Function(double progress)? onProgress) async {
+    try {
+      final apkUrl = 'https://github.com/$_owner/$_repo/releases/latest/download/MathCalcu.apk';
+
+      final response = await http.Client().send(
+        http.Request('GET', Uri.parse(apkUrl)),
+      );
+
+      if (response.statusCode != 200) {
+        return 'Server returned ${response.statusCode}';
+      }
+
+      final contentLength = response.contentLength ?? 0;
+      final bytes = <int>[];
+      final completer = Completer<String?>();
+
+      response.stream.listen(
+        (chunk) {
+          bytes.addAll(chunk);
+          if (contentLength > 0 && onProgress != null) {
+            onProgress(bytes.length / contentLength);
+          }
+        },
+        onDone: () async {
+          try {
+            final dir = await getTemporaryDirectory();
+            final file = File('${dir.path}/MathCalcu.apk');
+            await file.writeAsBytes(bytes);
+            final result = await OpenFilex.open(file.path);
+            if (result.type != ResultType.done) {
+              completer.complete(result.message);
+            } else {
+              completer.complete(null);
+            }
+          } catch (e) {
+            completer.complete(e.toString());
+          }
+        },
+        onError: (e) {
+          completer.complete(e.toString());
+        },
+      );
+
+      return await completer.future;
+    } catch (e) {
+      return e.toString();
+    }
   }
 }
