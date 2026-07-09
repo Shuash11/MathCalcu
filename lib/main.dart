@@ -68,6 +68,14 @@ class _CalculusAppState extends State<CalculusApp> {
           duration: const Duration(seconds: 3),
         ),
       );
+    } else {
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text('v$currentVersion - Could not check for updates'),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 
