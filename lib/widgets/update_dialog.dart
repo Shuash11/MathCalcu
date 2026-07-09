@@ -21,6 +21,8 @@ class _UpdateDialog extends StatefulWidget {
 
 class _UpdateDialogState extends State<_UpdateDialog> {
   double _progress = 0;
+  String? _error;
+  bool _installing = false;
 
   static const _accent = Color(0xFF6C63FF);
 
@@ -31,12 +33,38 @@ class _UpdateDialogState extends State<_UpdateDialog> {
   }
 
   void _startDownload() {
+    _error = null;
+    _installing = false;
     UpdateService.downloadAndInstall((p) {
       if (mounted) setState(() => _progress = p);
     }).then((error) {
       if (!mounted) return;
-      if (error == null) Navigator.of(context).pop();
+      if (error == null) {
+        Navigator.of(context).pop();
+      } else if (error == 'NEED_PERMISSION') {
+        setState(() {
+          _error =
+              'MathCalcu needs permission to install updates.\n'
+              'Tap "Open Settings" and enable "Allow from this source"';
+          _installing = false;
+        });
+      } else {
+        setState(() {
+          _error = error;
+          _installing = false;
+        });
+      }
     });
+  }
+
+  void _openSettings() async {
+    await UpdateService.openInstallSettings();
+    if (!mounted) return;
+    setState(() {
+      _progress = 0;
+      _error = null;
+    });
+    _startDownload();
   }
 
   @override
@@ -53,22 +81,20 @@ class _UpdateDialogState extends State<_UpdateDialog> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: _accent.withValues(alpha: 0.12),
+              color: _error != null
+                  ? Colors.red.withValues(alpha: 0.12)
+                  : _accent.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: SizedBox(
-              width: 32,
-              height: 32,
-              child: CircularProgressIndicator(
-                value: _progress > 0 ? _progress : null,
-                strokeWidth: 3,
-                color: _accent,
-              ),
+            child: Icon(
+              _error != null ? Icons.error_outline_rounded : Icons.system_update_rounded,
+              size: 32,
+              color: _error != null ? Colors.red : _accent,
             ),
           ),
           const SizedBox(height: 16),
           Text(
-            'Updating...',
+            _error != null ? 'Update failed' : 'Updating...',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
@@ -76,18 +102,57 @@ class _UpdateDialogState extends State<_UpdateDialog> {
             ),
           ),
           const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: LinearProgressIndicator(
-                value: _progress,
-                minHeight: 6,
-                backgroundColor: theme.card,
-                color: _accent,
+          if (_error != null) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                _error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: theme.textSecondary,
+                  height: 1.4,
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(foregroundColor: theme.textSecondary),
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 12),
+                if (_error == 'NEED_PERMISSION')
+                  FilledButton(
+                    onPressed: _installing ? null : _openSettings,
+                    style: FilledButton.styleFrom(backgroundColor: _accent),
+                    child: const Text('Open Settings'),
+                  )
+                else
+                  FilledButton(
+                    onPressed: _installing ? null : _startDownload,
+                    style: FilledButton.styleFrom(backgroundColor: _accent),
+                    child: const Text('Retry'),
+                  ),
+              ],
+            ),
+          ] else ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: LinearProgressIndicator(
+                  value: _progress,
+                  minHeight: 6,
+                  backgroundColor: theme.card,
+                  color: _accent,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -81,6 +81,28 @@ class UpdateService {
   static const MethodChannel _installerChannel =
       MethodChannel('com.mathcalcu/installer');
 
+  /// Check if the app has permission to install APKs (Android 8+).
+  /// Returns true if permission is granted or if running on older Android.
+  static Future<bool> checkInstallPermission() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      return await _installerChannel.invokeMethod('checkInstallPermission') as bool;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Open system settings for "Install unknown apps" permission.
+  static Future<bool> openInstallSettings() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      await _installerChannel.invokeMethod('openInstallSettings');
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Download the APK from the latest release and open the system installer.
   /// Returns null on success, or an error message string on failure.
   static Future<String?> downloadAndInstall(void Function(double progress)? onProgress) async {
