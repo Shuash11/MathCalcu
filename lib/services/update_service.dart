@@ -137,6 +137,12 @@ class UpdateService {
               try {
                 await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
                 completer.complete(null);
+              } on PlatformException catch (e) {
+                if (e.message == 'NEED_PERMISSION') {
+                  completer.complete('NEED_PERMISSION');
+                } else {
+                  completer.complete(e.message ?? e.toString());
+                }
               } catch (e) {
                 completer.complete(e.toString());
               }

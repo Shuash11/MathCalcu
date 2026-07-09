@@ -107,23 +107,45 @@ class MainActivity : FlutterActivity() {
                         val status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, -1)
                         val message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE) ?: ""
                         when (status) {
-                            PackageInstaller.STATUS_SUCCESS -> callback(null)
+                            PackageInstaller.STATUS_SUCCESS -> {
+                                callback(null)
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
                             PackageInstaller.STATUS_PENDING_USER_ACTION -> {
                                 val confirmIntent = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
                                 if (confirmIntent != null) {
                                     context.startActivity(confirmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                                 }
-                                callback(null)
                             }
-                            PackageInstaller.STATUS_FAILURE_ABORTED -> callback("Install cancelled")
-                            PackageInstaller.STATUS_FAILURE_BLOCKED -> callback("Install blocked by device policy")
-                            PackageInstaller.STATUS_FAILURE_CONFLICT -> callback("App signature mismatch — cannot update")
-                            PackageInstaller.STATUS_FAILURE_INCOMPATIBLE -> callback("App incompatible with device")
-                            PackageInstaller.STATUS_FAILURE_INVALID -> callback("APK file is invalid or corrupt")
-                            PackageInstaller.STATUS_FAILURE_STORAGE -> callback("Insufficient storage space")
-                            else -> callback(if (message.isNotEmpty()) message else "Install failed (code: $status)")
+                            PackageInstaller.STATUS_FAILURE_ABORTED -> {
+                                callback("Install cancelled")
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
+                            PackageInstaller.STATUS_FAILURE_BLOCKED -> {
+                                callback("Install blocked by device policy")
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
+                            PackageInstaller.STATUS_FAILURE_CONFLICT -> {
+                                callback("App signature mismatch — cannot update")
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
+                            PackageInstaller.STATUS_FAILURE_INCOMPATIBLE -> {
+                                callback("App incompatible with device")
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
+                            PackageInstaller.STATUS_FAILURE_INVALID -> {
+                                callback("APK file is invalid or corrupt")
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
+                            PackageInstaller.STATUS_FAILURE_STORAGE -> {
+                                callback("Insufficient storage space")
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
+                            else -> {
+                                callback(if (message.isNotEmpty()) message else "Install failed (code: $status)")
+                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                            }
                         }
-                        try { context.unregisterReceiver(this) } catch (_: Exception) {}
                     }
                 }
 
