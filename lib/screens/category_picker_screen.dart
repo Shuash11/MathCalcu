@@ -176,7 +176,7 @@ class _CategoryHeader extends StatelessWidget {
                 children: [
                   // Finals pill
                   GestureDetector(
-                    onTap: () => context.push('/second-sem'),
+                    onTap: () => StatefulNavigationShell.of(context).goBranch(1),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,

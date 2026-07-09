@@ -1,4 +1,3 @@
-import 'package:calculus_system/Finals/finals_router.dart';
 import 'midterm/screens/circles_screen/center/center_screen.dart';
 import 'midterm/screens/circles_screen/radius/radiusui.dart';
 import 'package:calculus_system/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
@@ -8,6 +7,8 @@ import 'package:calculus_system/midterm/screens/distance_screen/distancescreen.d
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/widgets/app_shell.dart';
 import 'package:calculus_system/screens/developers_screen.dart';
+import 'package:calculus_system/screens/category_picker_screen.dart';
+import 'package:calculus_system/screens/settings_screen.dart';
 
 import 'midterm/screens/inequalities_screen/card_picker_screen.dart';
 import 'midterm/screens/inequalities_screen/strict_screen.dart';
@@ -24,6 +25,15 @@ import 'midterm/screens/pointslope_screen/pointslopescreen.dart';
 import 'midterm/screens/two_point_slope_screen/twopointslopescreen.dart';
 import 'midterm/cards/circles/card_picker_screen.dart';
 import 'midterm/screens/circles_screen/center_radius_form/center_radiusui.dart';
+import 'package:calculus_system/Finals/finals_picker_screen.dart';
+import 'package:calculus_system/Finals/screens/derivatives_screen/derivatives_screen.dart';
+import 'package:calculus_system/Finals/screens/slope_using_derivatives_screen/slope_solver_screen.dart';
+import 'package:calculus_system/Finals/screens/limits_infinity_screen/limits_infinity_screen.dart';
+import 'package:calculus_system/Finals/screens/evaluating_limits_screen/evaluating_limits_picker.dart';
+import 'package:calculus_system/Finals/screens/evaluating_limits_screen/by_substitution/substitution_limit_screen.dart';
+import 'package:calculus_system/Finals/screens/evaluating_limits_screen/by_conjugate/conjugate_limit_screen.dart';
+import 'package:calculus_system/Finals/screens/evaluating_limits_screen/by_factoring/factoring_limit_screen.dart';
+import 'package:calculus_system/Finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -43,14 +53,80 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: '/',
     routes: [
-      // ── Home — AppShell with bottom nav ───────────────
-      GoRoute(
-        path: '/',
-        name: 'home',
-        builder: (context, state) => const AppShell(),
+      // ── Shell with bottom nav (Home / Finals / Settings) ──
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            AppShell(navigationShell: navigationShell),
+        branches: [
+          // Branch 0 — Home (Midterm)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => const CategoryPickerScreen(),
+              ),
+            ],
+          ),
+          // Branch 1 — Finals
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/second-sem',
+                builder: (context, state) => const FinalsPickerScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'derivatives',
+                    builder: (context, state) => const DerivativeScreen(),
+                  ),
+                  GoRoute(
+                    path: 'slope-derivative',
+                    builder: (context, state) => const SlopeSolverScreen(),
+                  ),
+                  GoRoute(
+                    path: 'infinity',
+                    builder: (context, state) => const LimitsInfinityScreen(),
+                  ),
+                  GoRoute(
+                    path: 'limits',
+                    builder: (context, state) => const EvaluatingLimitsPicker(),
+                    routes: [
+                      GoRoute(
+                        path: 'substitution',
+                        builder: (context, state) =>
+                            const SubstitutionLimitScreen(),
+                      ),
+                      GoRoute(
+                        path: 'conjugate',
+                        builder: (context, state) =>
+                            const ConjugateLimitScreen(),
+                      ),
+                      GoRoute(
+                        path: 'factoring',
+                        builder: (context, state) =>
+                            const FactoringLimitScreen(),
+                      ),
+                      GoRoute(
+                        path: 'lcd',
+                        builder: (context, state) => const LCDLimitScreen(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          // Branch 2 — Settings
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
 
-      ...finalsRoutes,
       // ── JOASHUA's routes ──────────────────────────────
       GoRoute(
         path: '/inequalities',

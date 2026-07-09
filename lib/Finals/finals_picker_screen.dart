@@ -4,9 +4,9 @@ import 'package:calculus_system/Finals/cards/derivatives/derevatives_card.dart';
 import 'package:calculus_system/Finals/cards/evaluating_limits/evaluationg_limits.dart';
 import 'package:calculus_system/Finals/cards/slope_using_derivatives/finding_slope_derevatives_card.dart';
 import 'package:calculus_system/Finals/cards/limits_infinity/limits_and_infinity_card.dart';
-import 'package:calculus_system/screens/category_picker_screen.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -143,11 +143,8 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                   children: [
                     // Back to Mid Term pill
                     GestureDetector(
-                      onTap: () => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const CategoryPickerScreen())),
+                      onTap: () =>
+                          StatefulNavigationShell.of(context).goBranch(0),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
