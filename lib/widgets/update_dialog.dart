@@ -65,68 +65,34 @@ class _UpdateDialogState extends State<_UpdateDialog> {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            _downloading
-                ? '${(_progress * 100).toInt()}%'
-                : 'v${widget.info.latestVersion} is now available',
-            style: const TextStyle(
-              fontSize: 14,
-              color: _accent,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'You are running v${widget.info.currentVersion}',
-            style: TextStyle(fontSize: 13, color: theme.textSecondary),
-          ),
-          if (_downloading) ...[
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: LinearProgressIndicator(
-                value: _progress,
-                minHeight: 6,
-                backgroundColor: theme.card,
-                color: _accent,
-              ),
-            ),
-          ],
-          if (!_downloading && widget.info.releaseNotes.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: theme.card,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Text(
-                widget.info.releaseNotes,
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 1.5,
-                  color: theme.textSecondary,
+          if (_downloading)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: LinearProgressIndicator(
+                  value: _progress,
+                  minHeight: 6,
+                  backgroundColor: theme.card,
+                  color: _accent,
                 ),
-                maxLines: 6,
-                overflow: TextOverflow.ellipsis,
+              ),
+            )
+          else
+            Text(
+              'v${widget.info.latestVersion} is now available',
+              style: const TextStyle(
+                fontSize: 14,
+                color: _accent,
+                fontWeight: FontWeight.w600,
               ),
             ),
-          ],
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                _error!,
-                style: const TextStyle(fontSize: 12, color: Colors.red),
-                textAlign: TextAlign.center,
-              ),
+            Text(
+              _error!,
+              style: const TextStyle(fontSize: 12, color: Colors.red),
+              textAlign: TextAlign.center,
             ),
           ],
         ],
@@ -141,7 +107,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
         ),
         if (!_downloading)
           FilledButton.icon(
-            onPressed: _error != null ? _startDownload : _startDownload,
+            onPressed: () => _error != null ? _startDownload() : _startDownload(),
             style: FilledButton.styleFrom(
               backgroundColor: _accent,
               shape: RoundedRectangleBorder(
