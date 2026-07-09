@@ -112,7 +112,6 @@ class UpdateService {
       final url = 'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
 
       final client = http.Client();
-      try {
         final request = http.Request('GET', Uri.parse(url));
         request.headers['Accept'] = 'application/octet-stream';
         final response = await client.send(request);
@@ -203,7 +202,6 @@ class UpdateService {
         );
 
         return await completer.future;
-      }
     } catch (e) {
       return e.toString();
     }
