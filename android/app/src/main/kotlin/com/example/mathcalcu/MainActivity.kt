@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageInstaller
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -144,6 +145,12 @@ class MainActivity : FlutterActivity() {
                 session.commit(pendingIntent.intentSender)
             } finally {
                 session.close()
+            }
+        } catch (e: SecurityException) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !packageManager.canRequestPackageInstalls()) {
+                callback("NEED_PERMISSION")
+            } else {
+                callback(e.message ?: "Security exception during install")
             }
         } catch (e: Exception) {
             callback(e.message ?: "Unknown install error")
