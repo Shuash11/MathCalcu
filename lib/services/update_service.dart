@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:open_filex/open_filex.dart';
 
 class UpdateInfo {
   final String latestVersion;
@@ -78,6 +78,9 @@ class UpdateService {
     return 0;
   }
 
+  static const MethodChannel _installerChannel =
+      MethodChannel('com.mathcalcu/installer');
+
   /// Download the APK from the latest release and open the system installer.
   /// Returns null on success, or an error message string on failure.
   static Future<String?> downloadAndInstall(void Function(double progress)? onProgress) async {
@@ -108,11 +111,15 @@ class UpdateService {
             final dir = await getTemporaryDirectory();
             final file = File('${dir.path}/MathCalcu.apk');
             await file.writeAsBytes(bytes);
-            final result = await OpenFilex.open(file.path);
-            if (result.type != ResultType.done) {
-              completer.complete(result.message);
+            if (Platform.isAndroid) {
+              try {
+                await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
+                completer.complete(null);
+              } catch (e) {
+                completer.complete(e.toString());
+              }
             } else {
-              completer.complete(null);
+              completer.complete('Updates not supported on this platform');
             }
           } catch (e) {
             completer.complete(e.toString());

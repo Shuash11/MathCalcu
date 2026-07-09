@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:calculus_system/midterm/screens/distance_screen/distancescreen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/widgets/app_shell.dart';
+import 'package:calculus_system/screens/developers_screen.dart';
 
 import 'midterm/screens/inequalities_screen/card_picker_screen.dart';
 import 'midterm/screens/inequalities_screen/strict_screen.dart';
@@ -175,8 +176,17 @@ class AppRouter {
             ),
           ),
         ],
+   
       ),
-  
+
+      // ── Settings sub-routes ────────────────────────────
+      GoRoute(
+        path: '/developers',
+        name: 'developers',
+        parentNavigatorKey: navigatorKey,
+        pageBuilder: (context, state) =>
+            _fadeRoute(state.pageKey, const DevelopersScreen()),
+      ),
     ],
   );
 }
