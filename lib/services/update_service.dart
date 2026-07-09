@@ -81,6 +81,17 @@ class UpdateService {
   static const MethodChannel _installerChannel =
       MethodChannel('com.mathcalcu/installer');
 
+  /// Check if the app has install permission (Android 8+).
+  static Future<bool> hasInstallPermission() async {
+    if (!Platform.isAndroid) return true;
+    try {
+      final ok = await _installerChannel.invokeMethod<bool>('checkInstallPermission');
+      return ok ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Open system settings for "Install unknown apps" permission.
   static Future<bool> openInstallSettings() async {
     if (!Platform.isAndroid) return false;
@@ -92,15 +103,17 @@ class UpdateService {
     }
   }
 
-  /// Download the APK from the latest release and open the system installer.
+  /// Download the latest release binary and trigger installation.
   /// Returns null on success, or an error message string on failure.
   static Future<String?> downloadAndInstall(void Function(double progress)? onProgress) async {
     try {
-      final apkUrl = 'https://github.com/$_owner/$_repo/releases/latest/download/MathCalcu.apk';
+      final isWin = Platform.isWindows;
+      final binaryName = isWin ? 'MathCalcu-Setup.exe' : 'MathCalcu.apk';
+      final url = 'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
 
       final client = http.Client();
       try {
-        final request = http.Request('GET', Uri.parse(apkUrl));
+        final request = http.Request('GET', Uri.parse(url));
         final response = await client.send(request);
 
         if (response.statusCode != 200) {
@@ -121,8 +134,9 @@ class UpdateService {
           onDone: () async {
             try {
               final dir = await getTemporaryDirectory();
-              final file = File('${dir.path}/MathCalcu.apk');
+              final file = File('${dir.path}/$binaryName');
               await file.writeAsBytes(bytes);
+
               if (Platform.isAndroid) {
                 try {
                   await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
@@ -136,6 +150,10 @@ class UpdateService {
                 } catch (e) {
                   completer.complete(e.toString());
                 }
+              } else if (isWin) {
+                await Process.start(file.path, ['/SILENT']);
+                await Future.delayed(const Duration(seconds: 1));
+                exit(0);
               } else {
                 completer.complete('Updates not supported on this platform');
               }

@@ -62,7 +62,7 @@ class _CalculusAppState extends State<CalculusApp> {
       final ctx = AppRouter.navigatorKey.currentContext;
       if (ctx == null || !ctx.mounted) return;
       if (info != null && info.hasUpdate) {
-        if (Platform.isAndroid) {
+        if (Platform.isAndroid || Platform.isWindows) {
           showUpdateDialog(ctx, info);
         } else {
           ScaffoldMessenger.of(ctx).showSnackBar(

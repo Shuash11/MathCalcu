@@ -29,6 +29,19 @@ class _UpdateDialogState extends State<_UpdateDialog> {
   @override
   void initState() {
     super.initState();
+    _checkPermissionAndDownload();
+  }
+
+  Future<void> _checkPermissionAndDownload() async {
+    if (await UpdateService.hasInstallPermission() == false) {
+      if (mounted) setState(() {
+        _error =
+            'MathCalcu needs permission to install updates.\n'
+            'Tap "Open Settings" and enable "Allow from this source"';
+        _installing = false;
+      });
+      return;
+    }
     _startDownload();
   }
 
@@ -60,11 +73,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
   void _openSettings() async {
     await UpdateService.openInstallSettings();
     if (!mounted) return;
-    setState(() {
-      _progress = 0;
-      _error = null;
-    });
-    _startDownload();
+    _checkPermissionAndDownload();
   }
 
   @override
@@ -133,7 +142,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
                   )
                 else
                   FilledButton(
-                    onPressed: _installing ? null : _startDownload,
+                    onPressed: _installing ? null : _checkPermissionAndDownload,
                     style: FilledButton.styleFrom(backgroundColor: _accent),
                     child: const Text('Retry'),
                   ),
