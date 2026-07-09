@@ -81,17 +81,6 @@ class UpdateService {
   static const MethodChannel _installerChannel =
       MethodChannel('com.mathcalcu/installer');
 
-  /// Check if the app has permission to install APKs (Android 8+).
-  /// Returns true if permission is granted or if running on older Android.
-  static Future<bool> checkInstallPermission() async {
-    if (!Platform.isAndroid) return false;
-    try {
-      return await _installerChannel.invokeMethod('checkInstallPermission') as bool;
-    } catch (_) {
-      return false;
-    }
-  }
-
   /// Open system settings for "Install unknown apps" permission.
   static Future<bool> openInstallSettings() async {
     if (!Platform.isAndroid) return false;
@@ -109,56 +98,63 @@ class UpdateService {
     try {
       final apkUrl = 'https://github.com/$_owner/$_repo/releases/latest/download/MathCalcu.apk';
 
-      final response = await http.Client().send(
-        http.Request('GET', Uri.parse(apkUrl)),
-      );
+      final client = http.Client();
+      try {
+        final request = http.Request('GET', Uri.parse(apkUrl));
+        final response = await client.send(request);
 
-      if (response.statusCode != 200) {
-        return 'Server returned ${response.statusCode}';
-      }
+        if (response.statusCode != 200) {
+          return 'Server returned ${response.statusCode}';
+        }
 
-      final contentLength = response.contentLength ?? 0;
-      final bytes = <int>[];
-      final completer = Completer<String?>();
+        final contentLength = response.contentLength ?? 0;
+        final bytes = <int>[];
+        final completer = Completer<String?>();
 
-      response.stream.listen(
-        (chunk) {
-          bytes.addAll(chunk);
-          if (contentLength > 0 && onProgress != null) {
-            onProgress(bytes.length / contentLength);
-          }
-        },
-        onDone: () async {
-          try {
-            final dir = await getTemporaryDirectory();
-            final file = File('${dir.path}/MathCalcu.apk');
-            await file.writeAsBytes(bytes);
-            if (Platform.isAndroid) {
-              try {
-                await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
-                completer.complete(null);
-              } on PlatformException catch (e) {
-                if (e.message == 'NEED_PERMISSION') {
-                  completer.complete('NEED_PERMISSION');
-                } else {
-                  completer.complete(e.message ?? e.toString());
-                }
-              } catch (e) {
-                completer.complete(e.toString());
-              }
-            } else {
-              completer.complete('Updates not supported on this platform');
+        response.stream.listen(
+          (chunk) {
+            bytes.addAll(chunk);
+            if (contentLength > 0 && onProgress != null) {
+              onProgress(bytes.length / contentLength);
             }
-          } catch (e) {
+          },
+          onDone: () async {
+            try {
+              final dir = await getTemporaryDirectory();
+              final file = File('${dir.path}/MathCalcu.apk');
+              await file.writeAsBytes(bytes);
+              if (Platform.isAndroid) {
+                try {
+                  await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
+                  completer.complete(null);
+                } on PlatformException catch (e) {
+                  if (e.message == 'NEED_PERMISSION') {
+                    completer.complete('NEED_PERMISSION');
+                  } else {
+                    completer.complete(e.message ?? e.toString());
+                  }
+                } catch (e) {
+                  completer.complete(e.toString());
+                }
+              } else {
+                completer.complete('Updates not supported on this platform');
+              }
+            } catch (e) {
+              completer.complete(e.toString());
+            } finally {
+              client.close();
+            }
+          },
+          onError: (e) {
             completer.complete(e.toString());
-          }
-        },
-        onError: (e) {
-          completer.complete(e.toString());
-        },
-      );
+            client.close();
+          },
+        );
 
-      return await completer.future;
+        return await completer.future;
+      } finally {
+        client.close();
+      }
     } catch (e) {
       return e.toString();
     }

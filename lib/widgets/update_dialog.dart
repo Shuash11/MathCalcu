@@ -34,7 +34,7 @@ class _UpdateDialogState extends State<_UpdateDialog> {
 
   void _startDownload() {
     _error = null;
-    _installing = false;
+    _installing = true;
     UpdateService.downloadAndInstall((p) {
       if (mounted) setState(() => _progress = p);
     }).then((error) {

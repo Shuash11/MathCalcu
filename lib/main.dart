@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -5,6 +6,7 @@ import 'app_router.dart';
 import 'package:provider/provider.dart';
 import 'theme/theme_provider.dart';
 import 'services/update_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'widgets/update_dialog.dart';
 
 void main() async {
@@ -51,29 +53,56 @@ class _CalculusAppState extends State<CalculusApp> {
   }
 
   Future<void> _checkForUpdates() async {
-    if (!mounted) return;
-    final packageInfo = await PackageInfo.fromPlatform();
-    final currentVersion = packageInfo.version;
-    final info = await UpdateService.checkForUpdate(currentVersion);
-    if (!mounted) return;
-    final ctx = AppRouter.navigatorKey.currentContext;
-    if (ctx == null || !ctx.mounted) return;
-    if (info != null && info.hasUpdate) {
-      showUpdateDialog(ctx, info);
-    } else if (info != null) {
+    try {
+      if (!mounted) return;
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = packageInfo.version;
+      final info = await UpdateService.checkForUpdate(currentVersion);
+      if (!mounted) return;
+      final ctx = AppRouter.navigatorKey.currentContext;
+      if (ctx == null || !ctx.mounted) return;
+      if (info != null && info.hasUpdate) {
+        if (Platform.isAndroid) {
+          showUpdateDialog(ctx, info);
+        } else {
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            SnackBar(
+              content: Text('Update v${info.latestVersion} available'),
+              action: SnackBarAction(
+                label: 'Open',
+                onPressed: () => launchUrl(Uri.parse(info.releaseUrl)),
+              ),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 10),
+            ),
+          );
+        }
+      } else if (info != null) {
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          SnackBar(
+            content: Text('\u2713 MathCalcu is up to date (v${info.currentVersion})'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          SnackBar(
+            content: Text('v$currentVersion - Could not check for updates'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (_) {
+      if (!mounted) return;
+      final ctx = AppRouter.navigatorKey.currentContext;
+      if (ctx == null || !ctx.mounted) return;
       ScaffoldMessenger.of(ctx).showSnackBar(
-        SnackBar(
-          content: Text('\u2713 MathCalcu is up to date (v${info.currentVersion})'),
+        const SnackBar(
+          content: Text('Could not check for updates'),
           behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(ctx).showSnackBar(
-        SnackBar(
-          content: Text('v$currentVersion - Could not check for updates'),
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
     }
