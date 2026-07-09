@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:http/http.dart' as http;
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/widgets/donate_sheet.dart';
 
@@ -15,7 +17,10 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
   static const _accent = Color(0xFF6C63FF);
+  static const _owner = 'Shuash11';
+  static const _repo = 'MathCalcu';
   String _appVersion = '';
+  String _latestVersion = '';
   late final AnimationController _staggerController;
 
   @override
@@ -26,6 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       duration: const Duration(milliseconds: 700),
     )..forward();
     _loadVersion();
+    _loadLatestVersion();
   }
 
   @override
@@ -41,6 +47,24 @@ class _SettingsScreenState extends State<SettingsScreen>
     } catch (_) {
       if (mounted) setState(() => _appVersion = 'v1.3.0');
     }
+  }
+
+  Future<void> _loadLatestVersion() async {
+    try {
+      final uri = Uri.parse('https://api.github.com/repos/$_owner/$_repo/releases/latest');
+      final res = await http.get(uri, headers: {'Accept': 'application/vnd.github.v3+json'});
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        final tag = data['tag_name'] as String? ?? '';
+        if (mounted) setState(() => _latestVersion = tag);
+      }
+    } catch (_) {}
+  }
+
+  String get _versionSubtitle {
+    if (_latestVersion.isEmpty) return _appVersion;
+    if (_appVersion == _latestVersion) return '$_appVersion — up to date';
+    return '$_appVersion · update to $_latestVersion';
   }
 
   Animation<double> _fadeFor(int index) {
@@ -136,7 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             child: _SettingsRow(
               icon: Icons.info_outline_rounded,
               label: 'MathCalcu',
-              subtitle: _appVersion,
+              subtitle: _versionSubtitle,
             ),
           )),
           buildAnimatedRow(4, _buildTappableCard(
