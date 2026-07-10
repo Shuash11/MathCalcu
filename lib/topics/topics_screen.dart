@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
+import 'package:calculus_system/topics/finals/finals_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +16,6 @@ class TopicsScreen extends StatelessWidget {
     int crossAxisCount;
     if (width < 600) {
       crossAxisCount = 2;
-    } else if (width < 900) {
-      crossAxisCount = 3;
     } else {
       crossAxisCount = 3;
     }
@@ -49,11 +48,15 @@ class TopicsScreen extends StatelessWidget {
             HomeCard(
               icon: Icons.functions_rounded,
               label: 'Midterm',
+              subtitle: 'Algebra · Geometry',
+              accent: FinalsTheme.primary,
               onTap: () => context.push('/topics/midterm'),
             ),
             HomeCard(
               icon: Icons.timeline_rounded,
               label: 'Finals',
+              subtitle: 'Calculus · Limits',
+              accent: FinalsTheme.secondary,
               onTap: () => context.push('/topics/finals'),
             ),
           ],
