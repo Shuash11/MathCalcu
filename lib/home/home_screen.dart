@@ -92,14 +92,7 @@ class HomeScreen extends StatelessWidget {
                           icon: Icons.calculate_rounded,
                           label: 'Calculator',
                           accent: FinalsTheme.tertiary,
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Coming soon!'),
-                                duration: Duration(seconds: 1),
-                              ),
-                            );
-                          },
+                          onTap: () => context.push('/calculator'),
                         ),
                       ],
                     ),

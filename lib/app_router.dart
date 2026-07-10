@@ -36,6 +36,7 @@ import 'package:calculus_system/topics/finals/screens/evaluating_limits_screen/b
 import 'package:calculus_system/topics/finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
 import 'package:calculus_system/home/home_screen.dart';
 import 'package:calculus_system/topics/topics_screen.dart';
+import 'package:calculus_system/calculator/calculator_screen.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -119,6 +120,10 @@ class AppRouter {
                         ],
                       ),
                     ],
+                  ),
+                  GoRoute(
+                    path: 'calculator',
+                    builder: (context, state) => const CalculatorScreen(),
                   ),
                 ],
               ),
