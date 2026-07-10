@@ -52,9 +52,15 @@ jobs:
           $version = "${{ steps.tag.outputs.tag }}" -replace '^v', ''
           iscc windows\installer.iss /DMyAppVersion=$version
 
+      - name: Rename installer
+        shell: powershell
+        run: |
+          $file = Get-ChildItem "build\installer\MathCalcu-Setup-*.exe" | Select-Object -First 1
+          if ($file) { Rename-Item $file.FullName "MathCalcu-Setup.exe" }
+
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          files: build\installer\MathCalcu-Setup-*.exe
+          files: build\installer\MathCalcu-Setup.exe
           token: ${{ secrets.GITHUB_TOKEN }}
