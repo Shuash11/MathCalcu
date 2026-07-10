@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:calculus_system/Finals/finals_theme.dart';
+import 'package:calculus_system/topics/finals/finals_theme.dart';
 
 class AppShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -46,11 +46,6 @@ class AppShell extends StatelessWidget {
               icon: Icon(Icons.home_outlined),
               selectedIcon: Icon(Icons.home_rounded),
               label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.school_outlined),
-              selectedIcon: Icon(Icons.school_rounded),
-              label: 'Finals',
             ),
             NavigationDestination(
               icon: Icon(Icons.settings_outlined),
