@@ -32,27 +32,13 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 16),
                   // Logo
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: FinalsTheme.headerGradient,
-                      boxShadow: [
-                        BoxShadow(
-                          color: FinalsTheme.primary.withValues(alpha: 0.3),
-                          blurRadius: 24,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/app_icon.png',
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: Image.asset(
+                      'assets/images/app_icon.png',
+                      width: 72,
+                      height: 72,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -86,14 +72,12 @@ class HomeScreen extends StatelessWidget {
                         HomeCard(
                           icon: Icons.school_rounded,
                           label: 'Topics',
-                          subtitle: 'Midterm · Finals',
                           accent: FinalsTheme.primary,
                           onTap: () => context.push('/topics'),
                         ),
                         HomeCard(
                           icon: Icons.note_alt_rounded,
                           label: 'Notes',
-                          subtitle: 'Coming soon',
                           accent: FinalsTheme.secondary,
                           onTap: () {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -107,7 +91,6 @@ class HomeScreen extends StatelessWidget {
                         HomeCard(
                           icon: Icons.calculate_rounded,
                           label: 'Calculator',
-                          subtitle: 'Coming soon',
                           accent: FinalsTheme.tertiary,
                           onTap: () {
                             ScaffoldMessenger.of(context).showSnackBar(

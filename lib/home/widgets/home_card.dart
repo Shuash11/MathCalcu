@@ -5,7 +5,6 @@ import 'package:calculus_system/theme/theme_provider.dart';
 class HomeCard extends StatefulWidget {
   final IconData icon;
   final String label;
-  final String? subtitle;
   final Color accent;
   final VoidCallback onTap;
 
@@ -13,7 +12,6 @@ class HomeCard extends StatefulWidget {
     super.key,
     required this.icon,
     required this.label,
-    this.subtitle,
     required this.accent,
     required this.onTap,
   });
@@ -118,24 +116,9 @@ class _HomeCardState extends State<HomeCard> {
                           color: theme.textPrimary,
                           letterSpacing: -0.2,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      if (widget.subtitle != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.subtitle!,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w400,
-                            color: theme.textSecondary,
-                            height: 1.3,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ],
+                    textAlign: TextAlign.center,
+                  ),
+                ],
                   ),
                 ),
               ),

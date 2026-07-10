@@ -48,14 +48,12 @@ class TopicsScreen extends StatelessWidget {
             HomeCard(
               icon: Icons.functions_rounded,
               label: 'Midterm',
-              subtitle: 'Algebra · Geometry',
               accent: FinalsTheme.primary,
               onTap: () => context.push('/topics/midterm'),
             ),
             HomeCard(
               icon: Icons.timeline_rounded,
               label: 'Finals',
-              subtitle: 'Calculus · Limits',
               accent: FinalsTheme.secondary,
               onTap: () => context.push('/topics/finals'),
             ),
