@@ -174,9 +174,9 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
     final headerBackPadding = isCompact ? 10.0 : (isMedium ? 11.0 : 12.0);
     final stepsPaddingTop = isCompact ? 24.0 : (isMedium ? 28.0 : 32.0);
 
-    return Scaffold(
-      backgroundColor: FinalsTheme.surface(context),
-      body: SafeArea(
+    return ColoredBox(
+      color: FinalsTheme.surface(context),
+      child: SafeArea(
         child: Column(
           children: [
             _buildHeader(context, headerPaddingH: headerPaddingH, titleFontSize: headerTitleFontSize, backSpacing: headerBackSpacing, badgePaddingH: headerBadgePaddingH, badgePaddingV: headerBadgePaddingV, backPadding: headerBackPadding, badgeIconSize: headerBadgeIconSize, badgeFontSize: headerBadgeFontSize),
@@ -258,16 +258,17 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
                   ),
                 ),
               ),
-              ),
-              MathKeyboard(
-                controller: _activeController ?? _expressionController,
-                accentColor: FinalsTheme.primary,
-                hideSignal: _hideKeyboardSignal,
-              ),
-            ],
-          ),
+            ),
+            MathKeyboard(
+              controller: _activeController ?? _expressionController,
+              accentColor: FinalsTheme.primary,
+              hideSignal: _hideKeyboardSignal,
+            ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   Widget _buildHeader(BuildContext context, {double headerPaddingH = 24, double titleFontSize = 24, double backSpacing = 20, double badgePaddingH = 12, double badgePaddingV = 6, double backPadding = 12, double badgeIconSize = 14, double badgeFontSize = 10}) {

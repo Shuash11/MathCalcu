@@ -152,109 +152,111 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: FinalsTheme.surface(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: FinalsTheme.primary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: CustomScrollView(
-          controller: _scrollController,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Differentiate', style: FinalsTheme.titleStyle(context).copyWith(fontSize: 28)),
-                    const SizedBox(height: 4),
-                    Text('Enter a function to find its derivative step-by-step.',
-                        style: FinalsTheme.subtitleStyle(context)),
-                  ],
-                ),
+    return ColoredBox(
+      color: FinalsTheme.surface(context),
+      child: Column(
+        children: [
+          SafeArea(
+            bottom: false,
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: FinalsTheme.primary),
+                onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverToBoxAdapter(
-                child: DerivativeInputField(
-                  controller: _exprController,
-                  focusNode: _expressionFocus,
-                  currentVariable: _variable,
-                  onVariableChanged: (v) => setState(() => _variable = v),
-                  onSolve: _solve,
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
-            if (_isLoading)
-              const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: Center(
-                    child: CircularProgressIndicator(color: FinalsTheme.primary, strokeWidth: 3),
+          ),
+          Expanded(
+            child: CustomScrollView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Differentiate', style: FinalsTheme.titleStyle(context).copyWith(fontSize: 28)),
+                        const SizedBox(height: 4),
+                        Text('Enter a function to find its derivative step-by-step.',
+                            style: FinalsTheme.subtitleStyle(context)),
+                      ],
+                    ),
                   ),
                 ),
-              )
-            else if (_error != null)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: DerivativeAnswerCard(
-                    originalExpr: _exprController.text.trim(),
-                    answerExpr: '',
-                    hasError: true,
-                    errorMessage: _error,
-                    onTap: () {},
+
+                const SliverToBoxAdapter(child: SizedBox(height: 32)),
+
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  sliver: SliverToBoxAdapter(
+                    child: DerivativeInputField(
+                      controller: _exprController,
+                      focusNode: _expressionFocus,
+                      currentVariable: _variable,
+                      onVariableChanged: (v) => setState(() => _variable = v),
+                      onSolve: _solve,
+                    ),
                   ),
                 ),
-              )
-            else if (_solution != null)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: DerivativeAnswerCard(
-                    originalExpr: _solution!.originalExpression,
-                    answerExpr: _solution!.finalAnswer,
-                    onTap: _scrollToStepsSection,
+
+                const SliverToBoxAdapter(child: SizedBox(height: 32)),
+
+                if (_isLoading)
+                  const SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: Center(
+                        child: CircularProgressIndicator(color: FinalsTheme.primary, strokeWidth: 3),
+                      ),
+                    ),
+                  )
+                else if (_error != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: DerivativeAnswerCard(
+                        originalExpr: _exprController.text.trim(),
+                        answerExpr: '',
+                        hasError: true,
+                        errorMessage: _error,
+                        onTap: () {},
+                      ),
+                    ),
+                  )
+                else if (_solution != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: DerivativeAnswerCard(
+                        originalExpr: _solution!.originalExpression,
+                        answerExpr: _solution!.finalAnswer,
+                        onTap: _scrollToStepsSection,
+                      ),
+                    ),
                   ),
-                ),
-              ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 40)),
+                const SliverToBoxAdapter(child: SizedBox(height: 40)),
 
-            if (_solution != null)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: _buildStepsSection(context, _solution!),
-                ),
-              ),
-          ],
-        ),
+                if (_solution != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: _buildStepsSection(context, _solution!),
+                    ),
+                  ),
+              ],
             ),
-            MathKeyboard(
-              controller: _activeController ?? _exprController,
-              accentColor: FinalsTheme.primary,
-              hideSignal: _hideKeyboardSignal,
-            ),
-          ],
-        ),
+          ),
+          MathKeyboard(
+            controller: _activeController ?? _exprController,
+            accentColor: FinalsTheme.primary,
+            hideSignal: _hideKeyboardSignal,
+          ),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
+        ],
       ),
     );
   }

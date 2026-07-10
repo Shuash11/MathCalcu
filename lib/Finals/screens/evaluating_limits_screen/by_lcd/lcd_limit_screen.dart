@@ -160,9 +160,9 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
     final isCompact = screenWidth < 380;
     final padding = isCompact ? 16.0 : 24.0;
 
-    return Scaffold(
-      backgroundColor: FinalsTheme.surface(context),
-      body: SafeArea(
+    return ColoredBox(
+      color: FinalsTheme.surface(context),
+      child: SafeArea(
         child: Column(
           children: [
             // ── Header ──────────────────────────────────────────
@@ -251,6 +251,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
               accentColor: FinalsTheme.danger,
               hideSignal: _hideKeyboardSignal,
             ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
         ),
       ),

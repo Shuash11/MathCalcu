@@ -118,20 +118,20 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: FinalsTheme.surface(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: FinalsTheme.primary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: SafeArea(
+    return ColoredBox(
+      color: FinalsTheme.surface(context),
+      child: SafeArea(
         child: Column(
           children: [
+            SafeArea(bottom: false, child: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                    color: FinalsTheme.primary),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            )),
             Expanded(
               child: CustomScrollView(
           controller: _scrollController,
@@ -322,6 +322,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
               accentColor: FinalsTheme.primary,
               hideSignal: _hideKeyboardSignal,
             ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
         ),
       ),

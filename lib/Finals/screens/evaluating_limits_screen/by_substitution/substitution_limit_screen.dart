@@ -138,9 +138,9 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: FinalsTheme.surface(context),
-      body: SafeArea(
+    return ColoredBox(
+      color: FinalsTheme.surface(context),
+      child: SafeArea(
         child: Column(
           children: [
             // ── Header ──────────────────────────────────────────
@@ -228,6 +228,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
               accentColor: FinalsTheme.primary,
               hideSignal: _hideKeyboardSignal,
             ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
         ),
       ),

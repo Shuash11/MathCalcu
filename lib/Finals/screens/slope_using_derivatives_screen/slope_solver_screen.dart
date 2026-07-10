@@ -96,19 +96,19 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
 
-    return Scaffold(
-      backgroundColor: FinalsTheme.surface(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: FinalsTheme.textPrimary(context)),
-          onPressed: () => context.pop(),
-        ),
-        title: Text('Slope Solver', style: FinalsTheme.titleStyle(context)),
-      ),
-      body: Column(
+    return ColoredBox(
+      color: FinalsTheme.surface(context),
+      child: Column(
         children: [
+          SafeArea(bottom: false, child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new, color: FinalsTheme.textPrimary(context)),
+              onPressed: () => context.pop(),
+            ),
+            title: Text('Slope Solver', style: FinalsTheme.titleStyle(context)),
+          )),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
@@ -196,6 +196,7 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
             accentColor: FinalsTheme.primary,
             hideSignal: _hideKeyboardSignal,
           ),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
     );

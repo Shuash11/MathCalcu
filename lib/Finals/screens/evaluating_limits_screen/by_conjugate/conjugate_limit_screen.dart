@@ -180,9 +180,9 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
     final headerBackPadding = isCompact ? 10.0 : (isMedium ? 11.0 : 12.0);
     final stepsPaddingTop = isCompact ? 24.0 : (isMedium ? 28.0 : 32.0);
 
-    return Scaffold(
-      backgroundColor: FinalsTheme.surface(context),
-      body: SafeArea(
+    return ColoredBox(
+      color: FinalsTheme.surface(context),
+      child: SafeArea(
         child: Column(
           children: [
             _buildHeader(context, headerPaddingH: headerPaddingH, titleFontSize: headerTitleFontSize, backSpacing: headerBackSpacing, badgePaddingH: headerBadgePaddingH, badgePaddingV: headerBadgePaddingV, backPadding: headerBackPadding, badgeIconSize: headerBadgeIconSize, badgeFontSize: headerBadgeFontSize),
@@ -276,6 +276,7 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
               accentColor: FinalsTheme.secondary,
               hideSignal: _hideKeyboardSignal,
             ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
         ),
       ),
