@@ -1,12 +1,13 @@
 {
   "tasks": [
-    { "id": 1, "description": "Read update_service.dart completely (especially downloadAndInstall method)", "status": "done" },
-    { "id": 2, "description": "Check recent git changes to update_service.dart", "status": "done" },
-    { "id": 3, "description": "Analyze download URL behavior and redirect handling", "status": "done" },
-    { "id": 4, "description": "Check http package version in pubspec.yaml and pubspec.lock", "status": "done" },
-    { "id": 5, "description": "Trace ALL error return paths in downloadAndInstall", "status": "done" },
-    { "id": 6, "description": "Check MainActivity.kt for installApk method channel errors", "status": "done" },
-    { "id": 7, "description": "Synthesize findings and identify root cause", "status": "done" }
+    { "id": 1, "description": "Create home module with responsive grid landing page", "status": "done" },
+    { "id": 2, "description": "Create topics module with midterm/finals sub-modules", "status": "done" },
+    { "id": 3, "description": "Move midterm/ and Finals/ into topics/ directory", "status": "done" },
+    { "id": 4, "description": "Update all imports to use new paths", "status": "done" },
+    { "id": 5, "description": "Simplify bottom nav to Home + Settings", "status": "done" },
+    { "id": 6, "description": "Restructure router with Home as root, Topics as sub-route", "status": "done" },
+    { "id": 7, "description": "Update all route paths to use new structure", "status": "done" },
+    { "id": 8, "description": "Add placeholders for Notes and Calculator screens", "status": "done" }
   ],
-  "completed": false
+  "completed": true
 }
