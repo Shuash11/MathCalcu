@@ -6,6 +6,7 @@ import 'package:calculus_system/topics/finals/cards/slope_using_derivatives/find
 import 'package:calculus_system/topics/finals/cards/limits_infinity/limits_and_infinity_card.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -127,6 +128,24 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Back button
+                GestureDetector(
+                  onTap: () => context.pop(),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: FinalsTheme.card(context),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: FinalsTheme.textSecondary(context).withValues(alpha: 0.2)),
+                    ),
+                    child: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 16,
+                      color: FinalsTheme.textPrimary(context),
+                    ),
+                  ),
+                ),
                 // Accent bar — gold gradient
                 Container(
                   width: 36,
