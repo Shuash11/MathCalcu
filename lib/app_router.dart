@@ -38,6 +38,7 @@ import 'package:calculus_system/topics/calculus/calculus_picker_screen.dart';
 import 'package:calculus_system/home/home_screen.dart';
 import 'package:calculus_system/topics/topics_screen.dart';
 import 'package:calculus_system/calculator/calculator_screen.dart';
+import 'package:calculus_system/notes/notes_screen.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -57,70 +58,73 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: '/',
     routes: [
-      // â”€â”€ Shell with bottom nav (Home / Settings) â”€â”€
+      // ── Shell with bottom nav (Home / Topics / Notes / Calculator / Settings) ──
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
         branches: [
-          // Branch 0 â€” Home
+          // Branch 0 — Home
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/',
                 builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          // Branch 1 — Topics
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/topics',
+                builder: (context, state) => const TopicsScreen(),
                 routes: [
                   GoRoute(
-                    path: 'topics',
-                    builder: (context, state) => const TopicsScreen(),
+                    path: 'calculus',
+                    builder: (context, state) => const CalculusPickerScreen(),
                     routes: [
                       GoRoute(
-                        path: 'calculus',
-                        builder: (context, state) => const CalculusPickerScreen(),
+                        path: 'midterm',
+                        builder: (context, state) => const CategoryPickerScreen(),
+                      ),
+                      GoRoute(
+                        path: 'finals',
+                        builder: (context, state) => const FinalsPickerScreen(),
                         routes: [
                           GoRoute(
-                            path: 'midterm',
-                            builder: (context, state) => const CategoryPickerScreen(),
+                            path: 'derivatives',
+                            builder: (context, state) => const DerivativeScreen(),
                           ),
                           GoRoute(
-                            path: 'finals',
-                            builder: (context, state) => const FinalsPickerScreen(),
+                            path: 'slope-derivative',
+                            builder: (context, state) => const SlopeSolverScreen(),
+                          ),
+                          GoRoute(
+                            path: 'infinity',
+                            builder: (context, state) => const LimitsInfinityScreen(),
+                          ),
+                          GoRoute(
+                            path: 'limits',
+                            builder: (context, state) => const EvaluatingLimitsPicker(),
                             routes: [
                               GoRoute(
-                                path: 'derivatives',
-                                builder: (context, state) => const DerivativeScreen(),
+                                path: 'substitution',
+                                builder: (context, state) =>
+                                    const SubstitutionLimitScreen(),
                               ),
                               GoRoute(
-                                path: 'slope-derivative',
-                                builder: (context, state) => const SlopeSolverScreen(),
+                                path: 'conjugate',
+                                builder: (context, state) =>
+                                    const ConjugateLimitScreen(),
                               ),
                               GoRoute(
-                                path: 'infinity',
-                                builder: (context, state) => const LimitsInfinityScreen(),
+                                path: 'factoring',
+                                builder: (context, state) =>
+                                    const FactoringLimitScreen(),
                               ),
                               GoRoute(
-                                path: 'limits',
-                                builder: (context, state) => const EvaluatingLimitsPicker(),
-                                routes: [
-                                  GoRoute(
-                                    path: 'substitution',
-                                    builder: (context, state) =>
-                                        const SubstitutionLimitScreen(),
-                                  ),
-                                  GoRoute(
-                                    path: 'conjugate',
-                                    builder: (context, state) =>
-                                        const ConjugateLimitScreen(),
-                                  ),
-                                  GoRoute(
-                                    path: 'factoring',
-                                    builder: (context, state) =>
-                                        const FactoringLimitScreen(),
-                                  ),
-                                  GoRoute(
-                                    path: 'lcd',
-                                    builder: (context, state) => const LCDLimitScreen(),
-                                  ),
-                                ],
+                                path: 'lcd',
+                                builder: (context, state) => const LCDLimitScreen(),
                               ),
                             ],
                           ),
@@ -128,15 +132,29 @@ class AppRouter {
                       ),
                     ],
                   ),
-                  GoRoute(
-                    path: 'calculator',
-                    builder: (context, state) => const CalculatorScreen(),
-                  ),
                 ],
               ),
             ],
           ),
-          // Branch 1 â€” Settings
+          // Branch 2 — Notes
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/notes',
+                builder: (context, state) => const NotesScreen(),
+              ),
+            ],
+          ),
+          // Branch 3 — Calculator
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/calculator',
+                builder: (context, state) => const CalculatorScreen(),
+              ),
+            ],
+          ),
+          // Branch 4 — Settings
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -148,7 +166,7 @@ class AppRouter {
         ],
       ),
 
-      // â”€â”€ JOASHUA's routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── JOASHUA's routes ─────────────────────────────────────────────
       GoRoute(
         path: '/inequalities',
         name: 'inequalities',
@@ -205,7 +223,7 @@ class AppRouter {
         ],
       ),
 
-      // â”€â”€ NASH's routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── NASH's routes ────────────────────────────────────────────────
       GoRoute(
         path: '/slope',
         name: 'slope',
@@ -242,7 +260,7 @@ class AppRouter {
         builder: (context, state) => const TwoPointSlopeScreen(),
       ),
 
-      // â”€â”€ Circle routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Circle routes ────────────────────────────────────────────────
       GoRoute(
         path: '/circle',
         name: 'circle',
@@ -273,10 +291,9 @@ class AppRouter {
             ),
           ),
         ],
-   
       ),
 
-      // â”€â”€ Settings sub-routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Settings sub-routes ──────────────────────────────────────────
       GoRoute(
         path: '/developers',
         name: 'developers',

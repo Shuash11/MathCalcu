@@ -39,13 +39,31 @@ class AppShell extends StatelessWidget {
         child: NavigationBar(
           selectedIndex: navigationShell.currentIndex,
           onDestinationSelected: (index) {
-            navigationShell.goBranch(index);
+            navigationShell.goBranch(
+              index,
+              initialLocation: index == navigationShell.currentIndex,
+            );
           },
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
               selectedIcon: Icon(Icons.home_rounded),
               label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.book_outlined),
+              selectedIcon: Icon(Icons.book_rounded),
+              label: 'Topics',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.sticky_note_2_outlined),
+              selectedIcon: Icon(Icons.sticky_note_2_rounded),
+              label: 'Notes',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.calculate_outlined),
+              selectedIcon: Icon(Icons.calculate_rounded),
+              label: 'Calculator',
             ),
             NavigationDestination(
               icon: Icon(Icons.settings_outlined),

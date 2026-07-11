@@ -73,26 +73,19 @@ class HomeScreen extends StatelessWidget {
                           icon: Icons.school_rounded,
                           label: 'Topics',
                           accent: FinalsTheme.primary,
-                          onTap: () => context.push('/topics'),
+                          onTap: () => context.go('/topics'),
                         ),
                         HomeCard(
                           icon: Icons.note_alt_rounded,
                           label: 'Notes',
                           accent: FinalsTheme.secondary,
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Coming soon!'),
-                                duration: Duration(seconds: 1),
-                              ),
-                            );
-                          },
+                          onTap: () => context.go('/notes'),
                         ),
                         HomeCard(
                           icon: Icons.calculate_rounded,
                           label: 'Calculator',
                           accent: FinalsTheme.tertiary,
-                          onTap: () => context.push('/calculator'),
+                          onTap: () => context.go('/calculator'),
                         ),
                       ],
                     ),
