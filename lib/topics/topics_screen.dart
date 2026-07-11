@@ -25,10 +25,6 @@ class TopicsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.textPrimary),
-          onPressed: () => context.pop(),
-        ),
         title: Text(
           'Topics',
           style: TextStyle(

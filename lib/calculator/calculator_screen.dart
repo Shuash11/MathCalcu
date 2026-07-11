@@ -62,10 +62,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: Text(
           'Calculator',
           style: TextStyle(
