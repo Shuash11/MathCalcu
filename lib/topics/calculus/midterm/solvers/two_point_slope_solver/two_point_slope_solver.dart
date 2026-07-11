@@ -84,7 +84,7 @@ class TwoPointSlopeSolver {
     // Step 1 — Identify points
     steps.add(SolverStep(
       number: 1,
-      title: '',
+      title: 'Points',
       formula: '',
       substitution:
           '(${_fmt(x1)},\\; ${_fmt(y1)}) \\text{ and } (${_fmt(x2)},\\; ${_fmt(y2)})',
@@ -94,7 +94,7 @@ class TwoPointSlopeSolver {
     // Step 2 — Slope formula
     steps.add(SolverStep(
       number: 2,
-      title: '',
+      title: 'Slope',
       formula: r'm = \frac{y_2 - y_1}{x_2 - x_1}',
       substitution: _toLatex(
           'm = \\frac{${_fmt(y2)}-${_fmt(y1)}}{${_fmt(x2)}-${_fmt(x1)}} = \\frac{${_fmt(dy)}}{${_fmt(dx)}}'),
@@ -112,7 +112,7 @@ class TwoPointSlopeSolver {
 
       steps.add(SolverStep(
         number: 3,
-        title: '',
+        title: 'Vertical Line',
         formula: r'm = \frac{\Delta y}{0}',
         substitution: '',
         result: _toLatex('x = ${_fmt(x1)}'),
@@ -124,7 +124,7 @@ class TwoPointSlopeSolver {
       // Step 3 — Simplify slope
       steps.add(SolverStep(
         number: 3,
-        title: '',
+        title: 'Simplify',
         formula: _toLatex('m = \\frac{${_fmt(dy)}}{${_fmt(dx)}}'),
         substitution: _fractionString(dy, dx),
         result: _toLatex('m = $slopeDisplay'),
@@ -134,7 +134,7 @@ class TwoPointSlopeSolver {
       yIntercept = y1 - slope * x1;
       steps.add(SolverStep(
         number: 4,
-        title: '',
+        title: 'Y-Intercept',
         formula: r'b = y_1 - m \cdot x_1',
         substitution: _toLatex(
             'b = ${_fmt(y1)} - (${_fmtSlope(slope)})(${_fmt(x1)}) = ${_fmtSlope(yIntercept)}'),
@@ -145,7 +145,7 @@ class TwoPointSlopeSolver {
       lineEquation = _buildSlopeIntercept(slope, yIntercept);
       steps.add(SolverStep(
         number: 5,
-        title: '',
+        title: 'y = mx + b',
         formula: r'y = mx + b',
         substitution: _toLatex(lineEquation),
         result: _toLatex(lineEquation),
@@ -176,7 +176,7 @@ class TwoPointSlopeSolver {
 
       steps.add(SolverStep(
         number: 6,
-        title: '',
+        title: 'Standard Form',
         formula: r'Ax + By = C',
         substitution: _toLatex('A = $a, B = $b, C = $c'),
         result: _toLatex(standardForm),
@@ -184,7 +184,7 @@ class TwoPointSlopeSolver {
 
       steps.add(SolverStep(
         number: 7,
-        title: '',
+        title: 'General Form',
         formula: r'Ax + By + C = 0',
         substitution: '',
         result: _toLatex(generalForm),

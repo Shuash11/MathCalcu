@@ -186,9 +186,20 @@ class _StepCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Title
+                    if (step.title.isNotEmpty)
+                      Text(
+                        step.title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: accentColor,
+                        ),
+                      ),
                     // Combined formula + substitution + result
                     if (step.formula.isNotEmpty ||
-                        step.substitution.isNotEmpty)
+                        step.substitution.isNotEmpty) ...[
+                      if (step.title.isNotEmpty) const SizedBox(height: 8),
                       _CombinedMathBlock(
                         formula: step.formula,
                         substitution: step.substitution,
@@ -196,6 +207,7 @@ class _StepCard extends StatelessWidget {
                         fontSize: 14,
                         color: accentColor,
                       ),
+                    ],
                   ],
                 ),
               ),
