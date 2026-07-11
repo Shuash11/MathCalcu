@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -62,7 +62,7 @@ class UpdateService {
   }
 
   /// Compare two semver strings (e.g. "1.2.3" vs "2.0.1").
-  /// Handles pre-release suffixes (e.g. "1.0.2-rc1" → major=1, minor=0, patch=2).
+  /// Handles pre-release suffixes (e.g. "1.0.2-rc1" â†’ major=1, minor=0, patch=2).
   /// Handles variable-length segments (covers all, not just 3).
   static int _compareVersions(String a, String b) {
     final _clean = (String s) => int.tryParse(s.replaceAll(RegExp(r'[^0-9].*$'), '')) ?? 0;

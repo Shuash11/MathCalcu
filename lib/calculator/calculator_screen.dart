@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:calculus_system/topics/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:provider/provider.dart';
 import 'calculator_engine.dart';
 
@@ -24,7 +24,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _expression = '';
         _result = '';
         _showResult = false;
-      } else if (value == '⌫') {
+      } else if (value == 'âŒ«') {
         if (_expression.isNotEmpty) {
           _expression = _expression.substring(0, _expression.length - 1);
         }
@@ -139,21 +139,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 flex: 5,
                 child: Column(
                   children: [
-                    _buildButtonRow(['C', '(', ')', '⌫'], theme),
+                    _buildButtonRow(['C', '(', ')', 'âŒ«'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['7', '8', '9', '÷'], theme),
+                    _buildButtonRow(['7', '8', '9', 'Ã·'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['4', '5', '6', '×'], theme),
+                    _buildButtonRow(['4', '5', '6', 'Ã—'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['1', '2', '3', '−'], theme),
+                    _buildButtonRow(['1', '2', '3', 'âˆ’'], theme),
                     const SizedBox(height: 8),
                     _buildButtonRow(['0', '.', 'Ans', '+'], theme),
                     const SizedBox(height: 8),
                     _buildButtonRow(['sin', 'cos', 'tan', '^'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['log', 'ln', '√', '='], theme),
+                    _buildButtonRow(['log', 'ln', 'âˆš', '='], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['π', 'e', '%', '!'], theme),
+                    _buildButtonRow(['Ï€', 'e', '%', '!'], theme),
                   ],
                 ),
               ),
@@ -181,10 +181,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   Widget _buildButton(String value, ThemeProvider theme) {
-    final isOperator = ['+', '−', '×', '÷', '='].contains(value);
-    final isSpecial = ['C', '⌫', 'Ans'].contains(value);
-    final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', '√'].contains(value);
-    final isConstant = ['π', 'e'].contains(value);
+    final isOperator = ['+', 'âˆ’', 'Ã—', 'Ã·', '='].contains(value);
+    final isSpecial = ['C', 'âŒ«', 'Ans'].contains(value);
+    final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', 'âˆš'].contains(value);
+    final isConstant = ['Ï€', 'e'].contains(value);
 
     Color bgColor;
     Color textColor;
@@ -216,7 +216,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         HapticFeedback.lightImpact();
         String insert = value;
         if (value == 'sin' || value == 'cos' || value == 'tan' ||
-            value == 'log' || value == 'ln' || value == '√') {
+            value == 'log' || value == 'ln' || value == 'âˆš') {
           insert = '$value(';
         } else if (value == '!') {
           insert = '!';

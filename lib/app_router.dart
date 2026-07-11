@@ -1,39 +1,40 @@
-import 'topics/midterm/screens/circles_screen/center/center_screen.dart';
-import 'topics/midterm/screens/circles_screen/radius/radiusui.dart';
-import 'package:calculus_system/topics/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
-import 'package:calculus_system/topics/midterm/screens/yintercept_screen/parallel_perpendicular_screen.dart';
+﻿import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart';
+import 'topics/calculus/midterm/screens/circles_screen/radius/radiusui.dart';
+import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
+import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/parallel_perpendicular_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/topics/midterm/screens/distance_screen/distancescreen.dart';
+import 'package:calculus_system/topics/calculus/midterm/screens/distance_screen/distancescreen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/widgets/app_shell.dart';
 import 'package:calculus_system/screens/developers_screen.dart';
 import 'package:calculus_system/screens/category_picker_screen.dart';
 import 'package:calculus_system/screens/settings_screen.dart';
 
-import 'topics/midterm/screens/inequalities_screen/card_picker_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/strict_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/non_strict_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/absolute_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/continued_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/simple_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/rational_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/quadratic_screen.dart';
-import 'topics/midterm/screens/inequalities_screen/radical_screen.dart';
-import 'topics/midterm/screens/slope_screen/slopescreen.dart';
-import 'topics/midterm/screens/midpoint_screen/midpointscreen.dart';
-import 'topics/midterm/screens/pointslope_screen/pointslopescreen.dart';
-import 'topics/midterm/screens/two_point_slope_screen/twopointslopescreen.dart';
-import 'topics/midterm/cards/circles/card_picker_screen.dart';
-import 'topics/midterm/screens/circles_screen/center_radius_form/center_radiusui.dart';
-import 'package:calculus_system/topics/finals/finals_picker_screen.dart';
-import 'package:calculus_system/topics/finals/screens/derivatives_screen/derivatives_screen.dart';
-import 'package:calculus_system/topics/finals/screens/slope_using_derivatives_screen/slope_solver_screen.dart';
-import 'package:calculus_system/topics/finals/screens/limits_infinity_screen/limits_infinity_screen.dart';
-import 'package:calculus_system/topics/finals/screens/evaluating_limits_screen/evaluating_limits_picker.dart';
-import 'package:calculus_system/topics/finals/screens/evaluating_limits_screen/by_substitution/substitution_limit_screen.dart';
-import 'package:calculus_system/topics/finals/screens/evaluating_limits_screen/by_conjugate/conjugate_limit_screen.dart';
-import 'package:calculus_system/topics/finals/screens/evaluating_limits_screen/by_factoring/factoring_limit_screen.dart';
-import 'package:calculus_system/topics/finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/card_picker_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/strict_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/non_strict_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/absolute_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/continued_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/simple_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/rational_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/quadratic_screen.dart';
+import 'topics/calculus/midterm/screens/inequalities_screen/radical_screen.dart';
+import 'topics/calculus/midterm/screens/slope_screen/slopescreen.dart';
+import 'topics/calculus/midterm/screens/midpoint_screen/midpointscreen.dart';
+import 'topics/calculus/midterm/screens/pointslope_screen/pointslopescreen.dart';
+import 'topics/calculus/midterm/screens/two_point_slope_screen/twopointslopescreen.dart';
+import 'topics/calculus/midterm/cards/circles/card_picker_screen.dart';
+import 'topics/calculus/midterm/screens/circles_screen/center_radius_form/center_radiusui.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_picker_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/derivatives_screen/derivatives_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/slope_using_derivatives_screen/slope_solver_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_infinity_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/evaluating_limits_picker.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_substitution/substitution_limit_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_conjugate/conjugate_limit_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_factoring/factoring_limit_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
+import 'package:calculus_system/topics/calculus/calculus_picker_screen.dart';
 import 'package:calculus_system/home/home_screen.dart';
 import 'package:calculus_system/topics/topics_screen.dart';
 import 'package:calculus_system/calculator/calculator_screen.dart';
@@ -56,12 +57,12 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: '/',
     routes: [
-      // ── Shell with bottom nav (Home / Settings) ──
+      // â”€â”€ Shell with bottom nav (Home / Settings) â”€â”€
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
         branches: [
-          // Branch 0 — Home
+          // Branch 0 â€” Home
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -73,47 +74,53 @@ class AppRouter {
                     builder: (context, state) => const TopicsScreen(),
                     routes: [
                       GoRoute(
-                        path: 'midterm',
-                        builder: (context, state) => const CategoryPickerScreen(),
-                      ),
-                      GoRoute(
-                        path: 'finals',
-                        builder: (context, state) => const FinalsPickerScreen(),
+                        path: 'calculus',
+                        builder: (context, state) => const CalculusPickerScreen(),
                         routes: [
                           GoRoute(
-                            path: 'derivatives',
-                            builder: (context, state) => const DerivativeScreen(),
+                            path: 'midterm',
+                            builder: (context, state) => const CategoryPickerScreen(),
                           ),
                           GoRoute(
-                            path: 'slope-derivative',
-                            builder: (context, state) => const SlopeSolverScreen(),
-                          ),
-                          GoRoute(
-                            path: 'infinity',
-                            builder: (context, state) => const LimitsInfinityScreen(),
-                          ),
-                          GoRoute(
-                            path: 'limits',
-                            builder: (context, state) => const EvaluatingLimitsPicker(),
+                            path: 'finals',
+                            builder: (context, state) => const FinalsPickerScreen(),
                             routes: [
                               GoRoute(
-                                path: 'substitution',
-                                builder: (context, state) =>
-                                    const SubstitutionLimitScreen(),
+                                path: 'derivatives',
+                                builder: (context, state) => const DerivativeScreen(),
                               ),
                               GoRoute(
-                                path: 'conjugate',
-                                builder: (context, state) =>
-                                    const ConjugateLimitScreen(),
+                                path: 'slope-derivative',
+                                builder: (context, state) => const SlopeSolverScreen(),
                               ),
                               GoRoute(
-                                path: 'factoring',
-                                builder: (context, state) =>
-                                    const FactoringLimitScreen(),
+                                path: 'infinity',
+                                builder: (context, state) => const LimitsInfinityScreen(),
                               ),
                               GoRoute(
-                                path: 'lcd',
-                                builder: (context, state) => const LCDLimitScreen(),
+                                path: 'limits',
+                                builder: (context, state) => const EvaluatingLimitsPicker(),
+                                routes: [
+                                  GoRoute(
+                                    path: 'substitution',
+                                    builder: (context, state) =>
+                                        const SubstitutionLimitScreen(),
+                                  ),
+                                  GoRoute(
+                                    path: 'conjugate',
+                                    builder: (context, state) =>
+                                        const ConjugateLimitScreen(),
+                                  ),
+                                  GoRoute(
+                                    path: 'factoring',
+                                    builder: (context, state) =>
+                                        const FactoringLimitScreen(),
+                                  ),
+                                  GoRoute(
+                                    path: 'lcd',
+                                    builder: (context, state) => const LCDLimitScreen(),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -129,7 +136,7 @@ class AppRouter {
               ),
             ],
           ),
-          // Branch 1 — Settings
+          // Branch 1 â€” Settings
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -141,7 +148,7 @@ class AppRouter {
         ],
       ),
 
-      // ── JOASHUA's routes ──────────────────────────────
+      // â”€â”€ JOASHUA's routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: '/inequalities',
         name: 'inequalities',
@@ -198,7 +205,7 @@ class AppRouter {
         ],
       ),
 
-      // ── NASH's routes ─────────────────────────────────
+      // â”€â”€ NASH's routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: '/slope',
         name: 'slope',
@@ -235,7 +242,7 @@ class AppRouter {
         builder: (context, state) => const TwoPointSlopeScreen(),
       ),
 
-      // ── Circle routes ─────────────────────────────────
+      // â”€â”€ Circle routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: '/circle',
         name: 'circle',
@@ -269,7 +276,7 @@ class AppRouter {
    
       ),
 
-      // ── Settings sub-routes ────────────────────────────
+      // â”€â”€ Settings sub-routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       GoRoute(
         path: '/developers',
         name: 'developers',

@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/models/developer.dart';
 import 'package:calculus_system/widgets/developer_tile.dart';
 
-// ── Public entry point ────────────────────────────────────────────────────────
+// â”€â”€ Public entry point â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 void showAboutSheet(BuildContext context) {
   showModalBottomSheet(
@@ -15,7 +15,7 @@ void showAboutSheet(BuildContext context) {
   );
 }
 
-// ── Sheet widget ──────────────────────────────────────────────────────────────
+// â”€â”€ Sheet widget â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _AboutSheet extends StatelessWidget {
   const _AboutSheet();
@@ -100,7 +100,7 @@ class _AboutSheet extends StatelessWidget {
                               ),
                               SizedBox(height: 4 * s),
                               Text(
-                                '${developers.length} developers · Math Solving App',
+                                '${developers.length} developers Â· Math Solving App',
                                 style: TextStyle(
                                   fontSize: 14 * s,
                                   color: theme.textSecondary,

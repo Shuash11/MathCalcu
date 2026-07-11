@@ -1,4 +1,4 @@
-import 'package:calculus_system/core/module_registry.dart';
+﻿import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -236,7 +236,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                         children: [
                                           const TextSpan(text: 'm = '),
                                           TextSpan(
-                                            text: '(y₂−y₁)',
+                                            text: '(yâ‚‚âˆ’yâ‚)',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               fontSize: 12 * s,
@@ -244,7 +244,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                           ),
                                           const TextSpan(text: ' / '),
                                           TextSpan(
-                                            text: '(x₂−x₁)',
+                                            text: '(xâ‚‚âˆ’xâ‚)',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               fontSize: 12 * s,

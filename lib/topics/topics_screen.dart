@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
-import 'package:calculus_system/topics/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -46,16 +46,10 @@ class TopicsScreen extends StatelessWidget {
           childAspectRatio: 1.0,
           children: [
             HomeCard(
-              icon: Icons.functions_rounded,
-              label: 'Midterm',
+              icon: Icons.calculate_rounded,
+              label: 'Calculus',
               accent: FinalsTheme.primary,
-              onTap: () => context.push('/topics/midterm'),
-            ),
-            HomeCard(
-              icon: Icons.timeline_rounded,
-              label: 'Finals',
-              accent: FinalsTheme.secondary,
-              onTap: () => context.push('/topics/finals'),
+              onTap: () => context.push('/topics/calculus'),
             ),
           ],
         ),

@@ -1,27 +1,27 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MODULE REGISTRY
-// Each developer registers their module here — ONE line.
+// Each developer registers their module here â€” ONE line.
 // The CategoryPickerScreen reads this list automatically.
 // No one needs to touch category_picker_screen.dart ever.
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class ModuleRegistry {
   static final List<ModuleEntry> modules = [
-    // ── JOASHUA: your module entry ────────────────────────
+    // â”€â”€ JOASHUA: your module entry â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const ModuleEntry(
       label: 'Inequalities',
-      subtitle: 'Strict · Non-strict · Absolute value',
+      subtitle: 'Strict Â· Non-strict Â· Absolute value',
       route: '/inequalities',
       icon: Icons.trending_up_rounded,
       accent: Color(0xFF6C63FF),
     ),
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-    // ── SLOPE MODULE ─────────────────────────────────────
+    // â”€â”€ SLOPE MODULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const ModuleEntry(
       label: 'slope',
       subtitle: 'Find slope between two points',
@@ -37,7 +37,7 @@ class ModuleRegistry {
       accent: Color(0xFFE9ECEF), // Ice white/silver
     ),
 
-    // ── DISTANCE MODULE ──────────────────────────────────
+    // â”€â”€ DISTANCE MODULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const ModuleEntry(
       label: 'distance',
       subtitle: 'Calculate distance between points',
@@ -46,20 +46,20 @@ class ModuleRegistry {
       accent: Color(0xFF4ECDC4),
     ),
 
-    // ── MIDPOINT MODULE ──────────────────────────────────
+    // â”€â”€ MIDPOINT MODULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // Clean white/silver accent - unique from orange distance
 
-    // ─────────────────────────────────────────────────────
-// ── POINT-SLOPE MODULE ───────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€ POINT-SLOPE MODULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Deep violet/purple theme - mathematical sophistication
     const ModuleEntry(
       label: 'point-slope',
-      subtitle: 'y − y₁ = m(x − x₁) · Line equations',
+      subtitle: 'y âˆ’ yâ‚ = m(x âˆ’ xâ‚) Â· Line equations',
       route: '/point-slope',
       icon: Icons.trending_flat_rounded, // Suggests line/slope
       accent: Color(0xFFA855F7), // Electric purple
     ),
-// ─────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const ModuleEntry(
       label: 'Two-Point Slope',
       subtitle: 'Find slope from two coordinate points',
@@ -67,7 +67,7 @@ class ModuleRegistry {
       icon: Icons.show_chart_rounded,
       accent: Color(0xFFF59E0B), // Amber
     ),
-// ── Y-INTERCEPT MODULE ────────────────────────────────
+// â”€â”€ Y-INTERCEPT MODULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Emerald green + gold - represents crossing point/growth
     const ModuleEntry(
       label: 'slope-intercept-form',
@@ -83,28 +83,28 @@ class ModuleRegistry {
       icon: Icons.compare_arrows_rounded,
       accent: Color(0xFF06B6D4),
     ),
-// ─────────────────────────────────────────────────────
-// ── CIRCLE MODULE ─────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€ CIRCLE MODULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Indigo + cyan theme - 3 solution types inside
     const ModuleEntry(
       label: 'circle',
-      subtitle: 'Standard · General · Center-Radius',
+      subtitle: 'Standard Â· General Â· Center-Radius',
       route: '/circle',
       icon: Icons.radio_button_unchecked_rounded, // Circle icon
       accent: Color(0xFF06B6D4), // Cyan
     ),
-// ─────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// ─────────────────────────────────────────────────────
-    // ── FUTURE DEV: add your one line here ───────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // â”€â”€ FUTURE DEV: add your one line here â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // ModuleEntry(
     //   label: 'Your Topic',
-    //   subtitle: 'Type A · Type B · Type C',
+    //   subtitle: 'Type A Â· Type B Â· Type C',
     //   route: '/your_route',
     //   icon: Icons.calculate_rounded,
     //   accent: Color(0xFFFF6B6B),
     // ),
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   ];
 }
 

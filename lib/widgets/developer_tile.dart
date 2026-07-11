@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/models/developer.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -269,7 +269,7 @@ class _DeveloperTileState extends State<DeveloperTile> {
   }
 }
 
-// ── Single info row inside the dropdown ───────────────────────────────────────
+// â”€â”€ Single info row inside the dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _InfoRow extends StatelessWidget {
   final IconData icon;

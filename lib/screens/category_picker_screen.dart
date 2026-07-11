@@ -1,4 +1,4 @@
-import 'package:calculus_system/core/module_registry.dart';
+﻿import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/screens/inequality.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +100,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Fixed header — never participates in scroll layout
+            // Fixed header â€” never participates in scroll layout
             _CategoryHeader(
               moduleCount: _modules.length,
               theme: theme,
@@ -136,7 +136,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
   }
 }
 
-// ── Header ────────────────────────────────────────────────────────────────────
+// â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _CategoryHeader extends StatelessWidget {
   final int moduleCount;
@@ -232,7 +232,7 @@ class _CategoryHeader extends StatelessWidget {
   }
 }
 
-// ── Default card for unregistered modules ─────────────────────────────────────
+// â”€â”€ Default card for unregistered modules â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _ModuleCard extends StatefulWidget {
   final ModuleEntry module;

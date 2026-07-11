@@ -1,12 +1,12 @@
-// ─────────────────────────────────────────────────────────────
-// SOLVE RESULT — returned by every BaseEquation.solve()
-// ─────────────────────────────────────────────────────────────
+﻿// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// SOLVE RESULT â€” returned by every BaseEquation.solve()
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class SolveResult {
   final String answer; // e.g. "x > 3"
   final String? latex; // optional LaTeX for rendering
   final List<double> points; // x-axis points for the graph
-  final String? intervalNotation; // e.g. "(3, ∞)"
+  final String? intervalNotation; // e.g. "(3, âˆž)"
   final bool hasError;
   final String? errorMessage;
 

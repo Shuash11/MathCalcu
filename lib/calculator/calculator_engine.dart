@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+﻿import 'dart:math' as math;
 
 class CalculatorEngine {
   static double evaluate(String expression) {
@@ -12,12 +12,12 @@ class CalculatorEngine {
   }
 
   static String _preprocess(String expr) {
-    expr = expr.replaceAll('×', '*');
-    expr = expr.replaceAll('÷', '/');
-    expr = expr.replaceAll('−', '-');
-    expr = expr.replaceAll('π', 'pi');
-    expr = expr.replaceAll('√', 'sqrt');
-    expr = expr.replaceAll('∛', 'cbrt');
+    expr = expr.replaceAll('Ã—', '*');
+    expr = expr.replaceAll('Ã·', '/');
+    expr = expr.replaceAll('âˆ’', '-');
+    expr = expr.replaceAll('Ï€', 'pi');
+    expr = expr.replaceAll('âˆš', 'sqrt');
+    expr = expr.replaceAll('âˆ›', 'cbrt');
     expr = expr.replaceAll('^', '^');
     expr = expr.replaceAll('%', '/100');
     return expr;
@@ -148,6 +148,15 @@ class CalculatorEngine {
   }
 
   static String formatResult(double value) {
+    // Check for special values
+    if (value.isNaN) return 'NaN';
+    if (value.isInfinite) return value > 0 ? '∞' : '-∞';
+
+    // Try to convert to fraction
+    final fraction = _toFraction(value);
+    if (fraction != null) return fraction;
+
+    // Fallback to decimal
     if (value == value.roundToDouble() && value.abs() < 1e15) {
       return value.toInt().toString();
     }
@@ -155,5 +164,54 @@ class CalculatorEngine {
     result = result.replaceAll(RegExp(r'0+$'), '');
     result = result.replaceAll(RegExp(r'\.$'), '');
     return result;
+  }
+
+  static String? _toFraction(double value) {
+    if (value == value.roundToDouble() && value.abs() < 1e15) {
+      return null; // Let formatResult handle integers
+    }
+
+    const maxDenominator = 10000;
+    const tolerance = 1e-10;
+
+    if (value.abs() < tolerance) return '0';
+
+    final sign = value < 0 ? '-' : '';
+    double absValue = value.abs();
+
+    // Continued fraction algorithm
+    int h1 = 1, h2 = 0;
+    int k1 = 0, k2 = 1;
+    double b = absValue;
+
+    do {
+      int a = b.floor();
+      double r = b - a;
+
+      int h = a * h1 + h2;
+      int k = a * k1 + k2;
+
+      if (k > maxDenominator) break;
+
+      h2 = h1; h1 = h;
+      k2 = k1; k1 = k;
+
+      if (r < tolerance) {
+        if (k == 0) return null;
+        if (h == 0) return '0';
+        // Check if it's a mixed number
+        if (h > k) {
+          int whole = h ~/ k;
+          int remainder = h % k;
+          if (remainder == 0) return null;
+          return '$sign$whole $remainder/$k';
+        }
+        return '$sign$h/$k';
+      }
+
+      b = 1 / r;
+    } while (b < 1e15);
+
+    return null; // Not a clean fraction
   }
 }
