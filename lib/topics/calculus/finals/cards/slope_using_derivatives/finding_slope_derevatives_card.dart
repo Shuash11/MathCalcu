@@ -238,7 +238,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                                           : theme.textSecondary,
                                     ),
                                     child: const Text(
-                                      "Tangent line slope Â· Evaluate at point Â· Instantaneous rate",
+                                      "Tangent line slope · Evaluate at point · Instantaneous rate",
                                     ),
                                   ),
 

@@ -150,7 +150,7 @@ class SolutionStepsGenerator {
     ));
 
     // Step 5: Cancel common factors
-    final commonStr = result.commonFactors.map((f) => f.toTex()).join(' Ã— ');
+    final commonStr = result.commonFactors.map((f) => f.toTex()).join(' ÷— ');
     steps.add(SolutionStep(
       stepNumber: 5,
       title: 'Cancel common factors',

@@ -73,7 +73,7 @@ class CenterResultSection extends StatelessWidget {
                 children: [
                   if (showHApprox) ...[
                     Text(
-                      'h â‰ˆ ${result!.hApprox}',
+                      'h ≠ˆ ${result!.hApprox}',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -89,7 +89,7 @@ class CenterResultSection extends StatelessWidget {
                   ],
                   if (showKApprox)
                     Text(
-                      'k â‰ˆ ${result!.kApprox}',
+                      'k ≠ˆ ${result!.kApprox}',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,

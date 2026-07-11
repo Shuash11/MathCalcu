@@ -336,14 +336,14 @@ class PolynomialFactorizer {
     final b = p[1];
     final a = p[2];
     final c = p[0];
-    // Pattern: axÂ² - c (no x term) with a, c > 0
+    // Pattern: ax² - c (no x term) with a, c > 0
     return b.abs() < 1e-12 && a > 0 && c < 0;
   }
 
   /// Check if polynomial is a sum or difference of cubes pattern
   bool isSumOrDifferenceOfCubes(Polynomial p) {
     if (p.degree != 3) return false;
-    // Pattern: axÂ³ Â± c (no xÂ² or x terms)
+    // Pattern: axÂ³ Â± c (no x² or x terms)
     return p[2].abs() < 1e-12 && p[1].abs() < 1e-12;
   }
 }

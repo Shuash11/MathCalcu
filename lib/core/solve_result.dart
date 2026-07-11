@@ -6,7 +6,7 @@ class SolveResult {
   final String answer; // e.g. "x > 3"
   final String? latex; // optional LaTeX for rendering
   final List<double> points; // x-axis points for the graph
-  final String? intervalNotation; // e.g. "(3, âˆž)"
+  final String? intervalNotation; // e.g. "(3, ∞)"
   final bool hasError;
   final String? errorMessage;
 

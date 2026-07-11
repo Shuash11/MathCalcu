@@ -231,12 +231,12 @@ class SmartParser {
   /// Try to detect and parse a fraction pattern.
   ///
   /// Detects patterns like:
-  /// - "x^2-1/x-1" â†’ (x^2-1)/(x-1)
-  /// - "2x+3/x^2+1" â†’ (2x+3)/(x^2+1)
+  /// - "x^2-1/x-1" → (x^2-1)/(x-1)
+  /// - "2x+3/x^2+1" → (2x+3)/(x^2+1)
   ///
   /// Does NOT convert:
-  /// - "x/2+x" â†’ x/2+x (standard order of operations)
-  /// - "1/2+x" â†’ 1/2+x (standard order of operations)
+  /// - "x/2+x" → x/2+x (standard order of operations)
+  /// - "1/2+x" → 1/2+x (standard order of operations)
   ASTNode? _tryParseAsFraction() {
     // Only attempt if there's at least one division
     if (!_hasDivision()) return null;

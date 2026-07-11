@@ -9,10 +9,10 @@ import 'package:calculus_system/theme/theme_provider.dart';
 // Uses ThemeProvider for light/dark surface base,
 // but overrides with Finals-specific amber/gold palette.
 //
-// Primary   : Amber gold   â†’  Color(0xFFFFB020)
-// Secondary : Deep orange  â†’  Color(0xFFFF6B35)
-// Tertiary  : Soft yellow  â†’  Color(0xFFFFD166)
-// Danger    : Rose red     â†’  Color(0xFFEF476F)  â† for badges
+// Primary   : Amber gold   →  Color(0xFFFFB020)
+// Secondary : Deep orange  →  Color(0xFFFF6B35)
+// Tertiary  : Soft yellow  →  Color(0xFFFFD166)
+// Danger    : Rose red     →  Color(0xFFEF476F)  â† for badges
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class FinalsTheme {

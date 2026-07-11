@@ -201,7 +201,7 @@ class StepGenerator {
       final formatted = _formatResult(numLimitAns);
       final fractionGuess = _findFractionGuess(numLimitAns);
       exactAnswerTex = fractionGuess ?? "=$formatted";
-      approxAnswerTex = "â‰ˆ $formatted";
+      approxAnswerTex = "≠ˆ $formatted";
     } else {
       exactAnswerTex = ansTex;
       approxAnswerTex = "";
@@ -312,7 +312,7 @@ class StepGenerator {
       originalEquation: eq,
       methodUsed: "Analytical Approach",
       steps: [
-        "**Note:** This expression requires L'HÃ´pital's Rule or advanced factoring."
+        "**Note:** This expression requires L'H÷´pital's Rule or advanced factoring."
       ],
     );
   }
@@ -326,7 +326,7 @@ class StepGenerator {
   }
 
   // -------------------------------------------------------------------
-  // Dynamic factoring: handles âˆšx and polynomial differences
+  // Dynamic factoring: handles √x and polynomial differences
   // -------------------------------------------------------------------
   static _FactorizationResult _dynamicFactorAndCancel(
       String combinedNumTex,
@@ -336,7 +336,7 @@ class StepGenerator {
       String d1Tex,
       String d2Tex,
       String lcdTex) {
-    // 1. Squareâ€‘root pattern: denominator = x - aÂ²
+    // 1. Squareâ€‘root pattern: denominator = x - a²
     if (denNode is BinaryOpNode &&
         denNode.op == '-' &&
         denNode.left is VariableNode &&
@@ -381,7 +381,7 @@ class StepGenerator {
       }
     }
 
-    // 2. Polynomial difference of squares: denominator = xÂ² - aÂ²
+    // 2. Polynomial difference of squares: denominator = x² - a²
     if (denNode is BinaryOpNode && denNode.op == '-') {
       final left = denNode.left;
       final right = denNode.right;
@@ -449,12 +449,12 @@ class StepGenerator {
       }
     }
 
-    // 4. No recognizable pattern â†’ empty result
+    // 4. No recognizable pattern → empty result
     return _FactorizationResult.empty();
   }
 
   // -------------------------------------------------------------------
-  // AST â†’ LaTeX conversion
+  // AST → LaTeX conversion
   // -------------------------------------------------------------------
   static String _nodeToTex(MathNode node) {
     if (node is NumberNode) return _doubleToStr(node.value);

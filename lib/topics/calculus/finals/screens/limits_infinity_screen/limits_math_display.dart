@@ -47,17 +47,17 @@ class LimitsMathDisplay extends StatelessWidget {
 
   String _parseLatex(String text) {
     return text
-        .replaceAll('âˆž', '\\infty')
-        .replaceAll('â†’', '\\rightarrow')
-        .replaceAll('Â·', '\\cdot')
+        .replaceAll('∞', '\\infty')
+        .replaceAll('→', '\\rightarrow')
+        .replaceAll('·', '\\cdot')
         .replaceAll('âˆ‘', '\\sum')
         .replaceAll('âˆ«', '\\int')
-        .replaceAll('âˆš', '\\sqrt')
+        .replaceAll('√', '\\sqrt')
         .replaceAll('Â±', '\\pm')
-        .replaceAll('â‰ ', '\\neq')
-        .replaceAll('â‰¤', '\\leq')
-        .replaceAll('â‰¥', '\\geq')
-        .replaceAll('Â²', '^2')
+        .replaceAll('≠ ', '\\neq')
+        .replaceAll('≠¤', '\\leq')
+        .replaceAll('≠¥', '\\geq')
+        .replaceAll('²', '^2')
         .replaceAll('Â³', '^3')
         .replaceAll('â´', '^4')
         .replaceAll('âµ', '^5')
@@ -229,10 +229,10 @@ class LimitsSolutionStep extends StatelessWidget {
     return text
         .replaceAll('\\frac{', 'âŸª')
         .replaceAll('}', 'âŸ«')
-        .replaceAll('\\infty', 'âˆž')
+        .replaceAll('\\infty', '∞')
         .replaceAll('\\lim', 'lim')
-        .replaceAll('\\rightarrow', 'â†’')
-        .replaceAll('\\cdot', 'Â·');
+        .replaceAll('\\rightarrow', '→')
+        .replaceAll('\\cdot', '·');
   }
 }
 

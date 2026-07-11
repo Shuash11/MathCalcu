@@ -1,6 +1,6 @@
 ﻿// main.dart
 // Entry point only: CLI argument parsing and the demo suite.
-// Wires together: SlopeSolver (compute) â†’ PrettyPrinter (display).
+// Wires together: SlopeSolver (compute) → PrettyPrinter (display).
 // No mathematics or formatting logic lives here.
 
 import 'dart:io';

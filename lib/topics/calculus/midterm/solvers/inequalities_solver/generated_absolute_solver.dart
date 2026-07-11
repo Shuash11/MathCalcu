@@ -13,12 +13,12 @@ class GeneratedAbsoluteSolver {
 
       bool absOnLeft = p.absOnLeft;
       String effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-      final isNarrow = effectiveOp == '<' || effectiveOp == 'â‰¤';
+      final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
 
       if (isNarrow) {
         if (p.k < 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
         if (p.k == 0 && effectiveOp == '<') return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
-        if (p.k == 0 && effectiveOp == 'â‰¤') {
+        if (p.k == 0 && effectiveOp == '≠¤') {
           if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
           final root = -p.b / p.a;
           return SolveResult(answer: 'x = ${_fmt(root)}', points: [root], intervalNotation: '{${_fmt(root)}}');
@@ -37,13 +37,13 @@ class GeneratedAbsoluteSolver {
           intervalNotation: '$lb${_fmt(l)}, ${_fmt(h)}$rb',
         );
       } else {
-        if (p.k < 0) return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-âˆž, âˆž)');
-        if (p.k == 0 && effectiveOp == 'â‰¥') return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-âˆž, âˆž)');
+        if (p.k < 0) return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
+        if (p.k == 0 && effectiveOp == '≠¥') return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
         if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
         if (p.k == 0 && effectiveOp == '>') {
           final root = -p.b / p.a;
           final fR = _fmt(root);
-          return SolveResult(answer: 'x < $fR or x > $fR', points: [root], intervalNotation: '(-âˆž, $fR) âˆª ($fR, âˆž)');
+          return SolveResult(answer: 'x < $fR or x > $fR', points: [root], intervalNotation: '(-∞, $fR) âˆª ($fR, ∞)');
         }
 
         final v1 = (-p.k - p.b) / p.a;
@@ -58,7 +58,7 @@ class GeneratedAbsoluteSolver {
         return SolveResult(
           answer: 'x $flipOp $fL or x $effectiveOp $fH',
           points: [l, h],
-          intervalNotation: '(-âˆž, $fL$b1 âˆª $b2$fH, âˆž)',
+          intervalNotation: '(-∞, $fL$b1 âˆª $b2$fH, ∞)',
         );
       }
     } catch (e) {
@@ -83,7 +83,7 @@ class GeneratedAbsoluteSolver {
     final kStr = _fmtLatex(p.k);
     final absOnLeft = p.absOnLeft;
     final effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-    final isNarrow = effectiveOp == '<' || effectiveOp == 'â‰¤';
+    final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
 
     // ---- Edge cases ----
     if (p.a == 0) {
@@ -122,7 +122,7 @@ class GeneratedAbsoluteSolver {
     }
 
     if (p.k == 0 && effectiveOp == '>') {
-      // |ax+b| > 0  =>  ax+b â‰  0  =>  x â‰  -b/a
+      // |ax+b| > 0  =>  ax+b ≠  0  =>  x ≠  -b/a
       final root = _fmtLatex(-p.b / p.a);
       steps.add(StepModel(
         stepNumber: n++,
@@ -151,8 +151,8 @@ class GeneratedAbsoluteSolver {
 
     if (isNarrow) {
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // NARROW CASE  |ax+b| < k  â†’  -k < ax+b < k
-      // Steps: Rule â†’ Isolate x-term â†’ Divide â†’ Interval
+      // NARROW CASE  |ax+b| < k  →  -k < ax+b < k
+      // Steps: Rule → Isolate x-term → Divide → Interval
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -240,8 +240,8 @@ class GeneratedAbsoluteSolver {
       ));
     } else {
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // WIDE CASE  |ax+b| > k  â†’  ax+b < -k  OR  ax+b > k
-      // Steps: Rule â†’ Solve Left â†’ Solve Right â†’ Combine â†’ Interval
+      // WIDE CASE  |ax+b| > k  →  ax+b < -k  OR  ax+b > k
+      // Steps: Rule → Solve Left → Solve Right → Combine → Interval
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -340,10 +340,10 @@ class GeneratedAbsoluteSolver {
     String s = input
         .trim()
         .replaceAll('âˆ’', '-')
-        .replaceAll('Â²', '^2')
+        .replaceAll('²', '^2')
         .replaceAll(' ', '')
-        .replaceAll('>=', 'â‰¥')
-        .replaceAll('<=', 'â‰¤');
+        .replaceAll('>=', '≠¥')
+        .replaceAll('<=', '≠¤');
 
     if (!s.contains('|')) return null;
 
@@ -377,8 +377,8 @@ class GeneratedAbsoluteSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('â‰¥')) return 'â‰¥';
-    if (s.contains('â‰¤')) return 'â‰¤';
+    if (s.contains('≠¥')) return '≠¥';
+    if (s.contains('≠¤')) return '≠¤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -420,7 +420,7 @@ class GeneratedAbsoluteSolver {
 
   static String _fmt(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? '-âˆž' : 'âˆž');
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? '-∞' : '∞');
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -464,8 +464,8 @@ class GeneratedAbsoluteSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case 'â‰¥': return '\\geq';
-      case 'â‰¤': return '\\leq';
+      case '≠¥': return '\\geq';
+      case '≠¤': return '\\leq';
       case '>': return '>';
       case '<': return '<';
       default: return op;
@@ -476,8 +476,8 @@ class GeneratedAbsoluteSolver {
     switch (op) {
       case '>': return '<';
       case '<': return '>';
-      case 'â‰¥': return 'â‰¤';
-      case 'â‰¤': return 'â‰¥';
+      case '≠¥': return '≠¤';
+      case '≠¤': return '≠¥';
       default: return op;
     }
   }

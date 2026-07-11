@@ -73,13 +73,13 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
 
               const SizedBox(height: 24),
 
-              // â”€â”€ Error (null â†’ hidden) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // â”€â”€ Error (null → hidden) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
               if (_controller.errorMsg != null) ...[
                 const SizedBox(height: 16),
                 CenterErrorSection(errorMsg: _controller.errorMsg),
               ],
 
-              // â”€â”€ Steps + result (null â†’ hidden) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // â”€â”€ Steps + result (null → hidden) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
               if (_controller.result != null) ...[
                 const SizedBox(height: 24),
                 CenterStepsSection(steps: _controller.result!.steps),

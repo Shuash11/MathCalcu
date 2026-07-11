@@ -81,8 +81,8 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify endpoints',
-        plainContent: 'A = ($x1s,  $y1s)   â†’   (xâ‚, yâ‚)\n'
-            'B = ($x2s,  $y2s)   â†’   (xâ‚‚, yâ‚‚)',
+        plainContent: 'A = ($x1s,  $y1s)   →   (xâ‚, yâ‚)\n'
+            'B = ($x2s,  $y2s)   →   (xâ‚‚, yâ‚‚)',
       ),
 
       // â”€â”€ Step 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -134,7 +134,7 @@ class _StepBuilder {
       //   'M &= \left($resXs,\;$resYs\right)\\[8pt]'
       // caused two bugs:
       //   1. \r (in \right) became a carriage-return character.
-      //   2. \\ became a single \, so \\[8pt] became \[8pt] â†’
+      //   2. \\ became a single \, so \\[8pt] became \[8pt] →
       //      "Undefined control sequence: \[".
       // Solution: split every LaTeX fragment into raw strings (r'...') and
       // splice variable values in via adjacent non-raw string literals.
@@ -177,9 +177,9 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify given values',
-        plainContent: 'M = ($xms,  $yms)   â†’   midpoint\n'
-            'A = ($x1s,  $y1s)   â†’   known endpoint\n'
-            'B = (xâ‚‚, yâ‚‚)      â†’   find this',
+        plainContent: 'M = ($xms,  $yms)   →   midpoint\n'
+            'A = ($x1s,  $y1s)   →   known endpoint\n'
+            'B = (xâ‚‚, yâ‚‚)      →   find this',
       ),
 
       // â”€â”€ Step 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -562,7 +562,7 @@ class _GuideLabel extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: '  Â·  ',
+            text: '  ·  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
               color: MidpointTheme.text40(context),

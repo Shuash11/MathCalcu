@@ -74,7 +74,7 @@ class SlopeSteps extends StatelessWidget {
         stepLabel: 'Step 1',
         guide: 'Identify points',
         plainContent:
-            'A = ($x1s, $y1s)  â†’  (xâ‚, yâ‚)\nB = ($x2s, $y2s)  â†’  (xâ‚‚, yâ‚‚)',
+            'A = ($x1s, $y1s)  →  (xâ‚, yâ‚)\nB = ($x2s, $y2s)  →  (xâ‚‚, yâ‚‚)',
       ),
       StepSection.single(
         stepLabel: 'Step 2',
@@ -548,7 +548,7 @@ class _GuideLabel extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: '  Â·  ',
+            text: '  ·  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
               color: SlopeTheme.textSecondary(context).withValues(alpha: 0.4),

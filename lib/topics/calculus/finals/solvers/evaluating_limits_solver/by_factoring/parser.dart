@@ -145,11 +145,11 @@ class UnaryMinusNode extends ASTNode {
 /// Recursive descent parser for mathematical expressions.
 ///
 /// Grammar:
-///   Expression â†’ Term (('+' | '-') Term)*
-///   Term       â†’ Power (('*' | '/') Power)*
-///   Power      â†’ Unary ('^' Unary)?
-///   Unary      â†’ '-' Unary | '+' Unary | Atom
-///   Atom       â†’ Number | Variable | '(' Expression ')'
+///   Expression → Term (('+' | '-') Term)*
+///   Term       → Power (('*' | '/') Power)*
+///   Power      → Unary ('^' Unary)?
+///   Unary      → '-' Unary | '+' Unary | Atom
+///   Atom       → Number | Variable | '(' Expression ')'
 class Parser {
   final List<Token> tokens;
   int _current = 0;

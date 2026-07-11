@@ -13,7 +13,7 @@ class FinalsModuleRegistry {
     // â”€â”€ Add Finals topic entries below â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const FinalsModuleEntry(
       label: 'Evaluating Limits',
-      subtitle: 'By substitution  Â· By conjugate Â· By factoring ',
+      subtitle: 'By substitution  · By conjugate · By factoring ',
       route: '/topics/calculus/finals/limits',
       icon: Icons.functions_rounded,
       accent: Color(0xFFFFB020),
@@ -27,21 +27,21 @@ class FinalsModuleRegistry {
     ),
     const FinalsModuleEntry(
       label: 'Derivatives',
-      subtitle: 'Power rule Â· Product rule Â· Quotient rule Â· Chain rule',
+      subtitle: 'Power rule · Product rule · Quotient rule · Chain rule',
       route: '/topics/calculus/finals/derivatives',
       icon: Icons.trending_up_rounded,
       accent: Color(0xFFFFD166), // Tertiary soft yellow
     ),
     const FinalsModuleEntry(
       label: 'Slope Using Derivatives',
-      subtitle: 'Tangent line slope Â· Evaluate at point Â· Instantaneous rate',
+      subtitle: 'Tangent line slope · Evaluate at point · Instantaneous rate',
       route: '/topics/calculus/finals/slope-derivative',
       icon: Icons.show_chart_rounded,
       accent: Color(0xFFEF476F), // Danger rose red
     ),
     // const FinalsModuleEntry(
     //   label: 'Limits',
-    //   subtitle: 'One-sided Â· Infinite Â· At a point',
+    //   subtitle: 'One-sided · Infinite · At a point',
     //   route: '/finals/limits',
     //   icon: Icons.compress_rounded,
     //   accent: Color(0xFFFFB020),

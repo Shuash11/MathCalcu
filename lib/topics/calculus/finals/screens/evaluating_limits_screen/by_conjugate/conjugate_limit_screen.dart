@@ -219,7 +219,7 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                           SizedBox(height: isCompact ? 16.0 : 24.0),
                           ConjugateAnswerCard(
                             problemNotation:
-                                'lim($_currentVariable â†’ ${_approachController.text}) ${_expressionController.text}',
+                                'lim($_currentVariable → ${_approachController.text}) ${_expressionController.text}',
                             resultString: _result!.resultString,
                             method: 'By Conjugate',
                             isShowingSteps: _showSteps,

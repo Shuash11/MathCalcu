@@ -19,7 +19,7 @@ class GeneratedLinearSolver {
         return SolveResult(
           answer: sat ? 'All real numbers' : 'No solution',
           points: [],
-          intervalNotation: sat ? '(-âˆž, âˆž)' : 'âˆ…',
+          intervalNotation: sat ? '(-∞, ∞)' : 'âˆ…',
         );
       }
 
@@ -178,17 +178,17 @@ class GeneratedLinearSolver {
         .trim()
         .replaceAll('\u2212', '-')
         .replaceAll(' ', '')
-        .replaceAll('>=', 'â‰¥')
-        .replaceAll('<=', 'â‰¤')
-        .replaceAll('=>', 'â‰¥')
-        .replaceAll('=<', 'â‰¤')
-        .replaceAll('xÂ²', 'x^2')
-        .replaceAll('Â²', '^2');
+        .replaceAll('>=', '≠¥')
+        .replaceAll('<=', '≠¤')
+        .replaceAll('=>', '≠¥')
+        .replaceAll('=<', '≠¤')
+        .replaceAll('x²', 'x^2')
+        .replaceAll('²', '^2');
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('â‰¥')) return 'â‰¥';
-    if (s.contains('â‰¤')) return 'â‰¤';
+    if (s.contains('≠¥')) return '≠¥';
+    if (s.contains('≠¤')) return '≠¤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -230,7 +230,7 @@ class GeneratedLinearSolver {
 
   static String _fmt(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? '-âˆž' : 'âˆž');
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? '-∞' : '∞');
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -267,8 +267,8 @@ class GeneratedLinearSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case 'â‰¥': return '\\geq';
-      case 'â‰¤': return '\\leq';
+      case '≠¥': return '\\geq';
+      case '≠¤': return '\\leq';
       case '>': return '>';
       case '<': return '<';
       default: return op;
@@ -279,8 +279,8 @@ class GeneratedLinearSolver {
     switch (op) {
       case '>': return '<';
       case '<': return '>';
-      case 'â‰¥': return 'â‰¤';
-      case 'â‰¤': return 'â‰¥';
+      case '≠¥': return '≠¤';
+      case '≠¤': return '≠¥';
       default: return op;
     }
   }
@@ -289,8 +289,8 @@ class GeneratedLinearSolver {
     switch (op) {
       case '>': return left > right;
       case '<': return left < right;
-      case 'â‰¥': return left >= right;
-      case 'â‰¤': return left <= right;
+      case '≠¥': return left >= right;
+      case '≠¤': return left <= right;
       default: return false;
     }
   }
@@ -299,9 +299,9 @@ class GeneratedLinearSolver {
     final bs = _fmtLatex(b);
     switch (op) {
       case '>': return '($bs, \\infty)';
-      case 'â‰¥': return '[$bs, \\infty)';
+      case '≠¥': return '[$bs, \\infty)';
       case '<': return '(-\\infty, $bs)';
-      case 'â‰¤': return '(-\\infty, $bs]';
+      case '≠¤': return '(-\\infty, $bs]';
       default: return '';
     }
   }
@@ -310,10 +310,10 @@ class GeneratedLinearSolver {
   static String _interval(String op, double b) {
     final bs = _fmt(b);
     switch (op) {
-      case '>': return '($bs, âˆž)';
-      case 'â‰¥': return '[$bs, âˆž)';
-      case '<': return '(-âˆž, $bs)';
-      case 'â‰¤': return '(-âˆž, $bs]';
+      case '>': return '($bs, ∞)';
+      case '≠¥': return '[$bs, ∞)';
+      case '<': return '(-∞, $bs)';
+      case '≠¤': return '(-∞, $bs]';
       default: return '';
     }
   }

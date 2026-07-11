@@ -48,19 +48,18 @@ class Tokenizer {
 
   String _preprocess() {
     var result = input
-        .replaceAll('âˆ’', '-')
+        .replaceAll('−', '-')
         .replaceAll('â€“', '-')
-        .replaceAll('â€”', '-')
-        .replaceAll('Ã¢Ë†â€™', '-')
-        .replaceAll('âˆš', 'sqrt')
-        .replaceAll('Ã¢Ë†Å¡', 'sqrt')
-        .replaceAll('Ã—', '*')
-        .replaceAll('Ã·', '/');
+        .replaceAll('â€"', '-')
+        .replaceAll('√', 'sqrt')
+        .replaceAll('÷¢Ë†Å¡', 'sqrt')
+        .replaceAll('÷—', '*')
+        .replaceAll('×', '/');
 
     result = result
         .replaceAll('â°', '^0')
         .replaceAll('Â¹', '^1')
-        .replaceAll('Â²', '^2')
+        .replaceAll('²', '^2')
         .replaceAll('Â³', '^3')
         .replaceAll('â´', '^4')
         .replaceAll('âµ', '^5')
@@ -68,16 +67,16 @@ class Tokenizer {
         .replaceAll('â·', '^7')
         .replaceAll('â¸', '^8')
         .replaceAll('â¹', '^9')
-        .replaceAll('Ã¢ÂÂ°', '^0')
-        .replaceAll('Ã‚Â¹', '^1')
-        .replaceAll('Ã‚Â²', '^2')
-        .replaceAll('Ã‚Â³', '^3')
-        .replaceAll('Ã¢ÂÂ´', '^4')
-        .replaceAll('Ã¢ÂÂµ', '^5')
-        .replaceAll('Ã¢ÂÂ¶', '^6')
-        .replaceAll('Ã¢ÂÂ·', '^7')
-        .replaceAll('Ã¢ÂÂ¸', '^8')
-        .replaceAll('Ã¢ÂÂ¹', '^9');
+        .replaceAll('÷¢ÂÂ°', '^0')
+        .replaceAll('÷‚Â¹', '^1')
+        .replaceAll('÷‚²', '^2')
+        .replaceAll('÷‚Â³', '^3')
+        .replaceAll('÷¢ÂÂ´', '^4')
+        .replaceAll('÷¢ÂÂµ', '^5')
+        .replaceAll('÷¢ÂÂ¶', '^6')
+        .replaceAll('÷¢Â·', '^7')
+        .replaceAll('÷¢ÂÂ¸', '^8')
+        .replaceAll('÷¢ÂÂ¹', '^9');
 
     final absBuf = StringBuffer();
     var inAbs = false;

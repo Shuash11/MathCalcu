@@ -155,8 +155,8 @@ class _NumberLinePainter extends CustomPainter {
     }
 
     if (answer == 'All real numbers' ||
-        interval == '(-âˆž, âˆž)' ||
-        interval == '(-âˆž, +âˆž)') {
+        interval == '(-∞, ∞)' ||
+        interval == '(-∞, +∞)') {
       canvas.drawRect(
         Rect.fromLTRB(lineLeft, cy - 8, lineRight, cy + 8),
         shadePaint,
@@ -173,7 +173,7 @@ class _NumberLinePainter extends CustomPainter {
     if (result.points.length == 1) {
       final boundary = result.points[0];
       final bx = cx + boundary * gap - viewCenter * gap;
-      final goRight = interval.contains(', âˆž)') || interval.contains(', +âˆž)');
+      final goRight = interval.contains(', ∞)') || interval.contains(', +∞)');
       final isOpen = interval.startsWith('(') || interval.endsWith(')');
 
       if (goRight) {
@@ -181,13 +181,13 @@ class _NumberLinePainter extends CustomPainter {
             Rect.fromLTRB(bx, cy - 8, lineRight, cy + 8), shadePaint);
         _drawArrow(canvas, Offset(lineRight + 4, cy), true,
             arrowPaint..color = accentColor);
-        _drawLabel(canvas, '+âˆž', lineRight - 8, cy - 26, accentColor);
+        _drawLabel(canvas, '+∞', lineRight - 8, cy - 26, accentColor);
       } else {
         canvas.drawRect(
             Rect.fromLTRB(lineLeft, cy - 8, bx, cy + 8), shadePaint);
         _drawArrow(canvas, const Offset(lineLeft - 4, cy), false,
             arrowPaint..color = accentColor);
-        _drawLabel(canvas, '-âˆž', lineLeft + 8, cy - 26, accentColor);
+        _drawLabel(canvas, '-∞', lineLeft + 8, cy - 26, accentColor);
       }
 
       // Boundary label above the line
@@ -219,8 +219,8 @@ class _NumberLinePainter extends CustomPainter {
             arrowPaint..color = accentColor);
         _drawArrow(canvas, const Offset(lineLeft - 4, cy), false,
             arrowPaint..color = accentColor);
-        _drawLabel(canvas, '+âˆž', lineRight - 8, cy - 26, accentColor);
-        _drawLabel(canvas, '-âˆž', lineLeft + 8, cy - 26, accentColor);
+        _drawLabel(canvas, '+∞', lineRight - 8, cy - 26, accentColor);
+        _drawLabel(canvas, '-∞', lineLeft + 8, cy - 26, accentColor);
       } else {
         canvas.drawRect(Rect.fromLTRB(lx, cy - 8, hx, cy + 8), shadePaint);
       }
@@ -230,17 +230,17 @@ class _NumberLinePainter extends CustomPainter {
       _drawLabel(canvas, _fmtVal(hi), hx, cy - 26, accentColor);
 
       // â”€â”€ Bracket detection (fixed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // For union:  (-âˆž, lo) âˆª (hi, +âˆž)
-      //   lo bracket is the char just before the lo value  â†’ after '('
-      //   hi bracket is the char just before ', +âˆž'        â†’ before ')'
+      // For union:  (-∞, lo) âˆª (hi, +∞)
+      //   lo bracket is the char just before the lo value  → after '('
+      //   hi bracket is the char just before ', +∞'        → before ')'
       // For bounded: [lo, hi]  or  (lo, hi)  etc.
       bool loOpen, hiOpen;
 
       if (isUnion) {
         // Split on âˆª and read each part independently
         final parts = interval.split('âˆª');
-        final leftPart = parts[0].trim(); // e.g. "(-âˆž, -1)"
-        final rightPart = parts[1].trim(); // e.g. "(-1, +âˆž)"
+        final leftPart = parts[0].trim(); // e.g. "(-∞, -1)"
+        final rightPart = parts[1].trim(); // e.g. "(-1, +∞)"
         loOpen = leftPart.endsWith(')'); // closing bracket of left part
         hiOpen = rightPart.startsWith('('); // opening bracket of right part
       } else {

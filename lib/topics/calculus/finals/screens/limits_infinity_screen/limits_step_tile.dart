@@ -161,11 +161,11 @@ class LimitsStepTile extends StatelessWidget {
     var formatted = text
         .replaceAll('\\frac{', 'âŸª')
         .replaceAll('}', 'âŸ«')
-        .replaceAll('\\infty', 'âˆž')
+        .replaceAll('\\infty', '∞')
         .replaceAll('\\lim', 'lim')
-        .replaceAll('\\rightarrow', 'â†’')
-        .replaceAll('\\cdot', 'Â·')
-        .replaceAll('x^2', 'xÂ²')
+        .replaceAll('\\rightarrow', '→')
+        .replaceAll('\\cdot', '·')
+        .replaceAll('x^2', 'x²')
         .replaceAll('x^3', 'xÂ³')
         .replaceAll('x^4', 'xâ´')
         .replaceAllMapped(
@@ -177,7 +177,7 @@ class LimitsStepTile extends StatelessWidget {
     const superscripts = {
       '0': 'â°',
       '1': 'Â¹',
-      '2': 'Â²',
+      '2': '²',
       '3': 'Â³',
       '4': 'â´',
       '5': 'âµ',

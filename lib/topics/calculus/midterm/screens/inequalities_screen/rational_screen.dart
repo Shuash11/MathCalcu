@@ -10,7 +10,7 @@ class RationalScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Rational Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. (x+2)/(xâˆ’1) > 0  or  (x-3)/(x+4) â‰¤ 0',
+      hint: 'e.g. (x+2)/(xâˆ’1) > 0  or  (x-3)/(x+4) ≠¤ 0',
       solveFunction: GeneratedRationalSolver.solve,
       stepsFunction: GeneratedRationalSolver.getSteps,
     );

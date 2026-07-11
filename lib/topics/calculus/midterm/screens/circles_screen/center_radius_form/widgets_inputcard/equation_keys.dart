@@ -2,7 +2,7 @@
 import 'buttons.dart';
 import 'package:flutter/material.dart';
 
-/// Standalone quick keys for equation input (xÂ², yÂ², etc.)
+/// Standalone quick keys for equation input (x², y², etc.)
 /// Manages visibility independently without rebuilding the TextField.
 class EquationQuickKeys extends StatefulWidget {
   final FocusNode focusNode;
@@ -24,7 +24,7 @@ class _EquationQuickKeysState extends State<EquationQuickKeys> {
   bool _isVisible = false;
   Timer? _hideTimer;
 
-  static const List<String> _keys = ['xÂ²', 'yÂ²', 'x', 'y', '+', '-', '=', '0'];
+  static const List<String> _keys = ['x²', 'y²', 'x', 'y', '+', '-', '=', '0'];
 
   @override
   void initState() {

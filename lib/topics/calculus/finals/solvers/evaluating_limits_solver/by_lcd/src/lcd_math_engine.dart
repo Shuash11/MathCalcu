@@ -72,7 +72,7 @@ class Tokenizer {
       } else if (ch == ')') {
         tokens.add(Token(TokenType.rparen, ch));
         _pos++;
-      } else if (ch == 'âˆš' || ch == '\u221A') {
+      } else if (ch == '√' || ch == '\u221A') {
         tokens.add(const Token(TokenType.function, 'sqrt'));
         _pos++;
       } else if (RegExp(r'[+\-*/^]').hasMatch(ch)) {
@@ -399,10 +399,10 @@ class LimitEngine {
       .replaceAll('âˆ’', '-')
       .replaceAll('â€“', '-')
       .replaceAll('â€”', '-')
-      .replaceAll('Ã—', '*')
-      .replaceAll('Ã·', '/')
-      .replaceAll('âˆš', 'sqrt')
-      .replaceAll('Â²', '^2')
+      .replaceAll('÷—', '*')
+      .replaceAll('×', '/')
+      .replaceAll('√', 'sqrt')
+      .replaceAll('²', '^2')
       .replaceAll('Â³', '^3');
   }
 }

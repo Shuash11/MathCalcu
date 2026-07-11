@@ -12,7 +12,7 @@ class ModuleRegistry {
     // â”€â”€ JOASHUA: your module entry â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const ModuleEntry(
       label: 'Inequalities',
-      subtitle: 'Strict Â· Non-strict Â· Absolute value',
+      subtitle: 'Strict · Non-strict · Absolute value',
       route: '/inequalities',
       icon: Icons.trending_up_rounded,
       accent: Color(0xFF6C63FF),
@@ -54,7 +54,7 @@ class ModuleRegistry {
 // Deep violet/purple theme - mathematical sophistication
     const ModuleEntry(
       label: 'point-slope',
-      subtitle: 'y âˆ’ yâ‚ = m(x âˆ’ xâ‚) Â· Line equations',
+      subtitle: 'y âˆ’ yâ‚ = m(x âˆ’ xâ‚) · Line equations',
       route: '/point-slope',
       icon: Icons.trending_flat_rounded, // Suggests line/slope
       accent: Color(0xFFA855F7), // Electric purple
@@ -88,7 +88,7 @@ class ModuleRegistry {
 // Indigo + cyan theme - 3 solution types inside
     const ModuleEntry(
       label: 'circle',
-      subtitle: 'Standard Â· General Â· Center-Radius',
+      subtitle: 'Standard · General · Center-Radius',
       route: '/circle',
       icon: Icons.radio_button_unchecked_rounded, // Circle icon
       accent: Color(0xFF06B6D4), // Cyan
@@ -99,7 +99,7 @@ class ModuleRegistry {
     // â”€â”€ FUTURE DEV: add your one line here â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // ModuleEntry(
     //   label: 'Your Topic',
-    //   subtitle: 'Type A Â· Type B Â· Type C',
+    //   subtitle: 'Type A · Type B · Type C',
     //   route: '/your_route',
     //   icon: Icons.calculate_rounded,
     //   accent: Color(0xFFFF6B6B),

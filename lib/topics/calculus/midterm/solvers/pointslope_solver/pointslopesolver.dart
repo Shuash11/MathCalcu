@@ -171,7 +171,7 @@ class PointSlopeSolver {
     final v = m.toDouble();
     if (v > 0) return 'Rising â†—';
     if (v < 0) return 'Falling â†˜';
-    return 'Horizontal â†’';
+    return 'Horizontal →';
   }
 
   String get angle => '${atan(m.toDouble()) * 180 / pi}Â°';

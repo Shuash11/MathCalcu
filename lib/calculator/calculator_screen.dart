@@ -137,9 +137,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   children: [
                     _buildButtonRow(['C', '(', ')', 'âŒ«'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['7', '8', '9', 'Ã·'], theme),
+                    _buildButtonRow(['7', '8', '9', '×'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['4', '5', '6', 'Ã—'], theme),
+                    _buildButtonRow(['4', '5', '6', '÷—'], theme),
                     const SizedBox(height: 8),
                     _buildButtonRow(['1', '2', '3', 'âˆ’'], theme),
                     const SizedBox(height: 8),
@@ -147,7 +147,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     const SizedBox(height: 8),
                     _buildButtonRow(['sin', 'cos', 'tan', '^'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['log', 'ln', 'âˆš', '='], theme),
+                    _buildButtonRow(['log', 'ln', '√', '='], theme),
                     const SizedBox(height: 8),
                     _buildButtonRow(['Ï€', 'e', '%', '!'], theme),
                   ],
@@ -177,9 +177,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   Widget _buildButton(String value, ThemeProvider theme) {
-    final isOperator = ['+', 'âˆ’', 'Ã—', 'Ã·', '='].contains(value);
+    final isOperator = ['+', 'âˆ’', '÷—', '×', '='].contains(value);
     final isSpecial = ['C', 'âŒ«', 'Ans'].contains(value);
-    final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', 'âˆš'].contains(value);
+    final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', '√'].contains(value);
     final isConstant = ['Ï€', 'e'].contains(value);
 
     Color bgColor;
@@ -212,7 +212,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         HapticFeedback.lightImpact();
         String insert = value;
         if (value == 'sin' || value == 'cos' || value == 'tan' ||
-            value == 'log' || value == 'ln' || value == 'âˆš') {
+            value == 'log' || value == 'ln' || value == '√') {
           insert = '$value(';
         } else if (value == '!') {
           insert = '!';

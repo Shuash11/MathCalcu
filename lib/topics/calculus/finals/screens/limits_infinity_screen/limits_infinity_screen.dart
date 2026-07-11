@@ -214,7 +214,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                 sliver: SliverToBoxAdapter(
                   child: LimitsAnswerCard(
                     problemNotation:
-                        'lim($_variable â†’ ${_approachController.text}) ${_exprController.text}',
+                        'lim($_variable → ${_approachController.text}) ${_exprController.text}',
                     resultString: '',
                     hasError: true,
                     errorMessage: _error,

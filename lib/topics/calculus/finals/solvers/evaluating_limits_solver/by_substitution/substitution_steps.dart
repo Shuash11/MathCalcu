@@ -123,7 +123,7 @@ class SubstitutionStepsGenerator {
         stepNumber: 1,
         title: 'Identify the Problem',
         explanation: 'We need to evaluate:\n'
-            'lim(x â†’ ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
+            'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
       ),
       SolutionStep(
         stepNumber: 2,
@@ -148,13 +148,13 @@ class SubstitutionStepsGenerator {
         stepNumber: 4,
         title: 'Recommendation',
         explanation: '${result.suggestedMethod ?? "Try a different method."}\n\n'
-            'For rational functions (polynomial Ã· polynomial) that give 0/0, '
+            'For rational functions (polynomial × polynomial) that give 0/0, '
             'the most common approach is:\n\n'
             '1. FACTOR both numerator and denominator\n'
             '2. CANCEL any common factors\n'
             '3. Try substitution again\n\n'
             'Other methods that might work:\n'
-            'â€¢ L\'HÃ´pital\'s Rule (take derivatives)\n'
+            'â€¢ L\'H÷´pital\'s Rule (take derivatives)\n'
             'â€¢ Rationalization (for roots)\n'
             'â€¢ Algebraic manipulation',
         mathExpression: 'This limit CANNOT be solved by direct substitution alone.\n'
@@ -170,7 +170,7 @@ class SubstitutionStepsGenerator {
         stepNumber: 1,
         title: 'Identify the Problem',
         explanation: 'We need to evaluate:\n'
-            'lim(x â†’ ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
+            'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
       ),
       SolutionStep(
         stepNumber: 2,
@@ -187,7 +187,7 @@ class SubstitutionStepsGenerator {
         explanation: result.isFraction
             ? 'The numerator evaluates to a non-zero value, but the denominator is zero.\n\n'
               'This means the function grows without bound as x approaches ${_fmt(result.approachValue)}.\n\n'
-              'To determine whether it\'s +âˆž or -âˆž, we need to check the signs:\n'
+              'To determine whether it\'s +∞ or -∞, we need to check the signs:\n'
               'â€¢ Numerator sign: ${_getSign(result.numeratorResult?.value)}\n'
               'â€¢ Denominator sign near ${_fmt(result.approachValue)}: ${_getSign(result.denominatorResult?.value)}'
             : 'The function evaluates to infinity, meaning it grows without bound.',
@@ -197,7 +197,7 @@ class SubstitutionStepsGenerator {
         title: 'Final Answer',
         explanation: 'The limit does not exist as a finite number. The function '
             'grows without bound.',
-        mathExpression: 'lim(x â†’ ${_fmt(result.approachValue)}) ${result.normalizedExpression} '
+        mathExpression: 'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression} '
             '= ${result.finalValueDescription}',
       ),
     ];
@@ -210,7 +210,7 @@ class SubstitutionStepsGenerator {
         stepNumber: 1,
         title: 'Identify the Problem',
         explanation: 'We need to evaluate:\n'
-            'lim(x â†’ ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
+            'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
       ),
       SolutionStep(
         stepNumber: 2,
@@ -250,7 +250,7 @@ class SubstitutionStepsGenerator {
 
   String _fmt(double n) {
     if (n.isNaN) return '?';
-    if (n.isInfinite) return n > 0 ? 'âˆž' : '-âˆž';
+    if (n.isInfinite) return n > 0 ? '∞' : '-∞';
     if (n == n.toInt()) return n.toInt().toString();
     return n.toStringAsFixed(2);
   }

@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 
 class SubstitutionInputField extends StatelessWidget {
@@ -70,7 +70,7 @@ class SubstitutionInputField extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
-                      hintText: isCompact ? 'xÂ²+2x+1' : 'e.g. x^2 + 2x + 1',
+                      hintText: isCompact ? 'x²+2x+1' : 'e.g. x^2 + 2x + 1',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                         color: FinalsTheme.textSecondary(context)
                             .withValues(alpha: 0.3),

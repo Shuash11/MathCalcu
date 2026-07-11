@@ -9,7 +9,7 @@ class NonStrictCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedInequalityCard(
       title: 'Non-strict Inequality',
-      subtitle: 'Uses â‰¤ or â‰¥. The boundary IS included.',
+      subtitle: 'Uses ≠¤ or ≠¥. The boundary IS included.',
       route: '/inequalities/non_strict',
       icon: Icons.drag_handle_rounded,
       accentColor: InequalityTheme.subtypeAccents['non_strict'] ?? InequalityTheme.accentColor,

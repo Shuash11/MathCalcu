@@ -175,13 +175,13 @@ class _MathKeyboardState extends State<MathKeyboard> {
           ),
           if (_visible) ...[
             const SizedBox(height: 2),
-            _buildRow(['(', ')', 'âˆš', '|', 'x', 'Â²']),
+            _buildRow(['(', ')', '√', '|', 'x', '²']),
             const SizedBox(height: 2),
             _buildRow(['7', '8', '9', '+', '-', '^']),
             const SizedBox(height: 2),
             _buildRow(['4', '5', '6', '<', '>', '/']),
             const SizedBox(height: 2),
-            _buildRow(['1', '2', '3', 'â‰¤', 'â‰¥', 'âŒ«']),
+            _buildRow(['1', '2', '3', '≠¤', '≠¥', 'âŒ«']),
             const SizedBox(height: 2),
             Row(
               children: [

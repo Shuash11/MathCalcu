@@ -138,12 +138,13 @@ class _SlopeScreenState extends State<SlopeScreen> {
     });
   }
 
-  void _openStepsDialog() {
-    if (_result1 == null || _error) return;
+  void _openStepsDialog({bool showSecond = false}) {
+    final result = showSecond ? _result2 : _result1;
+    if (result == null || _error) return;
     showDialog(
       context: context,
       barrierColor: Colors.black87,
-      builder: (_) => SlopeStepDialog(result: _result1!),
+      builder: (_) => SlopeStepDialog(result: result),
     );
   }
 
@@ -477,7 +478,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
               const SizedBox(width: 12),
               Expanded(
                   child: SlopeAnswerCard(
-                      result: _result2!, onTap: _openStepsDialog)),
+                      result: _result2!, onTap: () => _openStepsDialog(showSecond: true))),
             ],
           ),
         ],

@@ -3,7 +3,7 @@
 /// Represents a polynomial in one variable (x).
 ///
 /// Coefficients are stored as a map from degree to coefficient.
-/// Example: 3xÂ² + 2x - 1 is stored as {2: 3, 1: 2, 0: -1}
+/// Example: 3x² + 2x - 1 is stored as {2: 3, 1: 2, 0: -1}
 class Polynomial {
   final Map<int, double> _coeffs;
 

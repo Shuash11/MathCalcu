@@ -139,7 +139,7 @@ class ConjugateStepsGenerator {
         stepNumber: 5,
         title: 'Expand the Numerator',
         explanation:
-            'Using the difference of squares formula: (a - b)(a + b) = aÂ² - bÂ²',
+            'Using the difference of squares formula: (a - b)(a + b) = a² - b²',
         latexExpression: numeratorExpansion ??
             '\\text{Numerator: } $numTex \\cdot $conjTex = \\text{expanding...}',
       ));
@@ -163,7 +163,7 @@ class ConjugateStepsGenerator {
         stepNumber: 6,
         title: 'Expand the Denominator',
         explanation:
-            'Using the difference of squares formula: (a - b)(a + b) = aÂ² - bÂ²',
+            'Using the difference of squares formula: (a - b)(a + b) = a² - b²',
         latexExpression: denominatorExpansion ??
             '\\text{Denominator: } $denTex \\cdot $conjTex = \\text{expanding...}',
       ));

@@ -118,7 +118,7 @@ class _FactoringInputFieldContent extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
-                      hintText: isCompact ? 'xÂ²-4 / x-2' : '(x^2 - 4) / (x - 2)',
+                      hintText: isCompact ? 'x²-4 / x-2' : '(x^2 - 4) / (x - 2)',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                         color: FinalsTheme.textSecondary(context)
                             .withValues(alpha: 0.3),

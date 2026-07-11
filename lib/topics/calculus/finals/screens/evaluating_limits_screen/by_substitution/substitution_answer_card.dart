@@ -168,7 +168,7 @@ class _ValueDisplay extends StatelessWidget {
     } else if (answer == null || answer!.isNaN) {
       displayVal = 'Undefined';
     } else if (answer!.isInfinite) {
-      displayVal = answer! > 0 ? 'âˆž' : '-âˆž';
+      displayVal = answer! > 0 ? '∞' : '-∞';
     } else {
       displayVal = answer! == answer!.toInt() ? answer!.toInt().toString() : answer!.toStringAsFixed(4);
     }

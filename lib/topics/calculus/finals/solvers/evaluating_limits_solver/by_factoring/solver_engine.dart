@@ -14,7 +14,7 @@ class LimitProblem {
   });
 
   @override
-  String toString() => 'lim(x â†’ $approachValue) $expression';
+  String toString() => 'lim(x → $approachValue) $expression';
 }
 
 /// Result of solving a limit problem by factoring
@@ -297,7 +297,7 @@ class LimitSolverEngine {
   (Polynomial, Polynomial) _extractRationalFunction(ASTNode node) {
     // Look for top-level division
     if (node is BinaryOpNode && node.operator == '/') {
-      // Handle chained divisions: a/b/c â†’ (a/b)/c
+      // Handle chained divisions: a/b/c → (a/b)/c
       final numerator = _toPolynomial(node.left);
       final denominator = _toPolynomial(node.right);
       return (numerator, denominator);

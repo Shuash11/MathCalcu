@@ -180,8 +180,8 @@ class _StepBuilder {
 
   static String _buildStep4RightLatex(
       String m, String x1, String y1Sign, String y1Abs, String mSimplified) {
-    final mVal = int.tryParse(m) ?? 0;
-    final xVal = int.tryParse(x1) ?? 0;
+    final mVal = double.tryParse(m) ?? 0;
+    final xVal = double.tryParse(x1) ?? 0;
     final product = mVal * xVal;
     final sign = product < 0 ? '+' : '-';
     final absVal = product.abs().toString();
@@ -491,7 +491,7 @@ class _GuideLabel extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: '  Â·  ',
+            text: '  ·  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
               color: PSTheme.softLavender.withValues(alpha: 0.4),

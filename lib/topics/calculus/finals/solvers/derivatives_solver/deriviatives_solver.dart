@@ -267,8 +267,8 @@ class Sqrt extends Expr {
   @override double? get constValue => null;
   @override bool operator ==(Object o) => o is Sqrt && arg == o.arg;
   @override int get hashCode => arg.hashCode;
-  @override String toString() => 'âˆš($arg)';
-  @override String format({bool compact = false}) => 'âˆš(${arg.format(compact: compact)})';
+  @override String toString() => '√($arg)';
+  @override String format({bool compact = false}) => '√(${arg.format(compact: compact)})';
 }
 
 class Abs extends Expr {
@@ -316,7 +316,7 @@ class Tokenizer {
       final char = input[_pos], start = _pos;
       if (_isDigit(char) || (char == '.' && _pos + 1 < input.length && _isDigit(input[_pos + 1]))) {
         tokens.add(_readNumber(start));
-      } else if (_isLetter(char) || char == 'âˆš') {
+      } else if (_isLetter(char) || char == '√') {
         tokens.add(_readIdent(start));
       } else if ('+-*/^'.contains(char)) {
         tokens.add(Token(TokenType.operator, char, start)); _pos++;
@@ -345,11 +345,11 @@ class Tokenizer {
 
   Token _readIdent(int start) {
     final b = StringBuffer();
-    while (_pos < input.length && (_isLetter(input[_pos]) || _isDigit(input[_pos]) || input[_pos] == 'âˆš')) {
+    while (_pos < input.length && (_isLetter(input[_pos]) || _isDigit(input[_pos]) || input[_pos] == '√')) {
       b.write(input[_pos]); _pos++;
     }
     var v = b.toString().toLowerCase();
-    if (v.contains('âˆš')) v = v.replaceAll('âˆš', 'sqrt');
+    if (v.contains('√')) v = v.replaceAll('√', 'sqrt');
     const funcs = {'exp','sqrt','abs','sin','cos','tan','sec','csc','cot','ln','log'};
     return Token(funcs.contains(v) ? TokenType.function : TokenType.variable, v, start);
   }
@@ -464,10 +464,10 @@ class DerivativeSolver {
 
   static String _preprocess(String input) {
     var r = input;
-    // Unicode superscripts â†’ caret
-    final sup = {'â°': '^0','Â¹': '^1','Â²': '^2','Â³': '^3','â´': '^4','âµ': '^5','â¶': '^6','â·': '^7','â¸': '^8','â¹': '^9'};
+    // Unicode superscripts → caret
+    final sup = {'â°': '^0','Â¹': '^1','²': '^2','Â³': '^3','â´': '^4','âµ': '^5','â¶': '^6','â·': '^7','â¸': '^8','â¹': '^9'};
     sup.forEach((k, v) { r = r.replaceAll(k, v); });
-    r = r.replaceAll('âˆ’', '-').replaceAll('Ã—', '*').replaceAll('Ã·', '/');
+    r = r.replaceAll('âˆ’', '-').replaceAll('÷—', '*').replaceAll('×', '/');
     // Implicit multiplication parens
     r = r.replaceAllMapped(RegExp(r'(\))\s*(\()'), (m) => '${m[1]}*${m[2]}');
     r = r.replaceAllMapped(RegExp(r'(\d)\('), (m) => '${m[1]}*(');
@@ -476,9 +476,9 @@ class DerivativeSolver {
     // sqrt shorthand
     r = r.replaceAllMapped(RegExp(r'sqrt([a-zA-Z])'), (m) => 'sqrt(${m[1]})');
     r = r.replaceAllMapped(RegExp(r'sqrt(\d)'), (m) => 'sqrt(${m[1]})');
-    r = r.replaceAllMapped(RegExp(r'âˆš([a-zA-Z])'), (m) => 'sqrt(${m[1]})');
-    r = r.replaceAllMapped(RegExp(r'âˆš(\d)'), (m) => 'sqrt(${m[1]})');
-    r = r.replaceAll('âˆš(', 'sqrt(');
+    r = r.replaceAllMapped(RegExp(r'√([a-zA-Z])'), (m) => 'sqrt(${m[1]})');
+    r = r.replaceAllMapped(RegExp(r'√(\d)'), (m) => 'sqrt(${m[1]})');
+    r = r.replaceAll('√(', 'sqrt(');
     return r.replaceAll(RegExp(r'\s+'), '');
   }
 

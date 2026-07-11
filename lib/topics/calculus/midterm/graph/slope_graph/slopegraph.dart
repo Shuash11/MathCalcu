@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 // SlopeGraphScreen
 //
 // Pass either:
-//   â€¢ result1 only  â†’ single-line graph
-//   â€¢ result1 + result2 + comparison â†’ two-line graph with badge
+//   â€¢ result1 only  → single-line graph
+//   â€¢ result1 + result2 + comparison → two-line graph with badge
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 class SlopeGraphScreen extends StatelessWidget {

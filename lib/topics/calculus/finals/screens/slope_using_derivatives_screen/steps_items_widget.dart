@@ -18,7 +18,7 @@ class StepItemWidget extends StatelessWidget {
     final hasVariables = RegExp(r'[x-yt]').hasMatch(line);
     final hasNumbers = RegExp(r'[0-9]').hasMatch(line);
     
-    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('â†’'))) return true;
+    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('→'))) return true;
     if (hasNumbers && mathPattern.hasMatch(line) && line.contains('=')) return true;
 
     return false;

@@ -100,7 +100,7 @@ class _AboutSheet extends StatelessWidget {
                               ),
                               SizedBox(height: 4 * s),
                               Text(
-                                '${developers.length} developers Â· Math Solving App',
+                                '${developers.length} developers · Math Solving App',
                                 style: TextStyle(
                                   fontSize: 14 * s,
                                   color: theme.textSecondary,

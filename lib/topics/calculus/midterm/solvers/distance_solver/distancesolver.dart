@@ -103,10 +103,10 @@ class DistanceSolver {
     final distance = sqrt(squaredSum);
 
     final formula =
-        'âˆš(($_fmt(x2)âˆ’$_fmt(x1))Â² + ($_fmt(y2)âˆ’$_fmt(y1))Â²)\n'
-        '= âˆš($_fmt(dx)Â² + $_fmt(dy)Â²)\n'
-        '= âˆš($_fmt(dx * dx) + $_fmt(dy * dy))\n'
-        '= âˆš$_fmt(squaredSum)\n'
+        '√(($_fmt(x2)âˆ’$_fmt(x1))² + ($_fmt(y2)âˆ’$_fmt(y1))²)\n'
+        '= √($_fmt(dx)² + $_fmt(dy)²)\n'
+        '= √($_fmt(dx * dx) + $_fmt(dy * dy))\n'
+        '= √$_fmt(squaredSum)\n'
         '= $_fmt(distance)';
 
     return DistanceResult.success(distance: distance, formula: formula);

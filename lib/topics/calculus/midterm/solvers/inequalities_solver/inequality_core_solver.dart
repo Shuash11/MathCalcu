@@ -6,12 +6,12 @@
         .replaceAll('\u2013', '-')
         .replaceAll('\u2014', '-')
         .replaceAll(' ', '')
-        .replaceAll('>=', 'â‰¥')
-        .replaceAll('<=', 'â‰¤')
-        .replaceAll('=>', 'â‰¥')
-        .replaceAll('=<', 'â‰¤')
-        .replaceAll('xÂ²', 'x^2')
-        .replaceAll('Â²', '^2')
+        .replaceAll('>=', '≠¥')
+        .replaceAll('<=', '≠¤')
+        .replaceAll('=>', '≠¥')
+        .replaceAll('=<', '≠¤')
+        .replaceAll('x²', 'x^2')
+        .replaceAll('²', '^2')
         .replaceAllMapped(RegExp(r'abs\(([^)]+)\)'), (m) => '|${m.group(1)}|');
     s = _expandParentheses(s);
     return s;
@@ -82,9 +82,9 @@
 
   static bool _isStrict(String normalized) {
     // Check if the inequality uses ONLY strict operators (< or >) 
-    // If it has any non-strict operators (â‰¤ or â‰¥), it's non-strict
+    // If it has any non-strict operators (≠¤ or ≠¥), it's non-strict
     // If it has BOTH strict and non-strict, it's continued (return null via new method)
-    final hasNonStrict = normalized.contains('â‰¤') || normalized.contains('â‰¥');
+    final hasNonStrict = normalized.contains('≠¤') || normalized.contains('≠¥');
     if (hasNonStrict) return false;
     
     // If it has strict operators and no non-strict operators, it's strict
@@ -95,7 +95,7 @@
   static bool _isContinued(String normalized) {
     // Check if inequality has BOTH strict and non-strict operators (mixed)
     final hasStrict = normalized.contains('<') || normalized.contains('>');
-    final hasNonStrict = normalized.contains('â‰¤') || normalized.contains('â‰¥');
+    final hasNonStrict = normalized.contains('≠¤') || normalized.contains('≠¥');
     return hasStrict && hasNonStrict;
   }
 
@@ -108,7 +108,7 @@
       final hasRadical = normalized.contains('sqrt') ||
           normalized.contains('root') ||
           normalized.contains('\u221A') ||
-          normalized.contains('âˆš');
+          normalized.contains('√');
       if (hasRadical && normalized.contains('/')) return 'sqrtRational$strictnessStr';
       if (hasRadical) return 'radical$strictnessStr';
       if (normalized.contains('^2')) return 'quadratic$strictnessStr';
@@ -123,12 +123,12 @@
     final hasRadical = normalized.contains('sqrt') ||
         normalized.contains('root') ||
         normalized.contains('\u221A') ||
-        normalized.contains('âˆš');
+        normalized.contains('√');
     if (hasRadical && normalized.contains('/')) return 'sqrtRational$strictnessStr';
     if (hasRadical) return 'radical$strictnessStr';
     if (normalized.contains('^2')) return 'quadratic$strictnessStr';
-    if (normalized.contains('âˆš') && normalized.contains('/')) return 'sqrtRational$strictnessStr';
-    if (normalized.contains('âˆš')) return 'radical$strictnessStr';
+    if (normalized.contains('√') && normalized.contains('/')) return 'sqrtRational$strictnessStr';
+    if (normalized.contains('√')) return 'radical$strictnessStr';
     if (normalized.contains('/')) return 'rational$strictnessStr';
     return 'linear$strictnessStr';
   }
@@ -140,20 +140,20 @@
         .replaceAll('\u2013', '-')
         .replaceAll('\u2014', '-')
         .replaceAll(' ', '')
-        .replaceAll('>=', 'â‰¥')
-        .replaceAll('<=', 'â‰¤')
-        .replaceAll('=>', 'â‰¥')
-        .replaceAll('=<', 'â‰¤')
-        .replaceAll('xÂ²', 'x^2')
-        .replaceAll('Â²', '^2')
+        .replaceAll('>=', '≠¥')
+        .replaceAll('<=', '≠¤')
+        .replaceAll('=>', '≠¥')
+        .replaceAll('=<', '≠¤')
+        .replaceAll('x²', 'x^2')
+        .replaceAll('²', '^2')
         .replaceAllMapped(RegExp(r'abs\(([^)]+)\)'), (m) => '|${m.group(1)}|');
     s = _expandParentheses(s);
     return s;
   }
 
   static String? extractOperator(String expr) {
-    if (expr.contains('â‰¥')) return 'â‰¥';
-    if (expr.contains('â‰¤')) return 'â‰¤';
+    if (expr.contains('≠¥')) return '≠¥';
+    if (expr.contains('≠¤')) return '≠¤';
     if (expr.contains('>')) return '>';
     if (expr.contains('<')) return '<';
     return null;
@@ -261,10 +261,10 @@
         return '<';
       case '<':
         return '>';
-      case 'â‰¥':
-        return 'â‰¤';
-      case 'â‰¤':
-        return 'â‰¥';
+      case '≠¥':
+        return '≠¤';
+      case '≠¤':
+        return '≠¥';
       default:
         return op;
     }
@@ -276,9 +276,9 @@
         return left > right;
       case '<':
         return left < right;
-      case 'â‰¥':
+      case '≠¥':
         return left >= right;
-      case 'â‰¤':
+      case '≠¤':
         return left <= right;
       default:
         return false;
@@ -290,11 +290,11 @@
     switch (op) {
       case '>':
         return '($b, \\infty)';
-      case 'â‰¥':
+      case '≠¥':
         return '[$b, \\infty)';
       case '<':
         return '(-\\infty, $b)';
-      case 'â‰¤':
+      case '≠¤':
         return '(-\\infty, $b]';
       default:
         return '';

@@ -187,7 +187,7 @@ class AlgebraicSimplifier {
     if (node is VariableNode) return node.name;
     if (node is UnaryMinusNode) return "-${_nodeToString(node.child)}";
     if (node is FunctionNode) {
-      if (node.name == 'sqrt') return "âˆš(${_nodeToString(node.arg)})";
+      if (node.name == 'sqrt') return "√(${_nodeToString(node.arg)})";
       return "${node.name}(${_nodeToString(node.arg)})";
     }
     if (node is BinaryOpNode) {

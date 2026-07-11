@@ -84,7 +84,7 @@ class InputCard extends StatelessWidget {
 
   String _convertToLatex(String formula) {
     return formula
-        .replaceAll('Â²', '^2')
+        .replaceAll('²', '^2')
         .replaceAll('Â³', '^3')
         .replaceAll('(', r'\left(')
         .replaceAll(')', r'\right)');

@@ -117,7 +117,7 @@ class _ConjugateInputFieldContent extends StatelessWidget {
                         letterSpacing: -0.5,
                       ),
                       decoration: InputDecoration(
-                        hintText: isCompact ? 'âˆšx-2 / x-4' : '(sqrt(x) - 2) / (x - 4)',
+                        hintText: isCompact ? '√x-2 / x-4' : '(sqrt(x) - 2) / (x - 4)',
                         hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                           color: FinalsTheme.textSecondary(context)
                               .withValues(alpha: 0.3),

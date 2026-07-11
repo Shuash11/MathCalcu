@@ -172,7 +172,7 @@ class _ValueDisplay extends StatelessWidget {
 
     // Always use fractionalAnswer if provided - this is the authoritative answer from steps.dart
     if (fractionalAnswer != null) {
-      // Handle approximation notation (exact â‰ˆ decimal)
+      // Handle approximation notation (exact ≠ˆ decimal)
       if (fractionalAnswer!.contains(r'\approx')) {
         final parts = fractionalAnswer!.split(r'\approx');
         if (parts.length > 1) {
@@ -199,7 +199,7 @@ class _ValueDisplay extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'â‰ˆ ${parts[1].trim()}',
+                  '≠ˆ ${parts[1].trim()}',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -270,7 +270,7 @@ class _ValueDisplay extends StatelessWidget {
 
   String _formatAnswer(double val) {
     if (!val.isFinite) {
-      return val.isInfinite ? (val > 0 ? 'âˆž' : '-âˆž') : 'Undefined';
+      return val.isInfinite ? (val > 0 ? '∞' : '-∞') : 'Undefined';
     }
     if (val == val.toInt()) {
       return val.toInt().toString();

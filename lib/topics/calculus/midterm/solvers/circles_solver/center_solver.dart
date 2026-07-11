@@ -150,6 +150,6 @@ class CenterSolver {
       if ((v * 1000).round() / 1000 == v) return v.toStringAsFixed(3);
       return v.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
     }
-    return ' â‰ˆ ${fmt(d)}';
+    return ' ≠ˆ ${fmt(d)}';
   }
 }

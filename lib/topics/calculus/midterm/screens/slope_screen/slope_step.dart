@@ -90,8 +90,8 @@ class SlopeStepItem extends StatelessWidget {
     );
 
     result = result.replaceAll('âˆ’', '-');
-    result = result.replaceAll('Ã—', r'\times');
-    result = result.replaceAll('Ã·', r'\div');
+    result = result.replaceAll('÷—', r'\times');
+    result = result.replaceAll('×', r'\div');
 
     if (result.contains('=') && !result.contains(r'\=')) {
       if (result.contains(r'\implies') || result.contains(r'\rightarrow')) {
@@ -230,8 +230,8 @@ class _FinalBox extends StatelessWidget {
     );
 
     result = result.replaceAll('âˆ’', '-');
-    result = result.replaceAll('Ã—', r'\times');
-    result = result.replaceAll('Ã·', r'\div');
+    result = result.replaceAll('÷—', r'\times');
+    result = result.replaceAll('×', r'\div');
 
     if (result.contains('=') && !result.contains(r'\=')) {
       if (result.contains(r'\implies') || result.contains(r'\rightarrow')) {

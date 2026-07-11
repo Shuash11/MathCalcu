@@ -10,7 +10,7 @@ class NonStrictScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Non-strict Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. 3x âˆ’ 1 â‰¤ 8  or  2 â‰¤ 5 + 3x < 11',
+      hint: 'e.g. 3x âˆ’ 1 ≠¤ 8  or  2 ≠¤ 5 + 3x < 11',
       solveFunction: GeneratedLinearSolver.solve,
       stepsFunction: GeneratedLinearSolver.getSteps,
     );

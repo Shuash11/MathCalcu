@@ -81,8 +81,8 @@ class ClassroomSolution {
 
 class DerivativeNarrator {
   /// Returns lines such as:
-  ///   "Power Rule:  d/dx[uâ¿] = nÂ·uâ¿â»Â¹Â·u'"
-  ///   "Product Rule: d/dx[fÂ·g] = f'g + fg'"
+  ///   "Power Rule:  d/dx[uâ¿] = n·uâ¿â»Â¹·u'"
+  ///   "Product Rule: d/dx[f·g] = f'g + fg'"
   static List<String> narrate(Expr expr, String wrtVar) {
     if (expr is Num || expr is Const) {
       return ['Constant Rule:  d/d$wrtVar[c] = 0'];
@@ -109,13 +109,13 @@ class DerivativeNarrator {
           return ['Difference Rule:  d/d$wrtVar[f âˆ’ g] = f\' âˆ’ g\''];
         case '*':
           return [
-            'Product Rule:  d/d$wrtVar[fÂ·g] = f\'Â·g + fÂ·g\'',
+            'Product Rule:  d/d$wrtVar[f·g] = f\'·g + f·g\'',
             '  where  f = ${expr.left.toMathString()}',
             '         g = ${expr.right.toMathString()}',
           ];
         case '/':
           return [
-            'Quotient Rule:  d/d$wrtVar[f/g] = (f\'g âˆ’ fg\') / gÂ²',
+            'Quotient Rule:  d/d$wrtVar[f/g] = (f\'g âˆ’ fg\') / g²',
             '  where  f = ${expr.left.toMathString()}',
             '         g = ${expr.right.toMathString()}',
           ];
@@ -126,20 +126,20 @@ class DerivativeNarrator {
       final expHasVar = ExprUtils.containsVar(expr.exponent, wrtVar);
       if (baseHasVar && !expHasVar) {
         return [
-          'Power Rule:  d/d$wrtVar[uâ¿] = nÂ·uâ¿â»Â¹Â·u\'  (with Chain Rule)',
+          'Power Rule:  d/d$wrtVar[uâ¿] = n·uâ¿â»Â¹·u\'  (with Chain Rule)',
           '  where  u = ${expr.base.toMathString()}',
           '         n = ${expr.exponent.toMathString()}',
         ];
       }
       if (!baseHasVar && expHasVar) {
         return [
-          'Exponential Rule:  d/d$wrtVar[aáµ˜] = aáµ˜Â·ln(a)Â·u\'',
+          'Exponential Rule:  d/d$wrtVar[aáµ˜] = aáµ˜·ln(a)·u\'',
           '  where  a = ${expr.base.toMathString()}',
           '         u = ${expr.exponent.toMathString()}',
         ];
       }
       return [
-        'General Power Rule:  d/d$wrtVar[fáµ] = fáµÂ·(g\'Â·ln f + gÂ·f\'/f)',
+        'General Power Rule:  d/d$wrtVar[fáµ] = fáµ·(g\'·ln f + g·f\'/f)',
         '  where  f = ${expr.base.toMathString()}',
         '         g = ${expr.exponent.toMathString()}',
       ];
@@ -158,77 +158,77 @@ class DerivativeNarrator {
 
     switch (expr.name) {
       case 'sin':
-        return ['d/d$wrtVar[sin u] = cos u Â· u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[sin u] = cos u · u\'$chain', '  where  u = $u'];
       case 'cos':
-        return ['d/d$wrtVar[cos u] = âˆ’sin u Â· u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[cos u] = âˆ’sin u · u\'$chain', '  where  u = $u'];
       case 'tan':
         return [
-          'd/d$wrtVar[tan u] = secÂ²u Â· u\'  =  u\' / cosÂ²u$chain',
+          'd/d$wrtVar[tan u] = sec²u · u\'  =  u\' / cos²u$chain',
           '  where  u = $u'
         ];
       case 'cot':
         return [
-          'd/d$wrtVar[cot u] = âˆ’cscÂ²u Â· u\'  =  âˆ’u\' / sinÂ²u$chain',
+          'd/d$wrtVar[cot u] = âˆ’csc²u · u\'  =  âˆ’u\' / sin²u$chain',
           '  where  u = $u'
         ];
       case 'sec':
         return [
-          'd/d$wrtVar[sec u] = sec u Â· tan u Â· u\'  =  sin u Â· u\' / cosÂ²u$chain',
+          'd/d$wrtVar[sec u] = sec u · tan u · u\'  =  sin u · u\' / cos²u$chain',
           '  where  u = $u'
         ];
       case 'csc':
         return [
-          'd/d$wrtVar[csc u] = âˆ’csc u Â· cot u Â· u\'  =  âˆ’cos u Â· u\' / sinÂ²u$chain',
+          'd/d$wrtVar[csc u] = âˆ’csc u · cot u · u\'  =  âˆ’cos u · u\' / sin²u$chain',
           '  where  u = $u'
         ];
       case 'asin':
       case 'arcsin':
         return [
-          'd/d$wrtVar[arcsin u] = u\' / âˆš(1 âˆ’ uÂ²)$chain',
+          'd/d$wrtVar[arcsin u] = u\' / √(1 âˆ’ u²)$chain',
           '  where  u = $u'
         ];
       case 'acos':
       case 'arccos':
         return [
-          'd/d$wrtVar[arccos u] = âˆ’u\' / âˆš(1 âˆ’ uÂ²)$chain',
+          'd/d$wrtVar[arccos u] = âˆ’u\' / √(1 âˆ’ u²)$chain',
           '  where  u = $u'
         ];
       case 'atan':
       case 'arctan':
         return [
-          'd/d$wrtVar[arctan u] = u\' / (1 + uÂ²)$chain',
+          'd/d$wrtVar[arctan u] = u\' / (1 + u²)$chain',
           '  where  u = $u'
         ];
       case 'sinh':
-        return ['d/d$wrtVar[sinh u] = cosh u Â· u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[sinh u] = cosh u · u\'$chain', '  where  u = $u'];
       case 'cosh':
-        return ['d/d$wrtVar[cosh u] = sinh u Â· u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[cosh u] = sinh u · u\'$chain', '  where  u = $u'];
       case 'tanh':
-        return ['d/d$wrtVar[tanh u] = u\' / coshÂ²u$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[tanh u] = u\' / cosh²u$chain', '  where  u = $u'];
       case 'ln':
         return ['d/d$wrtVar[ln u] = u\' / u$chain', '  where  u = $u'];
       case 'log':
         return [
-          'd/d$wrtVar[logâ‚â‚€ u] = u\' / (u Â· ln 10)$chain',
+          'd/d$wrtVar[logâ‚â‚€ u] = u\' / (u · ln 10)$chain',
           '  where  u = $u'
         ];
       case 'exp':
-        return ['d/d$wrtVar[eáµ˜] = eáµ˜ Â· u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[eáµ˜] = eáµ˜ · u\'$chain', '  where  u = $u'];
       case 'sqrt':
-        return ['d/d$wrtVar[âˆšu] = u\' / (2âˆšu)$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[√u] = u\' / (2√u)$chain', '  where  u = $u'];
       case 'abs':
         return [
-          'd/d$wrtVar[|u|] = u Â· u\' / |u|   (u â‰  0)$chain',
+          'd/d$wrtVar[|u|] = u · u\' / |u|   (u ≠  0)$chain',
           '  where  u = $u'
         ];
       case 'cbrt':
         return [
-          'd/d$wrtVar[âˆ›u] = u\' / (3 Â· u^(2/3))$chain',
+          'd/d$wrtVar[âˆ›u] = u\' / (3 · u^(2/3))$chain',
           '  where  u = $u'
         ];
       default:
         return [
-          'd/d$wrtVar[${expr.name}(u)] Â· u\'  (Chain Rule)',
+          'd/d$wrtVar[${expr.name}(u)] · u\'  (Chain Rule)',
           '  where  u = $u'
         ];
     }
@@ -422,7 +422,7 @@ class ImplicitSolutionBuilder {
       hint: 'Differentiate left side with respect to x, treat y as y(x)',
       lines: [
         '\\frac{d}{dx}[ $lhsLatex ]',
-        ...dLRuleLines.map((l) => '  â†’ $l'),
+        ...dLRuleLines.map((l) => '  → $l'),
         '',
         '= $dLatex',
       ],
@@ -435,7 +435,7 @@ class ImplicitSolutionBuilder {
       hint: 'Differentiate right side with respect to x',
       lines: [
         '\\frac{d}{dx}[ $rhsLatex ]',
-        ...dRRuleLines.map((l) => '  â†’ $l'),
+        ...dRRuleLines.map((l) => '  → $l'),
         '',
         '= $dRLatex',
       ],
@@ -612,11 +612,11 @@ class ParametricSolutionBuilder {
       hint: 'Use Chain Rule: dy/dx = (dy/dt)/(dx/dt). Differentiate x(t) and y(t) with respect to t',
       lines: [
         '\\frac{dx}{dt}:',
-        ...dxRuleLines.map((l) => '  â†’ $l'),
+        ...dxRuleLines.map((l) => '  → $l'),
         '  dx/dt  =  $dxLatex',
         '',
         '\\frac{dy}{dt}:',
-        ...dyRuleLines.map((l) => '  â†’ $l'),
+        ...dyRuleLines.map((l) => '  → $l'),
         '  dy/dt  =  $dyLatex',
       ],
     ));
@@ -665,7 +665,7 @@ class ParametricSolutionBuilder {
             'dy/dt at t=${_fmt(tVal)}  =  $dyLatex  =  ${_fmt(dyVal)}',
           '',
           if (verticalTangent)
-            'dx/dt = 0  â†’  Vertical tangent at this point.'
+            'dx/dt = 0  →  Vertical tangent at this point.'
           else ...[
             'dy/dx  =  ${_fmt(dyVal ?? 0)} / ${_fmt(dxVal ?? 1)}  =  ${_fmt(r.slopeValue!)}',
           ],
@@ -881,7 +881,7 @@ class ClassroomPrinter {
 
 String _fmt(double v) {
   if (v != v) return 'undefined';
-  if (v.isInfinite) return v > 0 ? '+âˆž' : 'âˆ’âˆž';
+  if (v.isInfinite) return v > 0 ? '+∞' : 'âˆ’∞';
   if (v == v.truncateToDouble() && v.abs() < 1e10) return v.toInt().toString();
   final fracs = <double, String>{
     0.5: '1/2',
@@ -894,8 +894,8 @@ String _fmt(double v) {
     -0.25: 'âˆ’1/4',
     0.75: '3/4',
     -0.75: 'âˆ’3/4',
-    math.sqrt2: 'âˆš2',
-    -math.sqrt2: 'âˆ’âˆš2',
+    math.sqrt2: '√2',
+    -math.sqrt2: 'âˆ’√2',
     math.pi: 'Ï€',
     -math.pi: 'âˆ’Ï€',
     math.e: 'e',
@@ -968,7 +968,7 @@ void main(List<String> args) {
     // Explicit
     ('y = x^3 - 3*x^2 + 2', {'x': 2.0}, 'Polynomial â€” Power + Sum Rule'),
     ('y = sin(x) * cos(x)', {'x': 0.0}, 'Trig product â€” Product Rule'),
-    ('y = e^x * ln(x)', {'x': 1.0}, 'Exponential Ã— Log â€” Product Rule'),
+    ('y = e^x * ln(x)', {'x': 1.0}, 'Exponential ÷— Log â€” Product Rule'),
     (
       'y = (x^2 + 1) / (x - 1)',
       {'x': 3.0},

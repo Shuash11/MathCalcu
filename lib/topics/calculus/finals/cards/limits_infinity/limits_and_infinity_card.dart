@@ -220,7 +220,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                           ),
                                         ),
                                         child: Text(
-                                          "âˆž",
+                                          "∞",
                                           style: TextStyle(
                                             fontSize: isMobile ? 11 : 12,
                                             fontWeight: FontWeight.w900,
@@ -248,7 +248,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                           : theme.textSecondary,
                                     ),
                                     child: const Text(
-                                      "Horizontal asymptotes, end behavior & rational functions at âˆž",
+                                      "Horizontal asymptotes, end behavior & rational functions at ∞",
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),

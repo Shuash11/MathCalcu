@@ -111,7 +111,7 @@ class StepExplainer {
     if (r.secondDerivative != null) {
       steps.add('');
       steps.add('STEP 3 â€” Second derivative (concavity)');
-      steps.add('  dÂ²y/dxÂ² = (d/d$t[dy/dx]) / (dx/d$t)');
+      steps.add('  d²y/dx² = (d/d$t[dy/dx]) / (dx/d$t)');
       steps.add('          = ${r.secondDerivative!.toMathString()}');
     }
 

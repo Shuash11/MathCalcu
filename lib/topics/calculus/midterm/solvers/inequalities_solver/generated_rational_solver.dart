@@ -68,8 +68,8 @@ class GeneratedRationalSolver {
     String s = input
         .trim()
         .replaceAll(' ', '')
-        .replaceAll('>=', 'â‰¥')
-        .replaceAll('<=', 'â‰¤');
+        .replaceAll('>=', '≠¥')
+        .replaceAll('<=', '≠¤');
 
     final op = _extractOp(s);
     if (op == null) return null;
@@ -104,8 +104,8 @@ class GeneratedRationalSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('â‰¥')) return 'â‰¥';
-    if (s.contains('â‰¤')) return 'â‰¤';
+    if (s.contains('≠¥')) return '≠¥';
+    if (s.contains('≠¤')) return '≠¤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -155,7 +155,7 @@ class GeneratedRationalSolver {
 
   static String _fmt(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? '-âˆž' : 'âˆž');
+    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? '-∞' : '∞');
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -199,8 +199,8 @@ class GeneratedRationalSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case 'â‰¥': return '\\geq';
-      case 'â‰¤': return '\\leq';
+      case '≠¥': return '\\geq';
+      case '≠¤': return '\\leq';
       case '>': return '>';
       case '<': return '<';
       default: return op;
@@ -211,8 +211,8 @@ class GeneratedRationalSolver {
     switch (op) {
       case '>': return left > right;
       case '<': return left < right;
-      case 'â‰¥': return left >= right;
-      case 'â‰¤': return left <= right;
+      case '≠¥': return left >= right;
+      case '≠¤': return left <= right;
       default: return false;
     }
   }
@@ -244,10 +244,10 @@ class GeneratedRationalSolver {
       if (!_satisfies(testPts[i], p)) continue;
       if (i == 0) {
         final hi = pts[0];
-        solution.add('(-âˆž, ${_fmt(hi)}${strict || undefinedPts.contains(hi) ? ")" : "]"}');
+        solution.add('(-∞, ${_fmt(hi)}${strict || undefinedPts.contains(hi) ? ")" : "]"}');
       } else if (i == testPts.length - 1) {
         final lo = pts.last;
-        solution.add('${strict || undefinedPts.contains(lo) ? "(" : "["}${_fmt(lo)}, âˆž)');
+        solution.add('${strict || undefinedPts.contains(lo) ? "(" : "["}${_fmt(lo)}, ∞)');
       } else {
         final lo = pts[i - 1];
         final hi = pts[i];

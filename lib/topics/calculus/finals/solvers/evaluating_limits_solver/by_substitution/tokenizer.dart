@@ -54,7 +54,7 @@ class TokenizerException implements Exception {
 ///
 /// Features:
 /// - Implicit multiplication (2x, x(x+1), (x+1)(x-1))
-/// - Square root notation (âˆš or sqrt)
+/// - Square root notation (√ or sqrt)
 /// - Absolute value notation (|x|)
 class SmartTokenizer {
   final String input;
@@ -71,7 +71,7 @@ class SmartTokenizer {
     // Normalize superscript numbers to ^ notation
     result = result.replaceAll('â°', '^0');
     result = result.replaceAll('Â¹', '^1');
-    result = result.replaceAll('Â²', '^2');
+    result = result.replaceAll('²', '^2');
     result = result.replaceAll('Â³', '^3');
     result = result.replaceAll('â´', '^4');
     result = result.replaceAll('âµ', '^5');
@@ -80,8 +80,8 @@ class SmartTokenizer {
     result = result.replaceAll('â¸', '^8');
     result = result.replaceAll('â¹', '^9');
 
-    // Replace âˆš with sqrt(
-    result = result.replaceAll('âˆš', 'sqrt(');
+    // Replace √ with sqrt(
+    result = result.replaceAll('√', 'sqrt(');
 
     // Replace |...| with abs(...)... - need to handle matching
     result = _convertAbsoluteValue(result);
@@ -218,20 +218,20 @@ class _SimpleTokenizer {
   }
 
   bool _needsImplicitMultiply(Token prev, Token curr) {
-    // number â†’ variable or '(' or function
+    // number → variable or '(' or function
     if (prev.type == TokenType.number) {
       return curr.type == TokenType.variable ||
           curr.type == TokenType.leftParen ||
           curr.type == TokenType.sqrt ||
           curr.type == TokenType.abs;
     }
-    // variable â†’ '(' or function
+    // variable → '(' or function
     if (prev.type == TokenType.variable) {
       return curr.type == TokenType.leftParen ||
           curr.type == TokenType.sqrt ||
           curr.type == TokenType.abs;
     }
-    // ')' â†’ number, variable, '(' or function
+    // ')' → number, variable, '(' or function
     if (prev.type == TokenType.rightParen) {
       return curr.type == TokenType.number ||
           curr.type == TokenType.variable ||

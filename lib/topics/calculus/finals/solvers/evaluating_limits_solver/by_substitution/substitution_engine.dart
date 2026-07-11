@@ -13,7 +13,7 @@ class LimitProblem {
   });
 
   @override
-  String toString() => 'lim(x â†’ $approachValue) $expression';
+  String toString() => 'lim(x → $approachValue) $expression';
 }
 
 /// Result of solving a limit by substitution
@@ -155,7 +155,7 @@ class SubstitutionEngine {
                 ? LimitClassification.positiveInfinity
                 : LimitClassification.negativeInfinity,
             finalValue: infinity,
-            finalValueDescription: sign == '+' ? 'âˆž' : '-âˆž',
+            finalValueDescription: sign == '+' ? '∞' : '-∞',
             needsDifferentMethod: false,
             suggestedMethod: null,
             errorMessage: null,

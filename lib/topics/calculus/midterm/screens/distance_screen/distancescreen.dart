@@ -43,24 +43,10 @@ class _DistancescreenState extends State<Distancescreen>
   @override
   void initState() {
     super.initState();
-    _x1Ctrl.addListener(_onTextChanged);
-    _y1Ctrl.addListener(_onTextChanged);
-    _x2Ctrl.addListener(_onTextChanged);
-    _y2Ctrl.addListener(_onTextChanged);
-  }
-
-  void _onTextChanged() {}
-
-  void _onFieldFocus(FocusNode node) {
-    node.requestFocus();
   }
 
   @override
   void dispose() {
-    _x1Ctrl.removeListener(_onTextChanged);
-    _y1Ctrl.removeListener(_onTextChanged);
-    _x2Ctrl.removeListener(_onTextChanged);
-    _y2Ctrl.removeListener(_onTextChanged);
 
     _x1Ctrl.dispose();
     _y1Ctrl.dispose();
@@ -100,8 +86,8 @@ class _DistancescreenState extends State<Distancescreen>
   /// Formats the distance for display.
   /// - For 1D: returns absolute value (integer or trimmed decimal).
   /// - For 2D:
-  ///   - Perfect square â†’ integer (e.g., "5")
-  ///   - Nonâ€‘perfect square â†’ exact radical + approximation (e.g., "âˆš5 â‰ˆ 2.2361")
+  ///   - Perfect square → integer (e.g., "5")
+  ///   - Nonâ€‘perfect square → exact radical + approximation (e.g., "√5 ≠ˆ 2.2361")
   String _formatDistance(double value, bool is2D) {
     if (!is2D) {
       final abs = value.abs();
@@ -116,7 +102,7 @@ class _DistancescreenState extends State<Distancescreen>
     final int squared = (value * value).round();
     final double sqrtVal = sqrt(squared);
 
-    // Perfect square â†’ return integer only
+    // Perfect square → return integer only
     if (sqrtVal == sqrtVal.roundToDouble()) {
       return sqrtVal.round().toString();
     }
@@ -135,9 +121,9 @@ class _DistancescreenState extends State<Distancescreen>
     if (remaining == 1) {
       exact = largestSquare.toString();
     } else if (largestSquare == 1) {
-      exact = 'âˆš$remaining';
+      exact = '√$remaining';
     } else {
-      exact = '$largestSquareâˆš$remaining';
+      exact = '$largestSquare√$remaining';
     }
 
     // Decimal approximation (trimmed to 4 decimal places)
@@ -146,7 +132,7 @@ class _DistancescreenState extends State<Distancescreen>
         .replaceAll(RegExp(r'0+$'), '')
         .replaceAll(RegExp(r'\.$'), '');
 
-    return '$exact â‰ˆ $approx';
+    return '$exact ≠ˆ $approx';
   }
 
   void _onCalculate() {
@@ -193,7 +179,7 @@ class _DistancescreenState extends State<Distancescreen>
         Text(label, style: DistanceTheme.inputLabel(context)),
         const SizedBox(height: DistanceTheme.spaceXs),
         GestureDetector(
-          onTap: () => _onFieldFocus(focusNode),
+          onTap: () => focusNode.requestFocus(),
           child: Container(
             decoration: DistanceTheme.inputDecoration(context),
             child: TextField(
@@ -337,7 +323,7 @@ class _DistancescreenState extends State<Distancescreen>
                           color: DistanceTheme.accent70, size: 16),
                       const SizedBox(width: DistanceTheme.spaceXl),
                       Text(
-                        _is2D ? 'd = âˆš((xâ‚‚âˆ’xâ‚)Â² + (yâ‚‚âˆ’yâ‚)Â²)' : 'd = |xâ‚‚ âˆ’ xâ‚|',
+                        _is2D ? 'd = √((xâ‚‚âˆ’xâ‚)² + (yâ‚‚âˆ’yâ‚)²)' : 'd = |xâ‚‚ âˆ’ xâ‚|',
                         style: DistanceTheme.formulaText(context),
                       ),
                     ],

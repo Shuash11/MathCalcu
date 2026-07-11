@@ -29,7 +29,7 @@ class CircleEquationController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // â”€â”€ Standard â†’ General â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ Standard → General â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   bool computeStandardToGeneral() {
     final h = double.tryParse(hCtrl.text);
@@ -49,7 +49,7 @@ class CircleEquationController extends ChangeNotifier {
     return true;
   }
 
-  // â”€â”€ General â†’ Standard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ General → Standard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   bool computeGeneralToStandard() {
     if (equationCtrl.text.trim().isEmpty) {
@@ -65,7 +65,7 @@ class CircleEquationController extends ChangeNotifier {
       final rSq = h * h + k * k - parsed.F;
 
       if (rSq <= 0) {
-        errorMessage = 'No real circle: rÂ² â‰¤ 0 for these values.';
+        errorMessage = 'No real circle: r² ≠¤ 0 for these values.';
         notifyListeners();
         return false;
       }

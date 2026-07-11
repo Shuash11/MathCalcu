@@ -449,7 +449,7 @@ class LimitSolver {
         expression: '= 0',
       ));
       return LimitSolution(
-        problemNotation: 'lim(x â†’ $approachStr) $rawExpr',
+        problemNotation: 'lim(x → $approachStr) $rawExpr',
         resultString: '0',
         finalValue: 0,
         methodUsed: 'Degree Comparison',
@@ -473,7 +473,7 @@ class LimitSolver {
         expression: '= $resultStr',
       ));
       return LimitSolution(
-        problemNotation: 'lim(x â†’ $approachStr) $rawExpr',
+        problemNotation: 'lim(x → $approachStr) $rawExpr',
         resultString: isNegInf ? '-\\infty' : '\\infty',
         finalValue: isNegInf ? double.negativeInfinity : double.infinity,
         methodUsed: 'Degree Comparison',
@@ -501,7 +501,7 @@ class LimitSolver {
       expression: '= $resultStr',
     ));
     return LimitSolution(
-      problemNotation: 'lim(x â†’ $approachStr) $rawExpr',
+      problemNotation: 'lim(x → $approachStr) $rawExpr',
       resultString: resultStr,
       finalValue: result,
       methodUsed: 'Divide by Highest Power',
@@ -530,7 +530,7 @@ class LimitSolver {
           expression: '= $resultStr',
         ));
         return LimitSolution(
-          problemNotation: 'lim(x â†’ ${_fmt(approachValue)}) $rawExpr',
+          problemNotation: 'lim(x → ${_fmt(approachValue)}) $rawExpr',
           resultString: resultStr,
           finalValue: result,
           methodUsed: 'Direct Substitution',
@@ -544,7 +544,7 @@ class LimitSolver {
           explanation: 'Could not evaluate at x = ${_fmt(approachValue)}.',
         ));
         return LimitSolution(
-          problemNotation: 'lim(x â†’ ${_fmt(approachValue)}) $rawExpr',
+          problemNotation: 'lim(x → ${_fmt(approachValue)}) $rawExpr',
           resultString: 'Undefined',
           finalValue: double.nan,
           methodUsed: 'Error',
@@ -571,7 +571,7 @@ class LimitSolver {
         expression: '= ${_fmt(lc)}',
       ));
       return LimitSolution(
-        problemNotation: 'lim(x â†’ $approachStr) $rawExpr',
+        problemNotation: 'lim(x → $approachStr) $rawExpr',
         resultString: _fmt(lc),
         finalValue: lc,
         methodUsed: 'Constant',
@@ -587,7 +587,7 @@ class LimitSolver {
       description: 'Leading term dominates',
       type: StepType.transformation,
       formula: '\\lim_{x \\to $approachStr} $rawExpr = $resultStr',
-      explanation: 'For polynomials, the leading term ${lc}x^$degree dominates. As x â†’ $approachStr, the function approaches $resultStr.',
+      explanation: 'For polynomials, the leading term ${lc}x^$degree dominates. As x → $approachStr, the function approaches $resultStr.',
       expression: '= $resultStr',
     ));
     steps.add(SolutionStep(
@@ -597,8 +597,8 @@ class LimitSolver {
       expression: '= $resultStr',
     ));
     return LimitSolution(
-      problemNotation: 'lim(x â†’ $approachStr) $rawExpr',
-      resultString: resultIsNeg ? '-âˆž' : 'âˆž',
+      problemNotation: 'lim(x → $approachStr) $rawExpr',
+      resultString: resultIsNeg ? '-∞' : '∞',
       finalValue: result,
       methodUsed: 'Polynomial',
       steps: steps,
@@ -607,7 +607,7 @@ class LimitSolver {
 
   static String _fmt(double v) {
     if (v.isNaN) return 'Undefined';
-    if (v.isInfinite) return v > 0 ? 'âˆž' : '-âˆž';
+    if (v.isInfinite) return v > 0 ? '∞' : '-∞';
     if (v == v.truncateToDouble() && v.abs() < 1e10) return v.toInt().toString();
     return v.toStringAsFixed(4).replaceAll(RegExp(r'\.?0+$'), '');
   }

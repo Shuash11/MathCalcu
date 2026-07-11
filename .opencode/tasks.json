@@ -1,45 +1,24 @@
 {
   "tasks": [
-    {
-      "id": 1,
-      "description": "Rewrite service worker with stale-while-revalidate + skip-waiting",
-      "status": "done"
-    },
-    {
-      "id": 2,
-      "description": "Create web/version.json with current version",
-      "status": "done"
-    },
-    {
-      "id": 3,
-      "description": "Create lib/version.dart with kAppVersion constant",
-      "status": "done"
-    },
-    {
-      "id": 4,
-      "description": "Create lib/widgets/web_update_dialog.dart with Update/Later UI",
-      "status": "done"
-    },
-    {
-      "id": 5,
-      "description": "Create conditional import helper (web_update_web.dart + web_update_stub.dart + web_update_helper.dart)",
-      "status": "done"
-    },
-    {
-      "id": 6,
-      "description": "Modify lib/main.dart — add web update check via version.json",
-      "status": "done"
-    },
-    {
-      "id": 7,
-      "description": "Verify — flutter analyze (0 errors) + flutter test (all passing)",
-      "status": "done"
-    },
-    {
-      "id": 8,
-      "description": "End-to-end audit — verify all files exist, imports correct, no regressions",
-      "status": "done"
-    }
+    { "id": 1, "description": "Fix Finals encoding: derivatives_input_field.dart xÂ² → x²", "status": "pending" },
+    { "id": 2, "description": "Fix Finals encoding: substitution_input_field.dart xÂ², ─── comments", "status": "pending" },
+    { "id": 3, "description": "Fix Finals encoding: conjugate_input_field.dart âˆš → √", "status": "pending" },
+    { "id": 4, "description": "Fix Finals encoding: factoring_input_field.dart xÂ² → x²", "status": "pending" },
+    { "id": 5, "description": "Fix Finals encoding: lcd_input_field.dart ─── comments", "status": "pending" },
+    { "id": 6, "description": "Fix Finals encoding: limits_infinity_screen.dart â†' → →", "status": "pending" },
+    { "id": 7, "description": "Fix HIGH: Conjugate _expandNode() wrong expansion for + operations", "status": "pending" },
+    { "id": 8, "description": "Fix MEDIUM: Conjugate expansion LaTeX missing closing paren", "status": "pending" },
+    { "id": 9, "description": "Fix CRITICAL: pointslopesteps.dart int.tryParse on fractional inputs", "status": "pending" },
+    { "id": 10, "description": "Fix HIGH: slopescreen.dart UTF-8 corrupted em dash in error strings", "status": "pending" },
+    { "id": 11, "description": "Fix HIGH: slope_step.dart UTF-8 corrupted LaTeX converter replaceAll", "status": "pending" },
+    { "id": 12, "description": "Fix HIGH: distancescreen.dart UTF-8 corrupted formula hint", "status": "pending" },
+    { "id": 13, "description": "Fix HIGH: slope_input_field.dart missing FocusNode listener", "status": "pending" },
+    { "id": 14, "description": "Fix MEDIUM: slope_steps.dart UTF-8 corrupted Δ, →, · symbols", "status": "pending" },
+    { "id": 15, "description": "Fix MEDIUM: distancesteps.dart UTF-8 corrupted symbols", "status": "pending" },
+    { "id": 16, "description": "Fix MEDIUM: pointslopescreen.dart UTF-8 corrupted formula banner", "status": "pending" },
+    { "id": 17, "description": "Fix LOW: distancescreen.dart empty listener bodies", "status": "pending" },
+    { "id": 18, "description": "Fix LOW: slopescreen.dart second result card shows wrong steps", "status": "pending" },
+    { "id": 19, "description": "Fix LOW: substitution_engine.dart redundant replaceAll('^','^')", "status": "pending" }
   ],
-  "completed": true
+  "completed": false
 }

@@ -1145,7 +1145,7 @@ class SlopeResult {
   final Expr? dxDt;
   final Expr? dyDt;
 
-  // â”€â”€ FIX 2: added secondDerivative field so parametric dÂ²y/dxÂ² is preserved â”€â”€
+  // â”€â”€ FIX 2: added secondDerivative field so parametric d²y/dx² is preserved â”€â”€
   final Expr? secondDerivative;
 
   // Tangent line details
@@ -1197,7 +1197,7 @@ class SlopeSolver {
   ///   â€¢ Implicit:    "x^2 + y^2 = 25"  or  "x^3 + y^3 = 6xy"
   ///   â€¢ Parametric:  "x=cos(t), y=sin(t)"  (comma-separated pair)
   ///
-  /// [pointValues] maps variable names â†’ numeric values.
+  /// [pointValues] maps variable names → numeric values.
   /// For explicit/implicit supply {"x": value}; for parametric supply {"t": value}.
   static SlopeResult solve(String input, {Map<String, double>? pointValues}) {
     final trimmed = input.trim();
@@ -1294,7 +1294,7 @@ class SlopeSolver {
         tangentYIntercept = yVal - tangentSlope * xVal;
         tangentEq = _lineEquation(tangentSlope, tangentYIntercept, xVal, yVal);
 
-        // Normal line: perpendicular slope = -1/m (if m â‰  0)
+        // Normal line: perpendicular slope = -1/m (if m ≠  0)
         if (tangentSlope != 0 && tangentSlope.isFinite) {
           normalSlope = -1.0 / tangentSlope;
           final normYInt = yVal - normalSlope * xVal;
@@ -1457,8 +1457,8 @@ class SlopeSolver {
     // dy/dx = (dy/dt) / (dx/dt)
     final parametricSlope = Simplifier.simplify(BinOp(dyDt, '/', dxDt));
 
-    // â”€â”€ FIX 2: dÂ²y/dxÂ² computed and now stored in secondDerivative â”€â”€
-    // dÂ²y/dxÂ² = (d/dt[dy/dx]) / (dx/dt)
+    // â”€â”€ FIX 2: d²y/dx² computed and now stored in secondDerivative â”€â”€
+    // d²y/dx² = (d/dt[dy/dx]) / (dx/dt)
     final dSlopeDt = Simplifier.simplify(
       Differentiator.differentiate(parametricSlope, paramVar),
     );
@@ -1675,7 +1675,7 @@ class StepExplainer {
     if (r.secondDerivative != null) {
       steps.add('');
       steps.add('STEP 3 â€” Second derivative (concavity)');
-      steps.add('  dÂ²y/dxÂ² = (d/d$t[dy/dx]) / (dx/d$t)');
+      steps.add('  d²y/dx² = (d/d$t[dy/dx]) / (dx/d$t)');
       steps.add('          = ${r.secondDerivative!.toMathString()}');
     }
 

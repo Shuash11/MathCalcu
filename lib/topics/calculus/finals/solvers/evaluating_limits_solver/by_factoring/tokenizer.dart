@@ -51,7 +51,7 @@ class TokenizerException implements Exception {
 
 /// Converts a mathematical expression string into a list of tokens.
 ///
-/// Handles implicit multiplication (e.g., "2x" â†’ "2 * x", "(x+1)(x-1)" â†’ "(x+1) * (x-1)")
+/// Handles implicit multiplication (e.g., "2x" → "2 * x", "(x+1)(x-1)" → "(x+1) * (x-1)")
 class Tokenizer {
   final String input;
   int _position = 0;
@@ -65,13 +65,13 @@ class Tokenizer {
         .replaceAll('âˆ’', '-')
         .replaceAll('â€“', '-')
         .replaceAll('â€”', '-')
-        .replaceAll('Ã—', '*')
-        .replaceAll('Ã·', '/');
+        .replaceAll('÷—', '*')
+        .replaceAll('×', '/');
 
     result = result
         .replaceAll('â°', '^0')
         .replaceAll('Â¹', '^1')
-        .replaceAll('Â²', '^2')
+        .replaceAll('²', '^2')
         .replaceAll('Â³', '^3')
         .replaceAll('â´', '^4')
         .replaceAll('âµ', '^5')
@@ -118,7 +118,7 @@ class Tokenizer {
         if (tokenType != null) {
           currentToken = Token(tokenType, char, _position);
           _position++;
-        } else if (char == 'âˆš' || char == '\u221A') {
+        } else if (char == '√' || char == '\u221A') {
           currentToken = Token(TokenType.function, 'sqrt', _position);
           _position++;
         } else {

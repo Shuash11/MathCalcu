@@ -72,8 +72,8 @@ class RadiusResult {
     if (!isInteger) return _f(radius);
     if (_isPerfectSquare(sum)) return sqrt(sum).round().toString();
     final (coeff, radicand) = _simplifyRadical(sum);
-    final exact = coeff == 1 ? 'âˆš$radicand' : '$coeffâˆš$radicand';
-    return '$exact â‰ˆ ${_f(radius)}';
+    final exact = coeff == 1 ? '√$radicand' : '$coeff√$radicand';
+    return '$exact ≠ˆ ${_f(radius)}';
   }
 
   String get exactRadius {
@@ -82,22 +82,22 @@ class RadiusResult {
     if (!isInteger) return _f(radius);
     if (_isPerfectSquare(sum)) return sqrt(sum).round().toString();
     final (coeff, radicand) = _simplifyRadical(sum);
-    return coeff == 1 ? 'âˆš$radicand' : '$coeffâˆš$radicand';
+    return coeff == 1 ? '√$radicand' : '$coeff√$radicand';
   }
 
   String get steps {
     final buf = StringBuffer();
-    buf.writeln('r = âˆš((x âˆ’ h)Â² + (y âˆ’ k)Â²)');
-    buf.writeln('r = âˆš((${_fmt(x, rawX)} âˆ’ ${_fmt(h, rawH)})Â² + (${_fmt(y, rawY)} âˆ’ ${_fmt(k, rawK)})Â²)');
-    buf.writeln('r = âˆš((${_f(dx)})Â² + (${_f(dy)})Â²)');
-    buf.writeln('r = âˆš(${_f(dx2)} + ${_f(dy2)})');
-    buf.writeln('r = âˆš${_f(sum)}');
+    buf.writeln('r = √((x âˆ’ h)² + (y âˆ’ k)²)');
+    buf.writeln('r = √((${_fmt(x, rawX)} âˆ’ ${_fmt(h, rawH)})² + (${_fmt(y, rawY)} âˆ’ ${_fmt(k, rawK)})²)');
+    buf.writeln('r = √((${_f(dx)})² + (${_f(dy)})²)');
+    buf.writeln('r = √(${_f(dx2)} + ${_f(dy2)})');
+    buf.writeln('r = √${_f(sum)}');
     final sumInt = sum.round();
     final isInteger = (sum - sumInt).abs() < 1e-9;
     if (isInteger && !_isPerfectSquare(sum)) {
       final (coeff, radicand) = _simplifyRadical(sum);
-      final exact = coeff == 1 ? 'âˆš$radicand' : '$coeffâˆš$radicand';
-      buf.write('r = $exact â‰ˆ ${_f(radius)}');
+      final exact = coeff == 1 ? '√$radicand' : '$coeff√$radicand';
+      buf.write('r = $exact ≠ˆ ${_f(radius)}');
     } else {
       buf.write('r = ${_f(radius)}');
     }

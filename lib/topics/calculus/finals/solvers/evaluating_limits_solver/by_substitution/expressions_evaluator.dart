@@ -32,7 +32,7 @@ class EvaluationResult {
         isNaN: false,
         isInfinity: v > 0,
         isNegativeInfinity: v < 0,
-        description: v > 0 ? 'âˆž' : '-âˆž',
+        description: v > 0 ? '∞' : '-∞',
       );
     }
     return EvaluationResult(
