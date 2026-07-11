@@ -1,6 +1,9 @@
-﻿import 'dart:io';
+﻿import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
@@ -9,6 +12,8 @@ import 'theme/theme_provider.dart';
 import 'services/update_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'widgets/update_dialog.dart';
+import 'widgets/web_update_dialog.dart';
+import 'version.dart';
 
 void main() async {
   // â”€â”€ PRE-RUN INITIALIZATION â”€â”€
@@ -130,6 +135,14 @@ class _CalculusAppState extends State<CalculusApp> {
   Future<void> _checkForUpdates() async {
     try {
       if (!mounted) return;
+
+      // Web: fetch version.json and compare against current
+      if (kIsWeb) {
+        await _checkForWebUpdate();
+        return;
+      }
+
+      // Android/Windows: use GitHub API
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = packageInfo.version;
       final info = await UpdateService.checkForUpdate(currentVersion);
@@ -180,6 +193,33 @@ class _CalculusAppState extends State<CalculusApp> {
           duration: Duration(seconds: 3),
         ),
       );
+    }
+  }
+
+  Future<void> _checkForWebUpdate() async {
+    try {
+      // Fetch version.json with cache-bust timestamp
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final response = await http
+          .get(Uri.parse('version.json?v=$timestamp'))
+          .timeout(const Duration(seconds: 5));
+      if (response.statusCode != 200) return;
+
+      final data = jsonDecode(response.body);
+      final latestVersion = data['version'] as String?;
+      if (latestVersion == null) return;
+
+      // Get current version from the version constant
+      final currentVersion = kAppVersion;
+
+      if (latestVersion != currentVersion && mounted) {
+        final ctx = AppRouter.navigatorKey.currentContext;
+        if (ctx != null && ctx.mounted) {
+          showWebUpdateDialog(ctx, latestVersion);
+        }
+      }
+    } catch (_) {
+      // Silently ignore — not critical
     }
   }
 

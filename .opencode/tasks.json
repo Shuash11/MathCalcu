@@ -1,13 +1,45 @@
 {
   "tasks": [
-    { "id": 1, "description": "Create home module with responsive grid landing page", "status": "done" },
-    { "id": 2, "description": "Create topics module with midterm/finals sub-modules", "status": "done" },
-    { "id": 3, "description": "Move midterm/ and Finals/ into topics/ directory", "status": "done" },
-    { "id": 4, "description": "Update all imports to use new paths", "status": "done" },
-    { "id": 5, "description": "Simplify bottom nav to Home + Settings", "status": "done" },
-    { "id": 6, "description": "Restructure router with Home as root, Topics as sub-route", "status": "done" },
-    { "id": 7, "description": "Update all route paths to use new structure", "status": "done" },
-    { "id": 8, "description": "Add placeholders for Notes and Calculator screens", "status": "done" }
+    {
+      "id": 1,
+      "description": "Rewrite service worker with stale-while-revalidate + skip-waiting",
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "description": "Create web/version.json with current version",
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "description": "Create lib/version.dart with kAppVersion constant",
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "description": "Create lib/widgets/web_update_dialog.dart with Update/Later UI",
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "description": "Create conditional import helper (web_update_web.dart + web_update_stub.dart + web_update_helper.dart)",
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "description": "Modify lib/main.dart — add web update check via version.json",
+      "status": "done"
+    },
+    {
+      "id": 7,
+      "description": "Verify — flutter analyze (0 errors) + flutter test (all passing)",
+      "status": "done"
+    },
+    {
+      "id": 8,
+      "description": "End-to-end audit — verify all files exist, imports correct, no regressions",
+      "status": "done"
+    }
   ],
   "completed": true
 }
