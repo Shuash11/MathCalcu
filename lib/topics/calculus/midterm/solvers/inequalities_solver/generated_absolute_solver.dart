@@ -16,14 +16,14 @@ class GeneratedAbsoluteSolver {
       final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
 
       if (isNarrow) {
-        if (p.k < 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
-        if (p.k == 0 && effectiveOp == '<') return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+        if (p.k < 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
+        if (p.k == 0 && effectiveOp == '<') return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
         if (p.k == 0 && effectiveOp == '≠¤') {
-          if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+          if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
           final root = -p.b / p.a;
           return SolveResult(answer: 'x = ${_fmt(root)}', points: [root], intervalNotation: '{${_fmt(root)}}');
         }
-        if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+        if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
 
         final v1 = (-p.k - p.b) / p.a;
         final v2 = (p.k - p.b) / p.a;
@@ -39,11 +39,11 @@ class GeneratedAbsoluteSolver {
       } else {
         if (p.k < 0) return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
         if (p.k == 0 && effectiveOp == '≠¥') return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
-        if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+        if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
         if (p.k == 0 && effectiveOp == '>') {
           final root = -p.b / p.a;
           final fR = _fmt(root);
-          return SolveResult(answer: 'x < $fR or x > $fR', points: [root], intervalNotation: '(-∞, $fR) âˆª ($fR, ∞)');
+          return SolveResult(answer: 'x < $fR or x > $fR', points: [root], intervalNotation: '(-∞, $fR) ∪ ($fR, ∞)');
         }
 
         final v1 = (-p.k - p.b) / p.a;
@@ -58,7 +58,7 @@ class GeneratedAbsoluteSolver {
         return SolveResult(
           answer: 'x $flipOp $fL or x $effectiveOp $fH',
           points: [l, h],
-          intervalNotation: '(-∞, $fL$b1 âˆª $b2$fH, ∞)',
+          intervalNotation: '(-∞, $fL$b1 ∪ $b2$fH, ∞)',
         );
       }
     } catch (e) {
@@ -89,7 +89,7 @@ class GeneratedAbsoluteSolver {
     if (p.a == 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'No variable term â€” evaluate the constant directly',
+        hint: 'No variable term — evaluate the constant directly',
         latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
       ));
       return steps;
@@ -156,7 +156,7 @@ class GeneratedAbsoluteSolver {
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // Step 2: Apply Theorem 1 â€” |X| < k  =>  -k < X < k
+      // Step 2: Apply Theorem 1 — |X| < k  =>  -k < X < k
       steps.add(StepModel(
         stepNumber: n++,
         hint: 'Apply Theorem 1',
@@ -170,7 +170,7 @@ class GeneratedAbsoluteSolver {
       ));
 
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // Step 3: Isolate x-term â€” subtract/add constant
+      // Step 3: Isolate x-term — subtract/add constant
       if (p.b != 0) {
         final bAbs = _fmtLatex(p.b.abs());
         final bStr = _fmtLatex(p.b);
@@ -245,7 +245,7 @@ class GeneratedAbsoluteSolver {
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
       // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // Step 2: Apply Theorem 2 â€” |X| > k  =>  X < -k  or  X > k
+      // Step 2: Apply Theorem 2 — |X| > k  =>  X < -k  or  X > k
       steps.add(StepModel(
         stepNumber: n++,
         hint: 'Apply Theorem 2',
@@ -339,7 +339,7 @@ class GeneratedAbsoluteSolver {
   static _Parsed? _parse(String input) {
     String s = input
         .trim()
-        .replaceAll('âˆ’', '-')
+        .replaceAll('−', '-')
         .replaceAll('²', '^2')
         .replaceAll(' ', '')
         .replaceAll('>=', '≠¥')

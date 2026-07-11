@@ -25,7 +25,7 @@ class GeneratedQuadraticSolver {
         return SolveResult(
           answer: allSat ? 'All real numbers' : 'No solution',
           points: [],
-          intervalNotation: allSat ? '(-∞, ∞)' : 'âˆ…',
+          intervalNotation: allSat ? '(-∞, ∞)' : '∅',
         );
       }
 
@@ -40,23 +40,23 @@ class GeneratedQuadraticSolver {
         final opensUp = p.a > 0;
         if (opensUp) {
           if (p.op == '<') {
-            return SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+            return SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
           } else if (p.op == '≠¤') {
             return SolveResult(answer: 'x = ${_fmt(root)}', points: [root], intervalNotation: '{${_fmt(root)}}');
           } else if (p.op == '>') {
             return SolveResult(answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}', points: [root],
-              intervalNotation: '(-∞, ${_fmt(root)}) âˆª (${_fmt(root)}, ∞)');
+              intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)');
           } else {
             return SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
           }
         } else {
           if (p.op == '<') {
             return SolveResult(answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}', points: [root],
-              intervalNotation: '(-∞, ${_fmt(root)}) âˆª (${_fmt(root)}, ∞)');
+              intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)');
           } else if (p.op == '≠¤') {
             return SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
           } else if (p.op == '>') {
-            return SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+            return SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
           } else {
             return SolveResult(answer: 'x = ${_fmt(root)}', points: [root], intervalNotation: '{${_fmt(root)}}');
           }
@@ -79,7 +79,7 @@ class GeneratedQuadraticSolver {
         return SolveResult(
           answer: 'x ${strict ? '<' : '≠¤'} ${_fmt(lo)} or x ${strict ? '>' : '≠¥'} ${_fmt(hi)}',
           points: [lo, hi],
-          intervalNotation: '(-∞, ${_fmt(lo)}$rb âˆª $lb${_fmt(hi)}, ∞)',
+          intervalNotation: '(-∞, ${_fmt(lo)}$rb ∪ $lb${_fmt(hi)}, ∞)',
         );
       }
     } catch (e) {
@@ -138,10 +138,10 @@ class GeneratedQuadraticSolver {
     steps.add(StepModel(
       stepNumber: n++,
       hint: disc < 0
-          ? 'Negative discriminant \\Delta = ${_fmt(disc)} â€” no real roots'
+          ? 'Negative discriminant \\Delta = ${_fmt(disc)} — no real roots'
           : disc == 0
-              ? 'Zero discriminant \\Delta = 0 â€” one repeated root'
-              : 'Positive discriminant \\Delta = ${_fmt(disc)} â€” two real roots',
+              ? 'Zero discriminant \\Delta = 0 — one repeated root'
+              : 'Positive discriminant \\Delta = ${_fmt(disc)} — two real roots',
       details: [
         r'\Delta = b^2 - 4ac',
         r'\Delta = (' + _fmtLatex(p.b) + ')^2 - 4(' + _fmtLatex(p.a) + ')(' + _fmtLatex(p.c) + ')',
@@ -158,8 +158,8 @@ class GeneratedQuadraticSolver {
       steps.add(StepModel(
         stepNumber: n++,
         hint: allSat
-            ? 'Always true â€” parabola never crosses x-axis'
-            : 'Always false â€” parabola never crosses x-axis',
+            ? 'Always true — parabola never crosses x-axis'
+            : 'Always false — parabola never crosses x-axis',
         details: [
           r'\Delta < 0 \implies \text{no real roots}',
           p.a > 0
@@ -350,7 +350,7 @@ class GeneratedQuadraticSolver {
       return SolveResult(
         answer: sat ? 'All real numbers' : 'No solution',
         points: [],
-        intervalNotation: sat ? '(-∞, ∞)' : 'âˆ…',
+        intervalNotation: sat ? '(-∞, ∞)' : '∅',
       );
     }
     final x = -c / b;

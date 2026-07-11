@@ -19,7 +19,7 @@ class GeneratedLinearSolver {
         return SolveResult(
           answer: sat ? 'All real numbers' : 'No solution',
           points: [],
-          intervalNotation: sat ? '(-∞, ∞)' : 'âˆ…',
+          intervalNotation: sat ? '(-∞, ∞)' : '∅',
         );
       }
 
@@ -102,7 +102,7 @@ class GeneratedLinearSolver {
       final sat = _evalOp(b, p.op, 0);
       steps.add(StepModel(
         stepNumber: n++,
-        hint: sat ? 'Always true â€” no x term remains' : 'Always false â€” no x term remains',
+        hint: sat ? 'Always true — no x term remains' : 'Always false — no x term remains',
         latex: sat ? r'(-\infty, \infty)' : r'\emptyset',
       ));
       return steps;

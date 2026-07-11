@@ -13,13 +13,13 @@ class GeneratedRationalSolver {
 
       final intervals = _buildIntervals(p);
       if (intervals.isEmpty) {
-        return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+        return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
       }
 
       return SolveResult(
         answer: intervals.join(' or '),
         points: _criticalPoints(p),
-        intervalNotation: intervals.join(' âˆª '),
+        intervalNotation: intervals.join(' ∪ '),
       );
     } catch (e) {
       return SolveResult.error('Error: $e');
@@ -54,7 +54,7 @@ class GeneratedRationalSolver {
     ));
 
     final intervals = _buildIntervals(p);
-    final intervalStr = intervals.isEmpty ? 'âˆ…' : intervals.join(' âˆª ');
+    final intervalStr = intervals.isEmpty ? '∅' : intervals.join(' ∪ ');
 
     steps.add(StepModel(
       stepNumber: n++,

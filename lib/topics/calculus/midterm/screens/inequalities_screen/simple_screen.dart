@@ -10,7 +10,7 @@ class SimpleScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Basic Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. 2x + 1 > 5  or  3x âˆ’ 4 ≠¤ 8',
+      hint: 'e.g. 2x + 1 > 5  or  3x − 4 ≤ 8',
       solveFunction: GeneratedLinearSolver.solve,
       stepsFunction: GeneratedLinearSolver.getSteps,
     );

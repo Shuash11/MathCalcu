@@ -16,7 +16,7 @@ class GeneratedRadicalSolver {
         if (p.op == '>' || p.op == '≠¥') {
           return SolveResult(answer: 'x ≠¥ ${_fmt(-p.c / p.b)} (domain only)', points: [], intervalNotation: '');
         }
-        return const SolveResult(answer: 'No solution', points: [], intervalNotation: 'âˆ…');
+        return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
       }
 
       // Domain: bx + c >= 0  =>  x >= -c/b (if b > 0) or x <= -c/b (if b < 0)
@@ -43,7 +43,7 @@ class GeneratedRadicalSolver {
         } else {
           if (squaredBoundary < domainBoundary) {
             answer = 'No solution';
-            interval = 'âˆ…';
+            interval = '∅';
           } else {
             answer = '$dB ≠¤ x $sB';
             interval = '[$dB, $sB]';

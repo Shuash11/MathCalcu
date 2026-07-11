@@ -9,7 +9,7 @@ class LinearCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedInequalityCard(
       title: 'Linear Inequality',
-      subtitle: 'Supports <, >, ≠¤, ≠¥, and continued inequalities.',
+      subtitle: 'Supports <, >, ≤, ≥, and continued inequalities.',
       route: '/inequalities/simple',
       icon: Icons.functions_rounded,
       accentColor: InequalityTheme.subtypeAccents['strict'] ?? InequalityTheme.accentColor,

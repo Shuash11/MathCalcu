@@ -10,7 +10,7 @@ class ContinuedScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Continued Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. 1 < 2x + 3 < 9  or  âˆ’5 ≠¤ 2x âˆ’ 1 < 7',
+      hint: 'e.g. 1 < 2x + 3 < 9  or  −5 ≤ 2x – 1 < 7',
       solveFunction: GeneratedLinearSolver.solve,
       stepsFunction: GeneratedLinearSolver.getSteps,
     );
