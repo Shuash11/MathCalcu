@@ -26,6 +26,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   final _x2Focus = FocusNode();
   final _y2Focus = FocusNode();
   bool _showSteps = false;
+  bool _showGraph = false;
 
   @override
   void initState() {
@@ -56,6 +57,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   }
 
   void _toggleSteps() => setState(() => _showSteps = !_showSteps);
+  void _toggleGraph() => setState(() => _showGraph = !_showGraph);
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,11 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               if (_controller.hasSolved) ...[
                 _buildResultCard(),
                 const SizedBox(height: space4xl),
+                if (_showGraph) ...[
+                  TwoPointSlopeGraph(result: _controller.result!),
+                  const SizedBox(height: space4xl),
                 ],
+              ],
               ],
             ),
           ),
@@ -303,7 +309,10 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 Expanded(
                   child:                   _SolveButton(
                     onTap: () {
-                      setState(() => _showSteps = false);
+                      setState(() {
+                        _showSteps = false;
+                        _showGraph = false;
+                      });
                       _controller.solve();
                       try {
                         HapticFeedback.mediumImpact();
@@ -337,6 +346,11 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 child: Text('RESULT',
                     style: TwoPointSlopeTheme.labelStyle(context)),
               ),
+              GestureDetector(
+                onTap: _toggleGraph,
+                child: _buildShowGraphChip(),
+              ),
+              const SizedBox(width: 6),
               GestureDetector(
                 onTap: _toggleSteps,
                 child: _buildShowStepsChip(),
@@ -431,7 +445,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             ),
             TwoPointSlopeSteps(result: _controller.result!),
             const SizedBox(height: 20),
-            TwoPointSlopeGraph(result: _controller.result!),
           ],
         ],
       ),
@@ -464,6 +477,34 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             duration: const Duration(milliseconds: 200),
             child: Icon(Icons.keyboard_arrow_down_rounded,
                 color: TwoPointSlopeTheme.primary, size: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShowGraphChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _showGraph
+            ? TwoPointSlopeTheme.stepGreen.withValues(alpha: 0.2)
+            : TwoPointSlopeTheme.stepGreen.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.show_chart_rounded,
+              color: TwoPointSlopeTheme.stepGreen, size: 14),
+          const SizedBox(width: 4),
+          Text(
+            _showGraph ? 'Hide graph' : 'Show graph',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: TwoPointSlopeTheme.stepGreen,
+            ),
           ),
         ],
       ),

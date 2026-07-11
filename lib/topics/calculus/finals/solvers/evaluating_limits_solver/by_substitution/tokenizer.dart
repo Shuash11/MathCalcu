@@ -66,12 +66,12 @@ class SmartTokenizer {
     String result = input;
 
     // Normalize Unicode minus to ASCII minus
-    result = result.replaceAll('??', '-');
+    result = result.replaceAll('\u2212', '-');
 
     // Normalize superscript numbers to ^ notation
     result = result.replaceAll('⁰', '^0');
     result = result.replaceAll('¹', '^1');
-    result = result.replaceAll('?', '^2');
+    result = result.replaceAll('\u00B2', '^2');
     result = result.replaceAll('³', '^3');
     result = result.replaceAll('⁴', '^4');
     result = result.replaceAll('⁵', '^5');

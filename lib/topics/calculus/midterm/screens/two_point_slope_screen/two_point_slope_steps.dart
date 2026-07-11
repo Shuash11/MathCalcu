@@ -105,12 +105,13 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
           final i = entry.key;
           final step = entry.value;
           final color = _stepColors[i % _stepColors.length];
+          final isLast = i == widget.result.steps.length - 1;
 
           return FadeTransition(
             opacity: _fadeAnims[i],
             child: SlideTransition(
               position: _slideAnims[i],
-              child: _StepCard(step: step, color: color),
+              child: _StepCard(step: step, color: color, isLast: isLast),
             ),
           );
         }),
@@ -120,51 +121,59 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
 }
 
 // ─────────────────────────────────────────────────────────────
-// Individual step card
+// Individual step card — minimal circled-number timeline style
 // ─────────────────────────────────────────────────────────────
 
 class _StepCard extends StatelessWidget {
   final SolverStep step;
   final Color color;
+  final bool isLast;
 
-  const _StepCard({required this.step, required this.color});
+  const _StepCard({
+    required this.step,
+    required this.color,
+    this.isLast = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        decoration: BoxDecoration(
-          color: TwoPointSlopeTheme.surface(context),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Row(
+    const accentColor = TwoPointSlopeTheme.primary;
+
+    return Stack(
+      children: [
+        // Timeline line
+        if (!isLast)
+          Positioned(
+            left: 15.25,
+            top: 32,
+            bottom: 0,
+            child: Container(
+              width: 1.5,
+              color: accentColor.withValues(alpha: 0.15),
+            ),
+          ),
+
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Colored left bar + number
-            Container(
-              width: 48,
-              height: 80,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.08),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  bottomLeft: Radius.circular(16),
+            // Circled number indicator
+            SizedBox(
+              width: 40,
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
                 ),
-                border: Border(
-                  right: BorderSide(
-                    color: color.withValues(alpha: 0.2),
-                  ),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  '${step.number}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: color,
+                child: Center(
+                  child: Text(
+                    '${step.number}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      color: accentColor,
+                    ),
                   ),
                 ),
               ),
@@ -173,7 +182,7 @@ class _StepCard extends StatelessWidget {
             // Content
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.only(bottom: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -181,129 +190,141 @@ class _StepCard extends StatelessWidget {
                     Text(
                       step.title,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: color,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Formula - show as LaTeX
-                    if (step.formula.isNotEmpty)
-                      _LatexValue(
-                        latex: step.formula,
-                        fallback: step.formula,
-                        fontSize: 13,
-                        color: TwoPointSlopeTheme.textSecondary(context),
-                      ),
-                    const SizedBox(height: 6),
-
-                    // Substitution - show as LaTeX
-                    if (step.substitution.isNotEmpty)
-                      _LatexValue(
-                        latex: step.substitution,
-                        fallback: step.substitution,
-                        fontSize: 13,
                         color: TwoPointSlopeTheme.textPrimary(context),
                       ),
-                    const SizedBox(height: 6),
-
-                    // Result - show as LaTeX
-                    if (step.result.isNotEmpty)
-                      _LatexValue(
-                        latex: step.result,
-                        fallback: step.result,
-                        fontSize: 13,
-                        color: color,
-                        bold: true,
-                      ),
-
-                    const SizedBox(height: 10),
-                    const Divider(
-                      color: Color(0xFF222230),
-                      height: 1,
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
                     // Explanation
                     if (step.explanation.isNotEmpty)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.info_outline_rounded,
-                            size: 14,
-                            color: color.withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              step.explanation,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: TwoPointSlopeTheme.textSecondary(context)
-                                    .withValues(alpha: 0.8),
-                                height: 1.5,
-                              ),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        step.explanation,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: TwoPointSlopeTheme.textPrimary(context)
+                              .withValues(alpha: 0.8),
+                          height: 1.4,
+                        ),
                       ),
+
+                    // Combined formula + substitution + result
+                    if (step.formula.isNotEmpty ||
+                        step.substitution.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      _CombinedMathBlock(
+                        formula: step.formula,
+                        substitution: step.substitution,
+                        result: step.result,
+                        fontSize: 14,
+                        color: accentColor,
+                      ),
+                    ],
                   ],
                 ),
               ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 }
 
-class _LatexValue extends StatelessWidget {
-  final String latex;
-  final String fallback;
+class _CombinedMathBlock extends StatelessWidget {
+  final String formula;
+  final String substitution;
+  final String result;
   final double fontSize;
   final Color color;
-  final bool bold;
 
-  const _LatexValue({
-    required this.latex,
-    required this.fallback,
+  const _CombinedMathBlock({
+    required this.formula,
+    required this.substitution,
+    required this.result,
     required this.fontSize,
     required this.color,
-    this.bold = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: TwoPointSlopeTheme.surface(context).withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Math.tex(
-        latex,
-        textStyle: TextStyle(
-          fontSize: fontSize,
-          color: color,
-          fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
-        ),
-        onErrorFallback: (error) {
-          return Text(
-            fallback,
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: fontSize - 1,
-              color: color,
-              fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (formula.isNotEmpty)
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Math.tex(
+              formula,
+              textStyle: TextStyle(
+                fontSize: fontSize,
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+              onErrorFallback: (error) => Text(
+                formula,
+                style: TextStyle(
+                  fontFamily: 'serif',
+                  fontSize: fontSize,
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          );
-        },
-      ),
-    );
+          ),
+        if (formula.isNotEmpty && substitution.isNotEmpty)
+          const SizedBox(height: 6),
+        if (substitution.isNotEmpty)
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Math.tex(
+              substitution,
+              textStyle: TextStyle(
+                fontSize: fontSize,
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+              onErrorFallback: (error) => Text(
+                substitution,
+                style: TextStyle(
+                  fontFamily: 'serif',
+                  fontSize: fontSize,
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        if (substitution.isNotEmpty && result.isNotEmpty && result != substitution)
+          const SizedBox(height: 6),
+        if (result.isNotEmpty && result != substitution)
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Math.tex(
+              result,
+              textStyle: TextStyle(
+                fontSize: fontSize,
+                color: color,
+                fontWeight: FontWeight.w700,
+              ),
+              onErrorFallback: (error) => Text(
+                result,
+                style: TextStyle(
+                  fontFamily: 'serif',
+                  fontSize: fontSize,
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+      ]);
   }
 }
+
+

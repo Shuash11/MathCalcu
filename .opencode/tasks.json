@@ -1,24 +1,13 @@
 {
   "tasks": [
-    { "id": 1, "description": "Fix Finals encoding: derivatives_input_field.dart xÂ² → x²", "status": "pending" },
-    { "id": 2, "description": "Fix Finals encoding: substitution_input_field.dart xÂ², ─── comments", "status": "pending" },
-    { "id": 3, "description": "Fix Finals encoding: conjugate_input_field.dart âˆš → √", "status": "pending" },
-    { "id": 4, "description": "Fix Finals encoding: factoring_input_field.dart xÂ² → x²", "status": "pending" },
-    { "id": 5, "description": "Fix Finals encoding: lcd_input_field.dart ─── comments", "status": "pending" },
-    { "id": 6, "description": "Fix Finals encoding: limits_infinity_screen.dart â†' → →", "status": "pending" },
-    { "id": 7, "description": "Fix HIGH: Conjugate _expandNode() wrong expansion for + operations", "status": "pending" },
-    { "id": 8, "description": "Fix MEDIUM: Conjugate expansion LaTeX missing closing paren", "status": "pending" },
-    { "id": 9, "description": "Fix CRITICAL: pointslopesteps.dart int.tryParse on fractional inputs", "status": "pending" },
-    { "id": 10, "description": "Fix HIGH: slopescreen.dart UTF-8 corrupted em dash in error strings", "status": "pending" },
-    { "id": 11, "description": "Fix HIGH: slope_step.dart UTF-8 corrupted LaTeX converter replaceAll", "status": "pending" },
-    { "id": 12, "description": "Fix HIGH: distancescreen.dart UTF-8 corrupted formula hint", "status": "pending" },
-    { "id": 13, "description": "Fix HIGH: slope_input_field.dart missing FocusNode listener", "status": "pending" },
-    { "id": 14, "description": "Fix MEDIUM: slope_steps.dart UTF-8 corrupted Δ, →, · symbols", "status": "pending" },
-    { "id": 15, "description": "Fix MEDIUM: distancesteps.dart UTF-8 corrupted symbols", "status": "pending" },
-    { "id": 16, "description": "Fix MEDIUM: pointslopescreen.dart UTF-8 corrupted formula banner", "status": "pending" },
-    { "id": 17, "description": "Fix LOW: distancescreen.dart empty listener bodies", "status": "pending" },
-    { "id": 18, "description": "Fix LOW: slopescreen.dart second result card shows wrong steps", "status": "pending" },
-    { "id": 19, "description": "Fix LOW: substitution_engine.dart redundant replaceAll('^','^')", "status": "pending" }
+    { "id": 1, "description": "Read all 3 modified files completely", "status": "done" },
+    { "id": 2, "description": "Audit checklist items 1-4 (step style, math rendering, result display, deduplication)", "status": "done" },
+    { "id": 3, "description": "Audit checklist items 5-8 (graph toggle, button placement, reset on solve)", "status": "done" },
+    { "id": 4, "description": "Audit checklist items 9-10 (tokenizer bug fix)", "status": "done" },
+    { "id": 5, "description": "Audit checklist items 11-12 (compilation, regressions)", "status": "done" },
+    { "id": 6, "description": "Check _CombinedMathBlock integration across all step types", "status": "done" },
+    { "id": 7, "description": "Check graph toggle independence from steps toggle", "status": "done" },
+    { "id": 8, "description": "Write readiness report", "status": "done" }
   ],
-  "completed": false
+  "completed": true
 }
