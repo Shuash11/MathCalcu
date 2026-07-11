@@ -1,13 +1,15 @@
 {
   "tasks": [
-    { "id": 1, "description": "Read all 3 modified files completely", "status": "done" },
-    { "id": 2, "description": "Audit checklist items 1-4 (step style, math rendering, result display, deduplication)", "status": "done" },
-    { "id": 3, "description": "Audit checklist items 5-8 (graph toggle, button placement, reset on solve)", "status": "done" },
-    { "id": 4, "description": "Audit checklist items 9-10 (tokenizer bug fix)", "status": "done" },
-    { "id": 5, "description": "Audit checklist items 11-12 (compilation, regressions)", "status": "done" },
-    { "id": 6, "description": "Check _CombinedMathBlock integration across all step types", "status": "done" },
-    { "id": 7, "description": "Check graph toggle independence from steps toggle", "status": "done" },
-    { "id": 8, "description": "Write readiness report", "status": "done" }
+    { "id": 1, "description": "Redesign _StepCard — circled numbers, no boxes, minimal timeline style", "status": "done" },
+    { "id": 2, "description": "Consolidate formula + substitution + result into single LaTeX block (result inline)", "status": "done" },
+    { "id": 3, "description": "Replace _LatexValue (boxed) with _LatexInline (no background)", "status": "done" },
+    { "id": 4, "description": "Add graph toggle button — show/hide independently from steps", "status": "done" },
+    { "id": 5, "description": "Fix TokenizerError — corrupted ² character in limits tokenizer", "status": "done" },
+    { "id": 6, "description": "Review solver step data for compatibility with new display", "status": "done" },
+    { "id": 7, "description": "Fix _CombinedMathBlock to show formula/substitution/result as separate lines instead of substitution=result", "status": "done" }
   ],
-  "completed": true
+  "completed": true,
+  "release": {
+    "enabled": false
+  }
 }

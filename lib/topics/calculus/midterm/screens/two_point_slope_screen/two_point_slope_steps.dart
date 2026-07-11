@@ -195,20 +195,6 @@ class _StepCard extends StatelessWidget {
                         color: TwoPointSlopeTheme.textPrimary(context),
                       ),
                     ),
-                    const SizedBox(height: 8),
-
-                    // Explanation
-                    if (step.explanation.isNotEmpty)
-                      Text(
-                        step.explanation,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: TwoPointSlopeTheme.textPrimary(context)
-                              .withValues(alpha: 0.8),
-                          height: 1.4,
-                        ),
-                      ),
-
                     // Combined formula + substitution + result
                     if (step.formula.isNotEmpty ||
                         step.substitution.isNotEmpty) ...[
