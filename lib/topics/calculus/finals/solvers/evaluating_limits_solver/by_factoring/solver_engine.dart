@@ -100,7 +100,7 @@ class LimitSolverEngine {
     try {
       String processedExpression = problem.expression.trim();
       
-      // âœ¨ SMART PRE-PARSING
+      // ✨ SMART PRE-PARSING
       // If the expression has exactly one '/' and NO parentheses, 
       // we assume the user meant (everything_before) / (everything_after).
       if (processedExpression.contains('/') && 

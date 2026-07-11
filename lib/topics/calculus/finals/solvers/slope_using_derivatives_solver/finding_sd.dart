@@ -70,7 +70,7 @@ class Tokenizer {
     'cbrt',
   };
 
-  static const knownConstants = {'e', 'pi', 'Ï€'};
+  static const knownConstants = {'e', 'pi', 'π'};
 
   Tokenizer(this.input);
 
@@ -443,7 +443,7 @@ class Parser {
           case 'e':
             return Const('e', math.e);
           case 'pi':
-          case 'Ï€':
+          case 'π':
             return Const('pi', math.pi);
         }
       }
@@ -1145,7 +1145,7 @@ class SlopeResult {
   final Expr? dxDt;
   final Expr? dyDt;
 
-  // â”€â”€ FIX 2: added secondDerivative field so parametric d²y/dx² is preserved â”€â”€
+  // ── FIX 2: added secondDerivative field so parametric d?y/dx? is preserved ──
   final Expr? secondDerivative;
 
   // Tangent line details
@@ -1176,7 +1176,7 @@ class SlopeResult {
     this.paramYExpr,
     this.dxDt,
     this.dyDt,
-    this.secondDerivative,   // â”€â”€ FIX 2: wired into constructor â”€â”€
+    this.secondDerivative,   // ── FIX 2: wired into constructor ──
     this.tangentSlope,
     this.tangentYIntercept,
     this.normalSlope,
@@ -1188,14 +1188,14 @@ class SlopeResult {
 // ==================== SLOPE SOLVER (CORE ENGINE) ====================
 
 class SlopeSolver {
-  // â”€â”€ Public entry point â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Public entry point ──────────────────────────────────────────────────────
 
   /// Solve for the slope/derivative given an input string and optional point.
   ///
   /// [input] may be:
-  ///   â€¢ Explicit:    "y = 3x^2 - 2x + 1"  or  "f(x) = sin(x)*e^x"
-  ///   â€¢ Implicit:    "x^2 + y^2 = 25"  or  "x^3 + y^3 = 6xy"
-  ///   â€¢ Parametric:  "x=cos(t), y=sin(t)"  (comma-separated pair)
+  ///   • Explicit:    "y = 3x^2 - 2x + 1"  or  "f(x) = sin(x)*e^x"
+  ///   • Implicit:    "x^2 + y^2 = 25"  or  "x^3 + y^3 = 6xy"
+  ///   • Parametric:  "x=cos(t), y=sin(t)"  (comma-separated pair)
   ///
   /// [pointValues] maps variable names → numeric values.
   /// For explicit/implicit supply {"x": value}; for parametric supply {"t": value}.
@@ -1212,13 +1212,13 @@ class SlopeSolver {
     final (left, right) = Parser(tokens).parse();
 
     if (right == null) {
-      // Expression only â€” treat as y = expr
+      // Expression only — treat as y = expr
       return _solveExplicit(const Var('y'), left, trimmed, pointValues ?? {});
     }
 
     // left = right form
     if (left is Var && left.name == 'y') {
-      // y = f(x) â€” explicit
+      // y = f(x) — explicit
       return _solveExplicit(left, right, trimmed, pointValues ?? {});
     }
 
@@ -1239,11 +1239,11 @@ class SlopeSolver {
       return _solveImplicit(left, right, trimmed, pointValues ?? {});
     }
 
-    // Fallback â€” treat as implicit
+    // Fallback — treat as implicit
     return _solveImplicit(left, right, trimmed, pointValues ?? {});
   }
 
-  // â”€â”€ Parametric detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Parametric detection ────────────────────────────────────────────────────
 
   static bool _isParametric(String s) {
     // Must have exactly one top-level comma separating two equations
@@ -1260,7 +1260,7 @@ class SlopeSolver {
     return false;
   }
 
-  // â”€â”€ Explicit solver: y = f(x) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Explicit solver: y = f(x) ───────────────────────────────────────────────
 
   static SlopeResult _solveExplicit(
     Expr lhsVar,
@@ -1294,7 +1294,7 @@ class SlopeSolver {
         tangentYIntercept = yVal - tangentSlope * xVal;
         tangentEq = _lineEquation(tangentSlope, tangentYIntercept, xVal, yVal);
 
-        // Normal line: perpendicular slope = -1/m (if m ≠  0)
+        // Normal line: perpendicular slope = -1/m (if m ≠? 0)
         if (tangentSlope != 0 && tangentSlope.isFinite) {
           normalSlope = -1.0 / tangentSlope;
           final normYInt = yVal - normalSlope * xVal;
@@ -1323,7 +1323,7 @@ class SlopeSolver {
     );
   }
 
-  // â”€â”€ Implicit solver: F(x,y) = G(x,y) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Implicit solver: F(x,y) = G(x,y) ──────────────────────────────────────
 
   static SlopeResult _solveImplicit(
     Expr lhs,
@@ -1348,7 +1348,7 @@ class SlopeSolver {
       BinOp(UnaryNeg(remainder), '/', coeff),
     );
 
-    // â”€â”€ FIX 1: removed dead Fx / Fy computation that was never used â”€â”€
+    // ── FIX 1: removed dead Fx / Fy computation that was never used ──
     // The classic -F_x / F_y formula was being computed but silently discarded.
     // Additionally, the Fy was differentiated with dependentVars: {'y'} which
     // would introduce dy/dx terms, making it wrong for direct division anyway.
@@ -1401,7 +1401,7 @@ class SlopeSolver {
     );
   }
 
-  // â”€â”€ Parametric solver: x=f(t), y=g(t) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Parametric solver: x=f(t), y=g(t) ─────────────────────────────────────
 
   static SlopeResult _solveParametric(
     String input,
@@ -1457,8 +1457,8 @@ class SlopeSolver {
     // dy/dx = (dy/dt) / (dx/dt)
     final parametricSlope = Simplifier.simplify(BinOp(dyDt, '/', dxDt));
 
-    // â”€â”€ FIX 2: d²y/dx² computed and now stored in secondDerivative â”€â”€
-    // d²y/dx² = (d/dt[dy/dx]) / (dx/dt)
+    // ── FIX 2: d?y/dx? computed and now stored in secondDerivative ──
+    // d?y/dx? = (d/dt[dy/dx]) / (dx/dt)
     final dSlopeDt = Simplifier.simplify(
       Differentiator.differentiate(parametricSlope, paramVar),
     );
@@ -1472,9 +1472,9 @@ class SlopeSolver {
 
     if (pointValues.containsKey(paramVar)) {
       try {
-        // â”€â”€ FIX 3: tVal is now used in both the vertical and normal-slope
+        // ── FIX 3: tVal is now used in both the vertical and normal-slope
         //           tangent branches so the parameter value always appears
-        //           in the tangent line label for consistency â”€â”€
+        //           in the tangent line label for consistency ──
         final tVal = pointValues[paramVar]!;
         final xVal = ExprUtils.evaluate(xExpr, pointValues);
         final yVal = ExprUtils.evaluate(yExpr, pointValues);
@@ -1521,7 +1521,7 @@ class SlopeSolver {
       paramYExpr: yExpr,
       dxDt: dxDt,
       dyDt: dyDt,
-      secondDerivative: secondDeriv,   // â”€â”€ FIX 2: wired in â”€â”€
+      secondDerivative: secondDeriv,   // ── FIX 2: wired in ──
       tangentSlope: tangentSlope,
       tangentLineEquation: tangentEq,
       normalSlope: normalSlope,
@@ -1529,7 +1529,7 @@ class SlopeSolver {
     );
   }
 
-  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Helpers ─────────────────────────────────────────────────────────────────
 
   /// Split a string at top-level commas (not inside parentheses).
   static List<String> _splitTopLevel(String s) {
@@ -1593,14 +1593,14 @@ class StepExplainer {
 
     steps.add('GIVEN:  $dep = ${r.functionExpr.toMathString()}');
     steps.add('');
-    steps.add('STEP 1 â€” Identify the function');
+    steps.add('STEP 1 — Identify the function');
     steps.add('  f($indep) = ${r.functionExpr.toMathString()}');
     steps.add('');
-    steps.add('STEP 2 â€” Differentiate with respect to $indep');
+    steps.add('STEP 2 — Differentiate with respect to $indep');
     steps.add('  d$dep/d$indep = ${r.derivative.toMathString()}');
     if (r.derivative.toMathString() != r.simplifiedDerivative.toMathString()) {
       steps.add('');
-      steps.add('STEP 3 â€” Simplify the derivative');
+      steps.add('STEP 3 — Simplify the derivative');
       steps.add('  d$dep/d$indep = ${r.simplifiedDerivative.toMathString()}');
     } else {
       steps.add('  (already in simplified form)');
@@ -1610,7 +1610,7 @@ class StepExplainer {
       final xVal = r.point[indep]!;
       steps.add('');
       steps.add(
-          'STEP ${r.derivative.toMathString() != r.simplifiedDerivative.toMathString() ? 4 : 3} â€” Evaluate at $indep = ${_fmt(xVal)}');
+          'STEP ${r.derivative.toMathString() != r.simplifiedDerivative.toMathString() ? 4 : 3} — Evaluate at $indep = ${_fmt(xVal)}');
       steps.add(
           '  slope = ${r.simplifiedDerivative.toMathString()} | $indep=${_fmt(xVal)} = ${_fmt(r.slopeValue!)}');
     }
@@ -1625,17 +1625,17 @@ class StepExplainer {
     steps.add(
         'GIVEN (implicit):  ${r.leftSide?.toMathString() ?? ''} = ${r.rightSide?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 1 â€” Differentiate both sides with respect to x');
+    steps.add('STEP 1 — Differentiate both sides with respect to x');
     steps.add('  Treat y as a function of x: y = y(x)');
     steps.add(
         '  Left  side: d/dx[${r.leftSide?.toMathString() ?? ''}] = ${r.leftDerivative?.toMathString() ?? ''}');
     steps.add(
         '  Right side: d/dx[${r.rightSide?.toMathString() ?? ''}] = ${r.rightDerivative?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 2 â€” Set derivatives equal and collect dy/dx terms');
+    steps.add('STEP 2 — Set derivatives equal and collect dy/dx terms');
     steps.add('  ${r.derivative.toMathString()} = 0');
     steps.add('');
-    steps.add('STEP 3 â€” Solve for dy/dx');
+    steps.add('STEP 3 — Solve for dy/dx');
     steps.add(
         '  dy/dx = ${r.implicitSlopeExpr?.toMathString() ?? r.simplifiedDerivative.toMathString()}');
 
@@ -1645,7 +1645,7 @@ class StepExplainer {
       final xVal = r.point['x']!;
       final yVal = r.point['y']!;
       steps.add('');
-      steps.add('STEP 4 â€” Evaluate at (${_fmt(xVal)}, ${_fmt(yVal)})');
+      steps.add('STEP 4 — Evaluate at (${_fmt(xVal)}, ${_fmt(yVal)})');
       steps.add('  dy/dx = ${_fmt(r.slopeValue!)}');
     }
 
@@ -1661,21 +1661,21 @@ class StepExplainer {
     steps.add('  x($t) = ${r.paramXExpr?.toMathString() ?? ''}');
     steps.add('  y($t) = ${r.paramYExpr?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 1 â€” Find dx/d$t and dy/d$t');
+    steps.add('STEP 1 — Find dx/d$t and dy/d$t');
     steps.add('  dx/d$t = ${r.dxDt?.toMathString() ?? ''}');
     steps.add('  dy/d$t = ${r.dyDt?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 2 â€” Apply the parametric slope formula');
+    steps.add('STEP 2 — Apply the parametric slope formula');
     steps.add('  dy/dx = (dy/d$t) / (dx/d$t)');
     steps.add(
         '        = (${r.dyDt?.toMathString() ?? ''}) / (${r.dxDt?.toMathString() ?? ''})');
     steps.add('        = ${r.simplifiedDerivative.toMathString()}');
 
-    // â”€â”€ FIX 2: surface the second derivative in the step output â”€â”€
+    // ── FIX 2: surface the second derivative in the step output ──
     if (r.secondDerivative != null) {
       steps.add('');
-      steps.add('STEP 3 â€” Second derivative (concavity)');
-      steps.add('  d²y/dx² = (d/d$t[dy/dx]) / (dx/d$t)');
+      steps.add('STEP 3 — Second derivative (concavity)');
+      steps.add('  d?y/dx? = (d/d$t[dy/dx]) / (dx/d$t)');
       steps.add('          = ${r.secondDerivative!.toMathString()}');
     }
 
@@ -1683,7 +1683,7 @@ class StepExplainer {
       final stepNum = r.secondDerivative != null ? 4 : 3;
       final tVal = r.point[t]!;
       steps.add('');
-      steps.add('STEP $stepNum â€” Evaluate at $t = ${_fmt(tVal)}');
+      steps.add('STEP $stepNum — Evaluate at $t = ${_fmt(tVal)}');
       final xVal = r.paramXExpr != null
           ? ExprUtils.evaluate(r.paramXExpr!, r.point)
           : double.nan;
@@ -1732,11 +1732,11 @@ class PrettyPrinter {
 
   static void print(SlopeResult result) {
     const w = 62;
-    final bar = 'â•' * w;
+    final bar = '═' * w;
 
-    _writeln('$_bold$_cyanâ•”$barâ•—$_reset');
-    _writeln('$_bold$_cyanâ•‘${_center('SLOPE SOLVER', w)}â•‘$_reset');
-    _writeln('$_bold$_cyanâ•š$barâ•$_reset');
+    _writeln('$_bold$_cyan╔$bar╗$_reset');
+    _writeln('$_bold$_cyan║${_center('SLOPE SOLVER', w)}║$_reset');
+    _writeln('$_bold$_cyan╚$bar╝$_reset');
     _writeln('');
 
     // Type badge
@@ -1763,31 +1763,31 @@ class PrettyPrinter {
 
     // Summary box
     _writeln('');
-    _writeln('$_bold$_greenâ”Œâ”€â”€â”€ RESULT SUMMARY ${'â”€' * (w - 19)}â”$_reset');
+    _writeln('$_bold$_green┌─── RESULT SUMMARY ${'─' * (w - 19)}┐$_reset');
     _writeln(
-        '$_bold$_greenâ”‚$_reset  Derivative:  ${result.simplifiedDerivative.toMathString()}${' ' * _pad(result.simplifiedDerivative.toMathString(), w - 15)}$_bold$_greenâ”‚$_reset');
+        '$_bold$_green│$_reset  Derivative:  ${result.simplifiedDerivative.toMathString()}${' ' * _pad(result.simplifiedDerivative.toMathString(), w - 15)}$_bold$_green│$_reset');
     if (result.secondDerivative != null) {
-      // â”€â”€ FIX 2: show second derivative in summary box for parametric results â”€â”€
+      // ── FIX 2: show second derivative in summary box for parametric results ──
       final sd = result.secondDerivative!.toMathString();
       _writeln(
-          '$_bold$_greenâ”‚$_reset  2nd deriv:   $sd${' ' * _pad(sd, w - 15)}$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset  2nd deriv:   $sd${' ' * _pad(sd, w - 15)}$_bold$_green│$_reset');
     }
     if (result.slopeValue != null) {
       final sv = _fmtD(result.slopeValue!);
       _writeln(
-          '$_bold$_greenâ”‚$_reset  Slope value: $sv${' ' * _pad(sv, w - 15)}$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset  Slope value: $sv${' ' * _pad(sv, w - 15)}$_bold$_green│$_reset');
     }
     if (result.tangentLineEquation != null) {
       final tl = result.tangentLineEquation!;
       _writeln(
-          '$_bold$_greenâ”‚$_reset  Tangent:     $tl${' ' * _pad(tl, w - 15)}$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset  Tangent:     $tl${' ' * _pad(tl, w - 15)}$_bold$_green│$_reset');
     }
     if (result.normalLineEquation != null) {
       final nl = result.normalLineEquation!;
       _writeln(
-          '$_bold$_greenâ”‚$_reset  Normal:      $nl${' ' * _pad(nl, w - 15)}$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset  Normal:      $nl${' ' * _pad(nl, w - 15)}$_bold$_green│$_reset');
     }
-    _writeln('$_bold$_greenâ””${'â”€' * w}â”˜$_reset');
+    _writeln('$_bold$_green└${'─' * w}┘$_reset');
   }
 
   static void _writeln(String s) => stdout.writeln(s);
@@ -1834,31 +1834,31 @@ class PrettyPrinter {
 }
 
 void main(List<String> args) {
-  // â”€â”€ Demo suite (runs when no args are given) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Demo suite (runs when no args are given) ───────────────────────────────
   final demos = <(String, Map<String, double>)>[
-    // Explicit â€” polynomial
+    // Explicit — polynomial
     ('y = x^3 - 3x^2 + 2', {'x': 2.0}),
-    // Explicit â€” trig
+    // Explicit — trig
     ('y = sin(x) * cos(x)', {'x': 0.0}),
-    // Explicit â€” exponential / ln combo
+    // Explicit — exponential / ln combo
     ('y = e^x * ln(x)', {'x': 1.0}),
-    // Explicit â€” quotient rule
+    // Explicit — quotient rule
     ('y = (x^2 + 1) / (x - 1)', {'x': 3.0}),
-    // Explicit â€” chain rule inside power
+    // Explicit — chain rule inside power
     ('y = (sin(x))^3', {'x': 1.5708}),
-    // Explicit â€” sqrt
+    // Explicit — sqrt
     ('y = sqrt(x^2 + 1)', {'x': 2.0}),
-    // Implicit â€” circle
+    // Implicit — circle
     ('x^2 + y^2 = 25', {'x': 3.0, 'y': 4.0}),
-    // Implicit â€” Folium of Descartes (symmetric node at (3,3))
+    // Implicit — Folium of Descartes (symmetric node at (3,3))
     ('x^3 + y^3 = 6*x*y', {'x': 3.0, 'y': 3.0}),
-    // Implicit â€” ellipse
+    // Implicit — ellipse
     ('4*x^2 + 9*y^2 = 36', {'x': 0.0, 'y': 2.0}),
-    // Parametric â€” unit circle
+    // Parametric — unit circle
     ('x=cos(t), y=sin(t)', {'t': 0.7854}),
-    // Parametric â€” cycloid
+    // Parametric — cycloid
     ('x=t - sin(t), y=1 - cos(t)', {'t': 1.5708}),
-    // Parametric â€” astroid
+    // Parametric — astroid
     ('x=cos(t)^3, y=sin(t)^3', {'t': 0.5236}),
   ];
 
@@ -1884,9 +1884,9 @@ void main(List<String> args) {
     return;
   }
   // Full demo suite
-  stdout.writeln('\n${'â•' * 64}');
-  stdout.writeln('  SLOPE SOLVER â€” COMPREHENSIVE DEMO');
-  stdout.writeln('${'â•' * 64}\n');
+  stdout.writeln('\n${'═' * 64}');
+  stdout.writeln('  SLOPE SOLVER — COMPREHENSIVE DEMO');
+  stdout.writeln('${'═' * 64}\n');
 
   int passed = 0;
   int failed = 0;
@@ -1906,8 +1906,8 @@ void main(List<String> args) {
     stdout.writeln();
   }
 
-  stdout.writeln('â•' * 64);
+  stdout.writeln('═' * 64);
   stdout.writeln(
       '  RESULTS: $passed passed, $failed failed out of ${demos.length} demos');
-  stdout.writeln('${'â•' * 64}\n');
+  stdout.writeln('${'═' * 64}\n');
 }

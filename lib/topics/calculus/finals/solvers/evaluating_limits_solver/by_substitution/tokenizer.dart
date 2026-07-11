@@ -66,19 +66,19 @@ class SmartTokenizer {
     String result = input;
 
     // Normalize Unicode minus to ASCII minus
-    result = result.replaceAll('âˆ’', '-');
+    result = result.replaceAll('??', '-');
 
     // Normalize superscript numbers to ^ notation
-    result = result.replaceAll('â°', '^0');
-    result = result.replaceAll('Â¹', '^1');
-    result = result.replaceAll('²', '^2');
-    result = result.replaceAll('Â³', '^3');
-    result = result.replaceAll('â´', '^4');
-    result = result.replaceAll('âµ', '^5');
-    result = result.replaceAll('â¶', '^6');
-    result = result.replaceAll('â·', '^7');
-    result = result.replaceAll('â¸', '^8');
-    result = result.replaceAll('â¹', '^9');
+    result = result.replaceAll('⁰', '^0');
+    result = result.replaceAll('¹', '^1');
+    result = result.replaceAll('?', '^2');
+    result = result.replaceAll('³', '^3');
+    result = result.replaceAll('⁴', '^4');
+    result = result.replaceAll('⁵', '^5');
+    result = result.replaceAll('⁶', '^6');
+    result = result.replaceAll('⁷', '^7');
+    result = result.replaceAll('⁸', '^8');
+    result = result.replaceAll('⁹', '^9');
 
     // Replace √ with sqrt(
     result = result.replaceAll('√', 'sqrt(');

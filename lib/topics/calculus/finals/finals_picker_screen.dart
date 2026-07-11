@@ -9,18 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // FINALS PICKER SCREEN
 //
 // Sister screen to CategoryPickerScreen.
-// Reads from FinalsModuleRegistry â€” add entries there, not here.
-// Theme lives in FinalsTheme â€” change colours there, not here.
+// Reads from FinalsModuleRegistry — add entries there, not here.
+// Theme lives in FinalsTheme — change colours there, not here.
 //
 // To wire a new card:
 //   1. Create  screens/finals/cards/your_card.dart
 //   2. Add entry to FinalsModuleRegistry.modules
 //
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class FinalsPickerScreen extends StatefulWidget {
   const FinalsPickerScreen({super.key});
@@ -116,7 +116,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     );
   }
 
-  // â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Header ────────────────────────────────────────────────
 
   Widget _buildHeader() {
     return SliverToBoxAdapter(
@@ -146,7 +146,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                     ),
                   ),
                 ),
-                // Accent bar â€” gold gradient
+                // Accent bar — gold gradient
                 Container(
                   width: 36,
                   height: 4,
@@ -220,7 +220,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     );
   }
 
-  // â”€â”€ Semester badge banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Semester badge banner ─────────────────────────────────
 
   Widget _buildBanner() {
     return SliverToBoxAdapter(
@@ -292,7 +292,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     );
   }
 
-  // â”€â”€ Module list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Module list ───────────────────────────────────────────
 
   Widget _buildList() {
     if (_modules.isEmpty) {
@@ -331,10 +331,10 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // EMPTY STATE
 // Shown when FinalsModuleRegistry.modules is empty
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class _EmptyState extends StatelessWidget {
   @override
@@ -379,12 +379,12 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // DEFAULT CARD
 // Used for any module that doesn't have a custom card yet.
 // Replace with a custom card by adding a branch in
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class _FinalsDefaultCard extends StatefulWidget {
   final FinalsModuleEntry module;
@@ -450,7 +450,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
               borderRadius: BorderRadius.circular(20),
               child: Stack(
                 children: [
-                  // â”€â”€ Background glow orb (top right)
+                  // ── Background glow orb (top right)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 380),
                     curve: Curves.easeOut,
@@ -469,7 +469,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                     ),
                   ),
 
-                  // â”€â”€ Background glow orb (bottom left)
+                  // ── Background glow orb (bottom left)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 380),
                     curve: Curves.easeOut,
@@ -488,12 +488,12 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                     ),
                   ),
 
-                  // â”€â”€ Content
+                  // ── Content
                   Padding(
                     padding: const EdgeInsets.all(22),
                     child: Row(
                       children: [
-                        // â”€â”€ ICON BOX (UPDATED with human badge)
+                        // ── ICON BOX (UPDATED with human badge)
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 220),
                           width: 56,
@@ -537,7 +537,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                                 ),
                               ),
 
-                              // ðŸ‘¤ HUMAN BADGE
+                              // 👤 HUMAN BADGE
                               Positioned(
                                 right: 5,
                                 top: 5,
@@ -565,7 +565,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
 
                         const SizedBox(width: 18),
 
-                        // â”€â”€ TEXT
+                        // ── TEXT
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -596,7 +596,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                           ),
                         ),
 
-                        // â”€â”€ ARROW
+                        // ── ARROW
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered

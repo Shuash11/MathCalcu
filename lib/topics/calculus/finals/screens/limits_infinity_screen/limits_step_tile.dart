@@ -159,15 +159,15 @@ class LimitsStepTile extends StatelessWidget {
 
   String _formatExplanation(String text) {
     var formatted = text
-        .replaceAll('\\frac{', 'âŸª')
-        .replaceAll('}', 'âŸ«')
+        .replaceAll('\\frac{', '⟪')
+        .replaceAll('}', '⟫')
         .replaceAll('\\infty', '∞')
         .replaceAll('\\lim', 'lim')
         .replaceAll('\\rightarrow', '→')
-        .replaceAll('\\cdot', '·')
-        .replaceAll('x^2', 'x²')
-        .replaceAll('x^3', 'xÂ³')
-        .replaceAll('x^4', 'xâ´')
+        .replaceAll('\\cdot', '?')
+        .replaceAll('x^2', 'x?')
+        .replaceAll('x^3', 'x³')
+        .replaceAll('x^4', 'x⁴')
         .replaceAllMapped(
             RegExp(r'(\d+)\^(\d+)'), (m) => '${m[1]}${_superscript(m[2]!)}');
     return formatted;
@@ -175,16 +175,16 @@ class LimitsStepTile extends StatelessWidget {
 
   String _superscript(String num) {
     const superscripts = {
-      '0': 'â°',
-      '1': 'Â¹',
-      '2': '²',
-      '3': 'Â³',
-      '4': 'â´',
-      '5': 'âµ',
-      '6': 'â¶',
-      '7': 'â·',
-      '8': 'â¸',
-      '9': 'â¹'
+      '0': '⁰',
+      '1': '¹',
+      '2': '?',
+      '3': '³',
+      '4': '⁴',
+      '5': '⁵',
+      '6': '⁶',
+      '7': '⁷',
+      '8': '⁸',
+      '9': '⁹'
     };
     return num.split('').map((c) => superscripts[c] ?? c).join('');
   }

@@ -60,7 +60,7 @@ class CenterFormulaCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            r'A(xâ‚, yâ‚) and B(xâ‚‚, yâ‚‚) are the endpoints of the diameter',
+            r'A(x₁, y₁) and B(x₂, y₂) are the endpoints of the diameter',
             style: TextStyle(
               fontSize: 12,
               color: FindingCenterTheme.textSecondary.withValues(alpha: 0.65),

@@ -2,10 +2,10 @@
   static GeneralFormResult parse(String input) {
     String eq = input
         .replaceAll(' ', '')
-        .replaceAll('x²', 'x^2')
-        .replaceAll('y²', 'y^2')
-        .replaceAll('X²', 'x^2')
-        .replaceAll('Y²', 'y^2')
+        .replaceAll('x?', 'x^2')
+        .replaceAll('y?', 'y^2')
+        .replaceAll('X?', 'x^2')
+        .replaceAll('Y?', 'y^2')
         .replaceAll('X^2', 'x^2')
         .replaceAll('Y^2', 'y^2')
         .replaceAll('x2', 'x^2') // handles x2 notation
@@ -20,10 +20,10 @@
 
     // Must contain x^2 and y^2
     if (!eq.contains('x^2') || !eq.contains('y^2')) {
-      throw const FormatException('Equation must contain x² and y² terms.');
+      throw const FormatException('Equation must contain x? and y? terms.');
     }
 
-    // Remove x^2 and y^2 â€” use replaceFirst to avoid stomping on x/y terms
+    // Remove x^2 and y^2 — use replaceFirst to avoid stomping on x/y terms
     eq = eq.replaceFirst('x^2', '').replaceFirst('y^2', '');
 
     // Clean up any double signs like +-  or ++

@@ -3,13 +3,13 @@ import 'dart:math';
 import 'fraction.dart';
 import 'yi_steps.dart';
 
-// â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Constants ────────────────────────────────────────────────────────
 
 const zeroFrac = YIFraction(numerator: 0, denominator: 1);
 const oneFrac = YIFraction(numerator: 1, denominator: 1);
 const negOneFrac = YIFraction(numerator: -1, denominator: 1);
 
-// â”€â”€ LaTeX Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── LaTeX Helpers ────────────────────────────────────────────────────
 
 String fracLatex(YIFraction f) {
   final s = f.simplified();
@@ -83,7 +83,7 @@ String riseRun(YIFraction m) {
   return s.denominator == 1 ? '${s.numerator} / 1' : '${s.numerator} / ${s.denominator}';
 }
 
-// â”€â”€ Form Conversion Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Form Conversion Helpers ─────────────────────────────────────────
 
 int lcm(int a, int b) => a == 0 || b == 0 ? 1 : (a * b).abs() ~/ _gcd2(a.abs(), b.abs());
 
@@ -150,7 +150,7 @@ String gfTexFromSlopeIntercept(YIFraction m, YIFraction b) {
   return gfLatex(A ~/ g, s ~/ g, C ~/ g);
 }
 
-// â”€â”€ Fraction Parser â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Fraction Parser ──────────────────────────────────────────────────
 
 YIFraction? parseFractionString(String text) {
   text = text.trim().replaceAll('\u2212', '-');
@@ -178,7 +178,7 @@ YIFraction? parseFractionString(String text) {
   return dv != null ? YIFraction.fromDouble(dv) : null;
 }
 
-// â”€â”€ Result Models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Result Models ────────────────────────────────────────────────────
 
 enum YIInputType { slopeIntercept, standardForm, generalForm, jumbled }
 
@@ -211,7 +211,7 @@ class YIResult {
   });
 }
 
-// â”€â”€ Parallel/Perpendicular Models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Parallel/Perpendicular Models ────────────────────────────────────
 
 enum PPRelationship { parallel, perpendicular, neither, sameLine }
 
@@ -234,7 +234,7 @@ class PPResult {
   });
 }
 
-// â”€â”€ Internal Parser Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Internal Parser Types ────────────────────────────────────────────
 
 class _Term {
   final String variable;
@@ -259,14 +259,14 @@ class _SIResult {
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════════
 // Y-INTERCEPT SOLVER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════════
 
 class YInterceptSolver {
   YInterceptSolver._();
 
-  // â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Public API ─────────────────────────────────────────────────────
 
   static YIResult? tryParseAny(String input) {
     final p = _parseAnyForm(input);
@@ -291,7 +291,7 @@ class YInterceptSolver {
   static YIResult fromStandardForm({required int A, required int B, required int C}) =>
       _computeFromABC(A, B, C, YIInputType.standardForm);
 
-  // â”€â”€ Universal Parser â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Universal Parser ──────────────────────────────────────────────
 
   static (int, int, int, YIInputType)? _parseAnyForm(String raw) {
     String s = raw.replaceAll('\u2212', '-').replaceAll(' ', '');
@@ -379,7 +379,7 @@ class YInterceptSolver {
     return YIInputType.standardForm;
   }
 
-  // â”€â”€ Core Computation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Core Computation ──────────────────────────────────────────────
 
   static YIResult _computeFromABC(int A, int B, int C, YIInputType type) {
     final sfStr = sfString(A, B, C), gfStr = generalFormFromABC(A, B, C);
@@ -453,9 +453,9 @@ class YInterceptSolver {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════════
 // PARALLEL / PERPENDICULAR SOLVER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════════
 
 class ParallelPerpendicularSolver {
   ParallelPerpendicularSolver._();
@@ -531,7 +531,7 @@ class ParallelPerpendicularSolver {
     return (m1 * m2).simplified().numerator == -(m1 * m2).simplified().denominator ? PPRelationship.perpendicular : PPRelationship.neither;
   }
 
-  // â”€â”€ Computation + Step Building â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Computation + Step Building ───────────────────────────────────
 
   static PPResult _compute(_Line l1, _Line l2) {
     final steps = <PPSolverStep>[];

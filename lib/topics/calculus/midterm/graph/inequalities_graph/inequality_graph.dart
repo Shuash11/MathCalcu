@@ -148,8 +148,8 @@ class _NumberLinePainter extends CustomPainter {
       );
     }
 
-    // â”€â”€ Special cases â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    if (answer == 'No solution' || interval == 'âˆ…') {
+    // ── Special cases ─────────────────────────────────────
+    if (answer == 'No solution' || interval == '∅') {
       _drawLabel(canvas, 'No solution', cx, cy - 30, accentColor);
       return;
     }
@@ -169,7 +169,7 @@ class _NumberLinePainter extends CustomPainter {
       return;
     }
 
-    // â”€â”€ Single boundary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Single boundary ───────────────────────────────────
     if (result.points.length == 1) {
       final boundary = result.points[0];
       final bx = cx + boundary * gap - viewCenter * gap;
@@ -197,7 +197,7 @@ class _NumberLinePainter extends CustomPainter {
           canvas, bx, cy, isOpen, boundaryPaint, boundaryFillPaint);
     }
 
-    // â”€â”€ Two boundaries â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Two boundaries ────────────────────────────────────
     else if (result.points.length == 2) {
       final lo = result.points[0] < result.points[1]
           ? result.points[0]
@@ -208,7 +208,7 @@ class _NumberLinePainter extends CustomPainter {
       final lx = cx + lo * gap - viewCenter * gap;
       final hx = cx + hi * gap - viewCenter * gap;
 
-      final isUnion = interval.contains('âˆª');
+      final isUnion = interval.contains('∪');
 
       if (isUnion) {
         canvas.drawRect(
@@ -225,20 +225,20 @@ class _NumberLinePainter extends CustomPainter {
         canvas.drawRect(Rect.fromLTRB(lx, cy - 8, hx, cy + 8), shadePaint);
       }
 
-      // Boundary labels â€” draw above the line, separated from tick labels
+      // Boundary labels — draw above the line, separated from tick labels
       _drawLabel(canvas, _fmtVal(lo), lx, cy - 26, accentColor);
       _drawLabel(canvas, _fmtVal(hi), hx, cy - 26, accentColor);
 
-      // â”€â”€ Bracket detection (fixed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // For union:  (-∞, lo) âˆª (hi, +∞)
+      // ── Bracket detection (fixed) ────────────────────────
+      // For union:  (-∞, lo) ∪ (hi, +∞)
       //   lo bracket is the char just before the lo value  → after '('
       //   hi bracket is the char just before ', +∞'        → before ')'
       // For bounded: [lo, hi]  or  (lo, hi)  etc.
       bool loOpen, hiOpen;
 
       if (isUnion) {
-        // Split on âˆª and read each part independently
-        final parts = interval.split('âˆª');
+        // Split on ∪ and read each part independently
+        final parts = interval.split('∪');
         final leftPart = parts[0].trim(); // e.g. "(-∞, -1)"
         final rightPart = parts[1].trim(); // e.g. "(-1, +∞)"
         loOpen = leftPart.endsWith(')'); // closing bracket of left part
@@ -261,7 +261,7 @@ class _NumberLinePainter extends CustomPainter {
       }
     }
 
-    // â”€â”€ Interval label at top â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Interval label at top ─────────────────────────────
     final tp = TextPainter(
       text: TextSpan(
         text: interval,

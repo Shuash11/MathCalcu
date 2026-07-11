@@ -4,7 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/c
 import 'package:flutter/material.dart';
 
 class CircleEquationController extends ChangeNotifier {
-  // â”€â”€ Text controllers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Text controllers ──────────────────────────────────────────────────────
 
   final hCtrl = TextEditingController();
   final kCtrl = TextEditingController();
@@ -12,14 +12,14 @@ class CircleEquationController extends ChangeNotifier {
 
   final equationCtrl = TextEditingController();
 
-  // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── State ─────────────────────────────────────────────────────────────────
 
   int activeTab = 0;
   List<SolverStep> steps = [];
   bool hasResult = false;
   String? errorMessage;
 
-  // â”€â”€ Tab switching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Tab switching ─────────────────────────────────────────────────────────
 
   void switchTab(int index) {
     activeTab = index;
@@ -29,7 +29,7 @@ class CircleEquationController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // â”€â”€ Standard → General â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Standard → General ───────────────────────────────────────────────────
 
   bool computeStandardToGeneral() {
     final h = double.tryParse(hCtrl.text);
@@ -49,7 +49,7 @@ class CircleEquationController extends ChangeNotifier {
     return true;
   }
 
-  // â”€â”€ General → Standard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── General → Standard ───────────────────────────────────────────────────
 
   bool computeGeneralToStandard() {
     if (equationCtrl.text.trim().isEmpty) {
@@ -65,7 +65,7 @@ class CircleEquationController extends ChangeNotifier {
       final rSq = h * h + k * k - parsed.F;
 
       if (rSq <= 0) {
-        errorMessage = 'No real circle: r² ≠¤ 0 for these values.';
+        errorMessage = 'No real circle: r? ≠? 0 for these values.';
         notifyListeners();
         return false;
       }
@@ -86,7 +86,7 @@ class CircleEquationController extends ChangeNotifier {
     }
   }
 
-  // â”€â”€ Dispose â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Dispose ───────────────────────────────────────────────────────────────
 
   @override
   void dispose() {

@@ -80,7 +80,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
 
                   return Stack(
                     children: [
-                      // âœ¨ Subtle background glow (top-right)
+                      // ✨ Subtle background glow (top-right)
                       Positioned(
                         top: -30,
                         right: -30,
@@ -104,7 +104,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                         ),
                       ),
 
-                      // ðŸ”¥ Content
+                      // 🔥 Content
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: horizontalPadding,
@@ -112,7 +112,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                         ),
                         child: Row(
                           children: [
-                            // ðŸŒ… LEFT ICON BOX
+                            // 🌅 LEFT ICON BOX
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
                               width: iconBoxSize,

@@ -59,7 +59,7 @@ class InequalityCardPickerScreen extends StatelessWidget {
                     _divider(),
                     const SizedBox(height: 20),
 
-                    // â”€â”€ Cards wired in from their own files â”€â”€
+                    // ── Cards wired in from their own files ──
                     const LinearCard(),
                     const SizedBox(height: 12),
                     const AbsoluteCard(),
@@ -95,7 +95,7 @@ class InequalityCardPickerScreen extends StatelessWidget {
       );
 }
 
-// â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Header ────────────────────────────────────────────────────────────────────
 
 class _PickerHeader extends StatelessWidget {
   const _PickerHeader();
@@ -167,7 +167,7 @@ class _PickerHeader extends StatelessWidget {
       );
 }
 
-// â”€â”€ Orbit Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Orbit Badge ───────────────────────────────────────────────────────────────
 
 class _OrbitBadge extends StatefulWidget {
   @override
@@ -261,7 +261,7 @@ class _OrbitRingPainter extends CustomPainter {
       progress != old.progress;
 }
 
-// â”€â”€ Ambient Orb â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Ambient Orb ───────────────────────────────────────────────────────────────
 
 class _AmbientOrb extends StatelessWidget {
   final Color color;

@@ -73,7 +73,7 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
               borderRadius: BorderRadius.circular(20),
               child: Stack(
                 children: [
-                  // â”€â”€ Dynamic background glow
+                  // ── Dynamic background glow
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 380),
                     curve: Curves.easeOut,
@@ -92,13 +92,13 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
                     ),
                   ),
 
-                  // â”€â”€ Content
+                  // ── Content
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 18),
                     child: Row(
                       children: [
-                        // â”€â”€ Icon Box
+                        // ── Icon Box
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 220),
                           width: 52,
@@ -143,7 +143,7 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
 
                         const SizedBox(width: 18),
 
-                        // â”€â”€ Text
+                        // ── Text
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +175,7 @@ class _SubstitutionCardState extends State<SubstitutionCard> {
                           ),
                         ),
 
-                        // â”€â”€ Arrow
+                        // ── Arrow
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered

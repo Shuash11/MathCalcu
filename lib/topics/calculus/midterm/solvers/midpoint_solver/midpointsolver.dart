@@ -1,12 +1,12 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// ═════════════════════════════════════════════════════════════
 // MIDPOINT SOLVER  (generated via SymPy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Calculates midpoint between two points and finds missing
 // endpoint when given a midpoint. Uses exact fraction arithmetic.
 //
 // INPUT: Coordinates can be whole numbers, decimals, or
 //        fractions using slash notation (3/5, -1/4, 2/3).
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 class Fraction {
   final int numerator;
@@ -64,7 +64,7 @@ class MidpointResult {
 class MidpointSolver {
   MidpointSolver._();
 
-  // â”€â”€ Main API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Main API ──────────────────────────────────────────────
 
   static MidpointResult solve({
     required String x1, required String y1,
@@ -98,7 +98,7 @@ class MidpointSolver {
     );
   }
 
-  // â”€â”€ Fraction Arithmetic (public for step builders) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Fraction Arithmetic (public for step builders) ──────────
 
   static Fraction midOfFractions(Fraction a, Fraction b) {
     final n = a.numerator * b.denominator + b.numerator * a.denominator;
@@ -127,7 +127,7 @@ class MidpointSolver {
     return a;
   }
 
-  // â”€â”€ Parsing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Parsing ───────────────────────────────────────────────
 
   static _ParseResult _parseAll(String a, String b, String c, String d) {
     final f1 = parseFraction(a, 'x1'); if (f1.hasError) return _ParseResult(error: f1.error);

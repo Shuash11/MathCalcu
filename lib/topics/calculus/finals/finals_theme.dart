@@ -2,7 +2,7 @@
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // FINALS THEME
 //
 // Separate theme layer on top of ThemeProvider.
@@ -12,17 +12,17 @@ import 'package:calculus_system/theme/theme_provider.dart';
 // Primary   : Amber gold   →  Color(0xFFFFB020)
 // Secondary : Deep orange  →  Color(0xFFFF6B35)
 // Tertiary  : Soft yellow  →  Color(0xFFFFD166)
-// Danger    : Rose red     →  Color(0xFFEF476F)  â† for badges
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Danger    : Rose red     →  Color(0xFFEF476F)  ← for badges
+// ─────────────────────────────────────────────────────────────
 
 class FinalsTheme {
-  // â”€â”€ Brand colors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Brand colors ──────────────────────────────────────────
   static const Color primary   = Color(0xFFFFB020);
   static const Color secondary = Color(0xFFFF6B35);
   static const Color tertiary  = Color(0xFFFFD166);
   static const Color danger    = Color(0xFFEF476F);
 
-  // â”€â”€ Surface / card â€” delegates to ThemeProvider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Surface / card — delegates to ThemeProvider ───────────
   static Color surface(BuildContext context) =>
       context.watch<ThemeProvider>().surface;
 
@@ -44,7 +44,7 @@ class FinalsTheme {
   static bool isLight(BuildContext context) =>
       context.watch<ThemeProvider>().isLight;
 
-  // â”€â”€ Typography â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Typography ────────────────────────────────────────────
   static TextStyle titleStyle(BuildContext context) => TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
@@ -66,7 +66,7 @@ class FinalsTheme {
         color: primary.withValues(alpha: 0.8),
       );
 
-  // â”€â”€ Gradients â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Gradients ─────────────────────────────────────────────
   static const LinearGradient headerGradient = LinearGradient(
     colors: [Color(0xFFFFB020), Color(0xFFFF6B35)],
     begin: Alignment.topLeft,

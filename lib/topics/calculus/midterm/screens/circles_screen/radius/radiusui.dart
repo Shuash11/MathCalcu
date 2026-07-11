@@ -65,7 +65,7 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
                 icon: Icons.circle_outlined,
                 leftController: _ctrl.xCtrl,
                 leftLabel: 'x',
-                leftHint: 'e.g. âˆ’2',
+                leftHint: 'e.g. −2',
                 rightController: _ctrl.yCtrl,
                 rightLabel: 'y',
                 rightHint: 'e.g. 3',

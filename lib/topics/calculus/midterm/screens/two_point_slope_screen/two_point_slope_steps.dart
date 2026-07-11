@@ -3,11 +3,11 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // STEPS WIDGET
 // Displays the full step-by-step working for the solution.
-// Completely self-contained â€” just pass in the result.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Completely self-contained — just pass in the result.
+// ─────────────────────────────────────────────────────────────
 
 class TwoPointSlopeSteps extends StatefulWidget {
   final TwoPointSlopeResult result;
@@ -24,7 +24,7 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
   late final List<Animation<double>> _fadeAnims;
   late final List<Animation<Offset>> _slideAnims;
 
-  // One color per step â€” cycles through step palette
+  // One color per step — cycles through step palette
   static const List<Color> _stepColors = [
     TwoPointSlopeTheme.stepBlue,
     TwoPointSlopeTheme.stepGreen,
@@ -119,9 +119,9 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Individual step card
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class _StepCard extends StatelessWidget {
   final SolverStep step;

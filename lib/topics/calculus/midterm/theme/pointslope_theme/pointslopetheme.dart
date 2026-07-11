@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class PSTheme {
   PSTheme._();
 
-  // â”€â”€ Core Colors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Core Colors ──────────────────────────
   static const Color deepViolet = Color(0xFF7C3AED);
   static const Color electricPurple = Color(0xFFA855F7);
   static const Color softLavender = Color(0xFFC4B5FD);
@@ -28,7 +28,7 @@ class PSTheme {
   static bool isLight(BuildContext context) =>
       context.watch<ThemeProvider>().isLight;
 
-  // â”€â”€ Semantic Alphas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Semantic Alphas ───────────────────────
   static Color glowMagenta(double opacity) =>
       neonMagenta.withValues(alpha: opacity);
   static Color glowPurple(double opacity) =>
@@ -38,7 +38,7 @@ class PSTheme {
   static Color lavenderFaded(double opacity) =>
       softLavender.withValues(alpha: opacity);
 
-  // â”€â”€ Gradients â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Gradients ────────────────────────────
   static LinearGradient cardGradient(BuildContext context) => LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -75,7 +75,7 @@ class PSTheme {
         ],
       );
 
-  // â”€â”€ Box Shadows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Box Shadows ───────────────────────────
   static List<BoxShadow> cardShadow(BuildContext context, [double s = 1]) => [
         BoxShadow(
           color: deepViolet.withValues(alpha: 0.15),
@@ -111,7 +111,7 @@ class PSTheme {
         ),
       ];
 
-  // â”€â”€ Border Radii â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Border Radii ──────────────────────────
   static const double radiusCard = 20;
   static const double radiusInner = 14;
   static const double radiusChip = 12;
@@ -120,7 +120,7 @@ class PSTheme {
   static const double radiusBadge = 8;
   static const double radiusStatChip = 10;
 
-  // â”€â”€ Text Styles (with optional scale factor) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Text Styles (with optional scale factor) ───────────
   static TextStyle titleStyle(BuildContext context, [double s = 1]) => TextStyle(
         fontSize: 18 * s,
         fontWeight: FontWeight.w600,

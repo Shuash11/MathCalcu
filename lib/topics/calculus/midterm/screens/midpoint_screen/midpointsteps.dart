@@ -77,15 +77,15 @@ class _StepBuilder {
     final resYs = resY.toString();
 
     return [
-      // â”€â”€ Step 1 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 1 ──────────────────────────────────────────────────────────
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify endpoints',
-        plainContent: 'A = ($x1s,  $y1s)   →   (xâ‚, yâ‚)\n'
-            'B = ($x2s,  $y2s)   →   (xâ‚‚, yâ‚‚)',
+        plainContent: 'A = ($x1s,  $y1s)   →   (x₁, y₁)\n'
+            'B = ($x2s,  $y2s)   →   (x₂, y₂)',
       ),
 
-      // â”€â”€ Step 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 2 ──────────────────────────────────────────────────────────
       StepSection.single(
         stepLabel: 'Step 2',
         guide: 'Midpoint formula',
@@ -93,7 +93,7 @@ class _StepBuilder {
             r'M = \left(\dfrac{x_1+x_2}{2},\;\dfrac{y_1+y_2}{2}\right)',
       ),
 
-      // â”€â”€ Step 3 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 3 ──────────────────────────────────────────────────────────
       // FIX: use raw-string fragments so \\ is a real LaTeX line-break (\\),
       // not the single backslash produced by a non-raw Dart string.
       StepSection.dual(
@@ -113,12 +113,12 @@ class _StepBuilder {
             r'\end{aligned}',
       ),
 
-      // â”€â”€ Step 4 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 4 ──────────────────────────────────────────────────────────
       StepSection.dual(
         stepLabel: 'Step 4',
         guide: 'Divide by 2',
-        leftLabel: 'Find xâ‚˜',
-        rightLabel: 'Find yâ‚˜',
+        leftLabel: 'Find xₘ',
+        rightLabel: 'Find yₘ',
         leftLatex: r'\begin{aligned}'
             r'x_m &= \dfrac{' '$sumXs' r'}{2} \\'
             r'&= \boxed{' '$resXs' r'}'
@@ -129,7 +129,7 @@ class _StepBuilder {
             r'\end{aligned}',
       ),
 
-      // â”€â”€ Step 5 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 5 ──────────────────────────────────────────────────────────
       // FIX: the previous non-raw string
       //   'M &= \left($resXs,\;$resYs\right)\\[8pt]'
       // caused two bugs:
@@ -173,16 +173,16 @@ class _StepBuilder {
     final resYs = resY.toString();
 
     return [
-      // â”€â”€ Step 1 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 1 ──────────────────────────────────────────────────────────
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify given values',
         plainContent: 'M = ($xms,  $yms)   →   midpoint\n'
             'A = ($x1s,  $y1s)   →   known endpoint\n'
-            'B = (xâ‚‚, yâ‚‚)      →   find this',
+            'B = (x₂, y₂)      →   find this',
       ),
 
-      // â”€â”€ Step 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 2 ──────────────────────────────────────────────────────────
       StepSection.single(
         stepLabel: 'Step 2',
         guide: 'Midpoint formula',
@@ -190,7 +190,7 @@ class _StepBuilder {
             r'M = \left(\dfrac{x_1+x_2}{2},\;\dfrac{y_1+y_2}{2}\right)',
       ),
 
-      // â”€â”€ Step 3 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 3 ──────────────────────────────────────────────────────────
       StepSection.single(
         stepLabel: 'Step 3',
         guide: 'Rearrange for unknown endpoint',
@@ -198,12 +198,12 @@ class _StepBuilder {
             r'\begin{aligned} x_2 &= 2x_m - x_1 \\ y_2 &= 2y_m - y_1 \end{aligned}',
       ),
 
-      // â”€â”€ Step 4 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 4 ──────────────────────────────────────────────────────────
       StepSection.dual(
         stepLabel: 'Step 4',
         guide: 'Solve both coordinates',
-        leftLabel: 'Solve xâ‚‚',
-        rightLabel: 'Solve yâ‚‚',
+        leftLabel: 'Solve x₂',
+        rightLabel: 'Solve y₂',
         leftLatex: r'\begin{aligned}'
             r'x_2 &= 2(' '$xms' r') - (' '$x1s' r') \\'
             r'&= ' '$doubleXms' r' - ' '$x1s' r' \\'
@@ -216,7 +216,7 @@ class _StepBuilder {
             r'\end{aligned}',
       ),
 
-      // â”€â”€ Step 5 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ── Step 5 ──────────────────────────────────────────────────────────
       // Same fix as midpoint Step 5: all LaTeX in raw strings, no \\[8pt].
       StepSection.single(
         stepLabel: 'Step 5',
@@ -255,10 +255,10 @@ class MidpointSteps extends StatelessWidget {
       MidpointSolver.parseFraction(raw, label).fraction;
 
   List<StepSection>? _buildSteps() {
-    final a1 = _parse(rawAX, 'xâ‚');
-    final a2 = _parse(rawAY, 'yâ‚');
-    final b1 = _parse(rawBX, 'xâ‚‚');
-    final b2 = _parse(rawBY, 'yâ‚‚');
+    final a1 = _parse(rawAX, 'x₁');
+    final a2 = _parse(rawAY, 'y₁');
+    final b1 = _parse(rawBX, 'x₂');
+    final b2 = _parse(rawBY, 'y₂');
     if (a1 == null || a2 == null || b1 == null || b2 == null) return null;
 
     return mode == StepMode.endpoint
@@ -309,9 +309,9 @@ class MidpointSteps extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────
 // Supporting widgets (unchanged from original)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ────────────────────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
   final int stepCount;
@@ -562,7 +562,7 @@ class _GuideLabel extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: '  ·  ',
+            text: '  ?  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
               color: MidpointTheme.text40(context),
@@ -795,7 +795,7 @@ class _ErrorCard extends StatelessWidget {
           SizedBox(width: isSmall ? 10 : 14),
           Expanded(
             child: Text(
-              'Invalid input. Use whole numbers or fractions (e.g. 3, âˆ’2, 1/2).',
+              'Invalid input. Use whole numbers or fractions (e.g. 3, ??2, 1/2).',
               style: TextStyle(
                 fontSize: isSmall ? 12 : 13,
                 height: 1.6,

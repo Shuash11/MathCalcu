@@ -17,13 +17,13 @@ class SolutionStep {
   @override
   String toString() {
     final buffer = StringBuffer();
-    buffer.writeln('â”Œâ”€ Step $stepNumber: $title');
-    buffer.writeln('â”‚  ${explanation.replaceAll('\n', '\nâ”‚  ')}');
+    buffer.writeln('┌─ Step $stepNumber: $title');
+    buffer.writeln('│  ${explanation.replaceAll('\n', '\n│  ')}');
     if (mathematicalExpression != null) {
-      buffer.writeln('â”‚');
-      buffer.writeln('â”‚  $mathematicalExpression'.replaceAll('\n', '\nâ”‚  '));
+      buffer.writeln('│');
+      buffer.writeln('│  $mathematicalExpression'.replaceAll('\n', '\n│  '));
     }
-    buffer.write('â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€');
+    buffer.write('└────────────────────────────────');
     return buffer.toString();
   }
 
@@ -150,7 +150,7 @@ class SolutionStepsGenerator {
     ));
 
     // Step 5: Cancel common factors
-    final commonStr = result.commonFactors.map((f) => f.toTex()).join(' ÷— ');
+    final commonStr = result.commonFactors.map((f) => f.toTex()).join(' ?? ');
     steps.add(SolutionStep(
       stepNumber: 5,
       title: 'Cancel common factors',

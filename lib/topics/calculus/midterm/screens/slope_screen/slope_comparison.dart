@@ -42,7 +42,7 @@ class SlopeComparisonDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // â”€â”€ Header â”€â”€
+              // ── Header ──
               Row(
                 children: [
                   Expanded(
@@ -76,7 +76,7 @@ class SlopeComparisonDialog extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // â”€â”€ Relationship badge â”€â”€
+              // ── Relationship badge ──
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -99,7 +99,7 @@ class SlopeComparisonDialog extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // â”€â”€ Steps â”€â”€
+              // ── Steps ──
               SlopeComparisonSteps(
                 comparison: comparisonResult,
                 result1: result1,
@@ -108,7 +108,7 @@ class SlopeComparisonDialog extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // â”€â”€ Action buttons â€” always show View Graph â”€â”€
+              // ── Action buttons — always show View Graph ──
               Row(
                 children: [
                   Expanded(

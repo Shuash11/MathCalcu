@@ -81,7 +81,7 @@ class _FinalsDerivativesCardState extends State<FinalsDerivativesCard> {
 
                   return Stack(
                     children: [
-                      // âœ¨ Diagonal gradient accent
+                      // ✨ Diagonal gradient accent
                       Positioned(
                         top: -40,
                         left: -40,
@@ -103,7 +103,7 @@ class _FinalsDerivativesCardState extends State<FinalsDerivativesCard> {
                         ),
                       ),
 
-                      // ðŸ”¥ Content
+                      // 🔥 Content
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: horizontalPadding,
@@ -111,7 +111,7 @@ class _FinalsDerivativesCardState extends State<FinalsDerivativesCard> {
                         ),
                         child: Row(
                           children: [
-                            // ðŸŒ… LEFT ICON BOX
+                            // 🌅 LEFT ICON BOX
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
                               width: iconBoxSize,

@@ -201,7 +201,7 @@ class StepGenerator {
       final formatted = _formatResult(numLimitAns);
       final fractionGuess = _findFractionGuess(numLimitAns);
       exactAnswerTex = fractionGuess ?? "=$formatted";
-      approxAnswerTex = "≠ˆ $formatted";
+      approxAnswerTex = "≈ $formatted";
     } else {
       exactAnswerTex = ansTex;
       approxAnswerTex = "";
@@ -312,7 +312,7 @@ class StepGenerator {
       originalEquation: eq,
       methodUsed: "Analytical Approach",
       steps: [
-        "**Note:** This expression requires L'H÷´pital's Rule or advanced factoring."
+        "**Note:** This expression requires L'H??pital's Rule or advanced factoring."
       ],
     );
   }
@@ -336,7 +336,7 @@ class StepGenerator {
       String d1Tex,
       String d2Tex,
       String lcdTex) {
-    // 1. Squareâ€‘root pattern: denominator = x - a²
+    // 1. Square‑root pattern: denominator = x - a?
     if (denNode is BinaryOpNode &&
         denNode.op == '-' &&
         denNode.left is VariableNode &&
@@ -381,7 +381,7 @@ class StepGenerator {
       }
     }
 
-    // 2. Polynomial difference of squares: denominator = x² - a²
+    // 2. Polynomial difference of squares: denominator = x? - a?
     if (denNode is BinaryOpNode && denNode.op == '-') {
       final left = denNode.left;
       final right = denNode.right;

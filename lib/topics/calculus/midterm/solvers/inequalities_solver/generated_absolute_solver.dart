@@ -13,12 +13,12 @@ class GeneratedAbsoluteSolver {
 
       bool absOnLeft = p.absOnLeft;
       String effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-      final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
+      final isNarrow = effectiveOp == '<' || effectiveOp == '≠?';
 
       if (isNarrow) {
         if (p.k < 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
         if (p.k == 0 && effectiveOp == '<') return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
-        if (p.k == 0 && effectiveOp == '≠¤') {
+        if (p.k == 0 && effectiveOp == '≠?') {
           if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
           final root = -p.b / p.a;
           return SolveResult(answer: 'x = ${_fmt(root)}', points: [root], intervalNotation: '{${_fmt(root)}}');
@@ -38,7 +38,7 @@ class GeneratedAbsoluteSolver {
         );
       } else {
         if (p.k < 0) return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
-        if (p.k == 0 && effectiveOp == '≠¥') return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
+        if (p.k == 0 && effectiveOp == '≠?') return const SolveResult(answer: 'All real numbers', points: [], intervalNotation: '(-∞, ∞)');
         if (p.a == 0) return const SolveResult(answer: 'No solution', points: [], intervalNotation: '∅');
         if (p.k == 0 && effectiveOp == '>') {
           final root = -p.b / p.a;
@@ -83,13 +83,13 @@ class GeneratedAbsoluteSolver {
     final kStr = _fmtLatex(p.k);
     final absOnLeft = p.absOnLeft;
     final effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-    final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
+    final isNarrow = effectiveOp == '<' || effectiveOp == '≠?';
 
     // ---- Edge cases ----
     if (p.a == 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'No variable term — evaluate the constant directly',
+        hint: 'No variable term ? evaluate the constant directly',
         latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
       ));
       return steps;
@@ -122,7 +122,7 @@ class GeneratedAbsoluteSolver {
     }
 
     if (p.k == 0 && effectiveOp == '>') {
-      // |ax+b| > 0  =>  ax+b ≠  0  =>  x ≠  -b/a
+      // |ax+b| > 0  =>  ax+b ≠? 0  =>  x ≠? -b/a
       final root = _fmtLatex(-p.b / p.a);
       steps.add(StepModel(
         stepNumber: n++,
@@ -150,13 +150,13 @@ class GeneratedAbsoluteSolver {
     final rightConst = _fmtLatex(p.k - p.b);
 
     if (isNarrow) {
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
       // NARROW CASE  |ax+b| < k  →  -k < ax+b < k
       // Steps: Rule → Isolate x-term → Divide → Interval
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
 
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // Step 2: Apply Theorem 1 — |X| < k  =>  -k < X < k
+      // ──────────────────────────────────────────────────────────
+      // Step 2: Apply Theorem 1 ? |X| < k  =>  -k < X < k
       steps.add(StepModel(
         stepNumber: n++,
         hint: 'Apply Theorem 1',
@@ -169,8 +169,8 @@ class GeneratedAbsoluteSolver {
         latex: '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
       ));
 
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // Step 3: Isolate x-term — subtract/add constant
+      // ──────────────────────────────────────────────────────────
+      // Step 3: Isolate x-term ? subtract/add constant
       if (p.b != 0) {
         final bAbs = _fmtLatex(p.b.abs());
         final bStr = _fmtLatex(p.b);
@@ -199,7 +199,7 @@ class GeneratedAbsoluteSolver {
         ));
       }
 
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
       // Step 4: Divide by x-coefficient
       if (p.a != 1 && p.a != -1) {
         final finalOpNarrow = p.a < 0 ? _flipOp(effectiveOp) : effectiveOp;
@@ -231,7 +231,7 @@ class GeneratedAbsoluteSolver {
         ));
       }
 
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
       // Final: Interval notation
       steps.add(StepModel(
         stepNumber: n++,
@@ -239,13 +239,13 @@ class GeneratedAbsoluteSolver {
         latex: _toLatexInterval(result.intervalNotation ?? ''),
       ));
     } else {
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
       // WIDE CASE  |ax+b| > k  →  ax+b < -k  OR  ax+b > k
       // Steps: Rule → Solve Left → Solve Right → Combine → Interval
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
 
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // Step 2: Apply Theorem 2 — |X| > k  =>  X < -k  or  X > k
+      // ──────────────────────────────────────────────────────────
+      // Step 2: Apply Theorem 2 ? |X| > k  =>  X < -k  or  X > k
       steps.add(StepModel(
         stepNumber: n++,
         hint: 'Apply Theorem 2',
@@ -263,7 +263,7 @@ class GeneratedAbsoluteSolver {
       final rightOp = p.a < 0 ? _flipOp(effectiveOp) : effectiveOp;
       final rightVal = _fmtLatex((p.k - p.b) / p.a);
 
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
       // Step 3: Isolate x-term in both branches
       if (p.b != 0) {
         final lConst = _fmtLatex(-p.k - p.b);
@@ -323,7 +323,7 @@ class GeneratedAbsoluteSolver {
         ));
       }
 
-      // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ──────────────────────────────────────────────────────────
       // Step 5: Interval notation
       steps.add(StepModel(
         stepNumber: n++,
@@ -340,10 +340,10 @@ class GeneratedAbsoluteSolver {
     String s = input
         .trim()
         .replaceAll('−', '-')
-        .replaceAll('²', '^2')
+        .replaceAll('?', '^2')
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤');
+        .replaceAll('>=', '≠?')
+        .replaceAll('<=', '≠?');
 
     if (!s.contains('|')) return null;
 
@@ -377,8 +377,8 @@ class GeneratedAbsoluteSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('≠¥')) return '≠¥';
-    if (s.contains('≠¤')) return '≠¤';
+    if (s.contains('≠?')) return '≠?';
+    if (s.contains('≠?')) return '≠?';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -464,8 +464,8 @@ class GeneratedAbsoluteSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case '≠¥': return '\\geq';
-      case '≠¤': return '\\leq';
+      case '≠?': return '\\geq';
+      case '≠?': return '\\leq';
       case '>': return '>';
       case '<': return '<';
       default: return op;
@@ -476,8 +476,8 @@ class GeneratedAbsoluteSolver {
     switch (op) {
       case '>': return '<';
       case '<': return '>';
-      case '≠¥': return '≠¤';
-      case '≠¤': return '≠¥';
+      case '≠?': return '≠?';
+      case '≠?': return '≠?';
       default: return op;
     }
   }

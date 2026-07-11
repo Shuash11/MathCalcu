@@ -82,7 +82,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                   borderRadius: BorderRadius.circular(22 * s),
                   child: Stack(
                     children: [
-                      // âœ¨ Bottom-right glow accent
+                      // ✨ Bottom-right glow accent
                       Positioned(
                         bottom: -30 * s,
                         right: -30 * s,
@@ -104,13 +104,13 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                         ),
                       ),
 
-                      // ðŸ”¥ Content
+                      // 🔥 Content
                       Padding(
                         padding: EdgeInsets.all(20 * s),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ðŸŒ… LEFT ICON BOX
+                            // 🌅 LEFT ICON BOX
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
                               width: 60 * s,
@@ -238,7 +238,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                                           : theme.textSecondary,
                                     ),
                                     child: const Text(
-                                      "Tangent line slope · Evaluate at point · Instantaneous rate",
+                                      "Tangent line slope ? Evaluate at point ? Instantaneous rate",
                                     ),
                                   ),
 

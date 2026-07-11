@@ -5,9 +5,9 @@ import 'two_point_slope_steps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // TWO-POINT SLOPE SCREEN - COMPLETE & FIXED
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class TwoPointSlopeScreen extends StatefulWidget {
   const TwoPointSlopeScreen({super.key});
@@ -90,7 +90,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     );
   }
 
-  // â”€â”€ App bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── App bar ───────────────────────────────────────────────
   Widget _buildAppBar() {
     return FadeTransition(
       opacity: _headerFade,
@@ -149,7 +149,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     );
   }
 
-  // â”€â”€ Input card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Input card ────────────────────────────────────────────
   Widget _buildInputCard() {
     return Container(
       decoration: TwoPointSlopeTheme.cardDecoration(context),
@@ -176,7 +176,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.x1Controller,
                     focusNode: _x1Focus,
-                    label: 'xâ‚',
+                    label: 'x₁',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.next,
@@ -188,7 +188,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.y1Controller,
                     focusNode: _y1Focus,
-                    label: 'yâ‚',
+                    label: 'y₁',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.next,
@@ -242,7 +242,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.x2Controller,
                     focusNode: _x2Focus,
-                    label: 'xâ‚‚',
+                    label: 'x₂',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.next,
@@ -254,7 +254,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.y2Controller,
                     focusNode: _y2Focus,
-                    label: 'yâ‚‚',
+                    label: 'y₂',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.done,
@@ -319,7 +319,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     );
   }
 
-  // â”€â”€ Result card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Result card ───────────────────────────────────────────
   Widget _buildResultCard() {
     final result = _controller.result!;
 
@@ -471,9 +471,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // SUB-WIDGETS - ALL FIXED
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class _PointLabel extends StatelessWidget {
   final String label;

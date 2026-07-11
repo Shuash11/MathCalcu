@@ -63,8 +63,8 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   String get _versionSubtitle {
     if (_latestVersion.isEmpty) return _appVersion;
-    if (_appVersion == _latestVersion) return '$_appVersion â€” up to date';
-    return '$_appVersion · update to $_latestVersion';
+    if (_appVersion == _latestVersion) return '$_appVersion — up to date';
+    return '$_appVersion ? update to $_latestVersion';
   }
 
   Animation<double> _fadeFor(int index) {

@@ -62,23 +62,23 @@ class Tokenizer {
   /// Preprocess input to normalize Unicode characters
   String _preprocess() {
     var result = input
-        .replaceAll('âˆ’', '-')
-        .replaceAll('â€“', '-')
-        .replaceAll('â€”', '-')
-        .replaceAll('÷—', '*')
-        .replaceAll('×', '/');
+        .replaceAll('??', '-')
+        .replaceAll('–', '-')
+        .replaceAll('—', '-')
+        .replaceAll('??', '*')
+        .replaceAll('?', '/');
 
     result = result
-        .replaceAll('â°', '^0')
-        .replaceAll('Â¹', '^1')
-        .replaceAll('²', '^2')
-        .replaceAll('Â³', '^3')
-        .replaceAll('â´', '^4')
-        .replaceAll('âµ', '^5')
-        .replaceAll('â¶', '^6')
-        .replaceAll('â·', '^7')
-        .replaceAll('â¸', '^8')
-        .replaceAll('â¹', '^9');
+        .replaceAll('⁰', '^0')
+        .replaceAll('¹', '^1')
+        .replaceAll('?', '^2')
+        .replaceAll('³', '^3')
+        .replaceAll('⁴', '^4')
+        .replaceAll('⁵', '^5')
+        .replaceAll('⁶', '^6')
+        .replaceAll('⁷', '^7')
+        .replaceAll('⁸', '^8')
+        .replaceAll('⁹', '^9');
 
     return result;
   }

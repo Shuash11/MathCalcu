@@ -94,7 +94,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
       );
       if (r == null) {
         _errorNotifier.value =
-            'Invalid input â€” use numbers or fractions like 3/4';
+            'Invalid input — use numbers or fractions like 3/4';
         _resultNotifier.value = null;
       } else {
         _errorNotifier.value = null;
@@ -110,7 +110,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
       final r = YInterceptSolver.tryParseAny(text);
       if (r == null) {
         _errorNotifier.value =
-            'Invalid format â€” try  6x - 3y = -3  or  3y - 6x = -3  or  -6x + 3y + 3 = 0';
+            'Invalid format — try  6x - 3y = -3  or  3y - 6x = -3  or  -6x + 3y + 3 = 0';
         _resultNotifier.value = null;
       } else {
         _errorNotifier.value = null;
@@ -237,9 +237,9 @@ class _YInterceptScreenState extends State<YInterceptScreen>
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 // STEPS BOTTOM SHEET
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 class StepsBottomSheet extends StatefulWidget {
   final List<YISolverStep> steps;
@@ -425,9 +425,9 @@ class _StepsBottomSheetState extends State<StepsBottomSheet> {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// STEP CARD  â€”  renders every field as LaTeX
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
+// STEP CARD  —  renders every field as LaTeX
+// ═════════════════════════════════════════════════════════════
 
 class StepCard extends StatelessWidget {
   final YISolverStep step;
@@ -465,7 +465,7 @@ class StepCard extends StatelessWidget {
     );
   }
 
-  // â”€â”€ Header row  (circle number + title) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Header row  (circle number + title) ──────────────────
 
   Widget _buildStepHeader() {
     return Row(
@@ -507,7 +507,7 @@ class StepCard extends StatelessWidget {
     );
   }
 
-  // â”€â”€ Single layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Single layout ─────────────────────────────────────────
 
   Widget _buildSingleLayout(BuildContext context) {
     return Column(
@@ -556,7 +556,7 @@ class StepCard extends StatelessWidget {
     );
   }
 
-  // â”€â”€ Dual layout  (side-by-side panels) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Dual layout  (side-by-side panels) ───────────────────
 
   Widget _buildDualLayout(BuildContext context) {
     return Column(
@@ -590,9 +590,9 @@ class StepCard extends StatelessWidget {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 // SMALL REUSABLE WIDGETS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 /// Grey chip that shows the formula template (e.g. y = mx + b)
 class _FormulaChip extends StatelessWidget {

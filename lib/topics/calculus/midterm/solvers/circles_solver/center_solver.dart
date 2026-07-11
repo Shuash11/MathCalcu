@@ -1,11 +1,11 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// ═════════════════════════════════════════════════════════════
 // CENTER SOLVER  (generated via SymPy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Finds the circle center from two endpoints of a diameter.
 // Uses exact fraction arithmetic.
 //
 // INPUT: Coordinates as numbers or fractions (e.g. "3/4").
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 class CenterFraction {
   final int numerator;
@@ -125,14 +125,14 @@ class CenterSolver {
     final sumX = fx1 + fx2;
     final sumY = fy1 + fy2;
 
-    final steps = 'Midpoint Formula: C(h, k) = ((xâ‚ + xâ‚‚)/2, (yâ‚ + yâ‚‚)/2)\n'
+    final steps = 'Midpoint Formula: C(h, k) = ((x₁ + x₂)/2, (y₁ + y₂)/2)\n'
         '\n'
-        'h = (xâ‚ + xâ‚‚) / 2\n'
+        'h = (x₁ + x₂) / 2\n'
         'h = ($fx1 + $fx2) / 2\n'
         'h = $sumX / 2\n'
         'h = ${h.toString()}${_showApprox(h)}\n'
         '\n'
-        'k = (yâ‚ + yâ‚‚) / 2\n'
+        'k = (y₁ + y₂) / 2\n'
         'k = ($fy1 + $fy2) / 2\n'
         'k = $sumY / 2\n'
         'k = ${k.toString()}${_showApprox(k)}';
@@ -150,6 +150,6 @@ class CenterSolver {
       if ((v * 1000).round() / 1000 == v) return v.toStringAsFixed(3);
       return v.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
     }
-    return ' ≠ˆ ${fmt(d)}';
+    return ' ≈ ${fmt(d)}';
   }
 }

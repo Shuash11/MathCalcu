@@ -72,7 +72,7 @@ class _ConjugateCardState extends State<ConjugateCard> {
               borderRadius: BorderRadius.circular(20),
               child: Stack(
                 children: [
-                  // â”€â”€ Dynamic background glow
+                  // ── Dynamic background glow
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 380),
                     curve: Curves.easeOut,
@@ -91,12 +91,12 @@ class _ConjugateCardState extends State<ConjugateCard> {
                     ),
                   ),
 
-                  // â”€â”€ Content
+                  // ── Content
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                     child: Row(
                       children: [
-                        // â”€â”€ Icon Box
+                        // ── Icon Box
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 220),
                           width: 52,
@@ -136,7 +136,7 @@ class _ConjugateCardState extends State<ConjugateCard> {
 
                         const SizedBox(width: 18),
 
-                        // â”€â”€ Text
+                        // ── Text
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +168,7 @@ class _ConjugateCardState extends State<ConjugateCard> {
                           ),
                         ),
 
-                        // â”€â”€ Arrow
+                        // ── Arrow
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered

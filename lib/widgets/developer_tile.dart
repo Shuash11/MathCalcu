@@ -269,7 +269,7 @@ class _DeveloperTileState extends State<DeveloperTile> {
   }
 }
 
-// â”€â”€ Single info row inside the dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Single info row inside the dropdown ───────────────────────────────────────
 
 class _InfoRow extends StatelessWidget {
   final IconData icon;

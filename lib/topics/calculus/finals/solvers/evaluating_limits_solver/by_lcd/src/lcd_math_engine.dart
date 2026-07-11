@@ -341,7 +341,7 @@ class LimitEngine {
     if (node is BinaryOpNode) {
       // A "complex fraction" is one where the overall numerator itself
       // contains a division (e.g. (1/x - 1/3) / (x - 3)).
-      // We deliberately do NOT match just any +/- in the numerator â€” that
+      // We deliberately do NOT match just any +/- in the numerator — that
       // would wrongly catch conjugate or polynomial-factoring problems.
       if (node.op == '/' && _containsOp(node.left, '/')) return true;
       return _hasNestedFractions(node.left) || _hasNestedFractions(node.right);
@@ -396,13 +396,13 @@ class LimitEngine {
 
   static String _normalizeUnicode(String input) {
     return input
-      .replaceAll('âˆ’', '-')
-      .replaceAll('â€“', '-')
-      .replaceAll('â€”', '-')
-      .replaceAll('÷—', '*')
-      .replaceAll('×', '/')
+      .replaceAll('??', '-')
+      .replaceAll('–', '-')
+      .replaceAll('—', '-')
+      .replaceAll('??', '*')
+      .replaceAll('?', '/')
       .replaceAll('√', 'sqrt')
-      .replaceAll('²', '^2')
-      .replaceAll('Â³', '^3');
+      .replaceAll('?', '^2')
+      .replaceAll('³', '^3');
   }
 }

@@ -1,12 +1,12 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // FINALS ABOUT SHEET
 //
 // Different visualization from the main AboutSheet.
 // Uses same developer data but with Finals gold/amber theme.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class _Developer {
   final String name;
@@ -134,7 +134,7 @@ class _FinalsAboutSheet extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // â”€â”€ Gold drag handle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                  // ── Gold drag handle ─────────────────────────────
                   Padding(
                     padding: EdgeInsets.only(top: 16 * s, bottom: 8 * s),
                     child: Container(
@@ -147,7 +147,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                     ),
                   ),
 
-                  // â”€â”€ Header with flame icon â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                  // ── Header with flame icon ──────────────────────
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 28 * s, vertical: 16 * s),
                     child: Row(
@@ -192,7 +192,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                               ),
                               SizedBox(height: 4 * s),
                               Text(
-                                '${_developers.length} developers · Finals Period',
+                                '${_developers.length} developers ? Finals Period',
                                 style: TextStyle(
                                   fontSize: 14 * s,
                                   color: FinalsTheme.textSecondary(context),
@@ -205,13 +205,13 @@ class _FinalsAboutSheet extends StatelessWidget {
                     ),
                   ),
 
-                  // â”€â”€ Scrollable content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                  // ── Scrollable content ──────────────────────────
                   Expanded(
                     child: ListView(
                       controller: scrollController,
                       padding: EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
                       children: [
-                        // â”€â”€ Description card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                        // ── Description card ────────────────────────
                         Container(
                           padding: EdgeInsets.all(20 * s),
                           decoration: BoxDecoration(
@@ -264,7 +264,7 @@ class _FinalsAboutSheet extends StatelessWidget {
 
                         SizedBox(height: 24 * s),
 
-                        // â”€â”€ Section divider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                        // ── Section divider ─────────────────────────
                         Row(
                           children: [
                             Expanded(
@@ -320,7 +320,7 @@ class _FinalsAboutSheet extends StatelessWidget {
 
                         SizedBox(height: 20 * s),
 
-                        // â”€â”€ Developer grid cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                        // ── Developer grid cards ────────────────────
                         ..._developers.asMap().entries.map(
                               (e) => _FinalsDeveloperCard(
                                 developer: e.value,
@@ -341,7 +341,7 @@ class _FinalsAboutSheet extends StatelessWidget {
   }
 }
 
-// â”€â”€ Developer card with Finals styling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Developer card with Finals styling ───────────────────────────────────────
 
 class _FinalsDeveloperCard extends StatefulWidget {
   final _Developer developer;
@@ -415,7 +415,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
             borderRadius: BorderRadius.circular(24 * s),
             child: Column(
               children: [
-                // â”€â”€ Top accent bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Top accent bar ──────────────────────────
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   height: _expanded ? 4 * s : 3 * s,
@@ -429,7 +429,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                   ),
                 ),
 
-                // â”€â”€ Main content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Main content ────────────────────────────
                 Padding(
                   padding: EdgeInsets.all(20 * s),
                   child: Row(
@@ -554,7 +554,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                   ),
                 ),
 
-                // â”€â”€ Expanded details â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Expanded details ────────────────────────
                 AnimatedCrossFade(
                   firstChild: const SizedBox.shrink(),
                   secondChild: Padding(
@@ -626,7 +626,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
   }
 }
 
-// â”€â”€ Detail item widget â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Detail item widget ───────────────────────────────────────────────────────
 
 class _DetailItem extends StatelessWidget {
   final IconData icon;

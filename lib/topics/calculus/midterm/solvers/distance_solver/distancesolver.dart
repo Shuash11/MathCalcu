@@ -1,12 +1,12 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// ═════════════════════════════════════════════════════════════
 // DISTANCE SOLVER  (generated via SymPy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Calculates distance between two points:
 //   - 1D (number line): d = |x2 - x1|
 //   - 2D (coordinate plane): d = sqrt((x2-x1)^2 + (y2-y1)^2)
 //
 // INPUT: Coordinates as numbers. Supports both 1D and 2D modes.
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 import 'dart:math' show sqrt;
 
@@ -49,7 +49,7 @@ class DistanceResult {
 
 /// Handles 1D (number line) and 2D (coordinate plane) distance calculations
 class DistanceSolver {
-  /// Main entry point â€” parses inputs and routes to appropriate solver
+  /// Main entry point — parses inputs and routes to appropriate solver
   static DistanceResult solve({
     required String x1,
     required String x2,
@@ -58,8 +58,8 @@ class DistanceSolver {
     required bool is2D,
   }) {
     // Parse x coordinates
-    final parsedX1 = _parseCoordinate(x1, 'xâ‚');
-    final parsedX2 = _parseCoordinate(x2, 'xâ‚‚');
+    final parsedX1 = _parseCoordinate(x1, 'x₁');
+    final parsedX2 = _parseCoordinate(x2, 'x₂');
 
     if (parsedX1.hasError) return parsedX1.errorResult!;
     if (parsedX2.hasError) return parsedX2.errorResult!;
@@ -72,8 +72,8 @@ class DistanceSolver {
         return DistanceResult.error('Y coordinates required for 2D mode');
       }
 
-      final parsedY1 = _parseCoordinate(y1, 'yâ‚');
-      final parsedY2 = _parseCoordinate(y2, 'yâ‚‚');
+      final parsedY1 = _parseCoordinate(y1, 'y₁');
+      final parsedY2 = _parseCoordinate(y2, 'y₂');
 
       if (parsedY1.hasError) return parsedY1.errorResult!;
       if (parsedY2.hasError) return parsedY2.errorResult!;
@@ -103,8 +103,8 @@ class DistanceSolver {
     final distance = sqrt(squaredSum);
 
     final formula =
-        '√(($_fmt(x2)âˆ’$_fmt(x1))² + ($_fmt(y2)âˆ’$_fmt(y1))²)\n'
-        '= √($_fmt(dx)² + $_fmt(dy)²)\n'
+        '√(($_fmt(x2)??$_fmt(x1))? + ($_fmt(y2)??$_fmt(y1))?)\n'
+        '= √($_fmt(dx)? + $_fmt(dy)?)\n'
         '= √($_fmt(dx * dx) + $_fmt(dy * dy))\n'
         '= √$_fmt(squaredSum)\n'
         '= $_fmt(distance)';

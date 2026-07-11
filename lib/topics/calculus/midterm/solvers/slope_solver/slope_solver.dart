@@ -1,12 +1,12 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// ═════════════════════════════════════════════════════════════
 // SLOPE SOLVER  (generated via SymPy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Calculates slope between two points with detailed results
 // and step-by-step workings. Shows results as fractions.
 //
 // INPUT: Coordinates can be plain numbers (3, -2.5) OR
 //        fractions using slash notation (3/5, -1/4, 2/3).
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 class SlopeStep {
   final String label;
@@ -55,7 +55,7 @@ class SlopeComparisonResult {
 class SlopeSolver {
   SlopeSolver._();
 
-  // â”€â”€ Fraction-aware parser â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Fraction-aware parser ────────────────────────────────
 
   static double? parseCoordinate(String raw) {
     final s = raw.trim();
@@ -70,7 +70,7 @@ class SlopeSolver {
     return num / den;
   }
 
-  // â”€â”€ Core solver â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Core solver ──────────────────────────────────────────
 
   static SlopeSolverResult solve(double x1, double y1, double x2, double y2) {
     if (x1.isNaN || y1.isNaN || x2.isNaN || y2.isNaN) {
@@ -116,7 +116,7 @@ class SlopeSolver {
     return solve(x1, y1, x2, y2);
   }
 
-  // â”€â”€ Steps â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Steps ────────────────────────────────────────────────
 
   static List<SlopeStep> getSteps(double x1, double y1, double x2, double y2) {
     final r = solve(x1, y1, x2, y2);
@@ -150,7 +150,7 @@ class SlopeSolver {
     ];
   }
 
-  // â”€â”€ Comparison â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Comparison ────────────────────────────────────────────
 
   static SlopeComparisonResult compareSlopes(
     SlopeSolverResult a, SlopeSolverResult b,
@@ -189,7 +189,7 @@ class SlopeSolver {
     ];
   }
 
-  // â”€â”€ Interpretation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Interpretation ─────────────────────────────────────────
 
   static String getInterpretation(double slope) {
     if (slope.isInfinite) return 'Vertical line (undefined)';
@@ -198,7 +198,7 @@ class SlopeSolver {
     return 'Line goes down from left to right (negative slope)';
   }
 
-  // â”€â”€ Private Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Private Helpers ───────────────────────────────────────
 
   static SlopeSolverResult _error(String msg) => SlopeSolverResult(
     x1: 0, y1: 0, x2: 0, y2: 0, slope: 0, deltaY: 0, deltaX: 0,

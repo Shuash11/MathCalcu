@@ -2,7 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
-/// â”€â”€ Card shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Card shell ────────────────────────────────
 class PSCard extends StatelessWidget {
   final Widget child;
   final double s;
@@ -73,7 +73,7 @@ class PSCard extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Header ────────────────────────────────────
 class PSHeader extends StatelessWidget {
   final Animation<double> pulseAnim;
   final double s;
@@ -144,7 +144,7 @@ class PSHeader extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Formula banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Formula banner ────────────────────────────
 class PSFormulaBanner extends StatelessWidget {
   const PSFormulaBanner({super.key});
 
@@ -165,12 +165,12 @@ class PSFormulaBanner extends StatelessWidget {
             text: TextSpan(
               style: PSTheme.formulaStyle(context),
               children: [
-                const TextSpan(text: 'y âˆ’ '),
-                TextSpan(text: 'yâ‚', style: PSTheme.highlightVarStyle()),
+                const TextSpan(text: 'y − '),
+                TextSpan(text: 'y₁', style: PSTheme.highlightVarStyle()),
                 const TextSpan(text: ' = '),
                 TextSpan(text: 'm', style: PSTheme.highlightVarStyle()),
-                const TextSpan(text: '(x âˆ’ '),
-                TextSpan(text: 'xâ‚', style: PSTheme.highlightVarStyle()),
+                const TextSpan(text: '(x − '),
+                TextSpan(text: 'x₁', style: PSTheme.highlightVarStyle()),
                 const TextSpan(text: ')'),
               ],
             ),
@@ -181,7 +181,7 @@ class PSFormulaBanner extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Inputs row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Inputs row ────────────────────────────────
 class PSInputsRow extends StatelessWidget {
   final TextEditingController mCtrl, x1Ctrl, y1Ctrl;
   final FocusNode mFocus, x1Focus, y1Focus;
@@ -217,7 +217,7 @@ class PSInputsRow extends StatelessWidget {
         Expanded(
           child: PSInputField(
             label: 'POINT',
-            variable: 'xâ‚',
+            variable: 'x₁',
             controller: x1Ctrl,
             focusNode: x1Focus,
             s: s,
@@ -229,7 +229,7 @@ class PSInputsRow extends StatelessWidget {
         Expanded(
           child: PSInputField(
             label: 'POINT',
-            variable: 'yâ‚',
+            variable: 'y₁',
             controller: y1Ctrl,
             focusNode: y1Focus,
             s: s,
@@ -285,7 +285,7 @@ class PSInputField extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Text Field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Text Field ─────────────────
 class PSTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -337,7 +337,7 @@ class PSTextField extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Divider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Divider ───────────────────────────────────
 class PSDivider extends StatelessWidget {
   const PSDivider({super.key});
 
@@ -350,7 +350,7 @@ class PSDivider extends StatelessWidget {
   }
 }
 
-/// â”€â”€ UPDATED: Result banner with General and Standard Form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── UPDATED: Result banner with General and Standard Form ─────────────────────────────
 class PSResultBanner extends StatelessWidget {
   final String? pointSlopeEq;
   final String? generalFormEq;
@@ -477,7 +477,7 @@ class PSResultBanner extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Graph â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Graph ─────────────────────────────────────
 class PSGraph extends StatelessWidget {
   final String mText;
   final String xText;
@@ -517,7 +517,7 @@ class PSGraph extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Simple Graph Painter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Simple Graph Painter ───────────────────────
 class SimpleGraphPainter extends CustomPainter {
   final String mText;
   final String xText;
@@ -665,7 +665,7 @@ class SimpleGraphPainter extends CustomPainter {
       oldDelegate.yText != yText;
 }
 
-/// â”€â”€ Badges â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Badges ────────────────────────────────────
 class PSBadges extends StatelessWidget {
   final String direction;
   final String angle;
@@ -721,7 +721,7 @@ class PSBadge extends StatelessWidget {
   }
 }
 
-/// â”€â”€ Decoration painter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/// ── Decoration painter ───────────────────────
 class DiagonalLinesPainter extends CustomPainter {
   final Color color;
 

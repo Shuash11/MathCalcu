@@ -12,12 +12,12 @@ class CalculatorEngine {
   }
 
   static String _preprocess(String expr) {
-    expr = expr.replaceAll('÷—', '*');
-    expr = expr.replaceAll('×', '/');
-    expr = expr.replaceAll('âˆ’', '-');
-    expr = expr.replaceAll('Ï€', 'pi');
+    expr = expr.replaceAll('??', '*');
+    expr = expr.replaceAll('?', '/');
+    expr = expr.replaceAll('??', '-');
+    expr = expr.replaceAll('π', 'pi');
     expr = expr.replaceAll('√', 'sqrt');
-    expr = expr.replaceAll('âˆ›', 'cbrt');
+    expr = expr.replaceAll('??', 'cbrt');
     expr = expr.replaceAll('^', '^');
     expr = expr.replaceAll('%', '/100');
     return expr;

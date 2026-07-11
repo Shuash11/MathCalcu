@@ -1,13 +1,13 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:flutter/material.dart';
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════
 // SlopeGraphScreen
 //
 // Pass either:
-//   â€¢ result1 only  → single-line graph
-//   â€¢ result1 + result2 + comparison → two-line graph with badge
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//   • result1 only  → single-line graph
+//   • result1 + result2 + comparison → two-line graph with badge
+// ═══════════════════════════════════════════════════════════════
 
 class SlopeGraphScreen extends StatelessWidget {
   final SlopeSolverResult result1;
@@ -21,7 +21,7 @@ class SlopeGraphScreen extends StatelessWidget {
     this.comparison,
   });
 
-  // â”€â”€ Relationship helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Relationship helpers ───────────────────────────────────
 
   /// True when the two lines lie exactly on top of each other.
   bool get _isCoincident {
@@ -71,7 +71,7 @@ class SlopeGraphScreen extends StatelessWidget {
     };
   }
 
-  // â”€â”€ Build â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Build ──────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +92,7 @@ class SlopeGraphScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // â”€â”€ Relationship badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+          // ── Relationship badge ───────────────────────────
           if (label.isNotEmpty)
             Container(
               width: double.infinity,
@@ -131,7 +131,7 @@ class SlopeGraphScreen extends StatelessWidget {
               ),
             ),
 
-          // â”€â”€ Legend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+          // ── Legend ──────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
             child: Row(
@@ -157,7 +157,7 @@ class SlopeGraphScreen extends StatelessWidget {
             ),
           ),
 
-          // â”€â”€ Graph â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+          // ── Graph ────────────────────────────────────────
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -183,16 +183,16 @@ class SlopeGraphScreen extends StatelessWidget {
   }
 
   String get _badgeSubtitle {
-    if (_isCoincident) return 'â€” same line, infinite intersections';
+    if (_isCoincident) return '— same line, infinite intersections';
     return switch (comparison?.relationship ?? 'neither') {
-      'parallel' => 'â€” same slope, never intersect',
-      'perpendicular' => 'â€” slopes multiply to âˆ’1',
-      _ => 'â€” different slopes, not perpendicular',
+      'parallel' => '— same slope, never intersect',
+      'perpendicular' => '— slopes multiply to −1',
+      _ => '— different slopes, not perpendicular',
     };
   }
 }
 
-// â”€â”€â”€ Legend dot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Legend dot ───────────────────────────────────────────────
 
 class _LegendDot extends StatelessWidget {
   final Color color;
@@ -220,9 +220,9 @@ class _LegendDot extends StatelessWidget {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════
 // Painter
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════
 
 class _SlopePainter extends CustomPainter {
   final SlopeSolverResult result1;
@@ -235,7 +235,7 @@ class _SlopePainter extends CustomPainter {
     required this.isCoincident,
   });
 
-  // â”€â”€ Auto-scale: pick a scale so all 4 points are visible â”€â”€
+  // ── Auto-scale: pick a scale so all 4 points are visible ──
 
   double _computeScale(Size size) {
     final pts = <double>[
@@ -264,7 +264,7 @@ class _SlopePainter extends CustomPainter {
       ? n.toInt().toString()
       : n.toStringAsFixed(1).replaceAll(RegExp(r'\.?0+$'), '');
 
-  // â”€â”€ Draw extended line â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Draw extended line ─────────────────────────────────────
 
   void _drawExtendedLine(
     Canvas canvas,
@@ -297,7 +297,7 @@ class _SlopePainter extends CustomPainter {
     );
   }
 
-  // â”€â”€ Draw equation label near line â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Draw equation label near line ─────────────────────────
 
   void _drawLineLabel(
     Canvas canvas,
@@ -336,7 +336,7 @@ class _SlopePainter extends CustomPainter {
     textPainter.paint(canvas, Offset(labelX, labelY));
   }
 
-  // â”€â”€ Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Grid ──────────────────────────────────────────────────
 
   void _drawGrid(Canvas canvas, Size size, double scale) {
     final gridPaint = Paint()
@@ -401,7 +401,7 @@ class _SlopePainter extends CustomPainter {
     drawTick('0', Offset(cx + 3, cy + 3));
   }
 
-  // â”€â”€ Paint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Paint ─────────────────────────────────────────────────
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -417,10 +417,10 @@ class _SlopePainter extends CustomPainter {
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke;
 
-    // â”€â”€ Draw line 1 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Draw line 1 ──────────────────────────────────────────
     _drawExtendedLine(canvas, result1, line1Paint, size, scale);
 
-    // â”€â”€ Draw line 2 (if present) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Draw line 2 (if present) ──────────────────────────────
     if (result2 != null) {
       final line2Paint = Paint()
         ..color = isCoincident
@@ -432,21 +432,21 @@ class _SlopePainter extends CustomPainter {
       _drawExtendedLine(canvas, result2!, line2Paint, size, scale);
     }
 
-    // â”€â”€ Equation labels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Equation labels ───────────────────────────────────────
     _drawLineLabel(canvas, result1, color1, size, scale, verticalOffset: 0);
     if (result2 != null && !isCoincident) {
       _drawLineLabel(canvas, result2!, color2, size, scale, verticalOffset: 16);
     }
 
-    // â”€â”€ Points â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Points ────────────────────────────────────────────────
     _drawPoints(canvas, result1, color1, size, scale);
     if (result2 != null && !isCoincident) {
       _drawPoints(canvas, result2!, color2, size, scale);
     }
 
-    // â”€â”€ Coincident overlay text â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Coincident overlay text ────────────────────────────────
     if (isCoincident) {
-      _drawCenteredBadge(canvas, size, 'âŸµ Lines are identical âŸ¶');
+      _drawCenteredBadge(canvas, size, '⟵ Lines are identical ⟶');
     }
   }
 

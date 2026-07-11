@@ -72,7 +72,7 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            // â”€â”€ Header
+            // ── Header
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 48, 24, 32),
@@ -122,7 +122,7 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
               ),
             ),
 
-            // â”€â”€ Topic Cards
+            // ── Topic Cards
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               sliver: SliverList(

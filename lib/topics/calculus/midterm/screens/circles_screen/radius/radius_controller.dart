@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 /// Finding-Radius screen.  Kept separate from the UI so the screen
 /// widget stays a "dumb" view.
 class FindingRadiusController extends ChangeNotifier {
-  // â”€â”€ Text controllers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  final xCtrl = TextEditingController(); // point on circle â€“ x
-  final yCtrl = TextEditingController(); // point on circle â€“ y
-  final hCtrl = TextEditingController(); // center â€“ h
-  final kCtrl = TextEditingController(); // center â€“ k
+  // ── Text controllers ──────────────────────────────────────
+  final xCtrl = TextEditingController(); // point on circle – x
+  final yCtrl = TextEditingController(); // point on circle – y
+  final hCtrl = TextEditingController(); // center – h
+  final kCtrl = TextEditingController(); // center – k
 
-  // â”€â”€ Output state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Output state ──────────────────────────────────────────
   RadiusResult? result;
   String?       errorMsg;
 
-  // â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Actions ───────────────────────────────────────────────
 
   /// Parses inputs, calls the solver, and notifies listeners.
 void calculate() {

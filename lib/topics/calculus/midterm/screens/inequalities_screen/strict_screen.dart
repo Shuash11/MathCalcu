@@ -10,7 +10,7 @@ class StrictScreen extends StatelessWidget {
     return const BaseInequalityScreen(
       title: 'Strict Inequality',
       subtitle: 'Inequalities Module',
-      hint: 'e.g. 2x + 3 > 7  or  5 âˆ’ x < 2',
+      hint: 'e.g. 2x + 3 > 7  or  5 − x < 2',
       solveFunction: GeneratedLinearSolver.solve,
       stepsFunction: GeneratedLinearSolver.getSteps,
     );

@@ -34,29 +34,29 @@ import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_deriv
 // ==================== DEMO SUITE ====================
 
 const _demos = <(String, Map<String, double>)>[
-  // Explicit â€” polynomial
+  // Explicit — polynomial
   ('y = x^3 - 3x^2 + 2', {'x': 2.0}),
-  // Explicit â€” trig
+  // Explicit — trig
   ('y = sin(x) * cos(x)', {'x': 0.0}),
-  // Explicit â€” exponential / ln combo
+  // Explicit — exponential / ln combo
   ('y = e^x * ln(x)', {'x': 1.0}),
-  // Explicit â€” quotient rule
+  // Explicit — quotient rule
   ('y = (x^2 + 1) / (x - 1)', {'x': 3.0}),
-  // Explicit â€” chain rule inside power
+  // Explicit — chain rule inside power
   ('y = (sin(x))^3', {'x': 1.5708}),
-  // Explicit â€” sqrt
+  // Explicit — sqrt
   ('y = sqrt(x^2 + 1)', {'x': 2.0}),
-  // Implicit â€” circle
+  // Implicit — circle
   ('x^2 + y^2 = 25', {'x': 3.0, 'y': 4.0}),
-  // Implicit â€” Folium of Descartes
+  // Implicit — Folium of Descartes
   ('x^3 + y^3 = 6*x*y', {'x': 3.0, 'y': 3.0}),
-  // Implicit â€” ellipse
+  // Implicit — ellipse
   ('4*x^2 + 9*y^2 = 36', {'x': 0.0, 'y': 2.0}),
-  // Parametric â€” unit circle
+  // Parametric — unit circle
   ('x=cos(t), y=sin(t)', {'t': 0.7854}),
-  // Parametric â€” cycloid
+  // Parametric — cycloid
   ('x=t - sin(t), y=1 - cos(t)', {'t': 1.5708}),
-  // Parametric â€” astroid
+  // Parametric — astroid
   ('x=cos(t)^3, y=sin(t)^3', {'t': 0.5236}),
 ];
 
@@ -84,9 +84,9 @@ void main(List<String> args) {
   }
 
   // Full demo suite
-  stdout.writeln('\n${'â•' * 64}');
-  stdout.writeln('  SLOPE SOLVER â€” COMPREHENSIVE DEMO');
-  stdout.writeln('${'â•' * 64}\n');
+  stdout.writeln('\n${'═' * 64}');
+  stdout.writeln('  SLOPE SOLVER — COMPREHENSIVE DEMO');
+  stdout.writeln('${'═' * 64}\n');
 
   int passed = 0;
   int failed = 0;
@@ -106,8 +106,8 @@ void main(List<String> args) {
     stdout.writeln();
   }
 
-  stdout.writeln('â•' * 64);
+  stdout.writeln('═' * 64);
   stdout.writeln(
       '  RESULTS: $passed passed, $failed failed out of ${_demos.length} demos');
-  stdout.writeln('${'â•' * 64}\n');
+  stdout.writeln('${'═' * 64}\n');
 }

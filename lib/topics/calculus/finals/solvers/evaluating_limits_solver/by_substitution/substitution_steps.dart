@@ -19,13 +19,13 @@ class SolutionStep {
   @override
   String toString() {
     final buffer = StringBuffer();
-    buffer.writeln('â”Œâ”€ Step $stepNumber: $title');
-    buffer.writeln('â”‚  ${explanation.replaceAll('\n', '\nâ”‚  ')}');
+    buffer.writeln('┌─ Step $stepNumber: $title');
+    buffer.writeln('│  ${explanation.replaceAll('\n', '\n│  ')}');
     if (mathExpression != null) {
-      buffer.writeln('â”‚');
-      buffer.writeln('â”‚  $mathExpression'.replaceAll('\n', '\nâ”‚  '));
+      buffer.writeln('│');
+      buffer.writeln('│  $mathExpression'.replaceAll('\n', '\n│  '));
     }
-    buffer.write('â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€');
+    buffer.write('└────────────────────────────────');
     return buffer.toString();
   }
 }
@@ -139,24 +139,24 @@ class SubstitutionStepsGenerator {
         explanation: 'We obtained 0/0, which is an indeterminate form.\n\n'
             'An indeterminate form means we cannot determine the limit from '
             'direct substitution alone. The expression might:\n'
-            'â€¢ Approach a finite value\n'
-            'â€¢ Approach infinity\n'
-            'â€¢ Not exist at all\n\n'
+            '• Approach a finite value\n'
+            '• Approach infinity\n'
+            '• Not exist at all\n\n'
             'We need to use a different technique to evaluate this limit.',
       ),
       SolutionStep(
         stepNumber: 4,
         title: 'Recommendation',
         explanation: '${result.suggestedMethod ?? "Try a different method."}\n\n'
-            'For rational functions (polynomial × polynomial) that give 0/0, '
+            'For rational functions (polynomial ? polynomial) that give 0/0, '
             'the most common approach is:\n\n'
             '1. FACTOR both numerator and denominator\n'
             '2. CANCEL any common factors\n'
             '3. Try substitution again\n\n'
             'Other methods that might work:\n'
-            'â€¢ L\'H÷´pital\'s Rule (take derivatives)\n'
-            'â€¢ Rationalization (for roots)\n'
-            'â€¢ Algebraic manipulation',
+            '• L\'H??pital\'s Rule (take derivatives)\n'
+            '• Rationalization (for roots)\n'
+            '• Algebraic manipulation',
         mathExpression: 'This limit CANNOT be solved by direct substitution alone.\n'
             'Try the "Factoring" method instead.',
       ),
@@ -188,8 +188,8 @@ class SubstitutionStepsGenerator {
             ? 'The numerator evaluates to a non-zero value, but the denominator is zero.\n\n'
               'This means the function grows without bound as x approaches ${_fmt(result.approachValue)}.\n\n'
               'To determine whether it\'s +∞ or -∞, we need to check the signs:\n'
-              'â€¢ Numerator sign: ${_getSign(result.numeratorResult?.value)}\n'
-              'â€¢ Denominator sign near ${_fmt(result.approachValue)}: ${_getSign(result.denominatorResult?.value)}'
+              '• Numerator sign: ${_getSign(result.numeratorResult?.value)}\n'
+              '• Denominator sign near ${_fmt(result.approachValue)}: ${_getSign(result.denominatorResult?.value)}'
             : 'The function evaluates to infinity, meaning it grows without bound.',
       ),
       SolutionStep(
@@ -222,9 +222,9 @@ class SubstitutionStepsGenerator {
         stepNumber: 3,
         title: 'Analysis',
         explanation: 'The expression is undefined at this point. This could be due to:\n'
-            'â€¢ Division by zero\n'
-            'â€¢ Square root of a negative number\n'
-            'â€¢ Logarithm of zero or negative number\n\n'
+            '• Division by zero\n'
+            '• Square root of a negative number\n'
+            '• Logarithm of zero or negative number\n\n'
             '${result.suggestedMethod ?? "Further analysis is needed."}',
       ),
     ];

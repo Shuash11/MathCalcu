@@ -55,7 +55,7 @@ class LCDInputField extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // â”€â”€ Expression Input Row
+          // ── Expression Input Row
           Padding(
             padding: expressionPadding,
             child: Row(
@@ -95,7 +95,7 @@ class LCDInputField extends StatelessWidget {
 
           const Divider(height: 1, thickness: 0.8, indent: 20, endIndent: 20),
 
-// â”€â”€ Limit Meta Row
+// ── Limit Meta Row
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
             child: Row(

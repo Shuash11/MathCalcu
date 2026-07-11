@@ -161,7 +161,7 @@ class _FindingCenterCardState extends State<FindingCenterCard>
   }
 }
 
-// â”€â”€ Shared widgets local to this card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Shared widgets local to this card ────────────────────────────────────────
 
 class _IconOrbit extends StatelessWidget {
   final IconData icon;

@@ -46,7 +46,7 @@ class StepTile extends StatelessWidget {
         children: [
           _TimelineRail(
               accentColor: accentColor,
-              label: step.arrow ? 'â˜…' : '${index + 1}',
+              label: step.arrow ? '★' : '${index + 1}',
               isArrow: step.arrow,
               isLast: isLast),
           const SizedBox(width: 12),

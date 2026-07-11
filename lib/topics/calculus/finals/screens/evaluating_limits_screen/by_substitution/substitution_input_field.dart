@@ -50,7 +50,7 @@ class SubstitutionInputField extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // â”€â”€ Expression Input Row
+          // ── Expression Input Row
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 12, 12, 4),
             child: Row(
@@ -70,7 +70,7 @@ class SubstitutionInputField extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
-                      hintText: isCompact ? 'x²+2x+1' : 'e.g. x^2 + 2x + 1',
+                      hintText: isCompact ? 'x?+2x+1' : 'e.g. x^2 + 2x + 1',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                         color: FinalsTheme.textSecondary(context)
                             .withValues(alpha: 0.3),
@@ -90,7 +90,7 @@ class SubstitutionInputField extends StatelessWidget {
 
           const Divider(height: 1, thickness: 0.8, indent: 20, endIndent: 20),
 
-          // â”€â”€ Limit Meta Row
+          // ── Limit Meta Row
           Padding(
             padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
             child: Row(

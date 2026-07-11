@@ -75,7 +75,7 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                   borderRadius: BorderRadius.circular(22 * s),
                   child: Stack(
                     children: [
-                      // âœ¨ Gradient glow overlay
+                      // ✨ Gradient glow overlay
                       Positioned.fill(
                         child: AnimatedOpacity(
                           duration: const Duration(milliseconds: 300),
@@ -91,12 +91,12 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                         ),
                       ),
 
-                      // ðŸ”¥ Content
+                      // 🔥 Content
                       Padding(
                         padding: EdgeInsets.all(20 * s),
                         child: Row(
                           children: [
-                            // ðŸŒ… LEFT ICON BOX
+                            // 🌅 LEFT ICON BOX
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
                               width: 60 * s,

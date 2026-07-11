@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class TwoPointSlopeTheme {
   TwoPointSlopeTheme._();
 
-  // â”€â”€ Amber accent palette â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Amber accent palette ──────────────────────────────────
   static const Color primary = Color(0xFFF59E0B); // amber-400
   static const Color primaryDark = Color(0xFFB45309); // amber-700
   static const Color primaryLight = Color(0xFFFCD34D); // amber-300
@@ -27,16 +27,16 @@ class TwoPointSlopeTheme {
   static bool isLight(BuildContext context) =>
       context.watch<ThemeProvider>().isLight;
 
-  // â”€â”€ Step colors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Step colors ───────────────────────────────────────────
   static const Color stepBlue = Color(0xFF60A5FA);
   static const Color stepGreen = Color(0xFF34D399);
   static const Color stepPurple = Color(0xFFA78BFA);
   static const Color stepOrange = Color(0xFFFB923C);
 
-  // â”€â”€ Border â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Border ────────────────────────────────────────────────
   static Color border(double opacity) => primary.withValues(alpha: opacity);
 
-  // â”€â”€ Card decoration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Card decoration ───────────────────────────────────────
   static BoxDecoration cardDecoration(BuildContext context,
           {bool glowing = false}) =>
       BoxDecoration(
@@ -65,7 +65,7 @@ class TwoPointSlopeTheme {
               ],
       );
 
-  // â”€â”€ Input decoration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Input decoration ──────────────────────────────────────
   static InputDecoration inputDecoration(
           BuildContext context, String label, String hint) =>
       InputDecoration(
@@ -107,7 +107,7 @@ class TwoPointSlopeTheme {
         ),
       );
 
-  // â”€â”€ Text styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Text styles ───────────────────────────────────────────
   static TextStyle headingStyle(BuildContext context) => TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.w700,

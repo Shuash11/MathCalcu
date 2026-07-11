@@ -14,7 +14,7 @@ class SlopeScreen extends StatefulWidget {
 }
 
 class _SlopeScreenState extends State<SlopeScreen> {
-  // â”€â”€ Controllers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Controllers ──────────────────────────────────────────
   final _x1 = TextEditingController();
   final _y1 = TextEditingController();
   final _x2 = TextEditingController();
@@ -24,7 +24,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   final _x4 = TextEditingController();
   final _y4 = TextEditingController();
 
-  // â”€â”€ Focus Nodes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Focus Nodes ──────────────────────────────────────────
   final _x1Focus = FocusNode();
   final _y1Focus = FocusNode();
   final _x2Focus = FocusNode();
@@ -34,7 +34,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   final _x4Focus = FocusNode();
   final _y4Focus = FocusNode();
 
-  // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── State ─────────────────────────────────────────────────
   SlopeSolverResult? _result1;
   SlopeSolverResult? _result2;
   SlopeComparisonResult? _comparisonResult;
@@ -42,7 +42,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   String? _errorMessage;
   bool _showCompareSection = false;
 
-  // â”€â”€ Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Lifecycle ─────────────────────────────────────────────
   @override
   void dispose() {
     for (final c in [_x1, _y1, _x2, _y2, _x3, _y3, _x4, _y4]) {
@@ -63,7 +63,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
     super.dispose();
   }
 
-  // â”€â”€ Logic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Logic ─────────────────────────────────────────────────
 
   void _calculate() {
     if (_x1.text.trim().isEmpty ||
@@ -82,7 +82,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
 
     if (result1.hasError) {
       return _setError(
-        result1.error ?? 'Invalid input â€” use numbers or fractions like 3/5',
+        result1.error ?? 'Invalid input — use numbers or fractions like 3/5',
       );
     }
 
@@ -113,7 +113,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
 
     if (result2.hasError) {
       return _setError(
-        result2.error ?? 'Invalid input â€” use numbers or fractions like 3/5',
+        result2.error ?? 'Invalid input — use numbers or fractions like 3/5',
       );
     }
 
@@ -181,11 +181,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
               _header(),
               const SizedBox(height: 32),
               _pointRow(
-                'Point 1: (xâ‚, yâ‚)',
-                'xâ‚',
+                'Point 1: (x₁, y₁)',
+                'x₁',
                 _x1,
                 _x1Focus,
-                'yâ‚',
+                'y₁',
                 _y1,
                 _y1Focus,
                 xTextInputAction: TextInputAction.next,
@@ -195,11 +195,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
               ),
               const SizedBox(height: 20),
               _pointRow(
-                'Point 2: (xâ‚‚, yâ‚‚)',
-                'xâ‚‚',
+                'Point 2: (x₂, y₂)',
+                'x₂',
                 _x2,
                 _x2Focus,
-                'yâ‚‚',
+                'y₂',
                 _y2,
                 _y2Focus,
                 xTextInputAction: TextInputAction.next,
@@ -216,11 +216,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
               if (_showCompareSection) ...[
                 const SizedBox(height: 28),
                 _pointRow(
-                  'Point 3: (xâ‚ƒ, yâ‚ƒ)',
-                  'xâ‚ƒ',
+                  'Point 3: (x₃, y₃)',
+                  'x₃',
                   _x3,
                   _x3Focus,
-                  'yâ‚ƒ',
+                  'y₃',
                   _y3,
                   _y3Focus,
                   xTextInputAction: TextInputAction.next,
@@ -230,11 +230,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
                 ),
                 const SizedBox(height: 20),
                 _pointRow(
-                  'Point 4: (xâ‚„, yâ‚„)',
-                  'xâ‚„',
+                  'Point 4: (x₄, y₄)',
+                  'x₄',
                   _x4,
                   _x4Focus,
-                  'yâ‚„',
+                  'y₄',
                   _y4,
                   _y4Focus,
                   xTextInputAction: TextInputAction.next,
@@ -284,7 +284,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
           Text('Equation of a line', style: SlopeTheme.titleStyle(context)),
           const SizedBox(height: 6),
           Text(
-            'Enter coordinates â€” supports fractions like 3/5 or -1/4',
+            'Enter coordinates — supports fractions like 3/5 or -1/4',
             style: SlopeTheme.subtitleStyle(context),
           ),
         ],

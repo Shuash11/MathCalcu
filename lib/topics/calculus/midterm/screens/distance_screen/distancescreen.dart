@@ -87,7 +87,7 @@ class _DistancescreenState extends State<Distancescreen>
   /// - For 1D: returns absolute value (integer or trimmed decimal).
   /// - For 2D:
   ///   - Perfect square → integer (e.g., "5")
-  ///   - Nonâ€‘perfect square → exact radical + approximation (e.g., "√5 ≠ˆ 2.2361")
+  ///   - Non‑perfect square → exact radical + approximation (e.g., "√5 ≈ 2.2361")
   String _formatDistance(double value, bool is2D) {
     if (!is2D) {
       final abs = value.abs();
@@ -132,7 +132,7 @@ class _DistancescreenState extends State<Distancescreen>
         .replaceAll(RegExp(r'0+$'), '')
         .replaceAll(RegExp(r'\.$'), '');
 
-    return '$exact ≠ˆ $approx';
+    return '$exact ≈ $approx';
   }
 
   void _onCalculate() {
@@ -239,7 +239,7 @@ class _DistancescreenState extends State<Distancescreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Header ──────────────────────────────────
                 Row(
                   children: [
                     GestureDetector(
@@ -284,7 +284,7 @@ class _DistancescreenState extends State<Distancescreen>
 
                 const SizedBox(height: DistanceTheme.space5xl),
 
-                // â”€â”€ Mode toggle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Mode toggle ──────────────────────────────
                 Container(
                   decoration: DistanceTheme.cardDecoration(context).copyWith(
                     border: Border.all(color: DistanceTheme.accent12),
@@ -312,7 +312,7 @@ class _DistancescreenState extends State<Distancescreen>
 
                 const SizedBox(height: DistanceTheme.space5xl),
 
-                // â”€â”€ Formula hint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Formula hint ─────────────────────────────
                 Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 14, vertical: DistanceTheme.spaceMd),
@@ -323,7 +323,7 @@ class _DistancescreenState extends State<Distancescreen>
                           color: DistanceTheme.accent70, size: 16),
                       const SizedBox(width: DistanceTheme.spaceXl),
                       Text(
-                        _is2D ? 'd = √((xâ‚‚âˆ’xâ‚)² + (yâ‚‚âˆ’yâ‚)²)' : 'd = |xâ‚‚ âˆ’ xâ‚|',
+                        _is2D ? 'd = √((x₂??x₁)? + (y₂??y₁)?)' : 'd = |x₂ ?? x₁|',
                         style: DistanceTheme.formulaText(context),
                       ),
                     ],
@@ -332,13 +332,13 @@ class _DistancescreenState extends State<Distancescreen>
 
                 const SizedBox(height: DistanceTheme.space5xl),
 
-                // â”€â”€ Inputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Inputs ───────────────────────────────────
                 if (!_is2D) ...[
                   Row(
                     children: [
                       Expanded(
                         child: _buildInputField(
-                          label: 'POINT xâ‚',
+                          label: 'POINT x₁',
                           controller: _x1Ctrl,
                           focusNode: _x1Focus,
                           nextFocus: _x2Focus,
@@ -353,7 +353,7 @@ class _DistancescreenState extends State<Distancescreen>
                       const SizedBox(width: DistanceTheme.spaceLg),
                       Expanded(
                         child: _buildInputField(
-                          label: 'POINT xâ‚‚',
+                          label: 'POINT x₂',
                           controller: _x2Ctrl,
                           focusNode: _x2Focus,
                         ),
@@ -372,14 +372,14 @@ class _DistancescreenState extends State<Distancescreen>
                                 style: DistanceTheme.pointLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
-                              label: 'xâ‚',
+                              label: 'x₁',
                               controller: _x1Ctrl,
                               focusNode: _x1Focus,
                               nextFocus: _y1Focus,
                             ),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
-                              label: 'yâ‚',
+                              label: 'y₁',
                               controller: _y1Ctrl,
                               focusNode: _y1Focus,
                               nextFocus: _x2Focus,
@@ -419,14 +419,14 @@ class _DistancescreenState extends State<Distancescreen>
                                 style: DistanceTheme.pointLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
-                              label: 'xâ‚‚',
+                              label: 'x₂',
                               controller: _x2Ctrl,
                               focusNode: _x2Focus,
                               nextFocus: _y2Focus,
                             ),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
-                              label: 'yâ‚‚',
+                              label: 'y₂',
                               controller: _y2Ctrl,
                               focusNode: _y2Focus,
                             ),
@@ -439,7 +439,7 @@ class _DistancescreenState extends State<Distancescreen>
 
                 const SizedBox(height: DistanceTheme.space4xl),
 
-                // â”€â”€ Calculate button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Calculate button ─────────────────────────
                 GestureDetector(
                   onTap: _onCalculate,
                   child: Container(
@@ -466,7 +466,7 @@ class _DistancescreenState extends State<Distancescreen>
                 ),
                 const SizedBox(height: 20),
 
-                // â”€â”€ Results Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Results Section ──────────────────────────────
                 if (_solved) ...[
                   const SizedBox(height: DistanceTheme.space4xl),
                   if (_hasError)
@@ -485,7 +485,7 @@ class _DistancescreenState extends State<Distancescreen>
                       ),
                     )
                   else ...[
-                    // â”€â”€ VIEW GRAPH BUTTON â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                    // ── VIEW GRAPH BUTTON ─────────────────────────
                     GestureDetector(
                       onTap: _openGraph,
                       child: Container(
@@ -528,7 +528,7 @@ class _DistancescreenState extends State<Distancescreen>
                       ),
                     ),
 
-                    // â”€â”€ Result Card with Steps â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                    // ── Result Card with Steps ─────────────────
                     GestureDetector(
                       onTap: _toggleSteps,
                       child: AnimatedContainer(
@@ -606,7 +606,7 @@ class _DistancescreenState extends State<Distancescreen>
                             ),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             Text(
-                              'd = ${_distance ?? 'â€”'}',
+                              'd = ${_distance ?? '—'}',
                               style: DistanceTheme.resultValue(context),
                             ),
                             if (_formula != null && !_showSteps) ...[

@@ -116,17 +116,17 @@ class _MidpointScreenState extends State<MidpointScreen> {
   String get _groupALabel => _mode == StepMode.midpoint ? 'POINT A' : 'MIDPOINT';
   String get _groupBLabel => _mode == StepMode.midpoint ? 'POINT B' : 'KNOWN POINT';
 
-  String get _fieldAX => _mode == StepMode.midpoint ? 'xâ‚' : 'Mâ‚“';
-  String get _fieldAY => _mode == StepMode.midpoint ? 'yâ‚' : 'Máµ§';
-  String get _fieldBX => _mode == StepMode.midpoint ? 'xâ‚‚' : 'xâ‚';
-  String get _fieldBY => _mode == StepMode.midpoint ? 'yâ‚‚' : 'yâ‚';
+  String get _fieldAX => _mode == StepMode.midpoint ? 'x₁' : 'Mₓ';
+  String get _fieldAY => _mode == StepMode.midpoint ? 'y₁' : 'Mᵧ';
+  String get _fieldBX => _mode == StepMode.midpoint ? 'x₂' : 'x₁';
+  String get _fieldBY => _mode == StepMode.midpoint ? 'y₂' : 'y₁';
 
   String get _resultLabel => _mode == StepMode.midpoint ? 'MIDPOINT' : 'ENDPOINT';
   String get _resultPrefix => _mode == StepMode.midpoint ? 'M' : 'B';
 
   String get _formulaHint => _mode == StepMode.midpoint
-      ? 'M = ((xâ‚+xâ‚‚)/2, (yâ‚+yâ‚‚)/2)'
-      : 'xâ‚‚ = 2Mâ‚“ âˆ’ xâ‚ , yâ‚‚ = 2Máµ§ âˆ’ yâ‚';
+      ? 'M = ((x₁+x₂)/2, (y₁+y₂)/2)'
+      : 'x₂ = 2Mₓ − x₁ , y₂ = 2Mᵧ − y₁';
 
   String get _buttonLabel =>
       _mode == StepMode.midpoint ? 'Calculate Midpoint' : 'Find Endpoint';
@@ -325,7 +325,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
           ),
           const SizedBox(height: MidpointTheme.spaceMd),
           Text(
-            '$_resultPrefix = (${_resX ?? 'â€”'}, ${_resY ?? 'â€”'})',
+            '$_resultPrefix = (${_resX ?? '—'}, ${_resY ?? '—'})',
             style: MidpointTheme.resultValue(context),
             softWrap: true,
             overflow: TextOverflow.visible,

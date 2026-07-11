@@ -100,7 +100,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Fixed header â€” never participates in scroll layout
+            // Fixed header — never participates in scroll layout
             _CategoryHeader(
               moduleCount: _modules.length,
               theme: theme,
@@ -136,7 +136,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
   }
 }
 
-// â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Header ────────────────────────────────────────────────────────────────────
 
 class _CategoryHeader extends StatelessWidget {
   final int moduleCount;
@@ -232,7 +232,7 @@ class _CategoryHeader extends StatelessWidget {
   }
 }
 
-// â”€â”€ Default card for unregistered modules â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Default card for unregistered modules ─────────────────────────────────────
 
 class _ModuleCard extends StatefulWidget {
   final ModuleEntry module;

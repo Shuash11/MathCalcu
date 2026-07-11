@@ -10,7 +10,7 @@ const _slate = Color(0xFF64748B);
 
 // PPStepBlockWidget renders a single block inside a step card.
 //
-// [width] â€” the exact pixel width the block should occupy.
+// [width] — the exact pixel width the block should occupy.
 // Always pass this from _StepCard so LaTeX has a finite bounded constraint.
 // Never rely on IntrinsicWidth or ConstrainedBox inside a scroll view.
 
@@ -75,7 +75,7 @@ class PPStepBlockWidget extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€ Note block â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Note block ───────────────────────────────────────────────
 
 class _NoteBlock extends StatelessWidget {
   final String text;
@@ -104,7 +104,7 @@ class _NoteBlock extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€ Generic math block â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Generic math block ───────────────────────────────────────
 
 class _MathBlock extends StatelessWidget {
   final String? label;
@@ -158,7 +158,7 @@ class _MathBlock extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€ Result block â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Result block ─────────────────────────────────────────────
 
 class _ResultBlock extends StatelessWidget {
   final String? latex;
@@ -192,7 +192,7 @@ class _ResultBlock extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€ Core renderer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Core renderer ────────────────────────────────────────────
 
 Widget _renderMath(
   String? latex,

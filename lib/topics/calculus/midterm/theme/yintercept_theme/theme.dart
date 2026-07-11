@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
 class YITheme {
-  // â”€â”€ Palette (Static Fallbacks) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Palette (Static Fallbacks) ──────────────────────────
   static const Color forestGreen = Color(0xFF059669);
   static const Color emeraldConst = Color(0xFF10B981);
   static const Color mintConst = Color(0xFF6EE7B7);
@@ -23,7 +23,7 @@ class YITheme {
   static Color shadowColor(BuildContext context) =>
       context.watch<ThemeProvider>().shadowColor;
 
-  // â”€â”€ Dynamic Accent Colors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Dynamic Accent Colors ───────────────────────────────
   static Color emerald(BuildContext context) =>
       isLight(context) ? const Color(0xFF059669) : const Color(0xFF10B981);
   static Color gold(BuildContext context) =>
@@ -33,7 +33,7 @@ class YITheme {
   static Color forest(BuildContext context) =>
       isLight(context) ? const Color(0xFF064E3B) : const Color(0xFF059669);
 
-  // â”€â”€ Gradients â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Gradients ──────────────────────────────────────────
   static LinearGradient cardGradient(BuildContext context) => LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -52,7 +52,7 @@ class YITheme {
         ],
       );
 
-  // â”€â”€ Text styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Text styles ────────────────────────────────────────
   static TextStyle titleStyle(BuildContext context) => TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,

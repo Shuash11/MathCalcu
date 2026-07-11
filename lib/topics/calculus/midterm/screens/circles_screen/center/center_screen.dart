@@ -1,5 +1,5 @@
 ﻿// lib/Screens/center_screen.dart
-// Thin shell â€” owns the controller lifecycle, renders sub-screens.
+// Thin shell — owns the controller lifecycle, renders sub-screens.
 
 import 'package:flutter/material.dart';
 import 'centercontroller.dart';
@@ -53,15 +53,15 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // ── Header ────────────────────────────────────
               const CenterHeaderBar(),
               const SizedBox(height: 28),
 
-              // â”€â”€ Formula reference â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // ── Formula reference ─────────────────────────
               const CenterFormulaCard(),
               const SizedBox(height: 24),
 
-              // â”€â”€ Inputs + buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // ── Inputs + buttons ──────────────────────────
               CenterInputSection(
                 controller: _controller,
                 x1Focus: _x1Focus,
@@ -73,13 +73,13 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
 
               const SizedBox(height: 24),
 
-              // â”€â”€ Error (null → hidden) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // ── Error (null → hidden) ─────────────────────
               if (_controller.errorMsg != null) ...[
                 const SizedBox(height: 16),
                 CenterErrorSection(errorMsg: _controller.errorMsg),
               ],
 
-              // â”€â”€ Steps + result (null → hidden) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+              // ── Steps + result (null → hidden) ────────────
               if (_controller.result != null) ...[
                 const SizedBox(height: 24),
                 CenterStepsSection(steps: _controller.result!.steps),

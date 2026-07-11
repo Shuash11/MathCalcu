@@ -1,8 +1,8 @@
 ﻿// display.dart
 // Two pure display classes that read a SlopeResult and produce output.
-// Nothing here does any mathematics â€” it only formats and prints.
-//   StepExplainer  â€” builds a list of step-by-step explanation strings
-//   PrettyPrinter  â€” renders a SlopeResult to the terminal with ANSI colour
+// Nothing here does any mathematics — it only formats and prints.
+//   StepExplainer  — builds a list of step-by-step explanation strings
+//   PrettyPrinter  — renders a SlopeResult to the terminal with ANSI colour
 import 'dart:io';
 import 'slope_using_derivatives_solver.dart';
 // ==================== STEP EXPLAINER ====================
@@ -27,14 +27,14 @@ class StepExplainer {
 
     steps.add('GIVEN:  $dep = ${r.functionExpr.toMathString()}');
     steps.add('');
-    steps.add('STEP 1 â€” Identify the function');
+    steps.add('STEP 1 — Identify the function');
     steps.add('  f($indep) = ${r.functionExpr.toMathString()}');
     steps.add('');
-    steps.add('STEP 2 â€” Differentiate with respect to $indep');
+    steps.add('STEP 2 — Differentiate with respect to $indep');
     steps.add('  d$dep/d$indep = ${r.derivative.toMathString()}');
     if (r.derivative.toMathString() != r.simplifiedDerivative.toMathString()) {
       steps.add('');
-      steps.add('STEP 3 â€” Simplify the derivative');
+      steps.add('STEP 3 — Simplify the derivative');
       steps.add('  d$dep/d$indep = ${r.simplifiedDerivative.toMathString()}');
     } else {
       steps.add('  (already in simplified form)');
@@ -47,7 +47,7 @@ class StepExplainer {
               ? 4
               : 3;
       steps.add('');
-      steps.add('STEP $stepNum â€” Evaluate at $indep = ${_fmt(xVal)}');
+      steps.add('STEP $stepNum — Evaluate at $indep = ${_fmt(xVal)}');
       steps.add(
           '  slope = ${r.simplifiedDerivative.toMathString()} | $indep=${_fmt(xVal)} = ${_fmt(r.slopeValue!)}');
     }
@@ -62,17 +62,17 @@ class StepExplainer {
     steps.add(
         'GIVEN (implicit):  ${r.leftSide?.toMathString() ?? ''} = ${r.rightSide?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 1 â€” Differentiate both sides with respect to x');
+    steps.add('STEP 1 — Differentiate both sides with respect to x');
     steps.add('  Treat y as a function of x: y = y(x)');
     steps.add(
         '  Left  side: d/dx[${r.leftSide?.toMathString() ?? ''}] = ${r.leftDerivative?.toMathString() ?? ''}');
     steps.add(
         '  Right side: d/dx[${r.rightSide?.toMathString() ?? ''}] = ${r.rightDerivative?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 2 â€” Set derivatives equal and collect dy/dx terms');
+    steps.add('STEP 2 — Set derivatives equal and collect dy/dx terms');
     steps.add('  ${r.derivative.toMathString()} = 0');
     steps.add('');
-    steps.add('STEP 3 â€” Solve for dy/dx');
+    steps.add('STEP 3 — Solve for dy/dx');
     steps.add(
         '  dy/dx = ${r.implicitSlopeExpr?.toMathString() ?? r.simplifiedDerivative.toMathString()}');
 
@@ -82,7 +82,7 @@ class StepExplainer {
       final xVal = r.point['x']!;
       final yVal = r.point['y']!;
       steps.add('');
-      steps.add('STEP 4 â€” Evaluate at (${_fmt(xVal)}, ${_fmt(yVal)})');
+      steps.add('STEP 4 — Evaluate at (${_fmt(xVal)}, ${_fmt(yVal)})');
       steps.add('  dy/dx = ${_fmt(r.slopeValue!)}');
     }
 
@@ -98,11 +98,11 @@ class StepExplainer {
     steps.add('  x($t) = ${r.paramXExpr?.toMathString() ?? ''}');
     steps.add('  y($t) = ${r.paramYExpr?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 1 â€” Find dx/d$t and dy/d$t');
+    steps.add('STEP 1 — Find dx/d$t and dy/d$t');
     steps.add('  dx/d$t = ${r.dxDt?.toMathString() ?? ''}');
     steps.add('  dy/d$t = ${r.dyDt?.toMathString() ?? ''}');
     steps.add('');
-    steps.add('STEP 2 â€” Apply the parametric slope formula');
+    steps.add('STEP 2 — Apply the parametric slope formula');
     steps.add('  dy/dx = (dy/d$t) / (dx/d$t)');
     steps.add(
         '        = (${r.dyDt?.toMathString() ?? ''}) / (${r.dxDt?.toMathString() ?? ''})');
@@ -110,8 +110,8 @@ class StepExplainer {
 
     if (r.secondDerivative != null) {
       steps.add('');
-      steps.add('STEP 3 â€” Second derivative (concavity)');
-      steps.add('  d²y/dx² = (d/d$t[dy/dx]) / (dx/d$t)');
+      steps.add('STEP 3 — Second derivative (concavity)');
+      steps.add('  d?y/dx? = (d/d$t[dy/dx]) / (dx/d$t)');
       steps.add('          = ${r.secondDerivative!.toMathString()}');
     }
 
@@ -119,7 +119,7 @@ class StepExplainer {
       final stepNum = r.secondDerivative != null ? 4 : 3;
       final tVal = r.point[t]!;
       steps.add('');
-      steps.add('STEP $stepNum â€” Evaluate at $t = ${_fmt(tVal)}');
+      steps.add('STEP $stepNum — Evaluate at $t = ${_fmt(tVal)}');
       final xVal = r.paramXExpr != null
           ? ExprUtils.evaluate(r.paramXExpr!, r.point)
           : double.nan;
@@ -167,11 +167,11 @@ class PrettyPrinter {
   /// Prints a fully-formatted, ANSI-coloured result block to stdout.
   static void print(SlopeResult result) {
     const w = 62;
-    final bar = 'â•' * w;
+    final bar = '═' * w;
 
-    _writeln('$_bold$_cyanâ•”$barâ•—$_reset');
-    _writeln('$_bold$_cyanâ•‘${_center('SLOPE SOLVER', w)}â•‘$_reset');
-    _writeln('$_bold$_cyanâ•š$barâ•$_reset');
+    _writeln('$_bold$_cyan╔$bar╗$_reset');
+    _writeln('$_bold$_cyan║${_center('SLOPE SOLVER', w)}║$_reset');
+    _writeln('$_bold$_cyan╚$bar╝$_reset');
     _writeln('');
 
     final typeLabel = {
@@ -195,41 +195,41 @@ class PrettyPrinter {
     }
 
     _writeln('');
-    _writeln('$_bold$_greenâ”Œâ”€â”€â”€ RESULT SUMMARY ${'â”€' * (w - 19)}â”$_reset');
+    _writeln('$_bold$_green┌─── RESULT SUMMARY ${'─' * (w - 19)}┐$_reset');
     _writeln(
-        '$_bold$_greenâ”‚$_reset  Derivative:  ${result.simplifiedDerivative.toMathString()}'
+        '$_bold$_green│$_reset  Derivative:  ${result.simplifiedDerivative.toMathString()}'
         '${' ' * _pad(result.simplifiedDerivative.toMathString(), w - 15)}'
-        '$_bold$_greenâ”‚$_reset');
+        '$_bold$_green│$_reset');
 
     if (result.secondDerivative != null) {
       final sd = result.secondDerivative!.toMathString();
       _writeln(
-          '$_bold$_greenâ”‚$_reset  2nd deriv:   $sd'
+          '$_bold$_green│$_reset  2nd deriv:   $sd'
           '${' ' * _pad(sd, w - 15)}'
-          '$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset');
     }
     if (result.slopeValue != null) {
       final sv = _fmtD(result.slopeValue!);
       _writeln(
-          '$_bold$_greenâ”‚$_reset  Slope value: $sv'
+          '$_bold$_green│$_reset  Slope value: $sv'
           '${' ' * _pad(sv, w - 15)}'
-          '$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset');
     }
     if (result.tangentLineEquation != null) {
       final tl = result.tangentLineEquation!;
       _writeln(
-          '$_bold$_greenâ”‚$_reset  Tangent:     $tl'
+          '$_bold$_green│$_reset  Tangent:     $tl'
           '${' ' * _pad(tl, w - 15)}'
-          '$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset');
     }
     if (result.normalLineEquation != null) {
       final nl = result.normalLineEquation!;
       _writeln(
-          '$_bold$_greenâ”‚$_reset  Normal:      $nl'
+          '$_bold$_green│$_reset  Normal:      $nl'
           '${' ' * _pad(nl, w - 15)}'
-          '$_bold$_greenâ”‚$_reset');
+          '$_bold$_green│$_reset');
     }
-    _writeln('$_bold$_greenâ””${'â”€' * w}â”˜$_reset');
+    _writeln('$_bold$_green└${'─' * w}┘$_reset');
   }
 
   static void _writeln(String s) => stdout.writeln(s);

@@ -427,8 +427,8 @@ class FullScreenNumberLinePainter extends CustomPainter {
     final p2 = tx(x2);
 
     _drawPoint(
-        canvas, p1, lineY, DistanceTheme.accent, 'xâ‚ = ${_formatNumber(x1)}');
-    _drawPoint(canvas, p2, lineY, textColor, 'xâ‚‚ = ${_formatNumber(x2)}');
+        canvas, p1, lineY, DistanceTheme.accent, 'x₁ = ${_formatNumber(x1)}');
+    _drawPoint(canvas, p2, lineY, textColor, 'x₂ = ${_formatNumber(x2)}');
 
     // Bracket
     _drawBracket(canvas, p1, p2, lineY);

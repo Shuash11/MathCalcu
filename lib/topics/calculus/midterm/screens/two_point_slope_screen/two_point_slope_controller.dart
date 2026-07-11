@@ -1,37 +1,37 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_solver/two_point_slope_solver.dart';
 import 'package:flutter/material.dart';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // CONTROLLER
 // Manages input state, validation, and result.
 // Extend ChangeNotifier so any widget can listen with Provider
 // or ValueListenableBuilder.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 enum SolveState { idle, solved, error }
 
 class TwoPointSlopeController extends ChangeNotifier {
-  // â”€â”€ Text controllers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Text controllers ──────────────────────────────────────
   final TextEditingController x1Controller = TextEditingController();
   final TextEditingController y1Controller = TextEditingController();
   final TextEditingController x2Controller = TextEditingController();
   final TextEditingController y2Controller = TextEditingController();
 
-  // â”€â”€ Form key â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Form key ──────────────────────────────────────────────
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── State ─────────────────────────────────────────────────
   SolveState _state = SolveState.idle;
   TwoPointSlopeResult? _result;
   String? _errorMessage;
 
-  // â”€â”€ Getters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Getters ───────────────────────────────────────────────
   SolveState get state => _state;
   TwoPointSlopeResult? get result => _result;
   String? get errorMessage => _errorMessage;
   bool get hasSolved => _state == SolveState.solved;
 
-  // â”€â”€ Solve â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Solve ─────────────────────────────────────────────────
   void solve() {
     if (!formKey.currentState!.validate()) return;
 
@@ -57,7 +57,7 @@ class TwoPointSlopeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // â”€â”€ Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Reset ─────────────────────────────────────────────────
   void reset() {
     x1Controller.clear();
     y1Controller.clear();
@@ -70,7 +70,7 @@ class TwoPointSlopeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // â”€â”€ Swap points â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Swap points ───────────────────────────────────────────
   void swapPoints() {
     final tempX = x1Controller.text;
     final tempY = y1Controller.text;
@@ -84,14 +84,14 @@ class TwoPointSlopeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // â”€â”€ Validator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Validator ─────────────────────────────────────────────
   String? validateNumber(String? value) {
     if (value == null || value.trim().isEmpty) return 'Required';
     if (double.tryParse(value.trim()) == null) return 'Enter a valid number';
     return null;
   }
 
-  // â”€â”€ Quick fill (example data) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Quick fill (example data) ─────────────────────────────
   void fillExample() {
     x1Controller.text = '2';
     y1Controller.text = '3';

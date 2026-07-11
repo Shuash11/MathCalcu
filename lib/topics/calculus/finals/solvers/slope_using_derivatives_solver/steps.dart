@@ -1,6 +1,6 @@
 ﻿// solution_steps.dart
-// Classroom Solution Steps â€” Slope Solver
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Classroom Solution Steps — Slope Solver
+// ════════════════════════════════════════
 // Depends on: slope_solver.dart (share the same directory)
 // Usage:
 //   dart solution_steps.dart
@@ -15,23 +15,23 @@ import 'dart:io';
 
 import 'slope_using_derivatives_solver.dart';
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
 // PASTE THE ENTIRE CONTENTS OF slope_solver.dart HERE (all classes up to main)
-// then delete slope_solver's own main() â€” only the main() below is kept.
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// then delete slope_solver's own main() — only the main() below is kept.
+// ══════════════════════════════════════════════════════════════════════════════
 
-// â”€â”€â”€ Forward declarations satisfied by slope_solver content above â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Forward declarations satisfied by slope_solver content above ─────────────
 // TokenType, Token, Tokenizer, Parser, Expr hierarchy (Num, Var, Const, BinOp,
 // Pow, UnaryNeg, Func, DerivSym), ExprUtils, Simplifier, Differentiator,
 // ProblemType, SlopeResult, SlopeSolver, StepExplainer, PrettyPrinter
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§1  DATA MODEL
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §1  DATA MODEL
+// ══════════════════════════════════════════════════════════════════════════════
 
 /// Semantic category of a single classroom step.
 enum StepKind {
-  sectionHeader, // bold title line  e.g. "â”€â”€ GIVEN â”€â”€"
+  sectionHeader, // bold title line  e.g. "── GIVEN ──"
   ruleStatement, // the calculus rule being applied
   algebra, // one line of algebraic work
   substitution, // plugging a numeric value in
@@ -73,16 +73,16 @@ class ClassroomSolution {
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§2  DERIVATIVE NARRATOR
+// ══════════════════════════════════════════════════════════════════════════════
+// §2  DERIVATIVE NARRATOR
 //     Converts an Expr AST node into the name of the differentiation rule
 //     applied at the top level, with a short justification phrase.
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
 
 class DerivativeNarrator {
   /// Returns lines such as:
-  ///   "Power Rule:  d/dx[uâ¿] = n·uâ¿â»Â¹·u'"
-  ///   "Product Rule: d/dx[f·g] = f'g + fg'"
+  ///   "Power Rule:  d/dx[uⁿ] = n?uⁿ⁻¹?u'"
+  ///   "Product Rule: d/dx[f?g] = f'g + fg'"
   static List<String> narrate(Expr expr, String wrtVar) {
     if (expr is Num || expr is Const) {
       return ['Constant Rule:  d/d$wrtVar[c] = 0'];
@@ -98,7 +98,7 @@ class DerivativeNarrator {
     if (expr is UnaryNeg) {
       return [
         'Constant Multiple Rule:  d/d$wrtVar[-f] = -(d/d$wrtVar[f])',
-        ...narrate(expr.operand, wrtVar).map((s) => '  â†³ inner: $s'),
+        ...narrate(expr.operand, wrtVar).map((s) => '  ↳ inner: $s'),
       ];
     }
     if (expr is BinOp) {
@@ -106,16 +106,16 @@ class DerivativeNarrator {
         case '+':
           return ['Sum Rule:  d/d$wrtVar[f + g] = f\' + g\''];
         case '-':
-          return ['Difference Rule:  d/d$wrtVar[f âˆ’ g] = f\' âˆ’ g\''];
+          return ['Difference Rule:  d/d$wrtVar[f ?? g] = f\' ?? g\''];
         case '*':
           return [
-            'Product Rule:  d/d$wrtVar[f·g] = f\'·g + f·g\'',
+            'Product Rule:  d/d$wrtVar[f?g] = f\'?g + f?g\'',
             '  where  f = ${expr.left.toMathString()}',
             '         g = ${expr.right.toMathString()}',
           ];
         case '/':
           return [
-            'Quotient Rule:  d/d$wrtVar[f/g] = (f\'g âˆ’ fg\') / g²',
+            'Quotient Rule:  d/d$wrtVar[f/g] = (f\'g ?? fg\') / g?',
             '  where  f = ${expr.left.toMathString()}',
             '         g = ${expr.right.toMathString()}',
           ];
@@ -126,20 +126,20 @@ class DerivativeNarrator {
       final expHasVar = ExprUtils.containsVar(expr.exponent, wrtVar);
       if (baseHasVar && !expHasVar) {
         return [
-          'Power Rule:  d/d$wrtVar[uâ¿] = n·uâ¿â»Â¹·u\'  (with Chain Rule)',
+          'Power Rule:  d/d$wrtVar[uⁿ] = n?uⁿ⁻¹?u\'  (with Chain Rule)',
           '  where  u = ${expr.base.toMathString()}',
           '         n = ${expr.exponent.toMathString()}',
         ];
       }
       if (!baseHasVar && expHasVar) {
         return [
-          'Exponential Rule:  d/d$wrtVar[aáµ˜] = aáµ˜·ln(a)·u\'',
+          'Exponential Rule:  d/d$wrtVar[aᵘ] = aᵘ?ln(a)?u\'',
           '  where  a = ${expr.base.toMathString()}',
           '         u = ${expr.exponent.toMathString()}',
         ];
       }
       return [
-        'General Power Rule:  d/d$wrtVar[fáµ] = fáµ·(g\'·ln f + g·f\'/f)',
+        'General Power Rule:  d/d$wrtVar[fᵍ] = fᵍ?(g\'?ln f + g?f\'/f)',
         '  where  f = ${expr.base.toMathString()}',
         '         g = ${expr.exponent.toMathString()}',
       ];
@@ -158,86 +158,86 @@ class DerivativeNarrator {
 
     switch (expr.name) {
       case 'sin':
-        return ['d/d$wrtVar[sin u] = cos u · u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[sin u] = cos u ? u\'$chain', '  where  u = $u'];
       case 'cos':
-        return ['d/d$wrtVar[cos u] = âˆ’sin u · u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[cos u] = ??sin u ? u\'$chain', '  where  u = $u'];
       case 'tan':
         return [
-          'd/d$wrtVar[tan u] = sec²u · u\'  =  u\' / cos²u$chain',
+          'd/d$wrtVar[tan u] = sec?u ? u\'  =  u\' / cos?u$chain',
           '  where  u = $u'
         ];
       case 'cot':
         return [
-          'd/d$wrtVar[cot u] = âˆ’csc²u · u\'  =  âˆ’u\' / sin²u$chain',
+          'd/d$wrtVar[cot u] = ??csc?u ? u\'  =  ??u\' / sin?u$chain',
           '  where  u = $u'
         ];
       case 'sec':
         return [
-          'd/d$wrtVar[sec u] = sec u · tan u · u\'  =  sin u · u\' / cos²u$chain',
+          'd/d$wrtVar[sec u] = sec u ? tan u ? u\'  =  sin u ? u\' / cos?u$chain',
           '  where  u = $u'
         ];
       case 'csc':
         return [
-          'd/d$wrtVar[csc u] = âˆ’csc u · cot u · u\'  =  âˆ’cos u · u\' / sin²u$chain',
+          'd/d$wrtVar[csc u] = ??csc u ? cot u ? u\'  =  ??cos u ? u\' / sin?u$chain',
           '  where  u = $u'
         ];
       case 'asin':
       case 'arcsin':
         return [
-          'd/d$wrtVar[arcsin u] = u\' / √(1 âˆ’ u²)$chain',
+          'd/d$wrtVar[arcsin u] = u\' / √(1 ?? u?)$chain',
           '  where  u = $u'
         ];
       case 'acos':
       case 'arccos':
         return [
-          'd/d$wrtVar[arccos u] = âˆ’u\' / √(1 âˆ’ u²)$chain',
+          'd/d$wrtVar[arccos u] = ??u\' / √(1 ?? u?)$chain',
           '  where  u = $u'
         ];
       case 'atan':
       case 'arctan':
         return [
-          'd/d$wrtVar[arctan u] = u\' / (1 + u²)$chain',
+          'd/d$wrtVar[arctan u] = u\' / (1 + u?)$chain',
           '  where  u = $u'
         ];
       case 'sinh':
-        return ['d/d$wrtVar[sinh u] = cosh u · u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[sinh u] = cosh u ? u\'$chain', '  where  u = $u'];
       case 'cosh':
-        return ['d/d$wrtVar[cosh u] = sinh u · u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[cosh u] = sinh u ? u\'$chain', '  where  u = $u'];
       case 'tanh':
-        return ['d/d$wrtVar[tanh u] = u\' / cosh²u$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[tanh u] = u\' / cosh?u$chain', '  where  u = $u'];
       case 'ln':
         return ['d/d$wrtVar[ln u] = u\' / u$chain', '  where  u = $u'];
       case 'log':
         return [
-          'd/d$wrtVar[logâ‚â‚€ u] = u\' / (u · ln 10)$chain',
+          'd/d$wrtVar[log₁₀ u] = u\' / (u ? ln 10)$chain',
           '  where  u = $u'
         ];
       case 'exp':
-        return ['d/d$wrtVar[eáµ˜] = eáµ˜ · u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[eᵘ] = eᵘ ? u\'$chain', '  where  u = $u'];
       case 'sqrt':
         return ['d/d$wrtVar[√u] = u\' / (2√u)$chain', '  where  u = $u'];
       case 'abs':
         return [
-          'd/d$wrtVar[|u|] = u · u\' / |u|   (u ≠  0)$chain',
+          'd/d$wrtVar[|u|] = u ? u\' / |u|   (u ≠? 0)$chain',
           '  where  u = $u'
         ];
       case 'cbrt':
         return [
-          'd/d$wrtVar[âˆ›u] = u\' / (3 · u^(2/3))$chain',
+          'd/d$wrtVar[??u] = u\' / (3 ? u^(2/3))$chain',
           '  where  u = $u'
         ];
       default:
         return [
-          'd/d$wrtVar[${expr.name}(u)] · u\'  (Chain Rule)',
+          'd/d$wrtVar[${expr.name}(u)] ? u\'  (Chain Rule)',
           '  where  u = $u'
         ];
     }
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§3  SOLUTION BUILDER â€” dispatches to the three sub-builders
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §3  SOLUTION BUILDER — dispatches to the three sub-builders
+// ══════════════════════════════════════════════════════════════════════════════
 
 class SolutionBuilder {
   static ClassroomSolution build(SlopeResult r) {
@@ -252,9 +252,9 @@ class SolutionBuilder {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§4  EXPLICIT SOLUTION BUILDER   y = f(x)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §4  EXPLICIT SOLUTION BUILDER   y = f(x)
+// ══════════════════════════════════════════════════════════════════════════════
 
 class ExplicitSolutionBuilder {
 static ClassroomSolution build(SlopeResult r) {
@@ -269,7 +269,7 @@ static ClassroomSolution build(SlopeResult r) {
     final showSimplify = r.derivative.toMathString() != r.simplifiedDerivative.toMathString();
     final ruleLines = DerivativeNarrator.narrate(f, x);
 
-    // â”€â”€ Given â”€â”€â”€
+    // ── Given ───
     steps.add(ClassroomStep(
       kind: StepKind.sectionHeader,
       label: 'Given',
@@ -279,7 +279,7 @@ static ClassroomSolution build(SlopeResult r) {
       ],
     ));
 
-    // â”€â”€ Differentiate (rules + result merged) â”€â”€â”€
+    // ── Differentiate (rules + result merged) ───
     steps.add(ClassroomStep(
       kind: StepKind.algebra,
       label: 'Differentiate',
@@ -293,7 +293,7 @@ static ClassroomSolution build(SlopeResult r) {
       ],
     ));
 
-    // â”€â”€ Simplify (separate, only if different) â”€â”€â”€
+    // ── Simplify (separate, only if different) ───
     if (showSimplify) {
       steps.add(ClassroomStep(
         kind: StepKind.algebra,
@@ -305,7 +305,7 @@ static ClassroomSolution build(SlopeResult r) {
       ));
     }
 
-    // â”€â”€ Evaluate â”€â”€â”€
+    // ── Evaluate ───
     if (hasPoint && r.slopeValue != null) {
       final xv = r.point[x]!;
       steps.add(ClassroomStep(
@@ -319,16 +319,16 @@ static ClassroomSolution build(SlopeResult r) {
         ],
       ));
 
-      // â”€â”€ Tangent Line â”€â”€â”€ (tangent ONLY)
+      // ── Tangent Line ─── (tangent ONLY)
       final yVal = _evalSafe(r.functionExpr, r.point);
       if (yVal != null && r.tangentLineEquation != null) {
         final m = r.slopeValue!;
         steps.add(ClassroomStep(
           kind: StepKind.tangentNormal,
           label: 'Tangent Line',
-          hint: 'Use point-slope form: y - yâ‚€ = m(x - xâ‚€)',
+          hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
           lines: [
-            'm = ${_fmt(m)},  (xâ‚€, yâ‚€) = (${_fmt(xv)}, ${_fmt(yVal)})',
+            'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xv)}, ${_fmt(yVal)})',
             '',
             'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xv)})',
             'y = ${_fmt(m)}x + ${_fmt(yVal - m * xv)}',
@@ -338,7 +338,7 @@ static ClassroomSolution build(SlopeResult r) {
         ));
       }
 
-      // â”€â”€ Normal Line â”€â”€â”€ (normal ONLY)
+      // ── Normal Line ─── (normal ONLY)
       if (yVal != null && r.normalLineEquation != null && r.normalSlope != null) {
         final mN = r.normalSlope!;
         steps.add(ClassroomStep(
@@ -357,7 +357,7 @@ static ClassroomSolution build(SlopeResult r) {
       }
     }
 
-    // â”€â”€ Result â”€â”€â”€
+    // ── Result ───
     steps.add(ClassroomStep(
       kind: StepKind.result,
       label: 'Answer',
@@ -373,7 +373,7 @@ static ClassroomSolution build(SlopeResult r) {
     ));
 
     return ClassroomSolution(
-      problemTitle: 'Explicit Differentiation â€” ${r.originalInput}',
+      problemTitle: 'Explicit Differentiation — ${r.originalInput}',
       type: r.type,
       steps: steps,
       result: r,
@@ -381,9 +381,9 @@ static ClassroomSolution build(SlopeResult r) {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§5  IMPLICIT SOLUTION BUILDER   F(x,y) = G(x,y)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §5  IMPLICIT SOLUTION BUILDER   F(x,y) = G(x,y)
+// ══════════════════════════════════════════════════════════════════════════════
 
 class ImplicitSolutionBuilder {
   static ClassroomSolution build(SlopeResult r) {
@@ -404,7 +404,7 @@ class ImplicitSolutionBuilder {
         ? DerivativeNarrator.narrate(r.rightSide!, 'x')
         : <String>[];
 
-    // â”€â”€ GIVEN â”€â”€â”€
+    // ── GIVEN ───
     steps.add(ClassroomStep(
       kind: StepKind.sectionHeader,
       label: 'Given',
@@ -415,7 +415,7 @@ class ImplicitSolutionBuilder {
       ],
     ));
 
-    // â”€â”€ Differentiate LHS â”€â”€â”€
+    // ── Differentiate LHS ───
     steps.add(ClassroomStep(
       kind: StepKind.algebra,
       label: 'Diff LHS',
@@ -428,7 +428,7 @@ class ImplicitSolutionBuilder {
       ],
     ));
 
-    // â”€â”€ Differentiate RHS â”€â”€â”€
+    // ── Differentiate RHS ───
     steps.add(ClassroomStep(
       kind: StepKind.algebra,
       label: 'Diff RHS',
@@ -441,7 +441,7 @@ class ImplicitSolutionBuilder {
       ],
     ));
 
-    // â”€â”€ Combine â”€â”€â”€
+    // ── Combine ───
     steps.add(ClassroomStep(
       kind: StepKind.algebra,
       label: 'Combine',
@@ -455,7 +455,7 @@ class ImplicitSolutionBuilder {
       ],
     ));
 
-    // â”€â”€ Move Terms â”€â”€â”€
+    // ── Move Terms ───
     if (hasDyDx) {
       final (c, rem) = Simplifier.extractDerivCoeff(r.derivative, 'y');
       final cLatex = c.toLatexString();
@@ -470,7 +470,7 @@ class ImplicitSolutionBuilder {
         ],
       ));
 
-      // â”€â”€ Isolate dy/dx â”€â”€â”€
+      // ── Isolate dy/dx ───
       final rawSlope = BinOp(negRem, '/', c);
       final rawSlopeLatex = rawSlope.toLatexString();
       final showSimplify = rawSlopeLatex != slopeLatex;
@@ -483,7 +483,7 @@ class ImplicitSolutionBuilder {
         ],
       ));
 
-      // â”€â”€ Simplify (only if needed) â”€â”€â”€
+      // ── Simplify (only if needed) ───
       if (showSimplify) {
         steps.add(ClassroomStep(
           kind: StepKind.algebra,
@@ -496,7 +496,7 @@ class ImplicitSolutionBuilder {
       }
     }
 
-    // â”€â”€ Evaluate â”€â”€â”€
+    // ── Evaluate ───
     if (hasPoint && r.slopeValue != null) {
       final xVal = r.point['x']!;
       final yVal = r.point['y']!;
@@ -511,16 +511,16 @@ class ImplicitSolutionBuilder {
         ],
       ));
 
-      // â”€â”€ Tangent Line â”€â”€â”€ (tangent ONLY)
+      // ── Tangent Line ─── (tangent ONLY)
       if (r.tangentLineEquation != null) {
         final m = r.slopeValue!;
         final b = yVal - m * xVal;
         steps.add(ClassroomStep(
           kind: StepKind.tangentNormal,
           label: 'Tangent Line',
-          hint: 'Use point-slope form: y - yâ‚€ = m(x - xâ‚€)',
+          hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
           lines: [
-            'm = ${_fmt(m)},  (xâ‚€, yâ‚€) = (${_fmt(xVal)}, ${_fmt(yVal)})',
+            'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xVal)}, ${_fmt(yVal)})',
             '',
             'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xVal)})',
             'y = ${_fmt(m)}x + ${_fmt(b)}',
@@ -530,7 +530,7 @@ class ImplicitSolutionBuilder {
         ));
       }
 
-      // â”€â”€ Normal Line â”€â”€â”€ (normal ONLY)
+      // ── Normal Line ─── (normal ONLY)
       if (r.normalLineEquation != null && r.normalSlope != null) {
         final mN = r.normalSlope!;
         final bN = yVal - mN * xVal;
@@ -550,7 +550,7 @@ class ImplicitSolutionBuilder {
       }
     }
 
-    // â”€â”€ RESULT â”€â”€â”€
+    // ── RESULT ───
     steps.add(ClassroomStep(
       kind: StepKind.result,
       label: 'Answer',
@@ -566,7 +566,7 @@ class ImplicitSolutionBuilder {
     ));
 
     return ClassroomSolution(
-      problemTitle: 'Implicit Differentiation â€” ${r.originalInput}',
+      problemTitle: 'Implicit Differentiation — ${r.originalInput}',
       type: r.type,
       steps: steps,
       result: r,
@@ -574,9 +574,9 @@ class ImplicitSolutionBuilder {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§6  PARAMETRIC SOLUTION BUILDER   x = f(t),  y = g(t)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §6  PARAMETRIC SOLUTION BUILDER   x = f(t),  y = g(t)
+// ══════════════════════════════════════════════════════════════════════════════
 
 class ParametricSolutionBuilder {
   static ClassroomSolution build(SlopeResult r) {
@@ -594,7 +594,7 @@ class ParametricSolutionBuilder {
         ? DerivativeNarrator.narrate(r.paramYExpr!, t)
         : <String>[];
 
-    // â”€â”€ GIVEN â”€â”€â”€
+    // ── GIVEN ───
     steps.add(ClassroomStep(
       kind: StepKind.sectionHeader,
       label: 'Given',
@@ -605,7 +605,7 @@ class ParametricSolutionBuilder {
       ],
     ));
 
-    // â”€â”€ Find Derivatives (merged: concept hint + diff x + diff y) â”€â”€â”€
+    // ── Find Derivatives (merged: concept hint + diff x + diff y) ───
     steps.add(ClassroomStep(
       kind: StepKind.algebra,
       label: 'Find Derivatives',
@@ -621,7 +621,7 @@ class ParametricSolutionBuilder {
       ],
     ));
 
-    // â”€â”€ Form Slope â”€â”€â”€
+    // ── Form Slope ───
     final dxE = r.dxDt;
     final dyE = r.dyDt;
     final rawRatioLatex = dxE != null && dyE != null
@@ -644,7 +644,7 @@ class ParametricSolutionBuilder {
       ],
     ));
 
-    // â”€â”€ Evaluate â”€â”€â”€
+    // ── Evaluate ───
     if (r.point.containsKey(t) && r.slopeValue != null) {
       final tVal = r.point[t]!;
       final xVal = _evalSafe(r.paramXExpr!, r.point);
@@ -674,7 +674,7 @@ class ParametricSolutionBuilder {
         ],
       ));
 
-      // â”€â”€ Tangent Line â”€â”€â”€ (tangent ONLY)
+      // ── Tangent Line ─── (tangent ONLY)
       if (r.tangentLineEquation != null &&
           xVal != null &&
           yVal != null &&
@@ -684,9 +684,9 @@ class ParametricSolutionBuilder {
         steps.add(ClassroomStep(
           kind: StepKind.tangentNormal,
           label: 'Tangent Line',
-          hint: 'Use point-slope form: y - yâ‚€ = m(x - xâ‚€)',
+          hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
           lines: [
-            'm = ${_fmt(m)},  (xâ‚€, yâ‚€) = (${_fmt(xVal)}, ${_fmt(yVal)})',
+            'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xVal)}, ${_fmt(yVal)})',
             '',
             'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xVal)})',
             'y = ${_fmt(m)}x + ${_fmt(b)}',
@@ -696,7 +696,7 @@ class ParametricSolutionBuilder {
         ));
       }
 
-      // â”€â”€ Normal Line â”€â”€â”€ (normal ONLY)
+      // ── Normal Line ─── (normal ONLY)
       if (r.normalLineEquation != null &&
           r.normalSlope != null &&
           xVal != null &&
@@ -720,7 +720,7 @@ class ParametricSolutionBuilder {
       }
     }
 
-    // â”€â”€ RESULT â”€â”€â”€
+    // ── RESULT ───
     steps.add(ClassroomStep(
       kind: StepKind.result,
       label: 'Answer',
@@ -736,7 +736,7 @@ class ParametricSolutionBuilder {
     ));
 
     return ClassroomSolution(
-      problemTitle: 'Parametric Differentiation â€” ${r.originalInput}',
+      problemTitle: 'Parametric Differentiation — ${r.originalInput}',
       type: r.type,
       steps: steps,
       result: r,
@@ -744,9 +744,9 @@ class ParametricSolutionBuilder {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§7  CLASSROOM PRINTER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §7  CLASSROOM PRINTER
+// ══════════════════════════════════════════════════════════════════════════════
 
 class ClassroomPrinter {
   static const _rst = '\x1B[0m';
@@ -771,7 +771,7 @@ class ClassroomPrinter {
   }
 
   static void _divider() {
-    _w('$_dim${'â”€' * _W}$_rst');
+    _w('$_dim${'─' * _W}$_rst');
   }
 
   static void _titleBanner(String title, ProblemType type) {
@@ -781,10 +781,10 @@ class ClassroomPrinter {
       ProblemType.parametric => '${_mag}PARAMETRIC$_rst',
     };
     _w('');
-    _w('$_bold$_wht${'â”' * _W}$_rst');
-    _w('$_bold$_wht  â–¶  $title$_rst');
+    _w('$_bold$_wht${'━' * _W}$_rst');
+    _w('$_bold$_wht  ▶  $title$_rst');
     _w('$_bold  Type: $badge$_rst');
-    _w('$_bold$_wht${'â”' * _W}$_rst');
+    _w('$_bold$_wht${'━' * _W}$_rst');
     _w('');
   }
 
@@ -794,26 +794,26 @@ class ClassroomPrinter {
 
     switch (step.kind) {
       case StepKind.sectionHeader:
-        _w('$_bold$_cyan  â•”â•â• ${lbl.toUpperCase()} â•â•$_rst');
-        if (step.hint != null) _w('$_dim  â•‘  â‡¢ ${step.hint}$_rst');
+        _w('$_bold$_cyan  ╔══ ${lbl.toUpperCase()} ══$_rst');
+        if (step.hint != null) _w('$_dim  ║  ⇢ ${step.hint}$_rst');
         for (final l in step.lines) {
-          _w('$_cyan  â•‘  $l$_rst');
+          _w('$_cyan  ║  $l$_rst');
         }
-        _w('$_cyan  â•š${'â•' * 40}$_rst');
+        _w('$_cyan  ╚${'═' * 40}$_rst');
         _w('');
 
       case StepKind.ruleStatement:
-        _w('$_bold$_yel  â”Œâ”€ $lbl â”€â”€â”€ [Rule] ${'â”€' * (fill - 14 < 0 ? 0 : fill - 14)}$_rst');
-        if (step.hint != null) _w('$_dim$_yel  â”‚  â‡¢ ${step.hint}$_rst');
+        _w('$_bold$_yel  ┌─ $lbl ─── [Rule] ${'─' * (fill - 14 < 0 ? 0 : fill - 14)}$_rst');
+        if (step.hint != null) _w('$_dim$_yel  │  ⇢ ${step.hint}$_rst');
         for (final l in step.lines) {
-          _w('$_yel  â”‚$_rst  $l');
+          _w('$_yel  │$_rst  $l');
         }
-        _w('$_yel  â””${'â”€' * (_W - 4)}$_rst');
+        _w('$_yel  └${'─' * (_W - 4)}$_rst');
         _w('');
 
       case StepKind.algebra:
-        _w('$_bold$_blu  â”Œâ”€ $lbl â”€â”€â”€ [Algebra] ${'â”€' * (fill - 17 < 0 ? 0 : fill - 17)}$_rst');
-        if (step.hint != null) _w('$_dim$_blu  â”‚  â‡¢ ${step.hint}$_rst');
+        _w('$_bold$_blu  ┌─ $lbl ─── [Algebra] ${'─' * (fill - 17 < 0 ? 0 : fill - 17)}$_rst');
+        if (step.hint != null) _w('$_dim$_blu  │  ⇢ ${step.hint}$_rst');
         for (final l in step.lines) {
           final isMath = l.contains('=') ||
               l.contains('d/dx') ||
@@ -821,47 +821,47 @@ class ClassroomPrinter {
               l.contains('dx/d') ||
               l.contains('dy/d');
           if (isMath && l.trim().isNotEmpty) {
-            _w('$_blu  â”‚$_rst$_bold  $l$_rst');
+            _w('$_blu  │$_rst$_bold  $l$_rst');
           } else {
-            _w('$_blu  â”‚$_rst  $l');
+            _w('$_blu  │$_rst  $l');
           }
         }
-        _w('$_blu  â””${'â”€' * (_W - 4)}$_rst');
+        _w('$_blu  └${'─' * (_W - 4)}$_rst');
         _w('');
 
       case StepKind.substitution:
-        _w('$_bold$_grn  â”Œâ”€ $lbl â”€â”€â”€ [Substitute] ${'â”€' * (fill - 20 < 0 ? 0 : fill - 20)}$_rst');
-        if (step.hint != null) _w('$_dim$_grn  â”‚  â‡¢ ${step.hint}$_rst');
+        _w('$_bold$_grn  ┌─ $lbl ─── [Substitute] ${'─' * (fill - 20 < 0 ? 0 : fill - 20)}$_rst');
+        if (step.hint != null) _w('$_dim$_grn  │  ⇢ ${step.hint}$_rst');
         for (final l in step.lines) {
-          _w('$_grn  â”‚$_rst  $l');
+          _w('$_grn  │$_rst  $l');
         }
-        _w('$_grn  â””${'â”€' * (_W - 4)}$_rst');
+        _w('$_grn  └${'─' * (_W - 4)}$_rst');
         _w('');
 
       case StepKind.tangentNormal:
-        _w('$_bold$_mag  â”Œâ”€ $lbl â”€â”€â”€ [Line] ${'â”€' * (fill - 14 < 0 ? 0 : fill - 14)}$_rst');
-        if (step.hint != null) _w('$_dim$_mag  â”‚  â‡¢ ${step.hint}$_rst');
+        _w('$_bold$_mag  ┌─ $lbl ─── [Line] ${'─' * (fill - 14 < 0 ? 0 : fill - 14)}$_rst');
+        if (step.hint != null) _w('$_dim$_mag  │  ⇢ ${step.hint}$_rst');
         for (final l in step.lines) {
-          _w('$_mag  â”‚$_rst  $l');
+          _w('$_mag  │$_rst  $l');
         }
-        _w('$_mag  â””${'â”€' * (_W - 4)}$_rst');
+        _w('$_mag  └${'─' * (_W - 4)}$_rst');
         _w('');
 
       case StepKind.note:
-        _w('$_dim  â—¦ $lbl:  ${step.lines.join(' ')}$_rst');
+        _w('$_dim  ◦ $lbl:  ${step.lines.join(' ')}$_rst');
         _w('');
 
       case StepKind.result:
-        _w('$_bold$_wht  â•”${'â•' * (_W - 4)}â•—$_rst');
-        _w('$_bold$_wht  â•‘${_center('âœ“  ANSWER', _W - 4)}â•‘$_rst');
-        _w('$_bold$_wht  â• ${'â•' * (_W - 4)}â•£$_rst');
-        if (step.hint != null) _w('$_dim$_wht  â•‘  â‡¢ ${step.hint}$_rst');
+        _w('$_bold$_wht  ╔${'═' * (_W - 4)}╗$_rst');
+        _w('$_bold$_wht  ║${_center('✓  ANSWER', _W - 4)}║$_rst');
+        _w('$_bold$_wht  ╠${'═' * (_W - 4)}╣$_rst');
+        if (step.hint != null) _w('$_dim$_wht  ║  ⇢ ${step.hint}$_rst');
         for (final l in step.lines) {
           final padded = '  $l';
           final right = _W - 4 - padded.length;
-          _w('$_bold$_wht  â•‘$_rst$_bold$padded${' ' * (right < 0 ? 0 : right)}$_whtâ•‘$_rst');
+          _w('$_bold$_wht  ║$_rst$_bold$padded${' ' * (right < 0 ? 0 : right)}$_wht║$_rst');
         }
-        _w('$_bold$_wht  â•š${'â•' * (_W - 4)}â•$_rst');
+        _w('$_bold$_wht  ╚${'═' * (_W - 4)}╝$_rst');
         _w('');
     }
   }
@@ -875,31 +875,31 @@ class ClassroomPrinter {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§8  SHARED UTILITIES
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §8  SHARED UTILITIES
+// ══════════════════════════════════════════════════════════════════════════════
 
 String _fmt(double v) {
   if (v != v) return 'undefined';
-  if (v.isInfinite) return v > 0 ? '+∞' : 'âˆ’∞';
+  if (v.isInfinite) return v > 0 ? '+∞' : '??∞';
   if (v == v.truncateToDouble() && v.abs() < 1e10) return v.toInt().toString();
   final fracs = <double, String>{
     0.5: '1/2',
-    -0.5: 'âˆ’1/2',
+    -0.5: '??1/2',
     1 / 3: '1/3',
-    -1 / 3: 'âˆ’1/3',
+    -1 / 3: '??1/3',
     2 / 3: '2/3',
-    -2 / 3: 'âˆ’2/3',
+    -2 / 3: '??2/3',
     0.25: '1/4',
-    -0.25: 'âˆ’1/4',
+    -0.25: '??1/4',
     0.75: '3/4',
-    -0.75: 'âˆ’3/4',
+    -0.75: '??3/4',
     math.sqrt2: '√2',
-    -math.sqrt2: 'âˆ’√2',
-    math.pi: 'Ï€',
-    -math.pi: 'âˆ’Ï€',
+    -math.sqrt2: '??√2',
+    math.pi: 'π',
+    -math.pi: '??π',
     math.e: 'e',
-    -math.e: 'âˆ’e',
+    -math.e: '??e',
   };
   for (final entry in fracs.entries) {
     if ((v - entry.key).abs() < 1e-9) return entry.value;
@@ -915,9 +915,9 @@ double? _evalSafe(Expr expr, Map<String, double> vals) {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§9  CLI ARG PARSER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §9  CLI ARG PARSER
+// ══════════════════════════════════════════════════════════════════════════════
 
 (String, Map<String, double>) _parseArgs(List<String> args) {
   final eqParts = <String>[];
@@ -934,9 +934,9 @@ double? _evalSafe(Expr expr, Map<String, double> vals) {
   return (eqParts.join(' '), vals);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Â§10  MAIN â€” 14 curated classroom problems (6 explicit, 4 implicit, 4 parametric)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════════════════════
+// §10  MAIN — 14 curated classroom problems (6 explicit, 4 implicit, 4 parametric)
+// ══════════════════════════════════════════════════════════════════════════════
 
 void main(List<String> args) {
   if (args.isNotEmpty) {
@@ -963,54 +963,54 @@ void main(List<String> args) {
     return;
   }
 
-  // â”€â”€ Classroom problem set â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Classroom problem set ──────────────────────────────────────────────────
   final problems = <(String, Map<String, double>, String)>[
     // Explicit
-    ('y = x^3 - 3*x^2 + 2', {'x': 2.0}, 'Polynomial â€” Power + Sum Rule'),
-    ('y = sin(x) * cos(x)', {'x': 0.0}, 'Trig product â€” Product Rule'),
-    ('y = e^x * ln(x)', {'x': 1.0}, 'Exponential ÷— Log â€” Product Rule'),
+    ('y = x^3 - 3*x^2 + 2', {'x': 2.0}, 'Polynomial — Power + Sum Rule'),
+    ('y = sin(x) * cos(x)', {'x': 0.0}, 'Trig product — Product Rule'),
+    ('y = e^x * ln(x)', {'x': 1.0}, 'Exponential ?? Log — Product Rule'),
     (
       'y = (x^2 + 1) / (x - 1)',
       {'x': 3.0},
-      'Rational function â€” Quotient Rule'
+      'Rational function — Quotient Rule'
     ),
-    ('y = (sin(x))^3', {'x': 1.5708}, 'Composite â€” Power + Chain Rule'),
-    ('y = sqrt(x^2 + 1)', {'x': 2.0}, 'Square root â€” Chain Rule'),
+    ('y = (sin(x))^3', {'x': 1.5708}, 'Composite — Power + Chain Rule'),
+    ('y = sqrt(x^2 + 1)', {'x': 2.0}, 'Square root — Chain Rule'),
     // Implicit
     ('x^2 + y^2 = 25', {'x': 3.0, 'y': 4.0}, 'Circle'),
     ('x^3 + y^3 = 6*x*y', {'x': 3.0, 'y': 3.0}, 'Folium of Descartes'),
     (
       '4*x^2 + 9*y^2 = 36',
       {'x': 0.0, 'y': 2.0},
-      'Ellipse â€” horizontal tangent'
+      'Ellipse — horizontal tangent'
     ),
     (
       'x^2 - x*y + y^2 = 7',
       {'x': 1.0, 'y': 3.0},
-      'Mixed xy term â€” Product Rule'
+      'Mixed xy term — Product Rule'
     ),
     // Parametric
-    ('x=cos(t), y=sin(t)', {'t': 0.7854}, 'Unit circle â€” t = Ï€/4'),
-    ('x=t - sin(t), y=1 - cos(t)', {'t': 1.5708}, 'Cycloid â€” t = Ï€/2'),
-    ('x=cos(t)^3, y=sin(t)^3', {'t': 0.5236}, 'Astroid â€” t = Ï€/6'),
+    ('x=cos(t), y=sin(t)', {'t': 0.7854}, 'Unit circle — t = π/4'),
+    ('x=t - sin(t), y=1 - cos(t)', {'t': 1.5708}, 'Cycloid — t = π/2'),
+    ('x=cos(t)^3, y=sin(t)^3', {'t': 0.5236}, 'Astroid — t = π/6'),
     ('x=t^2 - 1, y=t^3 - t', {'t': 1.0}, 'Cubic parametric curve'),
   ];
 
   final total = problems.length;
   stdout.writeln('');
-  stdout.writeln('â•”${'â•' * 70}â•—');
+  stdout.writeln('╔${'═' * 70}╗');
   stdout.writeln(
-      'â•‘${_centerMain('CLASSROOM SOLUTION STEPS â€” SLOPE & DERIVATIVES', 70)}â•‘');
+      '║${_centerMain('CLASSROOM SOLUTION STEPS — SLOPE & DERIVATIVES', 70)}║');
   stdout.writeln(
-      'â•‘${_centerMain('$total worked examples  â€¢  Explicit / Implicit / Parametric', 70)}â•‘');
-  stdout.writeln('â•š${'â•' * 70}â•');
+      '║${_centerMain('$total worked examples  •  Explicit / Implicit / Parametric', 70)}║');
+  stdout.writeln('╚${'═' * 70}╝');
   stdout.writeln('');
 
   int passed = 0, failed = 0;
 
   for (int i = 0; i < total; i++) {
     final (eq, vals, desc) = problems[i];
-    stdout.writeln('Problem ${i + 1} of $total â€” $desc');
+    stdout.writeln('Problem ${i + 1} of $total — $desc');
     try {
       final result = SlopeSolver.solve(eq, pointValues: vals);
       final solution = SolutionBuilder.build(result);
@@ -1024,11 +1024,11 @@ void main(List<String> args) {
   }
 
   stdout.writeln('');
-  stdout.writeln('â•”${'â•' * 70}â•—');
-  stdout.writeln('â•‘${_centerMain('SESSION COMPLETE', 70)}â•‘');
+  stdout.writeln('╔${'═' * 70}╗');
+  stdout.writeln('║${_centerMain('SESSION COMPLETE', 70)}║');
   stdout.writeln(
-      'â•‘${_centerMain('$passed solved  â€¢  $failed errors  â€¢  $total total', 70)}â•‘');
-  stdout.writeln('â•š${'â•' * 70}â•');
+      '║${_centerMain('$passed solved  •  $failed errors  •  $total total', 70)}║');
+  stdout.writeln('╚${'═' * 70}╝');
   stdout.writeln('');
 }
 

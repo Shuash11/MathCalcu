@@ -98,22 +98,22 @@ class DistanceSteps extends StatelessWidget {
       final double diff = (x2 - x1).abs();
       return [
         const StepSection(
-          title: 'Step 1 â€” Write the formula',
+          title: 'Step 1 — Write the formula',
           latex: r'd = |x_2 - x_1|',
           isFormula: true,
         ),
         StepSection(
-          title: 'Step 2 â€” Substitute the given values',
+          title: 'Step 2 — Substitute the given values',
           latex: 'd = \\left| ${_signed(x2)} - ${_signed(x1)} \\right|',
           isFormula: true,
         ),
         StepSection(
-          title: 'Step 3 â€” Subtract inside absolute value',
+          title: 'Step 3 — Subtract inside absolute value',
           latex: 'd = \\left| ${_fmt(x2 - x1)} \\right|',
           isFormula: true,
         ),
         StepSection(
-          title: 'Step 4 â€” Apply absolute value',
+          title: 'Step 4 — Apply absolute value',
           latex: 'd = ${_fmt(diff)}',
           isFormula: true,
           isResult: true,
@@ -130,27 +130,27 @@ class DistanceSteps extends StatelessWidget {
 
     return [
       const StepSection(
-        title: 'Step 1 â€” Write the formula',
+        title: 'Step 1 — Write the formula',
         latex: r'd = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}',
         isFormula: true,
       ),
       StepSection(
-        title: 'Step 2 â€” Substitute the given values',
+        title: 'Step 2 — Substitute the given values',
         latex: 'd = \\sqrt{\\left(${_signed(x2)}-${_signed(x1)}\\right)^2 + \\left(${_signed(y2!)}-${_signed(y1!)}\\right)^2}',
         isFormula: true,
       ),
       StepSection(
-        title: 'Step 3 â€” Square each term',
+        title: 'Step 3 — Square each term',
         latex: 'd = \\sqrt{${_fmt(dx)}^2 + ${_fmt(dy)}^2}',
         isFormula: true,
       ),
       StepSection(
-        title: 'Step 4 â€” Compute the squares',
+        title: 'Step 4 — Compute the squares',
         latex: 'd = \\sqrt{${_fmt(dx2)} + ${_fmt(dy2)}}',
         isFormula: true,
       ),
       StepSection(
-        title: 'Step 5 â€” Add and take square root',
+        title: 'Step 5 — Add and take square root',
         latex: 'd = \\sqrt{${_fmt(sum)}}',
         isFormula: true,
       ),
@@ -164,7 +164,7 @@ class DistanceSteps extends StatelessWidget {
     if (r.isPerfectSquare) {
       return [
         StepSection(
-          title: 'Step 6 â€” Take the square root',
+          title: 'Step 6 — Take the square root',
           latex: 'd = \\sqrt{$sumStr} = ${r.coefficient}',
           isFormula: true,
           isResult: true,
@@ -177,12 +177,12 @@ class DistanceSteps extends StatelessWidget {
     if (canSimplify) {
       return [
         StepSection(
-          title: 'Step 6 â€” Simplify the radical',
+          title: 'Step 6 — Simplify the radical',
           latex: '\\sqrt{$sumStr} = ${r.coefficient}\\sqrt{${r.radicand}}',
           isFormula: true,
         ),
         StepSection(
-          title: 'Step 7 â€” Approximate the decimal value',
+          title: 'Step 7 — Approximate the decimal value',
           latex: 'd = ${r.coefficient}\\sqrt{${r.radicand}} \\approx ${r.toDecimalString()}',
           isFormula: true,
           isResult: true,
@@ -192,7 +192,7 @@ class DistanceSteps extends StatelessWidget {
 
     return [
       StepSection(
-        title: 'Step 6 â€” Evaluate the square root',
+        title: 'Step 6 — Evaluate the square root',
         latex: 'd = \\sqrt{$sumStr} \\approx ${r.toDecimalString()}',
         isFormula: true,
         isResult: true,
@@ -220,7 +220,7 @@ class DistanceSteps extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Distance Formula â€” Step by Step',
+                'Distance Formula — Step by Step',
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,

@@ -22,7 +22,7 @@ class SlopeStepDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // â”€â”€ Header â”€â”€
+              // ── Header ──
               Row(
                 children: [
                   Expanded(
@@ -56,12 +56,12 @@ class SlopeStepDialog extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // â”€â”€ Steps â”€â”€
+              // ── Steps ──
               SlopeSteps(result: result),
 
               const SizedBox(height: 24),
 
-              // â”€â”€ Action buttons â”€â”€
+              // ── Action buttons ──
               Row(
                 children: [
                   Expanded(
@@ -74,7 +74,7 @@ class SlopeStepDialog extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (_) => SlopeGraphScreen(
                               result1: result,
-                              // single-line view â€” no result2 or comparison
+                              // single-line view — no result2 or comparison
                             ),
                           ),
                         );

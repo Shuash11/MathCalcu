@@ -3,7 +3,7 @@
 /// Represents a polynomial in one variable (x).
 ///
 /// Coefficients are stored as a map from degree to coefficient.
-/// Example: 3x² + 2x - 1 is stored as {2: 3, 1: 2, 0: -1}
+/// Example: 3x? + 2x - 1 is stored as {2: 3, 1: 2, 0: -1}
 class Polynomial {
   final Map<int, double> _coeffs;
 
@@ -46,7 +46,7 @@ class Polynomial {
   /// Check if polynomial is a constant (degree 0 or zero polynomial)
   bool get isConstant => degree == 0;
 
-  /// Get the constant term (coefficient of xâ°)
+  /// Get the constant term (coefficient of x⁰)
   double get constantTerm => this[0];
 
   /// Get the leading coefficient (coefficient of highest degree term)

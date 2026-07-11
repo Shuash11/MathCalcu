@@ -165,10 +165,10 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
       child: SafeArea(
         child: Column(
           children: [
-            // â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── Header ──────────────────────────────────────────
             _buildHeader(context, padding),
 
-            // â”€â”€ Scrollable Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── Scrollable Content ──────────────────────────────
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,

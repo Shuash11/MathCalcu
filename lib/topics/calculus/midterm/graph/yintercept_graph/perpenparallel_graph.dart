@@ -4,10 +4,10 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solve
 
 import 'package:flutter/material.dart';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // GRAPH SHEET
 // Usage: call showGraphSheet(context, result) from anywhere.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 void showGraphSheet(BuildContext context, PPResult result) {
   showModalBottomSheet<void>(
@@ -124,9 +124,9 @@ class _GraphSheet extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // LEGEND DOT
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class _LegendDot extends StatelessWidget {
   final Color color;
@@ -153,10 +153,10 @@ class _LegendDot extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // LINE PAINTER
 // Draws both lines on a cartesian grid with full axis labels.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 class PPLinePainter extends CustomPainter {
   final PPResult result;
@@ -177,7 +177,7 @@ class PPLinePainter extends CustomPainter {
     final plotW = size.width - _marginLeft - _marginRight;
     final plotH = size.height - _marginTop - _marginBottom;
 
-    // â”€â”€ Coordinate converters (within plot area) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Coordinate converters (within plot area) ──────────────
     double toScreenX(double mathX) =>
         _marginLeft + (mathX + _range) / (2 * _range) * plotW;
     double toScreenY(double mathY) =>
@@ -185,7 +185,7 @@ class PPLinePainter extends CustomPainter {
     double fromScreenX(double px) =>
         (px - _marginLeft) / plotW * (2 * _range) - _range;
 
-    // â”€â”€ Grid lines â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Grid lines ────────────────────────────────────────────
     final gridPaint = Paint()
       ..color = Colors.grey.withValues(alpha: 0.15)
       ..strokeWidth = 0.5;
@@ -203,7 +203,7 @@ class PPLinePainter extends CustomPainter {
       );
     }
 
-    // â”€â”€ Axes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Axes ──────────────────────────────────────────────────
     final axisPaint = Paint()
       ..color = Colors.grey.withValues(alpha: 0.55)
       ..strokeWidth = 1.2;
@@ -221,7 +221,7 @@ class PPLinePainter extends CustomPainter {
       axisPaint,
     );
 
-    // â”€â”€ Axis arrow heads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Axis arrow heads ──────────────────────────────────────
     final arrowPaint = Paint()
       ..color = Colors.grey.withValues(alpha: 0.55)
       ..strokeWidth = 1.2
@@ -245,7 +245,7 @@ class PPLinePainter extends CustomPainter {
     // Right arrow on X-axis
     drawArrow(Offset(_marginLeft + plotW, toScreenY(0)), const Offset(1, 0));
 
-    // â”€â”€ Axis name labels  x, y â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Axis name labels  x, y ────────────────────────────────
     final axisNameStyle = TextStyle(
       color: Colors.grey.withValues(alpha: 0.75),
       fontSize: 11,
@@ -266,7 +266,7 @@ class PPLinePainter extends CustomPainter {
     // "y" above the y-axis arrow
     drawText('y', toScreenX(0) + 4, _marginTop - 14);
 
-    // â”€â”€ Tick labels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Tick labels ───────────────────────────────────────────
     final tickStyle = TextStyle(
       color: Colors.grey.withValues(alpha: 0.55),
       fontSize: 8.5,
@@ -307,7 +307,7 @@ class PPLinePainter extends CustomPainter {
     // Origin label "0"
     drawTick('0', toScreenX(0) - 8, toScreenY(0) + 9);
 
-    // â”€â”€ Draw one line given Ax + By + C = 0 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Draw one line given Ax + By + C = 0 ──────────────────
     void drawLine(int A, int B, int C, Color color) {
       final paint = Paint()
         ..color = color
@@ -340,7 +340,7 @@ class PPLinePainter extends CustomPainter {
     drawLine(result.a1, result.b1, result.c1, const Color(0xFF06B6D4));
     drawLine(result.a2, result.b2, result.c2, const Color(0xFF10B981));
 
-    // â”€â”€ Equation labels at line endpoints â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Equation labels at line endpoints ────────────────────
     void drawLineLabel(int A, int B, int C, String label, Color color) {
       if (B == 0) return; // skip vertical for now
 
@@ -373,7 +373,7 @@ class PPLinePainter extends CustomPainter {
     drawLineLabel(result.a1, result.b1, result.c1, result.slopeIntercept1, const Color(0xFF06B6D4));
     drawLineLabel(result.a2, result.b2, result.c2, result.slopeIntercept2, const Color(0xFF10B981));
 
-    // â”€â”€ Intersection dot (perpendicular / neither) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Intersection dot (perpendicular / neither) ────────────
     if (result.relationship == PPRelationship.perpendicular ||
         result.relationship == PPRelationship.neither) {
       final det = result.a1 * result.b2 - result.a2 * result.b1;

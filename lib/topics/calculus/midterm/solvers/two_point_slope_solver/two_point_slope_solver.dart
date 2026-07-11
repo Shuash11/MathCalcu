@@ -1,11 +1,11 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// ═════════════════════════════════════════════════════════════
 // TWO-POINT SLOPE SOLVER  (generated via SymPy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Computes slope, y-intercept, and line equation forms from
 // two coordinate points. Handles vertical and horizontal lines.
 //
 // INPUT: Two points as doubles (x1,y1) and (x2,y2).
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 class TwoPointSlopeResult {
   final double x1, y1, x2, y2;
@@ -81,7 +81,7 @@ class TwoPointSlopeSolver {
     String slopeType;
     final List<SolverStep> steps = [];
 
-    // Step 1 â€” Identify points
+    // Step 1 — Identify points
     steps.add(SolverStep(
       number: 1,
       title: 'Identify Points',
@@ -92,7 +92,7 @@ class TwoPointSlopeSolver {
       explanation: 'Label the two coordinate points.',
     ));
 
-    // Step 2 â€” Slope formula
+    // Step 2 — Slope formula
     steps.add(SolverStep(
       number: 2,
       title: 'Slope Formula',
@@ -116,7 +116,7 @@ class TwoPointSlopeSolver {
         number: 3,
         title: 'Vertical Line',
         formula: r'm = \frac{\Delta y}{0}',
-        substitution: 'Division by zero â€” slope is undefined',
+        substitution: 'Division by zero — slope is undefined',
         result: _toLatex('x = ${_fmt(x1)}'),
         explanation: 'All points share the same x-value.',
         guide: 'Handle vertical line',
@@ -125,7 +125,7 @@ class TwoPointSlopeSolver {
       slope = dy / dx;
       slopeDisplay = _fmtSlope(slope);
 
-      // Step 3 â€” Simplify slope
+      // Step 3 — Simplify slope
       steps.add(SolverStep(
         number: 3,
         title: 'Simplify Slope',
@@ -136,7 +136,7 @@ class TwoPointSlopeSolver {
         guide: 'Simplify the fraction',
       ));
 
-      // Step 4 â€” Y-intercept
+      // Step 4 — Y-intercept
       yIntercept = y1 - slope * x1;
       steps.add(SolverStep(
         number: 4,
@@ -145,11 +145,11 @@ class TwoPointSlopeSolver {
         substitution: _toLatex(
             'b = ${_fmt(y1)} - (${_fmtSlope(slope)})(${_fmt(x1)}) = ${_fmtSlope(yIntercept)}'),
         result: _toLatex('b = ${_fmtSlope(yIntercept)}'),
-        explanation: 'Plug in point Pâ‚ and the slope.',
+        explanation: 'Plug in point P₁ and the slope.',
         guide: 'Find y-intercept',
       ));
 
-      // Step 5 â€” Slope-intercept form
+      // Step 5 — Slope-intercept form
       lineEquation = _buildSlopeIntercept(slope, yIntercept);
       steps.add(SolverStep(
         number: 5,
@@ -198,7 +198,7 @@ class TwoPointSlopeSolver {
         number: 7,
         title: 'General Form',
         formula: r'Ax + By + C = 0',
-        substitution: 'Move C to the left â€” sign flips',
+        substitution: 'Move C to the left — sign flips',
         result: _toLatex(generalForm),
         explanation: 'All terms on the left, right side is zero.',
         guide: 'Move constant to left side',
@@ -221,7 +221,7 @@ class TwoPointSlopeSolver {
     );
   }
 
-  // â”€â”€ GCD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── GCD ───────────────────────────────────────────────────
 
   static int _gcd2(int a, int b) => b == 0 ? a : _gcd2(b, a % b);
   static int _gcd3(int a, int b, int c) {
@@ -230,7 +230,7 @@ class TwoPointSlopeSolver {
     return r == 0 ? 1 : r;
   }
 
-  // â”€â”€ Formatting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Formatting ────────────────────────────────────────────
 
   static String _fmt(double v) {
     if (v == v.truncateToDouble()) return v.toInt().toString();
@@ -296,7 +296,7 @@ class TwoPointSlopeSolver {
     });
   }
 
-  // â”€â”€ Equation builders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Equation builders ─────────────────────────────────────
 
   static String _buildSlopeIntercept(double m, double b) {
     final ms = _fmtSlope(m);

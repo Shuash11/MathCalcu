@@ -1,13 +1,13 @@
 ﻿import 'dart:math';
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 // POINT-SLOPE SOLVER  (generated via SymPy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Converts point-slope form to slope-intercept, general,
 // and standard forms. Shows direction, angle, rise/run.
 //
 // INPUT: Slope and point coordinates as fractions or numbers.
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 class Fraction {
   final int numerator;
@@ -85,7 +85,7 @@ class Fraction {
   }
 }
 
-// â”€â”€ Internal helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Internal helpers ────────────────────────────────────────
 
 Fraction _simplify(int n, int d) {
   if (d == 0) return const Fraction(numerator: 0, denominator: 1);
@@ -110,7 +110,7 @@ int _pow10(int e) {
   return r;
 }
 
-// â”€â”€ Models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Models ──────────────────────────────────────────────────
 
 class SolveStep {
   final String title;
@@ -169,12 +169,12 @@ class PointSlopeSolver {
 
   String get direction {
     final v = m.toDouble();
-    if (v > 0) return 'Rising â†—';
-    if (v < 0) return 'Falling â†˜';
+    if (v > 0) return 'Rising ↗';
+    if (v < 0) return 'Falling ↘';
     return 'Horizontal →';
   }
 
-  String get angle => '${atan(m.toDouble()) * 180 / pi}Â°';
+  String get angle => '${atan(m.toDouble()) * 180 / pi}°';
 
   String get riseRun => '${m.simplified()} / 1';
   String get pointSlopeEquation => pointSlopeForm;
@@ -224,7 +224,7 @@ class PointSlopeSolver {
     return PointSlopeSolver.fromDoubles(m: md, x1: xd, y1: yd);
   }
 
-  // â”€â”€ Private â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Private ───────────────────────────────────────────────
 
   static String _buildGeneral(Fraction ms, Fraction bs) {
     final l = _lcm(ms.denominator, bs.denominator);

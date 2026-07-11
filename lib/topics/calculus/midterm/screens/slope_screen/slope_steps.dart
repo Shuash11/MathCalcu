@@ -28,7 +28,7 @@ class SlopeSteps extends StatelessWidget {
         ),
         StepSection.single(
           stepLabel: 'Step 2',
-          guide: 'Check Î”x',
+          guide: 'Check Δx',
           latexContent: r'\Delta x = x_2 - x_1 = ' '$x2s' r' - ' '$x1s' r' = 0',
         ),
         StepSection.single(
@@ -53,7 +53,7 @@ class SlopeSteps extends StatelessWidget {
         ),
         StepSection.single(
           stepLabel: 'Step 2',
-          guide: 'Check Î”y',
+          guide: 'Check Δy',
           latexContent: r'\Delta y = y_2 - y_1 = ' '$y2s' r' - ' '$y1s' r' = 0',
         ),
         StepSection.single(
@@ -74,7 +74,7 @@ class SlopeSteps extends StatelessWidget {
         stepLabel: 'Step 1',
         guide: 'Identify points',
         plainContent:
-            'A = ($x1s, $y1s)  →  (xâ‚, yâ‚)\nB = ($x2s, $y2s)  →  (xâ‚‚, yâ‚‚)',
+            'A = ($x1s, $y1s)  →  (x₁, y₁)\nB = ($x2s, $y2s)  →  (x₂, y₂)',
       ),
       StepSection.single(
         stepLabel: 'Step 2',
@@ -84,8 +84,8 @@ class SlopeSteps extends StatelessWidget {
       StepSection.dual(
         stepLabel: 'Step 3',
         guide: 'Find differences',
-        leftLabel: 'Î”y',
-        rightLabel: 'Î”x',
+        leftLabel: 'Δy',
+        rightLabel: 'Δx',
         leftLatex: r'\begin{aligned}'
             r'y_2 - y_1 &= '
             '$y2s'
@@ -548,7 +548,7 @@ class _GuideLabel extends StatelessWidget {
             ),
           ),
           TextSpan(
-            text: '  ·  ',
+            text: '  ?  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
               color: SlopeTheme.textSecondary(context).withValues(alpha: 0.4),

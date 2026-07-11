@@ -16,7 +16,7 @@ import 'widgets/web_update_dialog.dart';
 import 'version.dart';
 
 void main() async {
-  // â”€â”€ PRE-RUN INITIALIZATION â”€â”€
+  // ── PRE-RUN INITIALIZATION ──
   WidgetsFlutterBinding.ensureInitialized();
 
   // Create theme provider (load asynchronously in background)
@@ -219,7 +219,7 @@ class _CalculusAppState extends State<CalculusApp> {
         }
       }
     } catch (_) {
-      // Silently ignore — not critical
+      // Silently ignore ? not critical
     }
   }
 
@@ -239,11 +239,11 @@ class _CalculusAppState extends State<CalculusApp> {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// GLOBAL THEME â€” shared across all modules
+// ─────────────────────────────────────────────
+// GLOBAL THEME — shared across all modules
 // Each module can layer their own theme on top
 // via their own theme/ folder.
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 class AppTheme {
   static ThemeData light() {
     return ThemeData(

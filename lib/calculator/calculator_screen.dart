@@ -24,7 +24,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _expression = '';
         _result = '';
         _showResult = false;
-      } else if (value == 'âŒ«') {
+      } else if (value == '⌫') {
         if (_expression.isNotEmpty) {
           _expression = _expression.substring(0, _expression.length - 1);
         }
@@ -135,13 +135,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 flex: 5,
                 child: Column(
                   children: [
-                    _buildButtonRow(['C', '(', ')', 'âŒ«'], theme),
+                    _buildButtonRow(['C', '(', ')', '⌫'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['7', '8', '9', '×'], theme),
+                    _buildButtonRow(['7', '8', '9', '?'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['4', '5', '6', '÷—'], theme),
+                    _buildButtonRow(['4', '5', '6', '??'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['1', '2', '3', 'âˆ’'], theme),
+                    _buildButtonRow(['1', '2', '3', '??'], theme),
                     const SizedBox(height: 8),
                     _buildButtonRow(['0', '.', 'Ans', '+'], theme),
                     const SizedBox(height: 8),
@@ -149,7 +149,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     const SizedBox(height: 8),
                     _buildButtonRow(['log', 'ln', '√', '='], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['Ï€', 'e', '%', '!'], theme),
+                    _buildButtonRow(['π', 'e', '%', '!'], theme),
                   ],
                 ),
               ),
@@ -177,10 +177,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   Widget _buildButton(String value, ThemeProvider theme) {
-    final isOperator = ['+', 'âˆ’', '÷—', '×', '='].contains(value);
-    final isSpecial = ['C', 'âŒ«', 'Ans'].contains(value);
+    final isOperator = ['+', '??', '??', '?', '='].contains(value);
+    final isSpecial = ['C', '⌫', 'Ans'].contains(value);
     final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', '√'].contains(value);
-    final isConstant = ['Ï€', 'e'].contains(value);
+    final isConstant = ['π', 'e'].contains(value);
 
     Color bgColor;
     Color textColor;

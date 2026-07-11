@@ -23,21 +23,21 @@ class CenterInputSection extends StatelessWidget {
     return Column(
       children: [
         _PointCard(
-          label: 'Point A  â€”  Endpoint 1',
-          subtitle: '(xâ‚, yâ‚)',
+          label: 'Point A  —  Endpoint 1',
+          subtitle: '(x₁, y₁)',
           color: FindingCenterTheme.indigo,
           xCtrl: controller.x1Ctrl,
           yCtrl: controller.y1Ctrl,
           xFocus: x1Focus,
           yFocus: y1Focus,
-          xHint: 'e.g. âˆ’2',
+          xHint: 'e.g. −2',
           yHint: 'e.g. 3',
           onYEditingComplete: () => x2Focus.requestFocus(),
         ),
         const SizedBox(height: 16),
         _PointCard(
-          label: 'Point B  â€”  Endpoint 2',
-          subtitle: '(xâ‚‚, yâ‚‚)',
+          label: 'Point B  —  Endpoint 2',
+          subtitle: '(x₂, y₂)',
           color: FindingCenterTheme.purple,
           xCtrl: controller.x2Ctrl,
           yCtrl: controller.y2Ctrl,
@@ -263,7 +263,7 @@ class _FieldState extends State<_Field> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label row â€” shows quick-key buttons when focused
+        // Label row — shows quick-key buttons when focused
         Row(
           children: [
             Text(

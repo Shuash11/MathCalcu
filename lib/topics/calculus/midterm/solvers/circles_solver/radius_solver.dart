@@ -1,12 +1,12 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// ═════════════════════════════════════════════════════════════
 // RADIUS SOLVER  (generated via SymPy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Computes the radius of a circle given a point on the circle
 // and the circle's center. r = sqrt((x-h)^2 + (y-k)^2)
 //
 // INPUT: Point coordinates and center coordinates as numbers
 //        or fractions (e.g. "3/4").
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═════════════════════════════════════════════════════════════
 
 import 'dart:math' show sqrt;
 
@@ -73,7 +73,7 @@ class RadiusResult {
     if (_isPerfectSquare(sum)) return sqrt(sum).round().toString();
     final (coeff, radicand) = _simplifyRadical(sum);
     final exact = coeff == 1 ? '√$radicand' : '$coeff√$radicand';
-    return '$exact ≠ˆ ${_f(radius)}';
+    return '$exact ≈ ${_f(radius)}';
   }
 
   String get exactRadius {
@@ -87,9 +87,9 @@ class RadiusResult {
 
   String get steps {
     final buf = StringBuffer();
-    buf.writeln('r = √((x âˆ’ h)² + (y âˆ’ k)²)');
-    buf.writeln('r = √((${_fmt(x, rawX)} âˆ’ ${_fmt(h, rawH)})² + (${_fmt(y, rawY)} âˆ’ ${_fmt(k, rawK)})²)');
-    buf.writeln('r = √((${_f(dx)})² + (${_f(dy)})²)');
+    buf.writeln('r = √((x ?? h)? + (y ?? k)?)');
+    buf.writeln('r = √((${_fmt(x, rawX)} ?? ${_fmt(h, rawH)})? + (${_fmt(y, rawY)} ?? ${_fmt(k, rawK)})?)');
+    buf.writeln('r = √((${_f(dx)})? + (${_f(dy)})?)');
     buf.writeln('r = √(${_f(dx2)} + ${_f(dy2)})');
     buf.writeln('r = √${_f(sum)}');
     final sumInt = sum.round();
@@ -97,7 +97,7 @@ class RadiusResult {
     if (isInteger && !_isPerfectSquare(sum)) {
       final (coeff, radicand) = _simplifyRadical(sum);
       final exact = coeff == 1 ? '√$radicand' : '$coeff√$radicand';
-      buf.write('r = $exact ≠ˆ ${_f(radius)}');
+      buf.write('r = $exact ≈ ${_f(radius)}');
     } else {
       buf.write('r = ${_f(radius)}');
     }

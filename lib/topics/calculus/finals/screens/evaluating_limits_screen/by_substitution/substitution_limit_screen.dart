@@ -143,10 +143,10 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
       child: SafeArea(
         child: Column(
           children: [
-            // â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── Header ──────────────────────────────────────────
             _buildHeader(context),
 
-            // â”€â”€ Scrollable Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // ── Scrollable Content ──────────────────────────────
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
