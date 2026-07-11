@@ -84,23 +84,21 @@ class TwoPointSlopeSolver {
     // Step 1 — Identify points
     steps.add(SolverStep(
       number: 1,
-      title: 'Identify Points',
+      title: '',
       formula: '',
       substitution:
-          'Point 1: (${_fmt(x1)}, ${_fmt(y1)})\nPoint 2: (${_fmt(x2)}, ${_fmt(y2)})',
-      result: 'Points identified',
-      explanation: 'Label the two coordinate points.',
+          '(${_fmt(x1)},\\; ${_fmt(y1)}) \\text{ and } (${_fmt(x2)},\\; ${_fmt(y2)})',
+      result: '',
     ));
 
     // Step 2 — Slope formula
     steps.add(SolverStep(
       number: 2,
-      title: 'Slope Formula',
+      title: '',
       formula: r'm = \frac{y_2 - y_1}{x_2 - x_1}',
       substitution: _toLatex(
-          'm = (${_fmt(y2)}-${_fmt(y1)})/(${_fmt(x2)}-${_fmt(x1)}) = ${_fmt(dy)}/${_fmt(dx)}'),
+          'm = \\frac{${_fmt(y2)}-${_fmt(y1)}}{${_fmt(x2)}-${_fmt(x1)}} = \\frac{${_fmt(dy)}}{${_fmt(dx)}}'),
       result: '\\frac{${_fmt(dy)}}{${_fmt(dx)}}',
-      explanation: 'Rise over run.',
     ));
 
     if (isVertical) {
@@ -114,12 +112,10 @@ class TwoPointSlopeSolver {
 
       steps.add(SolverStep(
         number: 3,
-        title: 'Vertical Line',
+        title: '',
         formula: r'm = \frac{\Delta y}{0}',
-        substitution: 'Division by zero — slope is undefined',
+        substitution: '',
         result: _toLatex('x = ${_fmt(x1)}'),
-        explanation: 'All points share the same x-value.',
-        guide: 'Handle vertical line',
       ));
     } else {
       slope = dy / dx;
@@ -128,37 +124,31 @@ class TwoPointSlopeSolver {
       // Step 3 — Simplify slope
       steps.add(SolverStep(
         number: 3,
-        title: 'Simplify Slope',
-        formula: _toLatex('m = ${_fmt(dy)} / ${_fmt(dx)}'),
+        title: '',
+        formula: _toLatex('m = \\frac{${_fmt(dy)}}{${_fmt(dx)}}'),
         substitution: _fractionString(dy, dx),
         result: _toLatex('m = $slopeDisplay'),
-        explanation: _simplifyExplanation(dy, dx, slope),
-        guide: 'Simplify the fraction',
       ));
 
       // Step 4 — Y-intercept
       yIntercept = y1 - slope * x1;
       steps.add(SolverStep(
         number: 4,
-        title: 'Y-Intercept',
+        title: '',
         formula: r'b = y_1 - m \cdot x_1',
         substitution: _toLatex(
             'b = ${_fmt(y1)} - (${_fmtSlope(slope)})(${_fmt(x1)}) = ${_fmtSlope(yIntercept)}'),
         result: _toLatex('b = ${_fmtSlope(yIntercept)}'),
-        explanation: 'Plug in point P₁ and the slope.',
-        guide: 'Find y-intercept',
       ));
 
       // Step 5 — Slope-intercept form
       lineEquation = _buildSlopeIntercept(slope, yIntercept);
       steps.add(SolverStep(
         number: 5,
-        title: 'Slope-Intercept Form',
+        title: '',
         formula: r'y = mx + b',
         substitution: _toLatex(lineEquation),
         result: _toLatex(lineEquation),
-        explanation: 'Shows slope and y-intercept directly.',
-        guide: 'Write in y = mx + b form',
       ));
 
       // Standard & general forms with integer coefficients
@@ -186,22 +176,18 @@ class TwoPointSlopeSolver {
 
       steps.add(SolverStep(
         number: 6,
-        title: 'Standard Form',
+        title: '',
         formula: r'Ax + By = C',
         substitution: _toLatex('A = $a, B = $b, C = $c'),
         result: _toLatex(standardForm),
-        explanation: 'Integer coefficients reduced by GCD($g).',
-        guide: 'Convert to Ax + By = C',
       ));
 
       steps.add(SolverStep(
         number: 7,
-        title: 'General Form',
+        title: '',
         formula: r'Ax + By + C = 0',
-        substitution: 'Move C to the left — sign flips',
+        substitution: '',
         result: _toLatex(generalForm),
-        explanation: 'All terms on the left, right side is zero.',
-        guide: 'Move constant to left side',
       ));
 
       slopeType = isHorizontal
@@ -277,13 +263,6 @@ class TwoPointSlopeSolver {
       return 'm = \\frac{${_fmt(dy)}}{${_fmt(dx)}} = $f';
     }
     return 'm = ${_fmt(dy)} / ${_fmt(dx)}';
-  }
-
-  static String _simplifyExplanation(double dy, double dx, double slope) {
-    final f = _toLatexFraction(slope);
-    if (f != null) return 'Reduced: $f';
-    final s = slope.toStringAsFixed(3).replaceAll(RegExp(r'\.?0+$'), '');
-    return 'Decimal: $s';
   }
 
   static String _toLatex(String input) {

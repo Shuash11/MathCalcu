@@ -186,19 +186,9 @@ class _StepCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title
-                    Text(
-                      step.title,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: TwoPointSlopeTheme.textPrimary(context),
-                      ),
-                    ),
                     // Combined formula + substitution + result
                     if (step.formula.isNotEmpty ||
-                        step.substitution.isNotEmpty) ...[
-                      const SizedBox(height: 10),
+                        step.substitution.isNotEmpty)
                       _CombinedMathBlock(
                         formula: step.formula,
                         substitution: step.substitution,
@@ -206,7 +196,6 @@ class _StepCard extends StatelessWidget {
                         fontSize: 14,
                         color: accentColor,
                       ),
-                    ],
                   ],
                 ),
               ),
@@ -233,83 +222,54 @@ class _CombinedMathBlock extends StatelessWidget {
     required this.color,
   });
 
+  Widget _mathWidget(String tex) => FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Math.tex(
+          tex,
+          textStyle: TextStyle(
+            fontSize: fontSize,
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+          onErrorFallback: (error) => Text(
+            tex,
+            style: TextStyle(
+              fontFamily: 'serif',
+              fontSize: fontSize,
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (formula.isNotEmpty)
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Math.tex(
-              formula,
-              textStyle: TextStyle(
-                fontSize: fontSize,
-                color: color,
-                fontWeight: FontWeight.w600,
-              ),
-              onErrorFallback: (error) => Text(
-                formula,
-                style: TextStyle(
-                  fontFamily: 'serif',
-                  fontSize: fontSize,
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        if (formula.isNotEmpty && substitution.isNotEmpty)
-          const SizedBox(height: 6),
-        if (substitution.isNotEmpty)
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Math.tex(
-              substitution,
-              textStyle: TextStyle(
-                fontSize: fontSize,
-                color: color,
-                fontWeight: FontWeight.w600,
-              ),
-              onErrorFallback: (error) => Text(
-                substitution,
-                style: TextStyle(
-                  fontFamily: 'serif',
-                  fontSize: fontSize,
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        if (substitution.isNotEmpty && result.isNotEmpty && result != substitution)
-          const SizedBox(height: 6),
-        if (result.isNotEmpty && result != substitution)
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Math.tex(
-              result,
-              textStyle: TextStyle(
-                fontSize: fontSize,
-                color: color,
-                fontWeight: FontWeight.w700,
-              ),
-              onErrorFallback: (error) => Text(
-                result,
-                style: TextStyle(
-                  fontFamily: 'serif',
-                  fontSize: fontSize,
-                  color: color,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ),
-      ]);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: TwoPointSlopeTheme.cardBg(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (formula.isNotEmpty) _mathWidget(formula),
+          if (formula.isNotEmpty && substitution.isNotEmpty)
+            const SizedBox(height: 6),
+          if (substitution.isNotEmpty) _mathWidget(substitution),
+          if (substitution.isNotEmpty && result.isNotEmpty && result != substitution)
+            const SizedBox(height: 6),
+          if (result.isNotEmpty && result != substitution) _mathWidget(result),
+        ],
+      ),
+    );
   }
 }
 
