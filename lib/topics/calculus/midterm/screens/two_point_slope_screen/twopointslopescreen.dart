@@ -303,6 +303,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 Expanded(
                   child:                   _SolveButton(
                     onTap: () {
+                      setState(() => _showSteps = false);
                       _controller.solve();
                       try {
                         HapticFeedback.mediumImpact();

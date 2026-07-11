@@ -136,7 +136,7 @@ class _StepBuilder {
             (mSimplified.contains('/') ? ')' : '') +
             (mSimplified.contains('/') ? r' \cdot ' : '') +
             r'x ' +
-            (int.parse(b) >= 0 ? '+' : r'-') +
+            (double.tryParse(b) != null ? (double.parse(b) >= 0 ? '+' : '-') : (b.trimLeft().startsWith('-') ? '-' : '+')) +
             r' ' +
             bSimplified.replaceAll('-', ''),
       ),

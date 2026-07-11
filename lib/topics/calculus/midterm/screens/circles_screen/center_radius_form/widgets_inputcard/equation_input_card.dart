@@ -156,7 +156,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
             Wrap(
               spacing: 6,
               runSpacing: 6,
-              children: ['xÂ²', 'yÂ²', 'x', 'y', '+', '-', '=', '0']
+              children: ['x²', 'y²', 'x', 'y', '+', '-', '=', '0']
                   .map(_quickKey)
                   .toList(),
             ),
@@ -174,7 +174,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
               fontWeight: FontWeight.w600,
             ),
             decoration: InputDecoration(
-              hintText: 'e.g. xÂ² + yÂ² - 6x - 8y + 9 = 0',
+              hintText: 'e.g. x² + y² - 6x - 8y + 9 = 0',
               hintStyle: TextStyle(
                 color: FindingCenterRadiusTheme.textSecondary
                     .withValues(alpha: 0.4),

@@ -30,23 +30,23 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
   FocusNode get _focusNode => widget.focusNode ?? _internalFocusNode;
   bool _isFocused = false;
 
+  void _onFocusChange() {
+    setState(() => _isFocused = _focusNode.hasFocus);
+  }
+
   @override
   void initState() {
     super.initState();
     _internalFocusNode = FocusNode();
-    _focusNode.addListener(() {
-      setState(() => _isFocused = _focusNode.hasFocus);
-    });
+    _focusNode.addListener(_onFocusChange);
   }
 
   @override
   void didUpdateWidget(RadiusInputField old) {
     super.didUpdateWidget(old);
     if (old.focusNode != widget.focusNode) {
-      old.focusNode?.removeListener(() {});
-      _focusNode.addListener(() {
-        setState(() => _isFocused = _focusNode.hasFocus);
-      });
+      old.focusNode?.removeListener(_onFocusChange);
+      _focusNode.addListener(_onFocusChange);
     }
   }
 
