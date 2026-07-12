@@ -4,6 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/graph/two_point_slope_gr
 import 'two_point_slope_steps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 
 // ─────────────────────────────────────────────────────────────
 // TWO-POINT SLOPE SCREEN - COMPLETE & FIXED
@@ -25,7 +26,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   final _y1Focus = FocusNode();
   final _x2Focus = FocusNode();
   final _y2Focus = FocusNode();
-  bool _showSteps = false;
   bool _showGraph = false;
 
   @override
@@ -56,7 +56,14 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     super.dispose();
   }
 
-  void _toggleSteps() => setState(() => _showSteps = !_showSteps);
+  void _showStepsModal() {
+    showSolutionStepsModal(
+      context: context,
+      title: 'Solution Steps',
+      accentColor: TwoPointSlopeTheme.primary,
+      child: TwoPointSlopeSteps(result: _controller.result!),
+    );
+  }
   void _toggleGraph() => setState(() => _showGraph = !_showGraph);
 
   @override
@@ -310,7 +317,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child:                   _SolveButton(
                     onTap: () {
                       setState(() {
-                        _showSteps = false;
                         _showGraph = false;
                       });
                       _controller.solve();
@@ -352,7 +358,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               ),
               const SizedBox(width: 6),
               GestureDetector(
-                onTap: _toggleSteps,
+                onTap: _showStepsModal,
                 child: _buildShowStepsChip(),
               ),
             ],
@@ -434,18 +440,6 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               tagColor: TwoPointSlopeTheme.stepGreen,
             ),
           ],
-
-          if (_showSteps) ...[
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              height: 1,
-              margin: const EdgeInsets.only(bottom: 20),
-              color: TwoPointSlopeTheme.primary.withValues(alpha: 0.2),
-            ),
-            TwoPointSlopeSteps(result: _controller.result!),
-            const SizedBox(height: 20),
-          ],
         ],
       ),
     );
@@ -455,16 +449,14 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: _showSteps
-            ? TwoPointSlopeTheme.primary.withValues(alpha: 0.2)
-            : TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
+        color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            _showSteps ? 'Hide steps' : 'Show steps',
+            'Show steps',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -472,12 +464,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             ),
           ),
           const SizedBox(width: 4),
-          AnimatedRotation(
-            turns: _showSteps ? 0.5 : 0,
-            duration: const Duration(milliseconds: 200),
-            child: Icon(Icons.keyboard_arrow_down_rounded,
-                color: TwoPointSlopeTheme.primary, size: 16),
-          ),
+          Icon(Icons.keyboard_arrow_down_rounded,
+              color: TwoPointSlopeTheme.primary, size: 16),
         ],
       ),
     );

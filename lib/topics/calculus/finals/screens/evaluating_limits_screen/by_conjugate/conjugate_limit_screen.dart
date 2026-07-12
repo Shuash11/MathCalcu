@@ -1,5 +1,6 @@
 ﻿import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_conjugate/solver_engine.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_conjugate/solution_steps.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'conjugate_answer_card.dart';
 import 'conjugate_input_field.dart';
 import 'conjugate_steps_view.dart';
@@ -52,7 +53,6 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
 
   ConjugateResult? _result;
   List<ConjugateStep> _steps = [];
-  bool _showSteps = false;
   bool _isSolving = false;
 
   late final AnimationController _contentController;
@@ -123,7 +123,6 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
 
     setState(() {
       _isSolving = true;
-      _showSteps = false;
     });
 
     double approachVal = 0;
@@ -178,7 +177,6 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
     final headerBadgeIconSize = isCompact ? 12.0 : (isMedium ? 13.0 : 14.0);
     final headerBadgeFontSize = isCompact ? 9.0 : (isMedium ? 9.5 : 10.0);
     final headerBackPadding = isCompact ? 10.0 : (isMedium ? 11.0 : 12.0);
-    final stepsPaddingTop = isCompact ? 24.0 : (isMedium ? 28.0 : 32.0);
 
     return ColoredBox(
       color: FinalsTheme.surface(context),
@@ -222,47 +220,16 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                                 'lim($_currentVariable → ${_approachController.text}) ${_expressionController.text}',
                             resultString: _result!.resultString,
                             method: 'By Conjugate',
-                            isShowingSteps: _showSteps,
+                            isShowingSteps: false,
                             hasError: !_result!.solved &&
                                 _result!.errorMessage != null,
                             errorMessage: _result!.errorMessage,
-                            onTap: () =>
-                                setState(() => _showSteps = !_showSteps),
-                          ),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            child: _showSteps
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                        top: stepsPaddingTop, left: isCompact ? 4 : 8, right: isCompact ? 4 : 8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(Icons.list_alt_rounded,
-                                                color: FinalsTheme.secondary,
-                                                size: isCompact ? 16 : 18),
-                                            SizedBox(width: isCompact ? 8 : 10),
-                                            Text(
-                                              'SOLUTION STEPS',
-                                              style: FinalsTheme.labelStyle(
-                                                      context)
-                                                  .copyWith(
-                                                color: FinalsTheme.secondary,
-                                                letterSpacing: 1.5,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: isCompact ? 16 : 24),
-                                        ConjugateStepsView(steps: _steps),
-                                      ],
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
+                            onTap: () => showSolutionStepsModal(
+                              context: context,
+                              title: 'Solution Steps',
+                              accentColor: FinalsTheme.secondary,
+                              child: ConjugateStepsView(steps: _steps),
+                            ),
                           ),
                         ],
                       ],

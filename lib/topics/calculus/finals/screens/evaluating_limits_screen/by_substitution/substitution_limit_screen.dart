@@ -5,6 +5,7 @@ import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
 
 class SubstitutionLimitScreen extends StatefulWidget {
@@ -25,7 +26,6 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
   
   SubstitutionResult? _result;
   List<SolutionStep> _steps = [];
-  bool _showSteps = false;
   bool _isSolving = false;
 
   late final AnimationController _contentController;
@@ -92,7 +92,6 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
 
     setState(() {
       _isSolving = true;
-      _showSteps = false;
     });
 
     // parse approach value
@@ -181,40 +180,14 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                           SubstitutionAnswerCard(
                             answer: _result!.finalValue,
                             method: 'By Substitution',
-                            isShowingSteps: _showSteps,
-                            onTap: () => setState(() => _showSteps = !_showSteps),
+                            isShowingSteps: false,
+                            onTap: () => showSolutionStepsModal(
+                              context: context,
+                              title: 'Solution Steps',
+                              accentColor: FinalsTheme.primary,
+                              child: SubstitutionStepsView(steps: _steps),
+                            ),
                             error: _result!.errorMessage,
-                          ),
-
-                          // Steps Section
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            child: _showSteps
-                                ? Padding(
-                                    padding: const EdgeInsets.only(top: 32, left: 8, right: 8),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const Icon(Icons.list_alt_rounded, color: FinalsTheme.primary, size: 18),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              'SOLUTION STEPS',
-                                              style: FinalsTheme.labelStyle(context).copyWith(
-                                                color: FinalsTheme.primary,
-                                                letterSpacing: 1.5,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 24),
-                                        SubstitutionStepsView(steps: _steps),
-                                      ],
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
                           ),
                         ],
                       ],

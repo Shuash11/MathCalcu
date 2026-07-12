@@ -5,6 +5,7 @@ import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_factoring/solution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
 
 class FactoringLimitScreen extends StatelessWidget {
@@ -52,7 +53,6 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
 
   SolutionResult? _result;
   List<SolutionStep> _steps = [];
-  bool _showSteps = false;
   bool _isSolving = false;
 
   late final AnimationController _contentController;
@@ -119,7 +119,6 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
 
     setState(() {
       _isSolving = true;
-      _showSteps = false;
     });
 
     double approachVal = 0;
@@ -172,7 +171,6 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
     final headerBadgeIconSize = isCompact ? 12.0 : (isMedium ? 13.0 : 14.0);
     final headerBadgeFontSize = isCompact ? 9.0 : (isMedium ? 9.5 : 10.0);
     final headerBackPadding = isCompact ? 10.0 : (isMedium ? 11.0 : 12.0);
-    final stepsPaddingTop = isCompact ? 24.0 : (isMedium ? 28.0 : 32.0);
 
     return ColoredBox(
       color: FinalsTheme.surface(context),
@@ -210,48 +208,19 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
                           )
                         else if (_result != null) ...[
                           SizedBox(height: isCompact ? 16.0 : 24.0),
-                          FactoringAnswerCard(
-                            answer: _result!.finalValue,
-                            method: 'Factoring Method',
-                            isShowingSteps: _showSteps,
-                            onTap: () => setState(() => _showSteps = !_showSteps),
-                            error: _result!.errorMessage,
-                          ),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            child: _showSteps
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                        top: stepsPaddingTop, left: isCompact ? 4 : 8, right: isCompact ? 4 : 8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(Icons.list_alt_rounded,
-                                                color: FinalsTheme.primary,
-                                                size: isCompact ? 16 : 18),
-                                            SizedBox(width: isCompact ? 8 : 10),
-                                            Text(
-                                              'SOLUTION STEPS',
-                                              style: FinalsTheme.labelStyle(
-                                                      context)
-                                                  .copyWith(
-                                                color: FinalsTheme.primary,
-                                                letterSpacing: 1.5,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: isCompact ? 16 : 24),
-                                        FactoringStepsView(steps: _steps),
-                                      ],
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
+                            FactoringAnswerCard(
+                              answer: _result!.finalValue,
+                              method: 'Factoring Method',
+                              isShowingSteps: false,
+                              onTap: () => showSolutionStepsModal(
+                                context: context,
+                                title: 'Solution Steps',
+                                accentColor: FinalsTheme.primary,
+                                child: FactoringStepsView(steps: _steps),
+                              ),
+                              error: _result!.errorMessage,
+                            ),
+
                         ],
                       ],
                     ),

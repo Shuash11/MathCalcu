@@ -4,6 +4,7 @@ import 'lcd_steps_view.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_lcd/math_limits_library.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
 
 class LCDLimitScreen extends StatefulWidget {
@@ -23,7 +24,6 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
   String _currentVariable = 'x';
   
   LimitSolution? _solution;
-  bool _showSteps = false;
   bool _isSolving = false;
 
   late final AnimationController _contentController;
@@ -90,7 +90,6 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
 
     setState(() {
       _isSolving = true;
-      _showSteps = false;
     });
 
     // parse approach value with proper validation
@@ -205,39 +204,13 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                             answer: _solution!.finalAnswer,
                             fractionalAnswer: _solution!.fractionalAnswer,
                             method: _solution!.methodUsed,
-                            isShowingSteps: _showSteps,
-                            onTap: () => setState(() => _showSteps = !_showSteps),
-                          ),
-
-                          // Steps Section
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            child: _showSteps
-                                ? Padding(
-                                    padding: const EdgeInsets.only(top: 32, left: 8, right: 8),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const Icon(Icons.list_alt_rounded, color: FinalsTheme.danger, size: 18),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              'SOLUTION STEPS',
-                                              style: FinalsTheme.labelStyle(context).copyWith(
-                                                color: FinalsTheme.danger,
-                                                letterSpacing: 1.5,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 24),
-                                        LCDStepsView(steps: _solution!.steps),
-                                      ],
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
+                            isShowingSteps: false,
+                            onTap: () => showSolutionStepsModal(
+                              context: context,
+                              title: 'Solution Steps',
+                              accentColor: FinalsTheme.danger,
+                              child: LCDStepsView(steps: _solution!.steps),
+                            ),
                           ),
                         ],
                       ],

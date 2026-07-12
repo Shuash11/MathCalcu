@@ -1,15 +1,12 @@
 {
   "tasks": [
-    { "id": 1, "description": "Redesign _StepCard — circled numbers, no boxes, minimal timeline style", "status": "done" },
-    { "id": 2, "description": "Consolidate formula + substitution + result into single LaTeX block (result inline)", "status": "done" },
-    { "id": 3, "description": "Replace _LatexValue (boxed) with _LatexInline (no background)", "status": "done" },
-    { "id": 4, "description": "Add graph toggle button — show/hide independently from steps", "status": "done" },
-    { "id": 5, "description": "Fix TokenizerError — corrupted ² character in limits tokenizer", "status": "done" },
-    { "id": 6, "description": "Review solver step data for compatibility with new display", "status": "done" },
-    { "id": 7, "description": "Fix _CombinedMathBlock to show formula/substitution/result as separate lines instead of substitution=result", "status": "done" }
+    { "id": 1, "description": "Create shared SolutionStepsModal widget", "status": "done" },
+    { "id": 2, "description": "Two-point slope: replace inline steps with modal", "status": "done" },
+    { "id": 3, "description": "Substitution limits: replace inline steps with modal", "status": "done" },
+    { "id": 4, "description": "Factoring limits: replace inline steps with modal", "status": "done" },
+    { "id": 5, "description": "Conjugate limits: replace inline steps with modal", "status": "done" },
+    { "id": 6, "description": "LCD limits: replace inline steps with modal", "status": "done" },
+    { "id": 7, "description": "Full verification (analyze + tests)", "status": "done" }
   ],
-  "completed": true,
-  "release": {
-    "enabled": false
-  }
+  "completed": true
 }
