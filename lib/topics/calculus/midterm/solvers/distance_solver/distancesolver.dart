@@ -89,7 +89,7 @@ class DistanceSolver {
     final diff = x2 - x1;
     final distance = diff.abs();
 
-    final formula = '|$_fmt(x2) - $_fmt(x1)| = |$_fmt(diff)| = $_fmt(distance)';
+    final formula = '|${_fmt(x2)} - ${_fmt(x1)}| = |${_fmt(diff)}| = ${_fmt(distance)}';
 
     return DistanceResult.success(distance: distance, formula: formula);
   }
@@ -105,9 +105,9 @@ class DistanceSolver {
     final formula =
         '√((${_fmt(x2)}−${_fmt(x1)})² + (${_fmt(y2)}−${_fmt(y1)})²)\n'
         '= √(${_fmt(dx)}² + ${_fmt(dy)}²)\n'
-        '= √($_fmt(dx * dx) + $_fmt(dy * dy))\n'
-        '= √$_fmt(squaredSum)\n'
-        '= $_fmt(distance)';
+        '= √(${_fmt(dx * dx)} + ${_fmt(dy * dy)})\n'
+        '= √${_fmt(squaredSum)}\n'
+        '= ${_fmt(distance)}';
 
     return DistanceResult.success(distance: distance, formula: formula);
   }

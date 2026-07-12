@@ -236,7 +236,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                         children: [
                                           const TextSpan(text: 'm = '),
                                           TextSpan(
-                                            text: '(y₂??y₁)',
+                                            text: '(y₂−y₁)',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               fontSize: 12 * s,
@@ -244,7 +244,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                           ),
                                           const TextSpan(text: ' / '),
                                           TextSpan(
-                                            text: '(x₂??x₁)',
+                                            text: '(x₂−x₁)',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               fontSize: 12 * s,
