@@ -1,12 +1,13 @@
 {
   "tasks": [
-    { "id": 1, "description": "Find all modified files related to distance UTF fix", "status": "done" },
-    { "id": 2, "description": "Read all modified source files and verify compilation", "status": "done" },
-    { "id": 3, "description": "Read all test files and verify they pass", "status": "done" },
-    { "id": 4, "description": "Check for regressions in related screens", "status": "done" },
-    { "id": 5, "description": "Verify imports are correct", "status": "done" },
-    { "id": 6, "description": "Check for unused variables/state", "status": "done" },
-    { "id": 7, "description": "Write readiness report", "status": "done" }
+    { "id": 1, "description": "Create shared SolutionStepCard widget near solution_steps_modal.dart", "status": "done" },
+    { "id": 2, "description": "Update lcd_steps_view.dart - add titles + apply new style", "status": "done" },
+    { "id": 3, "description": "Update conjugate_steps_view.dart - remove cards, apply numbered circles", "status": "done" },
+    { "id": 4, "description": "Update two_point_slope_steps.dart - switch to FinalsTheme.primary", "status": "done" },
+    { "id": 5, "description": "Update slope_using_derivatives - replace StepsScreen with modal", "status": "done" },
+    { "id": 6, "description": "Update derivatives_screen.dart - replace inline steps with modal", "status": "done" },
+    { "id": 7, "description": "Update limits_infinity_screen.dart - replace inline steps with modal", "status": "done" },
+    { "id": 8, "description": "Run flutter analyze + flutter test to verify all changes", "status": "done" }
   ],
   "completed": true
 }

@@ -1,6 +1,7 @@
 ﻿// ignore_for_file: prefer_const_constructors
 
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -19,91 +20,24 @@ class LCDStepsView extends StatelessWidget {
     return Column(
       children: List.generate(
         visibleSteps.length,
-        (index) => _StepTile(
-          step: visibleSteps[index],
-          index: index,
-          isLast: index == visibleSteps.length - 1,
+        (index) => SolutionStepCard(
+          stepNumber: index + 1,
+          title: 'Step ${index + 1}',
+          mathContent: _FormattedStepText(
+            text: visibleSteps[index],
+            wrapInCard: false,
+          ),
         ),
       ),
     );
   }
 }
 
-class _StepTile extends StatelessWidget {
-  final String step;
-  final int index;
-  final bool isLast;
-
-  const _StepTile({
-    required this.step,
-    required this.index,
-    required this.isLast,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isCompact = screenWidth < 380;
-    const accentColor = FinalsTheme.danger;
-
-    return Stack(
-      children: [
-        if (!isLast)
-          Positioned(
-            left: isCompact ? 12.25 : 15.25,
-            top: isCompact ? 22 : 28,
-            bottom: 4,
-            child: Container(
-              width: 1.5,
-              color: accentColor.withValues(alpha: 0.15),
-            ),
-          ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: isCompact ? 28 : 32,
-              child: Container(
-                width: isCompact ? 20 : 24,
-                height: isCompact ? 20 : 24,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: accentColor.withValues(alpha: 0.4),
-                    width: 1.5,
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    (index + 1).toString(),
-                    style: TextStyle(
-                      fontSize: isCompact ? 9 : 11,
-                      fontWeight: FontWeight.w900,
-                      color: accentColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: isCompact ? 12 : 16),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 24),
-                child: _FormattedStepText(text: step),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 class _FormattedStepText extends StatelessWidget {
   final String text;
+  final bool wrapInCard;
 
-  const _FormattedStepText({required this.text});
+  const _FormattedStepText({required this.text, this.wrapInCard = true});
 
   static const _doubleDollar = r'$$';
 
@@ -126,38 +60,45 @@ class _FormattedStepText extends StatelessWidget {
       if (part.isEmpty) continue;
 
       if (i % 2 == 1) {
-        children.add(
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.only(top: 8, bottom: 8),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: FinalsTheme.cardSecondary(context),
-              borderRadius: BorderRadius.circular(12),
-              border:
-                  Border.all(color: FinalsTheme.danger.withValues(alpha: 0.1)),
+        final mathWidget = SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Math.tex(
+            part,
+            textStyle: FinalsTheme.titleStyle(context).copyWith(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Math.tex(
+            onErrorFallback: (err) {
+              return Text(
                 part,
-                textStyle: FinalsTheme.titleStyle(context).copyWith(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 13,
+                  color: FinalsTheme.primary.withValues(alpha: 0.8),
                 ),
-                onErrorFallback: (err) {
-                  return Text(
-                    part,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 13,
-                      color: FinalsTheme.danger.withValues(alpha: 0.8),
-                    ),
-                  );
-                },
-              ),
-            ),
+              );
+            },
           ),
+        );
+
+        children.add(
+          wrapInCard
+              ? Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(top: 8, bottom: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: FinalsTheme.cardSecondary(context),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: FinalsTheme.primary.withValues(alpha: 0.1)),
+                  ),
+                  child: mathWidget,
+                )
+              : Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: mathWidget,
+                ),
         );
       } else {
         children.add(_InlineMathText(text: part));
@@ -202,7 +143,7 @@ class _InlineMathText extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 13,
-                    color: FinalsTheme.danger.withValues(alpha: 0.7),
+                    color: FinalsTheme.primary.withValues(alpha: 0.7),
                   ),
                 );
               },

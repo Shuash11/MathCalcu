@@ -1,9 +1,11 @@
 ﻿import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
-import 'steps_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 
 class AnswerCard extends StatefulWidget {
   final ClassroomSolution solution;
@@ -35,10 +37,11 @@ class _AnswerCardState extends State<AnswerCard> {
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => StepsScreen(solution: widget.solution),
-            ),
+          showSolutionStepsModal(
+            context: context,
+            title: widget.solution.problemTitle,
+            accentColor: FinalsTheme.primary,
+            child: _SlopeDerivativesSteps(solution: widget.solution),
           );
         },
         child: AnimatedContainer(
@@ -197,6 +200,112 @@ class _AnswerCardState extends State<AnswerCard> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SlopeDerivativesSteps extends StatelessWidget {
+  final ClassroomSolution solution;
+  const _SlopeDerivativesSteps({required this.solution});
+
+  bool _isMathExpression(String line) {
+    if (line.trim().isEmpty) return false;
+    if (line.contains('{') && line.contains('}')) return true;
+    if (line.contains('\\') && RegExp(r'[\\{}]').hasMatch(line)) return true;
+    if (line.contains('dy/dx') || line.contains('d/dx')) return true;
+    final mathPattern = RegExp(r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=');
+    final hasVariables = RegExp(r'[x-yt]').hasMatch(line);
+    final hasNumbers = RegExp(r'[0-9]').hasMatch(line);
+    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('→'))) return true;
+    if (hasNumbers && mathPattern.hasMatch(line) && line.contains('=')) return true;
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+          child: Row(
+            children: [
+              Container(
+                width: 3, height: 20,
+                decoration: BoxDecoration(
+                  color: FinalsTheme.primary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'STEP-BY-STEP SOLUTION',
+                style: FinalsTheme.labelStyle(context),
+              ),
+            ],
+          ),
+        ),
+        ...solution.steps.asMap().entries.map((entry) {
+          final i = entry.key;
+          final step = entry.value;
+          return SolutionStepCard(
+            stepNumber: i + 1,
+            title: step.label,
+            description: step.hint,
+            mathContent: _buildMathContent(step, context),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildMathContent(ClassroomStep step, BuildContext context) {
+    final textLines = <Widget>[];
+    for (final line in step.lines) {
+      if (line.trim().isEmpty) {
+        textLines.add(const SizedBox(height: 6));
+      } else if (_isMathExpression(line)) {
+        textLines.add(Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Math.tex(
+              line,
+              textStyle: TextStyle(
+                color: FinalsTheme.textPrimary(context),
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+              mathStyle: MathStyle.text,
+              onErrorFallback: (err) => Text(
+                line,
+                style: TextStyle(
+                  color: FinalsTheme.danger,
+                  fontSize: 13,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ),
+        ));
+      } else {
+        textLines.add(Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Text(
+            line,
+            style: FinalsTheme.subtitleStyle(context).copyWith(
+              fontSize: 13,
+              height: 1.4,
+            ),
+          ),
+        ));
+      }
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: textLines,
     );
   }
 }

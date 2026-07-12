@@ -1,10 +1,11 @@
 ﻿import 'derivatives_answer_card.dart';
 import 'derivatives_input_field.dart';
-import 'derivatives_steptile.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/deriviatives_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
 
 class DerivativeScreen extends StatefulWidget {
@@ -17,7 +18,6 @@ class DerivativeScreen extends StatefulWidget {
 class _DerivativeScreenState extends State<DerivativeScreen> {
   final TextEditingController _exprController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _stepsKey = GlobalKey();
 
   final _expressionFocus = FocusNode();
   TextEditingController? _activeController;
@@ -74,8 +74,6 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
         _solution = result;
         _isLoading = false;
       });
-
-      _scrollToStepsSection();
     } catch (e) {
       setState(() {
         _error = e.toString().replaceFirst('ParseException: ', '');
@@ -84,69 +82,57 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
     }
   }
 
-  void _scrollToStepsSection() {
-    final context = _stepsKey.currentContext;
-    if (context != null) {
-      Scrollable.ensureVisible(
-        context,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOutCubic,
-      );
-    }
-  }
+  void _showStepsModal() {
+    if (_solution == null) return;
 
-  Widget _buildStepsSection(BuildContext context, ClassroomSolution solution) {
-    final stepCount = solution.steps.length;
-    final hasSteps = stepCount > 2 && solution.steps.any((s) => s.expression.isNotEmpty);
+    final solution = _solution!;
+    final hasSteps = solution.steps.length > 2 && solution.steps.any((s) => s.expression.isNotEmpty);
 
-    return Column(
-      key: _stepsKey,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Step-by-Step Solution', style: FinalsTheme.titleStyle(context)),
-        const SizedBox(height: 8),
-        Text('Understand the rules applied to reach the answer.',
-            style: FinalsTheme.subtitleStyle(context)),
-        const SizedBox(height: 24),
-
-        if (!hasSteps)
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: FinalsTheme.cardSecondary(context),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.check_circle_outline_rounded, color: FinalsTheme.primary, size: 24),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Direct computation. No step-by-step breakdown needed for this expression.',
-                    style: FinalsTheme.subtitleStyle(context),
+    showSolutionStepsModal(
+      context: context,
+      title: 'Derivative Steps',
+      accentColor: FinalsTheme.primary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (!hasSteps)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: FinalsTheme.cardSecondary(context),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle_outline_rounded, color: FinalsTheme.primary, size: 24),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Direct computation. No step-by-step breakdown needed for this expression.',
+                      style: FinalsTheme.subtitleStyle(context),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )
-        else
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: solution.steps.asMap().entries.map((entry) {
+                ],
+              ),
+            )
+          else
+            ...solution.steps.asMap().entries.map((entry) {
               final step = entry.value;
               if (step.expression.isEmpty && step.type != StepType.original) {
                 return const SizedBox.shrink();
               }
-              return DerivativeStepTile(
-                step: step,
-                index: entry.key,
-                isLast: entry.key == solution.steps.length - 1,
+              return SolutionStepCard(
+                stepNumber: entry.key + 1,
+                title: step.title,
+                description: step.explanation.split('\n').firstOrNull ?? '',
+                mathContent: Text(
+                  step.expression.toString(),
+                  style: const TextStyle(color: FinalsTheme.primary),
+                ),
               );
-            }).toList(),
-          ),
-
-        const SizedBox(height: 60),
-      ],
+            }),
+        ],
+      ),
     );
   }
 
@@ -233,7 +219,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                       child: DerivativeAnswerCard(
                         originalExpr: _solution!.originalExpression,
                         answerExpr: _solution!.finalAnswer,
-                        onTap: _scrollToStepsSection,
+                        onTap: _showStepsModal,
                       ),
                     ),
                   ),
@@ -244,7 +230,22 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverToBoxAdapter(
-                      child: _buildStepsSection(context, _solution!),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: OutlinedButton.icon(
+                          onPressed: _showStepsModal,
+                          icon: const Icon(Icons.list_alt_rounded, size: 18),
+                          label: const Text('Show Steps'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: FinalsTheme.primary,
+                            side: const BorderSide(color: FinalsTheme.primary),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
               ],

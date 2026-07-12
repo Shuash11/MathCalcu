@@ -1,10 +1,12 @@
 ﻿import 'package:calculus_system/topics/calculus/finals/solvers/limits_infinity_solver/limits_infinity_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_answer_card.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_input_field.dart';
-import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_step_guide.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 class LimitsInfinityScreen extends StatefulWidget {
   const LimitsInfinityScreen({super.key});
@@ -17,7 +19,6 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
   final TextEditingController _exprController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _stepsKey = GlobalKey();
 
   final _expressionFocus = FocusNode();
   final _approachFocus = FocusNode();
@@ -105,13 +106,108 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
     }
   }
 
-  void _scrollToStepsSection() {
-    final context = _stepsKey.currentContext;
-    if (context != null) {
-      Scrollable.ensureVisible(
-        context,
-        duration: const Duration(milliseconds: 800),
-        curve: Curves.easeInOutCubic,
+  void _showStepsModal() {
+    if (_solution == null) return;
+
+    showSolutionStepsModal(
+      context: context,
+      title: 'Solution Steps',
+      accentColor: FinalsTheme.primary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: FinalsTheme.cardSecondary(context),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              'Method: ${_solution!.methodUsed}',
+              style: FinalsTheme.subtitleStyle(context).copyWith(
+                fontWeight: FontWeight.w600,
+                color: FinalsTheme.primary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ..._solution!.steps.asMap().entries.map((entry) {
+            final step = entry.value;
+            final displayExpr =
+                step.formula ?? step.expression?.toString();
+            return SolutionStepCard(
+              stepNumber: entry.key + 1,
+              title: step.description,
+              description: step.explanation,
+              mathContent: displayExpr != null
+                  ? _buildMathDisplay(displayExpr)
+                  : const SizedBox.shrink(),
+            );
+          }),
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: FinalsTheme.primary.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                  color: FinalsTheme.primary.withValues(alpha: 0.2)),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'Final Conclusion',
+                  style: FinalsTheme.labelStyle(context),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'The limit is ${_solution!.resultString}',
+                  textAlign: TextAlign.center,
+                  style: FinalsTheme.titleStyle(context)
+                      .copyWith(fontSize: 18),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMathDisplay(String expr) {
+    final latex = expr
+        .replaceAll('*', ' \\cdot ')
+        .replaceAllMapped(
+            RegExp(r'(\w+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
+        .replaceAll('x ^ 2', 'x^{2}')
+        .replaceAll('x ^ 3', 'x^{3}')
+        .replaceAll('x ^ 4', 'x^{4}')
+        .replaceAllMapped(
+            RegExp(r'(\d+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
+        .replaceAllMapped(RegExp(r'([^\s]+)\s*/\s*([^\s]+)'),
+            (m) => '\\frac{${m[1]}}{${m[2]}}');
+
+    try {
+      return Math.tex(
+        latex,
+        textStyle: const TextStyle(
+          fontSize: 15,
+          color: FinalsTheme.primary,
+          fontWeight: FontWeight.w500,
+        ),
+        onErrorFallback: (error) {
+          return Text(
+            expr,
+            style: const TextStyle(fontSize: 14, fontFamily: 'monospace'),
+          );
+        },
+      );
+    } catch (e) {
+      return Text(
+        expr,
+        style: const TextStyle(fontSize: 14, fontFamily: 'monospace'),
       );
     }
   }
@@ -229,88 +325,34 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                   child: LimitsAnswerCard(
                     problemNotation: _solution!.problemNotation,
                     resultString: _solution!.resultString,
-                    onTap: _scrollToStepsSection,
+                    onTap: _showStepsModal,
                   ),
                 ),
               ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 48)),
 
-            // Steps Section
+            // Show Steps Button
             if (_solution != null)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
-                  child: Column(
-                    key: _stepsKey,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.auto_stories_rounded,
-                              size: 24, color: FinalsTheme.primary),
-                          const SizedBox(width: 12),
-                          Text('Solution Steps',
-                              style: FinalsTheme.titleStyle(context)
-                                  .copyWith(fontSize: 20)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Method: ${_solution!.methodUsed}',
-                        style: FinalsTheme.subtitleStyle(context).copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: FinalsTheme.primary),
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Render Each Step
-                      ..._solution!.steps.asMap().entries.map((entry) {
-                        final step = entry.value;
-                        final displayExpr =
-                            step.formula ?? step.expression?.toString();
-                        return LimitsStepGuide(
-                          title: step.description,
-                          subtitle: null,
-                          mathExpression: displayExpr,
-                          explanation: step.explanation,
-                          isConclusion: step.type == StepType.conclusion,
-                          stepNumber: entry.key + 1,
-                        );
-                      }),
-
-                      const SizedBox(height: 16),
-
-                      // Final Conclusion
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: FinalsTheme.primary.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color:
-                                  FinalsTheme.primary.withValues(alpha: 0.2)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: OutlinedButton.icon(
+                      onPressed: _showStepsModal,
+                      icon: const Icon(Icons.list_alt_rounded, size: 18),
+                      label: const Text('Show Steps'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: FinalsTheme.primary,
+                        side: const BorderSide(color: FinalsTheme.primary),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Final Conclusion',
-                              style: FinalsTheme.labelStyle(context),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'The limit is ${_solution!.resultString}',
-                              textAlign: TextAlign.center,
-                              style: FinalsTheme.titleStyle(context)
-                                  .copyWith(fontSize: 18),
-                            ),
-                          ],
-                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 14),
                       ),
-
-                      const SizedBox(height: 80),
-                    ],
+                    ),
                   ),
                 ),
               ),

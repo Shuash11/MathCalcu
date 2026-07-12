@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/two_point_slope_theme/two_point_slope_theme.dart';
+﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_solver/two_point_slope_solver.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -24,14 +25,7 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
   late final List<Animation<double>> _fadeAnims;
   late final List<Animation<Offset>> _slideAnims;
 
-  // One color per step — cycles through step palette
-  static const List<Color> _stepColors = [
-    TwoPointSlopeTheme.stepBlue,
-    TwoPointSlopeTheme.stepGreen,
-    TwoPointSlopeTheme.stepPurple,
-    TwoPointSlopeTheme.stepOrange,
-    TwoPointSlopeTheme.primary,
-  ];
+
 
   @override
   void initState() {
@@ -87,14 +81,14 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
                 width: 3,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: TwoPointSlopeTheme.primary,
+                  color: FinalsTheme.primary,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(width: 10),
               Text(
                 'STEP-BY-STEP SOLUTION',
-                style: TwoPointSlopeTheme.labelStyle(context),
+                style: FinalsTheme.labelStyle(context),
               ),
             ],
           ),
@@ -104,116 +98,25 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
         ...widget.result.steps.asMap().entries.map((entry) {
           final i = entry.key;
           final step = entry.value;
-          final color = _stepColors[i % _stepColors.length];
-          final isLast = i == widget.result.steps.length - 1;
 
           return FadeTransition(
             opacity: _fadeAnims[i],
             child: SlideTransition(
               position: _slideAnims[i],
-              child: _StepCard(step: step, color: color, isLast: isLast),
+              child: SolutionStepCard(
+                stepNumber: step.number,
+                title: step.title,
+                mathContent: _CombinedMathBlock(
+                  formula: step.formula,
+                  substitution: step.substitution,
+                  result: step.result,
+                  fontSize: 14,
+                  color: FinalsTheme.primary,
+                ),
+              ),
             ),
           );
         }),
-      ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// Individual step card — minimal circled-number timeline style
-// ─────────────────────────────────────────────────────────────
-
-class _StepCard extends StatelessWidget {
-  final SolverStep step;
-  final Color color;
-  final bool isLast;
-
-  const _StepCard({
-    required this.step,
-    required this.color,
-    this.isLast = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const accentColor = TwoPointSlopeTheme.primary;
-
-    return Stack(
-      children: [
-        // Timeline line
-        if (!isLast)
-          Positioned(
-            left: 15.25,
-            top: 32,
-            bottom: 0,
-            child: Container(
-              width: 1.5,
-              color: accentColor.withValues(alpha: 0.15),
-            ),
-          ),
-
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Circled number indicator
-            SizedBox(
-              width: 40,
-              child: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${step.number}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: accentColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Content
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title
-                    if (step.title.isNotEmpty)
-                      Text(
-                        step.title,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                    // Combined formula + substitution + result
-                    if (step.formula.isNotEmpty ||
-                        step.substitution.isNotEmpty) ...[
-                      if (step.title.isNotEmpty) const SizedBox(height: 8),
-                      _CombinedMathBlock(
-                        formula: step.formula,
-                        substitution: step.substitution,
-                        result: step.result,
-                        fontSize: 14,
-                        color: accentColor,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -262,10 +165,10 @@ class _CombinedMathBlock extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: TwoPointSlopeTheme.cardBg(context),
+        color: FinalsTheme.cardSecondary(context),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
+          color: FinalsTheme.primary.withValues(alpha: 0.1),
         ),
       ),
       child: Column(
