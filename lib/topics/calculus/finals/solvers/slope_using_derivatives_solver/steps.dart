@@ -106,7 +106,7 @@ class DerivativeNarrator {
         case '+':
           return ['Sum Rule:  d/d$wrtVar[f + g] = f\' + g\''];
         case '-':
-          return ['Difference Rule:  d/d$wrtVar[f ?? g] = f\' ?? g\''];
+          return ['Difference Rule:  d/d$wrtVar[f − g] = f\' − g\''];
         case '*':
           return [
             'Product Rule:  d/d$wrtVar[f?g] = f\'?g + f?g\'',
@@ -115,7 +115,7 @@ class DerivativeNarrator {
           ];
         case '/':
           return [
-            'Quotient Rule:  d/d$wrtVar[f/g] = (f\'g ?? fg\') / g?',
+            'Quotient Rule:  d/d$wrtVar[f/g] = (f\'g − fg\') / g²',
             '  where  f = ${expr.left.toMathString()}',
             '         g = ${expr.right.toMathString()}',
           ];
@@ -160,7 +160,7 @@ class DerivativeNarrator {
       case 'sin':
         return ['d/d$wrtVar[sin u] = cos u ? u\'$chain', '  where  u = $u'];
       case 'cos':
-        return ['d/d$wrtVar[cos u] = ??sin u ? u\'$chain', '  where  u = $u'];
+        return ['d/d$wrtVar[cos u] = −sin u · u\'$chain', '  where  u = $u'];
       case 'tan':
         return [
           'd/d$wrtVar[tan u] = sec?u ? u\'  =  u\' / cos?u$chain',
@@ -168,7 +168,7 @@ class DerivativeNarrator {
         ];
       case 'cot':
         return [
-          'd/d$wrtVar[cot u] = ??csc?u ? u\'  =  ??u\' / sin?u$chain',
+          'd/d$wrtVar[cot u] = −csc²u · u\'  =  −u\' / sin²u$chain',
           '  where  u = $u'
         ];
       case 'sec':
@@ -178,19 +178,19 @@ class DerivativeNarrator {
         ];
       case 'csc':
         return [
-          'd/d$wrtVar[csc u] = ??csc u ? cot u ? u\'  =  ??cos u ? u\' / sin?u$chain',
+          'd/d$wrtVar[csc u] = −csc u · cot u · u\'  =  −cos u · u\' / sin²u$chain',
           '  where  u = $u'
         ];
       case 'asin':
       case 'arcsin':
         return [
-          'd/d$wrtVar[arcsin u] = u\' / √(1 ?? u?)$chain',
+          'd/d$wrtVar[arcsin u] = u\' / √(1 − u²)$chain',
           '  where  u = $u'
         ];
       case 'acos':
       case 'arccos':
         return [
-          'd/d$wrtVar[arccos u] = ??u\' / √(1 ?? u?)$chain',
+          'd/d$wrtVar[arccos u] = −u\' / √(1 − u²)$chain',
           '  where  u = $u'
         ];
       case 'atan':
@@ -223,7 +223,7 @@ class DerivativeNarrator {
         ];
       case 'cbrt':
         return [
-          'd/d$wrtVar[??u] = u\' / (3 ? u^(2/3))$chain',
+          'd/d$wrtVar[∛u] = u\' / (3 · u^(2/3))$chain',
           '  where  u = $u'
         ];
       default:
@@ -881,25 +881,25 @@ class ClassroomPrinter {
 
 String _fmt(double v) {
   if (v != v) return 'undefined';
-  if (v.isInfinite) return v > 0 ? '+∞' : '??∞';
+  if (v.isInfinite) return v > 0 ? '+∞' : '−∞';
   if (v == v.truncateToDouble() && v.abs() < 1e10) return v.toInt().toString();
   final fracs = <double, String>{
     0.5: '1/2',
-    -0.5: '??1/2',
+    -0.5: '−1/2',
     1 / 3: '1/3',
-    -1 / 3: '??1/3',
+    -1 / 3: '−1/3',
     2 / 3: '2/3',
-    -2 / 3: '??2/3',
+    -2 / 3: '−2/3',
     0.25: '1/4',
-    -0.25: '??1/4',
+    -0.25: '−1/4',
     0.75: '3/4',
-    -0.75: '??3/4',
+    -0.75: '−3/4',
     math.sqrt2: '√2',
-    -math.sqrt2: '??√2',
+    -math.sqrt2: '−√2',
     math.pi: 'π',
-    -math.pi: '??π',
+    -math.pi: '−π',
     math.e: 'e',
-    -math.e: '??e',
+    -math.e: '−e',
   };
   for (final entry in fracs.entries) {
     if ((v - entry.key).abs() < 1e-9) return entry.value;

@@ -54,7 +54,7 @@ class ModuleRegistry {
 // Deep violet/purple theme - mathematical sophistication
     const ModuleEntry(
       label: 'point-slope',
-      subtitle: 'y ?? y₁ = m(x ?? x₁) ? Line equations',
+      subtitle: 'y − y₁ = m(x − x₁)  Line equations',
       route: '/point-slope',
       icon: Icons.trending_flat_rounded, // Suggests line/slope
       accent: Color(0xFFA855F7), // Electric purple

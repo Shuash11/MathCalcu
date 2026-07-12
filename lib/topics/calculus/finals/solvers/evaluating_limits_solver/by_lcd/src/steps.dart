@@ -312,7 +312,7 @@ class StepGenerator {
       originalEquation: eq,
       methodUsed: "Analytical Approach",
       steps: [
-        "**Note:** This expression requires L'H??pital's Rule or advanced factoring."
+        "**Note:** This expression requires L'Hôpital's Rule or advanced factoring."
       ],
     );
   }

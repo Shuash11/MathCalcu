@@ -154,7 +154,7 @@ class SubstitutionStepsGenerator {
             '2. CANCEL any common factors\n'
             '3. Try substitution again\n\n'
             'Other methods that might work:\n'
-            '• L\'H??pital\'s Rule (take derivatives)\n'
+            '• L\'Hôpital\'s Rule (take derivatives)\n'
             '• Rationalization (for roots)\n'
             '• Algebraic manipulation',
         mathExpression: 'This limit CANNOT be solved by direct substitution alone.\n'

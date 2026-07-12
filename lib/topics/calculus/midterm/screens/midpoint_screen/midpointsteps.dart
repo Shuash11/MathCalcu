@@ -795,7 +795,7 @@ class _ErrorCard extends StatelessWidget {
           SizedBox(width: isSmall ? 10 : 14),
           Expanded(
             child: Text(
-              'Invalid input. Use whole numbers or fractions (e.g. 3, ??2, 1/2).',
+              'Invalid input. Use whole numbers or fractions (e.g. 3, −2, 1/2).',
               style: TextStyle(
                 fontSize: isSmall ? 12 : 13,
                 height: 1.6,
