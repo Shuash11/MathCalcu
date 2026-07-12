@@ -1,5 +1,42 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
+﻿import 'dart:math';
+
+import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
+import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:flutter/material.dart';
+
+// ═══════════════════════════════════════════════════════════════
+// SlopeGraph — reusable CustomPaint wrapper
+// ═══════════════════════════════════════════════════════════════
+
+class SlopeGraph extends StatelessWidget {
+  final SlopeSolverResult result1;
+  final SlopeSolverResult? result2;
+  final bool isCoincident;
+
+  const SlopeGraph({
+    super.key,
+    required this.result1,
+    this.result2,
+    this.isCoincident = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = Size(constraints.maxWidth, constraints.maxHeight);
+        return CustomPaint(
+          size: size,
+          painter: _SlopePainter(
+            result1: result1,
+            result2: result2,
+            isCoincident: isCoincident,
+          ),
+        );
+      },
+    );
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════
 // SlopeGraphScreen
@@ -71,12 +108,75 @@ class SlopeGraphScreen extends StatelessWidget {
     };
   }
 
+  String get _badgeSubtitle {
+    if (_isCoincident) return '— same line, infinite intersections';
+    return switch (comparison?.relationship ?? 'neither') {
+      'parallel' => '— same slope, never intersect',
+      'perpendicular' => '— slopes multiply to −1',
+      _ => '— different slopes, not perpendicular',
+    };
+  }
+
+  // ── Full-screen info ───────────────────────────────────────
+
+  List<FullScreenInfoItem> _buildKeyInfo() {
+    final items = <FullScreenInfoItem>[];
+
+    items.add(FullScreenInfoItem(
+      label: 'Slope',
+      value: result1.isVertical ? 'Undefined' : result1.slope.toStringAsFixed(1),
+      color: const Color(0xFFFF6B6B),
+    ));
+
+    items.add(FullScreenInfoItem(
+      label: 'Y-intercept',
+      value: result1.isVertical
+          ? 'N/A'
+          : (result1.y1 - result1.slope * result1.x1).toStringAsFixed(1),
+      color: const Color(0xFFFF6B6B),
+    ));
+
+    if (result2 != null) {
+      items.add(FullScreenInfoItem(
+        label: 'Slope 2',
+        value: result2!.isVertical
+            ? 'Undefined'
+            : result2!.slope.toStringAsFixed(1),
+        color: const Color(0xFF4ECDC4),
+      ));
+
+      items.add(FullScreenInfoItem(
+        label: 'Y-intercept 2',
+        value: result2!.isVertical
+            ? 'N/A'
+            : (result2!.y1 - result2!.slope * result2!.x1).toStringAsFixed(1),
+        color: const Color(0xFF4ECDC4),
+      ));
+    }
+
+    if (_relationshipLabel.isNotEmpty) {
+      items.add(FullScreenInfoItem(
+        label: 'Relationship',
+        value: _relationshipLabel,
+        color: _relationshipColor,
+      ));
+    }
+
+    return items;
+  }
+
   // ── Build ──────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     final label = _relationshipLabel;
     final color = _relationshipColor;
+
+    final graphWidget = SlopeGraph(
+      result1: result1,
+      result2: result2,
+      isCoincident: _isCoincident,
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0A0F),
@@ -161,34 +261,27 @@ class SlopeGraphScreen extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final size =
-                      Size(constraints.maxWidth, constraints.maxHeight);
-                  return CustomPaint(
-                    size: size,
-                    painter: _SlopePainter(
-                      result1: result1,
-                      result2: result2,
-                      isCoincident: _isCoincident,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => FullScreenGraphScreen(
+                        title: 'Slope Graph',
+                        formula: result1.equation,
+                        keyInfo: _buildKeyInfo(),
+                        accentColor: const Color(0xFFFF6B6B),
+                        graph: graphWidget,
+                      ),
                     ),
                   );
                 },
+                child: graphWidget,
               ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  String get _badgeSubtitle {
-    if (_isCoincident) return '— same line, infinite intersections';
-    return switch (comparison?.relationship ?? 'neither') {
-      'parallel' => '— same slope, never intersect',
-      'perpendicular' => '— slopes multiply to −1',
-      _ => '— different slopes, not perpendicular',
-    };
   }
 }
 
@@ -304,7 +397,8 @@ class _SlopePainter extends CustomPainter {
     SlopeSolverResult r,
     Color color,
     Size size,
-    double scale, {
+    double scale,
+    double scaleFactor, {
     double verticalOffset = 0,
   }) {
     final textPainter = TextPainter(
@@ -313,7 +407,7 @@ class _SlopePainter extends CustomPainter {
         text: r.equation,
         style: TextStyle(
           color: color.withValues(alpha: 0.9),
-          fontSize: 10,
+          fontSize: 10 * scaleFactor,
           fontWeight: FontWeight.w600,
           shadows: const [Shadow(blurRadius: 4, color: Colors.black)],
         ),
@@ -338,7 +432,7 @@ class _SlopePainter extends CustomPainter {
 
   // ── Grid ──────────────────────────────────────────────────
 
-  void _drawGrid(Canvas canvas, Size size, double scale) {
+  void _drawGrid(Canvas canvas, Size size, double scale, double scaleFactor) {
     final gridPaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.06)
       ..strokeWidth = 1;
@@ -350,9 +444,10 @@ class _SlopePainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height / 2;
 
-    // Grid lines every 1 unit
+    // Grid lines every 1 unit; skip every other on small canvases
     final stepsX = (cx / scale).ceil();
     final stepsY = (cy / scale).ceil();
+    final tickEvery = size.width < 300 ? 4 : 2;
 
     for (int i = -stepsX; i <= stepsX; i++) {
       final x = cx + i * scale;
@@ -370,7 +465,7 @@ class _SlopePainter extends CustomPainter {
     // Tick labels
     final labelStyle = TextStyle(
       color: Colors.white.withValues(alpha: 0.35),
-      fontSize: 9,
+      fontSize: 9 * scaleFactor,
     );
 
     void drawTick(String text, Offset pos) {
@@ -384,7 +479,7 @@ class _SlopePainter extends CustomPainter {
     // X-axis ticks (skip 0)
     for (int i = -stepsX; i <= stepsX; i++) {
       if (i == 0) continue;
-      if (i % 2 != 0) continue; // every 2 units to avoid clutter
+      if (i % tickEvery != 0) continue;
       final x = cx + i * scale;
       drawTick('$i', Offset(x - 4, cy + 3));
     }
@@ -392,7 +487,7 @@ class _SlopePainter extends CustomPainter {
     // Y-axis ticks (skip 0)
     for (int i = -stepsY; i <= stepsY; i++) {
       if (i == 0) continue;
-      if (i % 2 != 0) continue;
+      if (i % tickEvery != 0) continue;
       final y = cy - i * scale;
       drawTick('$i', Offset(cx + 3, y - 5));
     }
@@ -406,8 +501,9 @@ class _SlopePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final scale = _computeScale(size);
+    final scaleFactor = min(size.width, size.height) / 400;
 
-    _drawGrid(canvas, size, scale);
+    _drawGrid(canvas, size, scale, scaleFactor);
 
     const color1 = Color(0xFFFF6B6B);
     const color2 = Color(0xFF4ECDC4);
@@ -433,20 +529,20 @@ class _SlopePainter extends CustomPainter {
     }
 
     // ── Equation labels ───────────────────────────────────────
-    _drawLineLabel(canvas, result1, color1, size, scale, verticalOffset: 0);
+    _drawLineLabel(canvas, result1, color1, size, scale, scaleFactor, verticalOffset: 0);
     if (result2 != null && !isCoincident) {
-      _drawLineLabel(canvas, result2!, color2, size, scale, verticalOffset: 16);
+      _drawLineLabel(canvas, result2!, color2, size, scale, scaleFactor, verticalOffset: 16 * scaleFactor);
     }
 
     // ── Points ────────────────────────────────────────────────
-    _drawPoints(canvas, result1, color1, size, scale);
+    _drawPoints(canvas, result1, color1, size, scale, scaleFactor);
     if (result2 != null && !isCoincident) {
-      _drawPoints(canvas, result2!, color2, size, scale);
+      _drawPoints(canvas, result2!, color2, size, scale, scaleFactor);
     }
 
     // ── Coincident overlay text ────────────────────────────────
     if (isCoincident) {
-      _drawCenteredBadge(canvas, size, '⟵ Lines are identical ⟶');
+      _drawCenteredBadge(canvas, size, '⟵ Lines are identical ⟶', scaleFactor);
     }
   }
 
@@ -456,6 +552,7 @@ class _SlopePainter extends CustomPainter {
     Color color,
     Size size,
     double scale,
+    double scaleFactor,
   ) {
     final dotPaint = Paint()
       ..color = color
@@ -484,29 +581,30 @@ class _SlopePainter extends CustomPainter {
         text: labels[i],
         style: TextStyle(
           color: Colors.white.withValues(alpha: 0.8),
-          fontSize: 10,
+          fontSize: 10 * scaleFactor,
           shadows: const [Shadow(blurRadius: 3, color: Colors.black)],
         ),
       );
       tp.layout();
 
-      // Nudge label so it doesn't overlap the dot
-      double ox = 10, oy = -16;
-      if (pts[i].dx > size.width * 0.75) ox = -tp.width - 6;
-      if (pts[i].dy < 20) oy = 10;
+      // Nudge label so it doesn't overlap the dot or edges
+      final edgeMargin = 8.0 * scaleFactor;
+      double ox = edgeMargin + 2, oy = -(16 * scaleFactor);
+      if (pts[i].dx > size.width * 0.75) ox = -tp.width - edgeMargin;
+      if (pts[i].dy < 20 * scaleFactor) oy = 10 * scaleFactor;
 
       tp.paint(canvas, pts[i] + Offset(ox, oy));
     }
   }
 
-  void _drawCenteredBadge(Canvas canvas, Size size, String text) {
+  void _drawCenteredBadge(Canvas canvas, Size size, String text, double scaleFactor) {
     final tp = TextPainter(
       textDirection: TextDirection.ltr,
       text: TextSpan(
         text: text,
-        style: const TextStyle(
-          color: Color(0xFFFFD700),
-          fontSize: 11,
+        style: TextStyle(
+          color: const Color(0xFFFFD700),
+          fontSize: 11 * scaleFactor,
           fontWeight: FontWeight.w600,
         ),
       ),

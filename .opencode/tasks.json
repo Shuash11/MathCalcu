@@ -1,12 +1,13 @@
 {
   "tasks": [
-    { "id": 1, "description": "Create shared SolutionStepsModal widget", "status": "done" },
-    { "id": 2, "description": "Two-point slope: replace inline steps with modal", "status": "done" },
-    { "id": 3, "description": "Substitution limits: replace inline steps with modal", "status": "done" },
-    { "id": 4, "description": "Factoring limits: replace inline steps with modal", "status": "done" },
-    { "id": 5, "description": "Conjugate limits: replace inline steps with modal", "status": "done" },
-    { "id": 6, "description": "LCD limits: replace inline steps with modal", "status": "done" },
-    { "id": 7, "description": "Full verification (analyze + tests)", "status": "done" }
+    { "id": 1, "description": "Refactor MidpointGraphScreen to extract graph painter and use FullScreenGraphScreen", "status": "done" },
+    { "id": 2, "description": "Refactor DistanceGraphScreen to extract graph painter and use FullScreenGraphScreen", "status": "done" },
+    { "id": 3, "description": "Refactor SlopeGraphScreen to extract graph painter and use FullScreenGraphScreen", "status": "done" },
+    { "id": 4, "description": "Fix MidpointPainter to be responsive (prevent overlapping labels)", "status": "done" },
+    { "id": 5, "description": "Fix FullScreenCoordinatePainter to be responsive (prevent overlapping labels)", "status": "done" },
+    { "id": 6, "description": "Fix FullScreenNumberLinePainter to be responsive (prevent overlapping labels)", "status": "done" },
+    { "id": 7, "description": "Fix _SlopePainter to be responsive (prevent overlapping labels)", "status": "done" }
   ],
+  "release": { "enabled": false },
   "completed": true
 }

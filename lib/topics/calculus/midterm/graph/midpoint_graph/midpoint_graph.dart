@@ -1,5 +1,6 @@
 ﻿import 'dart:math';
 import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
+import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:flutter/material.dart';
 
 class MidpointGraphScreen extends StatefulWidget {
@@ -55,6 +56,44 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
     super.dispose();
   }
 
+  void _openFullScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => FullScreenGraphScreen(
+          title: 'Midpoint Graph',
+          formula: 'M = ((x₁+x₂)/2, (y₁+y₂)/2)',
+          keyInfo: [
+            FullScreenInfoItem(
+              label: widget.labelA,
+              value: '(${_fmt(widget.x1)}, ${_fmt(widget.y1)})',
+              color: MidpointTheme.accent(context),
+            ),
+            FullScreenInfoItem(
+              label: widget.labelM,
+              value: '(${_fmt(widget.mx)}, ${_fmt(widget.my)})',
+              color: MidpointTheme.accent(context),
+            ),
+            FullScreenInfoItem(
+              label: widget.labelB,
+              value: '(${_fmt(widget.x2)}, ${_fmt(widget.y2)})',
+              color: MidpointTheme.text(context),
+            ),
+          ],
+          accentColor: MidpointTheme.accent(context),
+          graph: MidpointGraph(
+            x1: widget.x1,
+            y1: widget.y1,
+            x2: widget.x2,
+            y2: widget.y2,
+            mx: widget.mx,
+            my: widget.my,
+            progress: _progress.value,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -107,34 +146,34 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
               ),
             ),
 
-            // Graph Area
+            // Graph Area (tappable to open full screen)
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: MidpointTheme.card(context),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: MidpointTheme.accent15(context), width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 30,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: Stack(
-                      children: [
-                        // The Painter
-                        AnimatedBuilder(
-                          animation: _progress,
-                          builder: (context, child) {
-                            return CustomPaint(
-                              size: Size.infinite,
-                              painter: MidpointPainter(
+                child: GestureDetector(
+                  onTap: _openFullScreen,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: MidpointTheme.card(context),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: MidpointTheme.accent15(context), width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 30,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Stack(
+                        children: [
+                          // The Painter
+                          AnimatedBuilder(
+                            animation: _progress,
+                            builder: (context, child) {
+                              return MidpointGraph(
                                 x1: widget.x1,
                                 y1: widget.y1,
                                 x2: widget.x2,
@@ -142,46 +181,43 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                                 mx: widget.mx,
                                 my: widget.my,
                                 progress: _progress.value,
-                                isDark: isDark,
-                                accentColor: MidpointTheme.accent(context),
-                                textColor: MidpointTheme.text(context),
+                              );
+                            },
+                          ),
+                          
+                          // Theme Indicator (Subtle)
+                          Positioned(
+                            top: 16,
+                            right: 16,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: MidpointTheme.accent(context).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                            );
-                          },
-                        ),
-                        
-                        // Theme Indicator (Subtle)
-                        Positioned(
-                          top: 16,
-                          right: 16,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: MidpointTheme.accent(context).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-                                  size: 12,
-                                  color: MidpointTheme.accent(context),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  isDark ? 'Dark Mode' : 'Light Mode',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                                    size: 12,
                                     color: MidpointTheme.accent(context),
-                                    letterSpacing: 0.5,
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    isDark ? 'Dark Mode' : 'Light Mode',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: MidpointTheme.accent(context),
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -245,12 +281,56 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
   }
 }
 
+/// Reusable midpoint graph widget for both inline and full-screen views.
+class MidpointGraph extends StatelessWidget {
+  final double x1, y1, x2, y2, mx, my;
+  final double progress;
+
+  const MidpointGraph({
+    super.key,
+    required this.x1,
+    required this.y1,
+    required this.x2,
+    required this.y2,
+    required this.mx,
+    required this.my,
+    this.progress = 1.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return CustomPaint(
+      size: Size.infinite,
+      painter: MidpointPainter(
+        x1: x1,
+        y1: y1,
+        x2: x2,
+        y2: y2,
+        mx: mx,
+        my: my,
+        progress: progress,
+        isDark: isDark,
+        accentColor: MidpointTheme.accent(context),
+        textColor: MidpointTheme.text(context),
+      ),
+    );
+  }
+}
+
 class MidpointPainter extends CustomPainter {
   final double x1, y1, x2, y2, mx, my;
   final double progress;
   final bool isDark;
   final Color accentColor;
   final Color textColor;
+
+  /// Scale factor derived from canvas size for responsive rendering.
+  late final double _scaleFactor;
+
+  /// Bounding boxes of placed labels for overlap detection.
+  late final List<Rect> _labelBounds;
 
   MidpointPainter({
     required this.x1,
@@ -267,6 +347,11 @@ class MidpointPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Responsive scale factor: reference size ~350px, clamped 0.5–2.0
+    final minDim = size.width < size.height ? size.width : size.height;
+    _scaleFactor = (minDim / 350.0).clamp(0.5, 2.0);
+    _labelBounds = [];
+
     final center = Offset(size.width / 2, size.height / 2);
     
     // Bounds calculation for focus
@@ -296,7 +381,7 @@ class MidpointPainter extends CustomPainter {
     _drawAxes(canvas, size, origin);
     
     if (progress > 0.1) {
-      _drawContent(canvas, toCanvas);
+      _drawContent(canvas, toCanvas, size);
     }
   }
 
@@ -358,7 +443,7 @@ class MidpointPainter extends CustomPainter {
     }
   }
 
-  void _drawContent(Canvas canvas, Offset Function(double, double) toCanvas) {
+  void _drawContent(Canvas canvas, Offset Function(double, double) toCanvas, Size size) {
     final p1 = toCanvas(x1, y1);
     final p2 = toCanvas(x2, y2);
     final pm = toCanvas(mx, my);
@@ -376,13 +461,13 @@ class MidpointPainter extends CustomPainter {
     _drawProjections(canvas, p2, toCanvas(x2, 0), toCanvas(0, y2), progress);
 
     // Points
-    _drawPoint(canvas, p1, accentColor, "A", progress, label: "(${_fmt(x1)}, ${_fmt(y1)})");
-    _drawPoint(canvas, p2, textColor.withValues(alpha: 0.7), "B", progress, label: "(${_fmt(x2)}, ${_fmt(y2)})");
+    _drawPoint(canvas, p1, accentColor, "A", progress, size, label: "(${_fmt(x1)}, ${_fmt(y1)})");
+    _drawPoint(canvas, p2, textColor.withValues(alpha: 0.7), "B", progress, size, label: "(${_fmt(x2)}, ${_fmt(y2)})");
     
     // Midpoint with special styling
     if (progress > 0.5) {
       final mProgress = (progress - 0.5) * 2;
-      _drawMidpoint(canvas, pm, accentColor, mProgress, label: "(${_fmt(mx)}, ${_fmt(my)})");
+      _drawMidpoint(canvas, pm, accentColor, mProgress, size, label: "(${_fmt(mx)}, ${_fmt(my)})");
     }
   }
 
@@ -410,7 +495,7 @@ class MidpointPainter extends CustomPainter {
     }
   }
 
-  void _drawPoint(Canvas canvas, Offset pos, Color color, String name, double p, {String? label}) {
+  void _drawPoint(Canvas canvas, Offset pos, Color color, String name, double p, Size canvasSize, {String? label}) {
     final paint = Paint()
       ..color = color.withValues(alpha: p)
       ..style = PaintingStyle.fill;
@@ -421,26 +506,27 @@ class MidpointPainter extends CustomPainter {
     canvas.drawCircle(pos, 12 * p, Paint()..color = color.withValues(alpha: 0.1 * p));
 
     if (p > 0.8) {
+      final fontSize = 11.0 * _scaleFactor * p;
       final textPainter = TextPainter(
         text: TextSpan(
           text: "$name $label",
           style: TextStyle(
             color: color.withValues(alpha: p),
             fontWeight: FontWeight.bold,
-            fontSize: 11 * p,
+            fontSize: fontSize,
             backgroundColor: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.5),
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
       
-      // Determine label position based on quadrant to avoid overlap
-      Offset offset = const Offset(10, -20);
+      // Determine best label position, avoiding overlap
+      final offset = _findNonOverlappingOffset(pos, textPainter, canvasSize);
       textPainter.paint(canvas, pos + offset);
     }
   }
 
-  void _drawMidpoint(Canvas canvas, Offset pos, Color color, double p, {String? label}) {
+  void _drawMidpoint(Canvas canvas, Offset pos, Color color, double p, Size canvasSize, {String? label}) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
@@ -456,21 +542,85 @@ class MidpointPainter extends CustomPainter {
     
     // "M" Label + Coordinates
     if (p > 0.8) {
+      final fontSize = 13.0 * _scaleFactor * p;
       final textPainter = TextPainter(
         text: TextSpan(
           text: "M $label",
           style: TextStyle(
             color: color,
             fontWeight: FontWeight.bold,
-            fontSize: 13 * p,
+            fontSize: fontSize,
             backgroundColor: isDark ? Colors.black.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.7),
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
       
-      textPainter.paint(canvas, pos + const Offset(14, -28));
+      // Determine best label position, avoiding overlap
+      final offset = _findNonOverlappingOffset(pos, textPainter, canvasSize);
+      textPainter.paint(canvas, pos + offset);
     }
+  }
+
+  /// Finds an offset for a label that doesn't overlap previously placed labels.
+  /// Tries preferred position first, then rotates through alternatives.
+  Offset _findNonOverlappingOffset(Offset anchor, TextPainter tp, Size canvasSize) {
+    final labelWidth = tp.width;
+    final labelHeight = tp.height;
+    final margin = 8.0 * _scaleFactor;
+
+    // Candidate offsets relative to anchor point (tried in order)
+    final candidates = [
+      Offset(margin, -labelHeight - margin),           // top-right
+      Offset(-labelWidth - margin, -labelHeight - margin), // top-left
+      Offset(margin, margin),                          // bottom-right
+      Offset(-labelWidth - margin, margin),            // bottom-left
+      Offset(margin, 0),                               // right
+      Offset(-labelWidth - margin, 0),                 // left
+      Offset(0, -labelHeight - margin),                // top-center
+      Offset(0, margin),                               // bottom-center
+    ];
+
+    for (final offset in candidates) {
+      final candidateRect = Rect.fromLTWH(
+        anchor.dx + offset.dx,
+        anchor.dy + offset.dy,
+        labelWidth,
+        labelHeight,
+      );
+
+      // Check canvas bounds
+      if (candidateRect.left < 0 ||
+          candidateRect.top < 0 ||
+          candidateRect.right > canvasSize.width ||
+          candidateRect.bottom > canvasSize.height) {
+        continue;
+      }
+
+      // Check overlap with existing labels
+      bool overlaps = false;
+      for (final existing in _labelBounds) {
+        if (candidateRect.overlaps(existing)) {
+          overlaps = true;
+          break;
+        }
+      }
+
+      if (!overlaps) {
+        _labelBounds.add(candidateRect);
+        return offset;
+      }
+    }
+
+    // Fallback: use preferred offset even if overlapping
+    final fallback = Offset(margin, -labelHeight - margin);
+    _labelBounds.add(Rect.fromLTWH(
+      anchor.dx + fallback.dx,
+      anchor.dy + fallback.dy,
+      labelWidth,
+      labelHeight,
+    ));
+    return fallback;
   }
 
   @override
