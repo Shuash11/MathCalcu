@@ -103,8 +103,8 @@ class DistanceSolver {
     final distance = sqrt(squaredSum);
 
     final formula =
-        '√(($_fmt(x2)??$_fmt(x1))? + ($_fmt(y2)??$_fmt(y1))?)\n'
-        '= √($_fmt(dx)? + $_fmt(dy)?)\n'
+        '√((${_fmt(x2)}−${_fmt(x1)})² + (${_fmt(y2)}−${_fmt(y1)})²)\n'
+        '= √(${_fmt(dx)}² + ${_fmt(dy)}²)\n'
         '= √($_fmt(dx * dx) + $_fmt(dy * dy))\n'
         '= √$_fmt(squaredSum)\n'
         '= $_fmt(distance)';

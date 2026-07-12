@@ -1,13 +1,12 @@
 {
   "tasks": [
-    { "id": 1, "description": "Refactor MidpointGraphScreen to extract graph painter and use FullScreenGraphScreen", "status": "done" },
-    { "id": 2, "description": "Refactor DistanceGraphScreen to extract graph painter and use FullScreenGraphScreen", "status": "done" },
-    { "id": 3, "description": "Refactor SlopeGraphScreen to extract graph painter and use FullScreenGraphScreen", "status": "done" },
-    { "id": 4, "description": "Fix MidpointPainter to be responsive (prevent overlapping labels)", "status": "done" },
-    { "id": 5, "description": "Fix FullScreenCoordinatePainter to be responsive (prevent overlapping labels)", "status": "done" },
-    { "id": 6, "description": "Fix FullScreenNumberLinePainter to be responsive (prevent overlapping labels)", "status": "done" },
-    { "id": 7, "description": "Fix _SlopePainter to be responsive (prevent overlapping labels)", "status": "done" }
+    { "id": 1, "description": "Find all modified files related to distance UTF fix", "status": "done" },
+    { "id": 2, "description": "Read all modified source files and verify compilation", "status": "done" },
+    { "id": 3, "description": "Read all test files and verify they pass", "status": "done" },
+    { "id": 4, "description": "Check for regressions in related screens", "status": "done" },
+    { "id": 5, "description": "Verify imports are correct", "status": "done" },
+    { "id": 6, "description": "Check for unused variables/state", "status": "done" },
+    { "id": 7, "description": "Write readiness report", "status": "done" }
   ],
-  "release": { "enabled": false },
   "completed": true
 }

@@ -323,7 +323,7 @@ class _DistancescreenState extends State<Distancescreen>
                           color: DistanceTheme.accent70, size: 16),
                       const SizedBox(width: DistanceTheme.spaceXl),
                       Text(
-                        _is2D ? 'd = √((x₂??x₁)? + (y₂??y₁)?)' : 'd = |x₂ ?? x₁|',
+                        _is2D ? 'd = √((x₂−x₁)² + (y₂−y₁)²)' : 'd = |x₂ − x₁|',
                         style: DistanceTheme.formulaText(context),
                       ),
                     ],
