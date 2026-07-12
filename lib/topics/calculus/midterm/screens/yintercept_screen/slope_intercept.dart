@@ -1,4 +1,5 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/graph/yintercept_graph/graph.dart';
+import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'slope_intercept_scr.dart';
@@ -165,13 +166,59 @@ class YInterceptTab extends StatelessWidget {
                             const SizedBox(height: 14),
                             _buildBadges(context, result),
                             const SizedBox(height: 14),
-                            YInterceptGraph(
-                              mText: result.slope != null
-                                  ? result.slope!.toDouble().toString()
-                                  : '',
-                              bText: result.yIntercept != null
-                                  ? result.yIntercept!.toDouble().toString()
-                                  : '',
+                            GestureDetector(
+                              onTap: () {
+                                final slope = result.slope?.toDouble();
+                                final yInt = result.yIntercept?.toDouble();
+                                final xInt = (slope != null && slope != 0 && yInt != null)
+                                    ? -yInt / slope
+                                    : null;
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => FullScreenGraphScreen(
+                                      title: 'Y-Intercept Graph',
+                                      formula: 'y = mx + b',
+                                      keyInfo: [
+                                        if (slope != null)
+                                          FullScreenInfoItem(
+                                            label: 'Slope (m)',
+                                            value: slope.toStringAsFixed(1),
+                                            color: const Color(0xFFF59E0B),
+                                          ),
+                                        if (yInt != null)
+                                          FullScreenInfoItem(
+                                            label: 'Y-intercept (b)',
+                                            value: yInt.toStringAsFixed(1),
+                                            color: const Color(0xFFF59E0B),
+                                          ),
+                                        if (xInt != null)
+                                          FullScreenInfoItem(
+                                            label: 'X-intercept',
+                                            value: xInt.toStringAsFixed(1),
+                                            color: const Color(0xFF10B981),
+                                          ),
+                                      ],
+                                      accentColor: const Color(0xFF10B981),
+                                      graph: YInterceptGraph(
+                                        mText: result.slope != null
+                                            ? result.slope!.toDouble().toString()
+                                            : '',
+                                        bText: result.yIntercept != null
+                                            ? result.yIntercept!.toDouble().toString()
+                                            : '',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: YInterceptGraph(
+                                mText: result.slope != null
+                                    ? result.slope!.toDouble().toString()
+                                    : '',
+                                bText: result.yIntercept != null
+                                    ? result.yIntercept!.toDouble().toString()
+                                    : '',
+                              ),
                             ),
                           ],
                         ],

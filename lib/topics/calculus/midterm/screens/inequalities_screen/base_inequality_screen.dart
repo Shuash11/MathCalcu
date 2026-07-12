@@ -5,6 +5,7 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_sol
 import 'package:calculus_system/topics/calculus/midterm/graph/inequalities_graph/inequality_graph.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
 import 'package:calculus_system/shared/widgets/answer_card.dart';
+import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:calculus_system/shared/widgets/graph_widget.dart';
 import 'package:calculus_system/shared/widgets/math_input_field.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
@@ -111,6 +112,38 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
       steps: steps,
       accentColor: InequalityTheme.accentColor,
       title: widget.title,
+    );
+  }
+
+  void _openFullScreenGraph() {
+    if (_result == null || _result!.hasError) return;
+
+    final keyInfo = <FullScreenInfoItem>[
+      if (_result!.intervalNotation != null)
+        FullScreenInfoItem(
+          label: 'Interval',
+          value: _result!.intervalNotation!,
+        ),
+      if (_result!.points.isNotEmpty)
+        FullScreenInfoItem(
+          label: 'Boundaries',
+          value: _result!.points.join(', '),
+        ),
+    ];
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => FullScreenGraphScreen(
+          title: widget.title,
+          graph: InequalityGraph(
+            result: _result!,
+            accentColor: InequalityTheme.accentColor,
+          ),
+          formula: _result!.answer,
+          keyInfo: keyInfo.isNotEmpty ? keyInfo : null,
+          accentColor: InequalityTheme.accentColor,
+        ),
+      ),
     );
   }
 
@@ -386,12 +419,15 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
 
     return Column(
       children: [
-        GraphWidget(
-          result: _result!,
-          accentColor: InequalityTheme.accentColor,
-          graphBody: InequalityGraph(
+        GestureDetector(
+          onTap: _openFullScreenGraph,
+          child: GraphWidget(
             result: _result!,
             accentColor: InequalityTheme.accentColor,
+            graphBody: InequalityGraph(
+              result: _result!,
+              accentColor: InequalityTheme.accentColor,
+            ),
           ),
         ),
         const SizedBox(height: 16),

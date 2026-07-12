@@ -5,6 +5,7 @@ import 'pointslopesteps.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'pointslopesubwidget.dart';
+import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 
 class PointSlopeScreen extends StatefulWidget {
   const PointSlopeScreen({super.key});
@@ -239,11 +240,49 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                           ValueListenableBuilder<_GraphStrings?>(
                             valueListenable: _graphStringsNotifier,
                             builder: (context, strings, _) {
-                              return PSGraph(
-                                mText: strings?.mText ?? '',
-                                xText: strings?.xText ?? '',
-                                yText: strings?.yText ?? '',
-                                s: s,
+                              return ValueListenableBuilder<_ResultData?>(
+                                valueListenable: _resultNotifier,
+                                builder: (context, result, _) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => FullScreenGraphScreen(
+                                            title: 'Point-Slope Graph',
+                                            graph: PSGraph(
+                                              mText: strings?.mText ?? '',
+                                              xText: strings?.xText ?? '',
+                                              yText: strings?.yText ?? '',
+                                              s: 1.0,
+                                            ),
+                                            formula: result?.pointSlopeEq,
+                                            keyInfo: [
+                                              if (result != null) ...[
+                                                FullScreenInfoItem(
+                                                  label: 'Slope',
+                                                  value: 'm = ${result.m}',
+                                                  color: const Color(0xFFA855F7),
+                                                ),
+                                                FullScreenInfoItem(
+                                                  label: 'Point',
+                                                  value: '(${result.x1}, ${result.y1})',
+                                                  color: const Color(0xFFA855F7),
+                                                ),
+                                              ],
+                                            ],
+                                            accentColor: const Color(0xFFA855F7),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: PSGraph(
+                                      mText: strings?.mText ?? '',
+                                      xText: strings?.xText ?? '',
+                                      yText: strings?.yText ?? '',
+                                      s: s,
+                                    ),
+                                  );
+                                },
                               );
                             },
                           ),

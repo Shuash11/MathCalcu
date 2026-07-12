@@ -1,4 +1,5 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/two_point_slope_theme/two_point_slope_theme.dart';
+﻿import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
+import 'package:calculus_system/topics/calculus/midterm/theme/two_point_slope_theme/two_point_slope_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_solver/two_point_slope_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -22,65 +23,111 @@ class TwoPointSlopeGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Row(
-            children: [
-              Container(
-                width: 3,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: TwoPointSlopeTheme.primary,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text('GRAPH', style: TwoPointSlopeTheme.labelStyle(context)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  result.lineEquation,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: TwoPointSlopeTheme.primary.withValues(alpha: 0.8),
-                    fontFamily: 'monospace',
+    return GestureDetector(
+      onTap: () => _openFullScreen(context),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 3,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: TwoPointSlopeTheme.primary,
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              const Spacer(),
-              // Legend
-              const _LegendDot(
-                  color: TwoPointSlopeTheme.primary, label: 'Line'),
-              const SizedBox(width: 12),
-              _LegendDot(
-                color: TwoPointSlopeTheme.stepBlue,
-                label: 'P1 (${_fmt(result.x1)}, ${_fmt(result.y1)})',
-              ),
-              const SizedBox(width: 12),
-              _LegendDot(
-                color: TwoPointSlopeTheme.stepGreen,
-                label: 'P2 (${_fmt(result.x2)}, ${_fmt(result.y2)})',
-              ),
-            ],
+                const SizedBox(width: 10),
+                Text('GRAPH', style: TwoPointSlopeTheme.labelStyle(context)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    result.lineEquation,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: TwoPointSlopeTheme.primary.withValues(alpha: 0.8),
+                      fontFamily: 'monospace',
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const Spacer(),
+                // Legend
+                const _LegendDot(
+                    color: TwoPointSlopeTheme.primary, label: 'Line'),
+                const SizedBox(width: 12),
+                _LegendDot(
+                  color: TwoPointSlopeTheme.stepBlue,
+                  label: 'P1 (${_fmt(result.x1)}, ${_fmt(result.y1)})',
+                ),
+                const SizedBox(width: 12),
+                _LegendDot(
+                  color: TwoPointSlopeTheme.stepGreen,
+                  label: 'P2 (${_fmt(result.x2)}, ${_fmt(result.y2)})',
+                ),
+              ],
+            ),
           ),
-        ),
 
-        // Chart card
-        Container(
-          height: 320,
-          decoration: TwoPointSlopeTheme.cardDecoration(context, glowing: true),
-          padding: const EdgeInsets.fromLTRB(12, 20, 20, 12),
-          child: result.isVertical
-              ? _VerticalLineGraph(result: result)
-              : _LineGraph(result: result),
+          // Chart card
+          Container(
+            height: 320,
+            decoration: TwoPointSlopeTheme.cardDecoration(context, glowing: true),
+            padding: const EdgeInsets.fromLTRB(12, 20, 20, 12),
+            child: result.isVertical
+                ? _VerticalLineGraph(result: result)
+                : _LineGraph(result: result),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openFullScreen(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => FullScreenGraphScreen(
+          title: 'Two-Point Slope',
+          accentColor: TwoPointSlopeTheme.primary,
+          graph: Container(
+            color: TwoPointSlopeTheme.background(context),
+            child: result.isVertical
+                ? _VerticalLineGraph(result: result)
+                : _LineGraph(result: result),
+          ),
+          formula: result.lineEquation,
+          keyInfo: [
+            FullScreenInfoItem(
+              label: 'P1',
+              value: '(${_fmt(result.x1)}, ${_fmt(result.y1)})',
+              color: TwoPointSlopeTheme.stepBlue,
+            ),
+            FullScreenInfoItem(
+              label: 'P2',
+              value: '(${_fmt(result.x2)}, ${_fmt(result.y2)})',
+              color: TwoPointSlopeTheme.stepGreen,
+            ),
+            if (!result.isVertical)
+              FullScreenInfoItem(
+                label: 'Slope',
+                value: result.slope != null ? _fmt(result.slope!) : 'N/A',
+                color: TwoPointSlopeTheme.primary,
+              ),
+            if (!result.isVertical && result.yIntercept != null)
+              FullScreenInfoItem(
+                label: 'Y-Intercept',
+                value: _fmt(result.yIntercept!),
+                color: TwoPointSlopeTheme.primary,
+              ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

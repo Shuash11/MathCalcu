@@ -9,17 +9,19 @@ String _fmt(double v) {
 class YInterceptGraph extends StatelessWidget {
   final String mText;
   final String bText;
+  final double? height;
 
   const YInterceptGraph({
     super.key,
     this.mText = '',
     this.bText = '',
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 220,
+      height: height,
       decoration: BoxDecoration(
         color: const Color(0xFF0A1F17),
         borderRadius: BorderRadius.circular(16),
@@ -29,12 +31,19 @@ class YInterceptGraph extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: CustomPaint(
-          size: const Size(double.infinity, 220),
-          painter: YInterceptGraphPainter(
-            mText: mText,
-            bText: bText,
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return CustomPaint(
+              size: Size(
+                constraints.maxWidth,
+                height ?? constraints.maxHeight,
+              ),
+              painter: YInterceptGraphPainter(
+                mText: mText,
+                bText: bText,
+              ),
+            );
+          },
         ),
       ),
     );
