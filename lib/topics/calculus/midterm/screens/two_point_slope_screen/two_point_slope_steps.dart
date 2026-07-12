@@ -171,7 +171,7 @@ class _StepCard extends StatelessWidget {
                     '${step.number}',
                     style: const TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       color: accentColor,
                     ),
                   ),
@@ -192,8 +192,8 @@ class _StepCard extends StatelessWidget {
                         step.title,
                         style: const TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: accentColor,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                     // Combined formula + substitution + result
@@ -242,7 +242,7 @@ class _CombinedMathBlock extends StatelessWidget {
           textStyle: TextStyle(
             fontSize: fontSize,
             color: color,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
           onErrorFallback: (error) => Text(
             tex,
@@ -250,7 +250,7 @@ class _CombinedMathBlock extends StatelessWidget {
               fontFamily: 'serif',
               fontSize: fontSize,
               color: color,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
