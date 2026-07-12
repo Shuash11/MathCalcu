@@ -1,15 +1,19 @@
 ﻿// lib/modules/y-intercept/ui/parallel_perpendicular_screen.dart
 
 import 'dart:async';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/yintercept_graph/perpenparallel_graph.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
-import 'pp_stepblock_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 
 const _cyan = Color(0xFF06B6D4);
+const _accent = FinalsTheme.primary;
 
 // ─────────────────────────────────────────────────────────────
 // Screen
@@ -104,11 +108,10 @@ class _ParallelPerpendicularScreenState
   }
 
   void _showSteps(PPResult result) {
-    showModalBottomSheet<void>(
+    showSolutionStepsModal(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _SolutionStepsSheet(result: result),
+      accentColor: FinalsTheme.primary,
+      child: ParallelPerpendicularSteps(result: result),
     );
   }
 
@@ -561,263 +564,342 @@ class _EquationResultCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Solution Steps Bottom Sheet
+// STEPS WIDGET — MIGRATED TO SolutionStepCard
+//
+// Each PPSolverStep becomes a SolutionStepCard.
+// Blocks (note/formula/substitution/working/result) are rendered
+// inside the dark math-content card as a Column. The 'si' groupKey
+// pair (Line 1 / Line 2 conversion) renders side-by-side.
 // ─────────────────────────────────────────────────────────────
 
-class _SolutionStepsSheet extends StatelessWidget {
+class ParallelPerpendicularSteps extends StatelessWidget {
   final PPResult result;
-  const _SolutionStepsSheet({required this.result});
+
+  const ParallelPerpendicularSteps({super.key, required this.result});
 
   @override
   Widget build(BuildContext context) {
-    final emerald = YITheme.emerald(context);
-    final steps = result.steps;
+    final rows = _groupSteps(result.steps);
 
-    final rows = _groupSteps(steps, emerald);
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.88,
-      minChildSize: 0.5,
-      maxChildSize: 0.96,
-      expand: false,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: YITheme.surface(context),
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(color: _cyan.withValues(alpha: 0.28)),
-          ),
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: _cyan.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 14, 8, 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Solution Steps',
-                              style: YITheme.titleStyle(context)
-                                  .copyWith(fontSize: 17)),
-                          Text('Complete step-by-step working',
-                              style: YITheme.subtitleStyle(context).copyWith(
-                                  color: _cyan.withValues(alpha: 0.7),
-                                  fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close_rounded,
-                          color: _cyan, size: 20),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    const hPad = 16.0;
-                    final availableWidth = constraints.maxWidth - hPad * 2;
-                    return ListView.separated(
-                      controller: scrollController,
-                      padding: const EdgeInsets.fromLTRB(hPad, 4, hPad, 32),
-                      itemCount: rows.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, i) =>
-                          rows[i].build(context, availableWidth),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final row in rows) ...[
+          row,
+          if (row != rows.last) const SizedBox(height: 8),
+        ],
+      ],
     );
   }
 
-  List<_StepRow> _groupSteps(List<PPSolverStep> steps, Color emerald) {
-    final rows = <_StepRow>[];
-    final Map<String, PPSolverStep> pending = {};
+  List<Widget> _groupSteps(List<PPSolverStep> steps) {
+    final rows = <Widget>[];
+    final pending = <String, PPSolverStep>{};
 
     for (final step in steps) {
       final key = step.groupKey;
       if (key == null) {
-        rows.add(_FullWidthRow(step: step, accent: _cyan));
+        rows.add(_buildStepCard(step));
         continue;
       }
       if (pending.containsKey(key)) {
         final first = pending.remove(key)!;
-        rows.add(_SideBySideRow(
-          left: first,
-          right: step,
-          leftAccent: _cyan,
-          rightAccent: emerald,
-        ));
+        rows.add(_buildSideBySide(first, step));
       } else {
         pending[key] = step;
       }
     }
 
     for (final step in pending.values) {
-      rows.add(_FullWidthRow(step: step, accent: _cyan));
+      rows.add(_buildStepCard(step));
     }
 
     return rows;
   }
-}
 
-// ─────────────────────────────────────────────────────────────
-// Step Row abstractions
-// ─────────────────────────────────────────────────────────────
+  Widget _buildStepCard(PPSolverStep step) {
+    return SolutionStepCard(
+      stepNumber: step.number,
+      title: step.title,
+      description: 'Step ${step.number}',
+      mathContent: _StepBlocks(steps: [step]),
+    );
+  }
 
-abstract class _StepRow {
-  Widget build(BuildContext context, double availableWidth);
-}
-
-class _FullWidthRow extends _StepRow {
-  final PPSolverStep step;
-  final Color accent;
-  _FullWidthRow({required this.step, required this.accent});
-
-  @override
-  Widget build(BuildContext context, double availableWidth) {
-    return _StepCard(
-      step: step,
-      accent: accent,
-      width: availableWidth,
+  // For side-by-side (groupKey:'si') we render two SolutionStepCards
+  // in a Row sharing the same number/header row, but each card
+  // displays its own blocks. Number circle is shown for both.
+  Widget _buildSideBySide(PPSolverStep left, PPSolverStep right) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _MiniStepColumn(
+                  stepNumber: left.number,
+                  title: left.title,
+                  steps: [left],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _MiniStepColumn(
+                  stepNumber: right.number,
+                  title: right.title,
+                  steps: [right],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _SideBySideRow extends _StepRow {
-  final PPSolverStep left;
-  final PPSolverStep right;
-  final Color leftAccent;
-  final Color rightAccent;
+// A single step rendered as a numbered circle + title + math blocks.
+class _MiniStepColumn extends StatelessWidget {
+  final int stepNumber;
+  final String title;
+  final List<PPSolverStep> steps;
 
-  _SideBySideRow({
-    required this.left,
-    required this.right,
-    required this.leftAccent,
-    required this.rightAccent,
+  const _MiniStepColumn({
+    required this.stepNumber,
+    required this.title,
+    required this.steps,
   });
 
   @override
-  Widget build(BuildContext context, double availableWidth) {
-    const gap = 10.0;
-    final colWidth = (availableWidth - gap) / 2;
-
+  Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _StepCard(step: left, accent: leftAccent, width: colWidth),
-        const SizedBox(width: gap),
-        _StepCard(step: right, accent: rightAccent, width: colWidth),
+        SizedBox(
+          width: 24,
+          height: 24,
+          child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: FinalsTheme.primary,
+            ),
+            child: Center(
+              child: Text(
+                stepNumber.toString(),
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: FinalsTheme.titleStyle(context).copyWith(fontSize: 13),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: FinalsTheme.cardSecondary(context),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: _StepBlocks(steps: steps),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// THE MISSING STEP CARD WIDGET
-// This wraps your PPStepBlockWidget to create the actual cards
-// ─────────────────────────────────────────────────────────────
+// Renders a list of PPSolverStep's blocks inside the dark math card.
+// Maps each PPBlockType to a styled row (formula/substitution/working
+// use a tinted bordered box; result uses a highlighted centered block;
+// note uses plain text).
+class _StepBlocks extends StatelessWidget {
+  final List<PPSolverStep> steps;
+  const _StepBlocks({required this.steps});
 
-class _StepCard extends StatelessWidget {
-  final PPSolverStep step;
-  final Color accent;
-  final double width;
+  static const _borderColors = {
+    PPBlockType.formula: _accent,
+    PPBlockType.substitution: Color(0xFF64748B),
+    PPBlockType.working: Color(0xFFF59E0B),
+    PPBlockType.result: _accent,
+  };
 
-  const _StepCard({
-    required this.step,
-    required this.accent,
-    required this.width,
-  });
+  static const _labels = {
+    PPBlockType.formula: 'Formula',
+    PPBlockType.substitution: null,
+    PPBlockType.working: 'Working',
+    PPBlockType.result: null,
+  };
 
   @override
   Widget build(BuildContext context) {
-    // Subtract padding so the inner math blocks don't overflow horizontally
-    final innerWidth = width - 24; 
+    final blocks = <Widget>[];
+    for (final step in steps) {
+      for (var i = 0; i < step.blocks.length; i++) {
+        final block = step.blocks[i];
+        blocks.add(_buildBlock(context, block));
+        if (i != step.blocks.length - 1) {
+          blocks.add(const SizedBox(height: 8));
+        }
+      }
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: blocks,
+    );
+  }
 
-    return Container(
-      width: width,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: YITheme.surface(context).withValues(alpha: 0.95),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: accent.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+  Widget _buildBlock(BuildContext context, PPStepBlock block) {
+    switch (block.type) {
+      case PPBlockType.note:
+        return _renderNote(context, block.content);
+      case PPBlockType.formula:
+      case PPBlockType.substitution:
+      case PPBlockType.working:
+        return _renderMathBlock(
+          context,
+          label: block.label ?? _labels[block.type],
+          latex: block.latex,
+          fallback: block.content,
+          borderColor: _borderColors[block.type]!,
+        );
+      case PPBlockType.result:
+        return _renderResult(context, block.latex, block.content);
+    }
+  }
+
+  Widget _renderNote(BuildContext context, String text) {
+    final isDark = !YITheme.isLight(context);
+    final color = isDark
+        ? Colors.white.withValues(alpha: 0.6)
+        : Colors.black.withValues(alpha: 0.55);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 12, color: color, height: 1.4),
       ),
+    );
+  }
+
+  Widget _renderMathBlock(
+    BuildContext context, {
+    required String? label,
+    required String? latex,
+    required String fallback,
+    required Color borderColor,
+  }) {
+    return Container(
+      width: double.infinity,
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        color: borderColor.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: borderColor.withValues(alpha: 0.3)),
+      ),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Step Header
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  'Step ${step.number}',
-                  style: TextStyle(
-                    color: accent,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+          if (label != null && label.isNotEmpty) ...[
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+                color: borderColor.withValues(alpha: 0.85),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  step.title,
-                  style: TextStyle(
-                    color: YITheme.textPrimary(context),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          
-          // Step Blocks (mapped to your PPStepBlockWidget)
-          ...step.blocks.map((block) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: PPStepBlockWidget(
-                  block: block,
-                  width: innerWidth, 
-                ),
-              )),
+            ),
+            const SizedBox(height: 4),
+          ],
+          _renderMath(latex, fallback),
         ],
+      ),
+    );
+  }
+
+  Widget _renderResult(BuildContext context, String? latex, String fallback) {
+    return Container(
+      width: double.infinity,
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        color: _accent.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _accent.withValues(alpha: 0.5), width: 1.2),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Center(child: _renderMath(latex, fallback, fontSize: 14)),
+    );
+  }
+
+  Widget _renderMath(String? latex, String fallback, {double fontSize = 13}) {
+    if (latex == null || latex.isEmpty) {
+      return Text(
+        fallback,
+        style: const TextStyle(fontSize: 13, height: 1.4),
+      );
+    }
+    final lines = latex
+        .replaceAll(r'\\[6pt]', r'\\')
+        .replaceAll(r'\\[4pt]', r'\\')
+        .replaceAll(r'\\[8pt]', r'\\')
+        .split(RegExp(r'\\\\|\n'))
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+
+    if (lines.length == 1) {
+      return _mathLine(lines[0], fontSize);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: lines
+          .map((l) => Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: _mathLine(l, fontSize),
+              ))
+          .toList(),
+    );
+  }
+
+  Widget _mathLine(String tex, double fontSize) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: RepaintBoundary(
+        child: Math.tex(
+          tex,
+          textStyle: TextStyle(fontSize: fontSize, color: _accent),
+          onErrorFallback: (err) => Text(
+            tex,
+            style: TextStyle(
+              fontSize: fontSize,
+              color: _accent,
+              fontFamily: 'monospace',
+            ),
+          ),
+        ),
       ),
     );
   }

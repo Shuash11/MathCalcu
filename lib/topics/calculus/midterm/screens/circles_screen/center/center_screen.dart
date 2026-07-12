@@ -2,6 +2,8 @@
 // Thin shell — owns the controller lifecycle, renders sub-screens.
 
 import 'package:flutter/material.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'centercontroller.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/centertheme.dart';
 import 'header_bar.dart';
@@ -43,6 +45,16 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
     super.dispose();
   }
 
+  void _openStepsModal() {
+    if (_controller.result == null) return;
+    showSolutionStepsModal(
+      context: context,
+      title: 'Center \u2014 Step by Step',
+      accentColor: FinalsTheme.primary,
+      child: CenterStepsSection(steps: _controller.result!.steps),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,10 +91,39 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
                 CenterErrorSection(errorMsg: _controller.errorMsg),
               ],
 
-              // ── Steps + result (null → hidden) ────────────
+              // ── Steps button + result (null → hidden) ──────
               if (_controller.result != null) ...[
                 const SizedBox(height: 24),
-                CenterStepsSection(steps: _controller.result!.steps),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _openStepsModal,
+                    icon: const Icon(
+                      Icons.receipt_long_rounded,
+                      size: 14,
+                      color: FinalsTheme.primary,
+                    ),
+                    label: const Text(
+                      'Show Steps',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: FinalsTheme.primary,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: FinalsTheme.primary.withValues(alpha: 0.35),
+                      ),
+                      backgroundColor:
+                          FinalsTheme.primary.withValues(alpha: 0.08),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 CenterResultSection(result: _controller.result),
               ],

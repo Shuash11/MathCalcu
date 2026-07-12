@@ -1,13 +1,16 @@
 {
   "tasks": [
-    { "id": 1, "description": "Create shared SolutionStepCard widget near solution_steps_modal.dart", "status": "done" },
-    { "id": 2, "description": "Update lcd_steps_view.dart - add titles + apply new style", "status": "done" },
-    { "id": 3, "description": "Update conjugate_steps_view.dart - remove cards, apply numbered circles", "status": "done" },
-    { "id": 4, "description": "Update two_point_slope_steps.dart - switch to FinalsTheme.primary", "status": "done" },
-    { "id": 5, "description": "Update slope_using_derivatives - replace StepsScreen with modal", "status": "done" },
-    { "id": 6, "description": "Update derivatives_screen.dart - replace inline steps with modal", "status": "done" },
-    { "id": 7, "description": "Update limits_infinity_screen.dart - replace inline steps with modal", "status": "done" },
-    { "id": 8, "description": "Run flutter analyze + flutter test to verify all changes", "status": "done" }
+    { "id": 1, "description": "Verify shared widgets (solution_steps_modal.dart + solution_step_card.dart) support needed patterns", "status": "done" },
+    { "id": 2, "description": "Convert Slope screen — replace showDialog with showSolutionStepsModal, migrate steps to SolutionStepCard", "status": "done" },
+    { "id": 3, "description": "Convert Y-Intercept screen — replace inline toggle with showSolutionStepsModal", "status": "done" },
+    { "id": 4, "description": "Convert Parallel/Perpendicular screen — replace custom modal with shared showSolutionStepsModal", "status": "done" },
+    { "id": 5, "description": "Convert Point-Slope screen — replace inline toggle with showSolutionStepsModal", "status": "done" },
+    { "id": 6, "description": "Convert Distance screen — replace inline toggle with showSolutionStepsModal", "status": "done" },
+    { "id": 7, "description": "Convert Midpoint screen — wrap existing widget in modal (no design changes)", "status": "done" },
+    { "id": 8, "description": "Convert Circles screens (center-radius, radius, center) — replace inline/text with modal", "status": "done" },
+    { "id": 9, "description": "Unify Substitution steps to SolutionStepCard", "status": "done" },
+    { "id": 10, "description": "Unify Factoring steps to SolutionStepCard", "status": "done" },
+    { "id": 11, "description": "Full verification — flutter analyze + flutter test", "status": "done" }
   ],
   "completed": true
 }

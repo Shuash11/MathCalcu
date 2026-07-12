@@ -141,11 +141,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   void _openStepsDialog({bool showSecond = false}) {
     final result = showSecond ? _result2 : _result1;
     if (result == null || _error) return;
-    showDialog(
-      context: context,
-      barrierColor: Colors.black87,
-      builder: (_) => SlopeStepDialog(result: result),
-    );
+    showSlopeStepsModal(context: context, result: result);
   }
 
   void _openComparisonDialog() {
@@ -155,14 +151,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
         _error) {
       return;
     }
-    showDialog(
+    showSlopeComparisonModal(
       context: context,
-      barrierColor: Colors.black87,
-      builder: (_) => SlopeComparisonDialog(
-        comparisonResult: _comparisonResult!,
-        result1: _result1!,
-        result2: _result2!,
-      ),
+      comparisonResult: _comparisonResult!,
+      result1: _result1!,
+      result2: _result2!,
     );
   }
 

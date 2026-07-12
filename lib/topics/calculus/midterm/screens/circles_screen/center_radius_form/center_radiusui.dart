@@ -1,4 +1,6 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'center_radius_controller.dart';
 import 'models/field_def.dart';
 import 'input_card.dart';
@@ -42,6 +44,16 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
     }
   }
 
+  void _openStepsModal() {
+    if (!_controller.hasResult) return;
+    showSolutionStepsModal(
+      context: context,
+      title: 'Circle Equation \u2014 Step by Step',
+      accentColor: FinalsTheme.primary,
+      child: SolutionSteps(steps: _controller.steps),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,8 +70,38 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                   children: [
                     _buildInputCard(),
                     const SizedBox(height: 28),
-                    if (_controller.hasResult)
-                      SolutionSteps(steps: _controller.steps),
+                    if (_controller.hasResult) ...[
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: _openStepsModal,
+                          icon: const Icon(
+                            Icons.receipt_long_rounded,
+                            size: 14,
+                            color: FinalsTheme.primary,
+                          ),
+                          label: const Text(
+                            'Show Steps',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: FinalsTheme.primary,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: FinalsTheme.primary.withValues(alpha: 0.35),
+                            ),
+                            backgroundColor:
+                                FinalsTheme.primary.withValues(alpha: 0.08),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

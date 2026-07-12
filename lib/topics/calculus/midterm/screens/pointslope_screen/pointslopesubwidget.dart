@@ -355,9 +355,6 @@ class PSResultBanner extends StatelessWidget {
   final String? pointSlopeEq;
   final String? generalFormEq;
   final String? standardFormEq;
-  final bool tappable;
-  final VoidCallback? onShowSteps;
-  final bool showSteps;
   final double s;
 
   const PSResultBanner({
@@ -365,9 +362,6 @@ class PSResultBanner extends StatelessWidget {
     this.pointSlopeEq,
     this.generalFormEq,
     this.standardFormEq,
-    this.tappable = false,
-    this.onShowSteps,
-    this.showSteps = false,
     required this.s,
   });
 
@@ -428,48 +422,6 @@ class PSResultBanner extends StatelessWidget {
           ] else ...[
             Text('Enter values above',
                 style: PSTheme.placeholderStyle(context, s)),
-          ],
-          if (tappable && onShowSteps != null) ...[
-            SizedBox(height: 12 * s),
-            const Divider(),
-            SizedBox(height: 10 * s),
-            GestureDetector(
-              onTap: onShowSteps,
-              child: Container(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 12 * s, vertical: 6 * s),
-                decoration: BoxDecoration(
-                  color: showSteps
-                      ? PSTheme.deepViolet.withValues(alpha: 0.2)
-                      : PSTheme.deepViolet.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8 * s),
-                  border: Border.all(
-                    color: PSTheme.deepViolet.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      showSteps
-                          ? Icons.visibility_off_rounded
-                          : Icons.visibility_rounded,
-                      color: PSTheme.deepViolet,
-                      size: 14 * s,
-                    ),
-                    SizedBox(width: 6 * s),
-                    Text(
-                      showSteps ? 'Hide steps' : 'Show steps',
-                      style: TextStyle(
-                        color: PSTheme.deepViolet,
-                        fontSize: 12 * s,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ],
         ],
       ),

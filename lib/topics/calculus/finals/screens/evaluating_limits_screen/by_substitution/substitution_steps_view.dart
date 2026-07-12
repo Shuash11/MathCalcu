@@ -1,4 +1,5 @@
-﻿import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
+﻿import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -10,158 +11,44 @@ class SubstitutionStepsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: steps.length,
-      itemBuilder: (context, index) {
-        return _StepTile(
-          step: steps[index],
-          index: index,
-          isLast: index == steps.length - 1,
-        );
-      },
-    );
-  }
-}
-
-class _StepTile extends StatelessWidget {
-  final SolutionStep step;
-  final int index;
-  final bool isLast;
-
-  const _StepTile({
-    required this.step,
-    required this.index,
-    required this.isLast,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const accentColor = FinalsTheme.primary;
-
-    return Stack(
-      children: [
-        // Timeline line
-        if (!isLast)
-          Positioned(
-            left: 15.25,
-            top: 28,
-            bottom: 4,
-            child: Container(
-              width: 1.5,
-              color: accentColor.withValues(alpha: 0.15),
-            ),
-          ),
-
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Timeline indicator
-            SizedBox(
-              width: 32,
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                      color: accentColor.withValues(alpha: 0.4), width: 1.5),
-                ),
-                child: Center(
-                  child: Text(
-                    (index + 1).toString(),
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900,
-                      color: accentColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            // Step content
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      step.title,
-                      style: FinalsTheme.titleStyle(context).copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: FinalsTheme.textPrimary(context),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _FormattedStepContent(text: step.explanation, mathExpression: step.mathExpression),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _FormattedStepContent extends StatelessWidget {
-  final String text;
-  final String? mathExpression;
-
-  const _FormattedStepContent({required this.text, this.mathExpression});
-
-  @override
-  Widget build(BuildContext context) {
-    const accentColor = FinalsTheme.primary;
-    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          text,
-          style: FinalsTheme.subtitleStyle(context).copyWith(
-            fontSize: 14,
-            color: FinalsTheme.textPrimary(context).withValues(alpha: 0.8),
-            height: 1.4,
+        for (int i = 0; i < steps.length; i++)
+          SolutionStepCard(
+            stepNumber: i + 1,
+            title: steps[i].title,
+            description: steps[i].explanation,
+            mathContent: steps[i].mathExpression == null
+                ? const SizedBox.shrink()
+                : _MathBox(latex: steps[i].mathExpression!),
           ),
-        ),
-        if (mathExpression != null) ...[
-          const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: FinalsTheme.cardSecondary(context),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.1),
-              ),
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Math.tex(
-                mathExpression!,
-                textStyle: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: accentColor,
-                ),
-                onErrorFallback: (err) => Text(
-                  mathExpression!,
-                  style: const TextStyle(color: accentColor),
-                ),
-              ),
-            ),
-          ),
-        ],
       ],
+    );
+  }
+}
+
+class _MathBox extends StatelessWidget {
+  final String latex;
+  const _MathBox({required this.latex});
+
+  @override
+  Widget build(BuildContext context) {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Math.tex(
+        latex,
+        textStyle: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: FinalsTheme.primary,
+        ),
+        onErrorFallback: (err) => Text(
+          latex,
+          style: const TextStyle(color: FinalsTheme.primary),
+        ),
+      ),
     );
   }
 }

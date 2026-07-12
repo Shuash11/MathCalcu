@@ -1,6 +1,7 @@
 ﻿// lib/ui/point_slope_screen.dart
 import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/pointslopetheme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/pointslope_solver/pointslopesolver.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'pointslopesteps.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -26,7 +27,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   final _resultNotifier = ValueNotifier<_ResultData?>(null);
   final _badgesNotifier = ValueNotifier<Map<String, String>?>(null);
   final _graphStringsNotifier = ValueNotifier<_GraphStrings?>(null);
-  final _showStepsNotifier = ValueNotifier<bool>(false);
 
   late final AnimationController _pulseCtrl;
   late final Animation<double> _pulseAnim;
@@ -76,7 +76,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     _resultNotifier.dispose();
     _badgesNotifier.dispose();
     _graphStringsNotifier.dispose();
-    _showStepsNotifier.dispose();
 
     super.dispose();
   }
@@ -97,7 +96,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
       _resultNotifier.value = null;
       _badgesNotifier.value = null;
       _graphStringsNotifier.value = null;
-      _showStepsNotifier.value = false;
       return;
     }
 
@@ -157,9 +155,22 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     };
   }
 
-  void _toggleSteps() {
-    if (_resultNotifier.value == null) return;
-    _showStepsNotifier.value = !_showStepsNotifier.value;
+  void _openStepsModal() {
+    final result = _resultNotifier.value;
+    if (result == null) return;
+    showSolutionStepsModal(
+      context: context,
+      title: 'Point-Slope Solution',
+      accentColor: PSTheme.electricPurple,
+      child: PointSlopeSteps(
+        m: result.m,
+        x1: result.x1,
+        y1: result.y1,
+        b: result.b,
+        generalForm: result.generalFormEq,
+        standardForm: result.standardFormEq,
+      ),
+    );
   }
 
   @override
@@ -206,33 +217,47 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                           SizedBox(height: 20 * s),
                           _PSResultSection(
                             resultNotifier: _resultNotifier,
-                            showStepsNotifier: _showStepsNotifier,
-                            onToggleSteps: _toggleSteps,
                             s: s,
                           ),
-                          SizedBox(height: 14 * s),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: _showStepsNotifier,
-                            builder: (context, showSteps, _) {
-                              if (!showSteps) return const SizedBox.shrink();
-                              return ValueListenableBuilder<_ResultData?>(
-                                valueListenable: _resultNotifier,
-                                builder: (context, result, _) {
-                                  if (result == null) {
-                                    return const SizedBox.shrink();
-                                  }
-                                  return Padding(
-                                    padding: EdgeInsets.only(top: 16 * s),
-                                    child: PointSlopeSteps(
-                                      m: result.m,
-                                      x1: result.x1,
-                                      y1: result.y1,
-                                      b: result.b,
-                                      generalForm: result.generalFormEq,
-                                      standardForm: result.standardFormEq,
+                          SizedBox(height: 12 * s),
+                          ValueListenableBuilder<_ResultData?>(
+                            valueListenable: _resultNotifier,
+                            builder: (context, result, _) {
+                              if (result == null) {
+                                return const SizedBox.shrink();
+                              }
+                              return SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: _openStepsModal,
+                                  icon: const Icon(
+                                    Icons.receipt_long_rounded,
+                                    size: 14,
+                                    color: PSTheme.electricPurple,
+                                  ),
+                                  label: const Text(
+                                    'Show Steps',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: PSTheme.electricPurple,
                                     ),
-                                  );
-                                },
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                      color: PSTheme.electricPurple
+                                          .withValues(alpha: 0.35),
+                                    ),
+                                    backgroundColor: PSTheme.electricPurple
+                                        .withValues(alpha: 0.08),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
                               );
                             },
                           ),
@@ -390,14 +415,10 @@ class _GraphStrings {
 
 class _PSResultSection extends StatelessWidget {
   final ValueNotifier<_ResultData?> resultNotifier;
-  final ValueNotifier<bool> showStepsNotifier;
-  final VoidCallback onToggleSteps;
   final double s;
 
   const _PSResultSection({
     required this.resultNotifier,
-    required this.showStepsNotifier,
-    required this.onToggleSteps,
     required this.s,
   });
 
@@ -406,19 +427,11 @@ class _PSResultSection extends StatelessWidget {
     return ValueListenableBuilder<_ResultData?>(
       valueListenable: resultNotifier,
       builder: (context, result, _) {
-        return ValueListenableBuilder<bool>(
-          valueListenable: showStepsNotifier,
-          builder: (context, showSteps, _) {
-            return PSResultBanner(
-              pointSlopeEq: result?.pointSlopeEq,
-              generalFormEq: result?.generalFormEq,
-              standardFormEq: result?.standardFormEq,
-              tappable: result != null,
-              onShowSteps: result != null ? onToggleSteps : null,
-              showSteps: showSteps,
-              s: s,
-            );
-          },
+        return PSResultBanner(
+          pointSlopeEq: result?.pointSlopeEq,
+          generalFormEq: result?.generalFormEq,
+          standardFormEq: result?.standardFormEq,
+          s: s,
         );
       },
     );

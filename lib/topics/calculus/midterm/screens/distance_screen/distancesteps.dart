@@ -1,20 +1,8 @@
 ﻿import 'dart:math';
-import 'package:calculus_system/topics/calculus/midterm/theme/distance_theme/distancetheme.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-
-class StepSection {
-  final String title;
-  final String latex;
-  final bool isFormula;
-  final bool isResult;
-  const StepSection({
-    required this.title,
-    required this.latex,
-    this.isFormula = false,
-    this.isResult = false,
-  });
-}
 
 class RadicalResult {
   final int coefficient;
@@ -93,29 +81,28 @@ class DistanceSteps extends StatelessWidget {
     );
   }
 
-  List<StepSection> get _steps {
+  List<_Step> get _steps {
     if (!is2D) {
       final double diff = (x2 - x1).abs();
       return [
-        const StepSection(
-          title: 'Step 1 — Write the formula',
+        const _Step(
+          title: 'Write the formula',
           latex: r'd = |x_2 - x_1|',
-          isFormula: true,
+          isResult: false,
         ),
-        StepSection(
-          title: 'Step 2 — Substitute the given values',
+        _Step(
+          title: 'Substitute the given values',
           latex: 'd = \\left| ${_signed(x2)} - ${_signed(x1)} \\right|',
-          isFormula: true,
+          isResult: false,
         ),
-        StepSection(
-          title: 'Step 3 — Subtract inside absolute value',
+        _Step(
+          title: 'Subtract inside absolute value',
           latex: 'd = \\left| ${_fmt(x2 - x1)} \\right|',
-          isFormula: true,
+          isResult: false,
         ),
-        StepSection(
-          title: 'Step 4 — Apply absolute value',
+        _Step(
+          title: 'Apply absolute value',
           latex: 'd = ${_fmt(diff)}',
-          isFormula: true,
           isResult: true,
         ),
       ];
@@ -129,44 +116,43 @@ class DistanceSteps extends StatelessWidget {
     final RadicalResult radical = _simplifyRadical(sum);
 
     return [
-      const StepSection(
-        title: 'Step 1 — Write the formula',
+      const _Step(
+        title: 'Write the formula',
         latex: r'd = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}',
-        isFormula: true,
+        isResult: false,
       ),
-      StepSection(
-        title: 'Step 2 — Substitute the given values',
+      _Step(
+        title: 'Substitute the given values',
         latex: 'd = \\sqrt{\\left(${_signed(x2)}-${_signed(x1)}\\right)^2 + \\left(${_signed(y2!)}-${_signed(y1!)}\\right)^2}',
-        isFormula: true,
+        isResult: false,
       ),
-      StepSection(
-        title: 'Step 3 — Square each term',
+      _Step(
+        title: 'Square each term',
         latex: 'd = \\sqrt{${_fmt(dx)}^2 + ${_fmt(dy)}^2}',
-        isFormula: true,
+        isResult: false,
       ),
-      StepSection(
-        title: 'Step 4 — Compute the squares',
+      _Step(
+        title: 'Compute the squares',
         latex: 'd = \\sqrt{${_fmt(dx2)} + ${_fmt(dy2)}}',
-        isFormula: true,
+        isResult: false,
       ),
-      StepSection(
-        title: 'Step 5 — Add and take square root',
+      _Step(
+        title: 'Add and take square root',
         latex: 'd = \\sqrt{${_fmt(sum)}}',
-        isFormula: true,
+        isResult: false,
       ),
       ..._sqrtSteps(sum, radical),
     ];
   }
 
-  List<StepSection> _sqrtSteps(double sum, RadicalResult r) {
+  List<_Step> _sqrtSteps(double sum, RadicalResult r) {
     final String sumStr = _fmt(sum);
 
     if (r.isPerfectSquare) {
       return [
-        StepSection(
-          title: 'Step 6 — Take the square root',
+        _Step(
+          title: 'Take the square root',
           latex: 'd = \\sqrt{$sumStr} = ${r.coefficient}',
-          isFormula: true,
           isResult: true,
         ),
       ];
@@ -176,25 +162,23 @@ class DistanceSteps extends StatelessWidget {
 
     if (canSimplify) {
       return [
-        StepSection(
-          title: 'Step 6 — Simplify the radical',
+        _Step(
+          title: 'Simplify the radical',
           latex: '\\sqrt{$sumStr} = ${r.coefficient}\\sqrt{${r.radicand}}',
-          isFormula: true,
+          isResult: false,
         ),
-        StepSection(
-          title: 'Step 7 — Approximate the decimal value',
+        _Step(
+          title: 'Approximate the decimal value',
           latex: 'd = ${r.coefficient}\\sqrt{${r.radicand}} \\approx ${r.toDecimalString()}',
-          isFormula: true,
           isResult: true,
         ),
       ];
     }
 
     return [
-      StepSection(
-        title: 'Step 6 — Evaluate the square root',
+      _Step(
+        title: 'Evaluate the square root',
         latex: 'd = \\sqrt{$sumStr} \\approx ${r.toDecimalString()}',
-        isFormula: true,
         isResult: true,
       ),
     ];
@@ -206,144 +190,38 @@ class DistanceSteps extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: DistanceTheme.accent.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: DistanceTheme.accent15),
-          ),
-          child: Row(children: [
-            const Icon(Icons.school_rounded,
-                color: DistanceTheme.accent, size: 18),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Distance Formula — Step by Step',
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: DistanceTheme.accent,
+        for (int i = 0; i < steps.length; i++)
+          SolutionStepCard(
+            stepNumber: i + 1,
+            title: steps[i].title,
+            mathContent: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SelectableMath.tex(
+                steps[i].latex,
+                textStyle: TextStyle(
+                  fontSize: 15,
+                  fontWeight: steps[i].isResult
+                      ? FontWeight.w600
+                      : FontWeight.w500,
+                  color: steps[i].isResult
+                      ? FinalsTheme.primary
+                      : Colors.white70,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(width: 8),
-            Text(
-              '${steps.length} steps',
-              style: TextStyle(fontSize: 11, color: DistanceTheme.text40(context)),
-            ),
-          ]),
-        ),
-        ...List.generate(
-          steps.length,
-          (i) => _StepItem(
-            step: steps[i],
-            isLast: i == steps.length - 1,
           ),
-        ),
       ],
     );
   }
 }
 
-class _StepItem extends StatelessWidget {
-  final StepSection step;
-  final bool isLast;
-  const _StepItem({required this.step, required this.isLast});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: step.isResult
-                  ? DistanceTheme.accent
-                  : DistanceTheme.accent.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-              border: step.isResult
-                  ? null
-                  : Border.all(color: DistanceTheme.accent30),
-            ),
-            child: Center(
-              child: step.isResult
-                  ? const Icon(Icons.check, color: Colors.white, size: 14)
-                  : const Icon(Icons.edit_rounded,
-                      color: DistanceTheme.accent, size: 13),
-            ),
-          ),
-          if (!isLast)
-            Container(
-              width: 2,
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              height: 50,
-              color: DistanceTheme.accent.withValues(alpha: 0.15),
-            ),
-        ]),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.only(bottom: isLast ? 0 : 16),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: step.isResult
-                  ? DistanceTheme.accent.withValues(alpha: 0.08)
-                  : DistanceTheme.card(context),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: step.isResult
-                    ? DistanceTheme.accent30
-                    : DistanceTheme.accent.withValues(alpha: 0.08),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  step.title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: step.isResult
-                        ? DistanceTheme.accent
-                        : DistanceTheme.text70(context),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SelectableMath.tex(
-                      step.latex,
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight:
-                            step.isResult ? FontWeight.w600 : FontWeight.w500,
-                        color: step.isResult
-                            ? DistanceTheme.text(context)
-                            : DistanceTheme.text55(context),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+class _Step {
+  final String title;
+  final String latex;
+  final bool isResult;
+  const _Step({
+    required this.title,
+    required this.latex,
+    required this.isResult,
+  });
 }

@@ -2,6 +2,8 @@
 import 'package:calculus_system/topics/calculus/midterm/graph/distance_graph/distance_graph.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/distance_theme/distancetheme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/distance_solver/distancesolver.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'distancesteps.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +34,6 @@ class _DistancescreenState extends State<Distancescreen>
   bool _solved = false;
   bool _hasError = false;
   String _errorMsg = '';
-  bool _showSteps = false;
 
   double _parsedX1 = 0;
   double _parsedX2 = 0;
@@ -61,10 +62,21 @@ class _DistancescreenState extends State<Distancescreen>
 
   void _goBack() => Navigator.of(context).pop();
 
-  void _toggleSteps() {
-    setState(() {
-      _showSteps = !_showSteps;
-    });
+  void _openStepsModal() {
+    if (!_solved || _hasError) return;
+    showSolutionStepsModal(
+      context: context,
+      title: 'Distance Formula \u2014 Step by Step',
+      accentColor: FinalsTheme.primary,
+      child: DistanceSteps(
+        is2D: _is2D,
+        x1: _parsedX1,
+        y1: _parsedY1,
+        x2: _parsedX2,
+        y2: _parsedY2,
+        distance: _calculatedDistance,
+      ),
+    );
   }
 
   void _openGraph() {
@@ -147,7 +159,6 @@ class _DistancescreenState extends State<Distancescreen>
     setState(() {
       _solved = true;
       _hasError = result.hasError;
-      _showSteps = false;
 
       if (result.hasError) {
         _errorMsg = result.errorMessage ?? 'Calculation error';
@@ -296,14 +307,12 @@ class _DistancescreenState extends State<Distancescreen>
                         setState(() {
                           _is2D = false;
                           _solved = false;
-                          _showSteps = false;
                         });
                       }),
                       _buildModeButton('Coordinate (2D)', _is2D, () {
                         setState(() {
                           _is2D = true;
                           _solved = false;
-                          _showSteps = false;
                         });
                       }),
                     ],
@@ -528,10 +537,8 @@ class _DistancescreenState extends State<Distancescreen>
                       ),
                     ),
 
-                    // ── Result Card with Steps ─────────────────
-                    GestureDetector(
-                      onTap: _toggleSteps,
-                      child: AnimatedContainer(
+                    // ── Result Card ────────────────────────────────
+                    AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         width: double.infinity,
                         padding: const EdgeInsets.all(24),
@@ -540,76 +547,21 @@ class _DistancescreenState extends State<Distancescreen>
                           borderRadius:
                               BorderRadius.circular(DistanceTheme.radius2xl),
                           border: Border.all(
-                            color: _showSteps
-                                ? DistanceTheme.accent
-                                : DistanceTheme.accent30,
-                            width: _showSteps ? 2 : 1,
+                            color: DistanceTheme.accent30,
+                            width: 1,
                           ),
-                          boxShadow: _showSteps
-                              ? [
-                                  BoxShadow(
-                                    color: DistanceTheme.accent
-                                        .withValues(alpha: 0.2),
-                                    blurRadius: 20,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ]
-                              : null,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                const Text('DISTANCE',
-                                    style: DistanceTheme.resultLabel),
-                                const Spacer(),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: _showSteps
-                                        ? DistanceTheme.accent
-                                            .withValues(alpha: 0.2)
-                                        : DistanceTheme.accent
-                                            .withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        _showSteps
-                                            ? 'Hide steps'
-                                            : 'Show steps',
-                                        style: const TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
-                                          color: DistanceTheme.accent,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      AnimatedRotation(
-                                        turns: _showSteps ? 0.5 : 0,
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        child: const Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: DistanceTheme.accent,
-                                          size: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                            const Text('DISTANCE',
+                                style: DistanceTheme.resultLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             Text(
-                              'd = ${_distance ?? '—'}',
+                              'd = ${_distance ?? '\u2014'}',
                               style: DistanceTheme.resultValue(context),
                             ),
-                            if (_formula != null && !_showSteps) ...[
+                            if (_formula != null) ...[
                               const SizedBox(height: DistanceTheme.spaceLg),
                               Container(
                                 width: double.infinity,
@@ -629,36 +581,39 @@ class _DistancescreenState extends State<Distancescreen>
                                 ),
                               ),
                             ],
-                            AnimatedOpacity(
-                              opacity: _showSteps ? 1.0 : 0.0,
-                              duration: const Duration(milliseconds: 250),
-                              child: _showSteps
-                                  ? SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          const SizedBox(height: 20),
-                                          Container(
-                                            width: double.infinity,
-                                            height: 1,
-                                            color: DistanceTheme.accent
-                                                .withValues(alpha: 0.2),
-                                            margin: const EdgeInsets.only(bottom: 20),
-                                          ),
-                                          DistanceSteps(
-                                            is2D: _is2D,
-                                            x1: _parsedX1,
-                                            y1: _parsedY1,
-                                            x2: _parsedX2,
-                                            y2: _parsedY2,
-                                            distance: _calculatedDistance,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            ),
                           ],
+                        ),
+                      ),
+
+                    // ── Show Steps Button ──────────────────────────
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _openStepsModal,
+                        icon: const Icon(
+                          Icons.receipt_long_rounded,
+                          size: 14,
+                          color: FinalsTheme.primary,
+                        ),
+                        label: const Text(
+                          'Show Steps',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: FinalsTheme.primary,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: FinalsTheme.primary.withValues(alpha: 0.35),
+                          ),
+                          backgroundColor:
+                              FinalsTheme.primary.withValues(alpha: 0.08),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
                     ),

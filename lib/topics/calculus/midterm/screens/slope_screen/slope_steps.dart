@@ -1,14 +1,25 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/slope_theme/slope_theme.dart';
+﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
+import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
+
+// ─────────────────────────────────────────────────────────────
+// STEPS WIDGETS — MIGRATED TO SolutionStepCard
+//
+// Each step becomes a SolutionStepCard with:
+// - stepNumber
+// - title (the guide)
+// - description (the step label, e.g. "Step 1")
+// - mathContent (latex SelectableMath wrapped in scroll)
+// ─────────────────────────────────────────────────────────────
 
 class SlopeSteps extends StatelessWidget {
   final SlopeSolverResult result;
 
   const SlopeSteps({super.key, required this.result});
 
-  List<StepSection> _buildSteps() {
+  List<Widget> _buildSteps(BuildContext context) {
     final x1s = _fmtNum(result.x1);
     final y1s = _fmtNum(result.y1);
     final x2s = _fmtNum(result.x2);
@@ -20,108 +31,163 @@ class SlopeSteps extends StatelessWidget {
     final slopeStr = result.slopeDisplay;
 
     if (result.isVertical) {
-      return [
-        StepSection.single(
-          stepLabel: 'Step 1',
-          guide: 'Identify points',
-          plainContent: 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)',
-        ),
-        StepSection.single(
-          stepLabel: 'Step 2',
-          guide: 'Check Δx',
-          latexContent: r'\Delta x = x_2 - x_1 = ' '$x2s' r' - ' '$x1s' r' = 0',
-        ),
-        StepSection.single(
-          stepLabel: 'Step 3',
-          guide: 'Conclusion',
-          latexContent: r'\Delta x = 0 \implies \text{Vertical line}',
-        ),
-        StepSection.single(
-          stepLabel: 'Step 4',
-          guide: 'Line equation',
-          latexContent: r'x = ' '$x1s',
-        ),
-      ];
+      return _buildVerticalSteps(context, x1s, y1s, x2s, y2s);
     }
 
     if (result.isHorizontal) {
-      return [
-        StepSection.single(
-          stepLabel: 'Step 1',
-          guide: 'Identify points',
-          plainContent: 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)',
-        ),
-        StepSection.single(
-          stepLabel: 'Step 2',
-          guide: 'Check Δy',
-          latexContent: r'\Delta y = y_2 - y_1 = ' '$y2s' r' - ' '$y1s' r' = 0',
-        ),
-        StepSection.single(
-          stepLabel: 'Step 3',
-          guide: 'Conclusion',
-          latexContent: r'\Delta y = 0 \implies m = 0',
-        ),
-        StepSection.single(
-          stepLabel: 'Step 4',
-          guide: 'Slope value',
-          latexContent: r'm = 0',
-        ),
-      ];
+      return _buildHorizontalSteps(context, x1s, y1s, x2s, y2s);
     }
 
+    return _buildGenericSteps(
+        context, x1s, y1s, x2s, y2s, dys, dxs, slopeStr);
+  }
+
+  List<Widget> _buildVerticalSteps(
+      BuildContext context, String x1s, String y1s, String x2s, String y2s) {
     return [
-      StepSection.single(
-        stepLabel: 'Step 1',
-        guide: 'Identify points',
-        plainContent:
-            'A = ($x1s, $y1s)  →  (x₁, y₁)\nB = ($x2s, $y2s)  →  (x₂, y₂)',
+      SolutionStepCard(
+        stepNumber: 1,
+        title: 'Identify points',
+        description: 'Step 1',
+        mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
       ),
-      StepSection.single(
-        stepLabel: 'Step 2',
-        guide: 'Slope formula',
-        latexContent: r'm = \dfrac{y_2 - y_1}{x_2 - x_1}',
+      SolutionStepCard(
+        stepNumber: 2,
+        title: 'Check Δx',
+        description: 'Step 2',
+        mathContent: _mathLatex(
+          r'\Delta x = x_2 - x_1 = ' '$x2s' r' - ' '$x1s' r' = 0',
+        ),
       ),
-      StepSection.dual(
-        stepLabel: 'Step 3',
-        guide: 'Find differences',
-        leftLabel: 'Δy',
-        rightLabel: 'Δx',
-        leftLatex: r'\begin{aligned}'
-            r'y_2 - y_1 &= '
-            '$y2s'
-            r' - ('
-            '$y1s'
-            r') \\'
-            r'&= '
-            '$dys'
-            r'\end{aligned}',
-        rightLatex: r'\begin{aligned}'
-            r'x_2 - x_1 &= '
-            '$x2s'
-            r' - ('
-            '$x1s'
-            r') \\'
-            r'&= '
-            '$dxs'
-            r'\end{aligned}',
+      SolutionStepCard(
+        stepNumber: 3,
+        title: 'Conclusion',
+        description: 'Step 3',
+        mathContent: _mathLatex(
+          r'\Delta x = 0 \implies \text{Vertical line}',
+        ),
       ),
-      StepSection.single(
-        stepLabel: 'Step 4',
-        guide: 'Calculate slope',
-        latexContent: r'\begin{aligned}'
-            r'm &= \dfrac{'
-            '$dys'
-            r'}{'
-            '$dxs'
-            r'} \\'
-            r'&= '
-            '$slopeStr'
-            r'\end{aligned}',
+      SolutionStepCard(
+        stepNumber: 4,
+        title: 'Line equation',
+        description: 'Step 4',
+        mathContent: _mathLatex(r'x = ' '$x1s'),
       ),
-      StepSection.single(
-        stepLabel: 'Step 5',
-        guide: 'Result',
-        latexContent: r'm = ' '$slopeStr',
+    ];
+  }
+
+  List<Widget> _buildHorizontalSteps(
+      BuildContext context, String x1s, String y1s, String x2s, String y2s) {
+    return [
+      SolutionStepCard(
+        stepNumber: 1,
+        title: 'Identify points',
+        description: 'Step 1',
+        mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
+      ),
+      SolutionStepCard(
+        stepNumber: 2,
+        title: 'Check Δy',
+        description: 'Step 2',
+        mathContent: _mathLatex(
+          r'\Delta y = y_2 - y_1 = ' '$y2s' r' - ' '$y1s' r' = 0',
+        ),
+      ),
+      SolutionStepCard(
+        stepNumber: 3,
+        title: 'Conclusion',
+        description: 'Step 3',
+        mathContent: _mathLatex(r'\Delta y = 0 \implies m = 0'),
+      ),
+      SolutionStepCard(
+        stepNumber: 4,
+        title: 'Slope value',
+        description: 'Step 4',
+        mathContent: _mathLatex(r'm = 0'),
+      ),
+    ];
+  }
+
+  List<Widget> _buildGenericSteps(
+      BuildContext context,
+      String x1s,
+      String y1s,
+      String x2s,
+      String y2s,
+      String dys,
+      String dxs,
+      String slopeStr) {
+    return [
+      SolutionStepCard(
+        stepNumber: 1,
+        title: 'Identify points',
+        description: 'Step 1',
+        mathContent: _mathText(
+            context, 'A = ($x1s, $y1s)  →  (x₁, y₁)\nB = ($x2s, $y2s)  →  (x₂, y₂)'),
+      ),
+      SolutionStepCard(
+        stepNumber: 2,
+        title: 'Slope formula',
+        description: 'Step 2',
+        mathContent: _mathLatex(r'm = \dfrac{y_2 - y_1}{x_2 - x_1}'),
+      ),
+      SolutionStepCard(
+        stepNumber: 3,
+        title: 'Find differences',
+        description: 'Step 3',
+        mathContent: Row(
+          children: [
+            Expanded(
+              child: _mathLatex(
+                r'\begin{aligned}'
+                r'y_2 - y_1 &= '
+                '$y2s'
+                r' - ('
+                '$y1s'
+                r') \\'
+                r'&= '
+                '$dys'
+                r'\end{aligned}',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _mathLatex(
+                r'\begin{aligned}'
+                r'x_2 - x_1 &= '
+                '$x2s'
+                r' - ('
+                '$x1s'
+                r') \\'
+                r'&= '
+                '$dxs'
+                r'\end{aligned}',
+              ),
+            ),
+          ],
+        ),
+      ),
+      SolutionStepCard(
+        stepNumber: 4,
+        title: 'Calculate slope',
+        description: 'Step 4',
+        mathContent: _mathLatex(
+          r'\begin{aligned}'
+          r'm &= \dfrac{'
+          '$dys'
+          r'}{'
+          '$dxs'
+          r'} \\'
+          r'&= '
+          '$slopeStr'
+          r'\end{aligned}',
+        ),
+      ),
+      SolutionStepCard(
+        stepNumber: 5,
+        title: 'Result',
+        description: 'Step 5',
+        mathContent: _mathLatex(r'm = ' '$slopeStr'),
       ),
     ];
   }
@@ -131,25 +197,40 @@ class SlopeSteps extends StatelessWidget {
     return n.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
+  Widget _mathLatex(String tex) => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SelectableMath.tex(
+          tex,
+          textStyle: const TextStyle(
+            fontSize: 14,
+            color: FinalsTheme.primary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      );
+
+  Widget _mathText(BuildContext context, String text) {
+    final color = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white.withValues(alpha: 0.85)
+        : Colors.black87;
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        height: 1.6,
+        color: color,
+        fontWeight: FontWeight.w500,
+        fontFamily: 'monospace',
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final steps = _buildSteps();
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmall = screenWidth < 360;
-    final isMedium = screenWidth < 400;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [
-        _Header(stepCount: steps.length, isSmall: isSmall),
-        SizedBox(height: isSmall ? 12 : 16),
-        _Timeline(
-          steps: steps,
-          isSmall: isSmall,
-          isMedium: isMedium,
-        ),
-      ],
+      children: _buildSteps(context),
     );
   }
 }
@@ -166,7 +247,7 @@ class SlopeComparisonSteps extends StatelessWidget {
     required this.result2,
   });
 
-  List<StepSection> _buildSteps() {
+  List<Widget> _buildSteps() {
     final x1s1 = _fmtNum(result1.x1);
     final y1s1 = _fmtNum(result1.y1);
     final x2s1 = _fmtNum(result1.x2);
@@ -186,59 +267,85 @@ class SlopeComparisonSteps extends StatelessWidget {
             : 'Neither';
 
     return [
-      StepSection.dual(
-        stepLabel: 'Step 1',
-        guide: 'Line 1 points & slope',
-        leftLabel: 'Line 1 Points',
-        rightLabel: 'Slope',
-        leftLatex: r'\begin{aligned}'
-            r'&('
-            '$x1s1'
-            r', '
-            '$y1s1'
-            r') \\'
-            r'&('
-            '$x2s1'
-            r', '
-            '$y2s1'
-            r')'
-            r'\end{aligned}',
-        rightLatex: r'm_1 = ' '$m1',
+      SolutionStepCard(
+        stepNumber: 1,
+        title: 'Line 1 points & slope',
+        description: 'Step 1',
+        mathContent: Row(
+          children: [
+            Expanded(
+              child: _mathLatex(
+                r'\begin{aligned}'
+                r'&('
+                '$x1s1'
+                r', '
+                '$y1s1'
+                r') \\'
+                r'&('
+                '$x2s1'
+                r', '
+                '$y2s1'
+                r')'
+                r'\end{aligned}',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _mathLatex(r'm_1 = ' '$m1'),
+            ),
+          ],
+        ),
       ),
-      StepSection.dual(
-        stepLabel: 'Step 2',
-        guide: 'Line 2 points & slope',
-        leftLabel: 'Line 2 Points',
-        rightLabel: 'Slope',
-        leftLatex: r'\begin{aligned}'
-            r'&('
-            '$x1s2'
-            r', '
-            '$y1s2'
-            r') \\'
-            r'&('
-            '$x2s2'
-            r', '
-            '$y2s2'
-            r')'
-            r'\end{aligned}',
-        rightLatex: r'm_2 = ' '$m2',
+      SolutionStepCard(
+        stepNumber: 2,
+        title: 'Line 2 points & slope',
+        description: 'Step 2',
+        mathContent: Row(
+          children: [
+            Expanded(
+              child: _mathLatex(
+                r'\begin{aligned}'
+                r'&('
+                '$x1s2'
+                r', '
+                '$y1s2'
+                r') \\'
+                r'&('
+                '$x2s2'
+                r', '
+                '$y2s2'
+                r')'
+                r'\end{aligned}',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _mathLatex(r'm_2 = ' '$m2'),
+            ),
+          ],
+        ),
       ),
-      StepSection.single(
-        stepLabel: 'Step 3',
-        guide: 'Check relationship',
-        latexContent: comparison.isParallel
-            ? r'm_1 = m_2 \implies \text{Parallel}'
-            : comparison.isPerpendicular
-                ? r'm_1 \cdot m_2 = -1 \implies \text{Perpendicular}'
-                : r'm_1 \neq m_2 \text{ and } m_1 \cdot m_2 \neq -1',
+      SolutionStepCard(
+        stepNumber: 3,
+        title: 'Check relationship',
+        description: 'Step 3',
+        mathContent: _mathLatex(
+          comparison.isParallel
+              ? r'm_1 = m_2 \implies \text{Parallel}'
+              : comparison.isPerpendicular
+                  ? r'm_1 \cdot m_2 = -1 \implies \text{Perpendicular}'
+                  : r'm_1 \neq m_2 \text{ and } m_1 \cdot m_2 \neq -1',
+        ),
       ),
-      StepSection.single(
-        stepLabel: 'Step 4',
-        guide: 'Result',
-        latexContent: relLabel == 'Neither'
-            ? r'\text{Neither parallel nor perpendicular}'
-            : r'\text{' '$relLabel' r'}',
+      SolutionStepCard(
+        stepNumber: 4,
+        title: 'Result',
+        description: 'Step 4',
+        mathContent: _mathLatex(
+          relLabel == 'Neither'
+              ? r'\text{Neither parallel nor perpendicular}'
+              : r'\text{' '$relLabel' r'}',
+        ),
       ),
     ];
   }
@@ -248,513 +355,24 @@ class SlopeComparisonSteps extends StatelessWidget {
     return n.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final steps = _buildSteps();
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmall = screenWidth < 360;
-    final isMedium = screenWidth < 400;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _Header(stepCount: steps.length, isSmall: isSmall),
-        SizedBox(height: isSmall ? 12 : 16),
-        _Timeline(
-          steps: steps,
-          isSmall: isSmall,
-          isMedium: isMedium,
-        ),
-      ],
-    );
-  }
-}
-
-class StepSection {
-  final String stepLabel;
-  final String guide;
-  final _StepKind kind;
-  final String? latexContent;
-  final String? plainContent;
-  final String? leftLabel;
-  final String? rightLabel;
-  final String? leftLatex;
-  final String? rightLatex;
-
-  const StepSection.single({
-    required this.stepLabel,
-    required this.guide,
-    this.latexContent,
-    this.plainContent,
-  })  : kind = _StepKind.single,
-        leftLabel = null,
-        rightLabel = null,
-        leftLatex = null,
-        rightLatex = null;
-
-  const StepSection.dual({
-    required this.stepLabel,
-    required this.guide,
-    required String this.leftLabel,
-    required String this.rightLabel,
-    required String this.leftLatex,
-    required String this.rightLatex,
-  })  : kind = _StepKind.dual,
-        latexContent = null,
-        plainContent = null;
-}
-
-enum _StepKind { single, dual }
-
-class _Header extends StatelessWidget {
-  final int stepCount;
-  final bool isSmall;
-
-  const _Header({required this.stepCount, required this.isSmall});
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: isSmall ? 4 : 6,
-      runSpacing: 6,
-      children: [
-        Icon(
-          Icons.school_rounded,
-          size: isSmall ? 12 : 13,
-          color: SlopeTheme.accentColor.withValues(alpha: 0.6),
-        ),
-        Text(
-          'Solution',
-          style: TextStyle(
-            fontSize: isSmall ? 11 : 12,
-            fontWeight: FontWeight.w700,
-            color: SlopeTheme.accentColor.withValues(alpha: 0.6),
-            letterSpacing: 0.2,
+  Widget _mathLatex(String tex) => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SelectableMath.tex(
+          tex,
+          textStyle: const TextStyle(
+            fontSize: 14,
+            color: FinalsTheme.primary,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        _Chip(label: '$stepCount steps', isSmall: isSmall),
-        _Chip(label: 'Find Slope', isSmall: isSmall),
-      ],
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  final String label;
-  final bool isSmall;
-
-  const _Chip({required this.label, required this.isSmall});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: isSmall ? 6 : 7,
-        vertical: isSmall ? 1.5 : 2,
-      ),
-      decoration: BoxDecoration(
-        color: SlopeTheme.accentColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: isSmall ? 9 : 10,
-          fontWeight: FontWeight.w700,
-          color: SlopeTheme.accentColor.withValues(alpha: 0.7),
-        ),
-      ),
-    );
-  }
-}
-
-class _Timeline extends StatelessWidget {
-  final List<StepSection> steps;
-  final bool isSmall;
-  final bool isMedium;
-
-  const _Timeline({
-    required this.steps,
-    required this.isSmall,
-    required this.isMedium,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        for (int i = 0; i < steps.length; i++)
-          _StepRow(
-            step: steps[i],
-            isLast: i == steps.length - 1,
-            isSmall: isSmall,
-            isMedium: isMedium,
-          ),
-      ],
-    );
-  }
-}
-
-class _StepRow extends StatelessWidget {
-  final StepSection step;
-  final bool isLast;
-  final bool isSmall;
-  final bool isMedium;
-
-  const _StepRow({
-    required this.step,
-    required this.isLast,
-    required this.isSmall,
-    required this.isMedium,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final dotSize = isSmall ? 26.0 : 30.0;
-    final spacing = isSmall ? 10.0 : 14.0;
-    final bottomPadding = isLast ? 0.0 : (isSmall ? 20.0 : 28.0);
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottomPadding),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _TimelineDot(
-            label: step.stepLabel.replaceAll(RegExp(r'[^0-9]'), ''),
-            isLast: isLast,
-            size: dotSize,
-            isSmall: isSmall,
-          ),
-          SizedBox(width: spacing),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _GuideLabel(
-                  stepLabel: step.stepLabel,
-                  guide: step.guide,
-                  isSmall: isSmall,
-                ),
-                SizedBox(height: isSmall ? 6 : 8),
-                if (step.kind == _StepKind.single)
-                  _SingleMathBox(
-                    step: step,
-                    isSmall: isSmall,
-                    isMedium: isMedium,
-                  )
-                else
-                  _DualCaseRow(
-                    step: step,
-                    isSmall: isSmall,
-                    isMedium: isMedium,
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TimelineDot extends StatelessWidget {
-  final String label;
-  final bool isLast;
-  final double size;
-  final bool isSmall;
-
-  const _TimelineDot({
-    required this.label,
-    required this.isLast,
-    required this.size,
-    required this.isSmall,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: SlopeTheme.accentColor.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: SlopeTheme.accentColor.withValues(alpha: 0.4),
-              width: isSmall ? 1.2 : 1.5,
-            ),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: isSmall ? 10 : 12,
-              fontWeight: FontWeight.w900,
-              color: SlopeTheme.accentColor,
-            ),
-          ),
-        ),
-        if (!isLast)
-          Container(
-            width: isSmall ? 1.5 : 2,
-            height: isSmall ? 50 : 70,
-            margin: EdgeInsets.symmetric(vertical: isSmall ? 2 : 3),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  SlopeTheme.accentColor.withValues(alpha: 0.3),
-                  SlopeTheme.accentColor.withValues(alpha: 0.04),
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _GuideLabel extends StatelessWidget {
-  final String stepLabel;
-  final String guide;
-  final bool isSmall;
-
-  const _GuideLabel({
-    required this.stepLabel,
-    required this.guide,
-    required this.isSmall,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: stepLabel,
-            style: TextStyle(
-              fontSize: isSmall ? 9 : 10,
-              fontWeight: FontWeight.w700,
-              color: SlopeTheme.accentColor.withValues(alpha: 0.5),
-              letterSpacing: 0.6,
-            ),
-          ),
-          TextSpan(
-            text: '  ?  ',
-            style: TextStyle(
-              fontSize: isSmall ? 9 : 10,
-              color: SlopeTheme.textSecondary(context).withValues(alpha: 0.4),
-            ),
-          ),
-          TextSpan(
-            text: guide,
-            style: TextStyle(
-              fontSize: isSmall ? 12 : 13,
-              fontWeight: FontWeight.w700,
-              color: SlopeTheme.textPrimary(context),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SingleMathBox extends StatelessWidget {
-  final StepSection step;
-  final bool isSmall;
-  final bool isMedium;
-
-  const _SingleMathBox({
-    required this.step,
-    required this.isSmall,
-    required this.isMedium,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final padding = isSmall ? 10.0 : 14.0;
-    final fontSize = isSmall ? 13.0 : (isMedium ? 14.0 : 15.0);
-
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
-      decoration: BoxDecoration(
-        color: SlopeTheme.accentColor.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
-        border: Border.all(
-          color: SlopeTheme.accentColor.withValues(alpha: 0.2),
-        ),
-      ),
-      child: step.latexContent != null
-          ? SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SelectableMath.tex(
-                step.latexContent!,
-                textStyle: TextStyle(
-                  fontSize: fontSize,
-                  color: SlopeTheme.textPrimary(context),
-                ),
-              ),
-            )
-          : Text(
-              step.plainContent!,
-              style: TextStyle(
-                fontSize: isSmall ? 12 : 13,
-                height: 1.75,
-                color: SlopeTheme.textSecondary(context).withValues(alpha: 0.5),
-                fontWeight: FontWeight.w500,
-                fontFamily: 'monospace',
-              ),
-            ),
-    );
-  }
-}
-
-class _DualCaseRow extends StatelessWidget {
-  final StepSection step;
-  final bool isSmall;
-  final bool isMedium;
-
-  const _DualCaseRow({
-    required this.step,
-    required this.isSmall,
-    required this.isMedium,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth < 340) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _CasePanel(
-            label: step.leftLabel!,
-            latex: step.leftLatex!,
-            isSmall: isSmall,
-            isMedium: isMedium,
-          ),
-          SizedBox(height: isSmall ? 8 : 10),
-          _CasePanel(
-            label: step.rightLabel!,
-            latex: step.rightLatex!,
-            isSmall: isSmall,
-            isMedium: isMedium,
-          ),
-        ],
       );
-    }
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: _CasePanel(
-            label: step.leftLabel!,
-            latex: step.leftLatex!,
-            isSmall: isSmall,
-            isMedium: isMedium,
-          ),
-        ),
-        SizedBox(width: isSmall ? 6 : 10),
-        Expanded(
-          child: _CasePanel(
-            label: step.rightLabel!,
-            latex: step.rightLatex!,
-            isSmall: isSmall,
-            isMedium: isMedium,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _CasePanel extends StatelessWidget {
-  final String label;
-  final String latex;
-  final bool isSmall;
-  final bool isMedium;
-
-  const _CasePanel({
-    required this.label,
-    required this.latex,
-    required this.isSmall,
-    required this.isMedium,
-  });
 
   @override
   Widget build(BuildContext context) {
-    final headerPadding = isSmall
-        ? const EdgeInsets.symmetric(horizontal: 10, vertical: 6)
-        : const EdgeInsets.symmetric(horizontal: 12, vertical: 7);
-    final bodyPadding = isSmall
-        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 10)
-        : const EdgeInsets.symmetric(horizontal: 10, vertical: 14);
-    final fontSize = isSmall ? 12.0 : (isMedium ? 13.0 : 14.0);
-    final labelSize = isSmall ? 10.0 : 11.0;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: SlopeTheme.accentColor.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
-        border: Border.all(
-          color: SlopeTheme.accentColor.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: headerPadding,
-            decoration: BoxDecoration(
-              color: SlopeTheme.accentColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(isSmall ? 8 : 10),
-                topRight: Radius.circular(isSmall ? 8 : 10),
-              ),
-              border: Border(
-                bottom: BorderSide(
-                  color: SlopeTheme.accentColor.withValues(alpha: 0.2),
-                ),
-              ),
-            ),
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: labelSize,
-                fontWeight: FontWeight.w700,
-                color: SlopeTheme.accentColor,
-                letterSpacing: 0.3,
-              ),
-            ),
-          ),
-          Padding(
-            padding: bodyPadding,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SelectableMath.tex(
-                latex,
-                textStyle: TextStyle(
-                  fontSize: fontSize,
-                  color: SlopeTheme.textPrimary(context),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: _buildSteps(),
     );
   }
 }

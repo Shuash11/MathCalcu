@@ -2,6 +2,8 @@
 import 'package:calculus_system/topics/calculus/midterm/solvers/midpoint_solver/midpointsolver.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/midpoint_screen/midpointsteps.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
 
 class MidpointScreen extends StatefulWidget {
@@ -30,7 +32,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
   bool _solved = false;
   bool _hasError = false;
   String _errorMsg = '';
-  bool _showSteps = false;
 
   String _savedAX = '';
   String _savedAY = '';
@@ -61,11 +62,29 @@ class _MidpointScreenState extends State<MidpointScreen> {
       _bXCtrl.clear();
       _bYCtrl.clear();
       _solved = false;
-      _showSteps = false;
     });
   }
 
-  void _toggleSteps() => setState(() => _showSteps = !_showSteps);
+  void _openStepsModal() {
+    if (!_solved || _hasError) return;
+    if (_savedResX == null || _savedResY == null) return;
+    showSolutionStepsModal(
+      context: context,
+      title: _mode == StepMode.midpoint
+          ? 'Midpoint \u2014 Step by Step'
+          : 'Endpoint \u2014 Step by Step',
+      accentColor: FinalsTheme.primary,
+      child: MidpointSteps(
+        mode: _mode,
+        rawAX: _savedAX,
+        rawAY: _savedAY,
+        rawBX: _savedBX,
+        rawBY: _savedBY,
+        resX: _savedResX!,
+        resY: _savedResY!,
+      ),
+    );
+  }
 
   void _onCalculate() {
     final MidpointResult result;
@@ -89,7 +108,6 @@ class _MidpointScreenState extends State<MidpointScreen> {
     setState(() {
       _solved = true;
       _hasError = result.hasError;
-      _showSteps = false;
 
       if (result.hasError) {
         _errorMsg = result.errorMessage ?? 'Calculation error';
@@ -289,20 +307,9 @@ class _MidpointScreenState extends State<MidpointScreen> {
         gradient: MidpointTheme.resultGradient(context),
         borderRadius: BorderRadius.circular(MidpointTheme.radius2xl),
         border: Border.all(
-          color: _showSteps
-              ? MidpointTheme.accent(context)
-              : MidpointTheme.accent30(context),
-          width: _showSteps ? 2 : 1,
+          color: MidpointTheme.accent30(context),
+          width: 1,
         ),
-        boxShadow: _showSteps
-            ? [
-                BoxShadow(
-                  color: MidpointTheme.accent(context).withValues(alpha: 0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ]
-            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,8 +321,33 @@ class _MidpointScreenState extends State<MidpointScreen> {
             children: [
               Text(_resultLabel, style: MidpointTheme.resultLabel(context)),
               GestureDetector(
-                onTap: _toggleSteps,
-                child: _buildShowStepsChip(),
+                onTap: _openStepsModal,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: FinalsTheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: FinalsTheme.primary.withValues(alpha: 0.35),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.receipt_long_rounded,
+                          size: 14, color: FinalsTheme.primary),
+                      SizedBox(width: 4),
+                      Text(
+                        'Show steps',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: FinalsTheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               GestureDetector(
                 onTap: _openGraph,
@@ -325,101 +357,45 @@ class _MidpointScreenState extends State<MidpointScreen> {
           ),
           const SizedBox(height: MidpointTheme.spaceMd),
           Text(
-            '$_resultPrefix = (${_resX ?? '—'}, ${_resY ?? '—'})',
+            '$_resultPrefix = (${_resX ?? '\u2014'}, ${_resY ?? '\u2014'})',
             style: MidpointTheme.resultValue(context),
             softWrap: true,
             overflow: TextOverflow.visible,
           ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-            child: _showSteps
-                ? const SizedBox.shrink()
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: MidpointTheme.spaceLg),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: MidpointTheme.spaceMd),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          borderRadius:
-                              BorderRadius.circular(MidpointTheme.radiusSm),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _formulaX ?? '',
-                              style: MidpointTheme.resultFormula(context),
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _formulaY ?? '',
-                              style: MidpointTheme.resultFormula(context),
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
-          if (_showSteps && _savedResX != null && _savedResY != null) ...[
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              height: 1,
-              margin: const EdgeInsets.only(bottom: 20),
-              color: MidpointTheme.accent(context).withValues(alpha: 0.2),
-            ),
-            MidpointSteps(
-              mode: _mode,
-              rawAX: _savedAX,
-              rawAY: _savedAY,
-              rawBX: _savedBX,
-              rawBY: _savedBY,
-              resX: _savedResX!,
-              resY: _savedResY!,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildShowStepsChip() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: _showSteps
-            ? MidpointTheme.accent(context).withValues(alpha: 0.2)
-            : MidpointTheme.accent(context).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            _showSteps ? 'Hide steps' : 'Show steps',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: MidpointTheme.accent(context),
-            ),
-          ),
-          const SizedBox(width: 4),
-          AnimatedRotation(
-            turns: _showSteps ? 0.5 : 0,
-            duration: const Duration(milliseconds: 200),
-            child: Icon(Icons.keyboard_arrow_down_rounded,
-                color: MidpointTheme.accent(context), size: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: MidpointTheme.spaceLg),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: MidpointTheme.spaceMd),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  borderRadius:
+                      BorderRadius.circular(MidpointTheme.radiusSm),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _formulaX ?? '',
+                      style: MidpointTheme.resultFormula(context),
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _formulaY ?? '',
+                      style: MidpointTheme.resultFormula(context),
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

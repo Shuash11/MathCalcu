@@ -1,4 +1,6 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/radiustheme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'radius_controller.dart';
 import 'radius_action_buttons.dart';
 import 'radius_error_card.dart';
@@ -31,6 +33,16 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
   }
 
   void _onStateChanged() => setState(() {});
+
+  void _openStepsModal() {
+    if (_ctrl.result == null) return;
+    showSolutionStepsModal(
+      context: context,
+      title: 'Radius \u2014 Step by Step',
+      accentColor: FinalsTheme.primary,
+      child: RadiusStepsCard(steps: _ctrl.result!.steps),
+    );
+  }
 
   @override
   void dispose() {
@@ -110,7 +122,36 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
 
               if (_ctrl.result != null) ...[
                 const SizedBox(height: 24),
-                RadiusStepsCard(steps: _ctrl.result!.steps),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _openStepsModal,
+                    icon: const Icon(
+                      Icons.receipt_long_rounded,
+                      size: 14,
+                      color: FinalsTheme.primary,
+                    ),
+                    label: const Text(
+                      'Show Steps',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: FinalsTheme.primary,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: FinalsTheme.primary.withValues(alpha: 0.35),
+                      ),
+                      backgroundColor:
+                          FinalsTheme.primary.withValues(alpha: 0.08),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 RadiusResultCard(
                     formattedRadius: _ctrl.result!.formattedRadius),

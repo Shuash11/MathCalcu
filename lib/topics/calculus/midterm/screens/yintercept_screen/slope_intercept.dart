@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/graph/yintercept_graph/graph.dart';
+import 'package:calculus_system/topics/calculus/midterm/graph/yintercept_graph/graph.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
@@ -234,9 +234,9 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // HEADER SECTION
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildHeaderSection(BuildContext context) {
     return Row(
@@ -321,9 +321,9 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // MODE SWITCHER
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildModeSwitcher(BuildContext context) {
     return Container(
@@ -407,9 +407,9 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // FORMULA BANNER
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildFormulaBanner(BuildContext context) {
     final isSI = mode == InputMode.slopeIntercept;
@@ -492,9 +492,9 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // INPUT FIELD
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildInputField(
     BuildContext context,
@@ -556,9 +556,9 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // ANSWER CARD
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildAnswerCard(BuildContext context, YIResult? result) {
     final emerald = YITheme.emerald(context);
@@ -709,34 +709,10 @@ class YInterceptTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          GestureDetector(
+          _stepsButton(
+            accent: accent,
+            label: 'View Steps',
             onTap: () => onShowSlopeSteps(r),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.16),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: accent.withValues(alpha: 0.35),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.receipt_long_rounded, color: accent, size: 13),
-                  const SizedBox(width: 5),
-                  Text(
-                    'View Steps',
-                    style: YITheme.inputLabelStyle(context).copyWith(
-                      color: accent,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
@@ -754,9 +730,9 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // INTERCEPT TILE (with Show Steps button)
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildInterceptTile(
     BuildContext context,
@@ -805,47 +781,23 @@ class YInterceptTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          GestureDetector(
+          _stepsButton(
+            accent: accent,
+            label: 'Show Steps',
             onTap: onSteps,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.13),
-                borderRadius: BorderRadius.circular(7),
-                border: Border.all(
-                  color: accent.withValues(alpha: 0.32),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.receipt_long_rounded, color: accent, size: 11),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Show Steps',
-                    style: YITheme.inputLabelStyle(context).copyWith(
-                      color: accent,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // FORM TILE (display only)
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // FORM TILE WITH STEPS BUTTON (for Standard and General)
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildFormTileWithSteps(
     BuildContext context,
@@ -900,43 +852,19 @@ class YInterceptTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          GestureDetector(
+          _stepsButton(
+            accent: accent,
+            label: 'Steps',
             onTap: onSteps,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(
-                  color: accent.withValues(alpha: 0.3),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.receipt_long_rounded, color: accent, size: 10),
-                  const SizedBox(width: 3),
-                  Text(
-                    'Steps',
-                    style: YITheme.inputLabelStyle(context).copyWith(
-                      color: accent,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
     );
   }
 
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
   // BADGES
-  // ───────────────────────────────��─────────────────────────
+  // -------------------------------??-------------------------
 
   Widget _buildBadges(BuildContext context, YIResult result) {
     final badges = <String, String>{
@@ -974,9 +902,9 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ──────────────────────────────────────────────────────���──
+  // ------------------------------------------------------???--
   // UTILITIES
-  // ─────────────────────────────────────────────────────────
+  // ---------------------------------------------------------
 
   Widget _buildDivider(BuildContext context) => Container(
         height: 1,
@@ -1001,4 +929,38 @@ class YInterceptTab extends StatelessWidget {
           ),
         ),
       );
+
+  // ---------------------------------------------------------
+  // STEPS BUTTON -- shared across intercept tiles (OutlinedButton.icon)
+  // ---------------------------------------------------------
+
+  Widget _stepsButton({
+    required Color accent,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(Icons.receipt_long_rounded, size: 14, color: accent),
+        label: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: accent,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: accent.withValues(alpha: 0.35)),
+          backgroundColor: accent.withValues(alpha: 0.08),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+    );
+  }
 }
