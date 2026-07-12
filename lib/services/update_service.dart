@@ -112,9 +112,16 @@ class UpdateService {
       final url = 'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
 
       final client = http.Client();
+      try {
         final request = http.Request('GET', Uri.parse(url));
         request.headers['Accept'] = 'application/octet-stream';
-        final response = await client.send(request);
+        final response = await client.send(request).timeout(
+          const Duration(seconds: 30),
+          onTimeout: () {
+            client.close();
+            throw TimeoutException('Connection timed out');
+          },
+        );
 
         if (response.statusCode != 200) {
           return 'Server returned ${response.statusCode}';
@@ -130,7 +137,13 @@ class UpdateService {
         final bytes = <int>[];
         final completer = Completer<String?>();
 
-        response.stream.listen(
+        response.stream.timeout(
+          const Duration(minutes: 5),
+          onTimeout: (sink) {
+            sink.addError(TimeoutException('Download timed out'));
+            sink.close();
+          },
+        ).listen(
           (chunk) {
             bytes.addAll(chunk);
             if (contentLength > 0 && onProgress != null) {
@@ -196,13 +209,23 @@ class UpdateService {
             }
           },
           onError: (e) {
-            completer.complete(e.toString());
+            completer.complete('Download failed: ${e.toString()}');
             client.close();
           },
         );
 
         return await completer.future;
+      } catch (e) {
+        client.close();
+        if (e is TimeoutException) {
+          return 'Download failed: connection timed out. Please check your internet and try again.';
+        }
+        rethrow;
+      }
     } catch (e) {
+      if (e is TimeoutException) {
+        return 'Download failed: connection timed out. Please check your internet and try again.';
+      }
       return e.toString();
     }
   }
