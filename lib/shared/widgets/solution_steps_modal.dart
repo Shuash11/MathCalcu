@@ -57,6 +57,7 @@ class _SolutionStepsModal extends StatelessWidget {
         maxChildSize: 0.95,
         expand: false,
         builder: (_, scrollController) {
+          final bottomInset = MediaQuery.of(context).viewPadding.bottom;
           return Column(
             children: [
               // Drag handle
@@ -122,7 +123,7 @@ class _SolutionStepsModal extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+                  padding: EdgeInsets.fromLTRB(20, 16, 20, 32 + bottomInset),
                   child: child,
                 ),
               ),

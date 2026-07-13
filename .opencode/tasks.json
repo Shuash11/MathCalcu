@@ -1,16 +1,8 @@
 {
   "tasks": [
-    { "id": 1, "description": "Verify shared widgets (solution_steps_modal.dart + solution_step_card.dart) support needed patterns", "status": "done" },
-    { "id": 2, "description": "Convert Slope screen — replace showDialog with showSolutionStepsModal, migrate steps to SolutionStepCard", "status": "done" },
-    { "id": 3, "description": "Convert Y-Intercept screen — replace inline toggle with showSolutionStepsModal", "status": "done" },
-    { "id": 4, "description": "Convert Parallel/Perpendicular screen — replace custom modal with shared showSolutionStepsModal", "status": "done" },
-    { "id": 5, "description": "Convert Point-Slope screen — replace inline toggle with showSolutionStepsModal", "status": "done" },
-    { "id": 6, "description": "Convert Distance screen — replace inline toggle with showSolutionStepsModal", "status": "done" },
-    { "id": 7, "description": "Convert Midpoint screen — wrap existing widget in modal (no design changes)", "status": "done" },
-    { "id": 8, "description": "Convert Circles screens (center-radius, radius, center) — replace inline/text with modal", "status": "done" },
-    { "id": 9, "description": "Unify Substitution steps to SolutionStepCard", "status": "done" },
-    { "id": 10, "description": "Unify Factoring steps to SolutionStepCard", "status": "done" },
-    { "id": 11, "description": "Full verification — flutter analyze + flutter test", "status": "done" }
+    { "id": 1, "description": "Fix solution_steps_modal.dart — add viewPadding.bottom to bottom padding", "status": "done" },
+    { "id": 2, "description": "Verify fix — flutter analyze + flutter test", "status": "done" },
+    { "id": 3, "description": "Readiness audit — dispatch subagent", "status": "done" }
   ],
   "completed": true
 }
