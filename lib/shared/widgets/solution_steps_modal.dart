@@ -21,7 +21,6 @@ Future<void> showSolutionStepsModal({
     backgroundColor: Colors.transparent,
     builder: (_) => _SolutionStepsModal(
       title: title,
-      accentColor: accentColor,
       child: child,
     ),
   );
@@ -29,12 +28,10 @@ Future<void> showSolutionStepsModal({
 
 class _SolutionStepsModal extends StatelessWidget {
   final String title;
-  final Color? accentColor;
   final Widget child;
 
   const _SolutionStepsModal({
     required this.title,
-    this.accentColor,
     required this.child,
   });
 
@@ -44,7 +41,6 @@ class _SolutionStepsModal extends StatelessWidget {
     final bgColor = theme ? const Color(0xFF1E1E2E) : Colors.white;
     final handleColor = theme ? Colors.white24 : Colors.black26;
     final textColor = theme ? Colors.white : const Color(0xFF1E1E2E);
-    final accent = accentColor ?? Colors.amber;
 
     return Container(
       decoration: BoxDecoration(
@@ -79,10 +75,10 @@ class _SolutionStepsModal extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.12),
+                        color: const Color(0xFF2A2A3E),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Icon(Icons.list_alt_rounded, color: accent, size: 16),
+                      child: const Icon(Icons.list_alt_rounded, color: Color(0xFFFFD600), size: 16),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -101,13 +97,13 @@ class _SolutionStepsModal extends StatelessWidget {
                       child: Container(
                         width: 32,
                         height: 32,
-                        decoration: BoxDecoration(
-                          color: accent.withValues(alpha: 0.1),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFFFD600),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.close_rounded,
-                          color: accent,
+                          color: Color(0xFF1E1E2E),
                           size: 18,
                         ),
                       ),

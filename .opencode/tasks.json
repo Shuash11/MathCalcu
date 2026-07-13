@@ -1,8 +1,20 @@
 {
   "tasks": [
-    { "id": 1, "description": "Fix solution_steps_modal.dart — add viewPadding.bottom to bottom padding", "status": "done" },
-    { "id": 2, "description": "Verify fix — flutter analyze + flutter test", "status": "done" },
-    { "id": 3, "description": "Readiness audit — dispatch subagent", "status": "done" }
+    {
+      "id": 1,
+      "description": "Update SolutionStepCard widget — dark circle with white border, 'Step N' label, divider line",
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "description": "Update SolutionStepsModal header — match screenshot styling",
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "description": "Verify all screens compile — flutter analyze + flutter test",
+      "status": "done"
+    }
   ],
   "completed": true
 }
