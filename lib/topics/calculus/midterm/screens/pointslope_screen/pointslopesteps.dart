@@ -141,10 +141,10 @@ class PointSlopeSteps extends StatelessWidget {
     final sep = frac ? r' \cdot x + ' : r'x + ';
     return r'\begin{aligned}'
         'y $y1Sign $y1Abs = $mParaOpen$mSimplified$mParaClose$sep'
-        r'$mParaOpen$mSimplified$mParaClose \cdot ($x1Sign $x1Abs)'
+        '$mParaOpen$mSimplified$mParaClose \\cdot ($x1Sign $x1Abs)'
         r' \\'
         'y $y1Sign $y1Abs = $mParaOpen$mSimplified$mParaClose$sep'
-        r'$mParaOpen$mSimplified$mParaClose \cdot ($x1)'
+        '$mParaOpen$mSimplified$mParaClose \\cdot ($x1)'
         r'\end{aligned}';
   }
 
@@ -164,7 +164,7 @@ class PointSlopeSteps extends StatelessWidget {
     final mulSymbol = mSimplified.contains('/') ? r' \cdot ' : ' ';
     return r'\begin{aligned}'
         'y $y1Sign $y1Abs = $mWithParens$mulSymbol'
-        r'x $sign $absVal'
+        'x $sign $absVal'
         r'\end{aligned}';
   }
 

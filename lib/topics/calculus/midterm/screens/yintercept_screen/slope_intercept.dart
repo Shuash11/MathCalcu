@@ -212,6 +212,7 @@ class YInterceptTab extends StatelessWidget {
                                 );
                               },
                               child: YInterceptGraph(
+                                height: 220,
                                 mText: result.slope != null
                                     ? result.slope!.toDouble().toString()
                                     : '',
