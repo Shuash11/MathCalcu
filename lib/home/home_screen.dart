@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
@@ -73,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                         HomeCard(
                           icon: Icons.school_rounded,
                           label: 'Topics',
-                          accent: FinalsTheme.primary,
+                          accent: AppDesign.app.accent,
                           onTap: () => context.go('/topics'),
                         ),
                         HomeCard(
