@@ -3,6 +3,7 @@ import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/t
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'slope_intercept.dart';
 import 'slope_intercept_steps.dart';
@@ -119,7 +120,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
     showSolutionStepsModal(
       context: context,
       title: cardTitle,
-      accentColor: accentColor,
+      design: AppDesign.calculus,
       child: YInterceptSteps(steps: steps, accentColor: accentColor),
     );
   }

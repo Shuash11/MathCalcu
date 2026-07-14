@@ -4,6 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/theme/distance_theme/dis
 import 'package:calculus_system/topics/calculus/midterm/solvers/distance_solver/distancesolver.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'distancesteps.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +69,7 @@ class _DistancescreenState extends State<Distancescreen>
     showSolutionStepsModal(
       context: context,
       title: 'Distance Formula \u2014 Step by Step',
-      accentColor: FinalsTheme.primary,
+      design: AppDesign.calculus,
       child: DistanceSteps(
         is2D: _is2D,
         x1: _parsedX1,

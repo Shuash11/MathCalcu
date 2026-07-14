@@ -6,6 +6,7 @@ import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/t
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
@@ -98,7 +99,7 @@ class _ParallelPerpendicularScreenState
   void _showSteps(PPResult result) {
     showSolutionStepsModal(
       context: context,
-      accentColor: FinalsTheme.primary,
+      design: AppDesign.calculus,
       child: ParallelPerpendicularSteps(result: result),
     );
   }
@@ -592,7 +593,7 @@ class ParallelPerpendicularSteps extends StatelessWidget {
   }
 
   Widget _buildStepCard(PPSolverStep step) {
-    return SolutionStepCard(
+    return SolutionStepCard(design: AppDesign.calculus,
       stepNumber: step.number,
       title: step.title,
       description: 'Step ${step.number}',

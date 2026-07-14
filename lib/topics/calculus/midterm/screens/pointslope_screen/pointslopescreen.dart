@@ -3,6 +3,7 @@ import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/p
 import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/pointslope_solver/pointslopesolver.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'pointslopesteps.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     showSolutionStepsModal(
       context: context,
       title: 'Point-Slope Solution',
-      accentColor: PSTheme.electricPurple,
+      design: AppDesign.calculus,
       child: PointSlopeSteps(
         m: result.m,
         x1: result.x1,

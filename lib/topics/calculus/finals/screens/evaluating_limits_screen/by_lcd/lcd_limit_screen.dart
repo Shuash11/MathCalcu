@@ -6,6 +6,7 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:flutter/material.dart';
 
 class LCDLimitScreen extends StatefulWidget {
@@ -209,7 +210,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                             onTap: () => showSolutionStepsModal(
                               context: context,
                               title: 'Solution Steps',
-                              accentColor: FinalsTheme.danger,
+                              design: AppDesign.calculus,
                               child: LCDStepsView(steps: _solution!.steps),
                             ),
                           ),

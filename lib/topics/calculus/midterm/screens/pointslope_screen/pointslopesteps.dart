@@ -1,5 +1,6 @@
 ﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -217,25 +218,25 @@ class PointSlopeSteps extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        SolutionStepCard(
+        SolutionStepCard(design: AppDesign.calculus,
           stepNumber: 1,
           title: 'Identify given values',
           description: 'Step 1',
           mathContent: _mathText(context, 'Point:  ($x1, $y1)\nSlope:  m = $m'),
         ),
-        SolutionStepCard(
+        SolutionStepCard(design: AppDesign.calculus,
           stepNumber: 2,
           title: 'Point-Slope formula',
           description: 'Step 2',
           mathContent: _mathLatex(r'y - y_1 = m(x - x_1)'),
         ),
-        SolutionStepCard(
+        SolutionStepCard(design: AppDesign.calculus,
           stepNumber: 3,
           title: 'Substitute values',
           description: 'Step 3',
           mathContent: _mathLatex(step3Latex),
         ),
-        SolutionStepCard(
+        SolutionStepCard(design: AppDesign.calculus,
           stepNumber: 4,
           title: 'Distribute slope (m)',
           description: 'Step 4',
@@ -246,19 +247,19 @@ class PointSlopeSteps extends StatelessWidget {
             rightLatex: step4RightLatex,
           ),
         ),
-        SolutionStepCard(
+        SolutionStepCard(design: AppDesign.calculus,
           stepNumber: 5,
           title: 'Solve for y (Slope-Intercept)',
           description: 'Step 5',
           mathContent: _mathLatex(step5Latex),
         ),
-        SolutionStepCard(
+        SolutionStepCard(design: AppDesign.calculus,
           stepNumber: 6,
           title: 'General Form (Ax + By + C = 0)',
           description: 'Step 6',
           mathContent: _mathLatex(generalForm),
         ),
-        SolutionStepCard(
+        SolutionStepCard(design: AppDesign.calculus,
           stepNumber: 7,
           title: 'Standard Form (Ax + By = C)',
           description: 'Step 7',

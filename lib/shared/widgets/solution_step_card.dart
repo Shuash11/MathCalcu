@@ -1,3 +1,4 @@
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
@@ -12,6 +13,7 @@ class SolutionStepCard extends StatelessWidget {
   final String title;
   final String? description;
   final Widget mathContent;
+  final AppDesign design;
 
   const SolutionStepCard({
     super.key,
@@ -19,6 +21,7 @@ class SolutionStepCard extends StatelessWidget {
     required this.title,
     this.description,
     required this.mathContent,
+    required this.design,
   });
 
   @override
@@ -33,7 +36,7 @@ class SolutionStepCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF312C85),
+              color: design.accent,
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.6),
                 width: 1.5,

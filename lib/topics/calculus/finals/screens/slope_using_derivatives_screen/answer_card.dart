@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 
 class AnswerCard extends StatefulWidget {
@@ -41,7 +42,7 @@ class _AnswerCardState extends State<AnswerCard> {
           showSolutionStepsModal(
             context: context,
             title: widget.solution.problemTitle,
-            accentColor: FinalsTheme.primary,
+            design: AppDesign.calculus,
             child: _SlopeDerivativesSteps(solution: widget.solution),
           );
         },
@@ -253,6 +254,7 @@ class _SlopeDerivativesSteps extends StatelessWidget {
             stepNumber: i + 1,
             title: step.label,
             description: step.hint,
+            design: AppDesign.calculus,
             mathContent: _buildMathContent(step, context),
           );
         }),

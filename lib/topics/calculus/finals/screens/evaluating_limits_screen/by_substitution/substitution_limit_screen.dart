@@ -7,6 +7,7 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:flutter/material.dart';
 
 class SubstitutionLimitScreen extends StatefulWidget {
@@ -185,7 +186,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                             onTap: () => showSolutionStepsModal(
                               context: context,
                               title: 'Solution Steps',
-                              accentColor: FinalsTheme.primary,
+                              design: AppDesign.calculus,
                               child: SubstitutionStepsView(steps: _steps),
                             ),
                             error: _result!.errorMessage,

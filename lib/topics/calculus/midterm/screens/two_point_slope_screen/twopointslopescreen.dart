@@ -6,6 +6,7 @@ import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 
 // ─────────────────────────────────────────────────────────────
 // TWO-POINT SLOPE SCREEN - COMPLETE & FIXED
@@ -61,7 +62,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     showSolutionStepsModal(
       context: context,
       title: 'Solution Steps',
-      accentColor: TwoPointSlopeTheme.primary,
+      design: AppDesign.calculus,
       child: TwoPointSlopeSteps(result: _controller.result!),
     );
   }

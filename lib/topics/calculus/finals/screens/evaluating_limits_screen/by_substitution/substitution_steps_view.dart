@@ -2,6 +2,7 @@
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -20,6 +21,7 @@ class SubstitutionStepsView extends StatelessWidget {
             stepNumber: i + 1,
             title: steps[i].title,
             description: steps[i].explanation,
+            design: AppDesign.calculus,
             mathContent: steps[i].mathExpression == null
                 ? const SizedBox.shrink()
                 : _MathBox(latex: steps[i].mathExpression!),

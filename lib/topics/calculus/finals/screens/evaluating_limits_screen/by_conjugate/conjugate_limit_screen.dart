@@ -1,6 +1,7 @@
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_conjugate/solver_engine.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_conjugate/solution_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'conjugate_answer_card.dart';
 import 'conjugate_input_field.dart';
 import 'conjugate_steps_view.dart';
@@ -228,7 +229,7 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                             onTap: () => showSolutionStepsModal(
                               context: context,
                               title: 'Solution Steps',
-                              accentColor: FinalsTheme.secondary,
+                              design: AppDesign.calculus,
                               child: ConjugateStepsView(steps: _steps),
                             ),
                           ),

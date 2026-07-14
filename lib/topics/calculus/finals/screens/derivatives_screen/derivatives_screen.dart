@@ -6,6 +6,7 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
@@ -92,7 +93,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Derivative Steps',
-      accentColor: FinalsTheme.primary,
+      design: AppDesign.calculus,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -126,6 +127,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                 stepNumber: entry.key + 1,
                 title: step.title,
                 description: step.explanation.split('\n').firstOrNull ?? '',
+                design: AppDesign.calculus,
                 mathContent: Text(
                   step.expression.toString(),
                   style: const TextStyle(color: FinalsTheme.primary),

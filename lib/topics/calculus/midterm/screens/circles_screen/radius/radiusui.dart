@@ -1,6 +1,7 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/radiustheme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'radius_controller.dart';
 import 'radius_action_buttons.dart';
 import 'radius_error_card.dart';
@@ -39,7 +40,7 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Radius \u2014 Step by Step',
-      accentColor: FinalsTheme.primary,
+      design: AppDesign.calculus,
       child: RadiusStepsCard(steps: _ctrl.result!.steps),
     );
   }

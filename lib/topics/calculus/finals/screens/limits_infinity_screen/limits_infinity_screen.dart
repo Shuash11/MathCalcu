@@ -5,6 +5,7 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -113,7 +114,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Solution Steps',
-      accentColor: FinalsTheme.primary,
+      design: AppDesign.calculus,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -141,6 +142,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
               stepNumber: entry.key + 1,
               title: step.description,
               description: step.explanation,
+              design: AppDesign.calculus,
               mathContent: displayExpr != null
                   ? _buildMathDisplay(displayExpr)
                   : const SizedBox.shrink(),

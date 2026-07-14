@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/theme/app_design.dart';
 
 /// Shows a modal bottom sheet containing [child] (typically a steps widget).
 ///
@@ -15,8 +16,8 @@ import 'package:calculus_system/theme/theme_provider.dart';
 Future<void> showSolutionStepsModal({
   required BuildContext context,
   required Widget child,
+  required AppDesign design,
   String title = 'Solution Steps',
-  Color? accentColor,
 }) {
   return showModalBottomSheet(
     context: context,
@@ -25,6 +26,7 @@ Future<void> showSolutionStepsModal({
     builder: (_) => _SolutionStepsModal(
       title: title,
       child: child,
+      design: design,
     ),
   );
 }
@@ -32,10 +34,12 @@ Future<void> showSolutionStepsModal({
 class _SolutionStepsModal extends StatelessWidget {
   final String title;
   final Widget child;
+  final AppDesign design;
 
   const _SolutionStepsModal({
     required this.title,
     required this.child,
+    required this.design,
   });
 
   @override
@@ -78,10 +82,10 @@ class _SolutionStepsModal extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: theme.accentColor,
+                        color: design.accent,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Icon(Icons.list_alt_rounded, color: theme.textPrimary, size: 16),
+                      child: const Icon(Icons.list_alt_rounded, color: Colors.white, size: 16),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -101,12 +105,12 @@ class _SolutionStepsModal extends StatelessWidget {
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: theme.accentColor,
+                          color: design.accent,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.close_rounded,
-                          color: theme.textPrimary,
+                          color: Colors.white,
                           size: 18,
                         ),
                       ),

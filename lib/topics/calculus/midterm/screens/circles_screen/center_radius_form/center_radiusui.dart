@@ -1,6 +1,7 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'center_radius_controller.dart';
 import 'models/field_def.dart';
@@ -50,7 +51,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Circle Equation \u2014 Step by Step',
-      accentColor: FinalsTheme.primary,
+      design: AppDesign.calculus,
       child: SolutionSteps(steps: _controller.steps),
     );
   }

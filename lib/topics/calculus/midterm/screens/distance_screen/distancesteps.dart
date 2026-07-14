@@ -1,5 +1,6 @@
 ﻿import 'dart:math';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -191,7 +192,7 @@ class DistanceSteps extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (int i = 0; i < steps.length; i++)
-          SolutionStepCard(
+          SolutionStepCard(design: AppDesign.calculus,
             stepNumber: i + 1,
             title: steps[i].title,
             mathContent: SingleChildScrollView(

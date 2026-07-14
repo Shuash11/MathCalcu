@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'centercontroller.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/centertheme.dart';
 import 'header_bar.dart';
@@ -50,7 +51,7 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Center \u2014 Step by Step',
-      accentColor: FinalsTheme.primary,
+      design: AppDesign.calculus,
       child: CenterStepsSection(steps: _controller.result!.steps),
     );
   }

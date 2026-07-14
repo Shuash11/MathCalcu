@@ -1,10 +1,8 @@
 {
   "tasks": [
-    { "id": 1, "description": "Update ThemeProvider with dark mode support", "status": "done" },
-    { "id": 2, "description": "Update main.dart for dark mode", "status": "done" },
-    { "id": 3, "description": "Restore dark mode toggle in settings_screen.dart", "status": "done" },
-    { "id": 4, "description": "Audit hardcoded colors in key screens", "status": "done" },
-    { "id": 5, "description": "Run flutter analyze + flutter test", "status": "done" }
+    { "id": 1, "description": "Update SolutionStepCard and SolutionStepsModal with AppDesign parameter", "status": "done" },
+    { "id": 2, "description": "Add design: AppDesign.calculus to all SolutionStepCard call sites (midterm steps files)", "status": "done" },
+    { "id": 3, "description": "Add design: AppDesign.calculus to all showSolutionStepsModal call sites and remove accentColor param", "status": "done" }
   ],
   "completed": true
 }
