@@ -421,8 +421,7 @@ class PSResultBanner extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ] else ...[
-            Text('Enter values above',
-                style: PSTheme.placeholderStyle(context, s)),
+            const SizedBox.shrink(),
           ],
         ],
       ),

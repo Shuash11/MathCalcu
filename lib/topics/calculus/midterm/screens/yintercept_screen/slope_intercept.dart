@@ -630,7 +630,7 @@ class YInterceptTab extends StatelessWidget {
       ),
       child: has
           ? _buildFilledCard(context, result, emerald, amber)
-          : _buildEmptyCard(context),
+          : const SizedBox.shrink(),
     );
   }
 
@@ -743,17 +743,6 @@ class YInterceptTab extends StatelessWidget {
             onTap: () => onShowSlopeSteps(r),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyCard(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Text(
-        'Enter values above to see the solution',
-        style: YITheme.subtitleStyle(context),
-        textAlign: TextAlign.center,
       ),
     );
   }

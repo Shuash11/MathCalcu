@@ -214,7 +214,7 @@ class _ParallelPerpendicularScreenState
                       valueListenable: _resultNotifier,
                       builder: (context, result, _) {
                         if (result == null) {
-                          return const _EmptyState(accent: _cyan);
+                          return const SizedBox.shrink();
                         }
                         return _ResultSection(
                           result: result,
@@ -350,37 +350,6 @@ class _EquationFieldState extends State<_EquationField> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  final Color accent;
-  const _EmptyState({required this.accent});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-      decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: accent.withValues(alpha: 0.12)),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.compare_arrows_rounded,
-              color: accent.withValues(alpha: 0.3), size: 40),
-          const SizedBox(height: 12),
-          ResponsiveText('Enter two equations above',
-              style: YITheme.titleStyle(context).copyWith(
-                  color: YITheme.textSecondary(context), fontSize: 14)),
-          const SizedBox(height: 4),
-          ResponsiveText('Press Solve to see results.',
-              textAlign: TextAlign.center,
-              style: YITheme.subtitleStyle(context).copyWith(fontSize: 12)),
-        ],
-      ),
     );
   }
 }
