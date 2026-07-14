@@ -121,7 +121,7 @@ class Tokenizer {
       } else if (ch == ')') {
         tokens.add(const Token(TokenType.rparen));
         pos++;
-      } else if ('+-*/^'.contains(ch)) {
+      } else if ('+-*/^<>≤≥'.contains(ch)) {
         tokens.add(Token(TokenType.operator, ch));
         pos++;
       } else {

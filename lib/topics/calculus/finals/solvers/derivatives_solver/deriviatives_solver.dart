@@ -318,7 +318,7 @@ class Tokenizer {
         tokens.add(_readNumber(start));
       } else if (_isLetter(char) || char == '√') {
         tokens.add(_readIdent(start));
-      } else if ('+-*/^'.contains(char)) {
+      } else if ('+-*/^<>≤≥'.contains(char)) {
         tokens.add(Token(TokenType.operator, char, start)); _pos++;
       } else if (char == '(') { tokens.add(Token(TokenType.lParen, '(', start)); _pos++; }
       else if (char == ')') { tokens.add(Token(TokenType.rParen, ')', start)); _pos++; }

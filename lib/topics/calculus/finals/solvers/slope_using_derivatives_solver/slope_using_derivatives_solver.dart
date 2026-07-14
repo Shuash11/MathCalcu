@@ -17,7 +17,7 @@ import 'dart:math' as math;
 // TOKENS
 // ═══════════════════════════════════════════════════════════════════
 
-enum TokenType { number, ident, plus, minus, star, slash, caret, lparen, rparen, equals, comma, eof }
+enum TokenType { number, ident, plus, minus, star, slash, caret, operator, lparen, rparen, equals, comma, eof }
 
 class Token {
   final TokenType type; final String value;
@@ -221,6 +221,10 @@ class Tokenizer {
         case '*': tokens.add(const Token(TokenType.star, '*')); pos++; break;
         case '/': tokens.add(const Token(TokenType.slash, '/')); pos++; break;
         case '^': tokens.add(const Token(TokenType.caret, '^')); pos++; break;
+        case '<': tokens.add(const Token(TokenType.operator, '<')); pos++; break;
+        case '>': tokens.add(const Token(TokenType.operator, '>')); pos++; break;
+        case '\u2264': tokens.add(const Token(TokenType.operator, '\u2264')); pos++; break;
+        case '\u2265': tokens.add(const Token(TokenType.operator, '\u2265')); pos++; break;
         case '(': tokens.add(const Token(TokenType.lparen, '(')); pos++; break;
         case ')': tokens.add(const Token(TokenType.rparen, ')')); pos++; break;
         case '=': tokens.add(const Token(TokenType.equals, '=')); pos++; break;

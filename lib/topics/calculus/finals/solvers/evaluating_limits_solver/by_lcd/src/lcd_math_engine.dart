@@ -75,7 +75,7 @@ class Tokenizer {
       } else if (ch == '√' || ch == '\u221A') {
         tokens.add(const Token(TokenType.function, 'sqrt'));
         _pos++;
-      } else if (RegExp(r'[+\-*/^]').hasMatch(ch)) {
+      } else if (RegExp(r'[+\-*/^<>≤≥]').hasMatch(ch)) {
         tokens.add(Token(TokenType.operator, ch));
         _pos++;
       } else {

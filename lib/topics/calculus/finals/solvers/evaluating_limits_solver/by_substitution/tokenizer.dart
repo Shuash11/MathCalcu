@@ -7,6 +7,7 @@ enum TokenType {
   multiply,
   divide,
   power,
+  operator,
   leftParen,
   rightParen,
   sqrt, // sqrt symbol or function
@@ -249,6 +250,10 @@ class _SimpleTokenizer {
       '*' => TokenType.multiply,
       '/' => TokenType.divide,
       '^' => TokenType.power,
+      '<' => TokenType.operator,
+      '>' => TokenType.operator,
+      '\u2264' => TokenType.operator,
+      '\u2265' => TokenType.operator,
       '(' => TokenType.leftParen,
       ')' => TokenType.rightParen,
       _ => null,

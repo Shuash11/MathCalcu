@@ -24,6 +24,7 @@ enum TokenType {
   star,
   slash,
   caret,
+  operator,
   lparen,
   rparen,
   equals,
@@ -109,6 +110,22 @@ class Tokenizer {
           break;
         case ')':
           tokens.add(const Token(TokenType.rparen, ')'));
+          pos++;
+          break;
+        case '<':
+          tokens.add(const Token(TokenType.operator, '<'));
+          pos++;
+          break;
+        case '>':
+          tokens.add(const Token(TokenType.operator, '>'));
+          pos++;
+          break;
+        case '\u2264':
+          tokens.add(const Token(TokenType.operator, '\u2264'));
+          pos++;
+          break;
+        case '\u2265':
+          tokens.add(const Token(TokenType.operator, '\u2265'));
           pos++;
           break;
         case '=':
