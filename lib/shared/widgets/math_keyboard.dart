@@ -94,6 +94,7 @@ class _MathKeyboardState extends State<MathKeyboard> {
 
   Widget _key(String label, {Color? bg, double? fontSize}) {
     final theme = context.watch<ThemeProvider>();
+    final isBackspace = label == '?';
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(2.5),
@@ -102,20 +103,24 @@ class _MathKeyboardState extends State<MathKeyboard> {
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
-            onTap: () => label == '?' ? _backspace() : _insert(label),
+            onTap: () => isBackspace ? _backspace() : _insert(label),
             child: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: fontSize ?? 17,
-                  fontWeight: FontWeight.w500,
-                  color: label == '?'
-                      ? widget.accentColor
-                      : theme.textPrimary,
-                ),
-              ),
+              child: isBackspace
+                  ? Icon(
+                      Icons.backspace_outlined,
+                      size: 20,
+                      color: widget.accentColor,
+                    )
+                  : Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: fontSize ?? 17,
+                        fontWeight: FontWeight.w500,
+                        color: theme.textPrimary,
+                      ),
+                    ),
             ),
           ),
         ),
@@ -127,7 +132,7 @@ class _MathKeyboardState extends State<MathKeyboard> {
     return Row(
       children: labels
           .map((l) => l == '?'
-              ? _key(l, bg: widget.accentColor.withValues(alpha: 0.1))
+              ? _key(l, bg: widget.accentColor.withValues(alpha: 0.15))
               : _key(l))
           .toList(),
     );
