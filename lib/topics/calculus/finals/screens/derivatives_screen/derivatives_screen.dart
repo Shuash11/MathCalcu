@@ -1,4 +1,4 @@
-﻿import 'derivatives_answer_card.dart';
+import 'derivatives_answer_card.dart';
 import 'derivatives_input_field.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/deriviatives_solver.dart';
@@ -7,6 +7,7 @@ import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class DerivativeScreen extends StatefulWidget {
   const DerivativeScreen({super.key});
@@ -107,8 +108,8 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                   const Icon(Icons.check_circle_outline_rounded, color: FinalsTheme.primary, size: 24),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      'Direct computation. No step-by-step breakdown needed for this expression.',
+                    child: ResponsiveText(
+          '',
                       style: FinalsTheme.subtitleStyle(context),
                     ),
                   ),

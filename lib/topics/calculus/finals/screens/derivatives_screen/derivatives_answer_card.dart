@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -111,8 +112,8 @@ class DerivativeAnswerCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'f(x) = ',
+                  ResponsiveText(
+          '',
                     style: FinalsTheme.subtitleStyle(context),
                   ),
                   Flexible(
@@ -153,8 +154,8 @@ class DerivativeAnswerCard extends StatelessWidget {
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  'Tap to view step-by-step solution',
+                child: ResponsiveText(
+          '',
                   style: FinalsTheme.labelStyle(context).copyWith(
                     fontSize: 9,
                     letterSpacing: 0.5,

@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
@@ -47,26 +48,26 @@ class LimitsMathDisplay extends StatelessWidget {
 
   String _parseLatex(String text) {
     return text
-        .replaceAll('∞', '\\infty')
-        .replaceAll('→', '\\rightarrow')
+        .replaceAll('8', '\\infty')
+        .replaceAll('?', '\\rightarrow')
         .replaceAll('?', '\\cdot')
         .replaceAll('??', '\\sum')
         .replaceAll('??', '\\int')
-        .replaceAll('√', '\\sqrt')
-        .replaceAll('±', '\\pm')
-        .replaceAll('≠?', '\\neq')
-        .replaceAll('≠?', '\\leq')
-        .replaceAll('≠?', '\\geq')
+        .replaceAll('v', '\\sqrt')
+        .replaceAll('�', '\\pm')
+        .replaceAll('??', '\\neq')
+        .replaceAll('??', '\\leq')
+        .replaceAll('??', '\\geq')
         .replaceAll('?', '^2')
-        .replaceAll('³', '^3')
-        .replaceAll('⁴', '^4')
-        .replaceAll('⁵', '^5')
-        .replaceAll('⁶', '^6')
-        .replaceAll('⁷', '^7')
-        .replaceAll('⁸', '^8')
-        .replaceAll('⁹', '^9')
-        .replaceAll('⁰', '^0')
-        .replaceAll('¹', '^1');
+        .replaceAll('�', '^3')
+        .replaceAll('4', '^4')
+        .replaceAll('5', '^5')
+        .replaceAll('6', '^6')
+        .replaceAll('7', '^7')
+        .replaceAll('8', '^8')
+        .replaceAll('?', '^9')
+        .replaceAll('�', '^0')
+        .replaceAll('�', '^1');
   }
 }
 
@@ -227,11 +228,11 @@ class LimitsSolutionStep extends StatelessWidget {
 
   String _formatText(String text) {
     return text
-        .replaceAll('\\frac{', '⟪')
-        .replaceAll('}', '⟫')
-        .replaceAll('\\infty', '∞')
+        .replaceAll('\\frac{', '?')
+        .replaceAll('}', '?')
+        .replaceAll('\\infty', '8')
         .replaceAll('\\lim', 'lim')
-        .replaceAll('\\rightarrow', '→')
+        .replaceAll('\\rightarrow', '?')
         .replaceAll('\\cdot', '?');
   }
 }

@@ -3,6 +3,7 @@ import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/p
 import 'package:calculus_system/topics/calculus/midterm/solvers/pointslope_solver/pointslopesolver.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'pointslopesteps.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'pointslopesubwidget.dart';
@@ -364,7 +365,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
             ),
           ),
           const SizedBox(width: 12),
-          Text('Back', style: PSTheme.subtitleStyle(context)),
+          ResponsiveText('Back', style: PSTheme.subtitleStyle(context)),
         ],
       ),
     );

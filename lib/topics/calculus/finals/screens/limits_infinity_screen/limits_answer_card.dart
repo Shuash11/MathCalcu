@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
 class LimitsAnswerCard extends StatelessWidget {
@@ -115,8 +116,8 @@ class LimitsAnswerCard extends StatelessWidget {
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  'Tap to view step-by-step solution',
+                child: ResponsiveText(
+          '',
                   style: FinalsTheme.labelStyle(context).copyWith(
                     fontSize: 9,
                     letterSpacing: 0.5,

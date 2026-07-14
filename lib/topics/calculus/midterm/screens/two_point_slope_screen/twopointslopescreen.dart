@@ -2,6 +2,7 @@
 import 'two_point_slope_controller.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/two_point_slope_graph/two_point_slope_graph.dart';
 import 'two_point_slope_steps.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
@@ -150,7 +151,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   'Two-Point Slope',
                   style: TwoPointSlopeTheme.headingStyle(context),
                 ),
@@ -173,7 +174,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Section label
-            Text('ENTER COORDINATES',
+            ResponsiveText('ENTER COORDINATES',
                 style: TwoPointSlopeTheme.labelStyle(context)),
             const SizedBox(height: 20),
 
@@ -455,7 +456,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          ResponsiveText(
             'Show steps',
             style: TextStyle(
               fontSize: 11,
@@ -486,7 +487,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
           Icon(Icons.show_chart_rounded,
               color: TwoPointSlopeTheme.stepGreen, size: 14),
           const SizedBox(width: 4),
-          Text(
+          ResponsiveText(
             _showGraph ? 'Hide graph' : 'Show graph',
             style: TextStyle(
               fontSize: 11,
@@ -518,7 +519,7 @@ class _PointLabel extends StatelessWidget {
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 8),
-          Text(
+          ResponsiveText(
             label,
             style: TextStyle(
               fontSize: 13,
@@ -613,19 +614,19 @@ class _SolveButtonState extends State<_SolveButton> {
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.calculate_rounded, color: Colors.white, size: 18),
-                  SizedBox(width: 8),
-                  Text(
-                    'Solve',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ],
+                    children: [
+                      Icon(Icons.calculate_rounded, color: Colors.white, size: 18),
+                      SizedBox(width: 8),
+                      ResponsiveText(
+                        'Solve',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ],
               ),
             ),
           ),
@@ -663,7 +664,7 @@ class _EquationTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
+              ResponsiveText(
                 label,
                 style: TextStyle(
                   fontSize: 11,
@@ -694,7 +695,7 @@ class _EquationTile extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
+          ResponsiveText(
             equation,
             style: TextStyle(
               fontFamily: 'monospace',
@@ -740,7 +741,7 @@ class _ResultTile extends StatelessWidget {
               children: [
                 Icon(icon, size: 14, color: color.withValues(alpha: 0.7)),
                 const SizedBox(width: 6),
-                Text(
+                ResponsiveText(
                   label,
                   style: TextStyle(
                     fontSize: 11,
@@ -752,7 +753,7 @@ class _ResultTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(
+            ResponsiveText(
               value,
               style: TextStyle(
                 fontFamily: 'monospace',

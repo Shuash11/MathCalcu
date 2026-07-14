@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
@@ -18,7 +19,7 @@ class StepItemWidget extends StatelessWidget {
     final hasVariables = RegExp(r'[x-yt]').hasMatch(line);
     final hasNumbers = RegExp(r'[0-9]').hasMatch(line);
     
-    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('→'))) return true;
+    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('?'))) return true;
     if (hasNumbers && mathPattern.hasMatch(line) && line.contains('=')) return true;
 
     return false;
@@ -315,8 +316,8 @@ class StepItemWidget extends StatelessWidget {
             const Row(children: [
               Icon(Icons.check_circle, color: FinalsTheme.primary, size: 18),
               SizedBox(width: 8),
-              Text(
-                'FINAL FORM', 
+              ResponsiveText(
+          '', 
                 style: TextStyle(
                   color: FinalsTheme.primary, 
                   fontWeight: FontWeight.w900, 

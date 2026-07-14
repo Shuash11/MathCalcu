@@ -1,4 +1,5 @@
 ﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -63,7 +64,7 @@ class LCDAnswerCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      ResponsiveText(
                         'FINAL ANSWER',
                         style: FinalsTheme.labelStyle(context).copyWith(
                           color: accentColor,
@@ -71,7 +72,7 @@ class LCDAnswerCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      ResponsiveText(
                         method,
                         style: FinalsTheme.subtitleStyle(context).copyWith(
                           fontWeight: FontWeight.w700,
@@ -100,7 +101,7 @@ class LCDAnswerCard extends StatelessWidget {
                         children: [
                           Icon(Icons.expand_more_rounded, size: 16, color: accentColor.withValues(alpha: 0.5)),
                           const SizedBox(width: 8),
-                          Text(
+                          ResponsiveText(
                             'TAP TO REVEAL SOLUTIONS',
                             style: TextStyle(
                               fontSize: 10,
@@ -198,7 +199,7 @@ class _ValueDisplay extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
+                ResponsiveText(
                   '≠ˆ ${parts[1].trim()}',
                   style: TextStyle(
                     fontSize: 18,
@@ -249,7 +250,7 @@ class _ValueDisplay extends StatelessWidget {
                       ),
                     ),
                   )
-                : Text(
+                : ResponsiveText(
                     fractionalAnswer!,
                     style: TextStyle(
                       fontSize: 24,
@@ -365,7 +366,7 @@ class _ValueDisplay extends StatelessWidget {
                   ),
                 ),
               )
-            : Text(
+            : ResponsiveText(
                 displayVal,
                 style: TextStyle(
                   fontSize: 24,

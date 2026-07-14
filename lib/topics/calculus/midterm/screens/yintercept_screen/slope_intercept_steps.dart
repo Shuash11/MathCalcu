@@ -1,6 +1,7 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -201,7 +202,7 @@ class _ExplanationText extends StatelessWidget {
     final color = Theme.of(context).brightness == Brightness.dark
         ? Colors.white.withValues(alpha: 0.5)
         : Colors.black.withValues(alpha: 0.5);
-    return Text(
+    return ResponsiveText(
       text,
       style: TextStyle(
         fontSize: 11.5,
@@ -243,7 +244,7 @@ class _SubStepLine extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (subStep.label.isNotEmpty)
-                  Text(
+                  ResponsiveText(
                     subStep.label,
                     style: TextStyle(
                       fontSize: 10.5,
@@ -298,7 +299,7 @@ class _DualPanel extends StatelessWidget {
                 topRight: Radius.circular(12),
               ),
             ),
-            child: Text(
+            child: ResponsiveText(
               label,
               textAlign: TextAlign.center,
               style: TextStyle(

@@ -2,6 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 import 'calculator_engine.dart';
 
@@ -62,7 +63,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: ResponsiveText(
           'Calculator',
           style: TextStyle(
             fontWeight: FontWeight.w700,
@@ -94,29 +95,25 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       if (_history.isNotEmpty)
-                        Text(
+                        ResponsiveText(
                           _history,
                           style: TextStyle(
                             fontSize: 16,
                             color: theme.textSecondary,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       const SizedBox(height: 8),
-                      Text(
+                      ResponsiveText(
                         _expression.isEmpty ? '0' : _expression,
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w600,
                           color: theme.textPrimary,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       if (_showResult) ...[
                         const SizedBox(height: 8),
-                        Text(
+                        ResponsiveText(
                           '= $_result',
                           style: TextStyle(
                             fontSize: 24,

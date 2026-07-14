@@ -99,83 +99,109 @@ abstract class MidpointTheme {
   static const double space6xl = 40.0;
 
   // Typography
-  static TextStyle headerTitle(BuildContext context) => TextStyle(
+  static TextStyle headerTitle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.w700,
         color: text(context),
         letterSpacing: -0.5,
       );
 
-  static TextStyle headerSubtitle(BuildContext context) => TextStyle(
+  static TextStyle headerSubtitle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 12,
         color: accent70(context),
       );
 
-  static TextStyle inputLabel(BuildContext context) => TextStyle(
+  static TextStyle inputLabel(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w600,
         color: text40(context),
         letterSpacing: 0.8,
       );
 
-  static TextStyle inputText(BuildContext context) => TextStyle(
+  static TextStyle inputText(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: text(context),
       );
 
-  static TextStyle inputHint(BuildContext context) => TextStyle(
+  static TextStyle inputHint(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         color: text20(context),
         fontSize: 18,
       );
 
-  static TextStyle modeButtonActive(BuildContext context) => TextStyle(
+  static TextStyle modeButtonActive(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w600,
         color: surface(context),
       );
 
-  static TextStyle modeButtonInactive(BuildContext context) => TextStyle(
+  static TextStyle modeButtonInactive(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w600,
         color: text30(context),
       );
 
-  static TextStyle formulaText(BuildContext context) => TextStyle(
+  static TextStyle formulaText(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         color: text50(context),
         fontWeight: FontWeight.w500,
       );
 
-  static TextStyle pointLabel(BuildContext context) => TextStyle(
+  static TextStyle pointLabel(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w700,
         color: accent50(context),
         letterSpacing: 1.2,
       );
 
-  static TextStyle resultLabel(BuildContext context) => TextStyle(
+  static TextStyle resultLabel(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w700,
         color: accent50(context),
         letterSpacing: 1.4,
       );
 
-  static TextStyle resultValue(BuildContext context) => TextStyle(
+  static TextStyle resultValue(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 36,
         fontWeight: FontWeight.w700,
         color: text(context),
         letterSpacing: -1.0,
       );
 
-  static TextStyle resultFormula(BuildContext context) => TextStyle(
+  static TextStyle resultFormula(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 12,
         color: text50(context),
         fontWeight: FontWeight.w500,
         height: 1.4,
       );
 
-  static TextStyle calculateButton(BuildContext context) => TextStyle(
+  static TextStyle calculateButton(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w700,
         color: surface(context),

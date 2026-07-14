@@ -1,10 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/models/developer.dart';
 import 'package:calculus_system/widgets/developer_tile.dart';
 
-// ── Public entry point ────────────────────────────────────────────────────────
+// -- Public entry point --------------------------------------------------------
 
 void showAboutSheet(BuildContext context) {
   showModalBottomSheet(
@@ -15,7 +16,7 @@ void showAboutSheet(BuildContext context) {
   );
 }
 
-// ── Sheet widget ──────────────────────────────────────────────────────────────
+// -- Sheet widget --------------------------------------------------------------
 
 class _AboutSheet extends StatelessWidget {
   const _AboutSheet();

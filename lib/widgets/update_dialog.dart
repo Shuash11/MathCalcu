@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/services/update_service.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -214,7 +215,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
       );
     }
 
-    // Initial state — simple "Update available" with Update/Later
+    // Initial state � simple "Update available" with Update/Later
     return AlertDialog(
       backgroundColor: theme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),

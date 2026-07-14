@@ -5,6 +5,7 @@ import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
 
@@ -231,11 +232,11 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   'Substitution',
                   style: FinalsTheme.titleStyle(context).copyWith(fontSize: 24),
                 ),
-                Text(
+                ResponsiveText(
                   'Evaluating Limits',
                   style: FinalsTheme.subtitleStyle(context),
                 ),
@@ -254,7 +255,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
               children: [
                 Icon(Icons.swap_horiz_rounded, size: 14, color: FinalsTheme.primary),
                 SizedBox(width: 6),
-                Text(
+                ResponsiveText(
                   'BY SUBSTITUTION',
                   style: TextStyle(
                     color: FinalsTheme.primary,

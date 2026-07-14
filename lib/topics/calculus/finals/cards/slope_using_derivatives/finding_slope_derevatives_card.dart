@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_module_registry.dart';
 import 'package:go_router/go_router.dart';
@@ -82,7 +83,7 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                   borderRadius: BorderRadius.circular(22 * s),
                   child: Stack(
                     children: [
-                      // ✨ Bottom-right glow accent
+                      // ? Bottom-right glow accent
                       Positioned(
                         bottom: -30 * s,
                         right: -30 * s,
@@ -104,13 +105,13 @@ class _FinalsSlopeDerivativeCardState extends State<FinalsSlopeDerivativeCard> {
                         ),
                       ),
 
-                      // 🔥 Content
+                      // ?? Content
                       Padding(
                         padding: EdgeInsets.all(20 * s),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // 🌅 LEFT ICON BOX
+                            // ?? LEFT ICON BOX
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
                               width: 60 * s,

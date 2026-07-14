@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 /// A full-screen page that displays a graph widget, formula, and key info.
 ///

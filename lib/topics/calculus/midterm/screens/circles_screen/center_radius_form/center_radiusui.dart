@@ -1,6 +1,7 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'center_radius_controller.dart';
 import 'models/field_def.dart';
 import 'input_card.dart';
@@ -80,7 +81,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                             size: 14,
                             color: FinalsTheme.primary,
                           ),
-                          label: const Text(
+                          label: const ResponsiveText(
                             'Show Steps',
                             style: TextStyle(
                               fontSize: 12,
@@ -157,7 +158,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              const ResponsiveText(
                 'Circle Equations',
                 style: TextStyle(
                   fontSize: 20,
@@ -165,7 +166,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                   color: FindingCenterRadiusTheme.textPrimary,
                 ),
               ),
-              Text(
+              ResponsiveText(
                 'Step-by-step solution',
                 style: TextStyle(
                   fontSize: 12,
@@ -209,7 +210,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                       : null,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(
+                child: ResponsiveText(
                   labels[i],
                   textAlign: TextAlign.center,
                   style: TextStyle(

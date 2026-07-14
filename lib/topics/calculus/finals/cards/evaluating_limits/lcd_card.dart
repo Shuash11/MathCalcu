@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,7 @@ class _LCDCardState extends State<LCDCard> {
               borderRadius: BorderRadius.circular(20),
               child: Stack(
                 children: [
-                  // ── Dynamic background glow
+                  // -- Dynamic background glow
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 380),
                     curve: Curves.easeOut,
@@ -91,12 +92,12 @@ class _LCDCardState extends State<LCDCard> {
                     ),
                   ),
 
-                  // ── Content
+                  // -- Content
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                     child: Row(
                       children: [
-                        // ── Icon Box
+                        // -- Icon Box
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 220),
                           width: 52,
@@ -136,7 +137,7 @@ class _LCDCardState extends State<LCDCard> {
 
                         const SizedBox(width: 18),
 
-                        // ── Text
+                        // -- Text
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +169,7 @@ class _LCDCardState extends State<LCDCard> {
                           ),
                         ),
 
-                        // ── Arrow
+                        // -- Arrow
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered

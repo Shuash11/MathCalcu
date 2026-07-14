@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/solvers/limits_infinity_solver/limits_infinity_solver.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/limits_infinity_solver/limits_infinity_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_answer_card.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_input_field.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
@@ -6,6 +6,7 @@ import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
 class LimitsInfinityScreen extends StatefulWidget {
@@ -123,8 +124,8 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
               color: FinalsTheme.cardSecondary(context),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Text(
-              'Method: ${_solution!.methodUsed}',
+            child: ResponsiveText(
+          '',
               style: FinalsTheme.subtitleStyle(context).copyWith(
                 fontWeight: FontWeight.w600,
                 color: FinalsTheme.primary,
@@ -157,13 +158,13 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
             ),
             child: Column(
               children: [
-                Text(
-                  'Final Conclusion',
+                ResponsiveText(
+          '',
                   style: FinalsTheme.labelStyle(context),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  'The limit is ${_solution!.resultString}',
+                ResponsiveText(
+          '',
                   textAlign: TextAlign.center,
                   style: FinalsTheme.titleStyle(context)
                       .copyWith(fontSize: 18),
@@ -252,14 +253,14 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                     //   ),
                     // ),
                     // const SizedBox(height: 16),
-                    Text(
-                      'Infinity & Beyond',
+                    ResponsiveText(
+          '',
                       style: FinalsTheme.titleStyle(context)
                           .copyWith(fontSize: 32, height: 1.1),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Solve limits approaching finite values or infinity with step-by-step algebraic breakdowns.',
+                    ResponsiveText(
+          '',
                       style: FinalsTheme.subtitleStyle(context)
                           .copyWith(fontSize: 15),
                     ),
@@ -310,7 +311,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                 sliver: SliverToBoxAdapter(
                   child: LimitsAnswerCard(
                     problemNotation:
-                        'lim($_variable → ${_approachController.text}) ${_exprController.text}',
+                        'lim($_variable ? ${_approachController.text}) ${_exprController.text}',
                     resultString: '',
                     hasError: true,
                     errorMessage: _error,

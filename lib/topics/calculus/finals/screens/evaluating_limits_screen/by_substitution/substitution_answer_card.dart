@@ -1,4 +1,5 @@
 ﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 
 class SubstitutionAnswerCard extends StatelessWidget {
@@ -60,7 +61,7 @@ class SubstitutionAnswerCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      ResponsiveText(
                         'FINAL ANSWER',
                         style: FinalsTheme.labelStyle(context).copyWith(
                           color: accentColor,
@@ -68,7 +69,7 @@ class SubstitutionAnswerCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      ResponsiveText(
                         method,
                         style: FinalsTheme.subtitleStyle(context).copyWith(
                           fontWeight: FontWeight.w700,
@@ -97,7 +98,7 @@ class SubstitutionAnswerCard extends StatelessWidget {
                         children: [
                           Icon(Icons.expand_more_rounded, size: 16, color: accentColor.withValues(alpha: 0.5)),
                           const SizedBox(width: 8),
-                          Text(
+                          ResponsiveText(
                             'TAP TO REVEAL SOLUTIONS',
                             style: TextStyle(
                               fontSize: 10,

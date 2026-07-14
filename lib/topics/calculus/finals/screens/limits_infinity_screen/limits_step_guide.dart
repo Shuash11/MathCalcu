@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
@@ -168,29 +169,29 @@ class LimitsStepGuide extends StatelessWidget {
 
   String _formatText(String text) {
     return text
-        .replaceAll('\\infty', '∞')
+        .replaceAll('\\infty', '8')
         .replaceAll('\\lim', 'lim')
-        .replaceAll('\\rightarrow', '→')
+        .replaceAll('\\rightarrow', '?')
         .replaceAll('\\cdot', '?')
         .replaceAll('x^2', 'x?')
-        .replaceAll('x^3', 'x³')
-        .replaceAll('x^4', 'x⁴')
+        .replaceAll('x^3', 'x�')
+        .replaceAll('x^4', 'x4')
         .replaceAllMapped(
             RegExp(r'(\d+)\^(\d+)'), (m) => '${m[1]}${_superscript(m[2]!)}');
   }
 
   String _superscript(String num) {
     const superscripts = {
-      '0': '⁰',
-      '1': '¹',
+      '0': '�',
+      '1': '�',
       '2': '?',
-      '3': '³',
-      '4': '⁴',
-      '5': '⁵',
-      '6': '⁶',
-      '7': '⁷',
-      '8': '⁸',
-      '9': '⁹'
+      '3': '�',
+      '4': '4',
+      '5': '5',
+      '6': '6',
+      '7': '7',
+      '8': '8',
+      '9': '?'
     };
     return num.split('').map((c) => superscripts[c] ?? c).join('');
   }

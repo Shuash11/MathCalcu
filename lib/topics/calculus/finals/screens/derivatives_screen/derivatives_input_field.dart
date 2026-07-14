@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class DerivativeInputField extends StatelessWidget {
   final TextEditingController controller;
@@ -51,8 +52,8 @@ class DerivativeInputField extends StatelessWidget {
                     color: FinalsTheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    'd/d$currentVariable',
+                  child: ResponsiveText(
+          '',
                     style: FinalsTheme.labelStyle(context).copyWith(
                       color: FinalsTheme.primary,
                       fontSize: 12,
@@ -72,7 +73,7 @@ class DerivativeInputField extends StatelessWidget {
                     fontSize: 16,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'e.g. x² + 3x + ln(x)',
+                    hintText: 'e.g. x� + 3x + ln(x)',
                     hintStyle:
                         FinalsTheme.subtitleStyle(context).copyWith(
                       color:
@@ -134,8 +135,8 @@ class DerivativeInputField extends StatelessWidget {
           children: variables.map((v) {
             final isSelected = v == currentVariable;
             return ListTile(
-              title: Text(
-                'd/d$v',
+              title: ResponsiveText(
+          '',
                 style: FinalsTheme.titleStyle(ctx).copyWith(
                   color: isSelected ? FinalsTheme.primary : null,
                 ),

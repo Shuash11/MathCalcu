@@ -2,6 +2,7 @@
 
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -69,7 +70,7 @@ class _FormattedStepText extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
             onErrorFallback: (err) {
-              return Text(
+              return ResponsiveText(
                 part,
                 style: TextStyle(
                   fontFamily: 'monospace',
@@ -138,7 +139,7 @@ class _InlineMathText extends StatelessWidget {
                 color: FinalsTheme.textPrimary(context),
               ),
               onErrorFallback: (err) {
-                return Text(
+                return ResponsiveText(
                   part,
                   style: TextStyle(
                     fontFamily: 'monospace',

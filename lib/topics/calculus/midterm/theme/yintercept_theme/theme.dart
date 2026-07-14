@@ -53,14 +53,18 @@ class YITheme {
       );
 
   // ── Text styles ────────────────────────────────────────
-  static TextStyle titleStyle(BuildContext context) => TextStyle(
+  static TextStyle titleStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,
         color: textPrimary(context),
         letterSpacing: -0.5,
       );
 
-  static TextStyle subtitleStyle(BuildContext context) => TextStyle(
+  static TextStyle subtitleStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         color: isLight(context)
             ? emerald(context).withValues(alpha: 0.8)
@@ -68,7 +72,9 @@ class YITheme {
         height: 1.3,
       );
 
-  static TextStyle inputLabelStyle(BuildContext context) => TextStyle(
+  static TextStyle inputLabelStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.w600,
         color: isLight(context)
@@ -77,34 +83,44 @@ class YITheme {
         letterSpacing: 1.2,
       );
 
-  static TextStyle inputVarStyle(BuildContext context) => TextStyle(
+  static TextStyle inputVarStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w700,
         color: isLight(context) ? emerald(context) : mint(context),
       );
 
-  static TextStyle inputTextStyle(BuildContext context) => TextStyle(
+  static TextStyle inputTextStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w500,
         color: textPrimary(context),
         fontFamily: 'monospace',
       );
 
-  static TextStyle formulaStyle(BuildContext context) => TextStyle(
+  static TextStyle formulaStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
         color: textPrimary(context),
         fontFamily: 'monospace',
       );
 
-  static TextStyle resultEquationStyle(BuildContext context) => TextStyle(
+  static TextStyle resultEquationStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,
         color: isLight(context) ? emerald(context) : mint(context),
         fontFamily: 'monospace',
       );
 
-  static TextStyle badgeKeyStyle(BuildContext context) => TextStyle(
+  static TextStyle badgeKeyStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w600,
         color: isLight(context)
@@ -112,7 +128,9 @@ class YITheme {
             : mint(context).withValues(alpha: 0.5),
       );
 
-  static TextStyle badgeValueStyle(BuildContext context) => TextStyle(
+  static TextStyle badgeValueStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w600,
         color: textPrimary(context),

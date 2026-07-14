@@ -1,12 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // FINALS ABOUT SHEET
 //
 // Different visualization from the main AboutSheet.
 // Uses same developer data but with Finals gold/amber theme.
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _Developer {
   final String name;
@@ -134,7 +135,7 @@ class _FinalsAboutSheet extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // ── Gold drag handle ─────────────────────────────
+                  // -- Gold drag handle -----------------------------
                   Padding(
                     padding: EdgeInsets.only(top: 16 * s, bottom: 8 * s),
                     child: Container(
@@ -147,7 +148,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                     ),
                   ),
 
-                  // ── Header with flame icon ──────────────────────
+                  // -- Header with flame icon ----------------------
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 28 * s, vertical: 16 * s),
                     child: Row(
@@ -205,13 +206,13 @@ class _FinalsAboutSheet extends StatelessWidget {
                     ),
                   ),
 
-                  // ── Scrollable content ──────────────────────────
+                  // -- Scrollable content --------------------------
                   Expanded(
                     child: ListView(
                       controller: scrollController,
                       padding: EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
                       children: [
-                        // ── Description card ────────────────────────
+                        // -- Description card ------------------------
                         Container(
                           padding: EdgeInsets.all(20 * s),
                           decoration: BoxDecoration(
@@ -264,7 +265,7 @@ class _FinalsAboutSheet extends StatelessWidget {
 
                         SizedBox(height: 24 * s),
 
-                        // ── Section divider ─────────────────────────
+                        // -- Section divider -------------------------
                         Row(
                           children: [
                             Expanded(
@@ -320,7 +321,7 @@ class _FinalsAboutSheet extends StatelessWidget {
 
                         SizedBox(height: 20 * s),
 
-                        // ── Developer grid cards ────────────────────
+                        // -- Developer grid cards --------------------
                         ..._developers.asMap().entries.map(
                               (e) => _FinalsDeveloperCard(
                                 developer: e.value,
@@ -341,7 +342,7 @@ class _FinalsAboutSheet extends StatelessWidget {
   }
 }
 
-// ── Developer card with Finals styling ───────────────────────────────────────
+// -- Developer card with Finals styling ---------------------------------------
 
 class _FinalsDeveloperCard extends StatefulWidget {
   final _Developer developer;
@@ -415,7 +416,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
             borderRadius: BorderRadius.circular(24 * s),
             child: Column(
               children: [
-                // ── Top accent bar ──────────────────────────
+                // -- Top accent bar --------------------------
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   height: _expanded ? 4 * s : 3 * s,
@@ -429,7 +430,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                   ),
                 ),
 
-                // ── Main content ────────────────────────────
+                // -- Main content ----------------------------
                 Padding(
                   padding: EdgeInsets.all(20 * s),
                   child: Row(
@@ -554,7 +555,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                   ),
                 ),
 
-                // ── Expanded details ────────────────────────
+                // -- Expanded details ------------------------
                 AnimatedCrossFade(
                   firstChild: const SizedBox.shrink(),
                   secondChild: Padding(
@@ -626,7 +627,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
   }
 }
 
-// ── Detail item widget ───────────────────────────────────────────────────────
+// -- Detail item widget -------------------------------------------------------
 
 class _DetailItem extends StatelessWidget {
   final IconData icon;

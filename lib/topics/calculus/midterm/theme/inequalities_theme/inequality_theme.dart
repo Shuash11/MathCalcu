@@ -31,14 +31,18 @@ class InequalityTheme {
     'absolute': Color(0xFFC4BCFF),
   };
 
-  static TextStyle titleStyle(BuildContext context) => TextStyle(
+  static TextStyle titleStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.w800,
         color: text(context),
         letterSpacing: -0.8,
       );
 
-  static TextStyle subtitleStyle(BuildContext context) => TextStyle(
+  static TextStyle subtitleStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w400,
         color: textSecondary(context),

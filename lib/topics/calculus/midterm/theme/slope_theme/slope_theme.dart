@@ -19,27 +19,34 @@ class SlopeTheme {
   static Color textPrimary(BuildContext context) => context.watch<ThemeProvider>().textPrimary;
   static Color textSecondary(BuildContext context) => context.watch<ThemeProvider>().textSecondary;
 
-  static TextStyle titleStyle(BuildContext context) => TextStyle(
+  static TextStyle titleStyle(BuildContext context, {bool responsive = false}) =>
+      TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.w800,
         color: textPrimary(context),
         letterSpacing: -0.8,
       );
 
-  static TextStyle subtitleStyle(BuildContext context) => TextStyle(
+  static TextStyle subtitleStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w400,
         color: textSecondary(context),
       );
 
-  static TextStyle labelStyle(BuildContext context) => TextStyle(
+  static TextStyle labelStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w600,
         color: textSecondary(context).withValues(alpha: 0.7),
         letterSpacing: 0.5,
       );
 
-  static TextStyle resultStyle(BuildContext context) => TextStyle(
+  static TextStyle resultStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 42,
         fontWeight: FontWeight.w800,
         color: textPrimary(context),

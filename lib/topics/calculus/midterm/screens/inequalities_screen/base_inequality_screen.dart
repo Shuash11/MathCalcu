@@ -13,6 +13,7 @@ import 'package:calculus_system/shared/widgets/steps_drawer.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -199,7 +200,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              ResponsiveText(
                 widget.title,
                 style: TextStyle(
                   fontSize: 17,
@@ -207,7 +208,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
                   color: context.watch<ThemeProvider>().textPrimary,
                 ),
               ),
-              Text(
+              ResponsiveText(
                 widget.subtitle,
                 style: TextStyle(
                   fontSize: 12,
@@ -225,7 +226,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        ResponsiveText(
           'Enter your expression',
           style: TextStyle(
             fontSize: 12,
@@ -359,10 +360,9 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           Icon(icon, size: 16, color: textColor),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
+            child: ResponsiveText(
               bannerText,
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textColor),
-              softWrap: true,
             ),
           ),
         ],
@@ -410,7 +410,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           color: const Color(0xFF2A1010),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(
+        child: ResponsiveText(
           _result!.errorMessage ?? 'Unknown error',
           style: const TextStyle(color: Color(0xFFFF6B6B)),
         ),

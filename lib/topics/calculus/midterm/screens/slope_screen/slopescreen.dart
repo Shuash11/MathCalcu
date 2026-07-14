@@ -1,5 +1,6 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'slope_comparison.dart';
 import 'slope_input_field.dart';
@@ -274,9 +275,9 @@ class _SlopeScreenState extends State<SlopeScreen> {
   Widget _header() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Equation of a line', style: SlopeTheme.titleStyle(context)),
+          ResponsiveText('Equation of a line', style: SlopeTheme.titleStyle(context)),
           const SizedBox(height: 6),
-          Text(
+          ResponsiveText(
             'Enter coordinates — supports fractions like 3/5 or -1/4',
             style: SlopeTheme.subtitleStyle(context),
           ),
@@ -299,7 +300,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          ResponsiveText(
             sectionLabel,
             style: SlopeTheme.labelStyle(context).copyWith(
               letterSpacing: 0,
@@ -374,7 +375,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
+                child: ResponsiveText(
                   'Compare with another line',
                   style: TextStyle(
                     fontSize: 14,
@@ -409,7 +410,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
           ),
-          child: Text(
+          child: ResponsiveText(
             'Calculate Slope',
             style: TextStyle(
               fontWeight: FontWeight.w700,

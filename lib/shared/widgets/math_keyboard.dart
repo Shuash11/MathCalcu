@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 
 class MathKeyboard extends StatefulWidget {
@@ -101,7 +102,7 @@ class _MathKeyboardState extends State<MathKeyboard> {
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
-            onTap: () => label == '⌫' ? _backspace() : _insert(label),
+            onTap: () => label == '?' ? _backspace() : _insert(label),
             child: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -110,7 +111,7 @@ class _MathKeyboardState extends State<MathKeyboard> {
                 style: TextStyle(
                   fontSize: fontSize ?? 17,
                   fontWeight: FontWeight.w500,
-                  color: label == '⌫'
+                  color: label == '?'
                       ? widget.accentColor
                       : theme.textPrimary,
                 ),
@@ -125,7 +126,7 @@ class _MathKeyboardState extends State<MathKeyboard> {
   Widget _buildRow(List<String> labels) {
     return Row(
       children: labels
-          .map((l) => l == '⌫'
+          .map((l) => l == '?'
               ? _key(l, bg: widget.accentColor.withValues(alpha: 0.1))
               : _key(l))
           .toList(),
@@ -175,13 +176,13 @@ class _MathKeyboardState extends State<MathKeyboard> {
           ),
           if (_visible) ...[
             const SizedBox(height: 2),
-            _buildRow(['(', ')', '√', '|', 'x', '²']),
+            _buildRow(['(', ')', 'v', '|', 'x', '�']),
             const SizedBox(height: 2),
             _buildRow(['7', '8', '9', '+', '-', '^']),
             const SizedBox(height: 2),
             _buildRow(['4', '5', '6', '<', '>', '/']),
             const SizedBox(height: 2),
-            _buildRow(['1', '2', '3', '÷', '×', '⌫']),
+            _buildRow(['1', '2', '3', '�', '�', '?']),
             const SizedBox(height: 2),
             Row(
               children: [

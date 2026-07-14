@@ -1,5 +1,6 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 /// A reusable step card matching the unified solution steps style:
 /// - Numbered circle indicator (dark fill + white border, white bold number)
@@ -81,7 +82,7 @@ class SolutionStepCard extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 // Title — bold white
-                Text(
+                ResponsiveText(
                   title,
                   style: const TextStyle(
                     fontSize: 15,

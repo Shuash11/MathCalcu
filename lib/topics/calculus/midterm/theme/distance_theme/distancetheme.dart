@@ -80,7 +80,9 @@ abstract class DistanceTheme {
   static const double space6xl = 40.0;
 
   // Typography
-  static TextStyle headerTitle(BuildContext context) => TextStyle(
+  static TextStyle headerTitle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.w700,
         color: text(context),
@@ -92,20 +94,26 @@ abstract class DistanceTheme {
     color: accent70,
   );
 
-  static TextStyle inputLabel(BuildContext context) => TextStyle(
+  static TextStyle inputLabel(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w600,
         color: text40(context),
         letterSpacing: 0.8,
       );
 
-  static TextStyle inputText(BuildContext context) => TextStyle(
+  static TextStyle inputText(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: text(context),
       );
 
-  static TextStyle inputHint(BuildContext context) => TextStyle(
+  static TextStyle inputHint(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         color: text20(context),
         fontSize: 18,
       );
@@ -116,13 +124,17 @@ abstract class DistanceTheme {
     color: Colors.white,
   );
 
-  static TextStyle modeButtonInactive(BuildContext context) => TextStyle(
+  static TextStyle modeButtonInactive(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w600,
         color: text35(context),
       );
 
-  static TextStyle formulaText(BuildContext context) => TextStyle(
+  static TextStyle formulaText(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         color: text55(context),
         fontWeight: FontWeight.w500,
@@ -142,14 +154,18 @@ abstract class DistanceTheme {
     letterSpacing: 1.4,
   );
 
-  static TextStyle resultValue(BuildContext context) => TextStyle(
+  static TextStyle resultValue(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 36,
         fontWeight: FontWeight.w700,
         color: text(context),
         letterSpacing: -1.0,
       );
 
-  static TextStyle resultFormula(BuildContext context) => TextStyle(
+  static TextStyle resultFormula(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 12,
         color: text55(context),
         fontWeight: FontWeight.w500,

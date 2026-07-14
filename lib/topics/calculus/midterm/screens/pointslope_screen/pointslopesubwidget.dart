@@ -1,4 +1,5 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/pointslopetheme.dart';
+﻿import 'package:calculus_system/shared/widgets/responsive_text.dart';
+import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/pointslopetheme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
@@ -108,7 +109,7 @@ class PSHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text('Equation of a line',
+                  ResponsiveText('Equation of a line',
                       style: PSTheme.titleStyle(context, s)),
                   SizedBox(width: 10 * s),
                   AnimatedBuilder(
@@ -132,7 +133,7 @@ class PSHeader extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 3 * s),
-              Text(
+              ResponsiveText(
                 'Linear equation builder & visualiser',
                 style: PSTheme.subtitleStyle(context, s),
               ),
@@ -159,7 +160,7 @@ class PSFormulaBanner extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('Point Slope Form', style: PSTheme.monoCaptionStyle(context)),
+          ResponsiveText('Point Slope Form', style: PSTheme.monoCaptionStyle(context)),
           const SizedBox(height: 6),
           RichText(
             text: TextSpan(

@@ -1,5 +1,6 @@
 ﻿import 'package:calculus_system/topics/calculus/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -42,7 +43,7 @@ class SlopeAnswerCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            ResponsiveText(
               'Slope',
               style: TextStyle(
                 fontSize: 10,
@@ -186,7 +187,7 @@ class SlopeComparisonCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      ResponsiveText(
                         result.isNeither ? 'Neither' : _label,
                         style: TextStyle(
                           fontSize: 18,
@@ -196,7 +197,7 @@ class SlopeComparisonCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      ResponsiveText(
                         'Line Relationship',
                         style: TextStyle(
                           fontSize: 11,
@@ -284,7 +285,7 @@ class SlopeInfoChip extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          ResponsiveText(
             label,
             style: TextStyle(
               fontSize: 10,

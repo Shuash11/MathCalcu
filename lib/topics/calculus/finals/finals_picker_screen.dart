@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_module_registry.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/derivatives/derevatives_card.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/evaluationg_limits.dart';
@@ -6,21 +6,22 @@ import 'package:calculus_system/topics/calculus/finals/cards/slope_using_derivat
 import 'package:calculus_system/topics/calculus/finals/cards/limits_infinity/limits_and_infinity_card.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // FINALS PICKER SCREEN
 //
 // Sister screen to CategoryPickerScreen.
-// Reads from FinalsModuleRegistry — add entries there, not here.
-// Theme lives in FinalsTheme — change colours there, not here.
+// Reads from FinalsModuleRegistry � add entries there, not here.
+// Theme lives in FinalsTheme � change colours there, not here.
 //
 // To wire a new card:
 //   1. Create  screens/finals/cards/your_card.dart
 //   2. Add entry to FinalsModuleRegistry.modules
 //
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class FinalsPickerScreen extends StatefulWidget {
   const FinalsPickerScreen({super.key});
@@ -116,7 +117,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     );
   }
 
-  // ── Header ────────────────────────────────────────────────
+  // -- Header ------------------------------------------------
 
   Widget _buildHeader() {
     return SliverToBoxAdapter(
@@ -146,7 +147,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                     ),
                   ),
                 ),
-                // Accent bar — gold gradient
+                // Accent bar � gold gradient
                 Container(
                   width: 36,
                   height: 4,
@@ -220,7 +221,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     );
   }
 
-  // ── Semester badge banner ─────────────────────────────────
+  // -- Semester badge banner ---------------------------------
 
   Widget _buildBanner() {
     return SliverToBoxAdapter(
@@ -292,7 +293,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     );
   }
 
-  // ── Module list ───────────────────────────────────────────
+  // -- Module list -------------------------------------------
 
   Widget _buildList() {
     if (_modules.isEmpty) {
@@ -331,10 +332,10 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // EMPTY STATE
 // Shown when FinalsModuleRegistry.modules is empty
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _EmptyState extends StatelessWidget {
   @override
@@ -379,12 +380,12 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // DEFAULT CARD
 // Used for any module that doesn't have a custom card yet.
 // Replace with a custom card by adding a branch in
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _FinalsDefaultCard extends StatefulWidget {
   final FinalsModuleEntry module;
@@ -450,7 +451,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
               borderRadius: BorderRadius.circular(20),
               child: Stack(
                 children: [
-                  // ── Background glow orb (top right)
+                  // -- Background glow orb (top right)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 380),
                     curve: Curves.easeOut,
@@ -469,7 +470,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                     ),
                   ),
 
-                  // ── Background glow orb (bottom left)
+                  // -- Background glow orb (bottom left)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 380),
                     curve: Curves.easeOut,
@@ -488,12 +489,12 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                     ),
                   ),
 
-                  // ── Content
+                  // -- Content
                   Padding(
                     padding: const EdgeInsets.all(22),
                     child: Row(
                       children: [
-                        // ── ICON BOX (UPDATED with human badge)
+                        // -- ICON BOX (UPDATED with human badge)
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 220),
                           width: 56,
@@ -537,7 +538,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                                 ),
                               ),
 
-                              // 👤 HUMAN BADGE
+                              // ?? HUMAN BADGE
                               Positioned(
                                 right: 5,
                                 top: 5,
@@ -565,7 +566,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
 
                         const SizedBox(width: 18),
 
-                        // ── TEXT
+                        // -- TEXT
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -596,7 +597,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                           ),
                         ),
 
-                        // ── ARROW
+                        // -- ARROW
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           transform: _hovered

@@ -1,4 +1,4 @@
-﻿import 'factoring_answer_card.dart';
+import 'factoring_answer_card.dart';
 import 'factoring_input_field.dart';
 import 'factoring_steps_view.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_factoring/solver_engine.dart';
@@ -7,6 +7,7 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class FactoringLimitScreen extends StatelessWidget {
   const FactoringLimitScreen({super.key});
@@ -263,12 +264,12 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Factoring Method',
+                ResponsiveText(
+          '',
                   style: FinalsTheme.titleStyle(context).copyWith(fontSize: titleFontSize),
                 ),
-                Text(
-                  'Evaluating Limits',
+                ResponsiveText(
+          '',
                   style: FinalsTheme.subtitleStyle(context),
                 ),
               ],
@@ -287,8 +288,8 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
                 Icon(Icons.layers_rounded,
                     size: badgeIconSize, color: FinalsTheme.primary),
                 SizedBox(width: badgePaddingH * 0.5),
-                Text(
-                  'By Factoring',
+                ResponsiveText(
+          '',
                   style: TextStyle(
                     color: FinalsTheme.primary,
                     fontWeight: FontWeight.w800,

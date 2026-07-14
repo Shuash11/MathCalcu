@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_module_registry.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +81,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
 
                   return Stack(
                     children: [
-                      // ✨ Subtle background glow (top-right)
+                      // ? Subtle background glow (top-right)
                       Positioned(
                         top: -30,
                         right: -30,
@@ -104,7 +105,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                         ),
                       ),
 
-                      // 🔥 Content
+                      // ?? Content
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: horizontalPadding,
@@ -112,7 +113,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                         ),
                         child: Row(
                           children: [
-                            // 🌅 LEFT ICON BOX
+                            // ?? LEFT ICON BOX
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
                               width: iconBoxSize,
@@ -220,7 +221,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                           ),
                                         ),
                                         child: Text(
-                                          "∞",
+                                          "8",
                                           style: TextStyle(
                                             fontSize: isMobile ? 11 : 12,
                                             fontWeight: FontWeight.w900,
@@ -248,7 +249,7 @@ class _FinalsInfinityLimitsCardState extends State<FinalsInfinityLimitsCard> {
                                           : theme.textSecondary,
                                     ),
                                     child: const Text(
-                                      "Horizontal asymptotes, end behavior & rational functions at ∞",
+                                      "Horizontal asymptotes, end behavior & rational functions at 8",
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),

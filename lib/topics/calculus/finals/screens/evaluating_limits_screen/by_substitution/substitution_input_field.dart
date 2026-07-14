@@ -1,4 +1,5 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 
 class SubstitutionInputField extends StatelessWidget {
@@ -95,7 +96,7 @@ class SubstitutionInputField extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
             child: Row(
               children: [
-                Text(
+                ResponsiveText(
                   'lim',
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontStyle: FontStyle.italic,
@@ -194,7 +195,7 @@ class SubstitutionInputField extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(24.0),
-              child: Text(
+              child: ResponsiveText(
                 'Select Limit Variable',
                 style: FinalsTheme.titleStyle(ctx).copyWith(fontSize: 20),
               ),
@@ -218,7 +219,7 @@ class SubstitutionInputField extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: ListTile(
-                      title: Text(
+                      title: ResponsiveText(
                         v,
                         style: FinalsTheme.titleStyle(ctx).copyWith(
                           fontFamily: 'serif',
@@ -295,7 +296,7 @@ return MouseRegion(
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              ResponsiveText(
                 'Solve',
                 style: TextStyle(
                   color: Colors.white,
@@ -341,7 +342,7 @@ class _VariablePill extends StatelessWidget {
           borderRadius: BorderRadius.circular(fontSize * 0.5),
           border: Border.all(color: accentColor.withValues(alpha: 0.2)),
         ),
-        child: Text(
+        child: ResponsiveText(
           variable,
           style: TextStyle(
             fontFamily: 'serif',

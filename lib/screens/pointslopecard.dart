@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -182,8 +183,8 @@ class _PointSlopeModuleCardState extends State<PointSlopeModuleCard> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(
-                                        widget.module.label,
+                                      ResponsiveText(
+                                    widget.module.label,
                                         style: TextStyle(
                                           color: _hovered
                                               ? _softLavender
@@ -221,7 +222,7 @@ class _PointSlopeModuleCardState extends State<PointSlopeModuleCard> {
                                     ],
                                   ),
                                   SizedBox(height: 6 * s),
-                                  Text(
+                                  ResponsiveText(
                                     widget.module.subtitle,
                                     style: TextStyle(
                                       fontSize: 13 * s,

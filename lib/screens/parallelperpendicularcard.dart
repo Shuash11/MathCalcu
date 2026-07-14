@@ -1,6 +1,7 @@
-﻿import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -195,40 +196,28 @@ class _ParallelPerpendicularModuleCardState
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  AnimatedDefaultTextStyle(
-                                    duration: const Duration(milliseconds: 200),
-                                    style: TextStyle(
-                                      fontSize: 16 * s,
-                                      fontWeight: FontWeight.w600,
-                                      color: _hovered ? _sky : theme.textPrimary,
-                                      letterSpacing: -0.4 * s,
-                                      height: 1.2,
-                                    ),
-                                    child: Text(
+children: [
+                                    ResponsiveText(
                                       widget.module.label,
-                                      softWrap: true,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 16 * s,
+                                        fontWeight: FontWeight.w600,
+                                        color: _hovered ? _sky : theme.textPrimary,
+                                        letterSpacing: -0.4 * s,
+                                        height: 1.2,
+                                      ),
                                     ),
-                                  ),
                                   SizedBox(height: 4 * s),
-                                  AnimatedDefaultTextStyle(
-                                    duration: const Duration(milliseconds: 200),
-                                    style: TextStyle(
-                                      fontSize: 12 * s,
-                                      color: _hovered
-                                          ? _sky.withValues(alpha: 0.72)
-                                          : theme.textSecondary,
-                                      height: 1.3,
-                                    ),
-                                    child: Text(
+                                    ResponsiveText(
                                       widget.module.subtitle,
-                                      softWrap: true,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12 * s,
+                                        color: _hovered
+                                            ? _sky.withValues(alpha: 0.72)
+                                            : theme.textSecondary,
+                                        height: 1.3,
+                                      ),
                                     ),
-                                  ),
                                   SizedBox(height: 10 * s),
                                   Wrap(
                                     spacing: 6 * s,

@@ -1,5 +1,6 @@
 ﻿import 'dart:math';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import '../../cards/inequalities/absolute_card.dart';
 import '../../cards/inequalities/continued_card.dart';
@@ -113,7 +114,7 @@ class _PickerHeader extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            ResponsiveText(
               'Inequality Solvers',
               style: TextStyle(
                 fontSize: 18,
@@ -123,7 +124,7 @@ class _PickerHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2),
-            Text(
+            ResponsiveText(
               'Select a module to explore',
               style: TextStyle(
                   fontSize: 12, color: _softPurple.withValues(alpha: 0.55)),

@@ -4,6 +4,7 @@ import 'lcd_steps_view.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_lcd/math_limits_library.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:flutter/material.dart';
 
@@ -254,11 +255,11 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   'LCD Method',
                   style: FinalsTheme.titleStyle(context).copyWith(fontSize: 24),
                 ),
-                Text(
+                ResponsiveText(
                   'Evaluating Limits',
                   style: FinalsTheme.subtitleStyle(context),
                 ),
@@ -277,7 +278,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
               children: [
                 Icon(Icons.layers_rounded, size: 14, color: FinalsTheme.danger),
                 SizedBox(width: 6),
-                Text(
+                ResponsiveText(
                   'By LCD',
                   style: TextStyle(
                     color: FinalsTheme.danger,

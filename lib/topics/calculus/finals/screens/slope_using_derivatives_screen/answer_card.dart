@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
@@ -216,7 +217,7 @@ class _SlopeDerivativesSteps extends StatelessWidget {
     final mathPattern = RegExp(r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=');
     final hasVariables = RegExp(r'[x-yt]').hasMatch(line);
     final hasNumbers = RegExp(r'[0-9]').hasMatch(line);
-    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('→'))) return true;
+    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('?'))) return true;
     if (hasNumbers && mathPattern.hasMatch(line) && line.contains('=')) return true;
     return false;
   }
@@ -238,8 +239,8 @@ class _SlopeDerivativesSteps extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                'STEP-BY-STEP SOLUTION',
+              ResponsiveText(
+          '',
                 style: FinalsTheme.labelStyle(context),
               ),
             ],

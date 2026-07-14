@@ -4,6 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/screens/midpoint_screen/
 import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 
 class MidpointScreen extends StatefulWidget {
@@ -240,7 +241,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                       ? MidpointTheme.surface(context)
                       : MidpointTheme.text40(context)),
               const SizedBox(width: 6),
-              Text(
+              ResponsiveText(
                 label,
                 style: TextStyle(
                   fontSize: 13,
@@ -267,7 +268,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: MidpointTheme.inputLabel(context)),
+        ResponsiveText(label, style: MidpointTheme.inputLabel(context)),
         const SizedBox(height: MidpointTheme.spaceXs),
         Container(
           decoration: MidpointTheme.inputDecoration(context),
@@ -319,7 +320,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
             spacing: 8,
             runSpacing: 6,
             children: [
-              Text(_resultLabel, style: MidpointTheme.resultLabel(context)),
+              ResponsiveText(_resultLabel, style: MidpointTheme.resultLabel(context)),
               GestureDetector(
                 onTap: _openStepsModal,
                 child: Container(
@@ -337,7 +338,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                       Icon(Icons.receipt_long_rounded,
                           size: 14, color: FinalsTheme.primary),
                       SizedBox(width: 4),
-                      Text(
+                      ResponsiveText(
                         'Show steps',
                         style: TextStyle(
                           fontSize: 11,
@@ -356,11 +357,9 @@ class _MidpointScreenState extends State<MidpointScreen> {
             ],
           ),
           const SizedBox(height: MidpointTheme.spaceMd),
-          Text(
+          ResponsiveText(
             '$_resultPrefix = (${_resX ?? '\u2014'}, ${_resY ?? '\u2014'})',
             style: MidpointTheme.resultValue(context),
-            softWrap: true,
-            overflow: TextOverflow.visible,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,18 +378,14 @@ class _MidpointScreenState extends State<MidpointScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    ResponsiveText(
                       _formulaX ?? '',
                       style: MidpointTheme.resultFormula(context),
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    ResponsiveText(
                       _formulaY ?? '',
                       style: MidpointTheme.resultFormula(context),
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
                     ),
                   ],
                 ),
@@ -417,7 +412,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
           Icon(Icons.show_chart_rounded,
               size: 14, color: MidpointTheme.accent(context)),
           const SizedBox(width: 4),
-          Text(
+          ResponsiveText(
             'Graph',
             style: TextStyle(
               fontSize: 11,
@@ -474,7 +469,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          ResponsiveText(
                             _mode == StepMode.midpoint
                                 ? 'Midpoint'
                                 : 'Endpoint',
@@ -498,10 +493,9 @@ class _MidpointScreenState extends State<MidpointScreen> {
                           color: MidpointTheme.accent50(context), size: 16),
                       const SizedBox(width: MidpointTheme.spaceXl),
                       Expanded(
-                        child: Text(
+                        child: ResponsiveText(
                           _formulaHint,
                           style: MidpointTheme.formulaText(context),
-                          softWrap: true,
                         ),
                       ),
                     ],
@@ -515,7 +509,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_groupALabel,
+                          ResponsiveText(_groupALabel,
                               style: MidpointTheme.pointLabel(context)),
                           const SizedBox(height: MidpointTheme.spaceMd),
                           _buildInputField(
@@ -566,7 +560,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_groupBLabel,
+                          ResponsiveText(_groupBLabel,
                               style: MidpointTheme.pointLabel(context)),
                           const SizedBox(height: MidpointTheme.spaceMd),
                           _buildInputField(
@@ -608,7 +602,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                         Icon(Icons.calculate_rounded,
                             color: MidpointTheme.surface(context), size: 18),
                         const SizedBox(width: MidpointTheme.spaceSm),
-                        Text(_buttonLabel,
+                        ResponsiveText(_buttonLabel,
                             style: MidpointTheme.calculateButton(context)),
                       ],
                     ),
@@ -627,7 +621,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                               color: MidpointTheme.error, size: 18),
                           const SizedBox(width: MidpointTheme.spaceXl),
                           Expanded(
-                              child: Text(_errorMsg,
+                              child: ResponsiveText(_errorMsg,
                                   style: MidpointTheme.errorText)),
                         ],
                       ),

@@ -1,4 +1,5 @@
 ﻿import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -113,7 +114,7 @@ class _StepsDrawerState extends State<StepsDrawer> {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
+                      child: ResponsiveText(
                         widget.title,
                         style: TextStyle(
                           fontSize: 18,
@@ -229,7 +230,7 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                       if (s.hint != null && s.hint!.isNotEmpty)
                                         Padding(
                                           padding: const EdgeInsets.only(top: 6),
-                                          child: Text(
+                                          child: ResponsiveText(
                                             s.hint!,
                                             style: TextStyle(
                                               fontSize: 12,

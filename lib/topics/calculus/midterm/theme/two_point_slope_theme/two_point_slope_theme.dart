@@ -108,7 +108,9 @@ class TwoPointSlopeTheme {
       );
 
   // ── Text styles ───────────────────────────────────────────
-  static TextStyle headingStyle(BuildContext context) => TextStyle(
+  static TextStyle headingStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.w700,
         color: textPrimary(context),
@@ -116,20 +118,26 @@ class TwoPointSlopeTheme {
         height: 1.1,
       );
 
-  static TextStyle subheadingStyle(BuildContext context) => TextStyle(
+  static TextStyle subheadingStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         color: textSecondary(context),
         letterSpacing: 0.2,
       );
 
-  static TextStyle labelStyle(BuildContext context) => TextStyle(
+  static TextStyle labelStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w600,
         color: textSecondary(context).withValues(alpha: 0.6),
         letterSpacing: 1.2,
       );
 
-  static TextStyle monoStyle(BuildContext context) => TextStyle(
+  static TextStyle monoStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontFamily: 'monospace',
         fontSize: 15,
         color: textPrimary(context),

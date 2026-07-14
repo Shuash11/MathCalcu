@@ -45,21 +45,26 @@ class FinalsTheme {
       context.watch<ThemeProvider>().isLight;
 
   // ── Typography ────────────────────────────────────────────
-  static TextStyle titleStyle(BuildContext context) => TextStyle(
+  static TextStyle titleStyle(BuildContext context, {bool responsive = false}) =>
+      TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
         color: textPrimary(context),
         letterSpacing: -0.4,
       );
 
-  static TextStyle subtitleStyle(BuildContext context) => TextStyle(
+  static TextStyle subtitleStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w400,
         color: textSecondary(context),
         height: 1.4,
       );
 
-  static TextStyle labelStyle(BuildContext context) => TextStyle(
+  static TextStyle labelStyle(BuildContext context,
+          {bool responsive = false}) =>
+      TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.1,

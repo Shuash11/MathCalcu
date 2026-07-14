@@ -1,6 +1,7 @@
-﻿import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -134,7 +135,7 @@ class _CircleModuleCardState extends State<CircleModuleCard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
+                                  ResponsiveText(
                                     widget.module.label,
                                     style: TextStyle(
                                       fontSize: 18 * s,
@@ -146,7 +147,7 @@ class _CircleModuleCardState extends State<CircleModuleCard> {
                                     maxLines: 1,
                                   ),
                                   SizedBox(height: 4 * s),
-                                  Text(
+                                  ResponsiveText(
                                     widget.module.subtitle,
                                     style: TextStyle(
                                       fontSize: 13 * s,

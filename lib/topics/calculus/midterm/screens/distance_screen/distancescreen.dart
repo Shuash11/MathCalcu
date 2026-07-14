@@ -4,6 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/theme/distance_theme/dis
 import 'package:calculus_system/topics/calculus/midterm/solvers/distance_solver/distancesolver.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'distancesteps.dart';
 import 'package:flutter/material.dart';
 
@@ -187,7 +188,7 @@ class _DistancescreenState extends State<Distancescreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: DistanceTheme.inputLabel(context)),
+        ResponsiveText(label, style: DistanceTheme.inputLabel(context)),
         const SizedBox(height: DistanceTheme.spaceXs),
         GestureDetector(
           onTap: () => focusNode.requestFocus(),
@@ -228,7 +229,7 @@ class _DistancescreenState extends State<Distancescreen>
             color: active ? DistanceTheme.accent : Colors.transparent,
             borderRadius: BorderRadius.circular(9),
           ),
-          child: Text(
+          child: ResponsiveText(
             label,
             textAlign: TextAlign.center,
             style: active
@@ -281,9 +282,9 @@ class _DistancescreenState extends State<Distancescreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Distance',
+                          ResponsiveText('Distance',
                               style: DistanceTheme.headerTitle(context)),
-                          Text(
+                          ResponsiveText(
                             _is2D ? 'Two points in a plane' : 'Number line',
                             style: DistanceTheme.headerSubtitle,
                           ),
@@ -331,7 +332,7 @@ class _DistancescreenState extends State<Distancescreen>
                       const Icon(Icons.functions_rounded,
                           color: DistanceTheme.accent70, size: 16),
                       const SizedBox(width: DistanceTheme.spaceXl),
-                      Text(
+                      ResponsiveText(
                         _is2D ? 'd = √((x₂−x₁)² + (y₂−y₁)²)' : 'd = |x₂ − x₁|',
                         style: DistanceTheme.formulaText(context),
                       ),
@@ -377,7 +378,7 @@ class _DistancescreenState extends State<Distancescreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('POINT A',
+                            const ResponsiveText('POINT A',
                                 style: DistanceTheme.pointLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
@@ -424,7 +425,7 @@ class _DistancescreenState extends State<Distancescreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('POINT B',
+                            const ResponsiveText('POINT B',
                                 style: DistanceTheme.pointLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
                             _buildInputField(
@@ -467,7 +468,7 @@ class _DistancescreenState extends State<Distancescreen>
                         Icon(Icons.calculate_rounded,
                             color: Colors.white, size: 18),
                         SizedBox(width: DistanceTheme.spaceSm),
-                        Text('Calculate Distance',
+                        ResponsiveText('Calculate Distance',
                             style: DistanceTheme.calculateButton),
                       ],
                     ),
@@ -488,7 +489,7 @@ class _DistancescreenState extends State<Distancescreen>
                               color: DistanceTheme.error, size: 18),
                           const SizedBox(width: DistanceTheme.spaceXl),
                           Expanded(
-                              child: Text(_errorMsg,
+                              child: ResponsiveText(_errorMsg,
                                   style: DistanceTheme.errorText)),
                         ],
                       ),
@@ -517,7 +518,7 @@ class _DistancescreenState extends State<Distancescreen>
                               size: 20,
                             ),
                             const SizedBox(width: 10),
-                            const Text(
+                            const ResponsiveText(
                               'View Graph',
                               style: TextStyle(
                                 fontSize: 15,
@@ -554,10 +555,10 @@ class _DistancescreenState extends State<Distancescreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('DISTANCE',
+                            const ResponsiveText('DISTANCE',
                                 style: DistanceTheme.resultLabel),
                             const SizedBox(height: DistanceTheme.spaceMd),
-                            Text(
+                            ResponsiveText(
                               'd = ${_distance ?? '\u2014'}',
                               style: DistanceTheme.resultValue(context),
                             ),
@@ -573,7 +574,7 @@ class _DistancescreenState extends State<Distancescreen>
                                   borderRadius: BorderRadius.circular(
                                       DistanceTheme.radiusSm),
                                 ),
-                                child: Text(
+                                child: ResponsiveText(
                                   _formula!,
                                   style: DistanceTheme.resultFormula(context),
                                   maxLines: 2,
@@ -596,7 +597,7 @@ class _DistancescreenState extends State<Distancescreen>
                           size: 14,
                           color: FinalsTheme.primary,
                         ),
-                        label: const Text(
+                        label: const ResponsiveText(
                           'Show Steps',
                           style: TextStyle(
                             fontSize: 12,

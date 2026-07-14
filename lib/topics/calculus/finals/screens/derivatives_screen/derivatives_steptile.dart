@@ -1,7 +1,8 @@
-﻿import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_steps.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/deriviatives_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
 class DerivativeStepTile extends StatelessWidget {

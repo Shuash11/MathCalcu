@@ -1,4 +1,5 @@
 ﻿import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -85,7 +86,7 @@ class _AnswerCardState extends State<AnswerCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    ResponsiveText(
                       'Answer',
                       style: TextStyle(
                         fontSize: 11,
@@ -144,7 +145,7 @@ class _AnswerCardState extends State<AnswerCard>
                 children: [
                   Icon(Icons.menu_book_rounded, color: accent, size: 20),
                   const SizedBox(height: 4),
-                  Text(
+                  ResponsiveText(
                     'Steps',
                     style: TextStyle(
                       fontSize: 10,

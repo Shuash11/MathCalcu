@@ -1,6 +1,7 @@
 ﻿import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -44,7 +45,7 @@ class _MathBox extends StatelessWidget {
           fontWeight: FontWeight.w600,
           color: FinalsTheme.primary,
         ),
-        onErrorFallback: (err) => Text(
+        onErrorFallback: (err) => ResponsiveText(
           latex,
           style: const TextStyle(color: FinalsTheme.primary),
         ),

@@ -1,6 +1,7 @@
-﻿import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -161,8 +162,8 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
                                   Row(
                                     children: [
                                       Flexible(
-                                        child: Text(
-                                          widget.module.label,
+                                        child: ResponsiveText(
+                                    widget.module.label,
                                           style: TextStyle(
                                             fontSize: 18 * s,
                                             fontWeight: FontWeight.w800,

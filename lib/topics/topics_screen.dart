@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 
 class TopicsScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class TopicsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: ResponsiveText(
           'Topics',
           style: TextStyle(
             fontWeight: FontWeight.w700,

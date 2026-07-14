@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -187,8 +188,8 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                           ? _softGold
                                           : theme.textPrimary,
                                     ),
-                                    child: Text(
-                                      widget.module.label,
+                                    child: ResponsiveText(
+                                    widget.module.label,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -202,8 +203,8 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                           ? _softGold.withValues(alpha: 0.7)
                                           : theme.textSecondary,
                                     ),
-                                    child: Text(
-                                      widget.module.subtitle,
+                                    child: ResponsiveText(
+                                    widget.module.subtitle,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -236,7 +237,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                         children: [
                                           const TextSpan(text: 'm = '),
                                           TextSpan(
-                                            text: '(y₂−y₁)',
+                                            text: '(y2-y1)',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               fontSize: 12 * s,
@@ -244,7 +245,7 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
                                           ),
                                           const TextSpan(text: ' / '),
                                           TextSpan(
-                                            text: '(x₂−x₁)',
+                                            text: '(x2-x1)',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               fontSize: 12 * s,

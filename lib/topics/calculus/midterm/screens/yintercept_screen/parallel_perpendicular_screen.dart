@@ -9,6 +9,7 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solve
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -145,7 +146,7 @@ class _ParallelPerpendicularScreenState
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text(
+                  ResponsiveText(
                     'Parallel & Perpendicular',
                     style: YITheme.subtitleStyle(context).copyWith(
                       fontSize: 17,
@@ -259,7 +260,7 @@ class _HintBanner extends StatelessWidget {
               color: _cyan.withValues(alpha: 0.8), size: 18),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
+            child: ResponsiveText(
               'Enter equations in any format (e.g., y = 2x + 1, 3x - 4y = 12, or 2x + y - 5 = 0).',
               style: YITheme.subtitleStyle(context).copyWith(
                 color: YITheme.textSecondary(context),
@@ -307,7 +308,7 @@ class _EquationFieldState extends State<_EquationField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.label,
+        ResponsiveText(widget.label,
             style: YITheme.inputLabelStyle(context)
                 .copyWith(color: widget.accent, fontSize: 10)),
         const SizedBox(height: 6),
@@ -367,11 +368,11 @@ class _EmptyState extends StatelessWidget {
           Icon(Icons.compare_arrows_rounded,
               color: accent.withValues(alpha: 0.3), size: 40),
           const SizedBox(height: 12),
-          Text('Enter two equations above',
+          ResponsiveText('Enter two equations above',
               style: YITheme.titleStyle(context).copyWith(
                   color: YITheme.textSecondary(context), fontSize: 14)),
           const SizedBox(height: 4),
-          Text('Results will appear here automatically.',
+          ResponsiveText('Results will appear here automatically.',
               textAlign: TextAlign.center,
               style: YITheme.subtitleStyle(context).copyWith(fontSize: 12)),
         ],
@@ -456,7 +457,7 @@ class _ResultSection extends StatelessWidget {
               children: [
                 Icon(Icons.receipt_long_rounded, color: accent, size: 16),
                 const SizedBox(width: 8),
-                Text(
+                ResponsiveText(
                   'View Solution Steps',
                   style: YITheme.inputLabelStyle(context)
                       .copyWith(color: accent, fontSize: 11),
@@ -490,7 +491,7 @@ class _VerdictCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
+              ResponsiveText(
                 'VERDICT',
                 style: YITheme.inputLabelStyle(context)
                     .copyWith(color: accent, fontSize: 10),
@@ -498,7 +499,7 @@ class _VerdictCard extends StatelessWidget {
               const Spacer(),
               Icon(Icons.show_chart_rounded, color: accent, size: 16),
               const SizedBox(width: 4),
-              Text(
+              ResponsiveText(
                 'Tap to graph',
                 style: YITheme.subtitleStyle(context).copyWith(
                     color: accent.withValues(alpha: 0.7), fontSize: 11),
@@ -506,7 +507,7 @@ class _VerdictCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
+          ResponsiveText(
             '${result.verdictSymbol}  ${result.verdict}',
             style: YITheme.resultEquationStyle(context)
                 .copyWith(color: accent, fontSize: 22),
@@ -542,7 +543,7 @@ class _EquationResultCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
+          ResponsiveText(title,
               style: YITheme.inputLabelStyle(context)
                   .copyWith(color: accent)),
           const SizedBox(height: 6),
@@ -552,7 +553,7 @@ class _EquationResultCard extends StatelessWidget {
                 color: YITheme.textPrimary(context), fontSize: 15),
           ),
           const SizedBox(height: 8),
-          Text(
+          ResponsiveText(
             meta,
             style: YITheme.subtitleStyle(context)
                 .copyWith(color: YITheme.textSecondary(context)),
@@ -687,7 +688,7 @@ class _MiniStepColumn extends StatelessWidget {
               color: FinalsTheme.primary,
             ),
             child: Center(
-              child: Text(
+              child: ResponsiveText(
                 stepNumber.toString(),
                 style: const TextStyle(
                   fontSize: 11,
@@ -703,7 +704,7 @@ class _MiniStepColumn extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              ResponsiveText(
                 title,
                 style: FinalsTheme.titleStyle(context).copyWith(fontSize: 13),
               ),
@@ -793,7 +794,7 @@ class _StepBlocks extends StatelessWidget {
         : Colors.black.withValues(alpha: 0.55);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Text(
+      child: ResponsiveText(
         text,
         style: TextStyle(fontSize: 12, color: color, height: 1.4),
       ),
@@ -821,7 +822,7 @@ class _StepBlocks extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (label != null && label.isNotEmpty) ...[
-            Text(
+            ResponsiveText(
               label,
               style: TextStyle(
                 fontSize: 10,
@@ -854,7 +855,7 @@ class _StepBlocks extends StatelessWidget {
 
   Widget _renderMath(String? latex, String fallback, {double fontSize = 13}) {
     if (latex == null || latex.isEmpty) {
-      return Text(
+      return ResponsiveText(
         fallback,
         style: const TextStyle(fontSize: 13, height: 1.4),
       );

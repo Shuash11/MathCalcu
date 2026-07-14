@@ -1,13 +1,14 @@
-﻿import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 
-// ─────────────────────────────────────────────────────────────
-// GRAPH WIDGET — shared container shell
+// -------------------------------------------------------------
+// GRAPH WIDGET � shared container shell
 // Each module's graph/ class renders inside this shell.
 // The shell provides the dark card background + label.
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class GraphWidget extends StatelessWidget {
   final SolveResult result;

@@ -3,6 +3,7 @@ import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/c
 import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/factoring_card.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/lcd_card.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 
 class EvaluatingLimitsPicker extends StatefulWidget {
@@ -97,7 +98,7 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
                             const Icon(Icons.arrow_back_ios_new_rounded,
                                 size: 12, color: FinalsTheme.primary),
                             const SizedBox(width: 8),
-                            Text(
+                            ResponsiveText(
                               'Back to Finals',
                               style: FinalsTheme.labelStyle(context)
                                   .copyWith(fontSize: 10),
@@ -107,13 +108,13 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
                       ),
                     ),
                     const SizedBox(height: 24),
-                    Text(
+                    ResponsiveText(
                       'Evaluating Limits',
                       style: FinalsTheme.titleStyle(context)
                           .copyWith(fontSize: 32, height: 1.1),
                     ),
                     const SizedBox(height: 8),
-                    Text(
+                    ResponsiveText(
                       'Select a method to solve limits step-by-step using fundamental algebraic rules.',
                       style: FinalsTheme.subtitleStyle(context),
                     ),

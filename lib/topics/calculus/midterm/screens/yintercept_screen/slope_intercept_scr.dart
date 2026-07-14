@@ -4,6 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/t
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'slope_intercept.dart';
 import 'slope_intercept_steps.dart';
 import 'package:flutter/material.dart';
@@ -228,7 +229,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
             ),
           ),
           const SizedBox(width: 12),
-          Text('Slope-Intercept Form', style: YITheme.subtitleStyle(context)),
+          ResponsiveText('Slope-Intercept Form', style: YITheme.subtitleStyle(context)),
         ],
       ),
     );

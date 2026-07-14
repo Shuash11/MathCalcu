@@ -1,6 +1,7 @@
-﻿import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
 import 'answer_card.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
@@ -181,8 +182,8 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                     AnswerCard(solution: _solution!),
                     const SizedBox(height: 12),
                     Center(
-                      child: Text(
-                        'Tap the card to view step-by-step solution',
+                      child: ResponsiveText(
+          '',
                         style: TextStyle(color: FinalsTheme.textSecondary(context).withValues(alpha: 0.5), fontSize: 12, fontWeight: FontWeight.w500),
                       ),
                     ),

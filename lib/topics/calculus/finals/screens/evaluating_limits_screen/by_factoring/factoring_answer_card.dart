@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class FactoringAnswerCard extends StatelessWidget {
   final double? answer;
@@ -117,8 +118,8 @@ class _FactoringAnswerCardContent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'FINAL ANSWER',
+                      ResponsiveText(
+          '',
                         style: FinalsTheme.labelStyle(context).copyWith(
                           color: accentColor,
                           fontSize: labelFontSize,
@@ -156,8 +157,8 @@ class _FactoringAnswerCardContent extends StatelessWidget {
                         children: [
                           Icon(Icons.expand_more_rounded, size: expandIconSize, color: accentColor.withValues(alpha: 0.5)),
                           SizedBox(width: isCompact ? 6.0 : 8.0),
-                          Text(
-                            'TAP TO REVEAL SOLUTIONS',
+                          ResponsiveText(
+          '',
                             style: TextStyle(
                               fontSize: tapHintFontSize,
                               fontWeight: FontWeight.w900,
@@ -240,7 +241,7 @@ class _ValueDisplay extends StatelessWidget {
     } else if (answer == null || answer!.isNaN) {
       displayVal = 'Undefined';
     } else if (answer!.isInfinite) {
-      displayVal = answer! > 0 ? '∞' : '-∞';
+      displayVal = answer! > 0 ? '8' : '-8';
     } else {
       displayVal = answer! == answer!.toInt() ? answer!.toInt().toString() : answer!.toStringAsFixed(4);
     }

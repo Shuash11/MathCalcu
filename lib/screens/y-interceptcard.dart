@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -256,40 +257,30 @@ class _YInterceptModuleCardState extends State<YInterceptModuleCard>
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    AnimatedDefaultTextStyle(
-                                      duration: const Duration(milliseconds: 200),
-                                      style: TextStyle(
-                                        fontSize: 17 * s,
-                                        fontWeight: FontWeight.w600,
-                                        color: _hovered
-                                            ? _mint
-                                            : theme.textPrimary,
-                                        letterSpacing: -0.5 * s,
-                                        height: 1.2,
-                                      ),
-                                      child: Text(
+children: [
+                                      ResponsiveText(
                                         widget.module.label,
-                                        softWrap: true,
-                                        overflow: TextOverflow.visible,
+                                        style: TextStyle(
+                                          fontSize: 17 * s,
+                                          fontWeight: FontWeight.w600,
+                                          color: _hovered
+                                              ? _mint
+                                              : theme.textPrimary,
+                                          letterSpacing: -0.5 * s,
+                                          height: 1.2,
+                                        ),
                                       ),
-                                    ),
                                     SizedBox(height: 4 * s),
-                                    AnimatedDefaultTextStyle(
-                                      duration: const Duration(milliseconds: 200),
-                                      style: TextStyle(
-                                        fontSize: 13 * s,
-                                        color: _hovered
-                                            ? _mint.withValues(alpha: 0.7)
-                                            : theme.textSecondary,
-                                        height: 1.3,
-                                      ),
-                                      child: Text(
+                                      ResponsiveText(
                                         widget.module.subtitle,
-                                        softWrap: true,
-                                        overflow: TextOverflow.visible,
+                                        style: TextStyle(
+                                          fontSize: 13 * s,
+                                          color: _hovered
+                                              ? _mint.withValues(alpha: 0.7)
+                                              : theme.textSecondary,
+                                          height: 1.3,
+                                        ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),

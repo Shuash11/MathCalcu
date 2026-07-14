@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 /// Shows a modal bottom sheet containing [child] (typically a steps widget).
 ///
@@ -82,7 +83,7 @@ class _SolutionStepsModal extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
+                      child: ResponsiveText(
                         title,
                         style: TextStyle(
                           fontSize: 18,

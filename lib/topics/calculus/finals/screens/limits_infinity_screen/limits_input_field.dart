@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class LimitsInputField extends StatelessWidget {
   final TextEditingController expressionController;
@@ -116,8 +117,8 @@ class LimitsInputField extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Text(
-                  'lim',
+                ResponsiveText(
+          '',
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontStyle: FontStyle.italic,
                     fontSize: limitTextSize,

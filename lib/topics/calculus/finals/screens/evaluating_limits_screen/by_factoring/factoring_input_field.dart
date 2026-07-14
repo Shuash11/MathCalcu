@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class FactoringInputField extends StatelessWidget {
   final TextEditingController expressionController;
@@ -118,7 +119,7 @@ class _FactoringInputFieldContent extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                     decoration: InputDecoration(
-                      hintText: isCompact ? 'x²-4 / x-2' : '(x^2 - 4) / (x - 2)',
+                      hintText: isCompact ? 'x�-4 / x-2' : '(x^2 - 4) / (x - 2)',
                       hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
                         color: FinalsTheme.textSecondary(context)
                             .withValues(alpha: 0.3),
@@ -145,8 +146,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
             child: Row(
               children: [
-                Text(
-                  'lim',
+                ResponsiveText(
+          '',
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontStyle: FontStyle.italic,
                     fontSize: limitTextSize,
@@ -238,8 +239,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(24.0),
-              child: Text(
-                'Select Limit Variable',
+              child: ResponsiveText(
+          '',
                 style: FinalsTheme.titleStyle(ctx).copyWith(fontSize: 20),
               ),
             ),
@@ -350,8 +351,8 @@ class _SolveButtonState extends State<_SolveButton> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Solve',
+              ResponsiveText(
+          '',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,

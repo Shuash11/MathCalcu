@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class HomeCard extends StatefulWidget {
   final IconData icon;
@@ -108,7 +109,7 @@ class _HomeCardState extends State<HomeCard> {
                         ),
                       ),
                       const SizedBox(height: 14),
-                      Text(
+                      ResponsiveText(
                         widget.label,
                         style: TextStyle(
                           fontSize: 15,

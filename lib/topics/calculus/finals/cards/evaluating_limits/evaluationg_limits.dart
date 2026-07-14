@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_module_registry.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,7 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                   borderRadius: BorderRadius.circular(22 * s),
                   child: Stack(
                     children: [
-                      // ✨ Gradient glow overlay
+                      // ? Gradient glow overlay
                       Positioned.fill(
                         child: AnimatedOpacity(
                           duration: const Duration(milliseconds: 300),
@@ -91,12 +92,12 @@ class _FinalsLimitsCardState extends State<FinalsLimitsCard> {
                         ),
                       ),
 
-                      // 🔥 Content
+                      // ?? Content
                       Padding(
                         padding: EdgeInsets.all(20 * s),
                         child: Row(
                           children: [
-                            // 🌅 LEFT ICON BOX
+                            // ?? LEFT ICON BOX
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
                               width: 60 * s,

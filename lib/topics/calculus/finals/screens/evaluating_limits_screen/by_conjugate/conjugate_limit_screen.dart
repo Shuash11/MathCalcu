@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_conjugate/solver_engine.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_conjugate/solver_engine.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_conjugate/solution_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'conjugate_answer_card.dart';
@@ -7,6 +7,7 @@ import 'conjugate_steps_view.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class ConjugateLimitScreen extends StatelessWidget {
   const ConjugateLimitScreen({super.key});
@@ -217,7 +218,7 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                           SizedBox(height: isCompact ? 16.0 : 24.0),
                           ConjugateAnswerCard(
                             problemNotation:
-                                'lim($_currentVariable → ${_approachController.text}) ${_expressionController.text}',
+                                'lim($_currentVariable ? ${_approachController.text}) ${_expressionController.text}',
                             resultString: _result!.resultString,
                             method: 'By Conjugate',
                             isShowingSteps: false,
@@ -273,12 +274,12 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Conjugate Method',
+                ResponsiveText(
+          '',
                   style: FinalsTheme.titleStyle(context).copyWith(fontSize: titleFontSize),
                 ),
-                Text(
-                  'Evaluating Limits',
+                ResponsiveText(
+          '',
                   style: FinalsTheme.subtitleStyle(context),
                 ),
               ],
@@ -297,8 +298,8 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                 Icon(Icons.unfold_more_double_rounded,
                     size: badgeIconSize, color: FinalsTheme.secondary),
                 SizedBox(width: badgePaddingH * 0.5),
-                Text(
-                  'By Conjugate',
+                ResponsiveText(
+          '',
                   style: TextStyle(
                     color: FinalsTheme.secondary,
                     fontWeight: FontWeight.w800,
