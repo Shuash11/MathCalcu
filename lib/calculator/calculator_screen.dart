@@ -134,11 +134,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   children: [
                     _buildButtonRow(['C', '(', ')', '⌫'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['7', '8', '9', '?'], theme),
+                    _buildButtonRow(['7', '8', '9', '\u00D7'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['4', '5', '6', '??'], theme),
+                    _buildButtonRow(['4', '5', '6', '\u2212'], theme),
                     const SizedBox(height: 8),
-                    _buildButtonRow(['1', '2', '3', '??'], theme),
+                    _buildButtonRow(['1', '2', '3', '\u221B'], theme),
                     const SizedBox(height: 8),
                     _buildButtonRow(['0', '.', 'Ans', '+'], theme),
                     const SizedBox(height: 8),
@@ -174,7 +174,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   Widget _buildButton(String value, ThemeProvider theme) {
-    final isOperator = ['+', '??', '??', '?', '='].contains(value);
+    final isOperator = ['+', '\u00D7', '\u2212', '\u221B', '='].contains(value);
     final isSpecial = ['C', '⌫', 'Ans'].contains(value);
     final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', '√'].contains(value);
     final isConstant = ['π', 'e'].contains(value);
