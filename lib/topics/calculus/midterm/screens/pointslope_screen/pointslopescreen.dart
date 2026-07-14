@@ -1,11 +1,11 @@
 ﻿// lib/ui/point_slope_screen.dart
 import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/pointslopetheme.dart';
+import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/pointslope_solver/pointslopesolver.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'pointslopesteps.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'pointslopesubwidget.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 
@@ -32,12 +32,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   late final AnimationController _pulseCtrl;
   late final Animation<double> _pulseAnim;
 
-  Timer? _debounceTimer;
-
-  String _lastM = '';
-  String _lastX = '';
-  String _lastY = '';
-
   static const double _baseDesignWidth = 400.0;
 
   @override
@@ -52,20 +46,11 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     _pulseAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
       CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
     );
-
-    _mCtrl.addListener(_onTextChanged);
-    _x1Ctrl.addListener(_onTextChanged);
-    _y1Ctrl.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
-    _debounceTimer?.cancel();
     _pulseCtrl.dispose();
-
-    _mCtrl.removeListener(_onTextChanged);
-    _x1Ctrl.removeListener(_onTextChanged);
-    _y1Ctrl.removeListener(_onTextChanged);
 
     _mCtrl.dispose();
     _x1Ctrl.dispose();
@@ -79,29 +64,6 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     _graphStringsNotifier.dispose();
 
     super.dispose();
-  }
-
-  void _onTextChanged() {
-    final mText = _mCtrl.text;
-    final xText = _x1Ctrl.text;
-    final yText = _y1Ctrl.text;
-
-    if (mText == _lastM && xText == _lastX && yText == _lastY) return;
-
-    _lastM = mText;
-    _lastX = xText;
-    _lastY = yText;
-
-    if (mText.trim().isEmpty || xText.trim().isEmpty || yText.trim().isEmpty) {
-      _debounceTimer?.cancel();
-      _resultNotifier.value = null;
-      _badgesNotifier.value = null;
-      _graphStringsNotifier.value = null;
-      return;
-    }
-
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 400), _computeResult);
   }
 
   void _computeResult() {
@@ -211,6 +173,28 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                               x1Focus: _x1Focus,
                               y1Focus: _y1Focus,
                               s: s,
+                            ),
+                          ),
+                          SizedBox(height: 12 * s),
+                          GestureDetector(
+                            onTap: _computeResult,
+                            child: Container(
+                              height: 52,
+                              decoration: BoxDecoration(
+                                color: MidpointTheme.accent(context),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Solve',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: MidpointTheme.accentLight(context),
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(height: 20 * s),

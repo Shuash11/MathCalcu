@@ -1,6 +1,7 @@
 import 'package:calculus_system/topics/calculus/midterm/graph/yintercept_graph/graph.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
+import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'slope_intercept_scr.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -13,6 +14,7 @@ class YInterceptTab extends StatelessWidget {
   final FocusNode mFocus, bFocus, sfFocus;
   final InputMode mode;
   final void Function(InputMode) onSwitchMode;
+  final VoidCallback onSolve;
   final ValueNotifier<YIResult?> resultNotifier;
   final ValueNotifier<String?> errorNotifier;
   final Animation<double> pulseAnim;
@@ -33,6 +35,7 @@ class YInterceptTab extends StatelessWidget {
     required this.sfFocus,
     required this.mode,
     required this.onSwitchMode,
+    required this.onSolve,
     required this.resultNotifier,
     required this.errorNotifier,
     required this.pulseAnim,
@@ -152,6 +155,30 @@ class YInterceptTab extends StatelessWidget {
                               ),
                             ),
                     ),
+                    const SizedBox(height: 16),
+                    // Solve button
+                    GestureDetector(
+                      onTap: onSolve,
+                      child: Container(
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: MidpointTheme.accent(context),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Solve',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: MidpointTheme.accentLight(context),
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     _buildDivider(context),
                     const SizedBox(height: 20),
                     // Answer card with results

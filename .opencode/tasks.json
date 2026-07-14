@@ -1,28 +1,15 @@
 {
   "tasks": [
-    { "id": 1, "description": "Create ResponsiveText + ResponsiveMath shared widgets", "status": "done" },
-    { "id": 2, "description": "Update FinalsTheme typography helpers", "status": "done" },
-    { "id": 3, "description": "Update all module themes (slope, yi, two-point, pointslope, midpoint, distance, inequalities, circles)", "status": "done" },
-    { "id": 4, "description": "Update navigation & tab bar labels", "status": "done" },
-    { "id": 5, "description": "Update shared widgets (answer_card, solution_step_card, steps_drawer, solution_steps_modal, home_card)", "status": "done" },
-    { "id": 6, "description": "Update home & top-level screens", "status": "done" },
-    { "id": 7, "description": "Update calculator topic cards", "status": "done" },
-    { "id": 8, "description": "Update slope screen family", "status": "done" },
-    { "id": 9, "description": "Update two-point slope screen", "status": "done" },
-    { "id": 10, "description": "Update y-intercept screen family", "status": "done" },
-    { "id": 11, "description": "Update point-slope screen", "status": "done" },
-    { "id": 12, "description": "Update midpoint screen", "status": "done" },
-    { "id": 13, "description": "Update distance screen", "status": "done" },
-    { "id": 14, "description": "Update inequalities screen family", "status": "done" },
-    { "id": 15, "description": "Update circles screen family", "status": "done" },
-    { "id": 16, "description": "Update finals screens — evaluating limits", "status": "done" },
-    { "id": 17, "description": "Update finals screens — limits at infinity", "status": "done" },
-    { "id": 18, "description": "Update finals screens — derivatives", "status": "done" },
-    { "id": 19, "description": "Update finals screens — slope using derivatives", "status": "done" },
-    { "id": 20, "description": "Update finals topic cards", "status": "done" },
-    { "id": 21, "description": "Update inequality topic cards", "status": "done" },
-    { "id": 22, "description": "Update widget/dialog files", "status": "done" },
-    { "id": 23, "description": "Run analyzer & verify", "status": "done" }
+    { "id": 1, "description": "Read all 5 modified source files completely", "status": "done" },
+    { "id": 2, "description": "Run flutter analyze on each modified file", "status": "done" },
+    { "id": 3, "description": "Find and read all related test files", "status": "done" },
+    { "id": 4, "description": "Run flutter test and record results", "status": "done" },
+    { "id": 5, "description": "Check imports: unused, missing, broken", "status": "done" },
+    { "id": 6, "description": "Check for unused variables/state", "status": "done" },
+    { "id": 7, "description": "Verify solve button wired to compute/solve method", "status": "done" },
+    { "id": 8, "description": "Verify auto-solve listeners fully removed", "status": "done" },
+    { "id": 9, "description": "Verify result area starts empty and persists after solving", "status": "done" },
+    { "id": 10, "description": "Write readiness report to solve-button-READINESS.md", "status": "done" }
   ],
   "completed": true
 }

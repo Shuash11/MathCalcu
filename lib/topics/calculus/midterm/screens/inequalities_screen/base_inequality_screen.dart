@@ -1,5 +1,4 @@
-﻿import 'dart:async';
-import 'package:calculus_system/core/solve_result.dart';
+﻿import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_solver/inequality_solver_router.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/inequalities_graph/inequality_graph.dart';
@@ -45,25 +44,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   bool _loading = false;
   bool _solved = false;
 
-  Timer? _debounce;
   int _requestId = 0;
-
-  void _onInputChanged(String value) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-
-    if (value.trim().isEmpty) {
-      setState(() {
-        _detectedType = null;
-        _result = null;
-        _solved = false;
-      });
-      return;
-    }
-
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      _solve();
-    });
-  }
 
   Future<void> _solve() async {
     final input = _inputCtrl.text.trim();
@@ -151,7 +132,6 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   @override
   void dispose() {
     _inputCtrl.dispose();
-    _debounce?.cancel();
     _hideKeyboardSignal.dispose();
     super.dispose();
   }
@@ -239,7 +219,6 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           controller: _inputCtrl,
           accentColor: InequalityTheme.accentColor,
           hint: widget.hint,
-          onChanged: _onInputChanged,
           onSolve: _solve,
         ),
         MathKeyboard(

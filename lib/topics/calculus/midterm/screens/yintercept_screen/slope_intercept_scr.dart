@@ -1,5 +1,4 @@
 ﻿// ignore: file_names
-import 'dart:async';
 import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
@@ -31,7 +30,6 @@ class _YInterceptScreenState extends State<YInterceptScreen>
   InputMode _mode = InputMode.slopeIntercept;
   final _resultNotifier = ValueNotifier<YIResult?>(null);
   final _errorNotifier = ValueNotifier<String?>(null);
-  Timer? _debounce;
 
   late final AnimationController _pulseCtrl;
   late final Animation<double> _pulseAnim;
@@ -46,17 +44,12 @@ class _YInterceptScreenState extends State<YInterceptScreen>
     _pulseAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
       CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
     );
-    _mCtrl.addListener(_onChanged);
-    _bCtrl.addListener(_onChanged);
-    _sfCtrl.addListener(_onChanged);
   }
 
   @override
   void dispose() {
-    _debounce?.cancel();
     _pulseCtrl.dispose();
     for (final c in [_mCtrl, _bCtrl, _sfCtrl]) {
-      c.removeListener(_onChanged);
       c.dispose();
     }
     for (final f in [_mFocus, _bFocus, _sfFocus]) {
@@ -65,11 +58,6 @@ class _YInterceptScreenState extends State<YInterceptScreen>
     _resultNotifier.dispose();
     _errorNotifier.dispose();
     super.dispose();
-  }
-
-  void _onChanged() {
-    _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), _compute);
   }
 
   void _switchMode(InputMode mode) {
@@ -150,7 +138,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
             _buildHeader(context),
             const SizedBox(height: 16),
             Expanded(
-              child: YInterceptTab(
+              child:               YInterceptTab(
                 mCtrl: _mCtrl,
                 bCtrl: _bCtrl,
                 sfCtrl: _sfCtrl,
@@ -159,6 +147,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
                 sfFocus: _sfFocus,
                 mode: _mode,
                 onSwitchMode: _switchMode,
+                onSolve: _compute,
                 resultNotifier: _resultNotifier,
                 errorNotifier: _errorNotifier,
                 pulseAnim: _pulseAnim,

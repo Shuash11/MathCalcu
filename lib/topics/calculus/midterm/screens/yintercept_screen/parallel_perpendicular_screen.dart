@@ -1,6 +1,5 @@
 ﻿// lib/modules/y-intercept/ui/parallel_perpendicular_screen.dart
 
-import 'dart:async';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/yintercept_graph/perpenparallel_graph.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
@@ -12,6 +11,7 @@ import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
 
 const _cyan = Color(0xFF06B6D4);
 const _accent = FinalsTheme.primary;
@@ -38,26 +38,18 @@ class _ParallelPerpendicularScreenState
   final _hideKeyboardSignal = ValueNotifier<int>(0);
   final _resultNotifier = ValueNotifier<PPResult?>(null);
   final _errorNotifier = ValueNotifier<String?>(null);
-  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _line1Ctrl.addListener(_onChanged);
-    _line2Ctrl.addListener(_onChanged);
     _line1Focus.addListener(_onLine1FocusChange);
     _line2Focus.addListener(_onLine2FocusChange);
   }
 
   @override
   void dispose() {
-    _debounce?.cancel();
-    _line1Ctrl
-      ..removeListener(_onChanged)
-      ..dispose();
-    _line2Ctrl
-      ..removeListener(_onChanged)
-      ..dispose();
+    _line1Ctrl.dispose();
+    _line2Ctrl.dispose();
     _line1Focus
       ..removeListener(_onLine1FocusChange)
       ..dispose();
@@ -68,11 +60,6 @@ class _ParallelPerpendicularScreenState
     _errorNotifier.dispose();
     _hideKeyboardSignal.dispose();
     super.dispose();
-  }
-
-  void _onChanged() {
-    _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 400), _compute);
   }
 
   void _onLine1FocusChange() {
@@ -186,7 +173,24 @@ class _ParallelPerpendicularScreenState
                       textInputAction: TextInputAction.done,
                       onEditingComplete: () => _line2Focus.unfocus(),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 14),
+                    GestureDetector(
+                      onTap: _compute,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: MidpointTheme.accent(context),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Solve',
+                            style: MidpointTheme.calculateButton(context),
+                          ),
+                        ),
+                      ),
+                    ),
 
                     // error message
                     ValueListenableBuilder<String?>(
@@ -372,7 +376,7 @@ class _EmptyState extends StatelessWidget {
               style: YITheme.titleStyle(context).copyWith(
                   color: YITheme.textSecondary(context), fontSize: 14)),
           const SizedBox(height: 4),
-          ResponsiveText('Results will appear here automatically.',
+          ResponsiveText('Press Solve to see results.',
               textAlign: TextAlign.center,
               style: YITheme.subtitleStyle(context).copyWith(fontSize: 12)),
         ],
