@@ -20,13 +20,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final themeProvider = ThemeProvider();
+  await themeProvider.loadTheme();
 
   // Only set system UI overlay style on mobile platforms (not on web or desktop)
   try {
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
+      SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness:
+            themeProvider.isDark ? Brightness.light : Brightness.dark,
       ),
     );
   } catch (_) {
@@ -227,7 +229,7 @@ class _CalculusAppState extends State<CalculusApp> {
     return MaterialApp.router(
       title: 'MathCalcu',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
+      theme: themeProvider.isDark ? AppTheme.dark() : AppTheme.light(),
       routerConfig: AppRouter.router,
       builder: (context, child) {
         return child ?? const Scaffold(body: Center(child: Text('Error loading app')));
@@ -252,6 +254,21 @@ class AppTheme {
         tertiary: Color(0xFF16A34A),
         surface: Color(0xFFFFFFFF),
         onSurface: Color(0xFF1E1E28),
+      ),
+      useMaterial3: true,
+    );
+  }
+
+  static ThemeData dark() {
+    return ThemeData(
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: const Color(0xFF1A1A2E),
+      colorScheme: const ColorScheme.dark(
+        primary: Color(0xFF6366F1),
+        secondary: Color(0xFFF4F4F1),
+        tertiary: Color(0xFF16A34A),
+        surface: Color(0xFF232340),
+        onSurface: Color(0xFFF4F4F1),
       ),
       useMaterial3: true,
     );

@@ -132,6 +132,64 @@ class _SettingsScreenState extends State<SettingsScreen>
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         children: [
+          _sectionHeader('Theme'),
+          buildAnimatedRow(0, _buildCard(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF312C85).withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      theme.isDark ? Icons.dark_mode : Icons.light_mode,
+                      size: 20,
+                      color: const Color(0xFF312C85),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Dark Mode',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            theme.isDark ? 'Dark theme active' : 'Light theme active',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: theme.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: theme.isDark,
+                    activeColor: const Color(0xFF312C85),
+                    onChanged: (_) {
+                      theme.toggleTheme();
+                      theme.saveTheme();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          )),
+          sectionDivider(),
           _sectionHeader('Support'),
           buildAnimatedRow(1, _buildTappableCard(
             child: _SettingsRow(

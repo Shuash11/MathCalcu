@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 /// Shows a modal bottom sheet containing [child] (typically a steps widget).
 ///
@@ -38,10 +40,10 @@ class _SolutionStepsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = theme ? const Color(0xFFF4F4F1) : Colors.white;
-    final handleColor = theme ? Colors.black26 : Colors.black26;
-    final textColor = theme ? const Color(0xFF0C0C09) : const Color(0xFF0C0C09);
+    final theme = context.watch<ThemeProvider>();
+    final bgColor = theme.surface;
+    final handleColor = theme.isDark ? Colors.white24 : Colors.black26;
+    final textColor = theme.textPrimary;
 
     return Container(
       decoration: BoxDecoration(
@@ -76,10 +78,10 @@ class _SolutionStepsModal extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF312C85),
+                        color: theme.accentColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.list_alt_rounded, color: Color(0xFFF4F4F1), size: 16),
+                      child: Icon(Icons.list_alt_rounded, color: theme.textPrimary, size: 16),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -98,13 +100,13 @@ class _SolutionStepsModal extends StatelessWidget {
                       child: Container(
                         width: 32,
                         height: 32,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF312C85),
+                        decoration: BoxDecoration(
+                          color: theme.accentColor,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.close_rounded,
-                          color: Color(0xFFF4F4F1),
+                          color: theme.textPrimary,
                           size: 18,
                         ),
                       ),
