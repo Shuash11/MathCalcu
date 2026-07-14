@@ -17,10 +17,10 @@ class _PointSlopeModuleCardState extends State<PointSlopeModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color _deepViolet = Color(0xFF7C3AED);
-  static const Color _electricPurple = Color(0xFFA855F7);
-  static const Color _softLavender = Color(0xFFC4B5FD);
-  static const Color _neonMagenta = Color(0xFFE879F9);
+  static const Color _deepViolet = Color(0xFF312C85);
+  static const Color _electricPurple = Color(0xFF0C0C09);
+  static const Color _softLavender = Color(0xFFE8E6E2);
+  static const Color _neonMagenta = Color(0xFF16A34A);
   static const double _baseDesignWidth = 400.0;
 
   @override

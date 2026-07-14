@@ -27,7 +27,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
   bool _downloading = false;
   bool _waitingForPermission = false;
 
-  static const _accent = Color(0xFF6C63FF);
+  static const _accent = Color(0xFF312C85);
 
   @override
   void initState() {
@@ -215,7 +215,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
       );
     }
 
-    // Initial state — simple "Update available" with Update/Later
+    // Initial state ï¿½ simple "Update available" with Update/Later
     return AlertDialog(
       backgroundColor: theme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),

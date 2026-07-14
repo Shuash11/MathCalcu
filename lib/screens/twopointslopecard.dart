@@ -18,8 +18,8 @@ class _TwoPointSlopeModuleCardState extends State<TwoPointSlopeModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color _amber = Color(0xFFF59E0B);
-  static const Color _softGold = Color(0xFFFCD34D);
+  static const Color _amber = Color(0xFFD97706);
+  static const Color _softGold = Color(0xFFE8E6E2);
   static const double _baseDesignWidth = 400.0;
 
   @override

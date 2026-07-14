@@ -15,7 +15,7 @@ class _WebUpdateDialog extends StatelessWidget {
   final String latestVersion;
   const _WebUpdateDialog({required this.latestVersion});
 
-  static const _accent = Color(0xFF6C63FF);
+  static const _accent = Color(0xFF312C85);
 
   @override
   Widget build(BuildContext context) {

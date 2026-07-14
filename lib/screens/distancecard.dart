@@ -17,8 +17,8 @@ class _DistanceModuleCardState extends State<DistanceModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color orange = Color(0xFFFF6B35);
-  static const Color lightOrange = Color(0xFFFFB4A2);
+  static const Color orange = Color(0xFF0C0C09);
+  static const Color lightOrange = Color(0xFFE8E6E2);
   static const double _baseDesignWidth = 400.0;
 
   @override

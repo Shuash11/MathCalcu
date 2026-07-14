@@ -20,10 +20,10 @@ class _YInterceptModuleCardState extends State<YInterceptModuleCard>
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
-  static const Color _forestGreen = Color(0xFF059669);
-  static const Color _emerald = Color(0xFF10B981);
-  static const Color _mint = Color(0xFF6EE7B7);
-  static const Color _gold = Color(0xFFF59E0B);
+  static const Color _forestGreen = Color(0xFF16A34A);
+  static const Color _emerald = Color(0xFF0C0C09);
+  static const Color _mint = Color(0xFFE8E6E2);
+  static const Color _gold = Color(0xFFD97706);
   static const double _baseDesignWidth = 400.0;
 
   @override

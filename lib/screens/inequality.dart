@@ -17,9 +17,9 @@ class _InequalityModuleCardState extends State<InequalityModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color _purple = Color(0xFF6C63FF);
-  static const Color _purpleLight = Color(0xFF9B8FFF);
-  static const Color _teal = Color(0xFF2DD4BF);
+  static const Color _purple = Color(0xFF312C85);
+  static const Color _purpleLight = Color(0xFFE8E6E2);
+  static const Color _teal = Color(0xFF16A34A);
   static const double _baseDesignWidth = 400.0;
 
   @override

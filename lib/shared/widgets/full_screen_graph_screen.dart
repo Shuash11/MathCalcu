@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 /// A full-screen page that displays a graph widget, formula, and key info.
 ///
@@ -19,16 +21,15 @@ class FullScreenGraphScreen extends StatelessWidget {
     this.formula,
     this.keyInfo,
     this.formulaWidget,
-    this.accentColor = const Color(0xFF6366F1),
+    this.accentColor = const Color(0xFF312C85),
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final theme = context.watch<ThemeProvider>();
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0A0A0F) : Colors.grey[50],
+      backgroundColor: theme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -43,9 +44,7 @@ class FullScreenGraphScreen extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.06)
-                            : Colors.black.withValues(alpha: 0.04),
+                        color: theme.textPrimary.withValues(alpha: 0.04),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: accentColor.withValues(alpha: 0.2),
@@ -53,7 +52,7 @@ class FullScreenGraphScreen extends StatelessWidget {
                       ),
                       child: Icon(
                         Icons.arrow_back_rounded,
-                        color: isDark ? Colors.white70 : Colors.black54,
+                        color: theme.textSecondary,
                         size: 20,
                       ),
                     ),
@@ -65,7 +64,7 @@ class FullScreenGraphScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : Colors.black87,
+                        color: theme.textPrimary,
                       ),
                     ),
                   ),
@@ -80,9 +79,7 @@ class FullScreenGraphScreen extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.03)
-                        : Colors.white,
+                    color: theme.card,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: accentColor.withValues(alpha: 0.15),
@@ -110,9 +107,7 @@ class FullScreenGraphScreen extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.04)
-                      : Colors.white,
+                  color: theme.card,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: accentColor.withValues(alpha: 0.12),
@@ -161,7 +156,7 @@ class FullScreenGraphScreen extends StatelessWidget {
                                 item.label,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isDark ? Colors.white54 : Colors.black45,
+                                  color: theme.textSecondary,
                                 ),
                               ),
                               const SizedBox(width: 4),
@@ -170,7 +165,7 @@ class FullScreenGraphScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: isDark ? Colors.white70 : Colors.black87,
+                                  color: theme.textPrimary,
                                   fontFamily: 'monospace',
                                 ),
                               ),

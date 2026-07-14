@@ -15,7 +15,7 @@ void showDonateSheet(BuildContext context) {
 class _DonateSheet extends StatelessWidget {
   const _DonateSheet();
 
-  static const _accent = Color(0xFF6C63FF);
+  static const _accent = Color(0xFF312C85);
   static const _gcashNumber = '09334375611';
   static const _baseDesignWidth = 400.0;
 

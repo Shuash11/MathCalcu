@@ -19,17 +19,14 @@ void main() async {
   // ── PRE-RUN INITIALIZATION ──
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Create theme provider (load asynchronously in background)
   final themeProvider = ThemeProvider();
-  // Don't await - let it load in background while app starts
-  themeProvider.load();
 
   // Only set system UI overlay style on mobile platforms (not on web or desktop)
   try {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
       ),
     );
   } catch (_) {
@@ -86,10 +83,10 @@ class _CalculusAppState extends State<CalculusApp> {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFB020).withValues(alpha: 0.12),
+                color: const Color(0xFF312C85).withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFFFFB020)),
+              child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFF312C85)),
             ),
             const SizedBox(height: 16),
             const Text(
@@ -121,7 +118,7 @@ class _CalculusAppState extends State<CalculusApp> {
                     Navigator.of(ctx).pop();
                     UpdateService.openInstallSettings();
                   },
-                  style: FilledButton.styleFrom(backgroundColor: const Color(0xFFFFB020)),
+                  style: FilledButton.styleFrom(backgroundColor: const Color(0xFF312C85)),
                   child: const Text('Open Settings'),
                 ),
               ],
@@ -230,7 +227,7 @@ class _CalculusAppState extends State<CalculusApp> {
     return MaterialApp.router(
       title: 'MathCalcu',
       debugShowCheckedModeBanner: false,
-      theme: themeProvider.isLight ? AppTheme.light() : AppTheme.dark(),
+      theme: AppTheme.light(),
       routerConfig: AppRouter.router,
       builder: (context, child) {
         return child ?? const Scaffold(body: Center(child: Text('Error loading app')));
@@ -248,26 +245,13 @@ class AppTheme {
   static ThemeData light() {
     return ThemeData(
       brightness: Brightness.light,
-      scaffoldBackgroundColor: const Color(0xFFF7F7FA),
+      scaffoldBackgroundColor: const Color(0xFFF4F4F1),
       colorScheme: const ColorScheme.light(
-        primary: Color(0xFF6C63FF),
-        secondary: Color(0xFF00D4AA),
+        primary: Color(0xFF312C85),
+        secondary: Color(0xFF0C0C09),
+        tertiary: Color(0xFF16A34A),
         surface: Color(0xFFFFFFFF),
         onSurface: Color(0xFF1E1E28),
-      ),
-      useMaterial3: true,
-    );
-  }
-
-  static ThemeData dark() {
-    return ThemeData(
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: const Color(0xFF0A0A0F),
-      colorScheme: const ColorScheme.dark(
-        primary: Color(0xFF6C63FF),
-        secondary: Color(0xFF00D4AA),
-        surface: Color(0xFF12121A),
-        onSurface: Color(0xFFE8E8F0),
       ),
       useMaterial3: true,
     );

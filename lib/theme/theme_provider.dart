@@ -1,54 +1,15 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  static const String _themeKey = 'is_light_mode';
-  bool _isLight = false;
-  bool get isLight => _isLight;
+  // Minimal is light-only — always true
+  bool get isLight => true;
 
-  SharedPreferences? _prefs;
-
-  ThemeProvider() {
-    _init();
-  }
-
-  Future<void> _init() async {
-    _prefs = await SharedPreferences.getInstance();
-    _isLight = _prefs?.getBool(_themeKey) ?? false;
-    notifyListeners();
-  }
-
-  /// Optional: Use this in main.dart to ensure theme is loaded before runApp
-  Future<void> load() async {
-    _prefs ??= await SharedPreferences.getInstance();
-    _isLight = _prefs?.getBool(_themeKey) ?? false;
-    notifyListeners();
-  }
-
-  Future<void> toggle() async {
-    _isLight = !_isLight;
-    notifyListeners();
-
-    _prefs ??= await SharedPreferences.getInstance();
-    await _prefs?.setBool(_themeKey, _isLight);
-  }
-
-  // Quick utility colors that listen to the theme state
-  Color get surface =>
-      _isLight ? const Color(0xFFF7F7FA) : const Color(0xFF0A0A0F);
-  Color get card =>
-      _isLight ? const Color(0xFFFFFFFF) : const Color(0xFF12121A);
-  Color get cardSecondary =>
-      _isLight ? const Color(0xFFF0F0F5) : const Color(0xFF0D0D14);
-  Color get textPrimary =>
-      _isLight ? const Color(0xFF1E1E28) : const Color(0xFFE8E8F0);
-  Color get textSecondary => _isLight
-      ? const Color(0xFF1E1E28).withValues(alpha: 0.6)
-      : const Color(0xFFE8E8F0).withValues(alpha: 0.4);
-
-  Color get shadowColor => _isLight
-      ? Colors.black.withValues(alpha: 0.08)
-      : Colors.black.withValues(alpha: 0.4);
-
-  Color get accentColor => const Color(0xFF6C63FF);
+  // Minimal design system tokens
+  Color get surface => const Color(0xFFF4F4F1);
+  Color get card => const Color(0xFFFFFFFF);
+  Color get cardSecondary => const Color(0xFFE8E6E2);
+  Color get textPrimary => const Color(0xFF0C0C09);
+  Color get textSecondary => const Color(0xFF0C0C09).withValues(alpha: 0.6);
+  Color get shadowColor => Colors.black.withValues(alpha: 0.08);
+  Color get accentColor => const Color(0xFF312C85);
 }

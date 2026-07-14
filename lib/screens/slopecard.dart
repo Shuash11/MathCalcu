@@ -17,8 +17,8 @@ class _SlopeModuleCardState extends State<SlopeModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color pinkAccent = Color(0xFFFF6B6B);
-  static const Color lightPink = Color(0xFFFFB8B8);
+  static const Color pinkAccent = Color(0xFF312C85);
+  static const Color lightPink = Color(0xFFE8E6E2);
   static const double _baseDesignWidth = 400.0;
 
   @override

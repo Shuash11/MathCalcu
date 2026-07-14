@@ -33,7 +33,7 @@ class SolutionStepCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF2A2A3E),
+              color: const Color(0xFF312C85),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.6),
                 width: 1.5,

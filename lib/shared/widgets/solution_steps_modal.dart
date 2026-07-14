@@ -39,9 +39,9 @@ class _SolutionStepsModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = theme ? const Color(0xFF1E1E2E) : Colors.white;
-    final handleColor = theme ? Colors.white24 : Colors.black26;
-    final textColor = theme ? Colors.white : const Color(0xFF1E1E2E);
+    final bgColor = theme ? const Color(0xFFF4F4F1) : Colors.white;
+    final handleColor = theme ? Colors.black26 : Colors.black26;
+    final textColor = theme ? const Color(0xFF0C0C09) : const Color(0xFF0C0C09);
 
     return Container(
       decoration: BoxDecoration(
@@ -76,10 +76,10 @@ class _SolutionStepsModal extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2A2A3E),
+                        color: const Color(0xFF312C85),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.list_alt_rounded, color: Color(0xFFFFD600), size: 16),
+                      child: const Icon(Icons.list_alt_rounded, color: Color(0xFFF4F4F1), size: 16),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -99,12 +99,12 @@ class _SolutionStepsModal extends StatelessWidget {
                         width: 32,
                         height: 32,
                         decoration: const BoxDecoration(
-                          color: Color(0xFFFFD600),
+                          color: Color(0xFF312C85),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
                           Icons.close_rounded,
-                          color: Color(0xFF1E1E2E),
+                          color: Color(0xFFF4F4F1),
                           size: 18,
                         ),
                       ),

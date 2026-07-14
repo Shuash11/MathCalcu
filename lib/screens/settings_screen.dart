@@ -16,7 +16,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
-  static const _accent = Color(0xFF6C63FF);
+  static const _accent = Color(0xFF312C85);
   static const _owner = 'Shuash11';
   static const _repo = 'MathCalcu';
   String _appVersion = '';
@@ -132,18 +132,6 @@ class _SettingsScreenState extends State<SettingsScreen>
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         children: [
-          _sectionHeader('Theme'),
-          buildAnimatedRow(0, _buildCard(
-            child: _SettingsRow(
-              icon: theme.isLight ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-              label: 'Dark Mode',
-              trailing: Switch.adaptive(
-                value: !theme.isLight,
-                onChanged: (_) => theme.toggle(),
-              ),
-            ),
-          )),
-          sectionDivider(),
           _sectionHeader('Support'),
           buildAnimatedRow(1, _buildTappableCard(
             child: _SettingsRow(
@@ -334,10 +322,10 @@ class _SettingsRow extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
+              color: const Color(0xFF312C85).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: const Color(0xFF6C63FF)),
+            child: Icon(icon, size: 20, color: const Color(0xFF312C85)),
           ),
           const SizedBox(width: 16),
           Expanded(

@@ -1,15 +1,11 @@
 {
   "tasks": [
-    { "id": 1, "description": "Read all 5 modified source files completely", "status": "done" },
-    { "id": 2, "description": "Run flutter analyze on each modified file", "status": "done" },
-    { "id": 3, "description": "Find and read all related test files", "status": "done" },
-    { "id": 4, "description": "Run flutter test and record results", "status": "done" },
-    { "id": 5, "description": "Check imports: unused, missing, broken", "status": "done" },
-    { "id": 6, "description": "Check for unused variables/state", "status": "done" },
-    { "id": 7, "description": "Verify solve button wired to compute/solve method", "status": "done" },
-    { "id": 8, "description": "Verify auto-solve listeners fully removed", "status": "done" },
-    { "id": 9, "description": "Verify result area starts empty and persists after solving", "status": "done" },
-    { "id": 10, "description": "Write readiness report to solve-button-READINESS.md", "status": "done" }
+    { "id": 1, "description": "Update ThemeProvider: remove dark mode, set Minimal colors", "status": "done" },
+    { "id": 2, "description": "Update FinalsTheme: Minimal colors + Inter/Open Sans typography", "status": "done" },
+    { "id": 3, "description": "Update main.dart: SystemUiOverlayStyle for light theme", "status": "done" },
+    { "id": 4, "description": "Remove dark mode toggle from settings_screen.dart", "status": "done" },
+    { "id": 5, "description": "Audit hardcoded colors across app screens", "status": "done" },
+    { "id": 6, "description": "Run flutter analyze + flutter test", "status": "done" }
   ],
   "completed": true
 }

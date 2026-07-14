@@ -73,7 +73,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
   }
 
   Widget _buildHeader(ThemeProvider theme) {
-    const accent = Color(0xFF6C63FF);
+    const accent = Color(0xFF312C85);
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -172,7 +172,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
   }
 
   Widget _buildBanner(ThemeProvider theme) {
-    const accent = Color(0xFF6C63FF);
+    const accent = Color(0xFF312C85);
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -261,7 +261,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
         icon: Icons.local_fire_department_rounded,
         label: 'Finals',
         subtitle: 'Limits, derivatives, and advanced topics',
-        color: const Color(0xFFFFB020),
+        color: const Color(0xFF312C85),
       ),
     ];
 

@@ -26,7 +26,7 @@ class _AboutSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    const accent = Color(0xFF6C63FF);
+    const accent = Color(0xFF312C85);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.85,

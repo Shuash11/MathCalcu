@@ -6,21 +6,21 @@ import 'package:calculus_system/theme/theme_provider.dart';
 // FINALS THEME
 //
 // Separate theme layer on top of ThemeProvider.
-// Uses ThemeProvider for light/dark surface base,
-// but overrides with Finals-specific amber/gold palette.
+// Uses ThemeProvider for surface base,
+// but overrides with Finals-specific Minimal palette.
 //
-// Primary   : Amber gold   →  Color(0xFFFFB020)
-// Secondary : Deep orange  →  Color(0xFFFF6B35)
-// Tertiary  : Soft yellow  →  Color(0xFFFFD166)
-// Danger    : Rose red     →  Color(0xFFEF476F)  ← for badges
+// Primary   : Dark indigo  →  Color(0xFF312C85)
+// Secondary : Dark charcoal→  Color(0xFF0C0C09)
+// Tertiary  : Green        →  Color(0xFF16A34A)
+// Danger    : Red          →  Color(0xFFDC2626)  ← for badges
 // ─────────────────────────────────────────────────────────────
 
 class FinalsTheme {
   // ── Brand colors ──────────────────────────────────────────
-  static const Color primary   = Color(0xFFFFB020);
-  static const Color secondary = Color(0xFFFF6B35);
-  static const Color tertiary  = Color(0xFFFFD166);
-  static const Color danger    = Color(0xFFEF476F);
+  static const Color primary   = Color(0xFF312C85);
+  static const Color secondary = Color(0xFF0C0C09);
+  static const Color tertiary  = Color(0xFF16A34A);
+  static const Color danger    = Color(0xFFDC2626);
 
   // ── Surface / card — delegates to ThemeProvider ───────────
   static Color surface(BuildContext context) =>
@@ -73,7 +73,7 @@ class FinalsTheme {
 
   // ── Gradients ─────────────────────────────────────────────
   static const LinearGradient headerGradient = LinearGradient(
-    colors: [Color(0xFFFFB020), Color(0xFFFF6B35)],
+    colors: [Color(0xFF312C85), Color(0xFF0C0C09)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

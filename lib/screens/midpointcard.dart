@@ -24,11 +24,11 @@ class _MidpointModuleCardState extends State<MidpointModuleCard> {
     final theme = context.watch<ThemeProvider>();
 
     final Color accent =
-        theme.isLight ? const Color(0xFF334155) : const Color(0xFFF8F9FA);
+        theme.isLight ? const Color(0xFF0C0C09) : const Color(0xFFF4F4F1);
     final Color secondary =
-        theme.isLight ? const Color(0xFF475569) : const Color(0xFFE9ECEF);
+        theme.isLight ? const Color(0xFF312C85) : const Color(0xFFE8E6E2);
     final Color subtle =
-        theme.isLight ? const Color(0xFF64748B) : const Color(0xFFDEE2E6);
+        theme.isLight ? const Color(0xFF16A34A) : const Color(0xFFD97706);
 
     return LayoutBuilder(
       builder: (context, constraints) {

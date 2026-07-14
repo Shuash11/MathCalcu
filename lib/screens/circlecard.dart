@@ -17,9 +17,9 @@ class _CircleModuleCardState extends State<CircleModuleCard> {
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color _indigo = Color(0xFF6366F1);
-  static const Color _cyan = Color(0xFF06B6D4);
-  static const Color _teal = Color(0xFF14B8A6);
+  static const Color _indigo = Color(0xFF312C85);
+  static const Color _cyan = Color(0xFF16A34A);
+  static const Color _teal = Color(0xFFE8E6E2);
   static const double _baseDesignWidth = 400.0;
 
   @override
