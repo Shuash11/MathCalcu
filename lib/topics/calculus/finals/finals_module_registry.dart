@@ -16,28 +16,28 @@ class FinalsModuleRegistry {
       subtitle: 'By substitution  ? By conjugate ? By factoring ',
       route: '/topics/calculus/finals/limits',
       icon: Icons.functions_rounded,
-      accent: Color(0xFFFFB020),
+      accent: Color(0xFFE9ECEF),
     ),
     const FinalsModuleEntry(
       label: 'Limits at Infinity',
       subtitle: 'Horizontal asymptotes & end behavior',
       route: '/topics/calculus/finals/infinity',
       icon: Icons.all_inclusive_rounded,
-      accent: Color(0xFFFF6B35), // Secondary deep orange
+      accent: Color(0xFFE9ECEF),
     ),
     const FinalsModuleEntry(
       label: 'Derivatives',
       subtitle: 'Power rule ? Product rule ? Quotient rule ? Chain rule',
       route: '/topics/calculus/finals/derivatives',
       icon: Icons.trending_up_rounded,
-      accent: Color(0xFFFFD166), // Tertiary soft yellow
+      accent: Color(0xFFE9ECEF),
     ),
     const FinalsModuleEntry(
       label: 'Slope Using Derivatives',
       subtitle: 'Tangent line slope ? Evaluate at point ? Instantaneous rate',
       route: '/topics/calculus/finals/slope-derivative',
       icon: Icons.show_chart_rounded,
-      accent: Color(0xFFEF476F), // Danger rose red
+      accent: Color(0xFFE9ECEF),
     ),
     // const FinalsModuleEntry(
     //   label: 'Limits',
