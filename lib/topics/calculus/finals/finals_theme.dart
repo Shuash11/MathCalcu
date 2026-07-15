@@ -5,22 +5,15 @@ import 'package:calculus_system/theme/theme_provider.dart';
 // ─────────────────────────────────────────────────────────────
 // FINALS THEME
 //
-// Separate theme layer on top of ThemeProvider.
-// Uses ThemeProvider for surface base,
-// but overrides with Finals-specific Minimal palette.
-//
-// Primary   : Maroon       →  Color(0xFF7F1D1D)
-// Secondary : Dark charcoal→  Color(0xFF0C0C09)
-// Tertiary  : Green        →  Color(0xFF16A34A)
-// Danger    : Red          →  Color(0xFFDC2626)  ← for badges
+// Dark slate aesthetic matching the app-wide dark mode.
 // ─────────────────────────────────────────────────────────────
 
 class FinalsTheme {
-  // ── Brand colors ──────────────────────────────────────────
-  static const Color primary   = Color(0xFF7F1D1D);
+  // ── Brand colors — white/ice for dark mode ────────────────
+  static const Color primary   = Color(0xFFE9ECEF);
   static const Color secondary = Color(0xFF0C0C09);
   static const Color tertiary  = Color(0xFF16A34A);
-  static const Color danger    = Color(0xFFDC2626);
+  static const Color danger    = Color(0xFFFF6B6B);
 
   // ── Surface / card — delegates to ThemeProvider ───────────
   static Color surface(BuildContext context) =>
@@ -73,7 +66,7 @@ class FinalsTheme {
 
   // ── Gradients ─────────────────────────────────────────────
   static const LinearGradient headerGradient = LinearGradient(
-    colors: [Color(0xFF7F1D1D), Color(0xFF4A0E1A)],
+    colors: [Color(0xFFE9ECEF), Color(0xFFDEE2E6)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

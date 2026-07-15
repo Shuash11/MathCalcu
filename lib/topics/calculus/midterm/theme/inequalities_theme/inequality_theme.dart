@@ -3,17 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // ═════════════════════════════════════════════════════════════
-// JOASHUA — INEQUALITY MODULE THEME
-// ─────────────────────────────────────────────────────────────
-// This file is JOASHUA's design space.
-// Values are now context-aware to support light/dark mode.
+// INEQUALITY MODULE THEME
+// Dark slate aesthetic matching the app-wide dark mode
 // ═════════════════════════════════════════════════════════════
 
 class InequalityTheme {
-  // ── JOASHUA: customize your accent color here ─────────────
-  static const Color accentColor = Color(0xFF6C63FF); // violet
-  static const Color secondAccent = Color(0xFFA89CFF); // lighter violet
-  // ──────────────────────────────────────────────────────────
+  // ── Accent colors — white/ice for dark mode ───────────────
+  static const Color accentColor = Color(0xFFE9ECEF);
+  static const Color secondAccent = Color(0xFFF8F9FA);
 
   // Dynamic values using BuildContext
   static Color surface(BuildContext context) =>
@@ -26,9 +23,9 @@ class InequalityTheme {
       context.watch<ThemeProvider>().textSecondary;
 
   static const Map<String, Color> subtypeAccents = {
-    'strict': Color(0xFF6C63FF),
-    'non_strict': Color(0xFF9B8FFF),
-    'absolute': Color(0xFFC4BCFF),
+    'strict': Color(0xFFE9ECEF),
+    'non_strict': Color(0xFFF8F9FA),
+    'absolute': Color(0xFFDEE2E6),
   };
 
   static TextStyle titleStyle(BuildContext context,

@@ -227,7 +227,7 @@ class _DistancescreenState extends State<Distancescreen>
           duration: DistanceTheme.modeSwitchDuration,
           padding: const EdgeInsets.symmetric(vertical: DistanceTheme.spaceMd),
           decoration: BoxDecoration(
-            color: active ? DistanceTheme.accent : Colors.transparent,
+            color: active ? DistanceTheme.accentDefault : Colors.transparent,
             borderRadius: BorderRadius.circular(9),
           ),
           child: ResponsiveText(
@@ -263,7 +263,7 @@ class _DistancescreenState extends State<Distancescreen>
                         decoration: BoxDecoration(
                           color: DistanceTheme.card(context),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: DistanceTheme.accent15),
+                          border: Border.all(color: DistanceTheme.accent15Static),
                         ),
                         child: Icon(Icons.arrow_back_rounded,
                             color: DistanceTheme.text(context), size: 22),
@@ -274,9 +274,9 @@ class _DistancescreenState extends State<Distancescreen>
                       width: 44,
                       height: 44,
                       decoration: DistanceTheme.headerIconDecoration(
-                          DistanceTheme.accent12),
+                          DistanceTheme.accent12Static),
                       child: const Icon(Icons.straighten_rounded,
-                          color: DistanceTheme.accent, size: 22),
+                          color: DistanceTheme.accentDefault, size: 22),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -300,7 +300,7 @@ class _DistancescreenState extends State<Distancescreen>
                 // ── Mode toggle ──────────────────────────────
                 Container(
                   decoration: DistanceTheme.cardDecoration(context).copyWith(
-                    border: Border.all(color: DistanceTheme.accent12),
+                    border: Border.all(color: DistanceTheme.accent12Static),
                   ),
                   padding: const EdgeInsets.all(4),
                   child: Row(
@@ -331,7 +331,7 @@ class _DistancescreenState extends State<Distancescreen>
                   child: Row(
                     children: [
                       const Icon(Icons.functions_rounded,
-                          color: DistanceTheme.accent70, size: 16),
+                          color: DistanceTheme.accent70Static, size: 16),
                       const SizedBox(width: DistanceTheme.spaceXl),
                       ResponsiveText(
                         _is2D ? 'd = √((x₂−x₁)² + (y₂−y₁)²)' : 'd = |x₂ − x₁|',
@@ -356,11 +356,11 @@ class _DistancescreenState extends State<Distancescreen>
                         ),
                       ),
                       const SizedBox(width: DistanceTheme.spaceLg),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 22),
-                        child: Icon(Icons.arrow_forward_rounded,
-                            color: DistanceTheme.accent30, size: 20),
-                      ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 22),
+                          child: Icon(Icons.arrow_forward_rounded,
+                              color: DistanceTheme.accent30Static, size: 20),
+                        ),
                       const SizedBox(width: DistanceTheme.spaceLg),
                       Expanded(
                         child: _buildInputField(
@@ -408,7 +408,7 @@ class _DistancescreenState extends State<Distancescreen>
                               height: 6,
                               decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: DistanceTheme.accent30),
+                                  color: DistanceTheme.accent30Static),
                             ),
                             const SizedBox(height: 6),
                             Container(
@@ -416,7 +416,7 @@ class _DistancescreenState extends State<Distancescreen>
                               height: 6,
                               decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: DistanceTheme.accent15),
+                                  color: DistanceTheme.accent15Static),
                             ),
                           ],
                         ),
@@ -458,7 +458,7 @@ class _DistancescreenState extends State<Distancescreen>
                     padding: const EdgeInsets.symmetric(
                         vertical: DistanceTheme.space2xl),
                     decoration: BoxDecoration(
-                      color: DistanceTheme.accent,
+                      color: DistanceTheme.accentDefault,
                       borderRadius:
                           BorderRadius.circular(DistanceTheme.radiusXl),
                       boxShadow: DistanceTheme.accentShadow,
@@ -504,9 +504,9 @@ class _DistancescreenState extends State<Distancescreen>
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
-                          color: DistanceTheme.accent.withValues(alpha: 0.1),
+                          color: DistanceTheme.accentDefault.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: DistanceTheme.accent30),
+                          border: Border.all(color: DistanceTheme.accent30Static),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -515,7 +515,7 @@ class _DistancescreenState extends State<Distancescreen>
                               _is2D
                                   ? Icons.scatter_plot_rounded
                                   : Icons.linear_scale_rounded,
-                              color: DistanceTheme.accent,
+                              color: DistanceTheme.accentDefault,
                               size: 20,
                             ),
                             const SizedBox(width: 10),
@@ -524,14 +524,14 @@ class _DistancescreenState extends State<Distancescreen>
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
-                                color: DistanceTheme.accent,
+                                color: DistanceTheme.accentDefault,
                                 letterSpacing: 0.3,
                               ),
                             ),
                             const SizedBox(width: 8),
                             const Icon(
                               Icons.arrow_forward_rounded,
-                              color: DistanceTheme.accent,
+                              color: DistanceTheme.accentDefault,
                               size: 18,
                             ),
                           ],
@@ -549,7 +549,7 @@ class _DistancescreenState extends State<Distancescreen>
                           borderRadius:
                               BorderRadius.circular(DistanceTheme.radius2xl),
                           border: Border.all(
-                            color: DistanceTheme.accent30,
+                            color: DistanceTheme.accent30Static,
                             width: 1,
                           ),
                         ),

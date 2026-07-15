@@ -3,13 +3,13 @@ import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 /// Midpoint Module Theme
-/// Clean white/frost aesthetic - minimal and precise
+/// Dark slate aesthetic matching the app-wide dark mode
 abstract class MidpointTheme {
-  // Brand / Accent Colors
+  // Brand / Accent Colors — white/ice for dark mode
   static Color accent(BuildContext context) =>
       context.watch<ThemeProvider>().isLight
-          ? const Color(0xFF334155) // Slate 800 - Dark for light mode contrast
-          : const Color(0xFFE9ECEF); // Light Ice for dark mode
+          ? const Color(0xFF334155)
+          : const Color(0xFFE9ECEF);
 
   static Color accentLight(BuildContext context) =>
       context.watch<ThemeProvider>().isLight
@@ -31,7 +31,7 @@ abstract class MidpointTheme {
   static Color text(BuildContext context) =>
       context.watch<ThemeProvider>().textPrimary;
 
-  // Alpha Variants (Converted to reactive getters)
+  // Alpha Variants
   static Color accent70(BuildContext context) =>
       accent(context).withValues(alpha: 0.7);
   static Color accent50(BuildContext context) =>
@@ -204,7 +204,7 @@ abstract class MidpointTheme {
       TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w700,
-        color: surface(context),
+        color: const Color(0xFF1A1A2E),
         letterSpacing: 0.3,
       );
 
