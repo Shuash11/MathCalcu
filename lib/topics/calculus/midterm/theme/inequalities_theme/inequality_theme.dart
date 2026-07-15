@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 // ═════════════════════════════════════════════════════════════
 
 class InequalityTheme {
-  // ── Accent colors — white/ice for dark mode ───────────────
-  static const Color accentColor = Color(0xFFE9ECEF);
-  static const Color secondAccent = Color(0xFFF8F9FA);
+  // ── Accent colors — maroon for dark mode ───────────────
+  static const Color accentColor = Color(0xFF7F1D1D);
+  static const Color secondAccent = Color(0xFF7F1D1D);
 
   // Dynamic values using BuildContext
   static Color surface(BuildContext context) =>
@@ -23,9 +23,9 @@ class InequalityTheme {
       context.watch<ThemeProvider>().textSecondary;
 
   static const Map<String, Color> subtypeAccents = {
-    'strict': Color(0xFFE9ECEF),
-    'non_strict': Color(0xFFF8F9FA),
-    'absolute': Color(0xFFDEE2E6),
+    'strict': Color(0xFF7F1D1D),
+    'non_strict': Color(0xFF7F1D1D),
+    'absolute': Color(0xFF7F1D1D),
   };
 
   static TextStyle titleStyle(BuildContext context,

@@ -5,21 +5,12 @@ import 'package:provider/provider.dart';
 /// Midpoint Module Theme
 /// Dark slate aesthetic matching the app-wide dark mode
 abstract class MidpointTheme {
-  // Brand / Accent Colors — white/ice for dark mode
-  static Color accent(BuildContext context) =>
-      context.watch<ThemeProvider>().isLight
-          ? const Color(0xFF334155)
-          : const Color(0xFFE9ECEF);
+  // Brand / Accent Colors — maroon for dark mode
+  static Color accent(BuildContext context) => const Color(0xFF7F1D1D);
 
-  static Color accentLight(BuildContext context) =>
-      context.watch<ThemeProvider>().isLight
-          ? const Color(0xFF64748B)
-          : const Color(0xFFF8F9FA);
+  static Color accentLight(BuildContext context) => const Color(0xFF7F1D1D);
 
-  static Color accentDark(BuildContext context) =>
-      context.watch<ThemeProvider>().isLight
-          ? const Color(0xFF0F172A)
-          : const Color(0xFFDEE2E6);
+  static Color accentDark(BuildContext context) => const Color(0xFF7F1D1D);
 
   // Background Colors
   static Color surface(BuildContext context) =>

@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 
 class SlopeTheme {
   // ── Unique accent color for slope module ──────────────────
-  static const Color accentColor = Color(0xFFFF1493); // deep pink
-  static const Color secondAccent = Color(0xFFFF69B4); // hot pink
+  static const Color accentColor = Color(0xFF7F1D1D); // deep maroon
+  static const Color secondAccent = Color(0xFF7F1D1D); // deep maroon
   // ──────────────────────────────────────────────────────────
 
   static Color cardColor(BuildContext context) => context.watch<ThemeProvider>().card;

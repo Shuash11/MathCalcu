@@ -9,8 +9,7 @@ import 'finding_center_radius_card.dart';
 class CircleCardPickerScreen extends StatelessWidget {
   const CircleCardPickerScreen({super.key});
 
-  static const Color _indigo = Color(0xFF6366F1);
-  static const Color _cyan = Color(0xFF06B6D4);
+  static const Color _accent = Color(0xFF7F1D1D);
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +22,13 @@ class CircleCardPickerScreen extends StatelessWidget {
           Positioned(
             top: -60,
             right: -60,
-            child: _AmbientOrb(color: _cyan.withValues(alpha: 0.12), size: 260),
+            child: _AmbientOrb(color: _accent.withValues(alpha: 0.12), size: 260),
           ),
           Positioned(
             bottom: -80,
             left: -60,
             child:
-                _AmbientOrb(color: _indigo.withValues(alpha: 0.10), size: 200),
+                _AmbientOrb(color: _accent.withValues(alpha: 0.10), size: 200),
           ),
           SafeArea(
             child: Padding(
@@ -69,13 +68,13 @@ class CircleCardPickerScreen extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: _indigo.withValues(alpha: 0.12),
+          color: _accent.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
           border:
-              Border.all(color: _indigo.withValues(alpha: 0.35), width: 1.5),
+              Border.all(color: _accent.withValues(alpha: 0.35), width: 1.5),
         ),
         child: const Icon(Icons.arrow_back_ios_new_rounded,
-            color: _indigo, size: 18),
+            color: _accent, size: 18),
       ),
     );
   }
@@ -85,8 +84,8 @@ class CircleCardPickerScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(colors: [
             Colors.transparent,
-            Color(0x4D6366F1),
-            Color(0x3306B6D4),
+            Color(0x4D7F1D1D),
+            Color(0x337F1D1D),
             Colors.transparent,
           ]),
         ),
@@ -98,9 +97,7 @@ class CircleCardPickerScreen extends StatelessWidget {
 class _PickerHeader extends StatelessWidget {
   const _PickerHeader();
 
-  static const Color _cyan = Color(0xFF06B6D4);
-  static const Color _indigo = Color(0xFF6366F1);
-  static const Color _teal = Color(0xFF14B8A6);
+  static const Color _accent = Color(0xFF7F1D1D);
 
   @override
   Widget build(BuildContext context) {
@@ -128,18 +125,18 @@ class _PickerHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: _cyan.withValues(alpha: 0.08),
+            color: _accent.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _cyan.withValues(alpha: 0.25)),
+            border: Border.all(color: _accent.withValues(alpha: 0.25)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _dot(_indigo),
+              _dot(_accent),
               const SizedBox(width: 4),
-              _dot(_cyan),
+              _dot(_accent),
               const SizedBox(width: 4),
-              _dot(_teal),
+              _dot(_accent),
             ],
           ),
         ),
@@ -212,15 +209,15 @@ class _OrbitBadgeState extends State<_OrbitBadge>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: const Color(0xFF06B6D4).withValues(alpha: 0.4),
+                  color: const Color(0xFF7F1D1D).withValues(alpha: 0.4),
                   width: 1.5),
               gradient: RadialGradient(colors: [
-                const Color(0xFF6366F1).withValues(alpha: 0.25),
-                const Color(0xFF06B6D4).withValues(alpha: 0.08),
+                const Color(0xFF7F1D1D).withValues(alpha: 0.25),
+                const Color(0xFF7F1D1D).withValues(alpha: 0.08),
               ]),
             ),
             child: const Icon(Icons.trip_origin_rounded,
-                color: Color(0xFF06B6D4), size: 18),
+                color: Color(0xFF7F1D1D), size: 18),
           ),
         ],
       ),
@@ -242,7 +239,7 @@ class _OrbitRingPainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color = const Color(0xFF06B6D4).withValues(alpha: 0.2)
+        ..color = const Color(0xFF7F1D1D).withValues(alpha: 0.2)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );
@@ -251,8 +248,8 @@ class _OrbitRingPainter extends CustomPainter {
     final dot = Offset(
         center.dx + radius * cos(angle), center.dy + radius * sin(angle));
     canvas.drawCircle(dot, 5,
-        Paint()..color = const Color(0xFF06B6D4).withValues(alpha: 0.3));
-    canvas.drawCircle(dot, 2.5, Paint()..color = const Color(0xFF06B6D4));
+        Paint()..color = const Color(0xFF7F1D1D).withValues(alpha: 0.3));
+    canvas.drawCircle(dot, 2.5, Paint()..color = const Color(0xFF7F1D1D));
   }
 
   @override

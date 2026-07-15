@@ -5,11 +5,11 @@ class FindingRadiusTheme {
   static const Color bgDark = Color(0xFF0F172A);
   static const Color bgCard = Color(0xFF1E293B);
   
-  // Accents
-  static const Color cyan = Color(0xFF06B6D4);
-  static const Color indigo = Color(0xFF6366F1);
-  static const Color teal = Color(0xFF14B8A6);
-  static const Color softIndigo = Color(0xFFA5B4FC);
+  // Accents - Using maroon as primary
+  static const Color cyan = Color(0xFF7F1D1D);
+  static const Color indigo = Color(0xFF7F1D1D);
+  static const Color teal = Color(0xFF7F1D1D);
+  static const Color softIndigo = Color(0xFF7F1D1D);
   
   // Text
   static const Color textPrimary = Color(0xFFE8E8F0);

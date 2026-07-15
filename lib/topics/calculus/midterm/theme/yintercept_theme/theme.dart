@@ -4,10 +4,10 @@ import 'package:calculus_system/theme/theme_provider.dart';
 
 class YITheme {
   // ── Palette (Static Fallbacks) ──────────────────────────
-  static const Color forestGreen = Color(0xFF059669);
-  static const Color emeraldConst = Color(0xFF10B981);
-  static const Color mintConst = Color(0xFF6EE7B7);
-  static const Color goldConst = Color(0xFFF59E0B);
+  static const Color forestGreen = Color(0xFF7F1D1D);
+  static const Color emeraldConst = Color(0xFF7F1D1D);
+  static const Color mintConst = Color(0xFF7F1D1D);
+  static const Color goldConst = Color(0xFF7F1D1D);
 
   // Dynamic Theme Integration
   static bool isLight(BuildContext context) =>
@@ -24,14 +24,10 @@ class YITheme {
       context.watch<ThemeProvider>().shadowColor;
 
   // ── Dynamic Accent Colors ───────────────────────────────
-  static Color emerald(BuildContext context) =>
-      isLight(context) ? const Color(0xFF059669) : const Color(0xFF10B981);
-  static Color gold(BuildContext context) =>
-      isLight(context) ? const Color(0xFFD97706) : const Color(0xFFF59E0B);
-  static Color mint(BuildContext context) =>
-      isLight(context) ? const Color(0xFF10B981) : const Color(0xFF6EE7B7);
-  static Color forest(BuildContext context) =>
-      isLight(context) ? const Color(0xFF064E3B) : const Color(0xFF059669);
+  static Color emerald(BuildContext context) => const Color(0xFF7F1D1D);
+  static Color gold(BuildContext context) => const Color(0xFF7F1D1D);
+  static Color mint(BuildContext context) => const Color(0xFF7F1D1D);
+  static Color forest(BuildContext context) => const Color(0xFF7F1D1D);
 
   // ── Gradients ──────────────────────────────────────────
   static LinearGradient cardGradient(BuildContext context) => LinearGradient(

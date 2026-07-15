@@ -6,11 +6,11 @@ class PSTheme {
   PSTheme._();
 
   // ── Core Colors ──────────────────────────
-  static const Color deepViolet = Color(0xFF7C3AED);
-  static const Color electricPurple = Color(0xFFA855F7);
-  static const Color softLavender = Color(0xFFC4B5FD);
-  static const Color neonMagenta = Color(0xFFE879F9);
-  static const Color cyanAccent = Color(0xFFA5F3FC);
+  static const Color deepViolet = Color(0xFF7F1D1D);
+  static const Color electricPurple = Color(0xFF7F1D1D);
+  static const Color softLavender = Color(0xFF7F1D1D);
+  static const Color neonMagenta = Color(0xFF7F1D1D);
+  static const Color cyanAccent = Color(0xFF7F1D1D);
 
   // Dynamic Theme Integration
   static Color surface(BuildContext context) =>

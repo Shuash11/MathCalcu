@@ -149,7 +149,7 @@ class _CategoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF312C85);
+    const accent = Color(0xFF7F1D1D);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 48, 28, 16),

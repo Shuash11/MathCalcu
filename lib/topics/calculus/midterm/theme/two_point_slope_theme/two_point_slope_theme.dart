@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 class TwoPointSlopeTheme {
   TwoPointSlopeTheme._();
 
-  // ── Amber accent palette ──────────────────────────────────
-  static const Color primary = Color(0xFFF59E0B); // amber-400
-  static const Color primaryDark = Color(0xFFB45309); // amber-700
-  static const Color primaryLight = Color(0xFFFCD34D); // amber-300
-  static const Color orange = Color(0xFFEA580C); // orange-600
+  // ── Maroon accent palette ──────────────────────────────────
+  static const Color primary = Color(0xFF7F1D1D); // deep maroon
+  static const Color primaryDark = Color(0xFF7F1D1D); // deep maroon
+  static const Color primaryLight = Color(0xFF7F1D1D); // deep maroon
+  static const Color orange = Color(0xFF7F1D1D); // deep maroon
 
   // Dynamic Theme Integration
   static Color surface(BuildContext context) =>

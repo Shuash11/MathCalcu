@@ -6,13 +6,13 @@ import 'package:provider/provider.dart';
 /// Dark slate aesthetic matching the app-wide dark mode
 abstract class DistanceTheme {
   // ── Static defaults (dark mode) ─────────────────────────
-  static const Color accentDefault = Color(0xFFE9ECEF);
-  static const Color accent70Static = Color(0xB3E9ECEF);
-  static const Color accent50Static = Color(0x80E9ECEF);
-  static const Color accent30Static = Color(0x4DE9ECEF);
-  static const Color accent15Static = Color(0x26E9ECEF);
-  static const Color accent12Static = Color(0x1FE9ECEF);
-  static const Color accent06Static = Color(0x0FE9ECEF);
+  static const Color accentDefault = Color(0xFF7F1D1D);
+  static const Color accent70Static = Color(0xB37F1D1D);
+  static const Color accent50Static = Color(0x807F1D1D);
+  static const Color accent30Static = Color(0x4D7F1D1D);
+  static const Color accent15Static = Color(0x267F1D1D);
+  static const Color accent12Static = Color(0x1F7F1D1D);
+  static const Color accent06Static = Color(0x0F7F1D1D);
 
   // Brand / Accent Colors — context-aware for light/dark switching
   static Color accent(BuildContext context) =>
