@@ -1,13 +1,12 @@
 {
   "tasks": [
-    { "id": 1, "description": "Update FinalsTheme — maroon accent, headerGradient, cardGlow", "status": "done" },
-    { "id": 2, "description": "Update ThemeProvider — accentColor to maroon", "status": "done" },
-    { "id": 3, "description": "Update AppDesign — add glassmorphism constants", "status": "done" },
-    { "id": 4, "description": "Update AppShell — glassmorphism bottom nav", "status": "done" },
-    { "id": 5, "description": "Update HomeCard — glassmorphism card style", "status": "done" },
-    { "id": 6, "description": "Update CalculatorScreen — glassmorphism display", "status": "done" },
-    { "id": 7, "description": "Run flutter analyze — fix any new errors", "status": "done" },
-    { "id": 8, "description": "Run flutter test — fix any failures", "status": "done" }
+    { "id": 1, "description": "Read all 3 modified files + their test files", "status": "done" },
+    { "id": 2, "description": "Run flutter analyze on each modified file", "status": "done" },
+    { "id": 3, "description": "Run flutter test — all tests pass", "status": "done" },
+    { "id": 4, "description": "Check imports correct in all 3 files", "status": "done" },
+    { "id": 5, "description": "Check no unused variables/state", "status": "done" },
+    { "id": 6, "description": "Check for regressions in related screens", "status": "done" },
+    { "id": 7, "description": "Write readiness report", "status": "done" }
   ],
   "completed": true
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:calculus_system/shared/widgets/module_card.dart';
 
 class AnimatedInequalityCard extends StatelessWidget {
@@ -24,7 +25,7 @@ class AnimatedInequalityCard extends StatelessWidget {
       title: title,
       subtitle: subtitle,
       accentColor: accentColor,
-      onTap: () => Navigator.of(context).pushNamed(route),
+      onTap: () => context.push(route),
     );
   }
 }

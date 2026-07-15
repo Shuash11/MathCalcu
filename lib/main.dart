@@ -91,37 +91,50 @@ class _CalculusAppState extends State<CalculusApp> {
               child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFF7F1D1D)),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Allow app updates',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: ctx.watch<ThemeProvider>().textPrimary,
+              ),
             ),
             const SizedBox(height: 12),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 'MathCalcu needs permission to install updates automatically.\n'
                 'Grant this once and future updates will work seamlessly.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, height: 1.4),
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.4,
+                  color: ctx.watch<ThemeProvider>().textSecondary,
+                ),
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
               children: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  style: TextButton.styleFrom(foregroundColor: ctx.watch<ThemeProvider>().textSecondary),
-                  child: const Text('Not now'),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      UpdateService.openInstallSettings();
+                    },
+                    style: FilledButton.styleFrom(backgroundColor: const Color(0xFF7F1D1D)),
+                    child: const Text('Open Settings'),
+                  ),
                 ),
-                const SizedBox(width: 12),
-                FilledButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    UpdateService.openInstallSettings();
-                  },
-                  style: FilledButton.styleFrom(backgroundColor: const Color(0xFF7F1D1D)),
-                  child: const Text('Open Settings'),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    style: TextButton.styleFrom(foregroundColor: ctx.watch<ThemeProvider>().textSecondary),
+                    child: const Text('Not now'),
+                  ),
                 ),
               ],
             ),
