@@ -247,7 +247,7 @@ class _ModuleCardState extends State<_ModuleCard> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = widget.module.accent;
+    const accent = Color(0xFF9CA3AF);
     final theme = context.read<ThemeProvider>();
 
     return GestureDetector(

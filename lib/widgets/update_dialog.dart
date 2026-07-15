@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/services/update_service.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -27,7 +26,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
   bool _downloading = false;
   bool _waitingForPermission = false;
 
-  static const _accent = Color(0xFF312C85);
+  static const _accent = Color(0xFF7F1D1D);
 
   @override
   void initState() {
@@ -80,7 +79,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
       } else {
         debugPrint('Update error: $error');
         setState(() {
-          _error = 'FAILED';
+          _error = error;
           _downloading = false;
         });
       }
@@ -119,7 +118,11 @@ class _UpdateDialogState extends State<_UpdateDialog>
             ),
             const SizedBox(height: 16),
             Text(
-              _error == 'NEED_PERMISSION' ? 'Permission needed' : 'Update failed',
+              _error == 'NEED_PERMISSION'
+                  ? 'Permission needed'
+                  : _error?.contains('signature') == true
+                      ? 'Signature mismatch'
+                      : 'Update failed',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -130,7 +133,9 @@ class _UpdateDialogState extends State<_UpdateDialog>
             Text(
               _error == 'NEED_PERMISSION'
                   ? 'Allow MathCalcu to install updates in your phone settings, then try again.'
-                  : 'Something went wrong. Please try again later.',
+                  : _error?.contains('signature') == true
+                      ? 'This update was signed with a different key.\nUninstall the app first, then download the new version.'
+                      : (_error ?? 'Something went wrong. Please try again later.'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,

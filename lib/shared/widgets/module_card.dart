@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:calculus_system/theme/app_design.dart';
 import 'package:provider/provider.dart';
 
 class ModuleCard extends StatefulWidget {
@@ -27,7 +26,7 @@ class _ModuleCardState extends State<ModuleCard> {
   bool _hovered = false;
   bool _pressed = false;
 
-  Color get _accent => widget.accentColor ?? AppDesign.app.accent;
+  Color get _accent => widget.accentColor ?? const Color(0xFF9CA3AF);
 
   @override
   Widget build(BuildContext context) {

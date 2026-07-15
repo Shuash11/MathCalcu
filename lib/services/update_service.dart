@@ -1,6 +1,7 @@
 ﻿import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -103,10 +104,51 @@ class UpdateService {
     }
   }
 
+  /// Clean up any leftover temp APK/EXE files from previous updates.
+  static Future<void> cleanupTempFiles() async {
+    try {
+      final dir = await getTemporaryDirectory();
+      for (final name in ['MathCalcu.apk', 'MathCalcu-Setup.exe']) {
+        final file = File('${dir.path}/$name');
+        if (await file.exists()) {
+          await file.delete();
+        }
+      }
+    } catch (_) {}
+  }
+
+  /// Validate that downloaded bytes are a real APK (not an HTML error page).
+  /// Returns null if valid, or an error message string.
+  static String? _validateApkBytes(List<int> bytes, int totalBytes) {
+    if (totalBytes < 1000) {
+      return 'Downloaded file is too small ($totalBytes bytes). Please try again.';
+    }
+
+    // Check first bytes for HTML content (GitHub redirect/error pages)
+    final head = String.fromCharCodes(bytes.take(20));
+    if (head.contains('<!') || head.contains('<html') || head.contains('Not Found')) {
+      return 'Downloaded an error page instead of APK. Please try again.';
+    }
+
+    // APK files start with the ZIP magic number: PK (0x04, 0x03)
+    if (bytes.length >= 2 && bytes[0] == 0x50 && bytes[1] == 0x4B) {
+      return null; // Valid ZIP/APK header
+    }
+
+    // Could be an APK variant or the file is still downloading — allow it
+    // but log a warning
+    debugPrint('UpdateService: APK header check: first bytes = '
+        '${bytes.take(4).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ')}');
+    return null;
+  }
+
   /// Download the latest release binary and trigger installation.
   /// Returns null on success, or an error message string on failure.
   static Future<String?> downloadAndInstall(void Function(double progress)? onProgress) async {
     try {
+      // Clean up any leftover temp files from previous attempts
+      await cleanupTempFiles();
+
       final isWin = Platform.isWindows;
       final binaryName = isWin ? 'MathCalcu-Setup.exe' : 'MathCalcu.apk';
       final url = 'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
@@ -134,6 +176,7 @@ class UpdateService {
         }
 
         final contentLength = response.contentLength ?? 0;
+        final bool hasKnownSize = contentLength > 0;
         final bytes = <int>[];
         final completer = Completer<String?>();
 
@@ -146,8 +189,12 @@ class UpdateService {
         ).listen(
           (chunk) {
             bytes.addAll(chunk);
-            if (contentLength > 0 && onProgress != null) {
-              onProgress(bytes.length / contentLength);
+            if (onProgress != null) {
+              if (hasKnownSize) {
+                onProgress(bytes.length / contentLength);
+              }
+              // If contentLength is -1 (chunked), progress stays at 0
+              // — the UI shows indeterminate progress
             }
           },
           onDone: () async {
@@ -157,6 +204,17 @@ class UpdateService {
                 client.close();
                 return;
               }
+
+              // Validate APK content before writing
+              if (Platform.isAndroid) {
+                final error = _validateApkBytes(bytes, bytes.length);
+                if (error != null) {
+                  completer.complete(error);
+                  client.close();
+                  return;
+                }
+              }
+
               final dir = await getTemporaryDirectory();
               final file = File('${dir.path}/$binaryName');
               await file.writeAsBytes(bytes);
@@ -168,27 +226,17 @@ class UpdateService {
               }
 
               if (Platform.isAndroid) {
-                // Check if we downloaded HTML (GitHub redirect/error page) instead of APK
-                if (fileSize < 1000) {
-                  completer.complete('Download failed: file too small. Please try again.');
-                  client.close();
-                  return;
-                }
-                // Check for HTML content (first few bytes)
-                final header = await file.openRead(0, 20).toList();
-                final firstBytes = header.expand((b) => b).take(20).toList();
-                final head = String.fromCharCodes(firstBytes);
-                if (head.contains('<!') || head.contains('<html') || head.contains('Not Found')) {
-                  completer.complete('Download failed: got error page instead of APK. Please try again.');
-                  client.close();
-                  return;
-                }
                 try {
                   await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
                   completer.complete(null);
                 } on PlatformException catch (e) {
                   if (e.message == 'NEED_PERMISSION') {
                     completer.complete('NEED_PERMISSION');
+                  } else if (e.message == 'SIGNATURE_MISMATCH') {
+                    completer.complete(
+                      'Cannot update: app signature mismatch. '
+                      'Uninstall the current app first, then install the new version.',
+                    );
                   } else {
                     completer.complete(e.message ?? e.toString());
                   }

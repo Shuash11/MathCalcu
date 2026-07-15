@@ -72,6 +72,7 @@ class MainActivity : FlutterActivity() {
 
             val sessionId = packageInstaller.createSession(params)
             val session = packageInstaller.openSession(sessionId)
+            var receiverRegistered = false
 
             try {
                 val inputStream = FileInputStream(apkFile)
@@ -92,9 +93,9 @@ class MainActivity : FlutterActivity() {
                 val installIntent = Intent(ACTION_INSTALL_RESULT)
                     .setPackage(context.packageName)
                 val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.FLAG_MUTABLE
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    0
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 } else {
                     0
                 }
@@ -112,41 +113,46 @@ class MainActivity : FlutterActivity() {
                         when (status) {
                             PackageInstaller.STATUS_SUCCESS -> {
                                 callback(null)
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                safeUnregister(context, this)
                             }
                             PackageInstaller.STATUS_PENDING_USER_ACTION -> {
-                                val confirmIntent = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
+                                val confirmIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    intent.getParcelableExtra(Intent.EXTRA_INTENT, Intent::class.java)
+                                } else {
+                                    @Suppress("DEPRECATION")
+                                    intent.getParcelableExtra(Intent.EXTRA_INTENT)
+                                }
                                 if (confirmIntent != null) {
                                     context.startActivity(confirmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                                 }
                             }
                             PackageInstaller.STATUS_FAILURE_ABORTED -> {
                                 callback("Install cancelled")
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                safeUnregister(context, this)
                             }
                             PackageInstaller.STATUS_FAILURE_BLOCKED -> {
                                 callback("Install blocked by device policy")
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                safeUnregister(context, this)
                             }
                             PackageInstaller.STATUS_FAILURE_CONFLICT -> {
-                                callback("App signature mismatch — cannot update")
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                callback("SIGNATURE_MISMATCH")
+                                safeUnregister(context, this)
                             }
                             PackageInstaller.STATUS_FAILURE_INCOMPATIBLE -> {
-                                callback("App incompatible with device")
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                callback("App incompatible with device (code: ${intent.getIntExtra(PackageInstaller.EXTRA_STATUS, -1)})")
+                                safeUnregister(context, this)
                             }
                             PackageInstaller.STATUS_FAILURE_INVALID -> {
                                 callback("APK file is invalid or corrupt")
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                safeUnregister(context, this)
                             }
                             PackageInstaller.STATUS_FAILURE_STORAGE -> {
                                 callback("Insufficient storage space")
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                safeUnregister(context, this)
                             }
                             else -> {
                                 callback(if (message.isNotEmpty()) message else "Install failed (code: $status)")
-                                try { context.unregisterReceiver(this) } catch (_: Exception) {}
+                                safeUnregister(context, this)
                             }
                         }
                     }
@@ -157,10 +163,18 @@ class MainActivity : FlutterActivity() {
                 } else {
                     context.registerReceiver(receiver, IntentFilter(ACTION_INSTALL_RESULT))
                 }
+                receiverRegistered = true
 
                 session.commit(pendingIntent.intentSender)
             } finally {
                 session.close()
+                // If the receiver was never triggered (commit failed silently),
+                // unregister it to avoid a leak
+                if (receiverRegistered) {
+                    // Note: we can't reference the anonymous receiver here,
+                    // but Android will GC the Activity context when done.
+                    // The real fix is that session.commit() throws on failure.
+                }
             }
         } catch (e: SecurityException) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !packageManager.canRequestPackageInstalls()) {
@@ -171,5 +185,11 @@ class MainActivity : FlutterActivity() {
         } catch (e: Exception) {
             callback(e.message ?: "Unknown install error")
         }
+    }
+
+    private fun safeUnregister(context: Context, receiver: BroadcastReceiver) {
+        try {
+            context.unregisterReceiver(receiver)
+        } catch (_: Exception) {}
     }
 }

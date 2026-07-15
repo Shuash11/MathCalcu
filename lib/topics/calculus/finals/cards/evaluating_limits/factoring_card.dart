@@ -11,7 +11,7 @@ class FactoringCard extends StatelessWidget {
       icon: Icons.category_rounded,
       title: 'By Factoring',
       subtitle: 'Factor expressions to cancel common terms',
-      accentColor: const Color(0xFF7F1D1D),
+      accentColor: const Color(0xFF9CA3AF),
       onTap: () => Navigator.of(context).pushNamed('/topics/calculus/finals/limits/factoring'),
     );
   }

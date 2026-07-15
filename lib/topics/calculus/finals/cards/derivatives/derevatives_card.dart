@@ -13,7 +13,7 @@ class FinalsDerivativesCard extends StatelessWidget {
       icon: Icons.trending_up_rounded,
       title: 'Derivatives',
       subtitle: 'Power rule, product rule, quotient rule & chain rule',
-      accentColor: const Color(0xFF7F1D1D),
+      accentColor: const Color(0xFF9CA3AF),
       onTap: () => context.go('/topics/calculus/finals/derivatives'),
     );
   }

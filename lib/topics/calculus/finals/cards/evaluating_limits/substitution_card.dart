@@ -11,7 +11,7 @@ class SubstitutionCard extends StatelessWidget {
       icon: Icons.input_rounded,
       title: 'Direct Substitution',
       subtitle: 'Plug in the value directly when function is continuous',
-      accentColor: const Color(0xFF7F1D1D),
+      accentColor: const Color(0xFF9CA3AF),
       onTap: () => Navigator.of(context).pushNamed('/topics/calculus/finals/limits/substitution'),
     );
   }

@@ -13,7 +13,7 @@ class FinalsLimitsCard extends StatelessWidget {
       icon: Icons.functions_rounded,
       title: 'Evaluating Limits',
       subtitle: 'Direct substitution, factoring, rationalization & special limits',
-      accentColor: const Color(0xFF7F1D1D),
+      accentColor: const Color(0xFF9CA3AF),
       onTap: () => context.go(module.route),
     );
   }
