@@ -217,7 +217,7 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
                               onTap: () => showSolutionStepsModal(
                                 context: context,
                                 title: 'Solution Steps',
-                                design: AppDesign.calculus,
+                                design: AppDesign.app,
                                 child: FactoringStepsView(steps: _steps),
                               ),
                               error: _result!.errorMessage,

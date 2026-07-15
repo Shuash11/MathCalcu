@@ -1,4 +1,4 @@
-﻿// lib/Screens/center_screen.dart
+// lib/Screens/center_screen.dart
 // Thin shell — owns the controller lifecycle, renders sub-screens.
 
 import 'package:flutter/material.dart';
@@ -6,7 +6,6 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'centercontroller.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/centertheme.dart';
 import 'header_bar.dart';
 import 'formula_card.dart';
 import 'input_section.dart';
@@ -51,7 +50,7 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Center \u2014 Step by Step',
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: CenterStepsSection(steps: _controller.result!.steps),
     );
   }
@@ -59,22 +58,22 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FindingCenterTheme.bgDark,
+      backgroundColor: const Color(0xFF0F172A),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Header ────────────────────────────────────
+              // -- Header ------------------------------------
               const CenterHeaderBar(),
               const SizedBox(height: 28),
 
-              // ── Formula reference ─────────────────────────
+              // -- Formula reference -------------------------
               const CenterFormulaCard(),
               const SizedBox(height: 24),
 
-              // ── Inputs + buttons ──────────────────────────
+              // -- Inputs + buttons --------------------------
               CenterInputSection(
                 controller: _controller,
                 x1Focus: _x1Focus,
@@ -86,13 +85,13 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
 
               const SizedBox(height: 24),
 
-              // ── Error (null → hidden) ─────────────────────
+              // -- Error (null ? hidden) ---------------------
               if (_controller.errorMsg != null) ...[
                 const SizedBox(height: 16),
                 CenterErrorSection(errorMsg: _controller.errorMsg),
               ],
 
-              // ── Steps button + result (null → hidden) ──────
+              // -- Steps button + result (null ? hidden) ------
               if (_controller.result != null) ...[
                 const SizedBox(height: 24),
                 SizedBox(

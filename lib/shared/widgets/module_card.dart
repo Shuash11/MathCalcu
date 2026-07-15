@@ -26,7 +26,7 @@ class _ModuleCardState extends State<ModuleCard> {
   bool _hovered = false;
   bool _pressed = false;
 
-  Color get _accent => widget.accentColor ?? const Color(0xFF9CA3AF);
+  Color get _accent => widget.accentColor ?? context.watch<ThemeProvider>().accentColor;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +81,13 @@ class _ModuleCardState extends State<ModuleCard> {
                       color: _accent.withValues(alpha: _hovered ? 0.3 : 0.15),
                       width: 1,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _accent.withValues(alpha: theme.isDark ? 0.15 : 0.10),
+                        blurRadius: theme.isDark ? 12 : 10,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
                   ),
                   child: Icon(
                     widget.icon,

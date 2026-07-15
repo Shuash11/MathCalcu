@@ -1,5 +1,4 @@
-﻿// lib/Screens/SubScreens/steps_section.dart
-import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/centertheme.dart';
+// lib/Screens/SubScreens/steps_section.dart
 import 'package:flutter/material.dart';
 
 class CenterStepsSection extends StatelessWidget {
@@ -15,10 +14,10 @@ class CenterStepsSection extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: FindingCenterTheme.indigo.withValues(alpha: 0.07),
+        color: const Color(0xFF334155).withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: FindingCenterTheme.indigo.withValues(alpha: 0.25),
+          color: const Color(0xFF334155).withValues(alpha: 0.25),
         ),
       ),
       child: Column(
@@ -28,7 +27,7 @@ class CenterStepsSection extends StatelessWidget {
             children: [
               Icon(
                 Icons.list_alt_rounded,
-                color: FindingCenterTheme.indigo.withValues(alpha: 0.8),
+                color: const Color(0xFF334155).withValues(alpha: 0.8),
                 size: 18,
               ),
               const SizedBox(width: 8),
@@ -37,7 +36,7 @@ class CenterStepsSection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: FindingCenterTheme.indigo.withValues(alpha: 0.8),
+                  color: const Color(0xFF334155).withValues(alpha: 0.8),
                   letterSpacing: 1.4,
                 ),
               ),
@@ -51,7 +50,7 @@ class CenterStepsSection extends StatelessWidget {
                     line,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: FindingCenterTheme.textPrimary,
+                      color: const Color(0xFFE8E8F0),
                       height: 1.5,
                       fontFamily: 'monospace',
                     ),

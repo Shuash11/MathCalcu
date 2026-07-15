@@ -26,7 +26,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
   bool _downloading = false;
   bool _waitingForPermission = false;
 
-  static const _accent = Color(0xFF7F1D1D);
+  static const _accent = Color(0xFF334155);
 
   @override
   void initState() {

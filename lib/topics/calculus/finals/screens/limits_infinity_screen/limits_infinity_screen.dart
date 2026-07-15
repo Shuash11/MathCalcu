@@ -114,7 +114,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Solution Steps',
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -142,7 +142,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
               stepNumber: entry.key + 1,
               title: step.description,
               description: step.explanation,
-              design: AppDesign.calculus,
+              design: AppDesign.app,
               mathContent: displayExpr != null
                   ? _buildMathDisplay(displayExpr)
                   : const SizedBox.shrink(),

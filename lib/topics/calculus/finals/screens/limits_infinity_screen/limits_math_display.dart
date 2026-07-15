@@ -54,20 +54,20 @@ class LimitsMathDisplay extends StatelessWidget {
         .replaceAll('??', '\\sum')
         .replaceAll('??', '\\int')
         .replaceAll('v', '\\sqrt')
-        .replaceAll('±', '\\pm')
+        .replaceAll('Â±', '\\pm')
         .replaceAll('??', '\\neq')
         .replaceAll('??', '\\leq')
         .replaceAll('??', '\\geq')
         .replaceAll('?', '^2')
-        .replaceAll('³', '^3')
+        .replaceAll('Â³', '^3')
         .replaceAll('4', '^4')
         .replaceAll('5', '^5')
         .replaceAll('6', '^6')
         .replaceAll('7', '^7')
         .replaceAll('8', '^8')
         .replaceAll('?', '^9')
-        .replaceAll('°', '^0')
-        .replaceAll('¹', '^1');
+        .replaceAll('Â°', '^0')
+        .replaceAll('Â¹', '^1');
   }
 }
 

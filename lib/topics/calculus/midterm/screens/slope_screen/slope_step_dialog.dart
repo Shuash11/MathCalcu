@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/slope_graph/slopegraph.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
@@ -14,7 +14,7 @@ Future<void> showSlopeStepsModal({
   return showSolutionStepsModal(
     context: context,
     title: 'Calculation Steps',
-    design: AppDesign.calculus,
+    design: AppDesign.app,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,

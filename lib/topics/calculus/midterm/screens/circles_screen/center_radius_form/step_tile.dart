@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_radius_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,9 +17,9 @@ class StepTile extends StatelessWidget {
 
   Color _resolveColor(SolverColors? c) {
     return switch (c) {
-      SolverColors.teal => FindingCenterRadiusTheme.teal,
-      SolverColors.cyan => FindingCenterRadiusTheme.cyan,
-      null => FindingCenterRadiusTheme.textSecondary.withValues(alpha: 0.4),
+      SolverColors.teal => const Color(0xFF334155),
+      SolverColors.cyan => const Color(0xFF334155),
+      null => const Color(0xFF94A3B8).withValues(alpha: 0.4),
     };
   }
 
@@ -46,7 +45,7 @@ class StepTile extends StatelessWidget {
         children: [
           _TimelineRail(
               accentColor: accentColor,
-              label: step.arrow ? '★' : '${index + 1}',
+              label: step.arrow ? '?' : '${index + 1}',
               isArrow: step.arrow,
               isLast: isLast),
           const SizedBox(width: 12),
@@ -61,7 +60,7 @@ class StepTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: FindingCenterRadiusTheme.textSecondary
+                      color: const Color(0xFF94A3B8)
                           .withValues(alpha: 0.55),
                       height: 1.4,
                     ),
@@ -74,7 +73,7 @@ class StepTile extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
-                        color: FindingCenterRadiusTheme.inputBg,
+                        color: const Color(0xFF334155),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                             color: accentColor.withValues(alpha: 0.15)),
@@ -88,7 +87,7 @@ class StepTile extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             color: step.color != null
                                 ? accentColor
-                                : FindingCenterRadiusTheme.textPrimary
+                                : const Color(0xFFE8E8F0)
                                     .withValues(alpha: 0.9),
                           ),
                         ),
@@ -237,7 +236,7 @@ class _FinalBox extends StatelessWidget {
             const SizedBox(height: 14),
             Container(
               height: 1,
-              color: FindingCenterRadiusTheme.textSecondary
+              color: const Color(0xFF94A3B8)
                   .withValues(alpha: 0.15),
             ),
             const SizedBox(height: 12),
@@ -251,7 +250,7 @@ class _FinalBox extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: FindingCenterRadiusTheme.textPrimary
+                      color: const Color(0xFFE8E8F0)
                           .withValues(alpha: 0.85),
                     ),
                     textAlign: TextAlign.center,

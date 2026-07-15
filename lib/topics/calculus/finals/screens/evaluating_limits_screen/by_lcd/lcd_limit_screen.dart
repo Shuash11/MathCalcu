@@ -1,4 +1,4 @@
-﻿import 'lcd_answer_card.dart';
+import 'lcd_answer_card.dart';
 import 'lcd_input_field.dart';
 import 'lcd_steps_view.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_lcd/math_limits_library.dart';
@@ -166,10 +166,10 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
       child: SafeArea(
         child: Column(
           children: [
-            // ── Header ──────────────────────────────────────────
+            // -- Header ------------------------------------------
             _buildHeader(context, padding),
 
-            // ── Scrollable Content ──────────────────────────────
+            // -- Scrollable Content ------------------------------
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -210,7 +210,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                             onTap: () => showSolutionStepsModal(
                               context: context,
                               title: 'Solution Steps',
-                              design: AppDesign.calculus,
+                              design: AppDesign.app,
                               child: LCDStepsView(steps: _solution!.steps),
                             ),
                           ),

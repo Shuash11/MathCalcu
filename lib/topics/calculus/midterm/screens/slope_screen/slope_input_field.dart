@@ -1,5 +1,6 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SlopeInputField extends StatefulWidget {
   final String label;
@@ -65,19 +66,19 @@ class _SlopeInputFieldState extends State<SlopeInputField> {
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: isFocused
-                  ? SlopeTheme.accentColor
-                  : SlopeTheme.textSecondary(context),
+                  ? const Color(0xFF334155)
+                  : context.watch<ThemeProvider>().textSecondary,
             ),
           ),
           const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
-              color: SlopeTheme.cardColor(context),
+              color: context.watch<ThemeProvider>().card,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isFocused
-                    ? SlopeTheme.accentColor
-                    : SlopeTheme.accentColor.withValues(alpha: 0.2),
+                    ? const Color(0xFF334155)
+                    : const Color(0xFF334155).withValues(alpha: 0.2),
                 width: isFocused ? 2 : 1.5,
               ),
             ),
@@ -90,7 +91,7 @@ class _SlopeInputFieldState extends State<SlopeInputField> {
                 textInputAction: widget.textInputAction,
                 onEditingComplete: widget.onEditingComplete,
                 style: TextStyle(
-                  color: SlopeTheme.textPrimary(context),
+                  color: context.watch<ThemeProvider>().textPrimary,
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
                 ),
@@ -100,7 +101,7 @@ class _SlopeInputFieldState extends State<SlopeInputField> {
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
-                cursorColor: SlopeTheme.accentColor,
+                cursorColor: const Color(0xFF334155),
               ),
             ),
           ),

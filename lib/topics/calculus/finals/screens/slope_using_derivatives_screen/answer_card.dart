@@ -42,7 +42,7 @@ class _AnswerCardState extends State<AnswerCard> {
           showSolutionStepsModal(
             context: context,
             title: widget.solution.problemTitle,
-            design: AppDesign.calculus,
+            design: AppDesign.app,
             child: _SlopeDerivativesSteps(solution: widget.solution),
           );
         },
@@ -254,7 +254,7 @@ class _SlopeDerivativesSteps extends StatelessWidget {
             stepNumber: i + 1,
             title: step.label,
             description: step.hint,
-            design: AppDesign.calculus,
+            design: AppDesign.app,
             mathContent: _buildMathContent(step, context),
           );
         }),

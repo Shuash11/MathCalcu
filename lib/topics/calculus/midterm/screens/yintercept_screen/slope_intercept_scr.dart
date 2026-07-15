@@ -1,5 +1,4 @@
-﻿// ignore: file_names
-import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
+// ignore: file_names
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
@@ -8,6 +7,8 @@ import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'slope_intercept.dart';
 import 'slope_intercept_steps.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 enum InputMode { slopeIntercept, standardForm }
 
@@ -120,19 +121,19 @@ class _YInterceptScreenState extends State<YInterceptScreen>
     showSolutionStepsModal(
       context: context,
       title: cardTitle,
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: YInterceptSteps(steps: steps, accentColor: accentColor),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final emeraldColor = YITheme.emerald(context);
-    final goldColor = YITheme.gold(context);
-    const blueColor = Color(0xFF7EB8F7);
+    final emeraldColor = const Color(0xFF334155);
+    final goldColor = const Color(0xFF334155);
+    final accent = context.watch<ThemeProvider>().accentColor;
 
     return Scaffold(
-      backgroundColor: YITheme.surface(context),
+      backgroundColor: context.watch<ThemeProvider>().surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -168,14 +169,14 @@ class _YInterceptScreenState extends State<YInterceptScreen>
                   _openStepsSheet(
                     steps: result.standardFormSteps,
                     cardTitle: 'Convert to Standard Form (Ax + By = C)',
-                    accentColor: blueColor,
+                    accentColor: accent,
                   );
                 },
                 onShowGeneralFormSteps: (result) {
                   _openStepsSheet(
                     steps: result.generalFormSteps,
                     cardTitle: 'Convert to General Form (Ax + By + C = 0)',
-                    accentColor: blueColor,
+                    accentColor: accent,
                   );
                 },
                 onShowXInterceptSteps: (result) {
@@ -204,22 +205,22 @@ class _YInterceptScreenState extends State<YInterceptScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: YITheme.emerald(context).withValues(alpha: 0.12),
+                color: const Color(0xFF334155).withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: YITheme.emerald(context).withValues(alpha: 0.4),
+                  color: const Color(0xFF334155).withValues(alpha: 0.4),
                   width: 1.5,
                 ),
               ),
               child: Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: YITheme.emerald(context),
+                color: const Color(0xFF334155),
                 size: 18,
               ),
             ),
           ),
           const SizedBox(width: 12),
-          ResponsiveText('Slope-Intercept Form', style: YITheme.subtitleStyle(context)),
+          ResponsiveText('Slope-Intercept Form', style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3)),
         ],
       ),
     );

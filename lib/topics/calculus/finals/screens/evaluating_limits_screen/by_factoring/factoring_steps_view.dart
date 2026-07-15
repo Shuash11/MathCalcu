@@ -21,7 +21,7 @@ class FactoringStepsView extends StatelessWidget {
             stepNumber: step.stepNumber,
             title: step.title,
             description: step.explanation,
-            design: AppDesign.calculus,
+            design: AppDesign.app,
             mathContent: step.mathematicalExpression == null
                 ? const SizedBox.shrink()
                 : _MathBox(latex: step.mathematicalExpression!),

@@ -1,8 +1,7 @@
-﻿// lib/modules/y-intercept/ui/parallel_perpendicular_screen.dart
+// lib/modules/y-intercept/ui/parallel_perpendicular_screen.dart
 
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/yintercept_graph/perpenparallel_graph.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/yintercept_theme/theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
@@ -12,14 +11,15 @@ import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
+import 'package:provider/provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 const _cyan = Color(0xFF06B6D4);
 const _accent = FinalsTheme.primary;
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // Screen
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class ParallelPerpendicularScreen extends StatefulWidget {
   const ParallelPerpendicularScreen({super.key});
@@ -99,20 +99,20 @@ class _ParallelPerpendicularScreenState
   void _showSteps(PPResult result) {
     showSolutionStepsModal(
       context: context,
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: ParallelPerpendicularSteps(result: result),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final emerald = YITheme.emerald(context);
+    final emerald = const Color(0xFF334155);
     return Scaffold(
-      backgroundColor: YITheme.surface(context),
+      backgroundColor: context.watch<ThemeProvider>().surface,
       body: SafeArea(
         child: Column(
           children: [
-            // ── Top bar ──────────────────────────────────
+            // -- Top bar ----------------------------------
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
               child: Row(
@@ -136,17 +136,17 @@ class _ParallelPerpendicularScreenState
                   const SizedBox(width: 12),
                   ResponsiveText(
                     'Parallel & Perpendicular',
-                    style: YITheme.subtitleStyle(context).copyWith(
+                    style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3).copyWith(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
-                      color: YITheme.textPrimary(context),
+                      color: context.watch<ThemeProvider>().textPrimary,
                     ),
                   ),
                 ],
               ),
             ),
 
-            // ── Body ─────────────────────────────────────
+            // -- Body -------------------------------------
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -181,13 +181,13 @@ class _ParallelPerpendicularScreenState
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: MidpointTheme.accent(context),
+                          color: const Color(0xFF334155),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
                           child: Text(
                             'Solve',
-                            style: MidpointTheme.calculateButton(context),
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: const Color(0xFF1A1A2E), letterSpacing: 0.3),
                           ),
                         ),
                       ),
@@ -243,9 +243,9 @@ class _ParallelPerpendicularScreenState
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // UI Components
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _HintBanner extends StatelessWidget {
   const _HintBanner();
@@ -267,8 +267,8 @@ class _HintBanner extends StatelessWidget {
           Expanded(
             child: ResponsiveText(
               'Enter equations in any format (e.g., y = 2x + 1, 3x - 4y = 12, or 2x + y - 5 = 0).',
-              style: YITheme.subtitleStyle(context).copyWith(
-                color: YITheme.textSecondary(context),
+              style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3).copyWith(
+                color: context.watch<ThemeProvider>().textSecondary,
                 fontSize: 12,
               ),
             ),
@@ -314,7 +314,7 @@ class _EquationFieldState extends State<_EquationField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ResponsiveText(widget.label,
-            style: YITheme.inputLabelStyle(context)
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2)
                 .copyWith(color: widget.accent, fontSize: 10)),
         const SizedBox(height: 6),
         TextField(
@@ -323,17 +323,17 @@ class _EquationFieldState extends State<_EquationField> {
           keyboardType: TextInputType.none,
           textInputAction: widget.textInputAction,
           onEditingComplete: widget.onEditingComplete,
-          style: YITheme.resultEquationStyle(context).copyWith(
-            color: YITheme.textPrimary(context),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontFamily: 'monospace').copyWith(
+            color: context.watch<ThemeProvider>().textPrimary,
             fontSize: 16,
           ),
           decoration: InputDecoration(
             hintText: widget.hint,
-            hintStyle: YITheme.subtitleStyle(context).copyWith(
-              color: YITheme.textSecondary(context).withValues(alpha: 0.5),
+            hintStyle: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3).copyWith(
+              color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.5),
             ),
             filled: true,
-            fillColor: YITheme.surface(context).withValues(alpha: 0.8),
+            fillColor: context.watch<ThemeProvider>().surface.withValues(alpha: 0.8),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
@@ -433,7 +433,7 @@ class _ResultSection extends StatelessWidget {
                 const SizedBox(width: 8),
                 ResponsiveText(
                   'View Solution Steps',
-                  style: YITheme.inputLabelStyle(context)
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2)
                       .copyWith(color: accent, fontSize: 11),
                 ),
               ],
@@ -467,7 +467,7 @@ class _VerdictCard extends StatelessWidget {
             children: [
               ResponsiveText(
                 'VERDICT',
-                style: YITheme.inputLabelStyle(context)
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2)
                     .copyWith(color: accent, fontSize: 10),
               ),
               const Spacer(),
@@ -475,7 +475,7 @@ class _VerdictCard extends StatelessWidget {
               const SizedBox(width: 4),
               ResponsiveText(
                 'Tap to graph',
-                style: YITheme.subtitleStyle(context).copyWith(
+                style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3).copyWith(
                     color: accent.withValues(alpha: 0.7), fontSize: 11),
               ),
             ],
@@ -483,7 +483,7 @@ class _VerdictCard extends StatelessWidget {
           const SizedBox(height: 8),
           ResponsiveText(
             '${result.verdictSymbol}  ${result.verdict}',
-            style: YITheme.resultEquationStyle(context)
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontFamily: 'monospace')
                 .copyWith(color: accent, fontSize: 22),
           ),
         ],
@@ -518,19 +518,19 @@ class _EquationResultCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ResponsiveText(title,
-              style: YITheme.inputLabelStyle(context)
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2)
                   .copyWith(color: accent)),
           const SizedBox(height: 6),
           SelectableText(
             equation,
-            style: YITheme.resultEquationStyle(context).copyWith(
-                color: YITheme.textPrimary(context), fontSize: 15),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontFamily: 'monospace').copyWith(
+                color: context.watch<ThemeProvider>().textPrimary, fontSize: 15),
           ),
           const SizedBox(height: 8),
           ResponsiveText(
             meta,
-            style: YITheme.subtitleStyle(context)
-                .copyWith(color: YITheme.textSecondary(context)),
+            style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3)
+                .copyWith(color: context.watch<ThemeProvider>().textSecondary),
           ),
         ],
       ),
@@ -538,14 +538,14 @@ class _EquationResultCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // STEPS WIDGET — MIGRATED TO SolutionStepCard
 //
 // Each PPSolverStep becomes a SolutionStepCard.
 // Blocks (note/formula/substitution/working/result) are rendered
 // inside the dark math-content card as a Column. The 'si' groupKey
 // pair (Line 1 / Line 2 conversion) renders side-by-side.
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class ParallelPerpendicularSteps extends StatelessWidget {
   final PPResult result;
@@ -593,7 +593,7 @@ class ParallelPerpendicularSteps extends StatelessWidget {
   }
 
   Widget _buildStepCard(PPSolverStep step) {
-    return SolutionStepCard(design: AppDesign.calculus,
+    return SolutionStepCard(design: AppDesign.app,
       stepNumber: step.number,
       title: step.title,
       description: 'Step ${step.number}',
@@ -762,7 +762,7 @@ class _StepBlocks extends StatelessWidget {
   }
 
   Widget _renderNote(BuildContext context, String text) {
-    final isDark = !YITheme.isLight(context);
+    final isDark = !context.watch<ThemeProvider>().isLight;
     final color = isDark
         ? Colors.white.withValues(alpha: 0.6)
         : Colors.black.withValues(alpha: 0.55);

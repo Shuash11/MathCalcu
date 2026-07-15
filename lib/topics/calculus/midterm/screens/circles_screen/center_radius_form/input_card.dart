@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'models/field_def.dart';
 import 'widgets_inputcard/compute_button.dart';
 import 'widgets_inputcard/quick_key_field.dart';
@@ -28,7 +27,7 @@ class InputCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: FindingCenterRadiusTheme.cardGradient,
+        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
@@ -58,7 +57,7 @@ class InputCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: FindingCenterRadiusTheme.textPrimary,
+              color: const Color(0xFFE8E8F0),
             ),
           ),
         ),

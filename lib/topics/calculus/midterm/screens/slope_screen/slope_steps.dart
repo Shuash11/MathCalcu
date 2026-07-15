@@ -1,11 +1,11 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // STEPS WIDGETS — MIGRATED TO SolutionStepCard
 //
 // Each step becomes a SolutionStepCard with:
@@ -13,7 +13,7 @@ import 'package:flutter_math_fork/flutter_math.dart';
 // - title (the guide)
 // - description (the step label, e.g. "Step 1")
 // - mathContent (latex SelectableMath wrapped in scroll)
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class SlopeSteps extends StatelessWidget {
   final SlopeSolverResult result;
@@ -46,21 +46,21 @@ class SlopeSteps extends StatelessWidget {
   List<Widget> _buildVerticalSteps(
       BuildContext context, String x1s, String y1s, String x2s, String y2s) {
     return [
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
         mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 2,
-        title: 'Check Δx',
+        title: 'Check ?x',
         description: 'Step 2',
         mathContent: _mathLatex(
           r'\Delta x = x_2 - x_1 = ' '$x2s' r' - ' '$x1s' r' = 0',
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 3,
         title: 'Conclusion',
         description: 'Step 3',
@@ -68,7 +68,7 @@ class SlopeSteps extends StatelessWidget {
           r'\Delta x = 0 \implies \text{Vertical line}',
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 4,
         title: 'Line equation',
         description: 'Step 4',
@@ -80,27 +80,27 @@ class SlopeSteps extends StatelessWidget {
   List<Widget> _buildHorizontalSteps(
       BuildContext context, String x1s, String y1s, String x2s, String y2s) {
     return [
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
         mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 2,
-        title: 'Check Δy',
+        title: 'Check ?y',
         description: 'Step 2',
         mathContent: _mathLatex(
           r'\Delta y = y_2 - y_1 = ' '$y2s' r' - ' '$y1s' r' = 0',
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 3,
         title: 'Conclusion',
         description: 'Step 3',
         mathContent: _mathLatex(r'\Delta y = 0 \implies m = 0'),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 4,
         title: 'Slope value',
         description: 'Step 4',
@@ -119,20 +119,20 @@ class SlopeSteps extends StatelessWidget {
       String dxs,
       String slopeStr) {
     return [
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
         mathContent: _mathText(
-            context, 'A = ($x1s, $y1s)  →  (x₁, y₁)\nB = ($x2s, $y2s)  →  (x₂, y₂)'),
+            context, 'A = ($x1s, $y1s)  ?  (x1, y1)\nB = ($x2s, $y2s)  ?  (x2, y2)'),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 2,
         title: 'Slope formula',
         description: 'Step 2',
         mathContent: _mathLatex(r'm = \dfrac{y_2 - y_1}{x_2 - x_1}'),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 3,
         title: 'Find differences',
         description: 'Step 3',
@@ -168,7 +168,7 @@ class SlopeSteps extends StatelessWidget {
           ],
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 4,
         title: 'Calculate slope',
         description: 'Step 4',
@@ -184,7 +184,7 @@ class SlopeSteps extends StatelessWidget {
           r'\end{aligned}',
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 5,
         title: 'Result',
         description: 'Step 5',
@@ -268,7 +268,7 @@ class SlopeComparisonSteps extends StatelessWidget {
             : 'Neither';
 
     return [
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 1,
         title: 'Line 1 points & slope',
         description: 'Step 1',
@@ -297,7 +297,7 @@ class SlopeComparisonSteps extends StatelessWidget {
           ],
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 2,
         title: 'Line 2 points & slope',
         description: 'Step 2',
@@ -326,7 +326,7 @@ class SlopeComparisonSteps extends StatelessWidget {
           ],
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 3,
         title: 'Check relationship',
         description: 'Step 3',
@@ -338,7 +338,7 @@ class SlopeComparisonSteps extends StatelessWidget {
                   : r'm_1 \neq m_2 \text{ and } m_1 \cdot m_2 \neq -1',
         ),
       ),
-      SolutionStepCard(design: AppDesign.calculus,
+      SolutionStepCard(design: AppDesign.app,
         stepNumber: 4,
         title: 'Result',
         description: 'Step 4',

@@ -1,12 +1,30 @@
 {
   "tasks": [
-    { "id": 1, "description": "Read all 3 modified files + their test files", "status": "done" },
-    { "id": 2, "description": "Run flutter analyze on each modified file", "status": "done" },
-    { "id": 3, "description": "Run flutter test — all tests pass", "status": "done" },
-    { "id": 4, "description": "Check imports correct in all 3 files", "status": "done" },
-    { "id": 5, "description": "Check no unused variables/state", "status": "done" },
-    { "id": 6, "description": "Check for regressions in related screens", "status": "done" },
-    { "id": 7, "description": "Write readiness report", "status": "done" }
+    {
+      "id": 1,
+      "description": "Repair invalid UTF-8 encoding in the 20 non-deleted Dart source files and restore analyzer visibility",
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "description": "Align all midterm, finals, and fallback topic cards to the shared ModuleCard using ThemeProvider accent colors and glow",
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "description": "Align MathInputField solve-button border, background, icon, and glow to ThemeProvider accent colors in both modes",
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "description": "Remove residual blue UI accents from touched topic screens and graphs, replacing them with bottom-navigation theme colors",
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "description": "Run full analyzer, tests, UTF-8 scan, color scans, and end-to-end readiness re-audit",
+      "status": "done"
+    }
   ],
   "completed": true
 }

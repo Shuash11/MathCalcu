@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animated_inequality_card.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
+import 'package:provider/provider.dart';
 
 class LinearCard extends StatelessWidget {
   const LinearCard({super.key});
@@ -12,7 +12,7 @@ class LinearCard extends StatelessWidget {
       subtitle: 'Supports <, >, =, =, and continued inequalities.',
       route: '/inequalities/simple',
       icon: Icons.functions_rounded,
-      accentColor: InequalityTheme.subtypeAccents['strict'] ?? InequalityTheme.accentColor,
+      accentColor: {'strict': const Color(0xFF334155), 'non_strict': const Color(0xFF334155), 'absolute': const Color(0xFF334155)}['strict'] ?? const Color(0xFF334155),
     );
   }
 }

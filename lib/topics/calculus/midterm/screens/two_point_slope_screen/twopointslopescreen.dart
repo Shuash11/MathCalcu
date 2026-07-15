@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/two_point_slope_theme/two_point_slope_theme.dart';
 import 'two_point_slope_controller.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/two_point_slope_graph/two_point_slope_graph.dart';
 import 'two_point_slope_steps.dart';
@@ -7,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // TWO-POINT SLOPE SCREEN - COMPLETE & FIXED
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class TwoPointSlopeScreen extends StatefulWidget {
   const TwoPointSlopeScreen({super.key});
@@ -62,7 +63,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     showSolutionStepsModal(
       context: context,
       title: 'Solution Steps',
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: TwoPointSlopeSteps(result: _controller.result!),
     );
   }
@@ -74,7 +75,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     const space5xl = 28.0;
     const space4xl = 24.0;
     return Scaffold(
-      backgroundColor: TwoPointSlopeTheme.surface(context),
+      backgroundColor: context.watch<ThemeProvider>().surface,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.fromLTRB(
@@ -105,7 +106,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     );
   }
 
-  // ── App bar ───────────────────────────────────────────────
+  // -- App bar -----------------------------------------------
   Widget _buildAppBar() {
     return FadeTransition(
       opacity: _headerFade,
@@ -117,15 +118,15 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: TwoPointSlopeTheme.cardBg(context),
+                color: context.watch<ThemeProvider>().card,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: TwoPointSlopeTheme.border(0.2),
+                  color: const Color(0xFF334155).withValues(alpha: 0.2),
                 ),
               ),
               child: Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: TwoPointSlopeTheme.textSecondary(context),
+                color: context.watch<ThemeProvider>().textSecondary,
                 size: 18,
               ),
             ),
@@ -135,15 +136,15 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
+              color: const Color(0xFF334155).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: TwoPointSlopeTheme.primary.withValues(alpha: 0.2),
+                color: const Color(0xFF334155).withValues(alpha: 0.2),
               ),
             ),
             child: Icon(
               Icons.show_chart_rounded,
-              color: TwoPointSlopeTheme.primary,
+              color: const Color(0xFF334155),
               size: 22,
             ),
           ),
@@ -154,7 +155,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               children: [
                 ResponsiveText(
                   'Two-Point Slope',
-                  style: TwoPointSlopeTheme.headingStyle(context),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -1.0, height: 1.1),
                 ),
               ],
             ),
@@ -164,10 +165,10 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     );
   }
 
-  // ── Input card ────────────────────────────────────────────
+  // -- Input card --------------------------------------------
   Widget _buildInputCard() {
     return Container(
-      decoration: TwoPointSlopeTheme.cardDecoration(context),
+      decoration: BoxDecoration(color: context.watch<ThemeProvider>().card, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.15), width: 1), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: context.watch<ThemeProvider>().isLight ? 0.05 : 0.3), blurRadius: 16, offset: const Offset(0, 4))]),
       padding: const EdgeInsets.all(24),
       child: Form(
         key: _controller.formKey,
@@ -176,13 +177,13 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
           children: [
             // Section label
             ResponsiveText('ENTER COORDINATES',
-                style: TwoPointSlopeTheme.labelStyle(context)),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.7), letterSpacing: 0.5)),
             const SizedBox(height: 20),
 
             // Point 1
             const _PointLabel(
               label: 'Point 1',
-              color: TwoPointSlopeTheme.stepBlue,
+              color: const Color(0xFF334155),
             ),
             const SizedBox(height: 10),
             Row(
@@ -191,7 +192,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.x1Controller,
                     focusNode: _x1Focus,
-                    label: 'x₁',
+                    label: 'x1',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.next,
@@ -203,7 +204,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.y1Controller,
                     focusNode: _y1Focus,
-                    label: 'y₁',
+                    label: 'y1',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.next,
@@ -228,15 +229,15 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: TwoPointSlopeTheme.surface(context),
+                    color: context.watch<ThemeProvider>().surface,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: TwoPointSlopeTheme.border(0.2),
+                      color: const Color(0xFF334155).withValues(alpha: 0.2),
                     ),
                   ),
                   child: Icon(
                     Icons.swap_vert_rounded,
-                    color: TwoPointSlopeTheme.textSecondary(context),
+                    color: context.watch<ThemeProvider>().textSecondary,
                     size: 18,
                   ),
                 ),
@@ -248,7 +249,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             // Point 2
             const _PointLabel(
               label: 'Point 2',
-              color: TwoPointSlopeTheme.stepGreen,
+              color: const Color(0xFF34D399),
             ),
             const SizedBox(height: 10),
             Row(
@@ -257,7 +258,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.x2Controller,
                     focusNode: _x2Focus,
-                    label: 'x₂',
+                    label: 'x2',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.next,
@@ -269,7 +270,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                   child: _CoordField(
                     controller: _controller.y2Controller,
                     focusNode: _y2Focus,
-                    label: 'y₂',
+                    label: 'y2',
                     hint: '0',
                     validator: _controller.validateNumber,
                     textInputAction: TextInputAction.done,
@@ -299,15 +300,15 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                         width: 48,
                         height: 52,
                         decoration: BoxDecoration(
-                          color: TwoPointSlopeTheme.surface(context),
+                          color: context.watch<ThemeProvider>().surface,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: TwoPointSlopeTheme.border(0.15),
+                            color: const Color(0xFF334155).withValues(alpha: 0.15),
                           ),
                         ),
                         child: Icon(
                           Icons.refresh_rounded,
-                          color: TwoPointSlopeTheme.textSecondary(context),
+                          color: context.watch<ThemeProvider>().textSecondary,
                           size: 20,
                         ),
                       ),
@@ -336,14 +337,14 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     );
   }
 
-  // ── Result card ───────────────────────────────────────────
+  // -- Result card -------------------------------------------
   Widget _buildResultCard() {
     final result = _controller.result!;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeOutCubic,
-      decoration: TwoPointSlopeTheme.cardDecoration(context, glowing: true),
+      decoration: BoxDecoration(color: context.watch<ThemeProvider>().card, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.35), width: 1.5), boxShadow: [BoxShadow(color: const Color(0xFF334155).withValues(alpha: 0.15), blurRadius: 32, offset: const Offset(0, 8), spreadRadius: 2)]),
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,7 +353,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             children: [
               Expanded(
                 child: Text('RESULT',
-                    style: TwoPointSlopeTheme.labelStyle(context)),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.7), letterSpacing: 0.5)),
               ),
               GestureDetector(
                 onTap: _toggleGraph,
@@ -374,7 +375,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 child: _ResultTile(
                   label: 'Slope (m)',
                   value: result.slopeDisplay,
-                  color: TwoPointSlopeTheme.primary,
+                  color: const Color(0xFF334155),
                   icon: Icons.show_chart_rounded,
                 ),
               ),
@@ -383,7 +384,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 child: _ResultTile(
                   label: 'Type',
                   value: result.slopeType,
-                  color: TwoPointSlopeTheme.stepPurple,
+                  color: const Color(0xFFA78BFA),
                   icon: Icons.info_outline_rounded,
                   smallText: true,
                 ),
@@ -399,8 +400,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               label: 'Slope-Intercept Form',
               tag: 'y = mx + b',
               equation: result.lineEquation,
-              color: TwoPointSlopeTheme.primaryLight,
-              tagColor: TwoPointSlopeTheme.primary,
+              color: const Color(0xFF334155),
+              tagColor: const Color(0xFF334155),
             ),
 
             const SizedBox(height: 10),
@@ -410,8 +411,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               label: 'Standard Form',
               tag: 'Ax + By = C',
               equation: result.standardForm,
-              color: TwoPointSlopeTheme.stepBlue,
-              tagColor: TwoPointSlopeTheme.stepBlue,
+              color: const Color(0xFF334155),
+              tagColor: const Color(0xFF334155),
             ),
 
             const SizedBox(height: 10),
@@ -421,8 +422,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               label: 'General Form',
               tag: 'Ax + By + C = 0',
               equation: result.generalForm,
-              color: TwoPointSlopeTheme.stepGreen,
-              tagColor: TwoPointSlopeTheme.stepGreen,
+              color: const Color(0xFF34D399),
+              tagColor: const Color(0xFF34D399),
             ),
           ] else ...[
             // Vertical line special case
@@ -430,16 +431,16 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               label: 'Line Equation',
               tag: 'Vertical',
               equation: result.lineEquation,
-              color: TwoPointSlopeTheme.primaryLight,
-              tagColor: TwoPointSlopeTheme.primary,
+              color: const Color(0xFF334155),
+              tagColor: const Color(0xFF334155),
             ),
             const SizedBox(height: 10),
             _EquationTile(
               label: 'General Form',
               tag: 'Ax + By + C = 0',
               equation: result.generalForm,
-              color: TwoPointSlopeTheme.stepGreen,
-              tagColor: TwoPointSlopeTheme.stepGreen,
+              color: const Color(0xFF34D399),
+              tagColor: const Color(0xFF34D399),
             ),
           ],
         ],
@@ -451,7 +452,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: TwoPointSlopeTheme.primary.withValues(alpha: 0.1),
+        color: const Color(0xFF334155).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -462,12 +463,12 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: TwoPointSlopeTheme.primary,
+              color: const Color(0xFF334155),
             ),
           ),
           const SizedBox(width: 4),
           Icon(Icons.keyboard_arrow_down_rounded,
-              color: TwoPointSlopeTheme.primary, size: 16),
+              color: const Color(0xFF334155), size: 16),
         ],
       ),
     );
@@ -478,22 +479,22 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: _showGraph
-            ? TwoPointSlopeTheme.stepGreen.withValues(alpha: 0.2)
-            : TwoPointSlopeTheme.stepGreen.withValues(alpha: 0.1),
+            ? const Color(0xFF34D399).withValues(alpha: 0.2)
+            : const Color(0xFF34D399).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.show_chart_rounded,
-              color: TwoPointSlopeTheme.stepGreen, size: 14),
+              color: const Color(0xFF34D399), size: 14),
           const SizedBox(width: 4),
           ResponsiveText(
             _showGraph ? 'Hide graph' : 'Show graph',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: TwoPointSlopeTheme.stepGreen,
+              color: const Color(0xFF34D399),
             ),
           ),
         ],
@@ -502,9 +503,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // SUB-WIDGETS - ALL FIXED
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _PointLabel extends StatelessWidget {
   final String label;
@@ -561,11 +562,11 @@ class _CoordField extends StatelessWidget {
       textInputAction: textInputAction,
       onEditingComplete: onEditingComplete,
       style: TextStyle(
-        color: TwoPointSlopeTheme.textPrimary(context),
+        color: context.watch<ThemeProvider>().textPrimary,
         fontSize: 16,
         fontFamily: 'monospace',
       ),
-      decoration: TwoPointSlopeTheme.inputDecoration(context, label, hint),
+      decoration: InputDecoration(labelText: label, hintText: hint, labelStyle: TextStyle(color: context.watch<ThemeProvider>().textSecondary, fontSize: 13, fontWeight: FontWeight.w500), hintStyle: TextStyle(color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.6), fontSize: 14), filled: true, fillColor: context.watch<ThemeProvider>().surface, contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16), enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: const Color(0xFF334155).withValues(alpha: 0.15))), focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: const Color(0xFF334155).withValues(alpha: 0.5), width: 1.5)), errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Colors.redAccent)), focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: Colors.redAccent, width: 1.5))),
     );
   }
 }
@@ -597,8 +598,8 @@ class _SolveButtonState extends State<_SolveButton> {
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [
-                  TwoPointSlopeTheme.primary,
-                  TwoPointSlopeTheme.orange,
+                  const Color(0xFF334155),
+                  const Color(0xFF334155),
                 ],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
@@ -606,7 +607,7 @@ class _SolveButtonState extends State<_SolveButton> {
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: TwoPointSlopeTheme.primary.withValues(alpha: 0.35),
+                  color: const Color(0xFF334155).withValues(alpha: 0.35),
                   blurRadius: 20,
                   offset: const Offset(0, 6),
                 ),
@@ -669,7 +670,7 @@ class _EquationTile extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 11,
-                  color: TwoPointSlopeTheme.textSecondary(context)
+                  color: context.watch<ThemeProvider>().textSecondary
                       .withValues(alpha: 0.6),
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,

@@ -11,7 +11,7 @@ class FindingCenterCard extends StatelessWidget {
       icon: Icons.adjust_rounded,
       title: 'Finding the Center',
       subtitle: 'Standard form, general form & center coordinates',
-      accentColor: const Color(0xFF7F1D1D),
+      accentColor: const Color(0xFF334155),
       onTap: () => context.push('/circle/finding-center'),
     );
   }

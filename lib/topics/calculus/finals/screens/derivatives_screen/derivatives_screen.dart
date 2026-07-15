@@ -93,7 +93,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Derivative Steps',
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,7 +127,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                 stepNumber: entry.key + 1,
                 title: step.title,
                 description: step.explanation.split('\n').firstOrNull ?? '',
-                design: AppDesign.calculus,
+                design: AppDesign.app,
                 mathContent: Text(
                   step.expression.toString(),
                   style: const TextStyle(color: FinalsTheme.primary),

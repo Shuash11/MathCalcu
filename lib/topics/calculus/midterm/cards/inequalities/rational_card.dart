@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animated_inequality_card.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
+import 'package:provider/provider.dart';
 
 class RationalCard extends StatelessWidget {
   const RationalCard({super.key});
@@ -12,7 +12,7 @@ class RationalCard extends StatelessWidget {
       subtitle: 'Involves a fraction with variable in numerator/denominator.',
       route: '/inequalities/rational',
       icon: Icons.pie_chart_rounded,
-      accentColor: InequalityTheme.subtypeAccents['rational'] ?? InequalityTheme.accentColor,
+      accentColor: {'strict': const Color(0xFF334155), 'non_strict': const Color(0xFF334155), 'absolute': const Color(0xFF334155)}['rational'] ?? const Color(0xFF334155),
     );
   }
 }

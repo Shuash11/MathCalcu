@@ -1,6 +1,4 @@
-﻿// lib/ui/point_slope_screen.dart
-import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/pointslopetheme.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
+// lib/ui/point_slope_screen.dart
 import 'package:calculus_system/topics/calculus/midterm/solvers/pointslope_solver/pointslopesolver.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
@@ -9,6 +7,8 @@ import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'pointslopesubwidget.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 class PointSlopeScreen extends StatefulWidget {
   const PointSlopeScreen({super.key});
@@ -125,7 +125,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     showSolutionStepsModal(
       context: context,
       title: 'Point-Slope Solution',
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: PointSlopeSteps(
         m: result.m,
         x1: result.x1,
@@ -140,7 +140,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PSTheme.surface(context),
+      backgroundColor: context.watch<ThemeProvider>().surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -182,7 +182,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                             child: Container(
                               height: 52,
                               decoration: BoxDecoration(
-                                color: MidpointTheme.accent(context),
+                                color: const Color(0xFF334155),
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               child: Center(
@@ -191,7 +191,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
-                                    color: MidpointTheme.accentLight(context),
+                                    color: const Color(0xFF334155),
                                     letterSpacing: 0.3,
                                   ),
                                 ),
@@ -219,22 +219,22 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                   icon: const Icon(
                                     Icons.receipt_long_rounded,
                                     size: 14,
-                                    color: PSTheme.electricPurple,
+                                    color: const Color(0xFF334155),
                                   ),
                                   label: const Text(
                                     'Show Steps',
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: PSTheme.electricPurple,
+                                      color: const Color(0xFF334155),
                                     ),
                                   ),
                                   style: OutlinedButton.styleFrom(
                                     side: BorderSide(
-                                      color: PSTheme.electricPurple
+                                      color: const Color(0xFF334155)
                                           .withValues(alpha: 0.35),
                                     ),
-                                    backgroundColor: PSTheme.electricPurple
+                                    backgroundColor: const Color(0xFF334155)
                                         .withValues(alpha: 0.08),
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 8,
@@ -335,22 +335,22 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: PSTheme.glowPurple(0.12),
+                color: const Color(0xFF334155).withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: PSTheme.glowPurple(0.40),
+                  color: const Color(0xFF334155).withValues(alpha: 0.40),
                   width: 1.5,
                 ),
               ),
               child: const Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: PSTheme.electricPurple,
+                color: const Color(0xFF334155),
                 size: 18,
               ),
             ),
           ),
           const SizedBox(width: 12),
-          ResponsiveText('Back', style: PSTheme.subtitleStyle(context)),
+          ResponsiveText('Back', style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5))),
         ],
       ),
     );

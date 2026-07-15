@@ -1,8 +1,9 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SlopeAnswerCard extends StatelessWidget {
   final SlopeSolverResult result;
@@ -28,15 +29,15 @@ class SlopeAnswerCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              SlopeTheme.accentColor.withValues(alpha: 0.15),
-              SlopeTheme.accentColor.withValues(alpha: 0.05),
+              const Color(0xFF334155).withValues(alpha: 0.15),
+              const Color(0xFF334155).withValues(alpha: 0.05),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: SlopeTheme.accentColor.withValues(alpha: 0.3),
+            color: const Color(0xFF334155).withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -48,7 +49,7 @@ class SlopeAnswerCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
-                color: SlopeTheme.accentColor.withValues(alpha: 0.7),
+                color: const Color(0xFF334155).withValues(alpha: 0.7),
                 letterSpacing: 1.2,
               ),
             ),
@@ -59,7 +60,7 @@ class SlopeAnswerCard extends StatelessWidget {
               isVertical ? r'x = c' : (isHorizontal ? r'm = 0' : r'm = ' + _toLatexSlope(slopeStr)),
               textStyle: TextStyle(
                 fontSize: 11,
-                color: SlopeTheme.textSecondary(context).withValues(alpha: 0.5),
+                color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.5),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -108,7 +109,7 @@ class _SlopeDisplay extends StatelessWidget {
         textStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w700,
-          color: SlopeTheme.textPrimary(context),
+          color: context.watch<ThemeProvider>().textPrimary,
         ),
       ),
     );
@@ -227,7 +228,7 @@ class SlopeComparisonCard extends StatelessWidget {
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color:
-                      SlopeTheme.textPrimary(context).withValues(alpha: 0.75),
+                      context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.75),
                   height: 1.5,
                 ),
               ),
@@ -276,10 +277,10 @@ class SlopeInfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: SlopeTheme.cardColor(context),
+        color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: SlopeTheme.accentColor.withValues(alpha: 0.2),
+          color: const Color(0xFF334155).withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -290,7 +291,7 @@ class SlopeInfoChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
-              color: SlopeTheme.accentColor.withValues(alpha: 0.6),
+              color: const Color(0xFF334155).withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 4),
@@ -301,7 +302,7 @@ class SlopeInfoChip extends StatelessWidget {
               textStyle: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: SlopeTheme.textPrimary(context),
+                color: context.watch<ThemeProvider>().textPrimary,
               ),
             ),
           ),

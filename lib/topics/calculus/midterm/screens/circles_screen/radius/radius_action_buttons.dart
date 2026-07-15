@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/radiustheme.dart';
 import 'package:flutter/material.dart';
 
 class RadiusActionButtons extends StatelessWidget {
@@ -22,10 +21,10 @@ class RadiusActionButtons extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: FindingRadiusTheme.cyan.withValues(alpha: 0.08),
+                color: const Color(0xFF334155).withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: FindingRadiusTheme.cyan.withValues(alpha: 0.3),
+                  color: const Color(0xFF334155).withValues(alpha: 0.3),
                 ),
               ),
               child: const Center(
@@ -34,7 +33,7 @@ class RadiusActionButtons extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: FindingRadiusTheme.cyan,
+                    color: const Color(0xFF334155),
                   ),
                 ),
               ),
@@ -51,12 +50,12 @@ class RadiusActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [FindingRadiusTheme.cyan, FindingRadiusTheme.indigo],
+                  colors: [const Color(0xFF334155), const Color(0xFF334155)],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: FindingRadiusTheme.cyan.withValues(alpha: 0.3),
+                    color: const Color(0xFF334155).withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),

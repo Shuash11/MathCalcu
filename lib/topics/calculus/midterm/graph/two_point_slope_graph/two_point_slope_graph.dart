@@ -1,15 +1,16 @@
-﻿import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/two_point_slope_theme/two_point_slope_theme.dart';
+import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_solver/two_point_slope_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // GRAPH WIDGET
 // Renders the coordinate plane and the line using fl_chart.
 // Add fl_chart to pubspec.yaml:
 //   fl_chart: ^0.68.0
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 String _fmt(double v) {
   if (v == v.truncateToDouble()) return v.toInt().toString();
@@ -37,12 +38,12 @@ class TwoPointSlopeGraph extends StatelessWidget {
                   width: 3,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: TwoPointSlopeTheme.primary,
+                    color: const Color(0xFF334155),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text('GRAPH', style: TwoPointSlopeTheme.labelStyle(context)),
+                Text('GRAPH', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.7), letterSpacing: 0.5)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -50,7 +51,7 @@ class TwoPointSlopeGraph extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: TwoPointSlopeTheme.primary.withValues(alpha: 0.8),
+                      color: const Color(0xFF334155).withValues(alpha: 0.8),
                       fontFamily: 'monospace',
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -59,15 +60,15 @@ class TwoPointSlopeGraph extends StatelessWidget {
                 const Spacer(),
                 // Legend
                 const _LegendDot(
-                    color: TwoPointSlopeTheme.primary, label: 'Line'),
+                    color: const Color(0xFF334155), label: 'Line'),
                 const SizedBox(width: 12),
                 _LegendDot(
-                  color: TwoPointSlopeTheme.stepBlue,
+                  color: const Color(0xFF334155),
                   label: 'P1 (${_fmt(result.x1)}, ${_fmt(result.y1)})',
                 ),
                 const SizedBox(width: 12),
                 _LegendDot(
-                  color: TwoPointSlopeTheme.stepGreen,
+                  color: const Color(0xFF34D399),
                   label: 'P2 (${_fmt(result.x2)}, ${_fmt(result.y2)})',
                 ),
               ],
@@ -77,7 +78,7 @@ class TwoPointSlopeGraph extends StatelessWidget {
           // Chart card
           Container(
             height: 320,
-            decoration: TwoPointSlopeTheme.cardDecoration(context, glowing: true),
+            decoration: BoxDecoration(color: context.watch<ThemeProvider>().card, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.35), width: 1.5), boxShadow: [BoxShadow(color: const Color(0xFF334155).withValues(alpha: 0.15), blurRadius: 32, offset: const Offset(0, 8), spreadRadius: 2)]),
             padding: const EdgeInsets.fromLTRB(12, 20, 20, 12),
             child: result.isVertical
                 ? _VerticalLineGraph(result: result)
@@ -94,9 +95,9 @@ class TwoPointSlopeGraph extends StatelessWidget {
         fullscreenDialog: true,
         builder: (_) => FullScreenGraphScreen(
           title: 'Two-Point Slope',
-          accentColor: TwoPointSlopeTheme.primary,
+          accentColor: const Color(0xFF334155),
           graph: Container(
-            color: TwoPointSlopeTheme.background(context),
+            color: context.watch<ThemeProvider>().surface,
             child: result.isVertical
                 ? _VerticalLineGraph(result: result)
                 : _LineGraph(result: result),
@@ -106,24 +107,24 @@ class TwoPointSlopeGraph extends StatelessWidget {
             FullScreenInfoItem(
               label: 'P1',
               value: '(${_fmt(result.x1)}, ${_fmt(result.y1)})',
-              color: TwoPointSlopeTheme.stepBlue,
+              color: const Color(0xFF334155),
             ),
             FullScreenInfoItem(
               label: 'P2',
               value: '(${_fmt(result.x2)}, ${_fmt(result.y2)})',
-              color: TwoPointSlopeTheme.stepGreen,
+              color: const Color(0xFF34D399),
             ),
             if (!result.isVertical)
               FullScreenInfoItem(
                 label: 'Slope',
                 value: result.slope != null ? _fmt(result.slope!) : 'N/A',
-                color: TwoPointSlopeTheme.primary,
+                color: const Color(0xFF334155),
               ),
             if (!result.isVertical && result.yIntercept != null)
               FullScreenInfoItem(
                 label: 'Y-Intercept',
                 value: _fmt(result.yIntercept!),
-                color: TwoPointSlopeTheme.primary,
+                color: const Color(0xFF334155),
               ),
           ],
         ),
@@ -132,9 +133,9 @@ class TwoPointSlopeGraph extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // Normal line graph (slope defined)
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _LineGraph extends StatelessWidget {
   final TwoPointSlopeResult result;
@@ -165,9 +166,9 @@ class _LineGraph extends StatelessWidget {
     final point2 = FlSpot(result.x2, result.y2);
 
     // Capture colors before callbacks (avoid calling context.watch outside widget tree)
-    final bgColor = TwoPointSlopeTheme.background(context);
-    final stepBlue = TwoPointSlopeTheme.stepBlue;
-    final stepGreen = TwoPointSlopeTheme.stepGreen;
+    final bgColor = context.watch<ThemeProvider>().surface;
+    final stepBlue = const Color(0xFF334155);
+    final stepGreen = const Color(0xFF34D399);
 
     return LineChart(
       LineChartData(
@@ -196,7 +197,7 @@ class _LineGraph extends StatelessWidget {
           leftTitles: AxisTitles(
             axisNameWidget: Text('Y',
                 style: TextStyle(
-                    color: TwoPointSlopeTheme.textMuted(context),
+                    color: context.watch<ThemeProvider>().textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold)),
             axisNameSize: 22,
@@ -209,7 +210,7 @@ class _LineGraph extends StatelessWidget {
           bottomTitles: AxisTitles(
             axisNameWidget: Text('X',
                 style: TextStyle(
-                    color: TwoPointSlopeTheme.textMuted(context),
+                    color: context.watch<ThemeProvider>().textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold)),
             axisNameSize: 22,
@@ -234,21 +235,21 @@ class _LineGraph extends StatelessWidget {
         clipData: const FlClipData.all(),
 
         lineBarsData: [
-          // ── The line ───────────────────────────────────
+          // -- The line -----------------------------------
           LineChartBarData(
             spots: lineSpots,
             isCurved: false,
-            color: TwoPointSlopeTheme.primary,
+            color: const Color(0xFF334155),
             barWidth: 2.5,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
-              color: TwoPointSlopeTheme.primary.withValues(alpha: 0.06),
+              color: const Color(0xFF334155).withValues(alpha: 0.06),
             ),
           ),
 
-          // ── Point 1 ────────────────────────────────────
+          // -- Point 1 ------------------------------------
           LineChartBarData(
             spots: [point1],
             isCurved: false,
@@ -264,7 +265,7 @@ class _LineGraph extends StatelessWidget {
             ),
           ),
 
-          // ── Point 2 ────────────────────────────────────
+          // -- Point 2 ------------------------------------
           LineChartBarData(
             spots: [point2],
             isCurved: false,
@@ -288,7 +289,7 @@ class _LineGraph extends StatelessWidget {
               return LineTooltipItem(
                 '(${_fmt(s.x)}, ${_fmt(s.y)})',
                 TextStyle(
-                  color: TwoPointSlopeTheme.textPrimary(context),
+                  color: context.watch<ThemeProvider>().textPrimary,
                   fontFamily: 'monospace',
                   fontSize: 12,
                 ),
@@ -301,9 +302,9 @@ class _LineGraph extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // Vertical line fallback (slope undefined)
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _VerticalLineGraph extends StatelessWidget {
   final TwoPointSlopeResult result;
@@ -316,9 +317,9 @@ class _VerticalLineGraph extends StatelessWidget {
     final yMax = result.y1 > result.y2 ? result.y1 + 4 : result.y2 + 4;
 
     // Capture colors before callbacks (avoid calling context.watch outside widget tree)
-    final bgColor = TwoPointSlopeTheme.background(context);
-    final stepBlue = TwoPointSlopeTheme.stepBlue;
-    final stepGreen = TwoPointSlopeTheme.stepGreen;
+    final bgColor = context.watch<ThemeProvider>().surface;
+    final stepBlue = const Color(0xFF334155);
+    final stepGreen = const Color(0xFF34D399);
 
     return LineChart(
       LineChartData(
@@ -335,7 +336,7 @@ class _VerticalLineGraph extends StatelessWidget {
           leftTitles: AxisTitles(
             axisNameWidget: Text('Y',
                 style: TextStyle(
-                    color: TwoPointSlopeTheme.textMuted(context),
+                    color: context.watch<ThemeProvider>().textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold)),
             axisNameSize: 20,
@@ -348,7 +349,7 @@ class _VerticalLineGraph extends StatelessWidget {
           bottomTitles: AxisTitles(
             axisNameWidget: Text('X',
                 style: TextStyle(
-                    color: TwoPointSlopeTheme.textMuted(context),
+                    color: context.watch<ThemeProvider>().textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold)),
             axisNameSize: 20,
@@ -373,7 +374,7 @@ class _VerticalLineGraph extends StatelessWidget {
           LineChartBarData(
             spots: [FlSpot(x, yMin), FlSpot(x, yMax)],
             isCurved: false,
-            color: TwoPointSlopeTheme.primary,
+            color: const Color(0xFF334155),
             barWidth: 2.5,
             dotData: const FlDotData(show: false),
           ),
@@ -409,9 +410,9 @@ class _VerticalLineGraph extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // Helpers
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class _AxisLabel extends StatelessWidget {
   final String text;
@@ -425,7 +426,7 @@ class _AxisLabel extends StatelessWidget {
       label,
       style: TextStyle(
         fontSize: 10,
-        color: TwoPointSlopeTheme.textMuted(context),
+        color: context.watch<ThemeProvider>().textSecondary,
         fontFamily: 'monospace',
       ),
     );
@@ -450,7 +451,7 @@ class _LegendDot extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 11,
-              color: TwoPointSlopeTheme.textSecondary(context),
+              color: context.watch<ThemeProvider>().textSecondary,
             ),
           ),
         ],

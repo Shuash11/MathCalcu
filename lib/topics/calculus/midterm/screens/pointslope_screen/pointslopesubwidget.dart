@@ -1,9 +1,10 @@
-﻿import 'package:calculus_system/shared/widgets/responsive_text.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/pointslope_theme/pointslopetheme.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
-/// ── Card shell ────────────────────────────────
+/// -- Card shell --------------------------------
 class PSCard extends StatelessWidget {
   final Widget child;
   final double s;
@@ -14,15 +15,15 @@ class PSCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: PSTheme.cardGradient(context),
-        borderRadius: BorderRadius.circular(PSTheme.radiusCard * s),
+        gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [context.watch<ThemeProvider>().card, context.watch<ThemeProvider>().surface]),
+        borderRadius: BorderRadius.circular(20 * s),
         border: Border.all(
-            color: PSTheme.glowPurple(0.25).withValues(alpha: 0.15),
+            color: const Color(0xFF334155).withValues(alpha: 0.25).withValues(alpha: 0.15),
             width: 1.5 * s),
-        boxShadow: PSTheme.cardShadow(context, s),
+        boxShadow: [BoxShadow(color: const Color(0xFF334155).withValues(alpha: 0.15), blurRadius: 24, offset: const Offset(0, 8)), BoxShadow(color: context.watch<ThemeProvider>().shadowColor, blurRadius: 16, offset: const Offset(0, -4))],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(PSTheme.radiusCard * s),
+        borderRadius: BorderRadius.circular(20 * s),
         child: Stack(
           children: [
             Positioned(
@@ -34,7 +35,7 @@ class PSCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(colors: [
-                    PSTheme.glowPurple(0.12),
+                    const Color(0xFF334155).withValues(alpha: 0.12),
                     Colors.transparent,
                   ]),
                 ),
@@ -49,7 +50,7 @@ class PSCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(colors: [
-                    PSTheme.glowMagenta(0.07),
+                    const Color(0xFF334155).withValues(alpha: 0.07),
                     Colors.transparent,
                   ]),
                 ),
@@ -62,7 +63,7 @@ class PSCard extends StatelessWidget {
                 opacity: 0.15,
                 child: CustomPaint(
                   size: Size(110 * s, 110 * s),
-                  painter: const DiagonalLinesPainter(PSTheme.electricPurple),
+                  painter: const DiagonalLinesPainter(const Color(0xFF334155)),
                 ),
               ),
             ),
@@ -74,7 +75,7 @@ class PSCard extends StatelessWidget {
   }
 }
 
-/// ── Header ────────────────────────────────────
+/// -- Header ------------------------------------
 class PSHeader extends StatelessWidget {
   final Animation<double> pulseAnim;
   final double s;
@@ -89,15 +90,15 @@ class PSHeader extends StatelessWidget {
           width: 52 * s,
           height: 52 * s,
           decoration: BoxDecoration(
-            gradient: PSTheme.iconBoxGradient,
-            borderRadius: BorderRadius.circular(PSTheme.radiusIconBox * s),
-            border: Border.all(color: PSTheme.glowPurple(0.4), width: 2 * s),
-            boxShadow: PSTheme.iconBoxShadow(s),
+            gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [const Color(0xFF334155).withValues(alpha: 0.3), const Color(0xFF334155).withValues(alpha: 0.1)]),
+            borderRadius: BorderRadius.circular(14 * s),
+            border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.4), width: 2 * s),
+            boxShadow: [BoxShadow(color: const Color(0xFF334155).withValues(alpha: 0.15), blurRadius: 16, offset: const Offset(0, 4))],
           ),
           child: Center(
             child: Icon(
               Icons.show_chart_rounded,
-              color: PSTheme.electricPurple,
+              color: const Color(0xFF334155),
               size: 26 * s,
             ),
           ),
@@ -110,7 +111,7 @@ class PSHeader extends StatelessWidget {
               Row(
                 children: [
                   ResponsiveText('Equation of a line',
-                      style: PSTheme.titleStyle(context, s)),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -0.4)),
                   SizedBox(width: 10 * s),
                   AnimatedBuilder(
                     animation: pulseAnim,
@@ -119,10 +120,10 @@ class PSHeader extends StatelessWidget {
                       height: 8 * s,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: PSTheme.neonMagenta,
+                        color: const Color(0xFF334155),
                         boxShadow: [
                           BoxShadow(
-                            color: PSTheme.glowMagenta(pulseAnim.value),
+                            color: const Color(0xFF334155).withValues(alpha: pulseAnim.value),
                             blurRadius: pulseAnim.value * 14 * s,
                             spreadRadius: pulseAnim.value * 2 * s,
                           ),
@@ -135,7 +136,7 @@ class PSHeader extends StatelessWidget {
               SizedBox(height: 3 * s),
               ResponsiveText(
                 'Linear equation builder & visualiser',
-                style: PSTheme.subtitleStyle(context, s),
+                style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5)),
               ),
             ],
           ),
@@ -145,7 +146,7 @@ class PSHeader extends StatelessWidget {
   }
 }
 
-/// ── Formula banner ────────────────────────────
+/// -- Formula banner ----------------------------
 class PSFormulaBanner extends StatelessWidget {
   const PSFormulaBanner({super.key});
 
@@ -154,24 +155,24 @@ class PSFormulaBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
       decoration: BoxDecoration(
-        color: PSTheme.glowViolet(0.12),
-        borderRadius: BorderRadius.circular(PSTheme.radiusChip),
-        border: Border.all(color: PSTheme.glowViolet(0.3)),
+        color: const Color(0xFF334155).withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
-          ResponsiveText('Point Slope Form', style: PSTheme.monoCaptionStyle(context)),
+          ResponsiveText('Point Slope Form', style: TextStyle(fontSize: 11, letterSpacing: 1.5, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.6) : const Color(0xFF334155).withValues(alpha: 0.5), fontFamily: 'monospace')),
           const SizedBox(height: 6),
           RichText(
             text: TextSpan(
-              style: PSTheme.formulaStyle(context),
+              style: TextStyle(fontSize: 22, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontStyle: FontStyle.italic),
               children: [
-                const TextSpan(text: 'y − '),
-                TextSpan(text: 'y₁', style: PSTheme.highlightVarStyle()),
+                const TextSpan(text: 'y - '),
+                TextSpan(text: 'y1', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: const Color(0x66E879F9), blurRadius: 10)])),
                 const TextSpan(text: ' = '),
-                TextSpan(text: 'm', style: PSTheme.highlightVarStyle()),
-                const TextSpan(text: '(x − '),
-                TextSpan(text: 'x₁', style: PSTheme.highlightVarStyle()),
+                TextSpan(text: 'm', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: const Color(0x66E879F9), blurRadius: 10)])),
+                const TextSpan(text: '(x - '),
+                TextSpan(text: 'x1', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: const Color(0x66E879F9), blurRadius: 10)])),
                 const TextSpan(text: ')'),
               ],
             ),
@@ -182,7 +183,7 @@ class PSFormulaBanner extends StatelessWidget {
   }
 }
 
-/// ── Inputs row ────────────────────────────────
+/// -- Inputs row --------------------------------
 class PSInputsRow extends StatelessWidget {
   final TextEditingController mCtrl, x1Ctrl, y1Ctrl;
   final FocusNode mFocus, x1Focus, y1Focus;
@@ -218,7 +219,7 @@ class PSInputsRow extends StatelessWidget {
         Expanded(
           child: PSInputField(
             label: 'POINT',
-            variable: 'x₁',
+            variable: 'x1',
             controller: x1Ctrl,
             focusNode: x1Focus,
             s: s,
@@ -230,7 +231,7 @@ class PSInputsRow extends StatelessWidget {
         Expanded(
           child: PSInputField(
             label: 'POINT',
-            variable: 'y₁',
+            variable: 'y1',
             controller: y1Ctrl,
             focusNode: y1Focus,
             s: s,
@@ -269,8 +270,8 @@ class PSInputField extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('$label  ', style: PSTheme.inputLabelStyle(context, s)),
-            Text(variable, style: PSTheme.inputVarStyle(s)),
+            Text('$label  ', style: TextStyle(fontSize: 11, letterSpacing: 1.2, color: const Color(0xFF334155).withValues(alpha: 0.7), fontFamily: 'monospace')),
+            Text(variable, style: TextStyle(fontSize: 14, color: const Color(0xFF334155), fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, shadows: [Shadow(color: const Color(0xFF334155).withValues(alpha: 0.3), blurRadius: 6)])),
           ],
         ),
         SizedBox(height: 6 * s),
@@ -286,7 +287,7 @@ class PSInputField extends StatelessWidget {
   }
 }
 
-/// ── Text Field ─────────────────
+/// -- Text Field -----------------
 class PSTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -307,12 +308,12 @@ class PSTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: PSTheme.isLight(context)
+        color: context.watch<ThemeProvider>().isLight
             ? Colors.black.withValues(alpha: 0.03)
             : Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(PSTheme.radiusInput * s),
+        borderRadius: BorderRadius.circular(10 * s),
         border: Border.all(
-          color: PSTheme.glowPurple(0.2).withValues(alpha: 0.15),
+          color: const Color(0xFF334155).withValues(alpha: 0.2).withValues(alpha: 0.15),
           width: 1.5 * s,
         ),
       ),
@@ -325,20 +326,20 @@ class PSTextField extends StatelessWidget {
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'[\d\s./-]')),
         ],
-        style: PSTheme.inputTextStyle(context, s),
+        style: TextStyle(fontSize: 16, color: context.watch<ThemeProvider>().textPrimary),
         decoration: InputDecoration(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 14 * s, vertical: 10 * s),
           border: InputBorder.none,
           hintText: '3/4 or 1.5',
-          hintStyle: PSTheme.inputHintStyle(context, s),
+          hintStyle: TextStyle(color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.3) : const Color(0xFF334155).withValues(alpha: 0.25)),
         ),
       ),
     );
   }
 }
 
-/// ── Divider ───────────────────────────────────
+/// -- Divider -----------------------------------
 class PSDivider extends StatelessWidget {
   const PSDivider({super.key});
 
@@ -346,12 +347,12 @@ class PSDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 1,
-      decoration: const BoxDecoration(gradient: PSTheme.dividerGradient),
+      decoration: const BoxDecoration(gradient: const LinearGradient(colors: [Colors.transparent, const Color(0xFF334155), const Color(0xFF334155), Colors.transparent], stops: [0, 0.3, 0.7, 1])),
     );
   }
 }
 
-/// ── UPDATED: Result banner with General and Standard Form ─────────────────────────────
+/// -- UPDATED: Result banner with General and Standard Form -----------------------------
 class PSResultBanner extends StatelessWidget {
   final String? pointSlopeEq;
   final String? generalFormEq;
@@ -375,47 +376,47 @@ class PSResultBanner extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(20 * s, 18 * s, 20 * s, 14 * s),
       decoration: BoxDecoration(
-        gradient: PSTheme.resultBannerGradient(context, active: hasResult),
-        borderRadius: BorderRadius.circular(PSTheme.radiusInner * s),
+        gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [const Color(0xFF334155).withValues(alpha: 0.1), const Color(0xFF334155).withValues(alpha: 0.05)]),
+        borderRadius: BorderRadius.circular(14 * s),
         border: Border.all(
-          color: hasResult ? PSTheme.glowMagenta(0.5) : PSTheme.glowPurple(0.3),
+          color: hasResult ? const Color(0xFF334155).withValues(alpha: 0.5) : const Color(0xFF334155).withValues(alpha: 0.3),
           width: 1.5 * s,
         ),
-        boxShadow: hasResult ? PSTheme.resultActiveShadow(s) : [],
+        boxShadow: hasResult ? [BoxShadow(color: const Color(0xFF334155).withValues(alpha: 0.1), blurRadius: 24)] : [],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (hasResult) ...[
-            Text('POINT-SLOPE FORM', style: PSTheme.monoCaptionStyle(context)),
+            Text('POINT-SLOPE FORM', style: TextStyle(fontSize: 11, letterSpacing: 1.5, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.6) : const Color(0xFF334155).withValues(alpha: 0.5), fontFamily: 'monospace')),
             SizedBox(height: 4 * s),
             Text(
               pointSlopeEq!,
-              style: PSTheme.resultEquationStyle(context, s).copyWith(
-                color: PSTheme.electricPurple,
+              style: TextStyle(fontSize: 20, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontStyle: FontStyle.italic, letterSpacing: 0.5).copyWith(
+                color: const Color(0xFF334155),
               ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 12 * s),
             const Divider(),
             SizedBox(height: 12 * s),
-            Text('GENERAL FORM', style: PSTheme.monoCaptionStyle(context)),
+            Text('GENERAL FORM', style: TextStyle(fontSize: 11, letterSpacing: 1.5, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.6) : const Color(0xFF334155).withValues(alpha: 0.5), fontFamily: 'monospace')),
             SizedBox(height: 4 * s),
             Text(
               generalFormEq!,
-              style: PSTheme.resultEquationStyle(context, s).copyWith(
-                color: PSTheme.neonMagenta,
+              style: TextStyle(fontSize: 20, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontStyle: FontStyle.italic, letterSpacing: 0.5).copyWith(
+                color: const Color(0xFF334155),
               ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 12 * s),
             const Divider(),
             SizedBox(height: 12 * s),
-            Text('STANDARD FORM', style: PSTheme.monoCaptionStyle(context)),
+            Text('STANDARD FORM', style: TextStyle(fontSize: 11, letterSpacing: 1.5, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.6) : const Color(0xFF334155).withValues(alpha: 0.5), fontFamily: 'monospace')),
             SizedBox(height: 4 * s),
             Text(
               standardFormEq!,
-              style: PSTheme.resultEquationStyle(context, s).copyWith(
+              style: TextStyle(fontSize: 20, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontStyle: FontStyle.italic, letterSpacing: 0.5).copyWith(
                 color: const Color(0xFF10B981),
               ),
               textAlign: TextAlign.center,
@@ -429,7 +430,7 @@ class PSResultBanner extends StatelessWidget {
   }
 }
 
-/// ── Graph ─────────────────────────────────────
+/// -- Graph -------------------------------------
 class PSGraph extends StatelessWidget {
   final String mText;
   final String xText;
@@ -450,11 +451,11 @@ class PSGraph extends StatelessWidget {
       height: 200 * s,
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(PSTheme.radiusInner * s),
-        border: Border.all(color: PSTheme.glowViolet(0.25)),
+        borderRadius: BorderRadius.circular(14 * s),
+        border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.25)),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(PSTheme.radiusInner * s),
+        borderRadius: BorderRadius.circular(14 * s),
         child: CustomPaint(
           size: Size(double.infinity, 200 * s),
           painter: SimpleGraphPainter(
@@ -469,7 +470,7 @@ class PSGraph extends StatelessWidget {
   }
 }
 
-/// ── Simple Graph Painter ───────────────────────
+/// -- Simple Graph Painter -----------------------
 class SimpleGraphPainter extends CustomPainter {
   final String mText;
   final String xText;
@@ -617,7 +618,7 @@ class SimpleGraphPainter extends CustomPainter {
       oldDelegate.yText != yText;
 }
 
-/// ── Badges ────────────────────────────────────
+/// -- Badges ------------------------------------
 class PSBadges extends StatelessWidget {
   final String direction;
   final String angle;
@@ -657,15 +658,15 @@ class PSBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5 * s, horizontal: 12 * s),
       decoration: BoxDecoration(
-        color: PSTheme.glowViolet(0.15),
-        borderRadius: BorderRadius.circular(PSTheme.radiusBadge * s),
-        border: Border.all(color: PSTheme.glowPurple(0.3)),
+        color: const Color(0xFF334155).withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8 * s),
+        border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.3)),
       ),
       child: RichText(
         text: TextSpan(
           children: [
-            TextSpan(text: '$key_: ', style: PSTheme.badgeKeyStyle(s)),
-            TextSpan(text: value, style: PSTheme.badgeValueStyle(context, s)),
+            TextSpan(text: '$key_: ', style: TextStyle(fontSize: 12, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontFamily: 'monospace')),
+            TextSpan(text: value, style: TextStyle(fontSize: 12, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontFamily: 'monospace')),
           ],
         ),
       ),
@@ -673,7 +674,7 @@ class PSBadge extends StatelessWidget {
   }
 }
 
-/// ── Decoration painter ───────────────────────
+/// -- Decoration painter -----------------------
 class DiagonalLinesPainter extends CustomPainter {
   final Color color;
 

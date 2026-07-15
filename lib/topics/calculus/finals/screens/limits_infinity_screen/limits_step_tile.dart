@@ -167,7 +167,7 @@ class LimitsStepTile extends StatelessWidget {
         .replaceAll('\\rightarrow', '?')
         .replaceAll('\\cdot', '?')
         .replaceAll('x^2', 'x?')
-        .replaceAll('x^3', 'x³')
+        .replaceAll('x^3', 'xÂ³')
         .replaceAll('x^4', 'x4')
         .replaceAllMapped(
             RegExp(r'(\d+)\^(\d+)'), (m) => '${m[1]}${_superscript(m[2]!)}');
@@ -176,10 +176,10 @@ class LimitsStepTile extends StatelessWidget {
 
   String _superscript(String num) {
     const superscripts = {
-      '0': '°',
-      '1': '¹',
+      '0': 'Â°',
+      '1': 'Â¹',
       '2': '?',
-      '3': '³',
+      '3': 'Â³',
       '4': '4',
       '5': '5',
       '6': '6',

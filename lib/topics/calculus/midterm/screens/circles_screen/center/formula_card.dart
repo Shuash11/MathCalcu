@@ -1,5 +1,4 @@
-﻿// lib/Screens/SubScreens/formula_card.dart
-import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/centertheme.dart';
+// lib/Screens/SubScreens/formula_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -12,10 +11,10 @@ class CenterFormulaCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: FindingCenterTheme.indigo.withValues(alpha: 0.08),
+        color: const Color(0xFF334155).withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: FindingCenterTheme.indigo.withValues(alpha: 0.3),
+          color: const Color(0xFF334155).withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -25,7 +24,7 @@ class CenterFormulaCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.functions_rounded,
-                color: FindingCenterTheme.indigo.withValues(alpha: 0.8),
+                color: const Color(0xFF334155).withValues(alpha: 0.8),
                 size: 16,
               ),
               const SizedBox(width: 8),
@@ -34,7 +33,7 @@ class CenterFormulaCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: FindingCenterTheme.indigo.withValues(alpha: 0.8),
+                  color: const Color(0xFF334155).withValues(alpha: 0.8),
                   letterSpacing: 1.4,
                 ),
               ),
@@ -46,7 +45,7 @@ class CenterFormulaCard extends StatelessWidget {
             textStyle: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
-              color: FindingCenterTheme.textPrimary,
+              color: const Color(0xFFE8E8F0),
             ),
           ),
           const SizedBox(height: 4),
@@ -55,15 +54,15 @@ class CenterFormulaCard extends StatelessWidget {
             textStyle: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
-              color: FindingCenterTheme.textPrimary,
+              color: const Color(0xFFE8E8F0),
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            r'A(x₁, y₁) and B(x₂, y₂) are the endpoints of the diameter',
+            r'A(x1, y1) and B(x2, y2) are the endpoints of the diameter',
             style: TextStyle(
               fontSize: 12,
-              color: FindingCenterTheme.textSecondary.withValues(alpha: 0.65),
+              color: const Color(0xFF94A3B8).withValues(alpha: 0.65),
             ),
           ),
         ],

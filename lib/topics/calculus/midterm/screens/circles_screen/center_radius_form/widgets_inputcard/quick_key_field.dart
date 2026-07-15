@@ -1,5 +1,4 @@
-﻿import '../animations/time_anim.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
+import '../animations/time_anim.dart';
 import '../models/field_def.dart';
 import 'buttons.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +86,7 @@ class _LabeledQuickKeyFieldState extends State<LabeledQuickKeyField>
           ],
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: FindingCenterRadiusTheme.textPrimary,
+            color: const Color(0xFFE8E8F0),
             fontWeight: FontWeight.w700,
             fontSize: 18,
           ),
@@ -95,12 +94,12 @@ class _LabeledQuickKeyFieldState extends State<LabeledQuickKeyField>
             hintText: widget.field.hint,
             hintStyle: TextStyle(
               color:
-                  FindingCenterRadiusTheme.textSecondary.withValues(alpha: 0.4),
+                  const Color(0xFF94A3B8).withValues(alpha: 0.4),
               fontSize: 13,
               fontWeight: FontWeight.normal,
             ),
             filled: true,
-            fillColor: FindingCenterRadiusTheme.inputBg,
+            fillColor: const Color(0xFF334155),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,

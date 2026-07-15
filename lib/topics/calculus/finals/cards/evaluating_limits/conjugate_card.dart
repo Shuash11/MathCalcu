@@ -11,7 +11,6 @@ class ConjugateCard extends StatelessWidget {
       icon: Icons.unfold_more_double_rounded,
       title: 'By Conjugate',
       subtitle: 'Multiply by the conjugate to eliminate indeterminate radicals',
-      accentColor: const Color(0xFF9CA3AF),
       onTap: () => Navigator.of(context).pushNamed('/topics/calculus/finals/limits/conjugate'),
     );
   }

@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/radiustheme.dart';
 import 'package:flutter/material.dart';
 
 class RadiusHeader extends StatelessWidget {
@@ -13,15 +12,15 @@ class RadiusHeader extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: FindingRadiusTheme.cyan.withValues(alpha: 0.1),
+              color: const Color(0xFF334155).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: FindingRadiusTheme.cyan.withValues(alpha: 0.3),
+                color: const Color(0xFF334155).withValues(alpha: 0.3),
               ),
             ),
             child: const Icon(
               Icons.arrow_back_ios_new_rounded,
-              color: FindingRadiusTheme.cyan,
+              color: const Color(0xFF334155),
               size: 18,
             ),
           ),
@@ -31,7 +30,7 @@ class RadiusHeader extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [FindingRadiusTheme.cyan, FindingRadiusTheme.indigo],
+              colors: [const Color(0xFF334155), const Color(0xFF334155)],
             ),
             borderRadius: BorderRadius.circular(16),
           ),
@@ -51,7 +50,7 @@ class RadiusHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: FindingRadiusTheme.textPrimary,
+                  color: const Color(0xFFE8E8F0),
                 ),
               ),
               SizedBox(height: 2),
@@ -59,7 +58,7 @@ class RadiusHeader extends StatelessWidget {
                 'Distance formula method',
                 style: TextStyle(
                   fontSize: 13,
-                  color: FindingRadiusTheme.textSecondary,
+                  color: const Color(0xFF94A3B8),
                 ),
               ),
             ],

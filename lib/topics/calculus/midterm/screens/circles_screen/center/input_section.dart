@@ -1,5 +1,4 @@
-﻿// lib/Screens/SubScreens/input_section.dart
-import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/centertheme.dart';
+// lib/Screens/SubScreens/input_section.dart
 import 'centercontroller.dart';
 import 'package:flutter/material.dart';
 
@@ -24,21 +23,21 @@ class CenterInputSection extends StatelessWidget {
       children: [
         _PointCard(
           label: 'Point A  —  Endpoint 1',
-          subtitle: '(x₁, y₁)',
-          color: FindingCenterTheme.indigo,
+          subtitle: '(x1, y1)',
+          color: const Color(0xFF334155),
           xCtrl: controller.x1Ctrl,
           yCtrl: controller.y1Ctrl,
           xFocus: x1Focus,
           yFocus: y1Focus,
-          xHint: 'e.g. −2',
+          xHint: 'e.g. -2',
           yHint: 'e.g. 3',
           onYEditingComplete: () => x2Focus.requestFocus(),
         ),
         const SizedBox(height: 16),
         _PointCard(
           label: 'Point B  —  Endpoint 2',
-          subtitle: '(x₂, y₂)',
-          color: FindingCenterTheme.purple,
+          subtitle: '(x2, y2)',
+          color: const Color(0xFF334155),
           xCtrl: controller.x2Ctrl,
           yCtrl: controller.y2Ctrl,
           xFocus: x2Focus,
@@ -87,7 +86,7 @@ class _PointCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: FindingCenterTheme.cardGradient,
+        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
@@ -271,7 +270,7 @@ class _FieldState extends State<_Field> {
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: FindingCenterTheme.textSecondary,
+                color: const Color(0xFF94A3B8),
               ),
             ),
             if (_isFocused) ...[
@@ -290,16 +289,16 @@ class _FieldState extends State<_Field> {
           textInputAction: widget.textInputAction,
           onEditingComplete: widget.onEditingComplete,
           style: const TextStyle(
-            color: FindingCenterTheme.textPrimary,
+            color: const Color(0xFFE8E8F0),
             fontSize: 16,
           ),
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: TextStyle(
-              color: FindingCenterTheme.textSecondary.withValues(alpha: 0.4),
+              color: const Color(0xFF94A3B8).withValues(alpha: 0.4),
             ),
             filled: true,
-            fillColor: FindingCenterTheme.inputBg,
+            fillColor: const Color(0xFF334155),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -335,10 +334,10 @@ class _ActionButtons extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: FindingCenterTheme.indigo.withValues(alpha: 0.08),
+                color: const Color(0xFF334155).withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: FindingCenterTheme.indigo.withValues(alpha: 0.3),
+                  color: const Color(0xFF334155).withValues(alpha: 0.3),
                 ),
               ),
               child: const Center(
@@ -347,7 +346,7 @@ class _ActionButtons extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: FindingCenterTheme.indigo,
+                    color: const Color(0xFF334155),
                   ),
                 ),
               ),
@@ -364,14 +363,14 @@ class _ActionButtons extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
-                    FindingCenterTheme.indigo,
-                    FindingCenterTheme.purple
+                    const Color(0xFF334155),
+                    const Color(0xFF334155)
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: FindingCenterTheme.indigo.withValues(alpha: 0.3),
+                    color: const Color(0xFF334155).withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),

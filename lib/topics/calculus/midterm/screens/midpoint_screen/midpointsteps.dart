@@ -1,9 +1,10 @@
-﻿// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors
 
 import 'package:calculus_system/topics/calculus/midterm/solvers/midpoint_solver/midpointsolver.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:provider/provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 enum StepMode { midpoint, endpoint }
 
@@ -77,15 +78,15 @@ class _StepBuilder {
     final resYs = resY.toString();
 
     return [
-      // ── Step 1 ──────────────────────────────────────────────────────────
+      // -- Step 1 ----------------------------------------------------------
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify endpoints',
-        plainContent: 'A = ($x1s,  $y1s)   →   (x₁, y₁)\n'
-            'B = ($x2s,  $y2s)   →   (x₂, y₂)',
+        plainContent: 'A = ($x1s,  $y1s)   ?   (x1, y1)\n'
+            'B = ($x2s,  $y2s)   ?   (x2, y2)',
       ),
 
-      // ── Step 2 ──────────────────────────────────────────────────────────
+      // -- Step 2 ----------------------------------------------------------
       StepSection.single(
         stepLabel: 'Step 2',
         guide: 'Midpoint formula',
@@ -93,7 +94,7 @@ class _StepBuilder {
             r'M = \left(\dfrac{x_1+x_2}{2},\;\dfrac{y_1+y_2}{2}\right)',
       ),
 
-      // ── Step 3 ──────────────────────────────────────────────────────────
+      // -- Step 3 ----------------------------------------------------------
       // FIX: use raw-string fragments so \\ is a real LaTeX line-break (\\),
       // not the single backslash produced by a non-raw Dart string.
       StepSection.dual(
@@ -113,12 +114,12 @@ class _StepBuilder {
             r'\end{aligned}',
       ),
 
-      // ── Step 4 ──────────────────────────────────────────────────────────
+      // -- Step 4 ----------------------------------------------------------
       StepSection.dual(
         stepLabel: 'Step 4',
         guide: 'Divide by 2',
-        leftLabel: 'Find xₘ',
-        rightLabel: 'Find yₘ',
+        leftLabel: 'Find x?',
+        rightLabel: 'Find y?',
         leftLatex: r'\begin{aligned}'
             r'x_m &= \dfrac{' '$sumXs' r'}{2} \\'
             r'&= \boxed{' '$resXs' r'}'
@@ -129,12 +130,12 @@ class _StepBuilder {
             r'\end{aligned}',
       ),
 
-      // ── Step 5 ──────────────────────────────────────────────────────────
+      // -- Step 5 ----------------------------------------------------------
       // FIX: the previous non-raw string
       //   'M &= \left($resXs,\;$resYs\right)\\[8pt]'
       // caused two bugs:
       //   1. \r (in \right) became a carriage-return character.
-      //   2. \\ became a single \, so \\[8pt] became \[8pt] →
+      //   2. \\ became a single \, so \\[8pt] became \[8pt] ?
       //      "Undefined control sequence: \[".
       // Solution: split every LaTeX fragment into raw strings (r'...') and
       // splice variable values in via adjacent non-raw string literals.
@@ -173,16 +174,16 @@ class _StepBuilder {
     final resYs = resY.toString();
 
     return [
-      // ── Step 1 ──────────────────────────────────────────────────────────
+      // -- Step 1 ----------------------------------------------------------
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify given values',
-        plainContent: 'M = ($xms,  $yms)   →   midpoint\n'
-            'A = ($x1s,  $y1s)   →   known endpoint\n'
-            'B = (x₂, y₂)      →   find this',
+        plainContent: 'M = ($xms,  $yms)   ?   midpoint\n'
+            'A = ($x1s,  $y1s)   ?   known endpoint\n'
+            'B = (x2, y2)      ?   find this',
       ),
 
-      // ── Step 2 ──────────────────────────────────────────────────────────
+      // -- Step 2 ----------------------------------------------------------
       StepSection.single(
         stepLabel: 'Step 2',
         guide: 'Midpoint formula',
@@ -190,7 +191,7 @@ class _StepBuilder {
             r'M = \left(\dfrac{x_1+x_2}{2},\;\dfrac{y_1+y_2}{2}\right)',
       ),
 
-      // ── Step 3 ──────────────────────────────────────────────────────────
+      // -- Step 3 ----------------------------------------------------------
       StepSection.single(
         stepLabel: 'Step 3',
         guide: 'Rearrange for unknown endpoint',
@@ -198,12 +199,12 @@ class _StepBuilder {
             r'\begin{aligned} x_2 &= 2x_m - x_1 \\ y_2 &= 2y_m - y_1 \end{aligned}',
       ),
 
-      // ── Step 4 ──────────────────────────────────────────────────────────
+      // -- Step 4 ----------------------------------------------------------
       StepSection.dual(
         stepLabel: 'Step 4',
         guide: 'Solve both coordinates',
-        leftLabel: 'Solve x₂',
-        rightLabel: 'Solve y₂',
+        leftLabel: 'Solve x2',
+        rightLabel: 'Solve y2',
         leftLatex: r'\begin{aligned}'
             r'x_2 &= 2(' '$xms' r') - (' '$x1s' r') \\'
             r'&= ' '$doubleXms' r' - ' '$x1s' r' \\'
@@ -216,7 +217,7 @@ class _StepBuilder {
             r'\end{aligned}',
       ),
 
-      // ── Step 5 ──────────────────────────────────────────────────────────
+      // -- Step 5 ----------------------------------------------------------
       // Same fix as midpoint Step 5: all LaTeX in raw strings, no \\[8pt].
       StepSection.single(
         stepLabel: 'Step 5',
@@ -255,10 +256,10 @@ class MidpointSteps extends StatelessWidget {
       MidpointSolver.parseFraction(raw, label).fraction;
 
   List<StepSection>? _buildSteps() {
-    final a1 = _parse(rawAX, 'x₁');
-    final a2 = _parse(rawAY, 'y₁');
-    final b1 = _parse(rawBX, 'x₂');
-    final b2 = _parse(rawBY, 'y₂');
+    final a1 = _parse(rawAX, 'x1');
+    final a2 = _parse(rawAY, 'y1');
+    final b1 = _parse(rawBX, 'x2');
+    final b2 = _parse(rawBY, 'y2');
     if (a1 == null || a2 == null || b1 == null || b2 == null) return null;
 
     return mode == StepMode.endpoint
@@ -309,9 +310,9 @@ class MidpointSteps extends StatelessWidget {
   }
 }
 
-// ────────────────────────────────────────────────────────────────────────────
+// ----------------------------------------------------------------------------
 // Supporting widgets (unchanged from original)
-// ────────────────────────────────────────────────────────────────────────────
+// ----------------------------------------------------------------------------
 
 class _Header extends StatelessWidget {
   final int stepCount;
@@ -334,14 +335,14 @@ class _Header extends StatelessWidget {
         Icon(
           Icons.school_rounded,
           size: isSmall ? 12 : 13,
-          color: MidpointTheme.accent(context).withValues(alpha: 0.6),
+          color: const Color(0xFF334155).withValues(alpha: 0.6),
         ),
         Text(
           'Solution',
           style: TextStyle(
             fontSize: isSmall ? 11 : 12,
             fontWeight: FontWeight.w700,
-            color: MidpointTheme.accent(context).withValues(alpha: 0.6),
+            color: const Color(0xFF334155).withValues(alpha: 0.6),
             letterSpacing: 0.2,
           ),
         ),
@@ -369,7 +370,7 @@ class _Chip extends StatelessWidget {
         vertical: isSmall ? 1.5 : 2,
       ),
       decoration: BoxDecoration(
-        color: MidpointTheme.accent(context).withValues(alpha: 0.1),
+        color: const Color(0xFF334155).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -377,7 +378,7 @@ class _Chip extends StatelessWidget {
         style: TextStyle(
           fontSize: isSmall ? 9 : 10,
           fontWeight: FontWeight.w700,
-          color: MidpointTheme.accent(context).withValues(alpha: 0.7),
+          color: const Color(0xFF334155).withValues(alpha: 0.7),
         ),
       ),
     );
@@ -498,10 +499,10 @@ class _TimelineDot extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: MidpointTheme.accent(context).withValues(alpha: 0.1),
+            color: const Color(0xFF334155).withValues(alpha: 0.1),
             shape: BoxShape.circle,
             border: Border.all(
-              color: MidpointTheme.accent(context).withValues(alpha: 0.4),
+              color: const Color(0xFF334155).withValues(alpha: 0.4),
               width: isSmall ? 1.2 : 1.5,
             ),
           ),
@@ -511,7 +512,7 @@ class _TimelineDot extends StatelessWidget {
             style: TextStyle(
               fontSize: isSmall ? 10 : 12,
               fontWeight: FontWeight.w900,
-              color: MidpointTheme.accent(context),
+              color: const Color(0xFF334155),
             ),
           ),
         ),
@@ -525,8 +526,8 @@ class _TimelineDot extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  MidpointTheme.accent(context).withValues(alpha: 0.3),
-                  MidpointTheme.accent(context).withValues(alpha: 0.04),
+                  const Color(0xFF334155).withValues(alpha: 0.3),
+                  const Color(0xFF334155).withValues(alpha: 0.04),
                 ],
               ),
             ),
@@ -557,7 +558,7 @@ class _GuideLabel extends StatelessWidget {
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
               fontWeight: FontWeight.w700,
-              color: MidpointTheme.accent(context).withValues(alpha: 0.5),
+              color: const Color(0xFF334155).withValues(alpha: 0.5),
               letterSpacing: 0.6,
             ),
           ),
@@ -565,7 +566,7 @@ class _GuideLabel extends StatelessWidget {
             text: '  ?  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
-              color: MidpointTheme.text40(context),
+              color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.4),
             ),
           ),
           TextSpan(
@@ -573,7 +574,7 @@ class _GuideLabel extends StatelessWidget {
             style: TextStyle(
               fontSize: isSmall ? 12 : 13,
               fontWeight: FontWeight.w700,
-              color: MidpointTheme.text(context),
+              color: context.watch<ThemeProvider>().textPrimary,
             ),
           ),
         ],
@@ -602,10 +603,10 @@ class _SingleMathBox extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
       decoration: BoxDecoration(
-        color: MidpointTheme.accent(context).withValues(alpha: 0.06),
+        color: const Color(0xFF334155).withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
         border: Border.all(
-          color: MidpointTheme.accent(context).withValues(alpha: 0.2),
+          color: const Color(0xFF334155).withValues(alpha: 0.2),
         ),
       ),
       child: step.latexContent != null
@@ -615,7 +616,7 @@ class _SingleMathBox extends StatelessWidget {
                 step.latexContent!,
                 textStyle: TextStyle(
                   fontSize: fontSize,
-                  color: MidpointTheme.text(context),
+                  color: context.watch<ThemeProvider>().textPrimary,
                 ),
               ),
             )
@@ -624,7 +625,7 @@ class _SingleMathBox extends StatelessWidget {
               style: TextStyle(
                 fontSize: isSmall ? 12 : 13,
                 height: 1.75,
-                color: MidpointTheme.text50(context),
+                color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.5),
                 fontWeight: FontWeight.w500,
                 fontFamily: 'monospace',
               ),
@@ -720,10 +721,10 @@ class _CasePanel extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: MidpointTheme.accent(context).withValues(alpha: 0.06),
+        color: const Color(0xFF334155).withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
         border: Border.all(
-          color: MidpointTheme.accent(context).withValues(alpha: 0.2),
+          color: const Color(0xFF334155).withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -732,14 +733,14 @@ class _CasePanel extends StatelessWidget {
           Container(
             padding: headerPadding,
             decoration: BoxDecoration(
-              color: MidpointTheme.accent(context).withValues(alpha: 0.1),
+              color: const Color(0xFF334155).withValues(alpha: 0.1),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(isSmall ? 8 : 10),
                 topRight: Radius.circular(isSmall ? 8 : 10),
               ),
               border: Border(
                 bottom: BorderSide(
-                  color: MidpointTheme.accent(context).withValues(alpha: 0.2),
+                  color: const Color(0xFF334155).withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -749,7 +750,7 @@ class _CasePanel extends StatelessWidget {
               style: TextStyle(
                 fontSize: labelSize,
                 fontWeight: FontWeight.w700,
-                color: MidpointTheme.accent(context),
+                color: const Color(0xFF334155),
                 letterSpacing: 0.3,
               ),
             ),
@@ -762,7 +763,7 @@ class _CasePanel extends StatelessWidget {
                 latex,
                 textStyle: TextStyle(
                   fontSize: fontSize,
-                  color: MidpointTheme.text(context),
+                  color: context.watch<ThemeProvider>().textPrimary,
                 ),
               ),
             ),
@@ -795,7 +796,7 @@ class _ErrorCard extends StatelessWidget {
           SizedBox(width: isSmall ? 10 : 14),
           Expanded(
             child: Text(
-              'Invalid input. Use whole numbers or fractions (e.g. 3, −2, 1/2).',
+              'Invalid input. Use whole numbers or fractions (e.g. 3, -2, 1/2).',
               style: TextStyle(
                 fontSize: isSmall ? 12 : 13,
                 height: 1.6,

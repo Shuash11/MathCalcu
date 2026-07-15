@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/radiustheme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
@@ -40,7 +39,7 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Radius \u2014 Step by Step',
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: RadiusStepsCard(steps: _ctrl.result!.steps),
     );
   }
@@ -59,7 +58,7 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FindingRadiusTheme.bgDark,
+      backgroundColor: const Color(0xFF0F172A),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -74,11 +73,11 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
               // Point on circle (x, y)
               RadiusInputCard(
                 label: 'Point on the Circle',
-                color: FindingRadiusTheme.cyan,
+                color: const Color(0xFF334155),
                 icon: Icons.circle_outlined,
                 leftController: _ctrl.xCtrl,
                 leftLabel: 'x',
-                leftHint: 'e.g. −2',
+                leftHint: 'e.g. -2',
                 rightController: _ctrl.yCtrl,
                 rightLabel: 'y',
                 rightHint: 'e.g. 3',
@@ -94,7 +93,7 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
               // Center (h, k)
               RadiusInputCard(
                 label: 'Center of the Circle',
-                color: FindingRadiusTheme.indigo,
+                color: const Color(0xFF334155),
                 icon: Icons.adjust_rounded,
                 leftController: _ctrl.hCtrl,
                 leftLabel: 'h',

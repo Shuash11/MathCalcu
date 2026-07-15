@@ -23,7 +23,7 @@ class _ParallelPerpendicularModuleCardState
   bool _pressed = false;
   bool _hovered = false;
 
-  static const Color _indigo = Color(0xFF312C85);
+  static const Color _indigo = Color(0xFF334155);
   static const Color _cyan = Color(0xFF16A34A);
   static const Color _sky = Color(0xFFE8E6E2);
   static const double _baseDesignWidth = 400.0;

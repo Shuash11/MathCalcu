@@ -21,7 +21,7 @@ class FullScreenGraphScreen extends StatelessWidget {
     this.formula,
     this.keyInfo,
     this.formulaWidget,
-    this.accentColor = const Color(0xFF312C85),
+    this.accentColor = const Color(0xFF334155),
   });
 
   @override

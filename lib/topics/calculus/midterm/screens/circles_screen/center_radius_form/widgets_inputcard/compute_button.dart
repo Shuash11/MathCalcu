@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'package:flutter/material.dart';
 
 class GradientComputeButton extends StatelessWidget {
@@ -22,7 +21,7 @@ class GradientComputeButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [color, FindingCenterRadiusTheme.emerald],
+            colors: [color, const Color(0xFF334155)],
           ),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [

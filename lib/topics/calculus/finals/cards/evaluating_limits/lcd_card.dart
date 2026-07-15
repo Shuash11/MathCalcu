@@ -11,7 +11,6 @@ class LcdCard extends StatelessWidget {
       icon: Icons.calculate_rounded,
       title: 'By LCD',
       subtitle: 'Find least common denominator to combine fractions',
-      accentColor: const Color(0xFF9CA3AF),
       onTap: () => Navigator.of(context).pushNamed('/topics/calculus/finals/limits/lcd'),
     );
   }

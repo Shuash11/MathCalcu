@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_solver/two_point_slope_solver.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/theme/app_design.dart';
@@ -6,11 +6,11 @@ import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // STEPS WIDGET
 // Displays the full step-by-step working for the solution.
 // Completely self-contained — just pass in the result.
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 
 class TwoPointSlopeSteps extends StatefulWidget {
   final TwoPointSlopeResult result;
@@ -105,7 +105,7 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
             opacity: _fadeAnims[i],
             child: SlideTransition(
               position: _slideAnims[i],
-              child: SolutionStepCard(design: AppDesign.calculus,
+              child: SolutionStepCard(design: AppDesign.app,
                 stepNumber: step.number,
                 title: step.title,
                 mathContent: _CombinedMathBlock(

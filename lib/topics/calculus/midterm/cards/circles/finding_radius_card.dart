@@ -11,7 +11,7 @@ class FindingRadiusCard extends StatelessWidget {
       icon: Icons.radio_button_unchecked_rounded,
       title: 'Finding the Radius',
       subtitle: 'Standard form, geometry & radius calculations',
-      accentColor: const Color(0xFF7F1D1D),
+      accentColor: const Color(0xFF334155),
       onTap: () => context.push('/circle/finding-radius'),
     );
   }

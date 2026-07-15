@@ -13,7 +13,6 @@ class FinalsSlopeDerivativeCard extends StatelessWidget {
       icon: Icons.show_chart_rounded,
       title: 'Slope Using Derivatives',
       subtitle: 'Tangent line slope, evaluate at point & instantaneous rate',
-      accentColor: const Color(0xFF9CA3AF),
       onTap: () => context.go('/topics/calculus/finals/slope-derivative'),
     );
   }

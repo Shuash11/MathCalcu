@@ -1,6 +1,5 @@
-﻿// lib/Screens/SubScreens/result_section.dart
+// lib/Screens/SubScreens/result_section.dart
 
-import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/centertheme.dart';
 
 import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_solver.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +24,13 @@ class CenterResultSection extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            FindingCenterTheme.teal.withValues(alpha: 0.2),
-            FindingCenterTheme.indigo.withValues(alpha: 0.1),
+            const Color(0xFF334155).withValues(alpha: 0.2),
+            const Color(0xFF334155).withValues(alpha: 0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: FindingCenterTheme.teal.withValues(alpha: 0.3),
+          color: const Color(0xFF334155).withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
@@ -42,7 +41,7 @@ class CenterResultSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: FindingCenterTheme.textSecondary,
+              color: const Color(0xFF94A3B8),
               letterSpacing: 1.5,
             ),
           ),
@@ -54,7 +53,7 @@ class CenterResultSection extends StatelessWidget {
             style: const TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: FindingCenterTheme.indigo,
+              color: const Color(0xFF334155),
             ),
           ),
 
@@ -65,7 +64,7 @@ class CenterResultSection extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: FindingCenterTheme.indigo.withValues(alpha: 0.1),
+                color: const Color(0xFF334155).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -73,27 +72,27 @@ class CenterResultSection extends StatelessWidget {
                 children: [
                   if (showHApprox) ...[
                     Text(
-                      'h ≠ˆ ${result!.hApprox}',
+                      'h ?ˆ ${result!.hApprox}',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: FindingCenterTheme.textSecondary,
+                        color: const Color(0xFF94A3B8),
                       ),
                     ),
                     if (showKApprox)
                       const Text(
                         '    ',
                         style:
-                            TextStyle(color: FindingCenterTheme.textSecondary),
+                            TextStyle(color: const Color(0xFF94A3B8)),
                       ),
                   ],
                   if (showKApprox)
                     Text(
-                      'k ≠ˆ ${result!.kApprox}',
+                      'k ?ˆ ${result!.kApprox}',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: FindingCenterTheme.textSecondary,
+                        color: const Color(0xFF94A3B8),
                       ),
                     ),
                 ],
@@ -106,7 +105,7 @@ class CenterResultSection extends StatelessWidget {
               'h = ${result!.hExact}     k = ${result!.kExact}',
               style: TextStyle(
                 fontSize: 14,
-                color: FindingCenterTheme.textSecondary.withValues(alpha: 0.7),
+                color: const Color(0xFF94A3B8).withValues(alpha: 0.7),
               ),
             ),
         ],

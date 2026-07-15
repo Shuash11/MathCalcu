@@ -13,7 +13,6 @@ class FinalsInfinityLimitsCard extends StatelessWidget {
       icon: Icons.all_inclusive_rounded,
       title: 'Limits at Infinity',
       subtitle: 'Horizontal asymptotes, end behavior & rational functions',
-      accentColor: const Color(0xFF9CA3AF),
       onTap: () => context.go('/topics/calculus/finals/infinity'),
     );
   }

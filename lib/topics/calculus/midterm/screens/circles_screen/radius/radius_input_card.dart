@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/radiustheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -74,17 +73,17 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: FindingRadiusTheme.cyan.withValues(alpha: 0.15),
+          color: const Color(0xFF334155).withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: FindingRadiusTheme.cyan.withValues(alpha: 0.35),
+            color: const Color(0xFF334155).withValues(alpha: 0.35),
             width: 1,
           ),
         ),
         child: Text(
           char,
           style: const TextStyle(
-            color: FindingRadiusTheme.cyan,
+            color: const Color(0xFF334155),
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
@@ -105,7 +104,7 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: FindingRadiusTheme.textSecondary,
+                color: const Color(0xFF94A3B8),
               ),
             ),
             if (_isFocused) ...[
@@ -130,16 +129,16 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
             FilteringTextInputFormatter.allow(RegExp(r'[-0-9./]')),
           ],
           style: const TextStyle(
-            color: FindingRadiusTheme.textPrimary,
+            color: const Color(0xFFE8E8F0),
             fontSize: 16,
           ),
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: TextStyle(
-              color: FindingRadiusTheme.textSecondary.withValues(alpha: 0.4),
+              color: const Color(0xFF94A3B8).withValues(alpha: 0.4),
             ),
             filled: true,
-            fillColor: FindingRadiusTheme.inputBg,
+            fillColor: const Color(0xFF334155),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -147,7 +146,7 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: FindingRadiusTheme.cyan,
+                color: const Color(0xFF334155),
                 width: 1.5,
               ),
             ),
@@ -206,7 +205,7 @@ class RadiusInputCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: FindingRadiusTheme.cardGradient,
+        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),

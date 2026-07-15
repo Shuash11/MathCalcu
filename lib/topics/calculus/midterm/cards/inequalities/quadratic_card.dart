@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animated_inequality_card.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
+import 'package:provider/provider.dart';
 
 class QuadraticCard extends StatelessWidget {
   const QuadraticCard({super.key});
@@ -12,7 +12,7 @@ class QuadraticCard extends StatelessWidget {
       subtitle: 'Has a squared term. Requires factoring.',
       route: '/inequalities/quadratic',
       icon: Icons.ssid_chart_rounded,
-      accentColor: InequalityTheme.subtypeAccents['quadratic'] ?? InequalityTheme.accentColor,
+      accentColor: {'strict': const Color(0xFF334155), 'non_strict': const Color(0xFF334155), 'absolute': const Color(0xFF334155)}['quadratic'] ?? const Color(0xFF334155),
     );
   }
 }

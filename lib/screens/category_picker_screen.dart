@@ -149,7 +149,7 @@ class _CategoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF7F1D1D);
+    const accent = Color(0xFF334155);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 48, 28, 16),
@@ -247,8 +247,8 @@ class _ModuleCardState extends State<_ModuleCard> {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF9CA3AF);
     final theme = context.read<ThemeProvider>();
+    final accent = theme.accentColor;
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),

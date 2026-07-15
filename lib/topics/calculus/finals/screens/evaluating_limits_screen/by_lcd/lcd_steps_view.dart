@@ -1,4 +1,4 @@
-﻿// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors
 
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
@@ -25,7 +25,7 @@ class LCDStepsView extends StatelessWidget {
         (index) => SolutionStepCard(
           stepNumber: index + 1,
           title: 'Step ${index + 1}',
-          design: AppDesign.calculus,
+          design: AppDesign.app,
           mathContent: _FormattedStepText(
             text: visibleSteps[index],
             wrapInCard: false,

@@ -1,11 +1,10 @@
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 
 // -------------------------------------------------------------
 // MATH INPUT FIELD
-// StatefulWidget — owns its own FocusNode so it never loses
+// StatefulWidget ï¿½ owns its own FocusNode so it never loses
 // focus when the parent screen rebuilds after solve() is called.
 // -------------------------------------------------------------
 
@@ -29,7 +28,7 @@ class MathInputField extends StatefulWidget {
 }
 
 class _MathInputFieldState extends State<MathInputField> {
-  // FocusNode lives here — survives parent rebuilds
+  // FocusNode lives here ï¿½ survives parent rebuilds
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -46,7 +45,7 @@ class _MathInputFieldState extends State<MathInputField> {
         color: theme.card,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: widget.accentColor.withValues(alpha: 0.2),
+          color: (theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155)).withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -55,7 +54,7 @@ class _MathInputFieldState extends State<MathInputField> {
           Expanded(
             child: TextField(
               controller: widget.controller,
-              focusNode: _focusNode, // stable focus — no more pausing
+              focusNode: _focusNode, // stable focus ï¿½ no more pausing
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -93,12 +92,19 @@ class _MathInputFieldState extends State<MathInputField> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: widget.accentColor,
+                color: theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155),
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: (theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155)).withValues(alpha: theme.isDark ? 0.30 : 0.25),
+                    blurRadius: theme.isDark ? 15 : 12,
+                    offset: const Offset(0, 0),
+                  ),
+                ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_forward_rounded,
-                color: Colors.white,
+                color: theme.isDark ? const Color(0xFF1A1A2E) : Colors.white,
                 size: 20,
               ),
             ),

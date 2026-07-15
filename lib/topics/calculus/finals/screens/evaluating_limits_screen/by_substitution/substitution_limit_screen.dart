@@ -1,4 +1,4 @@
-﻿import 'substitution_answer_card.dart';
+import 'substitution_answer_card.dart';
 import 'substitution_input_field.dart';
 import 'substitution_steps_view.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_engine.dart';
@@ -144,10 +144,10 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
       child: SafeArea(
         child: Column(
           children: [
-            // ── Header ──────────────────────────────────────────
+            // -- Header ------------------------------------------
             _buildHeader(context),
 
-            // ── Scrollable Content ──────────────────────────────
+            // -- Scrollable Content ------------------------------
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -186,7 +186,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                             onTap: () => showSolutionStepsModal(
                               context: context,
                               title: 'Solution Steps',
-                              design: AppDesign.calculus,
+                              design: AppDesign.app,
                               child: SubstitutionStepsView(steps: _steps),
                             ),
                             error: _result!.errorMessage,

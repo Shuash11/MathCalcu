@@ -12,7 +12,7 @@ class DeveloperTile extends StatefulWidget {
     super.key,
     required this.developer,
     required this.index,
-    this.accent = const Color(0xFF312C85),
+    this.accent = const Color(0xFF334155),
   });
 
   @override
@@ -23,12 +23,12 @@ class _DeveloperTileState extends State<DeveloperTile> {
   bool _expanded = false;
 
   static const _avatarColors = [
-    Color(0xFF312C85),
+    Color(0xFF334155),
     Color(0xFF16A34A),
     Color(0xFFDC2626),
     Color(0xFFD97706),
     Color(0xFF0C0C09),
-    Color(0xFF312C85),
+    Color(0xFF334155),
   ];
 
   @override

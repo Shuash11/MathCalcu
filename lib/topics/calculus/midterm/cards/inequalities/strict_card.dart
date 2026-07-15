@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animated_inequality_card.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
+import 'package:provider/provider.dart';
 
 class StrictCard extends StatelessWidget {
   const StrictCard({super.key});
@@ -12,7 +12,7 @@ class StrictCard extends StatelessWidget {
       subtitle: 'Uses < or >. The boundary is NOT included.',
       route: '/inequalities/strict',
       icon: Icons.code_rounded,
-      accentColor: InequalityTheme.subtypeAccents['strict'] ?? InequalityTheme.accentColor,
+      accentColor: {'strict': const Color(0xFF334155), 'non_strict': const Color(0xFF334155), 'absolute': const Color(0xFF334155)}['strict'] ?? const Color(0xFF334155),
     );
   }
 }

@@ -42,7 +42,7 @@ class YInterceptSteps extends StatelessWidget {
   }
 
   Widget _buildStep(BuildContext context, YISolverStep step) {
-    return SolutionStepCard(design: AppDesign.calculus,
+    return SolutionStepCard(design: AppDesign.app,
       stepNumber: step.number,
       title: step.title,
       mathContent: step.layout == YIStepLayout.dual

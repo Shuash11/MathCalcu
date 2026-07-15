@@ -19,7 +19,7 @@ class ConjugateStepsView extends StatelessWidget {
           stepNumber: step.stepNumber,
           title: step.title,
           description: step.explanation,
-          design: AppDesign.calculus,
+          design: AppDesign.app,
           mathContent: step.latexExpression != null
               ? _buildLatex(step.latexExpression!)
               : const SizedBox.shrink(),

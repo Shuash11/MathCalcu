@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animated_inequality_card.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
+import 'package:provider/provider.dart';
 
 class SimpleCard extends StatelessWidget {
   const SimpleCard({super.key});
@@ -12,7 +12,7 @@ class SimpleCard extends StatelessWidget {
       subtitle: 'Linear inequalities with one variable.',
       route: '/inequalities/simple',
       icon: Icons.functions_rounded,
-      accentColor: InequalityTheme.subtypeAccents['simple'] ?? InequalityTheme.accentColor,
+      accentColor: {'strict': const Color(0xFF334155), 'non_strict': const Color(0xFF334155), 'absolute': const Color(0xFF334155)}['simple'] ?? const Color(0xFF334155),
     );
   }
 }

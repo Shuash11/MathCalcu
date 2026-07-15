@@ -14,8 +14,8 @@ import 'package:provider/provider.dart';
 // FINALS PICKER SCREEN
 //
 // Sister screen to CategoryPickerScreen.
-// Reads from FinalsModuleRegistry — add entries there, not here.
-// Theme lives in FinalsTheme — change colours there, not here.
+// Reads from FinalsModuleRegistry â€” add entries there, not here.
+// Theme lives in FinalsTheme â€” change colours there, not here.
 //
 // To wire a new card:
 //   1. Create  screens/finals/cards/your_card.dart
@@ -147,7 +147,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                     ),
                   ),
                 ),
-                // Accent bar — gold gradient
+                // Accent bar â€” gold gradient
                 Container(
                   width: 36,
                   height: 4,

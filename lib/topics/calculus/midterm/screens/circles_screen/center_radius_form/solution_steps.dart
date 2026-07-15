@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_radius_solver.dart';
 import 'package:flutter/material.dart';
 import 'step_tile.dart';
@@ -18,7 +17,7 @@ class SolutionSteps extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: FindingCenterRadiusTheme.textPrimary.withValues(alpha: 0.9),
+            color: const Color(0xFFE8E8F0).withValues(alpha: 0.9),
             letterSpacing: 0.5,
           ),
         ),

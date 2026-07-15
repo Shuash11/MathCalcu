@@ -15,7 +15,7 @@ class ModuleRegistry {
       subtitle: 'Strict ? Non-strict ? Absolute value',
       route: '/inequalities',
       icon: Icons.trending_up_rounded,
-      accent: Color(0xFF7F1D1D),
+      accent: Color(0xFF334155),
     ),
     // ─────────────────────────────────────────────────────
 
@@ -27,14 +27,14 @@ class ModuleRegistry {
       subtitle: 'Find slope between two points',
       route: '/slope',
       icon: Icons.show_chart,
-      accent: Color(0xFF7F1D1D),
+      accent: Color(0xFF334155),
     ),
     const ModuleEntry(
       label: 'midpoint',
       subtitle: 'Find center point between coordinates',
       route: '/midpoint',
       icon: Icons.center_focus_strong_rounded,
-      accent: Color(0xFF7F1D1D), // Ice white/silver
+      accent: Color(0xFF334155), // Ice white/silver
     ),
 
     // ── DISTANCE MODULE ──────────────────────────────────
@@ -43,7 +43,7 @@ class ModuleRegistry {
       subtitle: 'Calculate distance between points',
       route: '/distance',
       icon: Icons.straighten_rounded,
-      accent: Color(0xFF7F1D1D),
+      accent: Color(0xFF334155),
     ),
 
     // ── MIDPOINT MODULE ──────────────────────────────────
@@ -57,7 +57,7 @@ class ModuleRegistry {
       subtitle: 'y − y₁ = m(x − x₁)  Line equations',
       route: '/point-slope',
       icon: Icons.trending_flat_rounded, // Suggests line/slope
-      accent: Color(0xFF7F1D1D), // Charcoal
+      accent: Color(0xFF334155), // Charcoal
     ),
 // ─────────────────────────────────────────────────────
     const ModuleEntry(
@@ -65,7 +65,7 @@ class ModuleRegistry {
       subtitle: 'Find slope from two coordinate points',
       route: '/two-point-slope',
       icon: Icons.show_chart_rounded,
-      accent: Color(0xFF7F1D1D), // Amber
+      accent: Color(0xFF334155), // Amber
     ),
 // ── Y-INTERCEPT MODULE ────────────────────────────────
 // Emerald green + gold - represents crossing point/growth
@@ -74,14 +74,14 @@ class ModuleRegistry {
       subtitle: 'Find where \nline crosses\nY-axis',
       route: '/slope-intercept-form',
       icon: Icons.vertical_align_bottom_rounded, // Suggests bottom/crossing
-      accent: Color(0xFF7F1D1D), // Green
+      accent: Color(0xFF334155), // Green
     ),
     const ModuleEntry(
       label: 'parallel-perpendicular',
       subtitle: 'Compare two lines and\ncheck their relationship',
       route: '/parallel-perpendicular',
       icon: Icons.compare_arrows_rounded,
-      accent: Color(0xFF7F1D1D),
+      accent: Color(0xFF334155),
     ),
 // ─────────────────────────────────────────────────────
 // ── CIRCLE MODULE ─────────────────────────────────────
@@ -91,7 +91,7 @@ class ModuleRegistry {
       subtitle: 'Standard ? General ? Center-Radius',
       route: '/circle',
       icon: Icons.radio_button_unchecked_rounded, // Circle icon
-      accent: Color(0xFF7F1D1D), // Indigo
+      accent: Color(0xFF334155), // Indigo
     ),
 // ─────────────────────────────────────────────────────
 

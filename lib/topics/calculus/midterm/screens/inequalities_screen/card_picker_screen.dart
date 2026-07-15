@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 class InequalityCardPickerScreen extends StatelessWidget {
   const InequalityCardPickerScreen({super.key});
 
-  static const Color _purple = Color(0xFF6C63FF);
+  static const Color _purple = Color(0xFF334155);
   static const Color _teal = Color(0xFF2DD4BF);
 
   @override
@@ -102,8 +102,8 @@ class _PickerHeader extends StatelessWidget {
   const _PickerHeader();
 
   static const Color _teal = Color(0xFF2DD4BF);
-  static const Color _purple = Color(0xFF6C63FF);
-  static const Color _softPurple = Color(0xFF9B8FFF);
+  static const Color _purple = Color(0xFF334155);
+  static const Color _softPurple = Color(0xFF334155);
 
   @override
   Widget build(BuildContext context) {
@@ -214,10 +214,10 @@ class _OrbitBadgeState extends State<_OrbitBadge>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: const Color(0xFF6C63FF).withValues(alpha: 0.4),
+                  color: const Color(0xFF334155).withValues(alpha: 0.4),
                   width: 1.5),
               gradient: RadialGradient(colors: [
-                const Color(0xFF6C63FF).withValues(alpha: 0.25),
+                const Color(0xFF334155).withValues(alpha: 0.25),
                 const Color(0xFF2DD4BF).withValues(alpha: 0.08),
               ]),
             ),
@@ -244,7 +244,7 @@ class _OrbitRingPainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color = const Color(0xFF6C63FF).withValues(alpha: 0.2)
+        ..color = const Color(0xFF334155).withValues(alpha: 0.2)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );

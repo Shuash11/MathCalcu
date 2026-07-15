@@ -85,10 +85,10 @@ class _CalculusAppState extends State<CalculusApp> {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: const Color(0xFF7F1D1D).withValues(alpha: 0.12),
+                color: const Color(0xFF334155).withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFF7F1D1D)),
+              child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFF334155)),
             ),
             const SizedBox(height: 16),
             Text(
@@ -123,7 +123,7 @@ class _CalculusAppState extends State<CalculusApp> {
                       Navigator.of(ctx).pop();
                       UpdateService.openInstallSettings();
                     },
-                    style: FilledButton.styleFrom(backgroundColor: const Color(0xFF7F1D1D)),
+                    style: FilledButton.styleFrom(backgroundColor: const Color(0xFF334155)),
                     child: const Text('Open Settings'),
                   ),
                 ),
@@ -262,7 +262,7 @@ class AppTheme {
       brightness: Brightness.light,
       scaffoldBackgroundColor: const Color(0xFFF4F4F1),
       colorScheme: const ColorScheme.light(
-        primary: Color(0xFF7F1D1D),
+        primary: Color(0xFF334155),
         secondary: Color(0xFF0C0C09),
         tertiary: Color(0xFF16A34A),
         surface: Color(0xFFFFFFFF),
@@ -277,7 +277,7 @@ class AppTheme {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: const Color(0xFF1A1A2E),
       colorScheme: const ColorScheme.dark(
-        primary: Color(0xFF9F2333),
+        primary: Color(0xFFE9ECEF),
         secondary: Color(0xFFF4F4F1),
         tertiary: Color(0xFF16A34A),
         surface: Color(0xFF232340),

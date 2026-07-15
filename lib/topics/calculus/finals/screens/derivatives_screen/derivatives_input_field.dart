@@ -73,7 +73,7 @@ class DerivativeInputField extends StatelessWidget {
                     fontSize: 16,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'e.g. x² + 3x + ln(x)',
+                    hintText: 'e.g. xÂ² + 3x + ln(x)',
                     hintStyle:
                         FinalsTheme.subtitleStyle(context).copyWith(
                       color:

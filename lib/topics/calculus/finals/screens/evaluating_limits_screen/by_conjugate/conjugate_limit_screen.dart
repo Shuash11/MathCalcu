@@ -229,7 +229,7 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                             onTap: () => showSolutionStepsModal(
                               context: context,
                               title: 'Solution Steps',
-                              design: AppDesign.calculus,
+                              design: AppDesign.app,
                               child: ConjugateStepsView(steps: _steps),
                             ),
                           ),

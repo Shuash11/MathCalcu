@@ -9,7 +9,7 @@ import 'finding_center_radius_card.dart';
 class CircleCardPickerScreen extends StatelessWidget {
   const CircleCardPickerScreen({super.key});
 
-  static const Color _accent = Color(0xFF7F1D1D);
+  static const Color _accent = Color(0xFF334155);
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +84,8 @@ class CircleCardPickerScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(colors: [
             Colors.transparent,
-            Color(0x4D7F1D1D),
-            Color(0x337F1D1D),
+            Color(0x4D334155),
+            Color(0x33334155),
             Colors.transparent,
           ]),
         ),
@@ -97,7 +97,7 @@ class CircleCardPickerScreen extends StatelessWidget {
 class _PickerHeader extends StatelessWidget {
   const _PickerHeader();
 
-  static const Color _accent = Color(0xFF7F1D1D);
+  static const Color _accent = Color(0xFF334155);
 
   @override
   Widget build(BuildContext context) {
@@ -209,15 +209,15 @@ class _OrbitBadgeState extends State<_OrbitBadge>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: const Color(0xFF7F1D1D).withValues(alpha: 0.4),
+                  color: const Color(0xFF334155).withValues(alpha: 0.4),
                   width: 1.5),
               gradient: RadialGradient(colors: [
-                const Color(0xFF7F1D1D).withValues(alpha: 0.25),
-                const Color(0xFF7F1D1D).withValues(alpha: 0.08),
+                const Color(0xFF334155).withValues(alpha: 0.25),
+                const Color(0xFF334155).withValues(alpha: 0.08),
               ]),
             ),
             child: const Icon(Icons.trip_origin_rounded,
-                color: Color(0xFF7F1D1D), size: 18),
+                color: Color(0xFF334155), size: 18),
           ),
         ],
       ),
@@ -239,7 +239,7 @@ class _OrbitRingPainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color = const Color(0xFF7F1D1D).withValues(alpha: 0.2)
+        ..color = const Color(0xFF334155).withValues(alpha: 0.2)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );
@@ -248,8 +248,8 @@ class _OrbitRingPainter extends CustomPainter {
     final dot = Offset(
         center.dx + radius * cos(angle), center.dy + radius * sin(angle));
     canvas.drawCircle(dot, 5,
-        Paint()..color = const Color(0xFF7F1D1D).withValues(alpha: 0.3));
-    canvas.drawCircle(dot, 2.5, Paint()..color = const Color(0xFF7F1D1D));
+        Paint()..color = const Color(0xFF334155).withValues(alpha: 0.3));
+    canvas.drawCircle(dot, 2.5, Paint()..color = const Color(0xFF334155));
   }
 
   @override

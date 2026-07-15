@@ -16,7 +16,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
-  static const _accent = Color(0xFF9CA3AF);
+  Color get _accent => context.read<ThemeProvider>().accentColor;
   static const _owner = 'Shuash11';
   static const _repo = 'MathCalcu';
   String _appVersion = '';
@@ -210,7 +210,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
           )),
           buildAnimatedRow(3, _buildTappableCard(
-            child: const _SettingsRow(
+            child: _SettingsRow(
               icon: Icons.language_rounded,
               label: 'Website',
               subtitle: 'mathcalc-calculus.netlify.app',
@@ -223,7 +223,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             },
           )),
           buildAnimatedRow(4, _buildTappableCard(
-            child: const _SettingsRow(
+            child: _SettingsRow(
               icon: Icons.code_rounded,
               label: 'GitHub',
               subtitle: 'Shuash11',
@@ -238,7 +238,7 @@ class _SettingsScreenState extends State<SettingsScreen>
           sectionDivider(),
           _sectionHeader('Team'),
           buildAnimatedRow(5, _buildTappableCard(
-            child: const _SettingsRow(
+            child: _SettingsRow(
               icon: Icons.group_rounded,
               label: 'Meet the Team',
               subtitle: 'mathcalcu-build.netlify.app',
@@ -286,7 +286,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         children: [
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: _accent,
@@ -343,7 +343,7 @@ class _TappableCardState extends State<_TappableCard> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: _SettingsScreenState._accent.withValues(alpha: 0.06),
+                color: theme.accentColor.withValues(alpha: 0.06),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),

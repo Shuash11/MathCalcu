@@ -1,6 +1,5 @@
-﻿import 'dart:async';
+import 'dart:async';
 
-import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -109,7 +108,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: FindingCenterRadiusTheme.cardGradient,
+        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: widget.color.withValues(alpha: 0.2)),
       ),
@@ -125,7 +124,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: FindingCenterRadiusTheme.textPrimary,
+                    color: const Color(0xFFE8E8F0),
                   ),
                 ),
               ),
@@ -169,20 +168,20 @@ class _EquationInputCardState extends State<EquationInputCard> {
             controller: widget.ctrl,
             focusNode: _focusNode,
             style: const TextStyle(
-              color: FindingCenterRadiusTheme.textPrimary,
+              color: const Color(0xFFE8E8F0),
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
             decoration: InputDecoration(
               hintText: 'e.g. x² + y² - 6x - 8y + 9 = 0',
               hintStyle: TextStyle(
-                color: FindingCenterRadiusTheme.textSecondary
+                color: const Color(0xFF94A3B8)
                     .withValues(alpha: 0.4),
                 fontSize: 13,
                 fontWeight: FontWeight.normal,
               ),
               filled: true,
-              fillColor: FindingCenterRadiusTheme.inputBg,
+              fillColor: const Color(0xFF334155),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -207,7 +206,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
               padding: const EdgeInsets.symmetric(vertical: 14),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [widget.color, FindingCenterRadiusTheme.emerald],
+                  colors: [widget.color, const Color(0xFF334155)],
                 ),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [

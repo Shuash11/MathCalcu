@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'animated_inequality_card.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
+import 'package:provider/provider.dart';
 
 class ContinuedCard extends StatelessWidget {
   const ContinuedCard({super.key});
@@ -12,7 +12,7 @@ class ContinuedCard extends StatelessWidget {
       subtitle: 'A value sandwiched between two bounds.',
       route: '/inequalities/continued',
       icon: Icons.compare_arrows_rounded,
-      accentColor: InequalityTheme.subtypeAccents['continued'] ?? InequalityTheme.accentColor,
+      accentColor: {'strict': const Color(0xFF334155), 'non_strict': const Color(0xFF334155), 'absolute': const Color(0xFF334155)}['continued'] ?? const Color(0xFF334155),
     );
   }
 }

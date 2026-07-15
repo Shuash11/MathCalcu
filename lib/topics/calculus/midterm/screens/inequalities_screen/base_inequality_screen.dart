@@ -1,8 +1,7 @@
-﻿import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_solver/inequality_solver_router.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/inequalities_graph/inequality_graph.dart';
-import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
 import 'package:calculus_system/shared/widgets/answer_card.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:calculus_system/shared/widgets/graph_widget.dart';
@@ -92,7 +91,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
     showStepsDrawer(
       context: context,
       steps: steps,
-      accentColor: InequalityTheme.accentColor,
+      accentColor: const Color(0xFF334155),
       title: widget.title,
     );
   }
@@ -119,11 +118,11 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           title: widget.title,
           graph: InequalityGraph(
             result: _result!,
-            accentColor: InequalityTheme.accentColor,
+            accentColor: const Color(0xFF334155),
           ),
           formula: _result!.answer,
           keyInfo: keyInfo.isNotEmpty ? keyInfo : null,
-          accentColor: InequalityTheme.accentColor,
+          accentColor: const Color(0xFF334155),
         ),
       ),
     );
@@ -171,7 +170,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
             child: const Icon(
               Icons.arrow_back_ios_rounded,
               size: 14,
-              color: InequalityTheme.accentColor,
+              color: const Color(0xFF334155),
             ),
           ),
         ),
@@ -192,7 +191,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
                 widget.subtitle,
                 style: TextStyle(
                   fontSize: 12,
-                  color: InequalityTheme.accentColor.withValues(alpha: 0.7),
+                  color: const Color(0xFF334155).withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -217,13 +216,13 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
         const SizedBox(height: 10),
         MathInputField(
           controller: _inputCtrl,
-          accentColor: InequalityTheme.accentColor,
+          accentColor: const Color(0xFF334155),
           hint: widget.hint,
           onSolve: _solve,
         ),
         MathKeyboard(
           controller: _inputCtrl,
-          accentColor: InequalityTheme.accentColor,
+          accentColor: const Color(0xFF334155),
           hideSignal: _hideKeyboardSignal,
         ),
         if (_result != null && !_result!.hasError && _detectedType != null) ...[
@@ -317,10 +316,10 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
     
     final matchesScreen = _matchesScreen;
     final bgColor = matchesScreen
-        ? InequalityTheme.accentColor.withValues(alpha: 0.1)
+        ? const Color(0xFF334155).withValues(alpha: 0.1)
         : const Color(0xFF2A1F10);
     final textColor = matchesScreen
-        ? InequalityTheme.accentColor
+        ? const Color(0xFF334155)
         : const Color(0xFFFFB84D);
     final icon = matchesScreen ? Icons.check_circle_outline : Icons.info_outline;
     final bannerText = matchesScreen
@@ -373,7 +372,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
       return const Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          color: InequalityTheme.accentColor,
+          color: const Color(0xFF334155),
         ),
       );
     }
@@ -402,17 +401,17 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           onTap: _openFullScreenGraph,
           child: GraphWidget(
             result: _result!,
-            accentColor: InequalityTheme.accentColor,
+            accentColor: const Color(0xFF334155),
             graphBody: InequalityGraph(
               result: _result!,
-              accentColor: InequalityTheme.accentColor,
+              accentColor: const Color(0xFF334155),
             ),
           ),
         ),
         const SizedBox(height: 16),
         AnswerCard(
           result: _result!,
-          accentColor: InequalityTheme.accentColor,
+          accentColor: const Color(0xFF334155),
           onTap: _showSteps,
         ),
       ],

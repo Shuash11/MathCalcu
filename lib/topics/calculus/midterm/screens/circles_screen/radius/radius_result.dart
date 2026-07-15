@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/radiustheme.dart';
 import 'package:flutter/material.dart';
 
 class RadiusResultCard extends StatelessWidget {
@@ -15,13 +14,13 @@ class RadiusResultCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            FindingRadiusTheme.teal.withValues(alpha: 0.2),
-            FindingRadiusTheme.cyan.withValues(alpha: 0.1),
+            const Color(0xFF334155).withValues(alpha: 0.2),
+            const Color(0xFF334155).withValues(alpha: 0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: FindingRadiusTheme.teal.withValues(alpha: 0.3),
+          color: const Color(0xFF334155).withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
@@ -32,7 +31,7 @@ class RadiusResultCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: FindingRadiusTheme.textSecondary,
+              color: const Color(0xFF94A3B8),
               letterSpacing: 1.5,
             ),
           ),
@@ -45,7 +44,7 @@ class RadiusResultCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   color:
-                      FindingRadiusTheme.textSecondary.withValues(alpha: 0.8),
+                      const Color(0xFF94A3B8).withValues(alpha: 0.8),
                 ),
               ),
               Text(
@@ -53,7 +52,7 @@ class RadiusResultCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
-                  color: FindingRadiusTheme.cyan,
+                  color: const Color(0xFF334155),
                 ),
               ),
             ],

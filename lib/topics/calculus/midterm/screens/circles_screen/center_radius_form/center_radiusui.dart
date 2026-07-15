@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/circles_theme/center_radius_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
@@ -51,7 +50,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
     showSolutionStepsModal(
       context: context,
       title: 'Circle Equation \u2014 Step by Step',
-      design: AppDesign.calculus,
+      design: AppDesign.app,
       child: SolutionSteps(steps: _controller.steps),
     );
   }
@@ -59,7 +58,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FindingCenterRadiusTheme.bgDark,
+      backgroundColor: const Color(0xFF0F172A),
       body: SafeArea(
         child: Column(
           children: [
@@ -124,15 +123,15 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: FindingCenterRadiusTheme.teal.withValues(alpha: 0.1),
+                color: const Color(0xFF334155).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: FindingCenterRadiusTheme.teal.withValues(alpha: 0.3),
+                  color: const Color(0xFF334155).withValues(alpha: 0.3),
                 ),
               ),
               child: const Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: FindingCenterRadiusTheme.teal,
+                color: const Color(0xFF334155),
                 size: 18,
               ),
             ),
@@ -143,8 +142,8 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [
-                  FindingCenterRadiusTheme.teal,
-                  FindingCenterRadiusTheme.emerald,
+                  const Color(0xFF334155),
+                  const Color(0xFF334155),
                 ],
               ),
               borderRadius: BorderRadius.circular(14),
@@ -164,14 +163,14 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: FindingCenterRadiusTheme.textPrimary,
+                  color: const Color(0xFFE8E8F0),
                 ),
               ),
               ResponsiveText(
                 'Step-by-step solution',
                 style: TextStyle(
                   fontSize: 12,
-                  color: FindingCenterRadiusTheme.textSecondary
+                  color: const Color(0xFF94A3B8)
                       .withValues(alpha: 0.6),
                 ),
               ),
@@ -183,12 +182,12 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
   }
 
   Widget _buildTabBar() {
-    final labels = ['Standard → General', 'General → Standard'];
+    final labels = ['Standard ? General', 'General ? Standard'];
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: FindingCenterRadiusTheme.inputBg,
+        color: const Color(0xFF334155),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -204,8 +203,8 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                   gradient: active
                       ? const LinearGradient(
                           colors: [
-                            FindingCenterRadiusTheme.teal,
-                            FindingCenterRadiusTheme.emerald,
+                            const Color(0xFF334155),
+                            const Color(0xFF334155),
                           ],
                         )
                       : null,
@@ -219,7 +218,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                     fontWeight: FontWeight.w600,
                     color: active
                         ? Colors.white
-                        : FindingCenterRadiusTheme.textSecondary
+                        : const Color(0xFF94A3B8)
                             .withValues(alpha: 0.5),
                   ),
                 ),
@@ -236,7 +235,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
       return InputCard(
         title: 'Enter Center & Radius',
         formula: r'(x - h)^2 + (y - k)^2 = r^2',
-        color: FindingCenterRadiusTheme.teal,
+        color: const Color(0xFF334155),
         fields: [
           FieldDef(ctrl: _controller.hCtrl, label: 'h', hint: 'x of center'),
           FieldDef(ctrl: _controller.kCtrl, label: 'k', hint: 'y of center'),
@@ -248,7 +247,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
     }
     return EquationInputCard(
       ctrl: _controller.equationCtrl,
-      color: FindingCenterRadiusTheme.cyan,
+      color: const Color(0xFF334155),
       buttonLabel: 'Find Center-Radius Form',
       onTap: _handleCompute,
     );

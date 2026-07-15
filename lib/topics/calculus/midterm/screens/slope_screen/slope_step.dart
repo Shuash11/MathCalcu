@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class SlopeStepItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: SlopeTheme.accentColor.withValues(alpha: 0.6),
+                      color: const Color(0xFF334155).withValues(alpha: 0.6),
                       letterSpacing: 0.5,
                       height: 1.4,
                     ),
@@ -51,10 +50,10 @@ class SlopeStepItem extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: SlopeTheme.cardColor(context),
+                      color: context.watch<ThemeProvider>().card,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: SlopeTheme.accentColor.withValues(alpha: 0.2),
+                        color: const Color(0xFF334155).withValues(alpha: 0.2),
                       ),
                     ),
                     child: SingleChildScrollView(
@@ -134,8 +133,8 @@ class _TimelineRail extends StatelessWidget {
             height: 24,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: SlopeTheme.accentColor.withValues(alpha: 0.15),
-              border: Border.all(color: SlopeTheme.accentColor, width: 1.5),
+              color: const Color(0xFF334155).withValues(alpha: 0.15),
+              border: Border.all(color: const Color(0xFF334155), width: 1.5),
             ),
             child: Center(
               child: Text(
@@ -143,7 +142,7 @@ class _TimelineRail extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
-                  color: SlopeTheme.accentColor,
+                  color: const Color(0xFF334155),
                 ),
               ),
             ),
@@ -152,7 +151,7 @@ class _TimelineRail extends StatelessWidget {
             Expanded(
               child: Container(
                 width: 1.5,
-                color: SlopeTheme.accentColor.withValues(alpha: 0.2),
+                color: const Color(0xFF334155).withValues(alpha: 0.2),
                 margin: const EdgeInsets.symmetric(vertical: 3),
               ),
             ),
@@ -176,30 +175,30 @@ class _FinalBox extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            SlopeTheme.accentColor.withValues(alpha: 0.18),
-            SlopeTheme.accentColor.withValues(alpha: 0.08),
+            const Color(0xFF334155).withValues(alpha: 0.18),
+            const Color(0xFF334155).withValues(alpha: 0.08),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: SlopeTheme.accentColor.withValues(alpha: 0.4), width: 1.5),
+            color: const Color(0xFF334155).withValues(alpha: 0.4), width: 1.5),
       ),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             decoration: BoxDecoration(
-              color: SlopeTheme.accentColor.withValues(alpha: 0.15),
+              color: const Color(0xFF334155).withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                  color: SlopeTheme.accentColor.withValues(alpha: 0.35)),
+                  color: const Color(0xFF334155).withValues(alpha: 0.35)),
             ),
             child: Text(
               step.label.toUpperCase(),
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
-                color: SlopeTheme.accentColor,
+                color: const Color(0xFF334155),
                 letterSpacing: 1.2,
               ),
             ),

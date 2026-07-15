@@ -1,7 +1,8 @@
-﻿import 'dart:math';
-import 'package:calculus_system/topics/calculus/midterm/theme/midpoint_theme/midpointtheme.dart';
+import 'dart:math';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 class MidpointGraphScreen extends StatefulWidget {
   final double x1;
@@ -61,25 +62,25 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
       MaterialPageRoute(
         builder: (_) => FullScreenGraphScreen(
           title: 'Midpoint Graph',
-          formula: 'M = ((x₁+x₂)/2, (y₁+y₂)/2)',
+          formula: 'M = ((x1+x2)/2, (y1+y2)/2)',
           keyInfo: [
             FullScreenInfoItem(
               label: widget.labelA,
               value: '(${_fmt(widget.x1)}, ${_fmt(widget.y1)})',
-              color: MidpointTheme.accent(context),
+              color: const Color(0xFF334155),
             ),
             FullScreenInfoItem(
               label: widget.labelM,
               value: '(${_fmt(widget.mx)}, ${_fmt(widget.my)})',
-              color: MidpointTheme.accent(context),
+              color: const Color(0xFF334155),
             ),
             FullScreenInfoItem(
               label: widget.labelB,
               value: '(${_fmt(widget.x2)}, ${_fmt(widget.y2)})',
-              color: MidpointTheme.text(context),
+              color: context.watch<ThemeProvider>().textPrimary,
             ),
           ],
-          accentColor: MidpointTheme.accent(context),
+          accentColor: const Color(0xFF334155),
           graph: MidpointGraph(
             x1: widget.x1,
             y1: widget.y1,
@@ -100,7 +101,7 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: MidpointTheme.surface(context),
+      backgroundColor: context.watch<ThemeProvider>().surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -115,13 +116,13 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: MidpointTheme.card(context),
+                        color: context.watch<ThemeProvider>().card,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: MidpointTheme.accent15(context)),
+                        border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.15)),
                       ),
                       child: Icon(
                         Icons.close_rounded,
-                        color: MidpointTheme.text(context),
+                        color: context.watch<ThemeProvider>().textPrimary,
                         size: 22,
                       ),
                     ),
@@ -133,11 +134,11 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                       children: [
                         Text(
                           'Midpoint Graph',
-                          style: MidpointTheme.headerTitle(context),
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -0.5),
                         ),
                         Text(
                           'Classroom Concept Visualization',
-                          style: MidpointTheme.headerSubtitle(context),
+                          style: TextStyle(fontSize: 12, color: const Color(0xFF334155).withValues(alpha: 0.7)),
                         ),
                       ],
                     ),
@@ -154,9 +155,9 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                   onTap: _openFullScreen,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: MidpointTheme.card(context),
+                      color: context.watch<ThemeProvider>().card,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: MidpointTheme.accent15(context), width: 1.5),
+                      border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.15), width: 1.5),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.05),
@@ -192,7 +193,7 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                               decoration: BoxDecoration(
-                                color: MidpointTheme.accent(context).withValues(alpha: 0.1),
+                                color: const Color(0xFF334155).withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Row(
@@ -200,7 +201,7 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                                   Icon(
                                     isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
                                     size: 12,
-                                    color: MidpointTheme.accent(context),
+                                    color: const Color(0xFF334155),
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
@@ -208,7 +209,7 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
-                                      color: MidpointTheme.accent(context),
+                                      color: const Color(0xFF334155),
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -229,17 +230,17 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
               padding: const EdgeInsets.all(20),
               child: Container(
                 padding: const EdgeInsets.all(20),
-                decoration: MidpointTheme.cardDecoration(context).copyWith(
+                decoration: BoxDecoration(color: context.watch<ThemeProvider>().card, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.1))).copyWith(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildPointInfo(context, widget.labelA, widget.x1, widget.y1, MidpointTheme.accent(context)),
-                    Container(width: 1, height: 40, color: MidpointTheme.accent15(context)),
-                    _buildPointInfo(context, widget.labelM, widget.mx, widget.my, MidpointTheme.accent(context), isMidpoint: true),
-                    Container(width: 1, height: 40, color: MidpointTheme.accent15(context)),
-                    _buildPointInfo(context, widget.labelB, widget.x2, widget.y2, MidpointTheme.text(context)),
+                    _buildPointInfo(context, widget.labelA, widget.x1, widget.y1, const Color(0xFF334155)),
+                    Container(width: 1, height: 40, color: const Color(0xFF334155).withValues(alpha: 0.15)),
+                    _buildPointInfo(context, widget.labelM, widget.mx, widget.my, const Color(0xFF334155), isMidpoint: true),
+                    Container(width: 1, height: 40, color: const Color(0xFF334155).withValues(alpha: 0.15)),
+                    _buildPointInfo(context, widget.labelB, widget.x2, widget.y2, context.watch<ThemeProvider>().textPrimary),
                   ],
                 ),
               ),
@@ -312,8 +313,8 @@ class MidpointGraph extends StatelessWidget {
         my: my,
         progress: progress,
         isDark: isDark,
-        accentColor: MidpointTheme.accent(context),
-        textColor: MidpointTheme.text(context),
+        accentColor: const Color(0xFF334155),
+        textColor: context.watch<ThemeProvider>().textPrimary,
       ),
     );
   }

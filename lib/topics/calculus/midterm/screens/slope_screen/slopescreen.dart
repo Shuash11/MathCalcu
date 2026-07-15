@@ -1,4 +1,3 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/theme/slope_theme/slope_theme.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,8 @@ import 'slope_comparison.dart';
 import 'slope_input_field.dart';
 import 'slope_result.dart';
 import 'slope_step_dialog.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SlopeScreen extends StatefulWidget {
   const SlopeScreen({super.key});
@@ -15,7 +16,7 @@ class SlopeScreen extends StatefulWidget {
 }
 
 class _SlopeScreenState extends State<SlopeScreen> {
-  // ── Controllers ──────────────────────────────────────────
+  // -- Controllers ------------------------------------------
   final _x1 = TextEditingController();
   final _y1 = TextEditingController();
   final _x2 = TextEditingController();
@@ -25,7 +26,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   final _x4 = TextEditingController();
   final _y4 = TextEditingController();
 
-  // ── Focus Nodes ──────────────────────────────────────────
+  // -- Focus Nodes ------------------------------------------
   final _x1Focus = FocusNode();
   final _y1Focus = FocusNode();
   final _x2Focus = FocusNode();
@@ -35,7 +36,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   final _x4Focus = FocusNode();
   final _y4Focus = FocusNode();
 
-  // ── State ─────────────────────────────────────────────────
+  // -- State -------------------------------------------------
   SlopeSolverResult? _result1;
   SlopeSolverResult? _result2;
   SlopeComparisonResult? _comparisonResult;
@@ -43,7 +44,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   String? _errorMessage;
   bool _showCompareSection = false;
 
-  // ── Lifecycle ─────────────────────────────────────────────
+  // -- Lifecycle ---------------------------------------------
   @override
   void dispose() {
     for (final c in [_x1, _y1, _x2, _y2, _x3, _y3, _x4, _y4]) {
@@ -64,7 +65,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
     super.dispose();
   }
 
-  // ── Logic ─────────────────────────────────────────────────
+  // -- Logic -------------------------------------------------
 
   void _calculate() {
     if (_x1.text.trim().isEmpty ||
@@ -163,7 +164,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: SlopeTheme.surface(context),
+      backgroundColor: context.watch<ThemeProvider>().surface,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 40),
@@ -175,11 +176,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
               _header(),
               const SizedBox(height: 32),
               _pointRow(
-                'Point 1: (x₁, y₁)',
-                'x₁',
+                'Point 1: (x1, y1)',
+                'x1',
                 _x1,
                 _x1Focus,
-                'y₁',
+                'y1',
                 _y1,
                 _y1Focus,
                 xTextInputAction: TextInputAction.next,
@@ -189,11 +190,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
               ),
               const SizedBox(height: 20),
               _pointRow(
-                'Point 2: (x₂, y₂)',
-                'x₂',
+                'Point 2: (x2, y2)',
+                'x2',
                 _x2,
                 _x2Focus,
-                'y₂',
+                'y2',
                 _y2,
                 _y2Focus,
                 xTextInputAction: TextInputAction.next,
@@ -210,11 +211,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
               if (_showCompareSection) ...[
                 const SizedBox(height: 28),
                 _pointRow(
-                  'Point 3: (x₃, y₃)',
-                  'x₃',
+                  'Point 3: (x3, y3)',
+                  'x3',
                   _x3,
                   _x3Focus,
-                  'y₃',
+                  'y3',
                   _y3,
                   _y3Focus,
                   xTextInputAction: TextInputAction.next,
@@ -224,11 +225,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
                 ),
                 const SizedBox(height: 20),
                 _pointRow(
-                  'Point 4: (x₄, y₄)',
-                  'x₄',
+                  'Point 4: (x4, y4)',
+                  'x4',
                   _x4,
                   _x4Focus,
-                  'y₄',
+                  'y4',
                   _y4,
                   _y4Focus,
                   xTextInputAction: TextInputAction.next,
@@ -261,25 +262,25 @@ class _SlopeScreenState extends State<SlopeScreen> {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: SlopeTheme.cardColor(context),
+            color: context.watch<ThemeProvider>().card,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: SlopeTheme.accentColor.withValues(alpha: 0.15),
+              color: const Color(0xFF334155).withValues(alpha: 0.15),
             ),
           ),
           child: const Icon(Icons.arrow_back_ios_rounded,
-              size: 16, color: SlopeTheme.accentColor),
+              size: 16, color: const Color(0xFF334155)),
         ),
       );
 
   Widget _header() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ResponsiveText('Equation of a line', style: SlopeTheme.titleStyle(context)),
+          ResponsiveText('Equation of a line', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -0.8)),
           const SizedBox(height: 6),
           ResponsiveText(
             'Enter coordinates — supports fractions like 3/5 or -1/4',
-            style: SlopeTheme.subtitleStyle(context),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: context.watch<ThemeProvider>().textSecondary),
           ),
         ],
       );
@@ -302,7 +303,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
         children: [
           ResponsiveText(
             sectionLabel,
-            style: SlopeTheme.labelStyle(context).copyWith(
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.7), letterSpacing: 0.5).copyWith(
               letterSpacing: 0,
               fontSize: 12,
               fontWeight: FontWeight.w500,
@@ -343,12 +344,12 @@ class _SlopeScreenState extends State<SlopeScreen> {
           decoration: BoxDecoration(
             color: _showCompareSection
                 ? const Color(0xFF4ECDC4).withValues(alpha: 0.1)
-                : SlopeTheme.cardColor(context),
+                : context.watch<ThemeProvider>().card,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: _showCompareSection
                   ? const Color(0xFF4ECDC4).withValues(alpha: 0.3)
-                  : SlopeTheme.accentColor.withValues(alpha: 0.15),
+                  : const Color(0xFF334155).withValues(alpha: 0.15),
             ),
           ),
           child: Row(
@@ -364,7 +365,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
                   border: Border.all(
                     color: _showCompareSection
                         ? const Color(0xFF4ECDC4)
-                        : SlopeTheme.accentColor.withValues(alpha: 0.3),
+                        : const Color(0xFF334155).withValues(alpha: 0.3),
                     width: 2,
                   ),
                 ),
@@ -382,7 +383,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
                     fontWeight: FontWeight.w600,
                     color: _showCompareSection
                         ? const Color(0xFF4ECDC4)
-                        : SlopeTheme.textPrimary(context),
+                        : context.watch<ThemeProvider>().textPrimary,
                   ),
                 ),
               ),
@@ -392,7 +393,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
                     : Icons.expand_more_rounded,
                 color: _showCompareSection
                     ? const Color(0xFF4ECDC4)
-                    : SlopeTheme.accentColor.withValues(alpha: 0.5),
+                    : const Color(0xFF334155).withValues(alpha: 0.5),
               ),
             ],
           ),
@@ -404,7 +405,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
         child: ElevatedButton(
           onPressed: _calculate,
           style: ElevatedButton.styleFrom(
-            backgroundColor: SlopeTheme.accentColor,
+            backgroundColor: const Color(0xFF334155),
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -415,7 +416,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 16,
-              color: SlopeTheme.surface(context),
+              color: context.watch<ThemeProvider>().surface,
               letterSpacing: 0.3,
             ),
           ),
