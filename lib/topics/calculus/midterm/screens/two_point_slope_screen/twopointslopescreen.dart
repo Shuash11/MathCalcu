@@ -1,6 +1,7 @@
 import 'two_point_slope_controller.dart';
 import 'package:calculus_system/topics/calculus/midterm/graph/two_point_slope_graph/two_point_slope_graph.dart';
 import 'two_point_slope_steps.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -121,8 +122,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 color: context.watch<ThemeProvider>().card,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: const Color(0xFF334155).withValues(alpha: 0.2),
+                  color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2),
                 ),
+                boxShadow: AccentGlow.stack(context),
               ),
               child: Icon(
                 Icons.arrow_back_ios_new_rounded,
@@ -136,15 +138,16 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFF334155).withValues(alpha: 0.1),
+              color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFF334155).withValues(alpha: 0.2),
+                color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2),
               ),
+              boxShadow: AccentGlow.stack(context),
             ),
             child: Icon(
               Icons.show_chart_rounded,
-              color: const Color(0xFF334155),
+              color: context.watch<ThemeProvider>().accentColor,
               size: 22,
             ),
           ),

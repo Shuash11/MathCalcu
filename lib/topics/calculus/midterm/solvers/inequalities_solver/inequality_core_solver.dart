@@ -5,6 +5,8 @@
         .replaceAll('\u2212', '-')
         .replaceAll('\u2013', '-')
         .replaceAll('\u2014', '-')
+        .replaceAll('\u2264', '<=')
+        .replaceAll('\u2265', '>=')
         .replaceAll(' ', '')
         .replaceAll('>=', '≠¥')
         .replaceAll('<=', '≠¤')
@@ -13,8 +15,44 @@
         .replaceAll('x²', 'x^2')
         .replaceAll('²', '^2')
         .replaceAllMapped(RegExp(r'abs\(([^)]+)\)'), (m) => '|${m.group(1)}|');
+    s = _expandAdjacentLinearFactors(s);
     s = _expandParentheses(s);
     return s;
+  }
+
+  static String _expandAdjacentLinearFactors(String s) {
+    final pattern = RegExp(r'\(([^()]+)\)\(([^()]+)\)');
+    while (pattern.hasMatch(s)) {
+      s = s.replaceAllMapped(pattern, (match) {
+        final left = parseLinear(match.group(1)!);
+        final right = parseLinear(match.group(2)!);
+        if (left == null || right == null) return match.group(0)!;
+
+        final a = left['x']! * right['x']!;
+        final b = left['x']! * right['c']! + left['c']! * right['x']!;
+        final c = left['c']! * right['c']!;
+        return _formatQuadratic(a, b, c);
+      });
+    }
+    return s;
+  }
+
+  static String _formatQuadratic(double a, double b, double c) {
+    final terms = <String>[];
+    void addTerm(double value, String variable) {
+      if (value == 0) return;
+      final sign = value < 0 ? '-' : (terms.isEmpty ? '' : '+');
+      final magnitude = value.abs();
+      final coefficient = variable.isNotEmpty && magnitude == 1
+          ? ''
+          : fmt(magnitude);
+      terms.add('$sign$coefficient$variable');
+    }
+
+    addTerm(a, 'x^2');
+    addTerm(b, 'x');
+    addTerm(c, '');
+    return terms.isEmpty ? '0' : terms.join();
   }
 
   static String _expandParentheses(String s) {
@@ -139,6 +177,8 @@
         .replaceAll('\u2212', '-')
         .replaceAll('\u2013', '-')
         .replaceAll('\u2014', '-')
+        .replaceAll('\u2264', '<=')
+        .replaceAll('\u2265', '>=')
         .replaceAll(' ', '')
         .replaceAll('>=', '≠¥')
         .replaceAll('<=', '≠¤')
@@ -147,6 +187,7 @@
         .replaceAll('x²', 'x^2')
         .replaceAll('²', '^2')
         .replaceAllMapped(RegExp(r'abs\(([^)]+)\)'), (m) => '|${m.group(1)}|');
+    s = _expandAdjacentLinearFactors(s);
     s = _expandParentheses(s);
     return s;
   }
@@ -198,11 +239,15 @@
         } else if (coefStr == '-') {
           coef = -1;
         } else {
-          coef = double.tryParse(coefStr) ?? 1;
+          final parsed = tryParseNumber(coefStr);
+          if (parsed == null) return null;
+          coef = parsed;
         }
         xCoef += coef;
       } else {
-        constant += double.tryParse(tok) ?? 0;
+        final parsed = tryParseNumber(tok);
+        if (parsed == null) return null;
+        constant += parsed;
       }
     }
     return {'x': xCoef, 'c': constant};
@@ -234,7 +279,9 @@
         } else if (cs == '-') {
           coef = -1;
         } else {
-          coef = double.tryParse(cs) ?? 1;
+          final parsed = tryParseNumber(cs);
+          if (parsed == null) return null;
+          coef = parsed;
         }
         a += coef;
       } else if (tok.contains('x')) {
@@ -245,14 +292,43 @@
         } else if (cs == '-') {
           coef = -1;
         } else {
-          coef = double.tryParse(cs) ?? 1;
+          final parsed = tryParseNumber(cs);
+          if (parsed == null) return null;
+          coef = parsed;
         }
         b += coef;
       } else {
-        c += double.tryParse(tok) ?? 0;
+        final parsed = tryParseNumber(tok);
+        if (parsed == null) return null;
+        c += parsed;
       }
     }
     return {'a': a, 'b': b, 'c': c};
+  }
+
+  static double? tryParseNumber(String input) {
+    var value = input.trim();
+    if (value.startsWith('+')) value = value.substring(1);
+    if (value.endsWith('.')) value = '${value}0';
+
+    final slash = value.indexOf('/');
+    if (slash > 0 && slash == value.lastIndexOf('/')) {
+      final numerator = double.tryParse(value.substring(0, slash));
+      final denominator = double.tryParse(value.substring(slash + 1));
+      if (numerator == null || denominator == null || denominator == 0) {
+        return null;
+      }
+      return numerator / denominator;
+    }
+    return double.tryParse(value);
+  }
+
+  static int? unsupportedPower(String normalized) {
+    for (final match in RegExp(r'x\^(\d+)').allMatches(normalized)) {
+      final exponent = int.tryParse(match.group(1)!);
+      if (exponent != null && exponent > 2) return exponent;
+    }
+    return null;
   }
 
   static String flipOp(String op) {

@@ -1,3 +1,4 @@
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
@@ -405,11 +406,12 @@ class _SlopeScreenState extends State<SlopeScreen> {
         child: ElevatedButton(
           onPressed: _calculate,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF334155),
+            backgroundColor: context.watch<ThemeProvider>().accentColor,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
+            shadowColor: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.5),
           ),
           child: ResponsiveText(
             'Calculate Slope',

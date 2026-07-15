@@ -1,6 +1,7 @@
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
 import 'answer_card.dart';
 import 'package:flutter/material.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -105,9 +106,12 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
           SafeArea(bottom: false, child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_new, color: FinalsTheme.textPrimary(context)),
-              onPressed: () => context.pop(),
+            leading: AccentGlow.iconHalo(
+              context,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios_new, color: FinalsTheme.textPrimary(context)),
+                onPressed: () => context.pop(),
+              ),
             ),
             title: Text('Slope Solver', style: FinalsTheme.titleStyle(context)),
           )),

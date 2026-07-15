@@ -1,3 +1,4 @@
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -92,15 +93,9 @@ class _MathInputFieldState extends State<MathInputField> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155),
+                color: theme.accentColor,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: (theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155)).withValues(alpha: theme.isDark ? 0.30 : 0.25),
-                    blurRadius: theme.isDark ? 15 : 12,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
+                boxShadow: [AccentGlow.halo(context)],
               ),
               child: Icon(
                 Icons.arrow_forward_rounded,

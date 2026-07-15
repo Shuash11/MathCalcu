@@ -2,27 +2,27 @@
   "tasks": [
     {
       "id": 1,
-      "description": "Repair invalid UTF-8 encoding in the 20 non-deleted Dart source files and restore analyzer visibility",
+      "description": "Add failing regression tests for keyboard-compatible inequality expressions",
       "status": "done"
     },
     {
       "id": 2,
-      "description": "Align all midterm, finals, and fallback topic cards to the shared ModuleCard using ThemeProvider accent colors and glow",
+      "description": "Fix inequality Unicode normalization, sibling linear-factor expansion, decimal/trailing-dot parsing, shared number helper, and unsupported-power rejection in InequalityCoreSolver; pass normalized expression through InequalitySolverRouter",
       "status": "done"
     },
     {
       "id": 3,
-      "description": "Align MathInputField solve-button border, background, icon, and glow to ThemeProvider accent colors in both modes",
+      "description": "Add shared AccentGlow helper, swap MathInputField solve-button literal halos for the helper, swap slope-screen ElevatedButton literal background for ThemeProvider.accentColor with halo shadow, and add AccentGlow halo to the calculator = button",
       "status": "done"
     },
     {
       "id": 4,
-      "description": "Remove residual blue UI accents from touched topic screens and graphs, replacing them with bottom-navigation theme colors",
+      "description": "Analyze header icon containers — finals screens already funnel the primary color through FinalsTheme.primary which matches the dark-mode accent; no further changes needed without disrupting tap targets",
       "status": "done"
     },
     {
       "id": 5,
-      "description": "Run full analyzer, tests, UTF-8 scan, color scans, and end-to-end readiness re-audit",
+      "description": "Final verification: 7/7 tests pass, zero analyze errors, no maroon/blue color residuals",
       "status": "done"
     }
   ],

@@ -10,21 +10,27 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_sol
 class InequalitySolverRouter {
   static SolveResult solve(String input) {
     final normalized = InequalityCoreSolver.normalize(input);
+    final unsupportedPower = InequalityCoreSolver.unsupportedPower(normalized);
+    if (unsupportedPower != null) {
+      return SolveResult.error(
+        'Unsupported power x^$unsupportedPower. Only linear and quadratic inequalities are supported.',
+      );
+    }
     final type = InequalityCoreSolver.detectType(normalized);
     final baseType = _getBaseType(type);
 
     switch (baseType) {
       case 'linear':
-        return GeneratedLinearSolver.solve(input);
+        return GeneratedLinearSolver.solve(normalized);
       case 'absolute':
-        return GeneratedAbsoluteSolver.solve(input);
+        return GeneratedAbsoluteSolver.solve(normalized);
       case 'quadratic':
-        return GeneratedQuadraticSolver.solve(input);
+        return GeneratedQuadraticSolver.solve(normalized);
       case 'rational':
-        return GeneratedRationalSolver.solve(input);
+        return GeneratedRationalSolver.solve(normalized);
       case 'radical':
       case 'sqrtRational':
-        return GeneratedRadicalSolver.solve(input);
+        return GeneratedRadicalSolver.solve(normalized);
       default:
         return SolveResult.error('Could not detect inequality type');
     }
@@ -32,21 +38,33 @@ class InequalitySolverRouter {
 
   static List<StepModel> getSteps(String input) {
     final normalized = InequalityCoreSolver.normalize(input);
+    final unsupportedPower = InequalityCoreSolver.unsupportedPower(normalized);
+    if (unsupportedPower != null) {
+      return [
+        StepModel(
+          stepNumber: 1,
+          title: 'Unsupported power',
+          explanation:
+              'Powers above two are not supported by the inequality solver.',
+          latex: 'x^$unsupportedPower',
+        ),
+      ];
+    }
     final type = InequalityCoreSolver.detectType(normalized);
     final baseType = _getBaseType(type);
 
     switch (baseType) {
       case 'linear':
-        return GeneratedLinearSolver.getSteps(input);
+        return GeneratedLinearSolver.getSteps(normalized);
       case 'absolute':
-        return GeneratedAbsoluteSolver.getSteps(input);
+        return GeneratedAbsoluteSolver.getSteps(normalized);
       case 'quadratic':
-        return GeneratedQuadraticSolver.getSteps(input);
+        return GeneratedQuadraticSolver.getSteps(normalized);
       case 'rational':
-        return GeneratedRationalSolver.getSteps(input);
+        return GeneratedRationalSolver.getSteps(normalized);
       case 'radical':
       case 'sqrtRational':
-        return GeneratedRadicalSolver.getSteps(input);
+        return GeneratedRadicalSolver.getSteps(normalized);
       default:
         return [
           const StepModel(

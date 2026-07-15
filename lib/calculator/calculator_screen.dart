@@ -1,8 +1,9 @@
-﻿import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+﻿import 'package:calculus_system/shared/widgets/accent_glow.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'calculator_engine.dart';
 
@@ -234,15 +235,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
         decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: value == '='
-                ? FinalsTheme.primary
-                : textColor.withValues(alpha: 0.1),
-            width: value == '=' ? 0 : 1,
+            color: bgColor,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: value == '='
+                  ? FinalsTheme.primary
+                  : textColor.withValues(alpha: 0.1),
+              width: value == '=' ? 0 : 1,
+            ),
+            boxShadow: value == '=' ? [AccentGlow.halo(context)] : const [],
           ),
-        ),
         child: Center(
           child: Text(
             value,

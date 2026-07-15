@@ -2,6 +2,7 @@ import 'package:calculus_system/topics/calculus/finals/solvers/limits_infinity_s
 import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_answer_card.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_input_field.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
@@ -225,10 +226,13 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
             SafeArea(bottom: false, child: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: FinalsTheme.primary),
-                onPressed: () => Navigator.of(context).pop(),
+              leading: AccentGlow.iconHalo(
+                context,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                      color: FinalsTheme.primary),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ),
             )),
             Expanded(

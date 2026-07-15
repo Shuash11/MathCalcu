@@ -88,7 +88,7 @@ class InequalityCardPickerScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(colors: [
             Colors.transparent,
-            Color(0x4D6C63FF),
+            Color(0x4D334155),
             Color(0x332DD4BF),
             Colors.transparent,
           ]),
