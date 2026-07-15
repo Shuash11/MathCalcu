@@ -12,7 +12,6 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final isLight = themeProvider.isLight;
-    final surface = isLight ? const Color(0xFFFFFFFF) : const Color(0xFF1A1A2E);
     final card = isLight ? const Color(0xFFF4F4F1) : const Color(0xFF232340);
     final accent = isLight ? const Color(0xFF334155) : const Color(0xFFE9ECEF);
     final textMuted = isLight
@@ -21,155 +20,88 @@ class AppShell extends StatelessWidget {
 
     return Scaffold(
       body: navigationShell,
-      backgroundColor: surface,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: surface,
-          boxShadow: [
-            BoxShadow(
+          color: card,
+          border: Border(
+            top: BorderSide(
               color: accent.withValues(alpha: 0.08),
-              blurRadius: 24,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Center(
-            child: Container(
-              height: 60,
-              constraints: const BoxConstraints(maxWidth: 420),
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-              decoration: BoxDecoration(
-                color: card,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: accent.withValues(alpha: 0.08),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: accent.withValues(alpha: 0.06),
-                    blurRadius: 16,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildNavItem(
-                    context: context,
-                    icon: Icons.home_outlined,
-                    activeIcon: Icons.home_rounded,
-                    label: 'Home',
-                    index: 0,
-                    isSelected: navigationShell.currentIndex == 0,
-                    accent: accent,
-                    textMuted: textMuted,
-                  ),
-                  _buildNavItem(
-                    context: context,
-                    icon: Icons.book_outlined,
-                    activeIcon: Icons.book_rounded,
-                    label: 'Topics',
-                    index: 1,
-                    isSelected: navigationShell.currentIndex == 1,
-                    accent: accent,
-                    textMuted: textMuted,
-                  ),
-                  _buildNavItem(
-                    context: context,
-                    icon: Icons.sticky_note_2_outlined,
-                    activeIcon: Icons.sticky_note_2_rounded,
-                    label: 'Notes',
-                    index: 2,
-                    isSelected: navigationShell.currentIndex == 2,
-                    accent: accent,
-                    textMuted: textMuted,
-                  ),
-                  _buildNavItem(
-                    context: context,
-                    icon: Icons.calculate_outlined,
-                    activeIcon: Icons.calculate_rounded,
-                    label: 'Calc',
-                    index: 3,
-                    isSelected: navigationShell.currentIndex == 3,
-                    accent: accent,
-                    textMuted: textMuted,
-                  ),
-                  _buildNavItem(
-                    context: context,
-                    icon: Icons.settings_outlined,
-                    activeIcon: Icons.settings_rounded,
-                    label: 'Settings',
-                    index: 4,
-                    isSelected: navigationShell.currentIndex == 4,
-                    accent: accent,
-                    textMuted: textMuted,
-                  ),
-                ],
-              ),
+              width: 1,
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem({
-    required BuildContext context,
-    required IconData icon,
-    required IconData activeIcon,
-    required String label,
-    required int index,
-    required bool isSelected,
-    required Color accent,
-    required Color textMuted,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        navigationShell.goBranch(
-          index,
-          initialLocation: index == navigationShell.currentIndex,
-        );
-      },
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: isSelected
-            ? BoxDecoration(
-                color: accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: accent.withValues(alpha: 0.2),
-                    blurRadius: 16,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              )
-            : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isSelected ? activeIcon : icon,
-              size: 22,
-              color: isSelected ? accent : textMuted,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? accent : textMuted,
-                letterSpacing: 0.2,
-              ),
+          boxShadow: [
+            BoxShadow(
+              color: accent.withValues(alpha: 0.06),
+              blurRadius: 20,
+              offset: const Offset(0, -2),
             ),
           ],
+        ),
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            height: 72,
+            backgroundColor: card,
+            indicatorColor: accent.withValues(alpha: 0.12),
+            elevation: 0,
+            iconTheme: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return IconThemeData(color: accent, size: 24);
+              }
+              return IconThemeData(color: textMuted, size: 24);
+            }),
+            labelTextStyle: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: accent,
+                  letterSpacing: 0.2,
+                );
+              }
+              return TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: textMuted,
+                letterSpacing: 0.2,
+              );
+            }),
+          ),
+          child: NavigationBar(
+            selectedIndex: navigationShell.currentIndex,
+            onDestinationSelected: (index) {
+              navigationShell.goBranch(
+                index,
+                initialLocation: index == navigationShell.currentIndex,
+              );
+            },
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home_rounded),
+                label: 'Home',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.book_outlined),
+                selectedIcon: Icon(Icons.book_rounded),
+                label: 'Topics',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.sticky_note_2_outlined),
+                selectedIcon: Icon(Icons.sticky_note_2_rounded),
+                label: 'Notes',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.calculate_outlined),
+                selectedIcon: Icon(Icons.calculate_rounded),
+                label: 'Calc',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.settings_outlined),
+                selectedIcon: Icon(Icons.settings_rounded),
+                label: 'Settings',
+              ),
+            ],
+          ),
         ),
       ),
     );
