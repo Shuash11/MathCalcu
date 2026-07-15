@@ -31,83 +31,81 @@ class AppShell extends StatelessWidget {
         ],
       ),
       child: SafeArea(
-        child: Container(
-          height: 64,
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: card,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: accent.withValues(alpha: 0.08),
-              width: 1,
+        child: Center(
+          child: Container(
+            height: 60,
+            constraints: const BoxConstraints(maxWidth: 420),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+            decoration: BoxDecoration(
+              color: card,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: accent.withValues(alpha: 0.08),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: accent.withValues(alpha: 0.06),
+                  blurRadius: 16,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: accent.withValues(alpha: 0.06),
-                blurRadius: 16,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(
-                context: context,
-                icon: Icons.home_outlined,
-                activeIcon: Icons.home_rounded,
-                label: 'Home',
-                index: 0,
-                isSelected: navigationShell.currentIndex == 0,
-                accent: accent,
-                textMuted: textMuted,
-                card: card,
-              ),
-              _buildNavItem(
-                context: context,
-                icon: Icons.book_outlined,
-                activeIcon: Icons.book_rounded,
-                label: 'Topics',
-                index: 1,
-                isSelected: navigationShell.currentIndex == 1,
-                accent: accent,
-                textMuted: textMuted,
-                card: card,
-              ),
-              _buildNavItem(
-                context: context,
-                icon: Icons.sticky_note_2_outlined,
-                activeIcon: Icons.sticky_note_2_rounded,
-                label: 'Notes',
-                index: 2,
-                isSelected: navigationShell.currentIndex == 2,
-                accent: accent,
-                textMuted: textMuted,
-                card: card,
-              ),
-              _buildNavItem(
-                context: context,
-                icon: Icons.calculate_outlined,
-                activeIcon: Icons.calculate_rounded,
-                label: 'Calculator',
-                index: 3,
-                isSelected: navigationShell.currentIndex == 3,
-                accent: accent,
-                textMuted: textMuted,
-                card: card,
-              ),
-              _buildNavItem(
-                context: context,
-                icon: Icons.settings_outlined,
-                activeIcon: Icons.settings_rounded,
-                label: 'Settings',
-                index: 4,
-                isSelected: navigationShell.currentIndex == 4,
-                accent: accent,
-                textMuted: textMuted,
-                card: card,
-              ),
-            ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNavItem(
+                  context: context,
+                  icon: Icons.home_outlined,
+                  activeIcon: Icons.home_rounded,
+                  label: 'Home',
+                  index: 0,
+                  isSelected: navigationShell.currentIndex == 0,
+                  accent: accent,
+                  textMuted: textMuted,
+                ),
+                _buildNavItem(
+                  context: context,
+                  icon: Icons.book_outlined,
+                  activeIcon: Icons.book_rounded,
+                  label: 'Topics',
+                  index: 1,
+                  isSelected: navigationShell.currentIndex == 1,
+                  accent: accent,
+                  textMuted: textMuted,
+                ),
+                _buildNavItem(
+                  context: context,
+                  icon: Icons.sticky_note_2_outlined,
+                  activeIcon: Icons.sticky_note_2_rounded,
+                  label: 'Notes',
+                  index: 2,
+                  isSelected: navigationShell.currentIndex == 2,
+                  accent: accent,
+                  textMuted: textMuted,
+                ),
+                _buildNavItem(
+                  context: context,
+                  icon: Icons.calculate_outlined,
+                  activeIcon: Icons.calculate_rounded,
+                  label: 'Calc',
+                  index: 3,
+                  isSelected: navigationShell.currentIndex == 3,
+                  accent: accent,
+                  textMuted: textMuted,
+                ),
+                _buildNavItem(
+                  context: context,
+                  icon: Icons.settings_outlined,
+                  activeIcon: Icons.settings_rounded,
+                  label: 'Settings',
+                  index: 4,
+                  isSelected: navigationShell.currentIndex == 4,
+                  accent: accent,
+                  textMuted: textMuted,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -123,7 +121,6 @@ class AppShell extends StatelessWidget {
     required bool isSelected,
     required Color accent,
     required Color textMuted,
-    required Color card,
   }) {
     return GestureDetector(
       onTap: () {
@@ -136,15 +133,15 @@ class AppShell extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: isSelected
             ? BoxDecoration(
                 color: accent.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: accent.withValues(alpha: 0.15),
-                    blurRadius: 12,
+                    color: accent.withValues(alpha: 0.2),
+                    blurRadius: 16,
                     offset: const Offset(0, 2),
                   ),
                 ],
