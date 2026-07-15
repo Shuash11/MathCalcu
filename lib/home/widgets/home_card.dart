@@ -50,23 +50,21 @@ class _HomeCardState extends State<HomeCard> {
               borderRadius: BorderRadius.circular(20),
               gradient: LinearGradient(
                 colors: [
-                  widget.accent.withValues(alpha: _hovered ? 0.18 : 0.10),
-                  widget.accent.withValues(alpha: _hovered ? 0.08 : 0.04),
+                  theme.card.withValues(alpha: _hovered ? 0.90 : 0.85),
+                  theme.card.withValues(alpha: _hovered ? 0.80 : 0.75),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               border: Border.all(
-                color: _hovered
-                    ? widget.accent.withValues(alpha: 0.4)
-                    : widget.accent.withValues(alpha: 0.15),
-                width: 1.5,
+                color: widget.accent.withValues(alpha: 0.15),
+                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: widget.accent.withValues(alpha: _hovered ? 0.20 : 0.08),
-                  blurRadius: _hovered ? 24 : 12,
-                  offset: const Offset(0, 4),
+                  color: widget.accent.withValues(alpha: 0.10),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),

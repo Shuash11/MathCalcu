@@ -1,0 +1,11 @@
+{
+  "tasks": [
+    { "id": 1, "description": "Read and verify solution_steps_modal.dart", "status": "done" },
+    { "id": 2, "description": "Read and verify solution_step_card.dart", "status": "done" },
+    { "id": 3, "description": "Read and verify app_design.dart", "status": "done" },
+    { "id": 4, "description": "Review all 18 showSolutionStepsModal call sites", "status": "done" },
+    { "id": 5, "description": "Review all 7 SolutionStepCard call sites in finals", "status": "done" },
+    { "id": 6, "description": "Final verdict: APPROVED or REJECTED", "status": "done" }
+  ],
+  "completed": true
+}

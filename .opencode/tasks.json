@@ -1,8 +1,13 @@
 {
   "tasks": [
-    { "id": 1, "description": "Update SolutionStepCard and SolutionStepsModal with AppDesign parameter", "status": "done" },
-    { "id": 2, "description": "Add design: AppDesign.calculus to all SolutionStepCard call sites (midterm steps files)", "status": "done" },
-    { "id": 3, "description": "Add design: AppDesign.calculus to all showSolutionStepsModal call sites and remove accentColor param", "status": "done" }
+    { "id": 1, "description": "Update FinalsTheme — maroon accent, headerGradient, cardGlow", "status": "done" },
+    { "id": 2, "description": "Update ThemeProvider — accentColor to maroon", "status": "done" },
+    { "id": 3, "description": "Update AppDesign — add glassmorphism constants", "status": "done" },
+    { "id": 4, "description": "Update AppShell — glassmorphism bottom nav", "status": "done" },
+    { "id": 5, "description": "Update HomeCard — glassmorphism card style", "status": "done" },
+    { "id": 6, "description": "Update CalculatorScreen — glassmorphism display", "status": "done" },
+    { "id": 7, "description": "Run flutter analyze — fix any new errors", "status": "done" },
+    { "id": 8, "description": "Run flutter test — fix any failures", "status": "done" }
   ],
   "completed": true
 }

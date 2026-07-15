@@ -22,6 +22,12 @@ class AppDesign {
   static const double iconCircleSize = 52;
   static const double stepCircleSize = 28;
 
+  // Glassmorphism constants
+  static const double glassBorderRadius = 20.0;
+  static const double glassBorderOpacity = 0.15;
+  static const double glassShadowOpacity = 0.10;
+  static const double glassShadowBlur = 20.0;
+
   // App theme — Deep Maroon
   static const app = AppDesign(
     accent: Color(0xFF7F1D1D),

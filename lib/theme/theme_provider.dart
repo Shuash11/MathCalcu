@@ -23,7 +23,7 @@ class ThemeProvider extends ChangeNotifier {
   Color get shadowColor => _isDark
       ? Colors.black.withValues(alpha: 0.2)
       : Colors.black.withValues(alpha: 0.08);
-  Color get accentColor => _isDark ? const Color(0xFF6366F1) : const Color(0xFF312C85);
+  Color get accentColor => _isDark ? const Color(0xFF7F1D1D) : const Color(0xFF7F1D1D);
 
   // Persistence
   Future<void> loadTheme() async {

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/slope_using_derivatives_solver.dart';
 
 class SlopeSolverScreen extends StatefulWidget {
@@ -145,21 +146,25 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                         gradient: _isLoading 
-                            ? LinearGradient(colors: [FinalsTheme.primary.withValues(alpha: 0.3), FinalsTheme.secondary.withValues(alpha: 0.3)])
-                            : FinalsTheme.headerGradient,
-                        borderRadius: BorderRadius.circular(16),
+                            ? LinearGradient(colors: [AppDesign.app.accent.withValues(alpha: 0.3), AppDesign.app.accent.withValues(alpha: 0.15)])
+                            : LinearGradient(
+                                colors: [AppDesign.app.accent, AppDesign.app.accent.withValues(alpha: 0.8)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                        borderRadius: BorderRadius.circular(14),
                         boxShadow: [
                           BoxShadow(
-                            color: FinalsTheme.primary.withValues(alpha: 0.4),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
+                            color: AppDesign.app.accent.withValues(alpha: 0.35),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
                           ),
                         ],
                       ),
                       child: Center(
                         child: _isLoading 
-                            ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                            : const Text('SOLVE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 1.2)),
+                            ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                            : const Text('SOLVE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15, letterSpacing: 1.0)),
                       ),
                     ),
                   ),

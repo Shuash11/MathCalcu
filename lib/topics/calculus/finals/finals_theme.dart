@@ -9,7 +9,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 // Uses ThemeProvider for surface base,
 // but overrides with Finals-specific Minimal palette.
 //
-// Primary   : Dark indigo  →  Color(0xFF312C85)
+// Primary   : Maroon       →  Color(0xFF7F1D1D)
 // Secondary : Dark charcoal→  Color(0xFF0C0C09)
 // Tertiary  : Green        →  Color(0xFF16A34A)
 // Danger    : Red          →  Color(0xFFDC2626)  ← for badges
@@ -17,7 +17,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 
 class FinalsTheme {
   // ── Brand colors ──────────────────────────────────────────
-  static const Color primary   = Color(0xFF312C85);
+  static const Color primary   = Color(0xFF7F1D1D);
   static const Color secondary = Color(0xFF0C0C09);
   static const Color tertiary  = Color(0xFF16A34A);
   static const Color danger    = Color(0xFFDC2626);
@@ -73,7 +73,7 @@ class FinalsTheme {
 
   // ── Gradients ─────────────────────────────────────────────
   static const LinearGradient headerGradient = LinearGradient(
-    colors: [Color(0xFF312C85), Color(0xFF0C0C09)],
+    colors: [Color(0xFF7F1D1D), Color(0xFF4A0E1A)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

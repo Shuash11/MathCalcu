@@ -84,11 +84,26 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: theme.card,
                     borderRadius: BorderRadius.circular(20),
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.card.withValues(alpha: 0.90),
+                        theme.card.withValues(alpha: 0.80),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     border: Border.all(
                       color: FinalsTheme.primary.withValues(alpha: 0.15),
+                      width: 1,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: FinalsTheme.primary.withValues(alpha: 0.10),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
