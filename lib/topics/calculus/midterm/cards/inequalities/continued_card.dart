@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'animated_inequality_card.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
 
@@ -14,7 +13,6 @@ class ContinuedCard extends StatelessWidget {
       route: '/inequalities/continued',
       icon: Icons.compare_arrows_rounded,
       accentColor: InequalityTheme.subtypeAccents['continued'] ?? InequalityTheme.accentColor,
-      tags: const ['Compound', 'Range', 'Dual'],
     );
   }
 }

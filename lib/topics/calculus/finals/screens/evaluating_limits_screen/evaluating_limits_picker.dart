@@ -23,7 +23,7 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
     const SubstitutionCard(),
     const ConjugateCard(),
     const FactoringCard(),
-    const LCDCard(),
+    const LcdCard(),
   ];
 
   @override

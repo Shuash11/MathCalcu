@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'animated_inequality_card.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
 
@@ -12,9 +11,8 @@ class RadicalCard extends StatelessWidget {
       title: 'Radical Inequality',
       subtitle: 'Has a square root. Check the domain constraints.',
       route: '/inequalities/radical',
-      icon: Icons.square_foot_rounded, // or any appropriate math icon
+      icon: Icons.square_foot_rounded,
       accentColor: InequalityTheme.subtypeAccents['radical'] ?? InequalityTheme.accentColor,
-      tags: const ['Roots', 'Domain', 'Squaring'],
     );
   }
 }

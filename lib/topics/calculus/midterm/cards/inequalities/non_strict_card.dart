@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'animated_inequality_card.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
 
@@ -14,7 +13,6 @@ class NonStrictCard extends StatelessWidget {
       route: '/inequalities/non_strict',
       icon: Icons.drag_handle_rounded,
       accentColor: InequalityTheme.subtypeAccents['non_strict'] ?? InequalityTheme.accentColor,
-      tags: const ['Linear', 'Inclusive', 'Basic'],
     );
   }
 }

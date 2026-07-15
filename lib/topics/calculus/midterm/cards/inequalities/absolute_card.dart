@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'animated_inequality_card.dart';
 import 'package:calculus_system/topics/calculus/midterm/theme/inequalities_theme/inequality_theme.dart';
 
@@ -14,7 +13,6 @@ class AbsoluteCard extends StatelessWidget {
       route: '/inequalities/absolute',
       icon: Icons.vertical_align_center_rounded,
       accentColor: InequalityTheme.subtypeAccents['absolute'] ?? InequalityTheme.accentColor,
-      tags: const ['Absolute', 'Distance', 'Split'],
     );
   }
 }
