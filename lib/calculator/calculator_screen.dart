@@ -73,114 +73,146 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              // Display
-              Expanded(
-                flex: 2,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    gradient: LinearGradient(
-                      colors: [
-                        theme.card.withValues(alpha: 0.90),
-                        theme.card.withValues(alpha: 0.80),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    border: Border.all(
-                      color: FinalsTheme.primary.withValues(alpha: 0.15),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: FinalsTheme.primary.withValues(alpha: 0.10),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Dynamic spacing: 2px (small), 3px (medium), 4px (large)
+            final double buttonSpacing = constraints.maxHeight < 600
+                ? 2.0
+                : constraints.maxHeight < 700
+                    ? 3.0
+                    : 4.0;
+
+            // Dynamic button height calculation
+            const double verticalPadding = 16.0; // 8 top + 8 bottom
+            final double spacingTotal = 7 * buttonSpacing;
+            final double availableForContent = constraints.maxHeight - verticalPadding - spacingTotal;
+
+            // Display takes ~22%, clamped 50-160px (lower min for tiny test screens)
+            final double displayHeight = (availableForContent * 0.22).clamp(50.0, 160.0);
+
+            // Button grid gets the rest
+            final double buttonGridHeight = availableForContent - displayHeight;
+            final double buttonHeight = ((buttonGridHeight - spacingTotal) / 8).clamp(36.0, 64.0);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  // Display - use explicit height
+                  SizedBox(
+                    height: displayHeight,
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: (displayHeight * 0.1).clamp(6.0, 20.0),
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (_history.isNotEmpty)
-                        ResponsiveText(
-                          _history,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: theme.textSecondary,
-                          ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          colors: [
+                            theme.card.withValues(alpha: 0.90),
+                            theme.card.withValues(alpha: 0.80),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                      const SizedBox(height: 8),
-                      ResponsiveText(
-                        _expression.isEmpty ? '0' : _expression,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w600,
-                          color: theme.textPrimary,
+                        border: Border.all(
+                          color: FinalsTheme.primary.withValues(alpha: 0.15),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: FinalsTheme.primary.withValues(alpha: 0.10),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: displayHeight),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            if (_history.isNotEmpty) ...[
+                              ResponsiveText(
+                                _history,
+                                style: TextStyle(
+                                  fontSize: (displayHeight * 0.1).clamp(8.0, 12.0),
+                                  color: theme.textSecondary,
+                                ),
+                              ),
+                              SizedBox(height: (displayHeight * 0.03).clamp(1.0, 4.0)),
+                            ],
+                            ResponsiveText(
+                              _expression.isEmpty ? '0' : _expression,
+                              style: TextStyle(
+                                fontSize: (displayHeight * 0.22).clamp(14.0, 24.0),
+                                fontWeight: FontWeight.w600,
+                                color: theme.textPrimary,
+                              ),
+                            ),
+                            if (_showResult) ...[
+                              SizedBox(height: (displayHeight * 0.03).clamp(1.0, 4.0)),
+                              ResponsiveText(
+                                '= $_result',
+                                style: TextStyle(
+                                  fontSize: (displayHeight * 0.15).clamp(10.0, 16.0),
+                                  fontWeight: FontWeight.w400,
+                                  color: FinalsTheme.primary,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
-                      if (_showResult) ...[
-                        const SizedBox(height: 8),
-                        ResponsiveText(
-                          '= $_result',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
-                            color: FinalsTheme.primary,
-                          ),
-                        ),
-                      ],
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  // Button grid - use explicit height
+                  SizedBox(
+                    height: buttonGridHeight,
+                    child: Column(
+                      children: [
+                        _buildButtonRow(['C', '(', ')', '⌫'], theme, buttonSpacing, buttonHeight),
+                        SizedBox(height: buttonSpacing),
+                        _buildButtonRow(['7', '8', '9', '\u00D7'], theme, buttonSpacing, buttonHeight),
+                        SizedBox(height: buttonSpacing),
+                        _buildButtonRow(['4', '5', '6', '\u2212'], theme, buttonSpacing, buttonHeight),
+                        SizedBox(height: buttonSpacing),
+                        _buildButtonRow(['1', '2', '3', '\u221B'], theme, buttonSpacing, buttonHeight),
+                        SizedBox(height: buttonSpacing),
+                        _buildButtonRow(['0', '.', 'Ans', '+'], theme, buttonSpacing, buttonHeight),
+                        SizedBox(height: buttonSpacing),
+                        _buildButtonRow(['sin', 'cos', 'tan', '^'], theme, buttonSpacing, buttonHeight),
+                        SizedBox(height: buttonSpacing),
+                        _buildButtonRow(['log', 'ln', '\u221A', '='], theme, buttonSpacing, buttonHeight),
+                        SizedBox(height: buttonSpacing),
+                        _buildButtonRow(['\u03C0', 'e', '%', '!'], theme, buttonSpacing, buttonHeight),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
               ),
-              const SizedBox(height: 16),
-              // Button grid
-              Expanded(
-                flex: 5,
-                child: Column(
-                  children: [
-                    _buildButtonRow(['C', '(', ')', '⌫'], theme),
-                    const SizedBox(height: 8),
-                    _buildButtonRow(['7', '8', '9', '\u00D7'], theme),
-                    const SizedBox(height: 8),
-                    _buildButtonRow(['4', '5', '6', '\u2212'], theme),
-                    const SizedBox(height: 8),
-                    _buildButtonRow(['1', '2', '3', '\u221B'], theme),
-                    const SizedBox(height: 8),
-                    _buildButtonRow(['0', '.', 'Ans', '+'], theme),
-                    const SizedBox(height: 8),
-                    _buildButtonRow(['sin', 'cos', 'tan', '^'], theme),
-                    const SizedBox(height: 8),
-                    _buildButtonRow(['log', 'ln', '√', '='], theme),
-                    const SizedBox(height: 8),
-                    _buildButtonRow(['π', 'e', '%', '!'], theme),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildButtonRow(List<String> buttons, ThemeProvider theme) {
-    return Expanded(
+  Widget _buildButtonRow(List<String> buttons, ThemeProvider theme, double spacing, double buttonHeight) {
+    return SizedBox(
+      height: buttonHeight,
       child: Row(
         children: buttons.map((btn) {
           return Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3),
+              padding: EdgeInsets.symmetric(horizontal: spacing / 2),
               child: _buildButton(btn, theme),
             ),
           );
@@ -192,8 +224,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget _buildButton(String value, ThemeProvider theme) {
     final isOperator = ['+', '\u00D7', '\u2212', '\u221B', '='].contains(value);
     final isSpecial = ['C', '⌫', 'Ans'].contains(value);
-    final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', '√'].contains(value);
-    final isConstant = ['π', 'e'].contains(value);
+    final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', '\u221A'].contains(value);
+    final isConstant = ['\u03C0', 'e'].contains(value);
 
     Color bgColor;
     Color textColor;
@@ -225,7 +257,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         HapticFeedback.lightImpact();
         String insert = value;
         if (value == 'sin' || value == 'cos' || value == 'tan' ||
-            value == 'log' || value == 'ln' || value == '√') {
+            value == 'log' || value == 'ln' || value == '\u221A') {
           insert = '$value(';
         } else if (value == '!') {
           insert = '!';
