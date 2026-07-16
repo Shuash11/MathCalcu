@@ -9,6 +9,7 @@ import 'slope_intercept_steps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 
 enum InputMode { slopeIntercept, standardForm }
 
@@ -195,32 +196,50 @@ class _YInterceptScreenState extends State<YInterceptScreen>
   }
 
   Widget _buildHeader(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => Navigator.of(context).maybePop(),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: const Color(0xFF334155).withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: const Color(0xFF334155).withValues(alpha: 0.4),
-                  width: 1.5,
-                ),
-              ),
-              child: Icon(
+          AccentGlow.iconHalo(
+            context,
+            child: IconButton(
+              onPressed: () => Navigator.of(context).maybePop(),
+              icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: const Color(0xFF334155),
+                color: accent,
                 size: 18,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: accent.withValues(alpha: 0.12),
+                foregroundColor: accent,
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: accent.withValues(alpha: 0.40),
+                    width: 1.5,
+                  ),
+                ),
               ),
             ),
           ),
           const SizedBox(width: 12),
-          ResponsiveText('Slope-Intercept Form', style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3)),
+          ResponsiveText('Slope-Intercept Form',
+              style: TextStyle(
+                  fontSize: 13,
+                  color: theme.isLight
+                      ? accent.withValues(alpha: 0.8)
+                      : accent.withValues(alpha: 0.7),
+                  height: 1.3,
+                  shadows: [
+                    Shadow(
+                      color: accent.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: Offset.zero,
+                    ),
+                  ])),
         ],
       ),
     );

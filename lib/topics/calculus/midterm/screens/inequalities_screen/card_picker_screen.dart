@@ -10,6 +10,7 @@ import '../../cards/inequalities/rational_card.dart';
 import '../../cards/inequalities/radical_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 
 class InequalityCardPickerScreen extends StatelessWidget {
   const InequalityCardPickerScreen({super.key});
@@ -44,12 +45,27 @@ class InequalityCardPickerScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        GestureDetector(
-                          onTap: () => context.go('/'),
-                          child: Icon(
-                            Icons.arrow_back_ios_rounded,
-                            size: 16,
-                            color: theme.textPrimary,
+                        AccentGlow.iconHalo(
+                          context,
+                          child: IconButton(
+                            onPressed: () => context.go('/'),
+                            icon: Icon(
+                              Icons.arrow_back_ios_rounded,
+                              size: 16,
+                              color: theme.accentColor,
+                            ),
+                            style: IconButton.styleFrom(
+                              backgroundColor: theme.accentColor.withValues(alpha: 0.12),
+                              foregroundColor: theme.accentColor,
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(
+                                  color: theme.accentColor.withValues(alpha: 0.40),
+                                  width: 1.5,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],

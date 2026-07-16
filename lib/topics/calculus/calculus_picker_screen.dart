@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 
 class CalculusPickerScreen extends StatefulWidget {
   const CalculusPickerScreen({super.key});
@@ -73,7 +74,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
   }
 
   Widget _buildHeader(ThemeProvider theme) {
-    const accent = Color(0xFF334155);
+    final accent = theme.accentColor;
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -84,20 +85,26 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () => context.pop(),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: theme.card,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: theme.textSecondary.withValues(alpha: 0.2)),
-                    ),
-                    child: Icon(
+                AccentGlow.iconHalo(
+                  context,
+                  child: IconButton(
+                    onPressed: () => context.pop(),
+                    icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 16,
-                      color: theme.textPrimary,
+                      color: accent,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: accent.withValues(alpha: 0.12),
+                      foregroundColor: accent,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: accent.withValues(alpha: 0.40),
+                          width: 1.5,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -146,6 +153,13 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                     color: theme.textPrimary,
                     height: 1.1,
                     letterSpacing: -1.5,
+                    shadows: [
+                      Shadow(
+                        color: accent.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: Offset.zero,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -160,6 +174,13 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                 style: TextStyle(
                   fontSize: 15,
                   color: theme.textSecondary,
+                  shadows: [
+                    Shadow(
+                      color: accent.withValues(alpha: 0.15),
+                      blurRadius: 4,
+                      offset: Offset.zero,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -172,7 +193,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
   }
 
   Widget _buildBanner(ThemeProvider theme) {
-    const accent = Color(0xFF334155);
+    final accent = theme.accentColor;
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -250,18 +271,19 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
   }
 
   Widget _buildList(ThemeProvider theme) {
+    final accent = theme.accentColor;
     final sections = [
       _Section(
         icon: Icons.school_rounded,
         label: 'Midterm',
         subtitle: 'Algebra, geometry, and coordinate topics',
-        color: theme.textPrimary,
+        color: accent,
       ),
       _Section(
         icon: Icons.local_fire_department_rounded,
         label: 'Finals',
         subtitle: 'Limits, derivatives, and advanced topics',
-        color: const Color(0xFF334155),
+        color: accent,
       ),
     ];
 

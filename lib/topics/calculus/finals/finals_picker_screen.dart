@@ -6,9 +6,9 @@ import 'package:calculus_system/topics/calculus/finals/cards/slope_using_derivat
 import 'package:calculus_system/topics/calculus/finals/cards/limits_infinity/limits_and_infinity_card.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 
 // -------------------------------------------------------------
 // FINALS PICKER SCREEN
@@ -120,6 +120,9 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   // -- Header ------------------------------------------------
 
   Widget _buildHeader() {
+    final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
+
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(28, 48, 28, 0),
@@ -130,29 +133,37 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Back button
-                GestureDetector(
-                  onTap: () => context.pop(),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: FinalsTheme.card(context),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: FinalsTheme.textSecondary(context).withValues(alpha: 0.2)),
-                    ),
-                    child: Icon(
+                AccentGlow.iconHalo(
+                  context,
+                  child: IconButton(
+                    onPressed: () => context.pop(),
+                    icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 16,
-                      color: FinalsTheme.textPrimary(context),
+                      color: accent,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: accent.withValues(alpha: 0.12),
+                      foregroundColor: accent,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: accent.withValues(alpha: 0.40),
+                          width: 1.5,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                // Accent bar — gold gradient
+                // Accent bar
                 Container(
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    gradient: FinalsTheme.headerGradient,
+                    gradient: LinearGradient(
+                      colors: [accent, accent.withValues(alpha: 0.7)],
+                    ),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -165,16 +176,16 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // Gold flame icon container
+                // Flame icon container
                 Container(
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    gradient: FinalsTheme.headerGradient,
+                    color: accent,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: FinalsTheme.primary.withValues(alpha: 0.35),
+                        color: accent.withValues(alpha: 0.35),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -187,18 +198,21 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                   ),
                 ),
                 const SizedBox(width: 12),
-                ShaderMask(
-                  shaderCallback: (bounds) =>
-                      FinalsTheme.headerGradient.createShader(bounds),
-                  child: const Text(
-                    'Finals',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white, // masked by shader
-                      height: 1.1,
-                      letterSpacing: -1.5,
-                    ),
+                Text(
+                  'Finals',
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontWeight: FontWeight.w800,
+                    color: theme.textPrimary,
+                    height: 1.1,
+                    letterSpacing: -1.5,
+                    shadows: [
+                      Shadow(
+                        color: accent.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: Offset.zero,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -210,7 +224,17 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
               padding: const EdgeInsets.only(left: 60),
               child: Text(
                 '${_modules.length} topic${_modules.length == 1 ? '' : 's'} available',
-                style: FinalsTheme.subtitleStyle(context),
+                style: TextStyle(
+                  fontSize: 15,
+                  color: theme.textSecondary,
+                  shadows: [
+                    Shadow(
+                      color: accent.withValues(alpha: 0.15),
+                      blurRadius: 4,
+                      offset: Offset.zero,
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -224,16 +248,19 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   // -- Semester badge banner ---------------------------------
 
   Widget _buildBanner() {
+    final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
+
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: FinalsTheme.primary.withValues(alpha: 0.08),
+            color: accent.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: FinalsTheme.primary.withValues(alpha: 0.25),
+              color: accent.withValues(alpha: 0.25),
               width: 1.5,
             ),
           ),
@@ -242,7 +269,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  gradient: FinalsTheme.headerGradient,
+                  color: accent,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -258,13 +285,20 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                   children: [
                     Text(
                       'FINALS PERIOD',
-                      style: FinalsTheme.labelStyle(context),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: accent,
+                        letterSpacing: 1.2,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       'Advanced topics for the final term',
-                      style: FinalsTheme.subtitleStyle(context)
-                          .copyWith(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -273,7 +307,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  gradient: FinalsTheme.headerGradient,
+                  color: accent,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
@@ -340,38 +374,44 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
 class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
         decoration: BoxDecoration(
-          color: FinalsTheme.primary.withValues(alpha: 0.05),
+          color: accent.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: FinalsTheme.primary.withValues(alpha: 0.18),
+            color: accent.withValues(alpha: 0.18),
           ),
         ),
         child: Column(
           children: [
-            ShaderMask(
-              shaderCallback: (bounds) =>
-                  FinalsTheme.headerGradient.createShader(bounds),
-              child: const Icon(
-                Icons.hourglass_empty_rounded,
-                size: 48,
-                color: Colors.white,
-              ),
+            Icon(
+              Icons.hourglass_empty_rounded,
+              size: 48,
+              color: accent,
             ),
             const SizedBox(height: 16),
             Text(
               'Topics coming soon',
-              style: FinalsTheme.titleStyle(context).copyWith(fontSize: 16),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: theme.textPrimary,
+              ),
             ),
             const SizedBox(height: 6),
             Text(
               'Finals modules will appear here once added\nto FinalsModuleRegistry.',
               textAlign: TextAlign.center,
-              style: FinalsTheme.subtitleStyle(context).copyWith(fontSize: 12),
+              style: TextStyle(
+                fontSize: 12,
+                color: theme.textSecondary,
+                height: 1.4,
+              ),
             ),
           ],
         ),
@@ -401,8 +441,8 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = widget.module.accent;
     final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -476,18 +516,18 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                     curve: Curves.easeOut,
                     bottom: _hovered ? -25 : -18,
                     left: _hovered ? -25 : -18,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 280),
-                      width: _hovered ? 120 : 90,
-                      height: _hovered ? 120 : 90,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: FinalsTheme.secondary.withValues(
-                          alpha: _hovered ? 0.10 : 0.04,
-                        ),
-                      ),
-                    ),
-                  ),
+child: AnimatedContainer(
+                       duration: const Duration(milliseconds: 280),
+                       width: _hovered ? 120 : 90,
+                       height: _hovered ? 120 : 90,
+                       decoration: BoxDecoration(
+                         shape: BoxShape.circle,
+                         color: accent.withValues(
+                           alpha: _hovered ? 0.10 : 0.04,
+                         ),
+                       ),
+                     ),
+                   ),
 
                   // -- Content
                   Padding(

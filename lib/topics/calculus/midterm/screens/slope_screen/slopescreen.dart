@@ -257,34 +257,66 @@ class _SlopeScreenState extends State<SlopeScreen> {
     );
   }
 
-  Widget _backButton() => GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: context.watch<ThemeProvider>().card,
+  Widget _backButton() {
+    final theme = context.watch<ThemeProvider>();
+    return AccentGlow.iconHalo(
+      context,
+      child: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: Icon(Icons.arrow_back_ios_rounded, size: 16, color: theme.accentColor),
+        style: IconButton.styleFrom(
+          backgroundColor: theme.accentColor.withValues(alpha: 0.12),
+          foregroundColor: theme.accentColor,
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFF334155).withValues(alpha: 0.15),
-            ),
+            side: BorderSide(color: theme.accentColor.withValues(alpha: 0.15), width: 1.5),
           ),
-          child: const Icon(Icons.arrow_back_ios_rounded,
-              size: 16, color: const Color(0xFF334155)),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget _header() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ResponsiveText('Equation of a line', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -0.8)),
-          const SizedBox(height: 6),
-          ResponsiveText(
-            'Enter coordinates — supports fractions like 3/5 or -1/4',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: context.watch<ThemeProvider>().textSecondary),
+  Widget _header() {
+    final theme = context.watch<ThemeProvider>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ResponsiveText(
+          'Equation of a line',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w800,
+            color: theme.textPrimary,
+            letterSpacing: -0.8,
+            shadows: [
+              Shadow(
+                color: theme.accentColor.withValues(alpha: 0.3),
+                blurRadius: 8,
+                offset: Offset.zero,
+              ),
+            ],
           ),
-        ],
-      );
+        ),
+        const SizedBox(height: 6),
+        ResponsiveText(
+          'Enter coordinates — supports fractions like 3/5 or -1/4',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: theme.textSecondary,
+            shadows: [
+              Shadow(
+                color: theme.accentColor.withValues(alpha: 0.15),
+                blurRadius: 4,
+                offset: Offset.zero,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _pointRow(
     String sectionLabel,
@@ -401,29 +433,37 @@ class _SlopeScreenState extends State<SlopeScreen> {
         ),
       );
 
-  Widget _calculateButton() => SizedBox(
-        width: double.infinity,
+  Widget _calculateButton() {
+    final theme = context.watch<ThemeProvider>();
+    return SizedBox(
+      width: double.infinity,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [AccentGlow.halo(context)],
+        ),
         child: ElevatedButton(
           onPressed: _calculate,
           style: ElevatedButton.styleFrom(
-            backgroundColor: context.watch<ThemeProvider>().accentColor,
+            backgroundColor: theme.accentColor,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
-            shadowColor: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.5),
+            shadowColor: Colors.transparent,
           ),
           child: ResponsiveText(
             'Calculate Slope',
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 16,
-              color: context.watch<ThemeProvider>().surface,
+              color: theme.surface,
               letterSpacing: 0.3,
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _errorBanner(String message) => Container(
         padding: const EdgeInsets.all(16),

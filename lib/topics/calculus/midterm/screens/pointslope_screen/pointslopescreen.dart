@@ -9,6 +9,7 @@ import 'pointslopesubwidget.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 
 class PointSlopeScreen extends StatefulWidget {
   const PointSlopeScreen({super.key});
@@ -182,8 +183,9 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                             child: Container(
                               height: 52,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF334155),
+                                color: context.watch<ThemeProvider>().accentColor,
                                 borderRadius: BorderRadius.circular(14),
+                                boxShadow: [AccentGlow.halo(context)],
                               ),
                               child: Center(
                                 child: Text(
@@ -191,7 +193,9 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF334155),
+                                    color: context.watch<ThemeProvider>().isLight
+                                        ? Colors.white
+                                        : const Color(0xFF1E1E2E),
                                     letterSpacing: 0.3,
                                   ),
                                 ),
@@ -325,32 +329,49 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   }
 
   Widget _buildHeader() {
+    final theme = context.watch<ThemeProvider>();
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => Navigator.of(context).maybePop(),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: const Color(0xFF334155).withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: const Color(0xFF334155).withValues(alpha: 0.40),
-                  width: 1.5,
-                ),
-              ),
-              child: const Icon(
+          AccentGlow.iconHalo(
+            context,
+            child: IconButton(
+              onPressed: () => Navigator.of(context).maybePop(),
+              icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: const Color(0xFF334155),
+                color: theme.accentColor,
                 size: 18,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: theme.accentColor.withValues(alpha: 0.12),
+                foregroundColor: theme.accentColor,
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: theme.accentColor.withValues(alpha: 0.40),
+                    width: 1.5,
+                  ),
+                ),
               ),
             ),
           ),
           const SizedBox(width: 12),
-          ResponsiveText('Back', style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5))),
+          ResponsiveText(
+            'Back',
+            style: TextStyle(
+              fontSize: 13,
+              color: theme.accentColor.withValues(alpha: theme.isLight ? 0.7 : 0.5),
+              shadows: [
+                Shadow(
+                  color: theme.accentColor.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: Offset.zero,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
