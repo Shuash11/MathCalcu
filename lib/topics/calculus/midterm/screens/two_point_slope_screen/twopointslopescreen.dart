@@ -250,9 +250,9 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
             const SizedBox(height: 16),
 
             // Point 2
-            const _PointLabel(
+            _PointLabel(
               label: 'Point 2',
-              color: const Color(0xFF34D399),
+              color: context.watch<ThemeProvider>().accentColor,
             ),
             const SizedBox(height: 10),
             Row(
@@ -387,7 +387,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 child: _ResultTile(
                   label: 'Type',
                   value: result.slopeType,
-                  color: const Color(0xFFA78BFA),
+                  color: context.watch<ThemeProvider>().accentColor,
                   icon: Icons.info_outline_rounded,
                   smallText: true,
                 ),
@@ -425,8 +425,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               label: 'General Form',
               tag: 'Ax + By + C = 0',
               equation: result.generalForm,
-              color: const Color(0xFF34D399),
-              tagColor: const Color(0xFF34D399),
+              color: context.watch<ThemeProvider>().accentColor,
+              tagColor: context.watch<ThemeProvider>().accentColor,
             ),
           ] else ...[
             // Vertical line special case
@@ -442,8 +442,8 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
               label: 'General Form',
               tag: 'Ax + By + C = 0',
               equation: result.generalForm,
-              color: const Color(0xFF34D399),
-              tagColor: const Color(0xFF34D399),
+              color: context.watch<ThemeProvider>().accentColor,
+              tagColor: context.watch<ThemeProvider>().accentColor,
             ),
           ],
         ],
@@ -478,26 +478,27 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   }
 
   Widget _buildShowGraphChip() {
+    final accent = context.watch<ThemeProvider>().accentColor;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: _showGraph
-            ? const Color(0xFF34D399).withValues(alpha: 0.2)
-            : const Color(0xFF34D399).withValues(alpha: 0.1),
+            ? accent.withValues(alpha: 0.2)
+            : accent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.show_chart_rounded,
-              color: const Color(0xFF34D399), size: 14),
+              color: accent, size: 14),
           const SizedBox(width: 4),
           ResponsiveText(
             _showGraph ? 'Hide graph' : 'Show graph',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF34D399),
+              color: accent,
             ),
           ),
         ],

@@ -10,12 +10,16 @@ class YInterceptGraph extends StatelessWidget {
   final String mText;
   final String bText;
   final double? height;
+  final Color accentColor;
+  final Color backgroundColor;
 
   const YInterceptGraph({
     super.key,
     this.mText = '',
     this.bText = '',
     this.height,
+    this.accentColor = const Color(0xFF334155),
+    this.backgroundColor = const Color(0xFFF4F4F1),
   });
 
   @override
@@ -23,10 +27,10 @@ class YInterceptGraph extends StatelessWidget {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: const Color(0xFF0A1F17),
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF059669).withValues(alpha: 0.3),
+          color: accentColor.withValues(alpha: 0.3),
         ),
       ),
       child: ClipRRect(
@@ -41,6 +45,8 @@ class YInterceptGraph extends StatelessWidget {
               painter: YInterceptGraphPainter(
                 mText: mText,
                 bText: bText,
+                accentColor: accentColor,
+                backgroundColor: backgroundColor,
               ),
             );
           },
@@ -53,10 +59,14 @@ class YInterceptGraph extends StatelessWidget {
 class YInterceptGraphPainter extends CustomPainter {
   final String mText;
   final String bText;
+  final Color accentColor;
+  final Color backgroundColor;
 
   YInterceptGraphPainter({
     required this.mText,
     required this.bText,
+    required this.accentColor,
+    required this.backgroundColor,
   });
 
   @override
@@ -95,7 +105,7 @@ class YInterceptGraphPainter extends CustomPainter {
 
     // Draw grid
     final gridPaint = Paint()
-      ..color = const Color(0xFF10B981).withValues(alpha: 0.1)
+      ..color = accentColor.withValues(alpha: 0.1)
       ..strokeWidth = 0.5;
 
     for (int gx = xMin.ceil(); gx <= xMax.floor(); gx++) {
@@ -118,7 +128,7 @@ class YInterceptGraphPainter extends CustomPainter {
 
     // Draw axes
     final axisPaint = Paint()
-      ..color = const Color(0xFF6EE7B7).withValues(alpha: 0.3)
+      ..color = accentColor.withValues(alpha: 0.3)
       ..strokeWidth = 1.5;
 
     if (yMin <= 0 && yMax >= 0) {
@@ -141,12 +151,12 @@ class YInterceptGraphPainter extends CustomPainter {
 
     // Draw line with glow
     final glowPaint = Paint()
-      ..color = const Color(0xFFF59E0B).withValues(alpha: 0.4)
+      ..color = accentColor.withValues(alpha: 0.4)
       ..strokeWidth = 6
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
 
     final linePaint = Paint()
-      ..color = const Color(0xFFF59E0B)
+      ..color = accentColor
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 
@@ -156,12 +166,12 @@ class YInterceptGraphPainter extends CustomPainter {
     canvas.drawLine(p0, p1, glowPaint);
     canvas.drawLine(p0, p1, linePaint);
 
-    // Draw y-intercept point (gold)
+    // Draw y-intercept point
     final yIntPoint = toScreen(0, b);
     canvas.drawCircle(
       yIntPoint,
       8,
-      Paint()..color = const Color(0xFFF59E0B),
+      Paint()..color = accentColor,
     );
     canvas.drawCircle(
       yIntPoint,
@@ -169,13 +179,13 @@ class YInterceptGraphPainter extends CustomPainter {
       Paint()..color = Colors.white,
     );
 
-    // Draw x-intercept point (emerald)
+    // Draw x-intercept point
     if (m != 0) {
       final xIntPoint = toScreen(xIntercept, 0);
       canvas.drawCircle(
         xIntPoint,
         8,
-        Paint()..color = const Color(0xFF10B981),
+        Paint()..color = accentColor,
       );
       canvas.drawCircle(
         xIntPoint,
@@ -187,9 +197,9 @@ class YInterceptGraphPainter extends CustomPainter {
       final xLabel = TextPainter(
         text: TextSpan(
           text: '(${_fmt(xIntercept)}, 0)',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 10,
-            color: Color(0xFF10B981),
+            color: accentColor,
             fontFamily: 'monospace',
           ),
         ),
@@ -202,9 +212,9 @@ class YInterceptGraphPainter extends CustomPainter {
     final yLabel = TextPainter(
       text: TextSpan(
         text: '(0, ${_fmt(b)})',
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 10,
-          color: Color(0xFFF59E0B),
+          color: accentColor,
           fontFamily: 'monospace',
         ),
       ),
@@ -215,7 +225,7 @@ class YInterceptGraphPainter extends CustomPainter {
 
   void _drawEmptyState(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF10B981).withValues(alpha: 0.1)
+      ..color = accentColor.withValues(alpha: 0.1)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
@@ -225,11 +235,11 @@ class YInterceptGraphPainter extends CustomPainter {
     );
 
     final text = TextPainter(
-      text: const TextSpan(
+      text: TextSpan(
         text: 'Enter slope and y-intercept',
         style: TextStyle(
           fontSize: 12,
-          color: Color(0x806EE7B7),
+          color: accentColor.withValues(alpha: 0.5),
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -243,5 +253,8 @@ class YInterceptGraphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant YInterceptGraphPainter oldDelegate) =>
-      oldDelegate.mText != mText || oldDelegate.bText != bText;
+      oldDelegate.mText != mText ||
+      oldDelegate.bText != bText ||
+      oldDelegate.accentColor != accentColor ||
+      oldDelegate.backgroundColor != backgroundColor;
 }

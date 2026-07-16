@@ -14,7 +14,6 @@ import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
-const _cyan = Color(0xFF06B6D4);
 const _accent = FinalsTheme.primary;
 
 // -------------------------------------------------------------
@@ -123,14 +122,14 @@ class _ParallelPerpendicularScreenState
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: _cyan.withValues(alpha: 0.12),
+                        color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                            color: _cyan.withValues(alpha: 0.35),
+                            color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.35),
                             width: 1.5),
                       ),
-                      child: const Icon(Icons.arrow_back_ios_new_rounded,
-                          color: _cyan, size: 16),
+                      child: Icon(Icons.arrow_back_ios_new_rounded,
+                          color: context.watch<ThemeProvider>().accentColor, size: 16),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -160,7 +159,7 @@ class _ParallelPerpendicularScreenState
                       focusNode: _line1Focus,
                       label: 'LINE 1',
                       hint: 'e.g. 2x + 3y = 6',
-                      accent: _cyan,
+                      accent: context.watch<ThemeProvider>().accentColor,
                       textInputAction: TextInputAction.next,
                       onEditingComplete: () => _line2Focus.requestFocus(),
                     ),
@@ -219,7 +218,7 @@ class _ParallelPerpendicularScreenState
                         }
                         return _ResultSection(
                           result: result,
-                          accent: _cyan,
+                          accent: context.watch<ThemeProvider>().accentColor,
                           emerald: emerald,
                           onStepsTap: () => _showSteps(result),
                           onGraphTap: () => showGraphSheet(context, result),
@@ -229,7 +228,7 @@ class _ParallelPerpendicularScreenState
                     const SizedBox(height: 16),
                     MathKeyboard(
                       controller: _activeController ?? _line1Ctrl,
-                      accentColor: _cyan,
+                      accentColor: context.watch<ThemeProvider>().accentColor,
                       hideSignal: _hideKeyboardSignal,
                     ),
                   ],
@@ -255,14 +254,14 @@ class _HintBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _cyan.withValues(alpha: 0.08),
+        color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _cyan.withValues(alpha: 0.2)),
+        border: Border.all(color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
           Icon(Icons.info_outline_rounded,
-              color: _cyan.withValues(alpha: 0.8), size: 18),
+              color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.8), size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: ResponsiveText(
@@ -370,14 +369,15 @@ class _ResultSection extends StatelessWidget {
     required this.onGraphTap,
   });
 
-  Color _verdictColor() {
+  Color _verdictColor(BuildContext context) {
+    final accent = context.watch<ThemeProvider>().accentColor;
     switch (result.relationship) {
       case PPRelationship.parallel:
-        return _cyan;
+        return accent;
       case PPRelationship.perpendicular:
-        return const Color(0xFF8B5CF6);
+        return accent;
       case PPRelationship.sameLine:
-        return const Color(0xFFF59E0B);
+        return accent;
       case PPRelationship.neither:
         return const Color(0xFF64748B);
     }
@@ -385,7 +385,7 @@ class _ResultSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _verdictColor();
+    final color = _verdictColor(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -402,7 +402,7 @@ class _ResultSection extends StatelessWidget {
                 title: 'Line 1',
                 equation: result.slopeIntercept1,
                 meta: 'm = ${result.slope1?.toString() ?? 'undefined'}',
-                accent: _cyan,
+                accent: context.watch<ThemeProvider>().accentColor,
               ),
             ),
             const SizedBox(width: 10),
@@ -712,7 +712,7 @@ class _StepBlocks extends StatelessWidget {
   static const _borderColors = {
     PPBlockType.formula: _accent,
     PPBlockType.substitution: Color(0xFF64748B),
-    PPBlockType.working: Color(0xFFF59E0B),
+    PPBlockType.working: _accent,
     PPBlockType.result: _accent,
   };
 

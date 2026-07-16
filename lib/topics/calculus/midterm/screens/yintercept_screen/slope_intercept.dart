@@ -208,29 +208,31 @@ class YInterceptTab extends StatelessWidget {
                                           FullScreenInfoItem(
                                             label: 'Slope (m)',
                                             value: slope.toStringAsFixed(1),
-                                            color: const Color(0xFFF59E0B),
+                                            color: context.watch<ThemeProvider>().accentColor,
                                           ),
                                         if (yInt != null)
                                           FullScreenInfoItem(
                                             label: 'Y-intercept (b)',
                                             value: yInt.toStringAsFixed(1),
-                                            color: const Color(0xFFF59E0B),
+                                            color: context.watch<ThemeProvider>().accentColor,
                                           ),
                                         if (xInt != null)
                                           FullScreenInfoItem(
                                             label: 'X-intercept',
                                             value: xInt.toStringAsFixed(1),
-                                            color: const Color(0xFF10B981),
+                                            color: context.watch<ThemeProvider>().accentColor,
                                           ),
                                       ],
-                                      accentColor: const Color(0xFF10B981),
-                                      graph: YInterceptGraph(
+                                      accentColor: context.watch<ThemeProvider>().accentColor,
+                                       graph: YInterceptGraph(
                                         mText: result.slope != null
                                             ? result.slope!.toDouble().toString()
                                             : '',
                                         bText: result.yIntercept != null
                                             ? result.yIntercept!.toDouble().toString()
                                             : '',
+                                        accentColor: context.watch<ThemeProvider>().accentColor,
+                                        backgroundColor: context.watch<ThemeProvider>().surface,
                                       ),
                                     ),
                                   ),
@@ -244,6 +246,8 @@ class YInterceptTab extends StatelessWidget {
                                 bText: result.yIntercept != null
                                     ? result.yIntercept!.toDouble().toString()
                                     : '',
+                                accentColor: context.watch<ThemeProvider>().accentColor,
+                                backgroundColor: context.watch<ThemeProvider>().surface,
                               ),
                             ),
                           ],

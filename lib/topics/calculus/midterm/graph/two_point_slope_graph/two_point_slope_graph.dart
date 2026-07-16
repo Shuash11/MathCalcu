@@ -68,7 +68,7 @@ class TwoPointSlopeGraph extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 _LegendDot(
-                  color: const Color(0xFF34D399),
+                  color: context.watch<ThemeProvider>().accentColor,
                   label: 'P2 (${_fmt(result.x2)}, ${_fmt(result.y2)})',
                 ),
               ],
@@ -112,7 +112,7 @@ class TwoPointSlopeGraph extends StatelessWidget {
             FullScreenInfoItem(
               label: 'P2',
               value: '(${_fmt(result.x2)}, ${_fmt(result.y2)})',
-              color: const Color(0xFF34D399),
+              color: context.watch<ThemeProvider>().accentColor,
             ),
             if (!result.isVertical)
               FullScreenInfoItem(
@@ -168,7 +168,7 @@ class _LineGraph extends StatelessWidget {
     // Capture colors before callbacks (avoid calling context.watch outside widget tree)
     final bgColor = context.watch<ThemeProvider>().surface;
     final stepBlue = const Color(0xFF334155);
-    final stepGreen = const Color(0xFF34D399);
+    final stepGreen = context.watch<ThemeProvider>().accentColor;
 
     return LineChart(
       LineChartData(
@@ -180,11 +180,11 @@ class _LineGraph extends StatelessWidget {
           drawVerticalLine: true,
           drawHorizontalLine: true,
           getDrawingHorizontalLine: (_) => const FlLine(
-            color: Color(0xFF1E1E2E),
+            color: Color(0xFF1A1A2E),
             strokeWidth: 1,
           ),
           getDrawingVerticalLine: (_) => const FlLine(
-            color: Color(0xFF1E1E2E),
+            color: Color(0xFF1A1A2E),
             strokeWidth: 1,
           ),
         ),
@@ -319,7 +319,7 @@ class _VerticalLineGraph extends StatelessWidget {
     // Capture colors before callbacks (avoid calling context.watch outside widget tree)
     final bgColor = context.watch<ThemeProvider>().surface;
     final stepBlue = const Color(0xFF334155);
-    final stepGreen = const Color(0xFF34D399);
+    final stepGreen = context.watch<ThemeProvider>().accentColor;
 
     return LineChart(
       LineChartData(
@@ -327,9 +327,9 @@ class _VerticalLineGraph extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           getDrawingHorizontalLine: (_) =>
-              const FlLine(color: Color(0xFF1E1E2E), strokeWidth: 1),
+              const FlLine(color: Color(0xFF1A1A2E), strokeWidth: 1),
           getDrawingVerticalLine: (_) =>
-              const FlLine(color: Color(0xFF1E1E2E), strokeWidth: 1),
+              const FlLine(color: Color(0xFF1A1A2E), strokeWidth: 1),
         ),
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(

@@ -272,16 +272,16 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                                 FullScreenInfoItem(
                                                   label: 'Slope',
                                                   value: 'm = ${result.m}',
-                                                  color: const Color(0xFFA855F7),
+                                                  color: context.watch<ThemeProvider>().accentColor,
                                                 ),
                                                 FullScreenInfoItem(
                                                   label: 'Point',
                                                   value: '(${result.x1}, ${result.y1})',
-                                                  color: const Color(0xFFA855F7),
+                                                  color: context.watch<ThemeProvider>().accentColor,
                                                 ),
                                               ],
                                             ],
-                                            accentColor: const Color(0xFFA855F7),
+                                            accentColor: context.watch<ThemeProvider>().accentColor,
                                           ),
                                         ),
                                       );

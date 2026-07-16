@@ -25,7 +25,7 @@ class _GraphSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF06B6D4);
+    final accent = context.watch<ThemeProvider>().accentColor;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.65,
@@ -72,7 +72,7 @@ class _GraphSheet extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close_rounded, color: accent),
+                      icon: Icon(Icons.close_rounded, color: accent),
                     ),
                   ],
                 ),
@@ -83,12 +83,12 @@ class _GraphSheet extends StatelessWidget {
                 child: Row(
                   children: [
                     _LegendDot(
-                      color: const Color(0xFF06B6D4),
+                      color: accent,
                       label: result.slopeIntercept1,
                     ),
                     const SizedBox(width: 16),
                     _LegendDot(
-                      color: const Color(0xFF10B981),
+                      color: accent.withValues(alpha: 0.6),
                       label: result.slopeIntercept2,
                     ),
                   ],
@@ -102,7 +102,7 @@ class _GraphSheet extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: context.watch<ThemeProvider>().isLight
-                          ? const Color(0xFFF8FAFC)
+                          ? const Color(0xFFF4F4F1)
                           : Colors.white.withValues(alpha: 0.04),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: accent.withValues(alpha: 0.2)),
@@ -110,7 +110,7 @@ class _GraphSheet extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: CustomPaint(
-                        painter: PPLinePainter(result: result),
+                        painter: PPLinePainter(result: result, accentColor: accent),
                         child: const SizedBox.expand(),
                       ),
                     ),
@@ -161,8 +161,9 @@ class _LegendDot extends StatelessWidget {
 
 class PPLinePainter extends CustomPainter {
   final PPResult result;
+  final Color accentColor;
 
-  const PPLinePainter({required this.result});
+  const PPLinePainter({required this.result, required this.accentColor});
 
   static const double _range = 8.0;
 
@@ -338,8 +339,8 @@ class PPLinePainter extends CustomPainter {
       );
     }
 
-    drawLine(result.a1, result.b1, result.c1, const Color(0xFF06B6D4));
-    drawLine(result.a2, result.b2, result.c2, const Color(0xFF10B981));
+    drawLine(result.a1, result.b1, result.c1, accentColor);
+    drawLine(result.a2, result.b2, result.c2, accentColor.withValues(alpha: 0.6));
 
     // -- Equation labels at line endpoints --------------------
     void drawLineLabel(int A, int B, int C, String label, Color color) {
@@ -371,8 +372,8 @@ class PPLinePainter extends CustomPainter {
       );
     }
 
-    drawLineLabel(result.a1, result.b1, result.c1, result.slopeIntercept1, const Color(0xFF06B6D4));
-    drawLineLabel(result.a2, result.b2, result.c2, result.slopeIntercept2, const Color(0xFF10B981));
+    drawLineLabel(result.a1, result.b1, result.c1, result.slopeIntercept1, accentColor);
+    drawLineLabel(result.a2, result.b2, result.c2, result.slopeIntercept2, accentColor.withValues(alpha: 0.6));
 
     // -- Intersection dot (perpendicular / neither) ------------
     if (result.relationship == PPRelationship.perpendicular ||
@@ -391,7 +392,7 @@ class PPLinePainter extends CustomPainter {
             Offset(toScreenX(ix), toScreenY(iy)),
             5,
             Paint()
-              ..color = Colors.orange
+              ..color = accentColor
               ..style = PaintingStyle.stroke
               ..strokeWidth = 2,
           );
@@ -402,7 +403,7 @@ class PPLinePainter extends CustomPainter {
             text: TextSpan(
               text: coordLabel,
               style: TextStyle(
-                color: Colors.orange.withValues(alpha: 0.9),
+                color: accentColor.withValues(alpha: 0.9),
                 fontSize: 8.5,
                 fontWeight: FontWeight.w600,
               ),
@@ -428,5 +429,6 @@ class PPLinePainter extends CustomPainter {
       oldDelegate.result.c1 != result.c1 ||
       oldDelegate.result.a2 != result.a2 ||
       oldDelegate.result.b2 != result.b2 ||
-      oldDelegate.result.c2 != result.c2;
+      oldDelegate.result.c2 != result.c2 ||
+      oldDelegate.accentColor != accentColor;
 }

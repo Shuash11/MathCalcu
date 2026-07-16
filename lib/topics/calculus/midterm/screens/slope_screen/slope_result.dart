@@ -20,6 +20,7 @@ class SlopeAnswerCard extends StatelessWidget {
     final slopeStr = result.slopeDisplay;
     final isVertical = result.isVertical;
     final isHorizontal = result.isHorizontal;
+    final accent = context.watch<ThemeProvider>().accentColor;
 
     return GestureDetector(
       onTap: onTap,
@@ -29,15 +30,15 @@ class SlopeAnswerCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              const Color(0xFF334155).withValues(alpha: 0.15),
-              const Color(0xFF334155).withValues(alpha: 0.05),
+              accent.withValues(alpha: 0.15),
+              accent.withValues(alpha: 0.05),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: const Color(0xFF334155).withValues(alpha: 0.3),
+            color: accent.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -49,7 +50,7 @@ class SlopeAnswerCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF334155).withValues(alpha: 0.7),
+                color: accent.withValues(alpha: 0.7),
                 letterSpacing: 1.2,
               ),
             ),
@@ -134,11 +135,7 @@ class SlopeComparisonCard extends StatelessWidget {
     required this.onTap,
   });
 
-  Color get _color => result.isParallel
-      ? const Color(0xFF4ECDC4)
-      : result.isPerpendicular
-          ? const Color(0xFFFFB347)
-          : const Color(0xFF95E1D3);
+  Color _color(BuildContext context) => context.watch<ThemeProvider>().accentColor;
 
   String get _label => result.isPerpendicular ? 'Perpendicular' : 'Parallel';
 
@@ -150,7 +147,7 @@ class SlopeComparisonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _color;
+    final color = _color(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -274,13 +271,14 @@ class SlopeInfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.watch<ThemeProvider>().accentColor;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: const Color(0xFF334155).withValues(alpha: 0.2),
+          color: accent.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -291,7 +289,7 @@ class SlopeInfoChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF334155).withValues(alpha: 0.6),
+              color: accent.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 4),

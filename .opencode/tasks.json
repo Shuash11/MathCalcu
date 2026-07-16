@@ -1,30 +1,13 @@
 {
   "tasks": [
-    {
-      "id": 1,
-      "description": "Add failing regression tests for keyboard-compatible inequality expressions",
-      "status": "done"
-    },
-    {
-      "id": 2,
-      "description": "Fix inequality Unicode normalization, sibling linear-factor expansion, decimal/trailing-dot parsing, shared number helper, and unsupported-power rejection in InequalityCoreSolver; pass normalized expression through InequalitySolverRouter",
-      "status": "done"
-    },
-    {
-      "id": 3,
-      "description": "Add shared AccentGlow helper, swap MathInputField solve-button literal halos for the helper, swap slope-screen ElevatedButton literal background for ThemeProvider.accentColor with halo shadow, and add AccentGlow halo to the calculator = button",
-      "status": "done"
-    },
-    {
-      "id": 4,
-      "description": "Analyze header icon containers — finals screens already funnel the primary color through FinalsTheme.primary which matches the dark-mode accent; no further changes needed without disrupting tap targets",
-      "status": "done"
-    },
-    {
-      "id": 5,
-      "description": "Final verification: 7/7 tests pass, zero analyze errors, no maroon/blue color residuals",
-      "status": "done"
-    }
+    { "id": 1, "description": "Read all 10 modified files", "status": "pending" },
+    { "id": 2, "description": "Run flutter analyze — zero new errors", "status": "pending" },
+    { "id": 3, "description": "Run flutter test — all pass", "status": "pending" },
+    { "id": 4, "description": "Check no hardcoded non-theme colors remain", "status": "pending" },
+    { "id": 5, "description": "Check imports are correct", "status": "pending" },
+    { "id": 6, "description": "Check no unused variables/state", "status": "pending" },
+    { "id": 7, "description": "Check no regressions in related screens", "status": "pending" },
+    { "id": 8, "description": "Write readiness report", "status": "pending" }
   ],
-  "completed": true
+  "completed": false
 }

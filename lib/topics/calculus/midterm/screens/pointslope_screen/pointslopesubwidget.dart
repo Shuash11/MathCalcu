@@ -168,11 +168,11 @@ class PSFormulaBanner extends StatelessWidget {
               style: TextStyle(fontSize: 22, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontStyle: FontStyle.italic),
               children: [
                 const TextSpan(text: 'y - '),
-                TextSpan(text: 'y1', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: const Color(0x66E879F9), blurRadius: 10)])),
+                TextSpan(text: 'y1', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: context.watch<ThemeProvider>().accentColor.withOpacity(0.3), blurRadius: 3)])),
                 const TextSpan(text: ' = '),
-                TextSpan(text: 'm', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: const Color(0x66E879F9), blurRadius: 10)])),
+                TextSpan(text: 'm', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: context.watch<ThemeProvider>().accentColor.withOpacity(0.3), blurRadius: 3)])),
                 const TextSpan(text: '(x - '),
-                TextSpan(text: 'x1', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: const Color(0x66E879F9), blurRadius: 10)])),
+                TextSpan(text: 'x1', style: TextStyle(fontSize: 22, color: const Color(0xFF334155), fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, shadows: [Shadow(color: context.watch<ThemeProvider>().accentColor.withOpacity(0.3), blurRadius: 3)])),
                 const TextSpan(text: ')'),
               ],
             ),
@@ -417,7 +417,7 @@ class PSResultBanner extends StatelessWidget {
             Text(
               standardFormEq!,
               style: TextStyle(fontSize: 20, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontStyle: FontStyle.italic, letterSpacing: 0.5).copyWith(
-                color: const Color(0xFF10B981),
+                color: context.watch<ThemeProvider>().accentColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -463,6 +463,7 @@ class PSGraph extends StatelessWidget {
             xText: xText,
             yText: yText,
             s: s,
+            accentColor: context.watch<ThemeProvider>().accentColor,
           ),
         ),
       ),
@@ -476,12 +477,14 @@ class SimpleGraphPainter extends CustomPainter {
   final String xText;
   final String yText;
   final double s;
+  final Color accentColor;
 
   SimpleGraphPainter({
     required this.mText,
     required this.xText,
     required this.yText,
     required this.s,
+    required this.accentColor,
   });
 
   @override
@@ -522,7 +525,7 @@ class SimpleGraphPainter extends CustomPainter {
     }
 
     final gridPaint = Paint()
-      ..color = const Color(0x1AA855F7)
+      ..color = accentColor.withOpacity(0.1)
       ..strokeWidth = 0.5 * s;
 
     for (int gx = xMin.ceil(); gx <= xMax.floor(); gx++) {
@@ -544,7 +547,7 @@ class SimpleGraphPainter extends CustomPainter {
     }
 
     final axisPaint = Paint()
-      ..color = const Color(0x40C4B5FD)
+      ..color = accentColor.withOpacity(0.25)
       ..strokeWidth = 1 * s;
 
     if (yMin <= 0 && yMax >= 0) {
@@ -566,12 +569,12 @@ class SimpleGraphPainter extends CustomPainter {
     }
 
     final glowPaint = Paint()
-      ..color = const Color(0x99E879F9)
+      ..color = accentColor.withOpacity(0.6)
       ..strokeWidth = 4 * s
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6 * s);
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3 * s);
 
     final linePaint = Paint()
-      ..color = const Color(0xFFE879F9)
+      ..color = accentColor
       ..strokeWidth = 1.8 * s
       ..strokeCap = StrokeCap.round;
 
@@ -582,14 +585,14 @@ class SimpleGraphPainter extends CustomPainter {
     canvas.drawLine(p0, p1, linePaint);
 
     final rp = toScreen(x1, y1);
-    canvas.drawCircle(rp, 6 * s, Paint()..color = const Color(0xFFA855F7));
+    canvas.drawCircle(rp, 6 * s, Paint()..color = accentColor);
 
     final tp = TextPainter(
       text: TextSpan(
         text: '(${formatCoordinate(x1)}, ${formatCoordinate(y1)})',
         style: TextStyle(
           fontSize: 10 * s,
-          color: const Color(0xFFC4B5FD),
+          color: accentColor,
           fontFamily: 'monospace',
         ),
       ),

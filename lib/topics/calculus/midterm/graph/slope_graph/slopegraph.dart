@@ -2,7 +2,9 @@
 
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ═══════════════════════════════════════════════════════════════
 // SlopeGraph — reusable CustomPaint wrapper
@@ -12,12 +14,14 @@ class SlopeGraph extends StatelessWidget {
   final SlopeSolverResult result1;
   final SlopeSolverResult? result2;
   final bool isCoincident;
+  final Color accentColor;
 
   const SlopeGraph({
     super.key,
     required this.result1,
     this.result2,
     this.isCoincident = false,
+    required this.accentColor,
   });
 
   @override
@@ -31,6 +35,7 @@ class SlopeGraph extends StatelessWidget {
             result1: result1,
             result2: result2,
             isCoincident: isCoincident,
+            accentColor: accentColor,
           ),
         );
       },
@@ -90,12 +95,12 @@ class SlopeGraphScreen extends StatelessWidget {
     };
   }
 
-  Color get _relationshipColor {
-    if (_isCoincident) return const Color(0xFFFFD700);
+  Color _relationshipColor(Color accent) {
+    if (_isCoincident) return accent;
     return switch (comparison?.relationship ?? 'neither') {
-      'parallel' => const Color(0xFF4ECDC4),
-      'perpendicular' => const Color(0xFFFFB347),
-      _ => const Color(0xFF95A3B3),
+      'parallel' => accent,
+      'perpendicular' => accent,
+      _ => accent,
     };
   }
 
@@ -119,13 +124,13 @@ class SlopeGraphScreen extends StatelessWidget {
 
   // ── Full-screen info ───────────────────────────────────────
 
-  List<FullScreenInfoItem> _buildKeyInfo() {
+  List<FullScreenInfoItem> _buildKeyInfo(Color accent) {
     final items = <FullScreenInfoItem>[];
 
     items.add(FullScreenInfoItem(
       label: 'Slope',
       value: result1.isVertical ? 'Undefined' : result1.slope.toStringAsFixed(1),
-      color: const Color(0xFFFF6B6B),
+      color: accent,
     ));
 
     items.add(FullScreenInfoItem(
@@ -133,7 +138,7 @@ class SlopeGraphScreen extends StatelessWidget {
       value: result1.isVertical
           ? 'N/A'
           : (result1.y1 - result1.slope * result1.x1).toStringAsFixed(1),
-      color: const Color(0xFFFF6B6B),
+      color: accent,
     ));
 
     if (result2 != null) {
@@ -142,7 +147,7 @@ class SlopeGraphScreen extends StatelessWidget {
         value: result2!.isVertical
             ? 'Undefined'
             : result2!.slope.toStringAsFixed(1),
-        color: const Color(0xFF4ECDC4),
+        color: accent,
       ));
 
       items.add(FullScreenInfoItem(
@@ -150,7 +155,7 @@ class SlopeGraphScreen extends StatelessWidget {
         value: result2!.isVertical
             ? 'N/A'
             : (result2!.y1 - result2!.slope * result2!.x1).toStringAsFixed(1),
-        color: const Color(0xFF4ECDC4),
+        color: accent,
       ));
     }
 
@@ -158,7 +163,7 @@ class SlopeGraphScreen extends StatelessWidget {
       items.add(FullScreenInfoItem(
         label: 'Relationship',
         value: _relationshipLabel,
-        color: _relationshipColor,
+        color: _relationshipColor(accent),
       ));
     }
 
@@ -170,24 +175,27 @@ class SlopeGraphScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = _relationshipLabel;
-    final color = _relationshipColor;
+    final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
+    final color = _relationshipColor(accent);
 
     final graphWidget = SlopeGraph(
       result1: result1,
       result2: result2,
       isCoincident: _isCoincident,
+      accentColor: accent,
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0F),
+      backgroundColor: theme.surface,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Slope Graph',
           style: TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+              color: theme.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
         ),
-        backgroundColor: const Color(0xFF12121A),
-        iconTheme: const IconThemeData(color: Color(0xFFFF6B6B)),
+        backgroundColor: theme.card,
+        iconTheme: IconThemeData(color: accent),
         elevation: 0,
       ),
       body: Column(
@@ -237,11 +245,11 @@ class SlopeGraphScreen extends StatelessWidget {
             child: Row(
               children: [
                 _LegendDot(
-                    color: const Color(0xFFFF6B6B), label: result1.equation),
+                    color: accent, label: result1.equation),
                 if (result2 != null && !_isCoincident) ...[
                   const SizedBox(width: 16),
                   _LegendDot(
-                      color: const Color(0xFF4ECDC4), label: result2!.equation),
+                      color: accent, label: result2!.equation),
                 ],
                 if (_isCoincident) ...[
                   const SizedBox(width: 8),
@@ -268,8 +276,8 @@ class SlopeGraphScreen extends StatelessWidget {
                       builder: (_) => FullScreenGraphScreen(
                         title: 'Slope Graph',
                         formula: result1.equation,
-                        keyInfo: _buildKeyInfo(),
-                        accentColor: const Color(0xFFFF6B6B),
+                        keyInfo: _buildKeyInfo(accent),
+                        accentColor: accent,
                         graph: graphWidget,
                       ),
                     ),
@@ -321,11 +329,13 @@ class _SlopePainter extends CustomPainter {
   final SlopeSolverResult result1;
   final SlopeSolverResult? result2;
   final bool isCoincident;
+  final Color accentColor;
 
   _SlopePainter({
     required this.result1,
     required this.result2,
     required this.isCoincident,
+    required this.accentColor,
   });
 
   // ── Auto-scale: pick a scale so all 4 points are visible ──
@@ -505,8 +515,8 @@ class _SlopePainter extends CustomPainter {
 
     _drawGrid(canvas, size, scale, scaleFactor);
 
-    const color1 = Color(0xFFFF6B6B);
-    const color2 = Color(0xFF4ECDC4);
+    final color1 = accentColor;
+    final color2 = accentColor;
 
     final line1Paint = Paint()
       ..color = color1
@@ -603,7 +613,7 @@ class _SlopePainter extends CustomPainter {
       text: TextSpan(
         text: text,
         style: TextStyle(
-          color: const Color(0xFFFFD700),
+          color: accentColor,
           fontSize: 11 * scaleFactor,
           fontWeight: FontWeight.w600,
         ),
@@ -621,7 +631,7 @@ class _SlopePainter extends CustomPainter {
 
     canvas.drawRRect(
       bgRect,
-      Paint()..color = const Color(0xFFFFD700).withValues(alpha: 0.12),
+      Paint()..color = accentColor.withValues(alpha: 0.12),
     );
     tp.paint(
       canvas,
@@ -631,5 +641,5 @@ class _SlopePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SlopePainter old) =>
-      old.result1 != result1 || old.result2 != result2;
+      old.result1 != result1 || old.result2 != result2 || old.accentColor != accentColor;
 }
