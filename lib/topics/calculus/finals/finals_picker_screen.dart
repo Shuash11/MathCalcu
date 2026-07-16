@@ -411,7 +411,7 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) {
           setState(() => _pressed = false);
-          // context.push(widget.module.route);
+          context.push(widget.module.route);
         },
         onTapCancel: () => setState(() => _pressed = false),
         child: AnimatedScale(

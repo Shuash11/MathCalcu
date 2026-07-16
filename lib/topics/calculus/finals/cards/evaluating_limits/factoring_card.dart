@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:calculus_system/shared/widgets/module_card.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
@@ -11,7 +12,7 @@ class FactoringCard extends StatelessWidget {
       icon: Icons.category_rounded,
       title: 'By Factoring',
       subtitle: 'Factor expressions to cancel common terms',
-      onTap: () => Navigator.of(context).pushNamed('/topics/calculus/finals/limits/factoring'),
+      onTap: () => context.push('/topics/calculus/finals/limits/factoring'),
     );
   }
 }

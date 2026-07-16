@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:calculus_system/shared/widgets/module_card.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
@@ -11,7 +12,7 @@ class SubstitutionCard extends StatelessWidget {
       icon: Icons.input_rounded,
       title: 'Direct Substitution',
       subtitle: 'Plug in the value directly when function is continuous',
-      onTap: () => Navigator.of(context).pushNamed('/topics/calculus/finals/limits/substitution'),
+      onTap: () => context.push('/topics/calculus/finals/limits/substitution'),
     );
   }
 }
