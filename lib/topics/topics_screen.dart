@@ -2,6 +2,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/modmat/modmat_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,12 @@ class TopicsScreen extends StatelessWidget {
               label: 'Calculus',
               accent: FinalsTheme.primary,
               onTap: () => context.push('/topics/calculus'),
+            ),
+            HomeCard(
+              icon: Icons.auto_awesome_rounded,
+              label: 'Modern Math',
+              accent: ModmatTheme.primary,
+              onTap: () => context.push('/topics/modmat'),
             ),
           ],
         ),
