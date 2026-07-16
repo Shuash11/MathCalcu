@@ -1,4 +1,7 @@
-﻿import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart';
+﻿import 'package:calculus_system/topics/modmat/modmat_picker_screen.dart';
+import 'package:calculus_system/topics/modmat/midterm/modmat_foundations_screen.dart';
+import 'package:calculus_system/topics/modmat/midterm/modmat_advanced_screen.dart';
+import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart';
 import 'topics/calculus/midterm/screens/circles_screen/radius/radiusui.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/parallel_perpendicular_screen.dart';
@@ -85,7 +88,8 @@ class AppRouter {
                     routes: [
                       GoRoute(
                         path: 'midterm',
-                        builder: (context, state) => const CategoryPickerScreen(),
+                        builder: (context, state) =>
+                            const CategoryPickerScreen(),
                       ),
                       GoRoute(
                         path: 'finals',
@@ -93,19 +97,23 @@ class AppRouter {
                         routes: [
                           GoRoute(
                             path: 'derivatives',
-                            builder: (context, state) => const DerivativeScreen(),
+                            builder: (context, state) =>
+                                const DerivativeScreen(),
                           ),
                           GoRoute(
                             path: 'slope-derivative',
-                            builder: (context, state) => const SlopeSolverScreen(),
+                            builder: (context, state) =>
+                                const SlopeSolverScreen(),
                           ),
                           GoRoute(
                             path: 'infinity',
-                            builder: (context, state) => const LimitsInfinityScreen(),
+                            builder: (context, state) =>
+                                const LimitsInfinityScreen(),
                           ),
                           GoRoute(
                             path: 'limits',
-                            builder: (context, state) => const EvaluatingLimitsPicker(),
+                            builder: (context, state) =>
+                                const EvaluatingLimitsPicker(),
                             routes: [
                               GoRoute(
                                 path: 'substitution',
@@ -124,7 +132,8 @@ class AppRouter {
                               ),
                               GoRoute(
                                 path: 'lcd',
-                                builder: (context, state) => const LCDLimitScreen(),
+                                builder: (context, state) =>
+                                    const LCDLimitScreen(),
                               ),
                             ],
                           ),
@@ -133,6 +142,15 @@ class AppRouter {
                     ],
                   ),
                 ],
+              ),
+            ],
+          ),
+          // Branch 1.5 — MODMAT
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/topics/modmat',
+                builder: (context, state) => const ModmatPickerScreen(),
               ),
             ],
           ),
