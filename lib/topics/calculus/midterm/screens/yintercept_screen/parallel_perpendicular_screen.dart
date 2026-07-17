@@ -14,8 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
 
-const _accent = FinalsTheme.primary;
-
 // -------------------------------------------------------------
 // Screen
 // -------------------------------------------------------------
@@ -232,7 +230,7 @@ class _ParallelPerpendicularScreenState
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFF334155).withValues(alpha: 0.15),
+          color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
           width: 1,
         ),
         boxShadow: [
@@ -264,9 +262,9 @@ class _ParallelPerpendicularScreenState
           const SizedBox(height: 20),
 
           // Line 1
-          const _PointLabel(
+          _PointLabel(
             label: 'Line 1',
-            color: Color(0xFF334155),
+            color: context.watch<ThemeProvider>().accentColor,
           ),
           const SizedBox(height: 10),
           _CoordField(
@@ -296,7 +294,7 @@ class _ParallelPerpendicularScreenState
                   color: context.watch<ThemeProvider>().surface,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color(0xFF334155).withValues(alpha: 0.2),
+                    color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Icon(
@@ -344,7 +342,7 @@ class _ParallelPerpendicularScreenState
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color:
-                              const Color(0xFF334155).withValues(alpha: 0.15),
+                              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
                         ),
                       ),
                       child: Icon(
@@ -356,10 +354,10 @@ class _ParallelPerpendicularScreenState
                   ),
                 ),
 
-              // Solve button
               Expanded(
                 child: _SolveButton(
                   onTap: _compute,
+                  accent: context.watch<ThemeProvider>().accentColor,
                 ),
               ),
             ],
@@ -394,12 +392,12 @@ class _ParallelPerpendicularScreenState
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFF334155).withValues(alpha: 0.35),
+          color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.35),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF334155).withValues(alpha: 0.15),
+            color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
             blurRadius: 32,
             offset: const Offset(0, 8),
             spreadRadius: 2,
@@ -465,7 +463,7 @@ class _ParallelPerpendicularScreenState
                   label: 'Slope 2',
                   value: result.slope2?.toDouble().toStringAsFixed(2) ??
                       'undefined',
-                  color: const Color(0xFF334155),
+                  color: context.watch<ThemeProvider>().accentColor,
                   icon: Icons.show_chart_rounded,
                 ),
               ),
@@ -479,8 +477,8 @@ class _ParallelPerpendicularScreenState
             label: 'Line 1 — Slope-Intercept',
             tag: 'y = mx + b',
             equation: result.slopeIntercept1,
-            color: const Color(0xFF334155),
-            tagColor: const Color(0xFF334155),
+            color: context.watch<ThemeProvider>().accentColor,
+            tagColor: context.watch<ThemeProvider>().accentColor,
           ),
 
           const SizedBox(height: 10),
@@ -489,8 +487,8 @@ class _ParallelPerpendicularScreenState
             label: 'Line 1 — Standard Form',
             tag: 'Ax + By = C',
             equation: _toStandardForm(result.a1, result.b1, result.c1),
-            color: const Color(0xFF334155),
-            tagColor: const Color(0xFF334155),
+            color: context.watch<ThemeProvider>().accentColor,
+            tagColor: context.watch<ThemeProvider>().accentColor,
           ),
 
           const SizedBox(height: 10),
@@ -510,8 +508,8 @@ class _ParallelPerpendicularScreenState
             label: 'Line 2 — Slope-Intercept',
             tag: 'y = mx + b',
             equation: result.slopeIntercept2,
-            color: const Color(0xFF334155),
-            tagColor: const Color(0xFF334155),
+            color: context.watch<ThemeProvider>().accentColor,
+            tagColor: context.watch<ThemeProvider>().accentColor,
           ),
 
           const SizedBox(height: 10),
@@ -520,8 +518,8 @@ class _ParallelPerpendicularScreenState
             label: 'Line 2 — Standard Form',
             tag: 'Ax + By = C',
             equation: _toStandardForm(result.a2, result.b2, result.c2),
-            color: const Color(0xFF334155),
-            tagColor: const Color(0xFF334155),
+            color: context.watch<ThemeProvider>().accentColor,
+            tagColor: context.watch<ThemeProvider>().accentColor,
           ),
 
           const SizedBox(height: 10),
@@ -564,7 +562,7 @@ class _ParallelPerpendicularScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF334155).withValues(alpha: 0.1),
+        color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -575,12 +573,12 @@ class _ParallelPerpendicularScreenState
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF334155),
+              color: context.watch<ThemeProvider>().accentColor,
             ),
           ),
           const SizedBox(width: 4),
           Icon(Icons.keyboard_arrow_down_rounded,
-              color: const Color(0xFF334155), size: 16),
+              color: context.watch<ThemeProvider>().accentColor, size: 16),
         ],
       ),
     );
@@ -620,7 +618,7 @@ class _ParallelPerpendicularScreenState
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border:
-            Border.all(color: const Color(0xFF334155).withValues(alpha: 0.2)),
+            Border.all(color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -718,13 +716,13 @@ class _CoordField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: const Color(0xFF334155).withValues(alpha: 0.15),
+            color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: const Color(0xFF334155).withValues(alpha: 0.5),
+            color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.5),
             width: 1.5,
           ),
         ),
@@ -743,7 +741,8 @@ class _CoordField extends StatelessWidget {
 
 class _SolveButton extends StatefulWidget {
   final VoidCallback onTap;
-  const _SolveButton({required this.onTap});
+  final Color accent;
+  const _SolveButton({required this.onTap, required this.accent});
 
   @override
   State<_SolveButton> createState() => _SolveButtonState();
@@ -766,22 +765,16 @@ class _SolveButtonState extends State<_SolveButton> {
           child: Container(
             height: 52,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 colors: [
-                  Color(0xFF334155),
-                  Color(0xFF334155),
+                  widget.accent,
+                  widget.accent,
                 ],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
               borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF334155).withValues(alpha: 0.35),
-                  blurRadius: 20,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+              boxShadow: [AccentGlow.halo(context)],
             ),
             child: const Center(
               child: Row(
@@ -1111,9 +1104,9 @@ class _MiniStepColumn extends StatelessWidget {
           width: 24,
           height: 24,
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: FinalsTheme.primary,
+              color: context.watch<ThemeProvider>().accentColor,
             ),
             child: Center(
               child: ResponsiveText(
@@ -1159,12 +1152,15 @@ class _StepBlocks extends StatelessWidget {
   final List<PPSolverStep> steps;
   const _StepBlocks({required this.steps});
 
-  static const _borderColors = {
-    PPBlockType.formula: _accent,
-    PPBlockType.substitution: Color(0xFF64748B),
-    PPBlockType.working: _accent,
-    PPBlockType.result: _accent,
-  };
+  static Map<PPBlockType, Color> _borderColors(BuildContext context) {
+    final accent = context.watch<ThemeProvider>().accentColor;
+    return {
+      PPBlockType.formula: accent,
+      PPBlockType.substitution: const Color(0xFF64748B),
+      PPBlockType.working: accent,
+      PPBlockType.result: accent,
+    };
+  }
 
   static const _labels = {
     PPBlockType.formula: 'Formula',
@@ -1204,7 +1200,7 @@ class _StepBlocks extends StatelessWidget {
           label: block.label ?? _labels[block.type],
           latex: block.latex,
           fallback: block.content,
-          borderColor: _borderColors[block.type]!,
+          borderColor: _borderColors(context)[block.type]!,
         );
       case PPBlockType.result:
         return _renderResult(context, block.latex, block.content);
@@ -1257,27 +1253,28 @@ class _StepBlocks extends StatelessWidget {
             ),
             const SizedBox(height: 4),
           ],
-          _renderMath(latex, fallback),
+          _renderMath(latex, fallback, accent: borderColor),
         ],
       ),
     );
   }
 
   Widget _renderResult(BuildContext context, String? latex, String fallback) {
+    final accent = context.watch<ThemeProvider>().accentColor;
     return Container(
       width: double.infinity,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        color: _accent.withValues(alpha: 0.1),
+        color: accent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _accent.withValues(alpha: 0.5), width: 1.2),
+        border: Border.all(color: accent.withValues(alpha: 0.5), width: 1.2),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      child: Center(child: _renderMath(latex, fallback, fontSize: 14)),
+      child: Center(child: _renderMath(latex, fallback, fontSize: 14, accent: accent)),
     );
   }
 
-  Widget _renderMath(String? latex, String fallback, {double fontSize = 13}) {
+  Widget _renderMath(String? latex, String fallback, {double fontSize = 13, Color? accent}) {
     if (latex == null || latex.isEmpty) {
       return ResponsiveText(
         fallback,
@@ -1293,8 +1290,9 @@ class _StepBlocks extends StatelessWidget {
         .where((l) => l.isNotEmpty)
         .toList();
 
+    final resolvedAccent = accent ?? Colors.black;
     if (lines.length == 1) {
-      return _mathLine(lines[0], fontSize);
+      return _mathLine(lines[0], fontSize, accent: resolvedAccent);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1302,25 +1300,25 @@ class _StepBlocks extends StatelessWidget {
       children: lines
           .map((l) => Padding(
                 padding: const EdgeInsets.only(bottom: 3),
-                child: _mathLine(l, fontSize),
+                child: _mathLine(l, fontSize, accent: resolvedAccent),
               ))
           .toList(),
     );
   }
 
-  Widget _mathLine(String tex, double fontSize) {
+  Widget _mathLine(String tex, double fontSize, {required Color accent}) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       child: RepaintBoundary(
         child: Math.tex(
           tex,
-          textStyle: TextStyle(fontSize: fontSize, color: _accent),
+          textStyle: TextStyle(fontSize: fontSize, color: accent),
           onErrorFallback: (err) => Text(
             tex,
             style: TextStyle(
               fontSize: fontSize,
-              color: _accent,
+              color: accent,
               fontFamily: 'monospace',
             ),
           ),
