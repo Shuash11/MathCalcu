@@ -24,7 +24,6 @@ class _ParallelPerpendicularModuleCardState
   bool _hovered = false;
 
   static const Color _indigo = Color(0xFF334155);
-  static const Color _cyan = Color(0xFF16A34A);
   static const Color _sky = Color(0xFFE8E6E2);
   static const double _baseDesignWidth = 400.0;
 
@@ -60,14 +59,14 @@ class _ParallelPerpendicularModuleCardState
                   borderRadius: BorderRadius.circular(20 * s),
                   border: Border.all(
                     color: _hovered
-                        ? _cyan.withValues(alpha: 0.45)
+                        ? theme.accentColor.withValues(alpha: 0.45)
                         : _indigo.withValues(alpha: 0.25),
                     width: _hovered ? 2 * s : 1 * s,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: _hovered
-                          ? _cyan.withValues(alpha: 0.2)
+                          ? theme.accentColor.withValues(alpha: 0.2)
                           : _indigo.withValues(alpha: 0.1),
                       blurRadius: _hovered ? 36 * s : 22 * s,
                       offset: Offset(0, 8 * s),
@@ -98,7 +97,7 @@ class _ParallelPerpendicularModuleCardState
                             shape: BoxShape.circle,
                             gradient: RadialGradient(
                               colors: [
-                                _cyan.withValues(alpha: _hovered ? 0.14 : 0.07),
+                                theme.accentColor.withValues(alpha: _hovered ? 0.14 : 0.07),
                                 Colors.transparent,
                               ],
                             ),
@@ -140,7 +139,7 @@ class _ParallelPerpendicularModuleCardState
                                   end: Alignment.bottomCenter,
                                   colors: [
                                     _indigo.withValues(alpha: 0.15),
-                                    _cyan.withValues(alpha: 0.85),
+                                    theme.accentColor.withValues(alpha: 0.85),
                                     _sky.withValues(alpha: 0.95),
                                   ],
                                 ),
@@ -158,13 +157,13 @@ class _ParallelPerpendicularModuleCardState
                                   end: Alignment.bottomRight,
                                   colors: [
                                     _indigo.withValues(alpha: 0.22),
-                                    _cyan.withValues(alpha: 0.1),
+                                    theme.accentColor.withValues(alpha: 0.1),
                                   ],
                                 ),
                                 border: Border.all(
                                   color: _hovered
                                       ? _sky.withValues(alpha: 0.6)
-                                      : _cyan.withValues(alpha: 0.3),
+                                      : theme.accentColor.withValues(alpha: 0.3),
                                   width: _hovered ? 2 * s : 1.5 * s,
                                 ),
                               ),
@@ -184,7 +183,7 @@ class _ParallelPerpendicularModuleCardState
                                         : Matrix4.identity(),
                                     child: Icon(
                                       widget.module.icon,
-                                      color: _hovered ? _sky : _cyan,
+                                      color: _hovered ? _sky : theme.accentColor,
                                       size: 25 * s,
                                     ),
                                   ),
@@ -230,7 +229,7 @@ children: [
                                       ),
                                       _TagPill(
                                         label: 'Slope Check',
-                                        color: _cyan,
+                                        color: theme.accentColor,
                                         s: s,
                                       ),
                                       _TagPill(
@@ -260,13 +259,13 @@ children: [
                                       end: Alignment.bottomRight,
                                       colors: [
                                         _indigo.withValues(alpha: 0.12),
-                                        _cyan.withValues(alpha: 0.08),
+                                        theme.accentColor.withValues(alpha: 0.08),
                                       ],
                                     ),
                                     border: Border.all(
                                       color: _hovered
                                           ? _sky.withValues(alpha: 0.55)
-                                          : _cyan.withValues(alpha: 0.22),
+                                          : theme.accentColor.withValues(alpha: 0.22),
                                       width: 1.5 * s,
                                     ),
                                   ),
@@ -274,7 +273,7 @@ children: [
                                     Icons.arrow_forward_rounded,
                                     color: _hovered
                                         ? _sky
-                                        : _cyan.withValues(alpha: 0.75),
+                                        : theme.accentColor.withValues(alpha: 0.75),
                                     size: 20 * s,
                                   ),
                                 ),

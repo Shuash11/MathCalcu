@@ -86,11 +86,6 @@ class AppShell extends StatelessWidget {
                 label: 'Topics',
               ),
               NavigationDestination(
-                icon: const Icon(Icons.auto_awesome_outlined),
-                selectedIcon: const Icon(Icons.auto_awesome_rounded),
-                label: 'MODMAT',
-              ),
-              NavigationDestination(
                 icon: const Icon(Icons.sticky_note_2_outlined),
                 selectedIcon: const Icon(Icons.sticky_note_2_rounded),
                 label: 'Notes',

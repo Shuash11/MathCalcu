@@ -141,16 +141,23 @@ class AppRouter {
                       ),
                     ],
                   ),
+                  GoRoute(
+                    path: 'modmat',
+                    builder: (context, state) => const ModmatPickerScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'foundations',
+                        builder: (context, state) =>
+                            const ModmatFoundationsScreen(),
+                      ),
+                      GoRoute(
+                        path: 'advanced',
+                        builder: (context, state) =>
+                            const ModmatAdvancedScreen(),
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-            ],
-          ),
-          // Branch 1.5 — MODMAT
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/topics/modmat',
-                builder: (context, state) => const ModmatPickerScreen(),
               ),
             ],
           ),

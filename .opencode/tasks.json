@@ -1,21 +1,14 @@
 {
   "tasks": [
-    { "id": 1, "description": "Fix PointSlopeScreen solve button - add AccentGlow.halo", "status": "done" },
-    { "id": 2, "description": "Fix SlopeScreen calculate button - replace hardcoded slate with AccentGlow", "status": "done" },
-    { "id": 3, "description": "Fix DistanceScreen calculate button - replace hardcoded slate with AccentGlow", "status": "done" },
-    { "id": 4, "description": "Fix MidpointScreen calculate button - replace hardcoded slate with AccentGlow", "status": "done" },
-    { "id": 5, "description": "Fix TwoPointSlopeScreen solve button - replace hardcoded slate with AccentGlow", "status": "done" },
-    { "id": 6, "description": "Add AccentGlow.iconHalo to CalculusPickerScreen back button", "status": "done" },
-    { "id": 7, "description": "Add AccentGlow.iconHalo to FinalsPickerScreen back button", "status": "done" },
-    { "id": 8, "description": "Add AccentGlow.iconHalo to SlopeInterceptScreen back button", "status": "done" },
-    { "id": 9, "description": "Add AccentGlow.iconHalo to SlopeScreen back button", "status": "done" },
-    { "id": 10, "description": "Add AccentGlow.iconHalo to DistanceScreen back button", "status": "done" },
-    { "id": 11, "description": "Add AccentGlow.iconHalo to MidpointScreen back button", "status": "done" },
-    { "id": 12, "description": "Add AccentGlow.iconHalo to PointSlopeScreen back button", "status": "done" },
-    { "id": 13, "description": "Add AccentGlow.iconHalo to CardPickerScreen back button", "status": "done" },
-    { "id": 14, "description": "Fix CalculusPickerScreen cards - use theme accent instead of hardcoded slate", "status": "done" },
-    { "id": 15, "description": "Fix FinalsPickerScreen cards - use theme accent instead of FinalsTheme", "status": "done" },
-    { "id": 16, "description": "Add header text glow to all solver screen titles (13 screens)", "status": "done" }
+    { "id": 1, "description": "Read all modified files (4 files)", "status": "done" },
+    { "id": 2, "description": "Read related files for regressions (2 files)", "status": "done" },
+    { "id": 3, "description": "Find and read test files", "status": "done" },
+    { "id": 4, "description": "Check compilation (flutter analyze)", "status": "done" },
+    { "id": 5, "description": "Run tests (flutter test)", "status": "done" },
+    { "id": 6, "description": "Check imports correctness", "status": "done" },
+    { "id": 7, "description": "Check for unused variables/state", "status": "done" },
+    { "id": 8, "description": "Check for regressions in related screens", "status": "done" },
+    { "id": 9, "description": "Write readiness report", "status": "done" }
   ],
   "completed": true
 }
