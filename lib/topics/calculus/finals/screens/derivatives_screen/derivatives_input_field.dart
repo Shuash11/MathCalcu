@@ -1,4 +1,5 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/widgets/finals_solver_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
@@ -8,6 +9,7 @@ class DerivativeInputField extends StatelessWidget {
   final String currentVariable;
   final VoidCallback onSolve;
   final FocusNode focusNode;
+  final bool isLoading;
 
   const DerivativeInputField({
     super.key,
@@ -16,6 +18,7 @@ class DerivativeInputField extends StatelessWidget {
     required this.currentVariable,
     required this.onSolve,
     required this.focusNode,
+    this.isLoading = false,
   });
 
   @override
@@ -43,23 +46,9 @@ class DerivativeInputField extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Row(
             children: [
-              GestureDetector(
+              FinalsVariableChip(
+                variable: currentVariable,
                 onTap: () => _showVariablePicker(context),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: FinalsTheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ResponsiveText(
-          '',
-                    style: FinalsTheme.labelStyle(context).copyWith(
-                      color: FinalsTheme.primary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -83,40 +72,11 @@ class DerivativeInputField extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.all(4),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: onSolve,
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        gradient: FinalsTheme.headerGradient,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                FinalsTheme.primary.withValues(alpha: 0.3),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
-
+        const SizedBox(height: 16),
+        FinalsSolverButton(onPressed: onSolve, isLoading: isLoading),
       ],
     );
   }
@@ -155,5 +115,3 @@ class DerivativeInputField extends StatelessWidget {
     );
   }
 }
-
-

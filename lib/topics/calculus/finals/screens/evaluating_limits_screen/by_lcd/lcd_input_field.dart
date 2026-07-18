@@ -1,4 +1,5 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/widgets/finals_solver_controls.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ class LCDInputField extends StatelessWidget {
   final VoidCallback onSolve;
   final FocusNode expressionFocus;
   final FocusNode approachFocus;
+  final bool isLoading;
 
   const LCDInputField({
     super.key,
@@ -20,6 +22,7 @@ class LCDInputField extends StatelessWidget {
     required this.onSolve,
     required this.expressionFocus,
     required this.approachFocus,
+    this.isLoading = false,
   });
 
   @override
@@ -87,14 +90,14 @@ class LCDInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Solve Button
-                _SolveButton(onTap: onSolve, accentColor: accentColor),
               ],
             ),
           ),
 
           const Divider(height: 1, thickness: 0.8, indent: 20, endIndent: 20),
+
+          FinalsSolverButton(onPressed: onSolve, isLoading: isLoading),
+          const SizedBox(height: 16),
 
 // ── Limit Meta Row
           Padding(
@@ -113,10 +116,9 @@ class LCDInputField extends StatelessWidget {
                 const SizedBox(width: 6),
 
                 // Variable Selection Pill
-                _VariablePill(
+                FinalsVariableChip(
                   variable: currentVariable,
                   onTap: () => _showVariablePicker(context),
-                  accentColor: accentColor,
                 ),
 
                 const Padding(
@@ -258,105 +260,3 @@ class LCDInputField extends StatelessWidget {
 
 }
 
-class _SolveButton extends StatefulWidget {
-  final VoidCallback onTap;
-  final Color accentColor;
-
-  const _SolveButton({required this.onTap, required this.accentColor});
-
-  @override
-  State<_SolveButton> createState() => _SolveButtonState();
-}
-
-class _SolveButtonState extends State<_SolveButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                widget.accentColor,
-                widget.accentColor.withValues(alpha: 0.8),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color:
-                    widget.accentColor.withValues(alpha: _hovered ? 0.4 : 0.2),
-                blurRadius: _hovered ? 16 : 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ResponsiveText(
-                'Solve',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 15,
-                ),
-              ),
-              SizedBox(width: 8),
-              Icon(
-                Icons.bolt_rounded,
-                color: Colors.white,
-                size: 20,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _VariablePill extends StatelessWidget {
-  final String variable;
-  final VoidCallback onTap;
-  final Color accentColor;
-
-  const _VariablePill({
-    required this.variable,
-    required this.onTap,
-    required this.accentColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color: accentColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: accentColor.withValues(alpha: 0.2)),
-        ),
-        child: ResponsiveText(
-          variable,
-          style: TextStyle(
-            fontFamily: 'serif',
-            fontSize: 17,
-            fontWeight: FontWeight.w900,
-            color: accentColor,
-          ),
-        ),
-      ),
-    );
-  }
-}

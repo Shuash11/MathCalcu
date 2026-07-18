@@ -289,29 +289,15 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                   currentVariable: _variable,
                   onVariableChanged: (v) => setState(() => _variable = v),
                   onSolve: _solve,
+                  isLoading: _isLoading,
                 ),
               ),
             ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-            // Answer Card / Loading / Error
-            if (_isLoading)
-              const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: CircularProgressIndicator(
-                        color: FinalsTheme.primary,
-                        strokeWidth: 3,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            else if (_error != null)
+            // Answer Card / Error
+            if (_error != null)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
@@ -325,7 +311,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                   ),
                 ),
               )
-            else if (_solution != null)
+            else if (_solution != null && !_isLoading)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
@@ -340,7 +326,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
             const SliverToBoxAdapter(child: SizedBox(height: 48)),
 
             // Show Steps Button
-            if (_solution != null)
+            if (_solution != null && !_isLoading)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(

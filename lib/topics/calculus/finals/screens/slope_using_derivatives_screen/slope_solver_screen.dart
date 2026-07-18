@@ -3,12 +3,10 @@ import 'answer_card.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
-import 'package:provider/provider.dart';
+import 'package:calculus_system/topics/calculus/finals/widgets/finals_solver_controls.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
-import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/slope_using_derivatives_solver.dart';
 
 class SlopeSolverScreen extends StatefulWidget {
@@ -97,8 +95,6 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.watch<ThemeProvider>();
-
     return ColoredBox(
       color: FinalsTheme.surface(context),
       child: Column(
@@ -125,7 +121,6 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                     controller: _eqController,
                     hint: 'e.g. y = x^2 + 1, x^2 + y^2 = 25',
                     label: 'EQUATION',
-                    theme: theme,
                     focusNode: _eqFocus,
                     textInputAction: TextInputAction.next,
                     onEditingComplete: () => _varsFocus.requestFocus(),
@@ -135,43 +130,13 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                     controller: _varsController,
                     hint: 'e.g. x=2 or x=3 y=4',
                     label: 'POINT VALUES',
-                    theme: theme,
                     focusNode: _varsFocus,
                     textInputAction: TextInputAction.done,
                     onEditingComplete: () => _varsFocus.unfocus(),
                   ),
                   const SizedBox(height: 24),
 
-                  // Solve Button
-                  GestureDetector(
-                    onTap: _isLoading ? null : _solve,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                        gradient: _isLoading 
-                            ? LinearGradient(colors: [AppDesign.app.accent.withValues(alpha: 0.3), AppDesign.app.accent.withValues(alpha: 0.15)])
-                            : LinearGradient(
-                                colors: [AppDesign.app.accent, AppDesign.app.accent.withValues(alpha: 0.8)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppDesign.app.accent.withValues(alpha: 0.35),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: _isLoading 
-                            ? const SizedBox(height: 22, width: 22, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                            : const Text('SOLVE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15, letterSpacing: 1.0)),
-                      ),
-                    ),
-                  ),
+                  FinalsSolverButton(onPressed: _solve, isLoading: _isLoading),
 
                   if (_error != null) ...[
                     const SizedBox(height: 20),
@@ -186,7 +151,7 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                     ),
                   ],
 
-                  if (_solution != null) ...[
+                  if (_solution != null && !_isLoading) ...[
                     const SizedBox(height: 32),
                     AnswerCard(solution: _solution!),
                     const SizedBox(height: 12),
@@ -216,7 +181,6 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
     required TextEditingController controller,
     required String hint,
     required String label,
-    required ThemeProvider theme,
     FocusNode? focusNode,
     TextInputAction? textInputAction,
     VoidCallback? onEditingComplete,

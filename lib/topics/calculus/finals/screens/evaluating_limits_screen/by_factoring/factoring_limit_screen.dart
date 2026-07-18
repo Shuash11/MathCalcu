@@ -199,16 +199,10 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
                           currentVariable: _currentVariable,
                           onVariableChanged: (v) => setState(() => _currentVariable = v),
                           onSolve: _solve,
+                          isLoading: _isSolving,
                         ),
 
-                        if (_isSolving)
-                          Padding(
-                            padding: EdgeInsets.all(isCompact ? 32.0 : 40.0),
-                            child: Center(
-                              child: CircularProgressIndicator(color: FinalsTheme.primary),
-                            ),
-                          )
-                        else if (_result != null) ...[
+                        if (_result != null && !_isSolving) ...[
                           SizedBox(height: isCompact ? 16.0 : 24.0),
                             FactoringAnswerCard(
                               answer: _result!.finalValue,

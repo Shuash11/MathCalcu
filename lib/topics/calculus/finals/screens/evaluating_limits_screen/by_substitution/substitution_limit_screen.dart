@@ -168,17 +168,11 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                           currentVariable: _currentVariable,
                           onVariableChanged: (v) => setState(() => _currentVariable = v),
                           onSolve: _solve,
+                          isLoading: _isSolving,
                         ),
 
                         // Animated Result Section
-                        if (_isSolving)
-                          const Padding(
-                            padding: EdgeInsets.all(40.0),
-                            child: Center(
-                              child: CircularProgressIndicator(color: FinalsTheme.primary),
-                            ),
-                          )
-                        else if (_result != null) ...[
+                        if (_result != null && !_isSolving) ...[
                           SubstitutionAnswerCard(
                             answer: _result!.finalValue,
                             method: 'By Substitution',

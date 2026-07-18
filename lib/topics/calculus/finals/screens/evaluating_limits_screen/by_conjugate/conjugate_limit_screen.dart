@@ -206,16 +206,9 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                           onVariableChanged: (v) =>
                               setState(() => _currentVariable = v),
                           onSolve: _solve,
+                          isLoading: _isSolving,
                         ),
-                        if (_isSolving)
-                          Padding(
-                            padding: EdgeInsets.all(isCompact ? 32.0 : 40.0),
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                  color: FinalsTheme.secondary),
-                            ),
-                          )
-                        else if (_result != null) ...[
+                        if (_result != null && !_isSolving) ...[
                           SizedBox(height: isCompact ? 16.0 : 24.0),
                           ConjugateAnswerCard(
                             problemNotation:

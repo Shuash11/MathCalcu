@@ -191,22 +191,14 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                       currentVariable: _variable,
                       onVariableChanged: (v) => setState(() => _variable = v),
                       onSolve: _solve,
+                      isLoading: _isLoading,
                     ),
                   ),
                 ),
 
                 const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
-                if (_isLoading)
-                  const SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverToBoxAdapter(
-                      child: Center(
-                        child: CircularProgressIndicator(color: FinalsTheme.primary, strokeWidth: 3),
-                      ),
-                    ),
-                  )
-                else if (_error != null)
+                if (_error != null)
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverToBoxAdapter(

@@ -191,17 +191,11 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                           currentVariable: _currentVariable,
                           onVariableChanged: (v) => setState(() => _currentVariable = v),
                           onSolve: _solve,
+                          isLoading: _isSolving,
                         ),
 
                         // Animated Result Section
-                        if (_isSolving)
-                          const Padding(
-                            padding: EdgeInsets.all(40.0),
-                            child: Center(
-                              child: CircularProgressIndicator(color: FinalsTheme.danger),
-                            ),
-                          )
-                        else if (_solution != null) ...[
+                        if (_solution != null && !_isSolving) ...[
                           LCDAnswerCard(
                             answer: _solution!.finalAnswer,
                             fractionalAnswer: _solution!.fractionalAnswer,
