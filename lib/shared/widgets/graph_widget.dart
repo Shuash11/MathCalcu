@@ -53,7 +53,7 @@ class GraphWidget extends StatelessWidget {
               top: 12,
               left: 16,
               child: Text(
-                'Graph',
+                'Solution graph',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,

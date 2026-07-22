@@ -38,22 +38,26 @@ class FullScreenGraphScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: theme.textPrimary.withValues(alpha: 0.04),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: accentColor.withValues(alpha: 0.2),
+                  Semantics(
+                    label: 'Close full-screen graph',
+                    button: true,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: theme.textPrimary.withValues(alpha: 0.04),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: accentColor.withValues(alpha: 0.2),
+                          ),
                         ),
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_rounded,
-                        color: theme.textSecondary,
-                        size: 20,
+                        child: Icon(
+                          Icons.arrow_back_rounded,
+                          color: theme.textSecondary,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -102,7 +106,9 @@ class FullScreenGraphScreen extends StatelessWidget {
             ),
 
             // Info section
-            if (formulaWidget != null || formula != null || (keyInfo?.isNotEmpty ?? false))
+            if (formulaWidget != null ||
+                formula != null ||
+                (keyInfo?.isNotEmpty ?? false))
               Container(
                 margin: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                 padding: const EdgeInsets.all(16),

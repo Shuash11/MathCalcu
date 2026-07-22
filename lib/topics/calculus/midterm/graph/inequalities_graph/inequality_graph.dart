@@ -19,6 +19,7 @@ class InequalityGraph extends BaseGraph {
         result: result,
         accentColor: accentColor,
         backgroundColor: theme.surface,
+        secondaryTextColor: theme.textSecondary,
       ),
     );
   }
@@ -28,11 +29,13 @@ class _NumberLinePainter extends CustomPainter {
   final SolveResult result;
   final Color accentColor;
   final Color backgroundColor;
+  final Color secondaryTextColor;
 
   _NumberLinePainter(
       {required this.result,
       required this.accentColor,
-      required this.backgroundColor});
+      required this.backgroundColor,
+      required this.secondaryTextColor});
 
   static const double gap = 40.0;
   static const int ticks = 5;
@@ -79,14 +82,16 @@ class _NumberLinePainter extends CustomPainter {
       viewCenter = viewCenter.roundToDouble();
     }
 
+    // Use higher opacity minimums for dark mode readability.
+    // accentColor is light (#E9ECEF) in dark mode, dark (#334155) in light mode.
     final linePaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.25)
+      ..color = accentColor.withValues(alpha: 0.35)
       ..strokeWidth = 2.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
     final shadePaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.18)
+      ..color = accentColor.withValues(alpha: 0.20)
       ..style = PaintingStyle.fill;
 
     final arrowPaint = Paint()
@@ -103,10 +108,10 @@ class _NumberLinePainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final tickPaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.3)
+      ..color = accentColor.withValues(alpha: 0.45)
       ..strokeWidth = 1.0;
 
-    final dimLabelColor = accentColor.withValues(alpha: 0.35);
+    final dimLabelColor = accentColor.withValues(alpha: 0.55);
 
     const lineLeft = marginL;
     final lineRight = size.width - marginR;
@@ -322,5 +327,6 @@ class _NumberLinePainter extends CustomPainter {
   bool shouldRepaint(covariant _NumberLinePainter old) =>
       old.result != result ||
       old.accentColor != accentColor ||
-      old.backgroundColor != backgroundColor;
+      old.backgroundColor != backgroundColor ||
+      old.secondaryTextColor != secondaryTextColor;
 }

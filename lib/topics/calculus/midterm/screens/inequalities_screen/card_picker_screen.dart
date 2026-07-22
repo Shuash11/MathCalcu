@@ -55,13 +55,15 @@ class InequalityCardPickerScreen extends StatelessWidget {
                               color: theme.accentColor,
                             ),
                             style: IconButton.styleFrom(
-                              backgroundColor: theme.accentColor.withValues(alpha: 0.12),
+                              backgroundColor:
+                                  theme.accentColor.withValues(alpha: 0.12),
                               foregroundColor: theme.accentColor,
                               padding: EdgeInsets.zero,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(
-                                  color: theme.accentColor.withValues(alpha: 0.40),
+                                  color:
+                                      theme.accentColor.withValues(alpha: 0.40),
                                   width: 1.5,
                                 ),
                               ),
@@ -143,7 +145,8 @@ class _PickerHeader extends StatelessWidget {
             ResponsiveText(
               'Select a module to explore',
               style: TextStyle(
-                  fontSize: 12, color: _softPurple.withValues(alpha: 0.55)),
+                  fontSize: 12,
+                  color: context.watch<ThemeProvider>().textSecondary),
             ),
           ],
         ),
