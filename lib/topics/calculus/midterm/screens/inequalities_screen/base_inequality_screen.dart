@@ -88,7 +88,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
 
     if (!mounted) return;
 
-    final theme = context.watch<ThemeProvider>();
+    final theme = context.read<ThemeProvider>();
     showStepsDrawer(
       context: context,
       steps: steps,
@@ -100,7 +100,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   void _openFullScreenGraph() {
     if (_result == null || _result!.hasError) return;
 
-    final theme = context.watch<ThemeProvider>();
+    final theme = context.read<ThemeProvider>();
     final keyInfo = <FullScreenInfoItem>[
       if (_result!.intervalNotation != null)
         FullScreenInfoItem(
@@ -121,6 +121,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           graph: InequalityGraph(
             result: _result!,
             accentColor: theme.accentColor,
+            backgroundColor: theme.card,
           ),
           formula: _result!.answer,
           keyInfo: keyInfo.isNotEmpty ? keyInfo : null,
@@ -164,11 +165,14 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
         Semantics(
           label: 'Back',
           button: true,
+          onTap: () => context.pop(),
+          excludeSemantics: true,
           child: GestureDetector(
+            excludeFromSemantics: true,
             onTap: () => context.pop(),
             child: Container(
-              width: 38,
-              height: 38,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: theme.card,
                 borderRadius: BorderRadius.circular(10),
@@ -424,6 +428,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
               graphBody: InequalityGraph(
                 result: _result!,
                 accentColor: theme.accentColor,
+                backgroundColor: theme.cardSecondary,
               ),
             ),
           ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
 /// A full-screen page that displays a graph widget, formula, and key info.
@@ -41,11 +40,14 @@ class FullScreenGraphScreen extends StatelessWidget {
                   Semantics(
                     label: 'Close full-screen graph',
                     button: true,
+                    onTap: () => Navigator.of(context).pop(),
+                    excludeSemantics: true,
                     child: GestureDetector(
+                      excludeFromSemantics: true,
                       onTap: () => Navigator.of(context).pop(),
                       child: Container(
-                        width: 40,
-                        height: 40,
+                        width: 44,
+                        height: 44,
                         decoration: BoxDecoration(
                           color: theme.textPrimary.withValues(alpha: 0.04),
                           borderRadius: BorderRadius.circular(12),

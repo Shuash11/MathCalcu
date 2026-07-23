@@ -1,15 +1,43 @@
-﻿import 'package:calculus_system/core/base_graph.dart';
+import 'package:calculus_system/core/base_graph.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InequalityGraph extends BaseGraph {
+  final Color? backgroundColor;
+
   const InequalityGraph({
     super.key,
     required super.result,
     required super.accentColor,
+    this.backgroundColor,
   });
+
+  /// Resolves every non-decorative graph color against the exact surface it
+  /// will be painted on. This prevents semi-transparent text colors from
+  /// silently losing contrast when a graph moves between card shells.
+  static InequalityGraphPalette paletteFor({
+    required Color backgroundColor,
+    required Color accentColor,
+    required Color secondaryTextColor,
+  }) {
+    final resolvedSecondary =
+        Color.alphaBlend(secondaryTextColor, backgroundColor);
+    return InequalityGraphPalette(
+      backgroundColor: backgroundColor,
+      axisColor: resolvedSecondary,
+      labelColor: resolvedSecondary,
+      solutionColor: accentColor,
+      shadeColor: accentColor.withValues(alpha: 0.18),
+    );
+  }
+
+  static bool goesRight(String interval) =>
+      interval.contains(', ∞)') || interval.contains(', +∞)');
+
+  static bool isOpenEndpoint(String interval, {required bool goesRight}) =>
+      goesRight ? interval.startsWith('(') : interval.endsWith(')');
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +46,27 @@ class InequalityGraph extends BaseGraph {
       painter: _NumberLinePainter(
         result: result,
         accentColor: accentColor,
-        backgroundColor: theme.surface,
+        backgroundColor: backgroundColor ?? theme.cardSecondary,
         secondaryTextColor: theme.textSecondary,
       ),
     );
   }
+}
+
+class InequalityGraphPalette {
+  final Color backgroundColor;
+  final Color axisColor;
+  final Color labelColor;
+  final Color solutionColor;
+  final Color shadeColor;
+
+  const InequalityGraphPalette({
+    required this.backgroundColor,
+    required this.axisColor,
+    required this.labelColor,
+    required this.solutionColor,
+    required this.shadeColor,
+  });
 }
 
 class _NumberLinePainter extends CustomPainter {
@@ -82,36 +126,42 @@ class _NumberLinePainter extends CustomPainter {
       viewCenter = viewCenter.roundToDouble();
     }
 
-    // Use higher opacity minimums for dark mode readability.
-    // accentColor is light (#E9ECEF) in dark mode, dark (#334155) in light mode.
+    final palette = InequalityGraph.paletteFor(
+      backgroundColor: backgroundColor,
+      accentColor: accentColor,
+      secondaryTextColor: secondaryTextColor,
+    );
+
+    // Axis labels and tick marks are essential graph content. They use
+    // palette colors composited against this graph's exact shell surface.
     final linePaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.35)
+      ..color = palette.axisColor
       ..strokeWidth = 2.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
     final shadePaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.20)
+      ..color = palette.shadeColor
       ..style = PaintingStyle.fill;
 
     final arrowPaint = Paint()
-      ..color = accentColor
+      ..color = palette.solutionColor
       ..style = PaintingStyle.fill;
 
     final boundaryPaint = Paint()
-      ..color = accentColor
+      ..color = palette.solutionColor
       ..strokeWidth = 2.2
       ..style = PaintingStyle.stroke;
 
     final boundaryFillPaint = Paint()
-      ..color = accentColor
+      ..color = palette.solutionColor
       ..style = PaintingStyle.fill;
 
     final tickPaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.45)
+      ..color = palette.axisColor
       ..strokeWidth = 1.0;
 
-    final dimLabelColor = accentColor.withValues(alpha: 0.55);
+    final dimLabelColor = palette.labelColor;
 
     const lineLeft = marginL;
     final lineRight = size.width - marginR;
@@ -178,8 +228,9 @@ class _NumberLinePainter extends CustomPainter {
     if (result.points.length == 1) {
       final boundary = result.points[0];
       final bx = cx + boundary * gap - viewCenter * gap;
-      final goRight = interval.contains(', ∞)') || interval.contains(', +∞)');
-      final isOpen = interval.startsWith('(') || interval.endsWith(')');
+      final goRight = InequalityGraph.goesRight(interval);
+      final isOpen =
+          InequalityGraph.isOpenEndpoint(interval, goesRight: goRight);
 
       if (goRight) {
         canvas.drawRect(
