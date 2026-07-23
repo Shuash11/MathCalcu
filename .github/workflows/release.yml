@@ -61,7 +61,7 @@ jobs:
           test "$EXPECTED_BUILD" != ""
           [[ "$EXPECTED_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           [[ "$EXPECTED_BUILD" =~ ^[1-9][0-9]*$ ]]
-          version_line="$(grep -E '^version: ' pubspec.yaml)"
+          version_line="$(grep -E '^version: ' pubspec.yaml | tr -d '\r')"
           test "$version_line" = "version: ${EXPECTED_VERSION}+${EXPECTED_BUILD}"
           git fetch --tags --force origin
           python3 - "$EXPECTED_VERSION" "$EXPECTED_BUILD" "$GITHUB_ENV" <<'PY'
