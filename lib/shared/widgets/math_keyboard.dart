@@ -1,6 +1,5 @@
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 
 class MathKeyboard extends StatefulWidget {
@@ -56,10 +55,13 @@ class _MathKeyboardState extends State<MathKeyboard> {
     int offset;
     if (sel.isCollapsed) {
       final cursor = sel.baseOffset;
-      newText = value.text.substring(0, cursor) + text + value.text.substring(cursor);
+      newText =
+          value.text.substring(0, cursor) + text + value.text.substring(cursor);
       offset = cursor + text.length;
     } else {
-      newText = value.text.substring(0, sel.start) + text + value.text.substring(sel.end);
+      newText = value.text.substring(0, sel.start) +
+          text +
+          value.text.substring(sel.end);
       offset = sel.start + text.length;
     }
 
@@ -79,10 +81,12 @@ class _MathKeyboardState extends State<MathKeyboard> {
     if (sel.isCollapsed) {
       final cursor = sel.baseOffset;
       if (cursor <= 0) return;
-      newText = value.text.substring(0, cursor - 1) + value.text.substring(cursor);
+      newText =
+          value.text.substring(0, cursor - 1) + value.text.substring(cursor);
       offset = cursor - 1;
     } else {
-      newText = value.text.substring(0, sel.start) + value.text.substring(sel.end);
+      newText =
+          value.text.substring(0, sel.start) + value.text.substring(sel.end);
       offset = sel.start;
     }
 
@@ -95,32 +99,41 @@ class _MathKeyboardState extends State<MathKeyboard> {
   Widget _key(String label, {Color? bg, double? fontSize}) {
     final theme = context.watch<ThemeProvider>();
     final isBackspace = label == '?';
+    final semanticLabel = isBackspace ? 'Backspace' : 'Insert $label';
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(2.5),
-        child: Material(
-          color: bg ?? theme.card,
-          borderRadius: BorderRadius.circular(8),
-          child: InkWell(
+        child: Semantics(
+          label: semanticLabel,
+          button: true,
+          onTap: () => isBackspace ? _backspace() : _insert(label),
+          excludeSemantics: true,
+          child: Material(
+            color: bg ?? theme.card,
             borderRadius: BorderRadius.circular(8),
-            onTap: () => isBackspace ? _backspace() : _insert(label),
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: isBackspace
-                  ? Icon(
-                      Icons.backspace_outlined,
-                      size: 20,
-                      color: widget.accentColor,
-                    )
-                  : Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: fontSize ?? 17,
-                        fontWeight: FontWeight.w500,
-                        color: theme.textPrimary,
-                      ),
-                    ),
+            child: InkWell(
+              excludeFromSemantics: true,
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => isBackspace ? _backspace() : _insert(label),
+              child: SizedBox(
+                height: 44,
+                child: Center(
+                  child: isBackspace
+                      ? Icon(
+                          Icons.backspace_outlined,
+                          size: 20,
+                          color: widget.accentColor,
+                        )
+                      : Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: fontSize ?? 17,
+                            fontWeight: FontWeight.w500,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                ),
+              ),
             ),
           ),
         ),
@@ -153,29 +166,39 @@ class _MathKeyboardState extends State<MathKeyboard> {
       ),
       child: Column(
         children: [
-          GestureDetector(
+          Semantics(
+            label: _visible ? 'Hide math keyboard' : 'Show math keyboard',
+            button: true,
             onTap: () => setState(() => _visible = !_visible),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    _visible ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
-                    size: 18,
-                    color: theme.textSecondary,
+            excludeSemantics: true,
+            child: GestureDetector(
+              excludeFromSemantics: true,
+              onTap: () => setState(() => _visible = !_visible),
+              child: SizedBox(
+                height: 44,
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _visible
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_up,
+                        size: 18,
+                        color: theme.textSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        _visible ? 'Hide math keyboard' : 'Show math keyboard',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: theme.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 6),
-                  Text(
-                    _visible ? 'Hide keyboard' : 'Show keyboard',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: theme.textSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

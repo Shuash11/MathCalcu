@@ -1,5 +1,6 @@
-﻿import 'general_form_parse.dart';
-import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_radius_solver.dart' hide GeneralFormParser;
+import 'general_form_parse.dart';
+import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_radius_solver.dart'
+    hide GeneralFormParser;
 
 import 'package:flutter/material.dart';
 

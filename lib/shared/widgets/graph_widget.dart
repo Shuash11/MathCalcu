@@ -1,7 +1,6 @@
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 
 // -------------------------------------------------------------
@@ -53,11 +52,11 @@ class GraphWidget extends StatelessWidget {
               top: 12,
               left: 16,
               child: Text(
-                'Graph',
+                'Solution graph',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: accentColor.withValues(alpha: 0.5),
+                  color: theme.textSecondary,
                   letterSpacing: 1.0,
                 ),
               ),

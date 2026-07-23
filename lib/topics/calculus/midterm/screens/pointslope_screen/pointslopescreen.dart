@@ -153,7 +153,8 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                   final double effectiveWidth = constraints.hasInfiniteWidth
                       ? _baseDesignWidth
                       : constraints.maxWidth;
-                  final double s = (effectiveWidth / _baseDesignWidth).clamp(0.7, 1.2);
+                  final double s =
+                      (effectiveWidth / _baseDesignWidth).clamp(0.7, 1.2);
 
                   return SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(20 * s, 0, 20 * s, 20 * s),
@@ -183,7 +184,8 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                             child: Container(
                               height: 52,
                               decoration: BoxDecoration(
-                                color: context.watch<ThemeProvider>().accentColor,
+                                color:
+                                    context.watch<ThemeProvider>().accentColor,
                                 borderRadius: BorderRadius.circular(14),
                                 boxShadow: [AccentGlow.halo(context)],
                               ),
@@ -193,9 +195,10 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
-                                    color: context.watch<ThemeProvider>().isLight
-                                        ? Colors.white
-                                        : const Color(0xFF1E1E2E),
+                                    color:
+                                        context.watch<ThemeProvider>().isLight
+                                            ? Colors.white
+                                            : const Color(0xFF1E1E2E),
                                     letterSpacing: 0.3,
                                   ),
                                 ),
@@ -276,16 +279,23 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                                 FullScreenInfoItem(
                                                   label: 'Slope',
                                                   value: 'm = ${result.m}',
-                                                  color: context.watch<ThemeProvider>().accentColor,
+                                                  color: context
+                                                      .watch<ThemeProvider>()
+                                                      .accentColor,
                                                 ),
                                                 FullScreenInfoItem(
                                                   label: 'Point',
-                                                  value: '(${result.x1}, ${result.y1})',
-                                                  color: context.watch<ThemeProvider>().accentColor,
+                                                  value:
+                                                      '(${result.x1}, ${result.y1})',
+                                                  color: context
+                                                      .watch<ThemeProvider>()
+                                                      .accentColor,
                                                 ),
                                               ],
                                             ],
-                                            accentColor: context.watch<ThemeProvider>().accentColor,
+                                            accentColor: context
+                                                .watch<ThemeProvider>()
+                                                .accentColor,
                                           ),
                                         ),
                                       );
@@ -305,7 +315,8 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                           ValueListenableBuilder<Map<String, String>?>(
                             valueListenable: _badgesNotifier,
                             builder: (context, badges, _) {
-                              if (badges == null) return const SizedBox.shrink();
+                              if (badges == null)
+                                return const SizedBox.shrink();
                               return PSBadges(
                                 direction: badges['direction']!,
                                 angle: badges['angle']!,
@@ -362,7 +373,8 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
             'Back',
             style: TextStyle(
               fontSize: 13,
-              color: theme.accentColor.withValues(alpha: theme.isLight ? 0.7 : 0.5),
+              color: theme.accentColor
+                  .withValues(alpha: theme.isLight ? 0.7 : 0.5),
               shadows: [
                 Shadow(
                   color: theme.accentColor.withValues(alpha: 0.3),

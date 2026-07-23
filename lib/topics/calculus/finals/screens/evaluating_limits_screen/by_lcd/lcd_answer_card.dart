@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -48,7 +48,8 @@ class LCDAnswerCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
+              color:
+                  accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
               blurRadius: isShowingSteps ? 30 : 20,
               offset: const Offset(0, 10),
             ),
@@ -58,7 +59,10 @@ class LCDAnswerCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                _StatusIcon(isShowingSteps: isShowingSteps, accentColor: accentColor, size: isCompact ? 40 : 48),
+                _StatusIcon(
+                    isShowingSteps: isShowingSteps,
+                    accentColor: accentColor,
+                    size: isCompact ? 40 : 48),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -89,7 +93,7 @@ class LCDAnswerCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             // Interaction hint
             AnimatedSize(
               duration: const Duration(milliseconds: 200),
@@ -99,7 +103,9 @@ class LCDAnswerCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.expand_more_rounded, size: 16, color: accentColor.withValues(alpha: 0.5)),
+                          Icon(Icons.expand_more_rounded,
+                              size: 16,
+                              color: accentColor.withValues(alpha: 0.5)),
                           const SizedBox(width: 8),
                           ResponsiveText(
                             'TAP TO REVEAL SOLUTIONS',
@@ -111,7 +117,9 @@ class LCDAnswerCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Icon(Icons.expand_more_rounded, size: 16, color: accentColor.withValues(alpha: 0.5)),
+                          Icon(Icons.expand_more_rounded,
+                              size: 16,
+                              color: accentColor.withValues(alpha: 0.5)),
                         ],
                       ),
                     )
@@ -129,16 +137,23 @@ class _StatusIcon extends StatelessWidget {
   final Color accentColor;
   final double size;
 
-  const _StatusIcon({required this.isShowingSteps, required this.accentColor, this.size = 48});
+  const _StatusIcon(
+      {required this.isShowingSteps,
+      required this.accentColor,
+      this.size = 48});
 
   @override
   Widget build(BuildContext context) {
+    final onDanger = FinalsTheme.isLight(context)
+        ? FinalsTheme.textPrimary(context)
+        : FinalsTheme.onPrimaryFor(context);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: isShowingSteps ? accentColor : accentColor.withValues(alpha: 0.1),
+        color:
+            isShowingSteps ? accentColor : accentColor.withValues(alpha: 0.1),
         shape: BoxShape.circle,
         border: Border.all(
           color: accentColor.withValues(alpha: 0.3),
@@ -147,7 +162,7 @@ class _StatusIcon extends StatelessWidget {
       ),
       child: Icon(
         isShowingSteps ? Icons.auto_awesome_rounded : Icons.check_rounded,
-        color: isShowingSteps ? Colors.white : accentColor,
+        color: isShowingSteps ? onDanger : accentColor,
         size: size * 0.5,
       ),
     );
@@ -168,7 +183,8 @@ class _ValueDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (answer == null || answer!.isNaN) {
-      return _buildTextDisplay('Undefined', accentColor, context, wrapFlexible: true);
+      return _buildTextDisplay('Undefined', accentColor, context,
+          wrapFlexible: true);
     }
 
     // Always use fractionalAnswer if provided - this is the authoritative answer from steps.dart
@@ -213,7 +229,7 @@ class _ValueDisplay extends StatelessWidget {
           );
         }
       }
-      
+
       // Display fractionalAnswer as-is (whether it's a fraction, constant, or other format)
       return Flexible(
         child: Container(
@@ -232,7 +248,8 @@ class _ValueDisplay extends StatelessWidget {
           ),
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: fractionalAnswer!.contains(r'\frac') || fractionalAnswer!.contains(r'\sqrt')
+            child: fractionalAnswer!.contains(r'\frac') ||
+                    fractionalAnswer!.contains(r'\sqrt')
                 ? Math.tex(
                     fractionalAnswer!,
                     textStyle: TextStyle(
@@ -266,7 +283,8 @@ class _ValueDisplay extends StatelessWidget {
     }
 
     // Fallback: if no fractionalAnswer, format the numerical answer
-    return _buildTextDisplay(_formatAnswer(answer!), accentColor, context, wrapFlexible: true);
+    return _buildTextDisplay(_formatAnswer(answer!), accentColor, context,
+        wrapFlexible: true);
   }
 
   String _formatAnswer(double val) {
@@ -276,7 +294,7 @@ class _ValueDisplay extends StatelessWidget {
     if (val == val.toInt()) {
       return val.toInt().toString();
     }
-    
+
     // Try to find a good fraction representation
     final absVal = val.abs();
     for (int d = 1; d <= 1000; d++) {
@@ -294,7 +312,7 @@ class _ValueDisplay extends StatelessWidget {
         return "${val < 0 ? '-' : ''}\\frac{$numerator}{$denominator}";
       }
     }
-    
+
     // Fallback: try higher tolerance range
     for (int d = 1001; d <= 10000; d += 100) {
       final n = absVal * d;
@@ -310,13 +328,13 @@ class _ValueDisplay extends StatelessWidget {
         }
       }
     }
-    
+
     // Absolute last resort: return as integer if very close
     final rounded = val.round();
     if ((val - rounded).abs() < 0.01) {
       return rounded.toInt().toString();
     }
-    
+
     // Never return decimals - return the value as-is in string form without decimal places
     return val.toInt().toString();
   }
@@ -330,7 +348,9 @@ class _ValueDisplay extends StatelessWidget {
     return a;
   }
 
-  Widget _buildTextDisplay(String displayVal, Color accentColor, BuildContext context, {required bool wrapFlexible}) {
+  Widget _buildTextDisplay(
+      String displayVal, Color accentColor, BuildContext context,
+      {required bool wrapFlexible}) {
     final container = Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(

@@ -77,7 +77,7 @@ class _FactoringInputFieldContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accentColor = FinalsTheme.primary;
+    final accentColor = FinalsTheme.primaryFor(context);
 
     final expressionFontSize = isCompact ? 16.0 : (isMedium ? 17.0 : 18.0);
     final limitTextSize = isCompact ? 16.0 : (isMedium ? 20.0 : 22.0);
@@ -121,27 +121,35 @@ class _FactoringInputFieldContent extends StatelessWidget {
                           letterSpacing: -0.5,
                         ),
                         decoration: InputDecoration(
-                          hintText: isCompact ? 'x²-4 / x-2' : '(x^2 - 4) / (x - 2)',
-                          hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
+                          hintText:
+                              isCompact ? 'x²-4 / x-2' : '(x^2 - 4) / (x - 2)',
+                          hintStyle:
+                              FinalsTheme.subtitleStyle(context).copyWith(
                             color: FinalsTheme.textSecondary(context)
                                 .withValues(alpha: 0.3),
                             fontSize: isCompact ? 12 : 14,
                           ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: isCompact ? 8 : 12),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: isCompact ? 8 : 12),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              Divider(height: 1, thickness: 0.8, indent: isCompact ? 16 : 20, endIndent: isCompact ? 16 : 20),
+              Divider(
+                  height: 1,
+                  thickness: 0.8,
+                  indent: isCompact ? 16 : 20,
+                  endIndent: isCompact ? 16 : 20),
               Padding(
-                padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
+                padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12,
+                    isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
                 child: Row(
                   children: [
                     ResponsiveText(
-          '',
+                      '',
                       style: FinalsTheme.titleStyle(context).copyWith(
                         fontStyle: FontStyle.italic,
                         fontSize: limitTextSize,
@@ -155,7 +163,8 @@ class _FactoringInputFieldContent extends StatelessWidget {
                       onTap: () => _showVariablePicker(context),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: isCompact ? 4 : 8),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: isCompact ? 4 : 8),
                       child: Icon(
                         Icons.arrow_forward_rounded,
                         size: isCompact ? 12 : 14,
@@ -187,14 +196,15 @@ class _FactoringInputFieldContent extends StatelessWidget {
                           ),
                           decoration: InputDecoration(
                             hintText: 'value',
-                            hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
+                            hintStyle:
+                                FinalsTheme.subtitleStyle(context).copyWith(
                               fontSize: 11,
                               color: FinalsTheme.textSecondary(context)
                                   .withValues(alpha: 0.4),
                             ),
                             border: InputBorder.none,
-                            contentPadding:
-                                EdgeInsets.symmetric(vertical: isCompact ? 6 : 10),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: isCompact ? 6 : 10),
                           ),
                         ),
                       ),
@@ -215,7 +225,7 @@ class _FactoringInputFieldContent extends StatelessWidget {
     final variables = ['x', 'y', 'z', 't', 'n', 'u'];
     showModalBottomSheet(
       context: context,
-      backgroundColor: FinalsTheme.card(context),
+      backgroundColor: FinalsTheme.cardForEvent(context),
       barrierColor: Colors.black.withValues(alpha: 0.5),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -236,7 +246,7 @@ class _FactoringInputFieldContent extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: ResponsiveText(
-          '',
+                '',
                 style: FinalsTheme.titleStyle(ctx).copyWith(fontSize: 20),
               ),
             ),
@@ -254,29 +264,34 @@ class _FactoringInputFieldContent extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? FinalsTheme.primary.withValues(alpha: 0.1)
+                          ? FinalsTheme.primaryFor(ctx).withValues(alpha: 0.1)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: ListTile(
-                      title: Text(
-                        v,
-                        style: FinalsTheme.titleStyle(ctx).copyWith(
-                          fontFamily: 'serif',
-                          fontSize: 18,
-                          color: isSelected ? FinalsTheme.primary : null,
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      child: ListTile(
+                        title: Text(
+                          v,
+                          style: FinalsTheme.titleStyle(ctx).copyWith(
+                            fontFamily: 'serif',
+                            fontSize: 18,
+                            color:
+                                isSelected ? FinalsTheme.primaryFor(ctx) : null,
+                          ),
                         ),
+                        onTap: () {
+                          onVariableChanged(v);
+                          Navigator.pop(ctx);
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                        trailing: isSelected
+                            ? Icon(Icons.check_circle_rounded,
+                                color: FinalsTheme.primaryFor(ctx))
+                            : null,
                       ),
-                      onTap: () {
-                        onVariableChanged(v);
-                        Navigator.pop(ctx);
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      trailing: isSelected
-                          ? const Icon(Icons.check_circle_rounded,
-                              color: FinalsTheme.primary)
-                          : null,
                     ),
                   );
                 },

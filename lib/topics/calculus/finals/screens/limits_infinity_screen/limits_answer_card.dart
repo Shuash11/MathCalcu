@@ -40,13 +40,13 @@ class LimitsAnswerCard extends StatelessWidget {
           border: Border.all(
             color: hasError
                 ? FinalsTheme.danger.withValues(alpha: 0.3)
-                : FinalsTheme.primary.withValues(alpha: 0.3),
+                : FinalsTheme.primaryFor(context).withValues(alpha: 0.3),
           ),
           boxShadow: [
             BoxShadow(
               color: hasError
                   ? FinalsTheme.danger.withValues(alpha: 0.1)
-                  : FinalsTheme.primary.withValues(alpha: 0.15),
+                  : FinalsTheme.primaryFor(context).withValues(alpha: 0.15),
               blurRadius: 24,
               offset: const Offset(0, 8),
             ),
@@ -70,12 +70,13 @@ class LimitsAnswerCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: FinalsTheme.primary.withValues(alpha: 0.15),
+                      color: FinalsTheme.primaryFor(context)
+                          .withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: FinalsTheme.primary,
+                      color: FinalsTheme.primaryFor(context),
                       size: 18,
                     ),
                   ),
@@ -108,7 +109,7 @@ class LimitsAnswerCard extends StatelessWidget {
                   "= $resultString",
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontSize: 22,
-                    color: FinalsTheme.primary,
+                    color: FinalsTheme.primaryFor(context),
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -117,7 +118,7 @@ class LimitsAnswerCard extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: ResponsiveText(
-          '',
+                  '',
                   style: FinalsTheme.labelStyle(context).copyWith(
                     fontSize: 9,
                     letterSpacing: 0.5,

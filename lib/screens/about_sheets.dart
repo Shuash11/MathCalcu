@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/models/developer.dart';
@@ -26,7 +25,7 @@ class _AboutSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    const accent = Color(0xFF334155);
+    final accent = theme.accentColor;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
@@ -35,12 +34,14 @@ class _AboutSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            final double s = (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
+            final double s =
+                (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
 
             return Container(
               decoration: BoxDecoration(
                 color: theme.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32 * s)),
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(32 * s)),
                 boxShadow: [
                   BoxShadow(
                     color: accent.withValues(alpha: 0.2),
@@ -66,7 +67,8 @@ class _AboutSheet extends StatelessWidget {
 
                   // Header with icon
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 28 * s, vertical: 16 * s),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 28 * s, vertical: 16 * s),
                     child: Row(
                       children: [
                         Container(
@@ -118,7 +120,8 @@ class _AboutSheet extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       controller: scrollController,
-                      padding: EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
+                      padding:
+                          EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
                       children: [
                         // Description card
                         Container(
@@ -199,7 +202,7 @@ class _AboutSheet extends StatelessWidget {
                                     fontSize: 11 * s,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 1.2,
-                                    color: Colors.white,
+                                    color: theme.surface,
                                   ),
                                 ),
                               ),
@@ -243,5 +246,3 @@ class _AboutSheet extends StatelessWidget {
     );
   }
 }
-
-

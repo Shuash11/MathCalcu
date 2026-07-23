@@ -53,12 +53,14 @@ class _AnswerCardState extends State<AnswerCard> {
             color: FinalsTheme.card(context),
             borderRadius: BorderRadius.circular(22),
             border: Border.all(
-              color: FinalsTheme.danger.withValues(alpha: _hovered ? 0.6 : 0.25),
+              color:
+                  FinalsTheme.danger.withValues(alpha: _hovered ? 0.6 : 0.25),
               width: _hovered ? 2 : 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: FinalsTheme.danger.withValues(alpha: _hovered ? 0.3 : 0.1),
+                color:
+                    FinalsTheme.danger.withValues(alpha: _hovered ? 0.3 : 0.1),
                 blurRadius: _hovered ? 28 : 16,
                 offset: const Offset(0, 8),
               ),
@@ -76,24 +78,28 @@ class _AnswerCardState extends State<AnswerCard> {
               children: [
                 // Background glow effect
                 Positioned(
-                  bottom: -30, right: -30,
+                  bottom: -30,
+                  right: -30,
                   child: Container(
-                    width: 140, height: 140,
+                    width: 140,
+                    height: 140,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          FinalsTheme.secondary.withValues(alpha: _hovered ? 0.25 : 0.12),
+                          FinalsTheme.secondary
+                              .withValues(alpha: _hovered ? 0.25 : 0.12),
                           Colors.transparent,
                         ],
                       ),
                     ),
                   ),
                 ),
-                
+
                 // Main Content Column
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -103,35 +109,38 @@ class _AnswerCardState extends State<AnswerCard> {
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                Icons.check_circle_outline, 
-                                color: FinalsTheme.danger.withValues(alpha: _hovered ? 1.0 : 0.8), 
-                                size: 20
-                              ),
+                              Icon(Icons.check_circle_outline,
+                                  color: FinalsTheme.danger
+                                      .withValues(alpha: _hovered ? 1.0 : 0.8),
+                                  size: 20),
                               const SizedBox(width: 8),
-                              Text(
-                                "Slope (m)", 
-                                style: TextStyle(
-                                  fontSize: 14, 
-                                  fontWeight: FontWeight.w700, 
-                                  color: FinalsTheme.textPrimary(context).withValues(alpha: 0.6),
-                                  letterSpacing: 0.5,
-                                )
-                              ),
+                              Text("Slope (m)",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: FinalsTheme.textPrimary(context)
+                                        .withValues(alpha: 0.6),
+                                    letterSpacing: 0.5,
+                                  )),
                             ],
                           ),
                           Container(
-                            width: 34, height: 34,
+                            width: 34,
+                            height: 34,
                             decoration: BoxDecoration(
-                              color: _hovered ? FinalsTheme.danger.withValues(alpha: 0.15) : Colors.transparent,
+                              color: _hovered
+                                  ? FinalsTheme.danger.withValues(alpha: 0.15)
+                                  : Colors.transparent,
                               shape: BoxShape.circle,
-                              border: Border.all(color: FinalsTheme.danger.withValues(alpha: _hovered ? 0.5 : 0.25), width: 1.5),
+                              border: Border.all(
+                                  color: FinalsTheme.danger
+                                      .withValues(alpha: _hovered ? 0.5 : 0.25),
+                                  width: 1.5),
                             ),
-                            child: Icon(
-                              Icons.arrow_forward_ios_rounded, 
-                              size: 14, 
-                              color: FinalsTheme.danger.withValues(alpha: _hovered ? 1.0 : 0.5)
-                            ),
+                            child: Icon(Icons.arrow_forward_ios_rounded,
+                                size: 14,
+                                color: FinalsTheme.danger
+                                    .withValues(alpha: _hovered ? 1.0 : 0.5)),
                           ),
                         ],
                       ),
@@ -144,7 +153,9 @@ class _AnswerCardState extends State<AnswerCard> {
                         style: TextStyle(
                           fontSize: 56,
                           fontWeight: FontWeight.w900,
-                          color: _hovered ? FinalsTheme.danger : FinalsTheme.textPrimary(context),
+                          color: _hovered
+                              ? FinalsTheme.danger
+                              : FinalsTheme.textPrimary(context),
                           letterSpacing: -2,
                           height: 1.1,
                         ),
@@ -158,9 +169,13 @@ class _AnswerCardState extends State<AnswerCard> {
                         alignment: WrapAlignment.start,
                         spacing: 8,
                         children: [
-                          _pillBadge("View Steps", FinalsTheme.danger, Icons.double_arrow_rounded),
-                          if (r.tangentLineEquation != null) 
-                            _pillBadge("Tangent", FinalsTheme.secondary, Icons.linear_scale_rounded),
+                          _pillBadge("View Steps", FinalsTheme.danger,
+                              Icons.double_arrow_rounded),
+                          if (r.tangentLineEquation != null)
+                            _pillBadge(
+                                "Tangent",
+                                FinalsTheme.secondaryFor(context),
+                                Icons.linear_scale_rounded),
                         ],
                       )
                     ],
@@ -181,7 +196,8 @@ class _AnswerCardState extends State<AnswerCard> {
       decoration: BoxDecoration(
         color: color.withValues(alpha: isHovered ? 0.2 : 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: isHovered ? 0.6 : 0.3), width: 1),
+        border: Border.all(
+            color: color.withValues(alpha: isHovered ? 0.6 : 0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -190,11 +206,11 @@ class _AnswerCardState extends State<AnswerCard> {
           const SizedBox(width: 6),
           Flexible(
             child: Text(
-              text, 
+              text,
               style: TextStyle(
-                fontSize: 12, 
-                fontWeight: FontWeight.w700, 
-                color: color, 
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: color,
                 letterSpacing: 0.3,
               ),
               overflow: TextOverflow.ellipsis,
@@ -215,11 +231,14 @@ class _SlopeDerivativesSteps extends StatelessWidget {
     if (line.contains('{') && line.contains('}')) return true;
     if (line.contains('\\') && RegExp(r'[\\{}]').hasMatch(line)) return true;
     if (line.contains('dy/dx') || line.contains('d/dx')) return true;
-    final mathPattern = RegExp(r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=');
+    final mathPattern =
+        RegExp(r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=');
     final hasVariables = RegExp(r'[x-yt]').hasMatch(line);
     final hasNumbers = RegExp(r'[0-9]').hasMatch(line);
-    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('?'))) return true;
-    if (hasNumbers && mathPattern.hasMatch(line) && line.contains('=')) return true;
+    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('?')))
+      return true;
+    if (hasNumbers && mathPattern.hasMatch(line) && line.contains('='))
+      return true;
     return false;
   }
 
@@ -233,15 +252,16 @@ class _SlopeDerivativesSteps extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 3, height: 20,
+                width: 3,
+                height: 20,
                 decoration: BoxDecoration(
-                  color: FinalsTheme.primary,
+                  color: FinalsTheme.primaryFor(context),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(width: 10),
               ResponsiveText(
-          '',
+                '',
                 style: FinalsTheme.labelStyle(context),
               ),
             ],

@@ -67,12 +67,12 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
 
     try {
       final inputExpr = _exprController.text.trim();
-      
+
       final result = AdvancedStepGenerator.generateDetailedSolution(
         inputExpr,
         _variable,
       );
-      
+
       setState(() {
         _solution = result;
         _isLoading = false;
@@ -89,7 +89,8 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
     if (_solution == null) return;
 
     final solution = _solution!;
-    final hasSteps = solution.steps.length > 2 && solution.steps.any((s) => s.expression.isNotEmpty);
+    final hasSteps = solution.steps.length > 2 &&
+        solution.steps.any((s) => s.expression.isNotEmpty);
 
     showSolutionStepsModal(
       context: context,
@@ -107,11 +108,12 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle_outline_rounded, color: FinalsTheme.primary, size: 24),
+                  Icon(Icons.check_circle_outline_rounded,
+                      color: FinalsTheme.primaryFor(context), size: 24),
                   const SizedBox(width: 12),
                   Expanded(
                     child: ResponsiveText(
-          '',
+                      '',
                       style: FinalsTheme.subtitleStyle(context),
                     ),
                   ),
@@ -131,7 +133,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                 design: AppDesign.app,
                 mathContent: Text(
                   step.expression.toString(),
-                  style: const TextStyle(color: FinalsTheme.primary),
+                  style: TextStyle(color: FinalsTheme.primaryFor(context)),
                 ),
               );
             }),
@@ -154,7 +156,8 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
               leading: AccentGlow.iconHalo(
                 context,
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: FinalsTheme.primary),
+                  icon: Icon(Icons.arrow_back_ios_new_rounded,
+                      color: FinalsTheme.primaryFor(context)),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
@@ -171,17 +174,18 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Differentiate', style: FinalsTheme.titleStyle(context).copyWith(fontSize: 28)),
+                        Text('Differentiate',
+                            style: FinalsTheme.titleStyle(context)
+                                .copyWith(fontSize: 28)),
                         const SizedBox(height: 4),
-                        Text('Enter a function to find its derivative step-by-step.',
+                        Text(
+                            'Enter a function to find its derivative step-by-step.',
                             style: FinalsTheme.subtitleStyle(context)),
                       ],
                     ),
                   ),
                 ),
-
                 const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   sliver: SliverToBoxAdapter(
@@ -195,9 +199,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                     ),
                   ),
                 ),
-
                 const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
                 if (_error != null)
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -222,9 +224,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                       ),
                     ),
                   ),
-
                 const SliverToBoxAdapter(child: SizedBox(height: 40)),
-
                 if (_solution != null)
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -236,12 +236,14 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                           icon: const Icon(Icons.list_alt_rounded, size: 18),
                           label: const Text('Show Steps'),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: FinalsTheme.primary,
-                            side: const BorderSide(color: FinalsTheme.primary),
+                            foregroundColor: FinalsTheme.primaryFor(context),
+                            side: BorderSide(
+                                color: FinalsTheme.primaryFor(context)),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 14),
                           ),
                         ),
                       ),
@@ -252,7 +254,7 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
           ),
           MathKeyboard(
             controller: _activeController ?? _exprController,
-            accentColor: FinalsTheme.primary,
+            accentColor: FinalsTheme.primaryFor(context),
             hideSignal: _hideKeyboardSignal,
           ),
           SizedBox(height: MediaQuery.of(context).padding.bottom),

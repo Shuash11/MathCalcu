@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/shared/widgets/accent_glow.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
@@ -85,14 +85,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             // Dynamic button height calculation
             const double verticalPadding = 16.0; // 8 top + 8 bottom
             final double spacingTotal = 7 * buttonSpacing;
-            final double availableForContent = constraints.maxHeight - verticalPadding - spacingTotal;
+            final double availableForContent =
+                constraints.maxHeight - verticalPadding - spacingTotal;
 
             // Display takes ~22%, clamped 50-160px (lower min for tiny test screens)
-            final double displayHeight = (availableForContent * 0.22).clamp(50.0, 160.0);
+            final double displayHeight =
+                (availableForContent * 0.22).clamp(50.0, 160.0);
 
             // Button grid gets the rest
             final double buttonGridHeight = availableForContent - displayHeight;
-            final double buttonHeight = ((buttonGridHeight - spacingTotal) / 8).clamp(36.0, 64.0);
+            final double buttonHeight =
+                ((buttonGridHeight - spacingTotal) / 8).clamp(44.0, 64.0);
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -119,12 +122,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           end: Alignment.bottomRight,
                         ),
                         border: Border.all(
-                          color: FinalsTheme.primary.withValues(alpha: 0.15),
+                          color: theme.accentColor.withValues(alpha: 0.15),
                           width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: FinalsTheme.primary.withValues(alpha: 0.10),
+                            color: theme.accentColor.withValues(alpha: 0.10),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
@@ -141,28 +144,35 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                               ResponsiveText(
                                 _history,
                                 style: TextStyle(
-                                  fontSize: (displayHeight * 0.1).clamp(8.0, 12.0),
+                                  fontSize:
+                                      (displayHeight * 0.1).clamp(8.0, 12.0),
                                   color: theme.textSecondary,
                                 ),
                               ),
-                              SizedBox(height: (displayHeight * 0.03).clamp(1.0, 4.0)),
+                              SizedBox(
+                                  height:
+                                      (displayHeight * 0.03).clamp(1.0, 4.0)),
                             ],
                             ResponsiveText(
                               _expression.isEmpty ? '0' : _expression,
                               style: TextStyle(
-                                fontSize: (displayHeight * 0.22).clamp(14.0, 24.0),
+                                fontSize:
+                                    (displayHeight * 0.22).clamp(14.0, 24.0),
                                 fontWeight: FontWeight.w600,
                                 color: theme.textPrimary,
                               ),
                             ),
                             if (_showResult) ...[
-                              SizedBox(height: (displayHeight * 0.03).clamp(1.0, 4.0)),
+                              SizedBox(
+                                  height:
+                                      (displayHeight * 0.03).clamp(1.0, 4.0)),
                               ResponsiveText(
                                 '= $_result',
                                 style: TextStyle(
-                                  fontSize: (displayHeight * 0.15).clamp(10.0, 16.0),
+                                  fontSize:
+                                      (displayHeight * 0.15).clamp(10.0, 16.0),
                                   fontWeight: FontWeight.w400,
-                                  color: FinalsTheme.primary,
+                                  color: theme.accentColor,
                                 ),
                               ),
                             ],
@@ -177,21 +187,29 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     height: buttonGridHeight,
                     child: Column(
                       children: [
-                        _buildButtonRow(['C', '(', ')', '⌫'], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['C', '(', ')', '⌫'], theme,
+                            buttonSpacing, buttonHeight),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['7', '8', '9', '\u00D7'], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['7', '8', '9', '\u00D7'], theme,
+                            buttonSpacing, buttonHeight),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['4', '5', '6', '\u2212'], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['4', '5', '6', '\u2212'], theme,
+                            buttonSpacing, buttonHeight),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['1', '2', '3', '\u221B'], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['1', '2', '3', '\u221B'], theme,
+                            buttonSpacing, buttonHeight),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['0', '.', 'Ans', '+'], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['0', '.', 'Ans', '+'], theme,
+                            buttonSpacing, buttonHeight),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['sin', 'cos', 'tan', '^'], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['sin', 'cos', 'tan', '^'], theme,
+                            buttonSpacing, buttonHeight),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['log', 'ln', '\u221A', '='], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['log', 'ln', '\u221A', '='], theme,
+                            buttonSpacing, buttonHeight),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['\u03C0', 'e', '%', '!'], theme, buttonSpacing, buttonHeight),
+                        _buildButtonRow(['\u03C0', 'e', '%', '!'], theme,
+                            buttonSpacing, buttonHeight),
                       ],
                     ),
                   ),
@@ -205,7 +223,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget _buildButtonRow(List<String> buttons, ThemeProvider theme, double spacing, double buttonHeight) {
+  Widget _buildButtonRow(List<String> buttons, ThemeProvider theme,
+      double spacing, double buttonHeight) {
     return SizedBox(
       height: buttonHeight,
       child: Row(
@@ -224,7 +243,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget _buildButton(String value, ThemeProvider theme) {
     final isOperator = ['+', '\u00D7', '\u2212', '\u221B', '='].contains(value);
     final isSpecial = ['C', '⌫', 'Ans'].contains(value);
-    final isFunction = ['sin', 'cos', 'tan', 'log', 'ln', '\u221A'].contains(value);
+    final isFunction =
+        ['sin', 'cos', 'tan', 'log', 'ln', '\u221A'].contains(value);
     final isConstant = ['\u03C0', 'e'].contains(value);
 
     Color bgColor;
@@ -233,57 +253,70 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     FontWeight fontWeight = FontWeight.w500;
 
     if (value == '=') {
-      bgColor = FinalsTheme.primary;
-      textColor = Colors.white;
+      bgColor = theme.accentColor;
+      textColor = theme.surface;
       fontWeight = FontWeight.w700;
     } else if (isOperator) {
-      bgColor = FinalsTheme.primary.withValues(alpha: 0.15);
-      textColor = FinalsTheme.primary;
+      bgColor = theme.accentColor.withValues(alpha: 0.15);
+      textColor = theme.accentColor;
       fontWeight = FontWeight.w600;
     } else if (isSpecial) {
       bgColor = FinalsTheme.danger.withValues(alpha: 0.15);
       textColor = FinalsTheme.danger;
     } else if (isFunction || isConstant) {
       bgColor = theme.cardSecondary;
-      textColor = FinalsTheme.secondary;
+      textColor = theme.textPrimary;
       fontSize = 16;
     } else {
       bgColor = theme.card;
       textColor = theme.textPrimary;
     }
 
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        String insert = value;
-        if (value == 'sin' || value == 'cos' || value == 'tan' ||
-            value == 'log' || value == 'ln' || value == '\u221A') {
-          insert = '$value(';
-        } else if (value == '!') {
-          insert = '!';
-        }
-        _onButtonTap(insert);
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        decoration: BoxDecoration(
+    void activate() {
+      HapticFeedback.lightImpact();
+      String insert = value;
+      if (value == 'sin' ||
+          value == 'cos' ||
+          value == 'tan' ||
+          value == 'log' ||
+          value == 'ln' ||
+          value == '\u221A') {
+        insert = '$value(';
+      } else if (value == '!') {
+        insert = '!';
+      }
+      _onButtonTap(insert);
+    }
+
+    return Semantics(
+      label: 'Calculator key $value',
+      button: true,
+      onTap: activate,
+      excludeSemantics: true,
+      child: GestureDetector(
+        excludeFromSemantics: true,
+        onTap: activate,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: value == '='
-                  ? FinalsTheme.primary
+                  ? theme.accentColor
                   : textColor.withValues(alpha: 0.1),
               width: value == '=' ? 0 : 1,
             ),
             boxShadow: value == '=' ? [AccentGlow.halo(context)] : const [],
           ),
-        child: Center(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: fontWeight,
-              color: textColor,
+          child: Center(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: fontWeight,
+                color: textColor,
+              ),
             ),
           ),
         ),

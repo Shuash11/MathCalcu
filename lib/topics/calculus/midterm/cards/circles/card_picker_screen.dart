@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +8,6 @@ import 'finding_center_radius_card.dart';
 
 class CircleCardPickerScreen extends StatelessWidget {
   const CircleCardPickerScreen({super.key});
-
-  static const Color _accent = Color(0xFF334155);
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +20,14 @@ class CircleCardPickerScreen extends StatelessWidget {
           Positioned(
             top: -60,
             right: -60,
-            child: _AmbientOrb(color: _accent.withValues(alpha: 0.12), size: 260),
+            child: _AmbientOrb(
+                color: theme.accentColor.withValues(alpha: 0.12), size: 260),
           ),
           Positioned(
             bottom: -80,
             left: -60,
-            child:
-                _AmbientOrb(color: _accent.withValues(alpha: 0.10), size: 200),
+            child: _AmbientOrb(
+                color: theme.accentColor.withValues(alpha: 0.10), size: 200),
           ),
           SafeArea(
             child: Padding(
@@ -62,19 +61,26 @@ class CircleCardPickerScreen extends StatelessWidget {
   }
 
   Widget _buildTopBar(BuildContext context, ThemeProvider theme) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Back',
+      button: true,
       onTap: () => Navigator.of(context).maybePop(),
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: _accent.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
-          border:
-              Border.all(color: _accent.withValues(alpha: 0.35), width: 1.5),
+      excludeSemantics: true,
+      child: GestureDetector(
+        excludeFromSemantics: true,
+        onTap: () => Navigator.of(context).maybePop(),
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: theme.accentColor.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+                color: theme.accentColor.withValues(alpha: 0.35), width: 1.5),
+          ),
+          child: Icon(Icons.arrow_back_ios_new_rounded,
+              color: theme.accentColor, size: 18),
         ),
-        child: const Icon(Icons.arrow_back_ios_new_rounded,
-            color: _accent, size: 18),
       ),
     );
   }

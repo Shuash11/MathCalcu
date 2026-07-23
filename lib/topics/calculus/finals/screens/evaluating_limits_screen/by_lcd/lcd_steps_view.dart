@@ -77,7 +77,7 @@ class _FormattedStepText extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 13,
-                  color: FinalsTheme.primary.withValues(alpha: 0.8),
+                  color: FinalsTheme.primaryFor(context).withValues(alpha: 0.8),
                 ),
               );
             },
@@ -94,7 +94,8 @@ class _FormattedStepText extends StatelessWidget {
                     color: FinalsTheme.cardSecondary(context),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: FinalsTheme.primary.withValues(alpha: 0.1)),
+                        color: FinalsTheme.primaryFor(context)
+                            .withValues(alpha: 0.1)),
                   ),
                   child: mathWidget,
                 )
@@ -146,7 +147,8 @@ class _InlineMathText extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 13,
-                    color: FinalsTheme.primary.withValues(alpha: 0.7),
+                    color:
+                        FinalsTheme.primaryFor(context).withValues(alpha: 0.7),
                   ),
                 );
               },

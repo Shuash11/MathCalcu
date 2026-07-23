@@ -108,7 +108,10 @@ class _EquationInputCardState extends State<EquationInputCard> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: widget.color.withValues(alpha: 0.2)),
       ),
@@ -175,8 +178,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
             decoration: InputDecoration(
               hintText: 'e.g. x² + y² - 6x - 8y + 9 = 0',
               hintStyle: TextStyle(
-                color: const Color(0xFF94A3B8)
-                    .withValues(alpha: 0.4),
+                color: const Color(0xFF94A3B8).withValues(alpha: 0.4),
                 fontSize: 13,
                 fontWeight: FontWeight.normal,
               ),

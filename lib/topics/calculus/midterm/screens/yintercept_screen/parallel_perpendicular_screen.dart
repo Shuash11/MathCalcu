@@ -230,7 +230,10 @@ class _ParallelPerpendicularScreenState
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
+          color: context
+              .watch<ThemeProvider>()
+              .accentColor
+              .withValues(alpha: 0.15),
           width: 1,
         ),
         boxShadow: [
@@ -294,7 +297,10 @@ class _ParallelPerpendicularScreenState
                   color: context.watch<ThemeProvider>().surface,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2),
+                    color: context
+                        .watch<ThemeProvider>()
+                        .accentColor
+                        .withValues(alpha: 0.2),
                   ),
                 ),
                 child: Icon(
@@ -341,8 +347,10 @@ class _ParallelPerpendicularScreenState
                         color: context.watch<ThemeProvider>().surface,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color:
-                              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
+                          color: context
+                              .watch<ThemeProvider>()
+                              .accentColor
+                              .withValues(alpha: 0.15),
                         ),
                       ),
                       child: Icon(
@@ -392,12 +400,18 @@ class _ParallelPerpendicularScreenState
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.35),
+          color: context
+              .watch<ThemeProvider>()
+              .accentColor
+              .withValues(alpha: 0.35),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
+            color: context
+                .watch<ThemeProvider>()
+                .accentColor
+                .withValues(alpha: 0.15),
             blurRadius: 32,
             offset: const Offset(0, 8),
             spreadRadius: 2,
@@ -562,7 +576,8 @@ class _ParallelPerpendicularScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1),
+        color:
+            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -617,8 +632,11 @@ class _ParallelPerpendicularScreenState
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border:
-            Border.all(color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2)),
+        border: Border.all(
+            color: context
+                .watch<ThemeProvider>()
+                .accentColor
+                .withValues(alpha: 0.2)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -716,13 +734,19 @@ class _CoordField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
+            color: context
+                .watch<ThemeProvider>()
+                .accentColor
+                .withValues(alpha: 0.15),
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.5),
+            color: context
+                .watch<ThemeProvider>()
+                .accentColor
+                .withValues(alpha: 0.5),
             width: 1.5,
           ),
         ),
@@ -776,18 +800,19 @@ class _SolveButtonState extends State<_SolveButton> {
               borderRadius: BorderRadius.circular(14),
               boxShadow: [AccentGlow.halo(context)],
             ),
-            child: const Center(
+            child: Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.calculate_rounded, color: Colors.white, size: 18),
-                  SizedBox(width: 8),
+                  Icon(Icons.calculate_rounded,
+                      color: FinalsTheme.onPrimaryFor(context), size: 18),
+                  const SizedBox(width: 8),
                   ResponsiveText(
                     'Solve',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: FinalsTheme.onPrimaryFor(context),
                       letterSpacing: 0.3,
                     ),
                   ),
@@ -1111,10 +1136,10 @@ class _MiniStepColumn extends StatelessWidget {
             child: Center(
               child: ResponsiveText(
                 stepNumber.toString(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: FinalsTheme.onPrimaryFor(context),
                 ),
               ),
             ),
@@ -1270,11 +1295,13 @@ class _StepBlocks extends StatelessWidget {
         border: Border.all(color: accent.withValues(alpha: 0.5), width: 1.2),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      child: Center(child: _renderMath(latex, fallback, fontSize: 14, accent: accent)),
+      child: Center(
+          child: _renderMath(latex, fallback, fontSize: 14, accent: accent)),
     );
   }
 
-  Widget _renderMath(String? latex, String fallback, {double fontSize = 13, Color? accent}) {
+  Widget _renderMath(String? latex, String fallback,
+      {double fontSize = 13, Color? accent}) {
     if (latex == null || latex.isEmpty) {
       return ResponsiveText(
         fallback,

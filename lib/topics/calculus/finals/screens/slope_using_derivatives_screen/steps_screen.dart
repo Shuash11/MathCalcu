@@ -17,7 +17,8 @@ class StepsScreen extends StatelessWidget {
         slivers: [
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
+              padding: const EdgeInsets.only(
+                  top: 50, bottom: 20, left: 20, right: 20),
               child: Row(
                 children: [
                   GestureDetector(
@@ -27,9 +28,11 @@ class StepsScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: FinalsTheme.danger.withValues(alpha: 0.15),
                         shape: BoxShape.circle,
-                        border: Border.all(color: FinalsTheme.danger.withValues(alpha: 0.3)),
+                        border: Border.all(
+                            color: FinalsTheme.danger.withValues(alpha: 0.3)),
                       ),
-                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: FinalsTheme.danger),
+                      child: Icon(Icons.arrow_back_ios_new_rounded,
+                          size: 16, color: FinalsTheme.danger),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -40,25 +43,32 @@ class StepsScreen extends StatelessWidget {
                         Text(
                           solution.problemTitle,
                           style: TextStyle(
-                            color: FinalsTheme.textPrimary(context), 
-                            fontWeight: FontWeight.w800, 
-                            fontSize: 20,
-                            letterSpacing: -0.4
-                          ),
+                              color: FinalsTheme.textPrimary(context),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20,
+                              letterSpacing: -0.4),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: FinalsTheme.primary.withValues(alpha: 0.15),
+                            color: FinalsTheme.primaryFor(context)
+                                .withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.3)),
+                            border: Border.all(
+                                color: FinalsTheme.primaryFor(context)
+                                    .withValues(alpha: 0.3)),
                           ),
                           child: Text(
                             solution.type.name.toUpperCase(),
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: FinalsTheme.primary.withValues(alpha: 0.8)),
+                            style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                                color: FinalsTheme.primaryFor(context)
+                                    .withValues(alpha: 0.8)),
                           ),
                         ),
                       ],
@@ -68,9 +78,9 @@ class StepsScreen extends StatelessWidget {
               ),
             ),
           ),
-
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(bottom: 40),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20).copyWith(bottom: 40),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {

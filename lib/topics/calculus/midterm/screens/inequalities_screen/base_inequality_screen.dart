@@ -88,10 +88,11 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
 
     if (!mounted) return;
 
+    final theme = context.read<ThemeProvider>();
     showStepsDrawer(
       context: context,
       steps: steps,
-      accentColor: const Color(0xFF334155),
+      accentColor: theme.accentColor,
       title: widget.title,
     );
   }
@@ -99,6 +100,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   void _openFullScreenGraph() {
     if (_result == null || _result!.hasError) return;
 
+    final theme = context.read<ThemeProvider>();
     final keyInfo = <FullScreenInfoItem>[
       if (_result!.intervalNotation != null)
         FullScreenInfoItem(
@@ -118,11 +120,12 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           title: widget.title,
           graph: InequalityGraph(
             result: _result!,
-            accentColor: const Color(0xFF334155),
+            accentColor: theme.accentColor,
+            backgroundColor: theme.card,
           ),
           formula: _result!.answer,
           keyInfo: keyInfo.isNotEmpty ? keyInfo : null,
-          accentColor: const Color(0xFF334155),
+          accentColor: theme.accentColor,
         ),
       ),
     );
@@ -156,21 +159,29 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   }
 
   Widget _buildHeader() {
+    final theme = context.watch<ThemeProvider>();
     return Row(
       children: [
-        GestureDetector(
+        Semantics(
+          label: 'Back',
+          button: true,
           onTap: () => context.pop(),
-          child: Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().card,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.arrow_back_ios_rounded,
-              size: 14,
-              color: const Color(0xFF334155),
+          excludeSemantics: true,
+          child: GestureDetector(
+            excludeFromSemantics: true,
+            onTap: () => context.pop(),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: theme.card,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.arrow_back_ios_rounded,
+                size: 14,
+                color: theme.accentColor,
+              ),
             ),
           ),
         ),
@@ -184,14 +195,14 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
-                  color: context.watch<ThemeProvider>().textPrimary,
+                  color: theme.textPrimary,
                 ),
               ),
               ResponsiveText(
                 widget.subtitle,
                 style: TextStyle(
                   fontSize: 12,
-                  color: const Color(0xFF334155).withValues(alpha: 0.7),
+                  color: theme.textSecondary,
                 ),
               ),
             ],
@@ -202,6 +213,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   }
 
   Widget _buildInput() {
+    final theme = context.watch<ThemeProvider>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -210,19 +222,19 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: context.watch<ThemeProvider>().textSecondary,
+            color: theme.textSecondary,
           ),
         ),
         const SizedBox(height: 10),
         MathInputField(
           controller: _inputCtrl,
-          accentColor: const Color(0xFF334155),
+          accentColor: theme.accentColor,
           hint: widget.hint,
           onSolve: _solve,
         ),
         MathKeyboard(
           controller: _inputCtrl,
-          accentColor: const Color(0xFF334155),
+          accentColor: theme.accentColor,
           hideSignal: _hideKeyboardSignal,
         ),
         if (_result != null && !_result!.hasError && _detectedType != null) ...[
@@ -238,7 +250,9 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
   String? get _baseDetectedType {
     if (_detectedType == null) return null;
     // Strip -strict, -non-strict, or -continued suffix
-    if (_detectedType!.endsWith('-strict') || _detectedType!.endsWith('-non-strict') || _detectedType!.endsWith('-continued')) {
+    if (_detectedType!.endsWith('-strict') ||
+        _detectedType!.endsWith('-non-strict') ||
+        _detectedType!.endsWith('-continued')) {
       final lastDash = _detectedType!.lastIndexOf('-');
       return _detectedType!.substring(0, lastDash);
     }
@@ -255,7 +269,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
 
   bool get _matchesScreen {
     if (_detectedType == null || _baseDetectedType == null) return false;
-    
+
     final typeToTitle = {
       'linear': 'Basic',
       'quadratic': 'Quadratic',
@@ -264,37 +278,40 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
       'sqrtRational': 'Radical',
       'absolute': 'Absolute',
     };
-    
+
     // Check if base type matches
     final expectedTitle = typeToTitle[_baseDetectedType];
     if (expectedTitle == null) return false;
-    
+
     final typeMatches = widget.title.contains(expectedTitle);
     if (!typeMatches) return false;
-    
+
     // Special case: Continued Inequality
     if (_detectedStrictness == 'continued') {
       return widget.title.contains('Continued');
     }
-    
+
     // Check if strictness matches screen type
     final isStrictScreen = widget.title.contains('Strict');
     final isNonStrictScreen = widget.title.contains('Non-strict');
     final detectedIsStrict = _detectedStrictness == 'strict';
-    
+
     if (isStrictScreen && detectedIsStrict) return true;
     if (isNonStrictScreen && !detectedIsStrict) return true;
-    
+
     // If screen has no strict/non-strict qualifier (e.g., just "Rational Inequality"),
     // match any strictness of that base type
-    if (!isStrictScreen && !isNonStrictScreen && !widget.title.contains('Continued')) {
+    if (!isStrictScreen &&
+        !isNonStrictScreen &&
+        !widget.title.contains('Continued')) {
       return true;
     }
-    
+
     return false;
   }
 
   Widget _buildTypeDetectionBanner() {
+    final theme = context.watch<ThemeProvider>();
     final baseLabels = {
       'linear': 'Basic Inequality',
       'absolute': 'Absolute Value Inequality',
@@ -304,27 +321,27 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
       'sqrtRational': 'Sqrt Rational Inequality',
     };
 
-    final baseLabel = baseLabels[_baseDetectedType] ?? _baseDetectedType ?? 'Unknown';
-    
+    final baseLabel =
+        baseLabels[_baseDetectedType] ?? _baseDetectedType ?? 'Unknown';
+
     String detectedLabel;
     if (_detectedStrictness == 'continued') {
       detectedLabel = 'Continued $baseLabel';
     } else {
-      final strictnessLabel = _detectedStrictness == 'strict' ? 'Strict' : 'Non-strict';
+      final strictnessLabel =
+          _detectedStrictness == 'strict' ? 'Strict' : 'Non-strict';
       detectedLabel = '$strictnessLabel $baseLabel';
     }
-    
+
     final matchesScreen = _matchesScreen;
-    final bgColor = matchesScreen
-        ? const Color(0xFF334155).withValues(alpha: 0.1)
-        : const Color(0xFF2A1F10);
-    final textColor = matchesScreen
-        ? const Color(0xFF334155)
-        : const Color(0xFFFFB84D);
-    final icon = matchesScreen ? Icons.check_circle_outline : Icons.info_outline;
+    final (Color bgColor, Color textColor) = matchesScreen
+        ? (theme.accentColor.withValues(alpha: 0.12), theme.textPrimary)
+        : (const Color(0xFF2A1F10), const Color(0xFFFFB84D));
+    final icon =
+        matchesScreen ? Icons.check_circle_outline : Icons.info_outline;
     final bannerText = matchesScreen
-        ? 'Detected: $detectedLabel'
-        : 'Detected as $detectedLabel - try $_suggestedScreen screen';
+        ? 'Recognized input: $detectedLabel.'
+        : 'Detected as $detectedLabel \u2014 try $_suggestedScreen screen';
 
     return Container(
       width: double.infinity,
@@ -340,7 +357,8 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
           Expanded(
             child: ResponsiveText(
               bannerText,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textColor),
+              style: TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w500, color: textColor),
             ),
           ),
         ],
@@ -357,22 +375,23 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
       'sqrtRational': 'Radical',
       'absolute': 'Absolute',
     };
-    
+
     if (_detectedStrictness == 'continued') {
       return 'Continued Inequality';
     }
-    
+
     final baseScreen = suggestions[_baseDetectedType] ?? 'appropriate';
-    final correctStrictness = _detectedStrictness == 'strict' ? 'Strict' : 'Non-strict';
+    final correctStrictness =
+        _detectedStrictness == 'strict' ? 'Strict' : 'Non-strict';
     return '$correctStrictness $baseScreen';
   }
 
   Widget _buildBody() {
     if (_loading) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          color: const Color(0xFF334155),
+          color: context.watch<ThemeProvider>().accentColor,
         ),
       );
     }
@@ -395,23 +414,29 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
       );
     }
 
+    final theme = context.watch<ThemeProvider>();
     return Column(
       children: [
-        GestureDetector(
-          onTap: _openFullScreenGraph,
-          child: GraphWidget(
-            result: _result!,
-            accentColor: const Color(0xFF334155),
-            graphBody: InequalityGraph(
+        Semantics(
+          label: 'Open graph in full screen',
+          button: true,
+          child: GestureDetector(
+            onTap: _openFullScreenGraph,
+            child: GraphWidget(
               result: _result!,
-              accentColor: const Color(0xFF334155),
+              accentColor: theme.accentColor,
+              graphBody: InequalityGraph(
+                result: _result!,
+                accentColor: theme.accentColor,
+                backgroundColor: theme.cardSecondary,
+              ),
             ),
           ),
         ),
         const SizedBox(height: 16),
         AnswerCard(
           result: _result!,
-          accentColor: const Color(0xFF334155),
+          accentColor: theme.accentColor,
           onTap: _showSteps,
         ),
       ],

@@ -91,7 +91,8 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                           ),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
-                              color: FinalsTheme.primary.withValues(alpha: 0.35),
+                              color:
+                                  FinalsTheme.primary.withValues(alpha: 0.35),
                             ),
                             backgroundColor:
                                 FinalsTheme.primary.withValues(alpha: 0.08),
@@ -170,8 +171,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                 'Step-by-step solution',
                 style: TextStyle(
                   fontSize: 12,
-                  color: const Color(0xFF94A3B8)
-                      .withValues(alpha: 0.6),
+                  color: const Color(0xFF94A3B8).withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -218,8 +218,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                     fontWeight: FontWeight.w600,
                     color: active
                         ? Colors.white
-                        : const Color(0xFF94A3B8)
-                            .withValues(alpha: 0.5),
+                        : const Color(0xFF94A3B8).withValues(alpha: 0.5),
                   ),
                 ),
               ),

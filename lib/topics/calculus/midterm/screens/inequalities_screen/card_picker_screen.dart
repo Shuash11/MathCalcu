@@ -49,19 +49,23 @@ class InequalityCardPickerScreen extends StatelessWidget {
                           context,
                           child: IconButton(
                             onPressed: () => context.go('/'),
+                            tooltip: 'Back',
                             icon: Icon(
                               Icons.arrow_back_ios_rounded,
                               size: 16,
                               color: theme.accentColor,
                             ),
                             style: IconButton.styleFrom(
-                              backgroundColor: theme.accentColor.withValues(alpha: 0.12),
+                              backgroundColor:
+                                  theme.accentColor.withValues(alpha: 0.12),
                               foregroundColor: theme.accentColor,
                               padding: EdgeInsets.zero,
+                              minimumSize: const Size(44, 44),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(
-                                  color: theme.accentColor.withValues(alpha: 0.40),
+                                  color:
+                                      theme.accentColor.withValues(alpha: 0.40),
                                   width: 1.5,
                                 ),
                               ),
@@ -119,8 +123,6 @@ class _PickerHeader extends StatelessWidget {
 
   static const Color _teal = Color(0xFF2DD4BF);
   static const Color _purple = Color(0xFF334155);
-  static const Color _softPurple = Color(0xFF334155);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -143,7 +145,8 @@ class _PickerHeader extends StatelessWidget {
             ResponsiveText(
               'Select a module to explore',
               style: TextStyle(
-                  fontSize: 12, color: _softPurple.withValues(alpha: 0.55)),
+                  fontSize: 12,
+                  color: context.watch<ThemeProvider>().textSecondary),
             ),
           ],
         ),

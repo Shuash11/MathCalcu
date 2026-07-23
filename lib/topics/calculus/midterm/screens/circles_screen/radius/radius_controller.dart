@@ -1,6 +1,5 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/radius_solver.dart';
+import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/radius_solver.dart';
 import 'package:flutter/material.dart';
-
 
 /// Manages all mutable state and user-input controllers for the
 /// Finding-Radius screen.  Kept separate from the UI so the screen
@@ -14,42 +13,43 @@ class FindingRadiusController extends ChangeNotifier {
 
   // ── Output state ──────────────────────────────────────────
   RadiusResult? result;
-  String?       errorMsg;
+  String? errorMsg;
 
   // ── Actions ───────────────────────────────────────────────
 
   /// Parses inputs, calls the solver, and notifies listeners.
-void calculate() {
-  final inputs = [xCtrl.text, yCtrl.text, hCtrl.text, kCtrl.text];
-  if (inputs.any((s) => s.trim().isEmpty)) {
-    result   = null;
-    errorMsg = 'Please fill in all four fields.';
+  void calculate() {
+    final inputs = [xCtrl.text, yCtrl.text, hCtrl.text, kCtrl.text];
+    if (inputs.any((s) => s.trim().isEmpty)) {
+      result = null;
+      errorMsg = 'Please fill in all four fields.';
+      notifyListeners();
+      return;
+    }
+
+    try {
+      result = RadiusSolver.solveFromStrings(
+        x: xCtrl.text,
+        y: yCtrl.text,
+        h: hCtrl.text,
+        k: kCtrl.text,
+      );
+      errorMsg = null;
+    } on ArgumentError catch (e) {
+      result = null;
+      errorMsg = e.message.toString();
+    }
+
     notifyListeners();
-    return;
   }
 
-  try {
-    result   = RadiusSolver.solveFromStrings(
-      x: xCtrl.text,
-      y: yCtrl.text,
-      h: hCtrl.text,
-      k: kCtrl.text,
-    );
-    errorMsg = null;
-  } on ArgumentError catch (e) {
-    result   = null;
-    errorMsg = e.message.toString();
-  }
-
-  notifyListeners();
-}
   /// Resets every field and clears output state.
   void clear() {
     xCtrl.clear();
     yCtrl.clear();
     hCtrl.clear();
     kCtrl.clear();
-    result   = null;
+    result = null;
     errorMsg = null;
     notifyListeners();
   }

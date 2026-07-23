@@ -40,11 +40,12 @@ class _ConjugateLimitScreenContent extends StatefulWidget {
   });
 
   @override
-  State<_ConjugateLimitScreenContent> createState() => _ConjugateLimitScreenContentState();
+  State<_ConjugateLimitScreenContent> createState() =>
+      _ConjugateLimitScreenContentState();
 }
 
-class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenContent>
-    with TickerProviderStateMixin {
+class _ConjugateLimitScreenContentState
+    extends State<_ConjugateLimitScreenContent> with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   final _expressionFocus = FocusNode();
@@ -185,7 +186,15 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
       child: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context, headerPaddingH: headerPaddingH, titleFontSize: headerTitleFontSize, backSpacing: headerBackSpacing, badgePaddingH: headerBadgePaddingH, badgePaddingV: headerBadgePaddingV, backPadding: headerBackPadding, badgeIconSize: headerBadgeIconSize, badgeFontSize: headerBadgeFontSize),
+            _buildHeader(context,
+                headerPaddingH: headerPaddingH,
+                titleFontSize: headerTitleFontSize,
+                backSpacing: headerBackSpacing,
+                badgePaddingH: headerBadgePaddingH,
+                badgePaddingV: headerBadgePaddingV,
+                backPadding: headerBackPadding,
+                badgeIconSize: headerBadgeIconSize,
+                badgeFontSize: headerBadgeFontSize),
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -193,7 +202,8 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
                   position: _slideAnim,
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(screenPaddingH, 8, screenPaddingH, screenPaddingBottom),
+                    padding: EdgeInsets.fromLTRB(
+                        screenPaddingH, 8, screenPaddingH, screenPaddingBottom),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -235,7 +245,7 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
             ),
             MathKeyboard(
               controller: _activeController ?? _expressionController,
-              accentColor: FinalsTheme.secondary,
+              accentColor: FinalsTheme.secondaryFor(context),
               hideSignal: _hideKeyboardSignal,
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -245,7 +255,15 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
     );
   }
 
-  Widget _buildHeader(BuildContext context, {double headerPaddingH = 24, double titleFontSize = 24, double backSpacing = 20, double badgePaddingH = 12, double badgePaddingV = 6, double backPadding = 12, double badgeIconSize = 14, double badgeFontSize = 10}) {
+  Widget _buildHeader(BuildContext context,
+      {double headerPaddingH = 24,
+      double titleFontSize = 24,
+      double backSpacing = 20,
+      double badgePaddingH = 12,
+      double badgePaddingV = 6,
+      double backPadding = 12,
+      double badgeIconSize = 14,
+      double badgeFontSize = 10}) {
     return Padding(
       padding: EdgeInsets.fromLTRB(headerPaddingH, 24, headerPaddingH, 16),
       child: Row(
@@ -260,7 +278,8 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
               side: BorderSide(
-                  color: FinalsTheme.secondary.withValues(alpha: 0.1)),
+                  color:
+                      FinalsTheme.secondaryFor(context).withValues(alpha: 0.1)),
             ),
           ),
           SizedBox(width: backSpacing),
@@ -269,33 +288,37 @@ class _ConjugateLimitScreenContentState extends State<_ConjugateLimitScreenConte
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ResponsiveText(
-          '',
-                  style: FinalsTheme.titleStyle(context).copyWith(fontSize: titleFontSize),
+                  '',
+                  style: FinalsTheme.titleStyle(context)
+                      .copyWith(fontSize: titleFontSize),
                 ),
                 ResponsiveText(
-          '',
+                  '',
                   style: FinalsTheme.subtitleStyle(context),
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: badgePaddingH, vertical: badgePaddingV),
+            padding: EdgeInsets.symmetric(
+                horizontal: badgePaddingH, vertical: badgePaddingV),
             decoration: BoxDecoration(
-              color: FinalsTheme.secondary.withValues(alpha: 0.1),
+              color: FinalsTheme.secondaryFor(context).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                  color: FinalsTheme.secondary.withValues(alpha: 0.2)),
+                  color:
+                      FinalsTheme.secondaryFor(context).withValues(alpha: 0.2)),
             ),
             child: Row(
               children: [
                 Icon(Icons.unfold_more_double_rounded,
-                    size: badgeIconSize, color: FinalsTheme.secondary),
+                    size: badgeIconSize,
+                    color: FinalsTheme.secondaryFor(context)),
                 SizedBox(width: badgePaddingH * 0.5),
                 ResponsiveText(
-          '',
+                  '',
                   style: TextStyle(
-                    color: FinalsTheme.secondary,
+                    color: FinalsTheme.secondaryFor(context),
                     fontWeight: FontWeight.w800,
                     fontSize: badgeFontSize,
                   ),

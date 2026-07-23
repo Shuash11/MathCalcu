@@ -36,8 +36,7 @@ class DerivativeInputField extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color:
-                    FinalsTheme.shadowColor(context).withValues(alpha: 0.05),
+                color: FinalsTheme.shadowColor(context).withValues(alpha: 0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 4),
               ),
@@ -63,10 +62,9 @@ class DerivativeInputField extends StatelessWidget {
                   ),
                   decoration: InputDecoration(
                     hintText: 'e.g. x² + 3x + ln(x)',
-                    hintStyle:
-                        FinalsTheme.subtitleStyle(context).copyWith(
-                      color:
-                          FinalsTheme.textSecondary(context).withValues(alpha: 0.5),
+                    hintStyle: FinalsTheme.subtitleStyle(context).copyWith(
+                      color: FinalsTheme.textSecondary(context)
+                          .withValues(alpha: 0.5),
                     ),
                     border: InputBorder.none,
                   ),
@@ -85,7 +83,7 @@ class DerivativeInputField extends StatelessWidget {
     final variables = ['x', 'y', 'z', 't', 'u'];
     showModalBottomSheet(
       context: context,
-      backgroundColor: FinalsTheme.card(context),
+      backgroundColor: FinalsTheme.cardForEvent(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -96,9 +94,9 @@ class DerivativeInputField extends StatelessWidget {
             final isSelected = v == currentVariable;
             return ListTile(
               title: ResponsiveText(
-          '',
+                '',
                 style: FinalsTheme.titleStyle(ctx).copyWith(
-                  color: isSelected ? FinalsTheme.primary : null,
+                  color: isSelected ? FinalsTheme.primaryFor(ctx) : null,
                 ),
               ),
               onTap: () {
@@ -106,7 +104,7 @@ class DerivativeInputField extends StatelessWidget {
                 Navigator.pop(ctx);
               },
               trailing: isSelected
-                  ? const Icon(Icons.check, color: FinalsTheme.primary)
+                  ? Icon(Icons.check, color: FinalsTheme.primaryFor(ctx))
                   : null,
             );
           }).toList(),

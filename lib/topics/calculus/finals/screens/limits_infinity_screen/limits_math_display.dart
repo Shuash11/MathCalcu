@@ -19,7 +19,7 @@ class LimitsMathDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = textColor ?? FinalsTheme.primary;
+    final color = textColor ?? FinalsTheme.primaryFor(context);
     final parsedLatex = _parseLatex(latex);
 
     return Container(
@@ -117,27 +117,27 @@ class LimitsSolutionStep extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isConclusion
-                ? FinalsTheme.primary
-                : FinalsTheme.primary.withValues(alpha: 0.1),
+                ? FinalsTheme.primaryFor(context)
+                : FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
             border: Border.all(
-              color:
-                  FinalsTheme.primary.withValues(alpha: isConclusion ? 1 : 0.5),
+              color: FinalsTheme.primaryFor(context)
+                  .withValues(alpha: isConclusion ? 1 : 0.5),
               width: 2,
             ),
           ),
           child: Center(
             child: isConclusion
-                ? const Icon(
+                ? Icon(
                     Icons.check_rounded,
                     size: 16,
-                    color: Colors.white,
+                    color: FinalsTheme.onPrimaryFor(context),
                   )
                 : Text(
                     '${stepIndex + 1}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: FinalsTheme.primary,
+                      color: FinalsTheme.primaryFor(context),
                     ),
                   ),
           ),
@@ -179,7 +179,7 @@ class LimitsSolutionStep extends StatelessWidget {
             description!,
             style: FinalsTheme.subtitleStyle(context).copyWith(
               fontSize: 13,
-              color: FinalsTheme.primary.withValues(alpha: 0.7),
+              color: FinalsTheme.primaryFor(context).withValues(alpha: 0.7),
             ),
           ),
         ],

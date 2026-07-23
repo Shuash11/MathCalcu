@@ -90,21 +90,28 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
+                Semantics(
+                  label: 'Back',
+                  button: true,
                   onTap: () => context.pop(),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: theme.card,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: theme.textSecondary.withValues(alpha: 0.2)),
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 16,
-                      color: theme.textPrimary,
+                  excludeSemantics: true,
+                  child: GestureDetector(
+                    excludeFromSemantics: true,
+                    onTap: () => context.pop(),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: theme.card,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: theme.textSecondary.withValues(alpha: 0.2)),
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 16,
+                        color: theme.textPrimary,
+                      ),
                     ),
                   ),
                 ),

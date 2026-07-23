@@ -28,7 +28,8 @@ class FinalsSolverButton extends StatelessWidget {
           backgroundColor: theme.accentColor,
           disabledBackgroundColor: theme.accentColor,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           elevation: 0,
           shadowColor: Colors.transparent,
         ),
@@ -36,7 +37,8 @@ class FinalsSolverButton extends StatelessWidget {
             ? SizedBox(
                 height: 22,
                 width: 22,
-                child: CircularProgressIndicator(color: theme.surface, strokeWidth: 2),
+                child: CircularProgressIndicator(
+                    color: theme.surface, strokeWidth: 2),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -72,23 +74,31 @@ class FinalsVariableChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    return GestureDetector(
+    return Semantics(
+      label: 'Insert variable $variable',
+      button: true,
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: theme.accentColor.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: theme.accentColor.withValues(alpha: 0.3)),
-          boxShadow: [AccentGlow.soft(context)],
-        ),
-        child: Text(
-          variable,
-          style: TextStyle(
-            fontFamily: 'serif',
-            fontSize: 15,
-            fontWeight: FontWeight.w900,
-            color: theme.accentColor,
+      excludeSemantics: true,
+      child: GestureDetector(
+        excludeFromSemantics: true,
+        onTap: onTap,
+        child: Container(
+          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: theme.accentColor.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: theme.accentColor.withValues(alpha: 0.3)),
+            boxShadow: [AccentGlow.soft(context)],
+          ),
+          child: Text(
+            variable,
+            style: TextStyle(
+              fontFamily: 'serif',
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+              color: theme.accentColor,
+            ),
           ),
         ),
       ),

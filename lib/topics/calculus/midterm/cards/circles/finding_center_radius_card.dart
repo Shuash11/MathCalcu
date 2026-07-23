@@ -11,7 +11,6 @@ class FindingCenterRadiusCard extends StatelessWidget {
       icon: Icons.blur_circular_rounded,
       title: 'Finding the Center & Radius',
       subtitle: 'Combined center and radius from equations',
-      accentColor: const Color(0xFF334155),
       onTap: () => context.push('/circle/finding-center-radius'),
     );
   }

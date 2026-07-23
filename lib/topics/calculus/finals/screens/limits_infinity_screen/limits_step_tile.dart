@@ -53,12 +53,13 @@ class LimitsStepTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: step.type == StepType.conclusion
-                      ? FinalsTheme.primary
-                      : FinalsTheme.primary.withValues(alpha: 0.15),
+                      ? FinalsTheme.primaryFor(context)
+                      : FinalsTheme.primaryFor(context).withValues(alpha: 0.15),
                   border: Border.all(
                     color: step.type == StepType.conclusion
-                        ? FinalsTheme.primary
-                        : FinalsTheme.primary.withValues(alpha: 0.5),
+                        ? FinalsTheme.primaryFor(context)
+                        : FinalsTheme.primaryFor(context)
+                            .withValues(alpha: 0.5),
                   ),
                 ),
                 child: Center(
@@ -68,8 +69,8 @@ class LimitsStepTile extends StatelessWidget {
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: step.type == StepType.conclusion
-                          ? Colors.white
-                          : FinalsTheme.primary,
+                          ? FinalsTheme.onPrimaryFor(context)
+                          : FinalsTheme.primaryFor(context),
                     ),
                   ),
                 ),
@@ -87,8 +88,8 @@ class LimitsStepTile extends StatelessWidget {
                     // Title / Description
                     Text(
                       step.description,
-                      style:
-                          FinalsTheme.titleStyle(context).copyWith(fontSize: 15),
+                      style: FinalsTheme.titleStyle(context)
+                          .copyWith(fontSize: 15),
                     ),
                     const SizedBox(height: 8),
 

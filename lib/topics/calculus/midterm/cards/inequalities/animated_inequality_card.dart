@@ -7,7 +7,7 @@ class AnimatedInequalityCard extends StatelessWidget {
   final String subtitle;
   final String route;
   final IconData icon;
-  final Color accentColor;
+  final Color? accentColor;
 
   const AnimatedInequalityCard({
     super.key,
@@ -15,7 +15,7 @@ class AnimatedInequalityCard extends StatelessWidget {
     required this.subtitle,
     required this.route,
     required this.icon,
-    required this.accentColor,
+    this.accentColor,
   });
 
   @override

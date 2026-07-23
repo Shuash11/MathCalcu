@@ -37,19 +37,20 @@ class _MathBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryFor = FinalsTheme.primaryFor(context);
     return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: Alignment.centerLeft,
       child: Math.tex(
         latex,
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w600,
-          color: FinalsTheme.primary,
+          color: primaryFor,
         ),
         onErrorFallback: (err) => ResponsiveText(
           latex,
-          style: const TextStyle(color: FinalsTheme.primary),
+          style: TextStyle(color: primaryFor),
         ),
       ),
     );

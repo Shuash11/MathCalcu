@@ -263,14 +263,16 @@ class _SlopeScreenState extends State<SlopeScreen> {
       context,
       child: IconButton(
         onPressed: () => Navigator.pop(context),
-        icon: Icon(Icons.arrow_back_ios_rounded, size: 16, color: theme.accentColor),
+        icon: Icon(Icons.arrow_back_ios_rounded,
+            size: 16, color: theme.accentColor),
         style: IconButton.styleFrom(
           backgroundColor: theme.accentColor.withValues(alpha: 0.12),
           foregroundColor: theme.accentColor,
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: theme.accentColor.withValues(alpha: 0.15), width: 1.5),
+            side: BorderSide(
+                color: theme.accentColor.withValues(alpha: 0.15), width: 1.5),
           ),
         ),
       ),
@@ -325,8 +327,8 @@ class _SlopeScreenState extends State<SlopeScreen> {
     FocusNode xFocus,
     String yLabel,
     TextEditingController yCtrl,
-    FocusNode yFocus,
-    {TextInputAction? xTextInputAction,
+    FocusNode yFocus, {
+    TextInputAction? xTextInputAction,
     VoidCallback? xOnEditingComplete,
     TextInputAction? yTextInputAction,
     VoidCallback? yOnEditingComplete,
@@ -336,7 +338,15 @@ class _SlopeScreenState extends State<SlopeScreen> {
         children: [
           ResponsiveText(
             sectionLabel,
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.7), letterSpacing: 0.5).copyWith(
+            style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: context
+                        .watch<ThemeProvider>()
+                        .textSecondary
+                        .withValues(alpha: 0.7),
+                    letterSpacing: 0.5)
+                .copyWith(
               letterSpacing: 0,
               fontSize: 12,
               fontWeight: FontWeight.w500,
@@ -447,7 +457,8 @@ class _SlopeScreenState extends State<SlopeScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.accentColor,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
             shadowColor: Colors.transparent,
           ),
@@ -515,7 +526,8 @@ class _SlopeScreenState extends State<SlopeScreen> {
               const SizedBox(width: 12),
               Expanded(
                   child: SlopeAnswerCard(
-                      result: _result2!, onTap: () => _openStepsDialog(showSecond: true))),
+                      result: _result2!,
+                      onTap: () => _openStepsDialog(showSecond: true))),
             ],
           ),
         ],

@@ -84,7 +84,10 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
     try {
       double approachVal;
       final clean = approachText.trim().toLowerCase();
-      if (clean == 'inf' || clean == 'infinity' || clean == '+inf' || clean == '+infinity') {
+      if (clean == 'inf' ||
+          clean == 'infinity' ||
+          clean == '+inf' ||
+          clean == '+infinity') {
         approachVal = double.infinity;
       } else if (clean == '-inf' || clean == '-infinity') {
         approachVal = double.negativeInfinity;
@@ -127,18 +130,17 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: ResponsiveText(
-          '',
+              '',
               style: FinalsTheme.subtitleStyle(context).copyWith(
                 fontWeight: FontWeight.w600,
-                color: FinalsTheme.primary,
+                color: FinalsTheme.primaryFor(context),
               ),
             ),
           ),
           const SizedBox(height: 16),
           ..._solution!.steps.asMap().entries.map((entry) {
             final step = entry.value;
-            final displayExpr =
-                step.formula ?? step.expression?.toString();
+            final displayExpr = step.formula ?? step.expression?.toString();
             return SolutionStepCard(
               stepNumber: entry.key + 1,
               title: step.description,
@@ -154,23 +156,23 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: FinalsTheme.primary.withValues(alpha: 0.05),
+              color: FinalsTheme.primaryFor(context).withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color: FinalsTheme.primary.withValues(alpha: 0.2)),
+                  color:
+                      FinalsTheme.primaryFor(context).withValues(alpha: 0.2)),
             ),
             child: Column(
               children: [
                 ResponsiveText(
-          '',
+                  '',
                   style: FinalsTheme.labelStyle(context),
                 ),
                 const SizedBox(height: 12),
                 ResponsiveText(
-          '',
+                  '',
                   textAlign: TextAlign.center,
-                  style: FinalsTheme.titleStyle(context)
-                      .copyWith(fontSize: 18),
+                  style: FinalsTheme.titleStyle(context).copyWith(fontSize: 18),
                 ),
               ],
             ),
@@ -196,9 +198,9 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
     try {
       return Math.tex(
         latex,
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
           fontSize: 15,
-          color: FinalsTheme.primary,
+          color: FinalsTheme.primaryFor(context),
           fontWeight: FontWeight.w500,
         ),
         onErrorFallback: (error) {
@@ -223,138 +225,141 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
       child: SafeArea(
         child: Column(
           children: [
-            SafeArea(bottom: false, child: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: AccentGlow.iconHalo(
-                context,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                      color: FinalsTheme.primary),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ),
-            )),
+            SafeArea(
+                bottom: false,
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  leading: AccentGlow.iconHalo(
+                    context,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_new_rounded,
+                          color: FinalsTheme.primaryFor(context)),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                )),
             Expanded(
               child: CustomScrollView(
-          controller: _scrollController,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
+                controller: _scrollController,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
 // Header Section
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Container(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    //   decoration: BoxDecoration(
-                    //     color: FinalsTheme.primary.withValues(alpha: 0.1),
-                    //     borderRadius: BorderRadius.circular(20),
-                    //   ),
-                    //   child: Text(
-                    //     'LIMITS SOLVER',
-                    //     style: FinalsTheme.labelStyle(context).copyWith(fontSize: 10),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 16),
-                    ResponsiveText(
-          '',
-                      style: FinalsTheme.titleStyle(context)
-                          .copyWith(fontSize: 32, height: 1.1),
-                    ),
-                    const SizedBox(height: 8),
-                    ResponsiveText(
-          '',
-                      style: FinalsTheme.subtitleStyle(context)
-                          .copyWith(fontSize: 15),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
-            // Input Field Section
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverToBoxAdapter(
-                child: LimitsInputField(
-                  expressionController: _exprController,
-                  approachController: _approachController,
-                  expressionFocus: _expressionFocus,
-                  approachFocus: _approachFocus,
-                  currentVariable: _variable,
-                  onVariableChanged: (v) => setState(() => _variable = v),
-                  onSolve: _solve,
-                  isLoading: _isLoading,
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: 24)),
-
-            // Answer Card / Error
-            if (_error != null)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: LimitsAnswerCard(
-                    problemNotation:
-                        'lim($_variable ? ${_approachController.text}) ${_exprController.text}',
-                    resultString: '',
-                    hasError: true,
-                    errorMessage: _error,
-                    onTap: () {},
-                  ),
-                ),
-              )
-            else if (_solution != null && !_isLoading)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: LimitsAnswerCard(
-                    problemNotation: _solution!.problemNotation,
-                    resultString: _solution!.resultString,
-                    onTap: _showStepsModal,
-                  ),
-                ),
-              ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: 48)),
-
-            // Show Steps Button
-            if (_solution != null && !_isLoading)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                sliver: SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: OutlinedButton.icon(
-                      onPressed: _showStepsModal,
-                      icon: const Icon(Icons.list_alt_rounded, size: 18),
-                      label: const Text('Show Steps'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: FinalsTheme.primary,
-                        side: const BorderSide(color: FinalsTheme.primary),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 14),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Container(
+                          //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          //   decoration: BoxDecoration(
+                          //     color: FinalsTheme.primary.withValues(alpha: 0.1),
+                          //     borderRadius: BorderRadius.circular(20),
+                          //   ),
+                          //   child: Text(
+                          //     'LIMITS SOLVER',
+                          //     style: FinalsTheme.labelStyle(context).copyWith(fontSize: 10),
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 16),
+                          ResponsiveText(
+                            '',
+                            style: FinalsTheme.titleStyle(context)
+                                .copyWith(fontSize: 32, height: 1.1),
+                          ),
+                          const SizedBox(height: 8),
+                          ResponsiveText(
+                            '',
+                            style: FinalsTheme.subtitleStyle(context)
+                                .copyWith(fontSize: 15),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 32)),
+
+                  // Input Field Section
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverToBoxAdapter(
+                      child: LimitsInputField(
+                        expressionController: _exprController,
+                        approachController: _approachController,
+                        expressionFocus: _expressionFocus,
+                        approachFocus: _approachFocus,
+                        currentVariable: _variable,
+                        onVariableChanged: (v) => setState(() => _variable = v),
+                        onSolve: _solve,
+                        isLoading: _isLoading,
+                      ),
+                    ),
+                  ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 24)),
+
+                  // Answer Card / Error
+                  if (_error != null)
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      sliver: SliverToBoxAdapter(
+                        child: LimitsAnswerCard(
+                          problemNotation:
+                              'lim($_variable ? ${_approachController.text}) ${_exprController.text}',
+                          resultString: '',
+                          hasError: true,
+                          errorMessage: _error,
+                          onTap: () {},
+                        ),
+                      ),
+                    )
+                  else if (_solution != null && !_isLoading)
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      sliver: SliverToBoxAdapter(
+                        child: LimitsAnswerCard(
+                          problemNotation: _solution!.problemNotation,
+                          resultString: _solution!.resultString,
+                          onTap: _showStepsModal,
+                        ),
+                      ),
+                    ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 48)),
+
+                  // Show Steps Button
+                  if (_solution != null && !_isLoading)
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      sliver: SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: OutlinedButton.icon(
+                            onPressed: _showStepsModal,
+                            icon: const Icon(Icons.list_alt_rounded, size: 18),
+                            label: const Text('Show Steps'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: FinalsTheme.primaryFor(context),
+                              side: BorderSide(
+                                  color: FinalsTheme.primaryFor(context)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 14),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-          ],
-        ),
             ),
             MathKeyboard(
               controller: _activeController ?? _exprController,
-              accentColor: FinalsTheme.primary,
+              accentColor: FinalsTheme.primaryFor(context),
               hideSignal: _hideKeyboardSignal,
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),

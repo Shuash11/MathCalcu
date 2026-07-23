@@ -39,40 +39,45 @@ class SlopeSteps extends StatelessWidget {
       return _buildHorizontalSteps(context, x1s, y1s, x2s, y2s);
     }
 
-    return _buildGenericSteps(
-        context, x1s, y1s, x2s, y2s, dys, dxs, slopeStr);
+    return _buildGenericSteps(context, x1s, y1s, x2s, y2s, dys, dxs, slopeStr);
   }
 
   List<Widget> _buildVerticalSteps(
       BuildContext context, String x1s, String y1s, String x2s, String y2s) {
     return [
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
         mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 2,
         title: 'Check ?x',
         description: 'Step 2',
         mathContent: _mathLatex(
+          context,
           r'\Delta x = x_2 - x_1 = ' '$x2s' r' - ' '$x1s' r' = 0',
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 3,
         title: 'Conclusion',
         description: 'Step 3',
         mathContent: _mathLatex(
+          context,
           r'\Delta x = 0 \implies \text{Vertical line}',
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 4,
         title: 'Line equation',
         description: 'Step 4',
-        mathContent: _mathLatex(r'x = ' '$x1s'),
+        mathContent: _mathLatex(context, r'x = ' '$x1s'),
       ),
     ];
   }
@@ -80,59 +85,60 @@ class SlopeSteps extends StatelessWidget {
   List<Widget> _buildHorizontalSteps(
       BuildContext context, String x1s, String y1s, String x2s, String y2s) {
     return [
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
         mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 2,
         title: 'Check ?y',
         description: 'Step 2',
         mathContent: _mathLatex(
+          context,
           r'\Delta y = y_2 - y_1 = ' '$y2s' r' - ' '$y1s' r' = 0',
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 3,
         title: 'Conclusion',
         description: 'Step 3',
-        mathContent: _mathLatex(r'\Delta y = 0 \implies m = 0'),
+        mathContent: _mathLatex(context, r'\Delta y = 0 \implies m = 0'),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 4,
         title: 'Slope value',
         description: 'Step 4',
-        mathContent: _mathLatex(r'm = 0'),
+        mathContent: _mathLatex(context, r'm = 0'),
       ),
     ];
   }
 
-  List<Widget> _buildGenericSteps(
-      BuildContext context,
-      String x1s,
-      String y1s,
-      String x2s,
-      String y2s,
-      String dys,
-      String dxs,
-      String slopeStr) {
+  List<Widget> _buildGenericSteps(BuildContext context, String x1s, String y1s,
+      String x2s, String y2s, String dys, String dxs, String slopeStr) {
     return [
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
-        mathContent: _mathText(
-            context, 'A = ($x1s, $y1s)  ?  (x1, y1)\nB = ($x2s, $y2s)  ?  (x2, y2)'),
+        mathContent: _mathText(context,
+            'A = ($x1s, $y1s)  ?  (x1, y1)\nB = ($x2s, $y2s)  ?  (x2, y2)'),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 2,
         title: 'Slope formula',
         description: 'Step 2',
-        mathContent: _mathLatex(r'm = \dfrac{y_2 - y_1}{x_2 - x_1}'),
+        mathContent: _mathLatex(context, r'm = \dfrac{y_2 - y_1}{x_2 - x_1}'),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 3,
         title: 'Find differences',
         description: 'Step 3',
@@ -140,6 +146,7 @@ class SlopeSteps extends StatelessWidget {
           children: [
             Expanded(
               child: _mathLatex(
+                context,
                 r'\begin{aligned}'
                 r'y_2 - y_1 &= '
                 '$y2s'
@@ -154,6 +161,7 @@ class SlopeSteps extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: _mathLatex(
+                context,
                 r'\begin{aligned}'
                 r'x_2 - x_1 &= '
                 '$x2s'
@@ -168,11 +176,13 @@ class SlopeSteps extends StatelessWidget {
           ],
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 4,
         title: 'Calculate slope',
         description: 'Step 4',
         mathContent: _mathLatex(
+          context,
           r'\begin{aligned}'
           r'm &= \dfrac{'
           '$dys'
@@ -184,11 +194,12 @@ class SlopeSteps extends StatelessWidget {
           r'\end{aligned}',
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 5,
         title: 'Result',
         description: 'Step 5',
-        mathContent: _mathLatex(r'm = ' '$slopeStr'),
+        mathContent: _mathLatex(context, r'm = ' '$slopeStr'),
       ),
     ];
   }
@@ -198,13 +209,13 @@ class SlopeSteps extends StatelessWidget {
     return n.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
-  Widget _mathLatex(String tex) => SingleChildScrollView(
+  Widget _mathLatex(BuildContext context, String tex) => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SelectableMath.tex(
           tex,
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontSize: 14,
-            color: FinalsTheme.primary,
+            color: FinalsTheme.primaryFor(context),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -248,7 +259,7 @@ class SlopeComparisonSteps extends StatelessWidget {
     required this.result2,
   });
 
-  List<Widget> _buildSteps() {
+  List<Widget> _buildSteps(BuildContext context) {
     final x1s1 = _fmtNum(result1.x1);
     final y1s1 = _fmtNum(result1.y1);
     final x2s1 = _fmtNum(result1.x2);
@@ -268,7 +279,8 @@ class SlopeComparisonSteps extends StatelessWidget {
             : 'Neither';
 
     return [
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 1,
         title: 'Line 1 points & slope',
         description: 'Step 1',
@@ -276,6 +288,7 @@ class SlopeComparisonSteps extends StatelessWidget {
           children: [
             Expanded(
               child: _mathLatex(
+                context,
                 r'\begin{aligned}'
                 r'&('
                 '$x1s1'
@@ -292,12 +305,13 @@ class SlopeComparisonSteps extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: _mathLatex(r'm_1 = ' '$m1'),
+              child: _mathLatex(context, r'm_1 = ' '$m1'),
             ),
           ],
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 2,
         title: 'Line 2 points & slope',
         description: 'Step 2',
@@ -305,6 +319,7 @@ class SlopeComparisonSteps extends StatelessWidget {
           children: [
             Expanded(
               child: _mathLatex(
+                context,
                 r'\begin{aligned}'
                 r'&('
                 '$x1s2'
@@ -321,16 +336,18 @@ class SlopeComparisonSteps extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: _mathLatex(r'm_2 = ' '$m2'),
+              child: _mathLatex(context, r'm_2 = ' '$m2'),
             ),
           ],
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 3,
         title: 'Check relationship',
         description: 'Step 3',
         mathContent: _mathLatex(
+          context,
           comparison.isParallel
               ? r'm_1 = m_2 \implies \text{Parallel}'
               : comparison.isPerpendicular
@@ -338,11 +355,13 @@ class SlopeComparisonSteps extends StatelessWidget {
                   : r'm_1 \neq m_2 \text{ and } m_1 \cdot m_2 \neq -1',
         ),
       ),
-      SolutionStepCard(design: AppDesign.app,
+      SolutionStepCard(
+        design: AppDesign.app,
         stepNumber: 4,
         title: 'Result',
         description: 'Step 4',
         mathContent: _mathLatex(
+          context,
           relLabel == 'Neither'
               ? r'\text{Neither parallel nor perpendicular}'
               : r'\text{' '$relLabel' r'}',
@@ -356,13 +375,13 @@ class SlopeComparisonSteps extends StatelessWidget {
     return n.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
-  Widget _mathLatex(String tex) => SingleChildScrollView(
+  Widget _mathLatex(BuildContext context, String tex) => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SelectableMath.tex(
           tex,
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontSize: 14,
-            color: FinalsTheme.primary,
+            color: FinalsTheme.primaryFor(context),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -373,7 +392,7 @@ class SlopeComparisonSteps extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: _buildSteps(),
+      children: _buildSteps(context),
     );
   }
 }

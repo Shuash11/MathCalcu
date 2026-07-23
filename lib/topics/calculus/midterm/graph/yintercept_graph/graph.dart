@@ -18,7 +18,7 @@ class YInterceptGraph extends StatelessWidget {
     this.mText = '',
     this.bText = '',
     this.height,
-    this.accentColor = const Color(0xFF334155),
+    this.accentColor = const Color(0xFF475569),
     this.backgroundColor = const Color(0xFFF4F4F1),
   });
 

@@ -37,7 +37,9 @@ class StepTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final accentColor = _resolveColor(step.color);
 
-    if (step.isFinal) return _FinalBox(step: step, accentColor: accentColor, onCopy: _copyToClipboard);
+    if (step.isFinal)
+      return _FinalBox(
+          step: step, accentColor: accentColor, onCopy: _copyToClipboard);
 
     return IntrinsicHeight(
       child: Row(
@@ -60,8 +62,7 @@ class StepTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF94A3B8)
-                          .withValues(alpha: 0.55),
+                      color: const Color(0xFF94A3B8).withValues(alpha: 0.55),
                       height: 1.4,
                     ),
                   ),
@@ -236,8 +237,7 @@ class _FinalBox extends StatelessWidget {
             const SizedBox(height: 14),
             Container(
               height: 1,
-              color: const Color(0xFF94A3B8)
-                  .withValues(alpha: 0.15),
+              color: const Color(0xFF94A3B8).withValues(alpha: 0.15),
             ),
             const SizedBox(height: 12),
             ...step.subLines.map(
@@ -250,8 +250,7 @@ class _FinalBox extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFFE8E8F0)
-                          .withValues(alpha: 0.85),
+                      color: const Color(0xFFE8E8F0).withValues(alpha: 0.85),
                     ),
                     textAlign: TextAlign.center,
                   ),

@@ -58,6 +58,7 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
   }
 
   void _openFullScreen() {
+    final accent = context.watch<ThemeProvider>().accentColor;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => FullScreenGraphScreen(
@@ -67,12 +68,12 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
             FullScreenInfoItem(
               label: widget.labelA,
               value: '(${_fmt(widget.x1)}, ${_fmt(widget.y1)})',
-              color: const Color(0xFF334155),
+              color: accent,
             ),
             FullScreenInfoItem(
               label: widget.labelM,
               value: '(${_fmt(widget.mx)}, ${_fmt(widget.my)})',
-              color: const Color(0xFF334155),
+              color: accent,
             ),
             FullScreenInfoItem(
               label: widget.labelB,
@@ -80,7 +81,7 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
               color: context.watch<ThemeProvider>().textPrimary,
             ),
           ],
-          accentColor: const Color(0xFF334155),
+          accentColor: accent,
           graph: MidpointGraph(
             x1: widget.x1,
             y1: widget.y1,
@@ -99,9 +100,11 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final tp = context.watch<ThemeProvider>();
+    final accent = tp.accentColor;
 
     return Scaffold(
-      backgroundColor: context.watch<ThemeProvider>().surface,
+      backgroundColor: tp.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -116,13 +119,14 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: context.watch<ThemeProvider>().card,
+                        color: tp.card,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.15)),
+                        border:
+                            Border.all(color: accent.withValues(alpha: 0.15)),
                       ),
                       child: Icon(
                         Icons.close_rounded,
-                        color: context.watch<ThemeProvider>().textPrimary,
+                        color: tp.textPrimary,
                         size: 22,
                       ),
                     ),
@@ -134,11 +138,17 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                       children: [
                         Text(
                           'Midpoint Graph',
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -0.5),
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              color: tp.textPrimary,
+                              letterSpacing: -0.5),
                         ),
                         Text(
                           'Classroom Concept Visualization',
-                          style: TextStyle(fontSize: 12, color: const Color(0xFF334155).withValues(alpha: 0.7)),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: accent.withValues(alpha: 0.7)),
                         ),
                       ],
                     ),
@@ -155,9 +165,10 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                   onTap: _openFullScreen,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: context.watch<ThemeProvider>().card,
+                      color: tp.card,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.15), width: 1.5),
+                      border: Border.all(
+                          color: accent.withValues(alpha: 0.15), width: 1.5),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.05),
@@ -185,23 +196,26 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                               );
                             },
                           ),
-                          
+
                           // Theme Indicator (Subtle)
                           Positioned(
                             top: 16,
                             right: 16,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF334155).withValues(alpha: 0.1),
+                                color: accent.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Row(
                                 children: [
                                   Icon(
-                                    isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                                    isDark
+                                        ? Icons.dark_mode_rounded
+                                        : Icons.light_mode_rounded,
                                     size: 12,
-                                    color: const Color(0xFF334155),
+                                    color: accent,
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
@@ -209,7 +223,7 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
-                                      color: const Color(0xFF334155),
+                                      color: accent,
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -230,17 +244,32 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
               padding: const EdgeInsets.all(20),
               child: Container(
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(color: context.watch<ThemeProvider>().card, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.1))).copyWith(
+                decoration: BoxDecoration(
+                        color: tp.card,
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: accent.withValues(alpha: 0.1)))
+                    .copyWith(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildPointInfo(context, widget.labelA, widget.x1, widget.y1, const Color(0xFF334155)),
-                    Container(width: 1, height: 40, color: const Color(0xFF334155).withValues(alpha: 0.15)),
-                    _buildPointInfo(context, widget.labelM, widget.mx, widget.my, const Color(0xFF334155), isMidpoint: true),
-                    Container(width: 1, height: 40, color: const Color(0xFF334155).withValues(alpha: 0.15)),
-                    _buildPointInfo(context, widget.labelB, widget.x2, widget.y2, context.watch<ThemeProvider>().textPrimary),
+                    _buildPointInfo(
+                        context, widget.labelA, widget.x1, widget.y1, accent),
+                    Container(
+                        width: 1,
+                        height: 40,
+                        color: accent.withValues(alpha: 0.15)),
+                    _buildPointInfo(
+                        context, widget.labelM, widget.mx, widget.my, accent,
+                        isMidpoint: true),
+                    Container(
+                        width: 1,
+                        height: 40,
+                        color: accent.withValues(alpha: 0.15)),
+                    _buildPointInfo(context, widget.labelB, widget.x2,
+                        widget.y2, tp.textPrimary),
                   ],
                 ),
               ),
@@ -251,7 +280,9 @@ class _MidpointGraphScreenState extends State<MidpointGraphScreen>
     );
   }
 
-  Widget _buildPointInfo(BuildContext context, String label, double x, double y, Color color, {bool isMidpoint = false}) {
+  Widget _buildPointInfo(
+      BuildContext context, String label, double x, double y, Color color,
+      {bool isMidpoint = false}) {
     return Column(
       children: [
         Text(
@@ -301,6 +332,7 @@ class MidpointGraph extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = context.watch<ThemeProvider>().accentColor;
 
     return CustomPaint(
       size: Size.infinite,
@@ -313,7 +345,7 @@ class MidpointGraph extends StatelessWidget {
         my: my,
         progress: progress,
         isDark: isDark,
-        accentColor: const Color(0xFF334155),
+        accentColor: accent,
         textColor: context.watch<ThemeProvider>().textPrimary,
       ),
     );
@@ -354,7 +386,7 @@ class MidpointPainter extends CustomPainter {
     _labelBounds = [];
 
     final center = Offset(size.width / 2, size.height / 2);
-    
+
     // Bounds calculation for focus
     final allX = [x1, x2, mx, 0.0];
     final allY = [y1, y2, my, 0.0];
@@ -362,12 +394,12 @@ class MidpointPainter extends CustomPainter {
     final maxX = allX.reduce(max);
     final minY = allY.reduce(min);
     final maxY = allY.reduce(max);
-    
+
     final rangeX = (maxX - minX).abs().clamp(4.0, 100.0) + 4;
     final rangeY = (maxY - minY).abs().clamp(4.0, 100.0) + 4;
-    
+
     final scale = min(size.width / rangeX, size.height / rangeY);
-    
+
     // Origin in canvas space
     final origin = Offset(
       center.dx - ((maxX + minX) / 2) * scale,
@@ -380,7 +412,7 @@ class MidpointPainter extends CustomPainter {
 
     _drawGrid(canvas, size, origin, scale);
     _drawAxes(canvas, size, origin);
-    
+
     if (progress > 0.1) {
       _drawContent(canvas, toCanvas, size);
     }
@@ -393,11 +425,15 @@ class MidpointPainter extends CustomPainter {
 
   void _drawGrid(Canvas canvas, Size size, Offset origin, double scale) {
     final majorGridPaint = Paint()
-      ..color = isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFD1D5DB).withValues(alpha: 0.5)
+      ..color = isDark
+          ? Colors.white.withValues(alpha: 0.05)
+          : const Color(0xFFD1D5DB).withValues(alpha: 0.5)
       ..strokeWidth = 1.0;
-      
+
     final minorGridPaint = Paint()
-      ..color = isDark ? Colors.white.withValues(alpha: 0.02) : const Color(0xFFE5E7EB).withValues(alpha: 0.3)
+      ..color = isDark
+          ? Colors.white.withValues(alpha: 0.02)
+          : const Color(0xFFE5E7EB).withValues(alpha: 0.3)
       ..strokeWidth = 0.5;
 
     // Determine grid spacing
@@ -406,9 +442,11 @@ class MidpointPainter extends CustomPainter {
     if (scale < 2) spacing = 50.0;
 
     // Draw vertical lines
-    for (double x = (origin.dx % (spacing * scale)) - (spacing * scale); x < size.width; x += spacing * scale) {
+    for (double x = (origin.dx % (spacing * scale)) - (spacing * scale);
+        x < size.width;
+        x += spacing * scale) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), majorGridPaint);
-      
+
       // Minor lines (classroom feel)
       for (int i = 1; i < 5; i++) {
         double mx = x + (i * (spacing * scale) / 5);
@@ -417,9 +455,11 @@ class MidpointPainter extends CustomPainter {
     }
 
     // Draw horizontal lines
-    for (double y = (origin.dy % (spacing * scale)) - (spacing * scale); y < size.height; y += spacing * scale) {
+    for (double y = (origin.dy % (spacing * scale)) - (spacing * scale);
+        y < size.height;
+        y += spacing * scale) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), majorGridPaint);
-      
+
       // Minor lines
       for (int i = 1; i < 5; i++) {
         double my = y + (i * (spacing * scale) / 5);
@@ -435,16 +475,19 @@ class MidpointPainter extends CustomPainter {
 
     // Y Axis
     if (origin.dx >= 0 && origin.dx <= size.width) {
-      canvas.drawLine(Offset(origin.dx, 0), Offset(origin.dx, size.height), axisPaint);
+      canvas.drawLine(
+          Offset(origin.dx, 0), Offset(origin.dx, size.height), axisPaint);
     }
-    
+
     // X Axis
     if (origin.dy >= 0 && origin.dy <= size.height) {
-      canvas.drawLine(Offset(0, origin.dy), Offset(size.width, origin.dy), axisPaint);
+      canvas.drawLine(
+          Offset(0, origin.dy), Offset(size.width, origin.dy), axisPaint);
     }
   }
 
-  void _drawContent(Canvas canvas, Offset Function(double, double) toCanvas, Size size) {
+  void _drawContent(
+      Canvas canvas, Offset Function(double, double) toCanvas, Size size) {
     final p1 = toCanvas(x1, y1);
     final p2 = toCanvas(x2, y2);
     final pm = toCanvas(mx, my);
@@ -462,17 +505,22 @@ class MidpointPainter extends CustomPainter {
     _drawProjections(canvas, p2, toCanvas(x2, 0), toCanvas(0, y2), progress);
 
     // Points
-    _drawPoint(canvas, p1, accentColor, "A", progress, size, label: "(${_fmt(x1)}, ${_fmt(y1)})");
-    _drawPoint(canvas, p2, textColor.withValues(alpha: 0.7), "B", progress, size, label: "(${_fmt(x2)}, ${_fmt(y2)})");
-    
+    _drawPoint(canvas, p1, accentColor, "A", progress, size,
+        label: "(${_fmt(x1)}, ${_fmt(y1)})");
+    _drawPoint(
+        canvas, p2, textColor.withValues(alpha: 0.7), "B", progress, size,
+        label: "(${_fmt(x2)}, ${_fmt(y2)})");
+
     // Midpoint with special styling
     if (progress > 0.5) {
       final mProgress = (progress - 0.5) * 2;
-      _drawMidpoint(canvas, pm, accentColor, mProgress, size, label: "(${_fmt(mx)}, ${_fmt(my)})");
+      _drawMidpoint(canvas, pm, accentColor, mProgress, size,
+          label: "(${_fmt(mx)}, ${_fmt(my)})");
     }
   }
 
-  void _drawProjections(Canvas canvas, Offset p, Offset px, Offset py, double progress) {
+  void _drawProjections(
+      Canvas canvas, Offset p, Offset px, Offset py, double progress) {
     final paint = Paint()
       ..color = textColor.withValues(alpha: 0.1 * progress)
       ..strokeWidth = 1.0
@@ -487,24 +535,28 @@ class MidpointPainter extends CustomPainter {
     const dashSpace = 4.0;
     double distance = (end - start).distance;
     double currentDistance = 0;
-    
+
     while (currentDistance < distance) {
       final subStart = Offset.lerp(start, end, currentDistance / distance)!;
-      final subEnd = Offset.lerp(start, end, (currentDistance + dashWidth) / distance)!;
+      final subEnd =
+          Offset.lerp(start, end, (currentDistance + dashWidth) / distance)!;
       canvas.drawLine(subStart, subEnd, paint);
       currentDistance += dashWidth + dashSpace;
     }
   }
 
-  void _drawPoint(Canvas canvas, Offset pos, Color color, String name, double p, Size canvasSize, {String? label}) {
+  void _drawPoint(Canvas canvas, Offset pos, Color color, String name, double p,
+      Size canvasSize,
+      {String? label}) {
     final paint = Paint()
       ..color = color.withValues(alpha: p)
       ..style = PaintingStyle.fill;
-      
+
     canvas.drawCircle(pos, 6 * p, paint);
-    
+
     // Halo
-    canvas.drawCircle(pos, 12 * p, Paint()..color = color.withValues(alpha: 0.1 * p));
+    canvas.drawCircle(
+        pos, 12 * p, Paint()..color = color.withValues(alpha: 0.1 * p));
 
     if (p > 0.8) {
       final fontSize = 11.0 * _scaleFactor * p;
@@ -515,32 +567,39 @@ class MidpointPainter extends CustomPainter {
             color: color.withValues(alpha: p),
             fontWeight: FontWeight.bold,
             fontSize: fontSize,
-            backgroundColor: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.5),
+            backgroundColor: isDark
+                ? Colors.black.withValues(alpha: 0.5)
+                : Colors.white.withValues(alpha: 0.5),
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      
+
       // Determine best label position, avoiding overlap
       final offset = _findNonOverlappingOffset(pos, textPainter, canvasSize);
       textPainter.paint(canvas, pos + offset);
     }
   }
 
-  void _drawMidpoint(Canvas canvas, Offset pos, Color color, double p, Size canvasSize, {String? label}) {
+  void _drawMidpoint(
+      Canvas canvas, Offset pos, Color color, double p, Size canvasSize,
+      {String? label}) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
-      
+
     // Outer Ring
-    canvas.drawCircle(pos, 10 * p, Paint()
-      ..color = color.withValues(alpha: 0.2)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2);
-      
+    canvas.drawCircle(
+        pos,
+        10 * p,
+        Paint()
+          ..color = color.withValues(alpha: 0.2)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2);
+
     // Inner center
     canvas.drawCircle(pos, 5 * p, paint);
-    
+
     // "M" Label + Coordinates
     if (p > 0.8) {
       final fontSize = 13.0 * _scaleFactor * p;
@@ -551,12 +610,14 @@ class MidpointPainter extends CustomPainter {
             color: color,
             fontWeight: FontWeight.bold,
             fontSize: fontSize,
-            backgroundColor: isDark ? Colors.black.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.7),
+            backgroundColor: isDark
+                ? Colors.black.withValues(alpha: 0.7)
+                : Colors.white.withValues(alpha: 0.7),
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      
+
       // Determine best label position, avoiding overlap
       final offset = _findNonOverlappingOffset(pos, textPainter, canvasSize);
       textPainter.paint(canvas, pos + offset);
@@ -565,21 +626,22 @@ class MidpointPainter extends CustomPainter {
 
   /// Finds an offset for a label that doesn't overlap previously placed labels.
   /// Tries preferred position first, then rotates through alternatives.
-  Offset _findNonOverlappingOffset(Offset anchor, TextPainter tp, Size canvasSize) {
+  Offset _findNonOverlappingOffset(
+      Offset anchor, TextPainter tp, Size canvasSize) {
     final labelWidth = tp.width;
     final labelHeight = tp.height;
     final margin = 8.0 * _scaleFactor;
 
     // Candidate offsets relative to anchor point (tried in order)
     final candidates = [
-      Offset(margin, -labelHeight - margin),           // top-right
+      Offset(margin, -labelHeight - margin), // top-right
       Offset(-labelWidth - margin, -labelHeight - margin), // top-left
-      Offset(margin, margin),                          // bottom-right
-      Offset(-labelWidth - margin, margin),            // bottom-left
-      Offset(margin, 0),                               // right
-      Offset(-labelWidth - margin, 0),                 // left
-      Offset(0, -labelHeight - margin),                // top-center
-      Offset(0, margin),                               // bottom-center
+      Offset(margin, margin), // bottom-right
+      Offset(-labelWidth - margin, margin), // bottom-left
+      Offset(margin, 0), // right
+      Offset(-labelWidth - margin, 0), // left
+      Offset(0, -labelHeight - margin), // top-center
+      Offset(0, margin), // bottom-center
     ];
 
     for (final offset in candidates) {
@@ -625,6 +687,6 @@ class MidpointPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant MidpointPainter oldDelegate) => 
-    oldDelegate.progress != progress || oldDelegate.isDark != isDark;
+  bool shouldRepaint(covariant MidpointPainter oldDelegate) =>
+      oldDelegate.progress != progress || oldDelegate.isDark != isDark;
 }

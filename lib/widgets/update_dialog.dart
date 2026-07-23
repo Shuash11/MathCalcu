@@ -26,8 +26,6 @@ class _UpdateDialogState extends State<_UpdateDialog>
   bool _downloading = false;
   bool _waitingForPermission = false;
 
-  static const _accent = Color(0xFF334155);
-
   @override
   void initState() {
     super.initState();
@@ -94,6 +92,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
 
     // Error state
     if (_error != null) {
@@ -110,7 +109,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
                 color: Colors.red.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.error_outline_rounded,
                 size: 32,
                 color: Colors.red,
@@ -135,7 +134,8 @@ class _UpdateDialogState extends State<_UpdateDialog>
                   ? 'Allow MathCalcu to install updates in your phone settings, then try again.'
                   : _error?.contains('signature') == true
                       ? 'This update was signed with a different key.\nUninstall the app first, then download the new version.'
-                      : (_error ?? 'Something went wrong. Please try again later.'),
+                      : (_error ??
+                          'Something went wrong. Please try again later.'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -149,14 +149,18 @@ class _UpdateDialogState extends State<_UpdateDialog>
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(foregroundColor: theme.textSecondary),
+                  style: TextButton.styleFrom(
+                      foregroundColor: theme.textSecondary),
                   child: const Text('Cancel'),
                 ),
                 const SizedBox(width: 12),
                 FilledButton(
-                  onPressed: _error == 'NEED_PERMISSION' ? _openSettings : _startDownload,
-                  style: FilledButton.styleFrom(backgroundColor: _accent),
-                  child: Text(_error == 'NEED_PERMISSION' ? 'Open Settings' : 'Retry'),
+                  onPressed: _error == 'NEED_PERMISSION'
+                      ? _openSettings
+                      : _startDownload,
+                  style: FilledButton.styleFrom(backgroundColor: accent),
+                  child: Text(
+                      _error == 'NEED_PERMISSION' ? 'Open Settings' : 'Retry'),
                 ),
               ],
             ),
@@ -177,13 +181,13 @@ class _UpdateDialogState extends State<_UpdateDialog>
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: _accent.withValues(alpha: 0.12),
+                color: accent.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.system_update_rounded,
                 size: 32,
-                color: _accent,
+                color: accent,
               ),
             ),
             const SizedBox(height: 16),
@@ -212,7 +216,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
                 value: _progress,
                 minHeight: 6,
                 backgroundColor: theme.card,
-                color: _accent,
+                color: accent,
               ),
             ),
           ],
@@ -231,13 +235,13 @@ class _UpdateDialogState extends State<_UpdateDialog>
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: _accent.withValues(alpha: 0.12),
+              color: accent.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.system_update_rounded,
               size: 32,
-              color: _accent,
+              color: accent,
             ),
           ),
           const SizedBox(height: 16),
@@ -278,7 +282,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
                     _checkPermissionThenDownload();
                   },
                   style: FilledButton.styleFrom(
-                    backgroundColor: _accent,
+                    backgroundColor: accent,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   child: const Text('Update'),

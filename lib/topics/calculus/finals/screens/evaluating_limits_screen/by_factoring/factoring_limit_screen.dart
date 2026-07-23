@@ -40,11 +40,12 @@ class _FactoringLimitScreenContent extends StatefulWidget {
   });
 
   @override
-  State<_FactoringLimitScreenContent> createState() => _FactoringLimitScreenContentState();
+  State<_FactoringLimitScreenContent> createState() =>
+      _FactoringLimitScreenContentState();
 }
 
-class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenContent>
-    with TickerProviderStateMixin {
+class _FactoringLimitScreenContentState
+    extends State<_FactoringLimitScreenContent> with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   final _expressionFocus = FocusNode();
@@ -68,11 +69,13 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim = CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
+    _fadeAnim =
+        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
     _slideAnim = Tween<Offset>(
       begin: const Offset(0, 0.05),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(
+        parent: _contentController, curve: Curves.easeOutCubic));
 
     _contentController.forward();
 
@@ -107,13 +110,16 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
 
   void _solve() {
     _hideKeyboardSignal.value++;
-    if (_expressionController.text.isEmpty || _approachController.text.isEmpty) {
+    if (_expressionController.text.isEmpty ||
+        _approachController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please enter both an expression and an approach value.'),
+          content: const Text(
+              'Please enter both an expression and an approach value.'),
           backgroundColor: FinalsTheme.danger,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
       return;
@@ -125,7 +131,8 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
 
     double approachVal = 0;
     try {
-      approachVal = double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
+      approachVal =
+          double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
     } catch (e) {
       approachVal = 0;
     }
@@ -179,7 +186,15 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
       child: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context, headerPaddingH: headerPaddingH, titleFontSize: headerTitleFontSize, backSpacing: headerBackSpacing, badgePaddingH: headerBadgePaddingH, badgePaddingV: headerBadgePaddingV, backPadding: headerBackPadding, badgeIconSize: headerBadgeIconSize, badgeFontSize: headerBadgeFontSize),
+            _buildHeader(context,
+                headerPaddingH: headerPaddingH,
+                titleFontSize: headerTitleFontSize,
+                backSpacing: headerBackSpacing,
+                badgePaddingH: headerBadgePaddingH,
+                badgePaddingV: headerBadgePaddingV,
+                backPadding: headerBackPadding,
+                badgeIconSize: headerBadgeIconSize,
+                badgeFontSize: headerBadgeFontSize),
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -187,7 +202,8 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
                   position: _slideAnim,
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(screenPaddingH, 8, screenPaddingH, screenPaddingBottom),
+                    padding: EdgeInsets.fromLTRB(
+                        screenPaddingH, 8, screenPaddingH, screenPaddingBottom),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -197,26 +213,25 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
                           expressionFocus: _expressionFocus,
                           approachFocus: _approachFocus,
                           currentVariable: _currentVariable,
-                          onVariableChanged: (v) => setState(() => _currentVariable = v),
+                          onVariableChanged: (v) =>
+                              setState(() => _currentVariable = v),
                           onSolve: _solve,
                           isLoading: _isSolving,
                         ),
-
                         if (_result != null && !_isSolving) ...[
                           SizedBox(height: isCompact ? 16.0 : 24.0),
-                            FactoringAnswerCard(
-                              answer: _result!.finalValue,
-                              method: 'Factoring Method',
-                              isShowingSteps: false,
-                              onTap: () => showSolutionStepsModal(
-                                context: context,
-                                title: 'Solution Steps',
-                                design: AppDesign.app,
-                                child: FactoringStepsView(steps: _steps),
-                              ),
-                              error: _result!.errorMessage,
+                          FactoringAnswerCard(
+                            answer: _result!.finalValue,
+                            method: 'Factoring Method',
+                            isShowingSteps: false,
+                            onTap: () => showSolutionStepsModal(
+                              context: context,
+                              title: 'Solution Steps',
+                              design: AppDesign.app,
+                              child: FactoringStepsView(steps: _steps),
                             ),
-
+                            error: _result!.errorMessage,
+                          ),
                         ],
                       ],
                     ),
@@ -226,7 +241,7 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
             ),
             MathKeyboard(
               controller: _activeController ?? _expressionController,
-              accentColor: FinalsTheme.primary,
+              accentColor: FinalsTheme.primaryFor(context),
               hideSignal: _hideKeyboardSignal,
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -236,7 +251,15 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
     );
   }
 
-  Widget _buildHeader(BuildContext context, {double headerPaddingH = 24, double titleFontSize = 24, double backSpacing = 20, double badgePaddingH = 12, double badgePaddingV = 6, double backPadding = 12, double badgeIconSize = 14, double badgeFontSize = 10}) {
+  Widget _buildHeader(BuildContext context,
+      {double headerPaddingH = 24,
+      double titleFontSize = 24,
+      double backSpacing = 20,
+      double badgePaddingH = 12,
+      double badgePaddingV = 6,
+      double backPadding = 12,
+      double badgeIconSize = 14,
+      double badgeFontSize = 10}) {
     return Padding(
       padding: EdgeInsets.fromLTRB(headerPaddingH, 24, headerPaddingH, 16),
       child: Row(
@@ -251,7 +274,8 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
               side: BorderSide(
-                  color: FinalsTheme.primary.withValues(alpha: 0.1)),
+                  color:
+                      FinalsTheme.primaryFor(context).withValues(alpha: 0.1)),
             ),
           ),
           SizedBox(width: backSpacing),
@@ -260,33 +284,37 @@ class _FactoringLimitScreenContentState extends State<_FactoringLimitScreenConte
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ResponsiveText(
-          '',
-                  style: FinalsTheme.titleStyle(context).copyWith(fontSize: titleFontSize),
+                  '',
+                  style: FinalsTheme.titleStyle(context)
+                      .copyWith(fontSize: titleFontSize),
                 ),
                 ResponsiveText(
-          '',
+                  '',
                   style: FinalsTheme.subtitleStyle(context),
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: badgePaddingH, vertical: badgePaddingV),
+            padding: EdgeInsets.symmetric(
+                horizontal: badgePaddingH, vertical: badgePaddingV),
             decoration: BoxDecoration(
-              color: FinalsTheme.primary.withValues(alpha: 0.1),
+              color: FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                  color: FinalsTheme.primary.withValues(alpha: 0.2)),
+                  color:
+                      FinalsTheme.primaryFor(context).withValues(alpha: 0.2)),
             ),
             child: Row(
               children: [
                 Icon(Icons.layers_rounded,
-                    size: badgeIconSize, color: FinalsTheme.primary),
+                    size: badgeIconSize,
+                    color: FinalsTheme.primaryFor(context)),
                 SizedBox(width: badgePaddingH * 0.5),
                 ResponsiveText(
-          '',
+                  '',
                   style: TextStyle(
-                    color: FinalsTheme.primary,
+                    color: FinalsTheme.primaryFor(context),
                     fontWeight: FontWeight.w800,
                     fontSize: badgeFontSize,
                   ),

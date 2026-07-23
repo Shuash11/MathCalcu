@@ -14,24 +14,28 @@ class StepItemWidget extends StatelessWidget {
     if (line.contains('{') && line.contains('}')) return true;
     if (line.contains('\\') && RegExp(r'[\\{}]').hasMatch(line)) return true;
     if (line.contains('dy/dx') || line.contains('d/dx')) return true;
-    
-    final mathPattern = RegExp(r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=');
+
+    final mathPattern =
+        RegExp(r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=');
     final hasVariables = RegExp(r'[x-yt]').hasMatch(line);
     final hasNumbers = RegExp(r'[0-9]').hasMatch(line);
-    
-    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('?'))) return true;
-    if (hasNumbers && mathPattern.hasMatch(line) && line.contains('=')) return true;
+
+    if (hasVariables && (mathPattern.hasMatch(line) || line.startsWith('?')))
+      return true;
+    if (hasNumbers && mathPattern.hasMatch(line) && line.contains('='))
+      return true;
 
     return false;
   }
 
-  /// Safely renders LaTeX on mobile. 
+  /// Safely renders LaTeX on mobile.
   /// Wraps in a horizontal scroll view to prevent overflow errors on long equations.
   Widget _buildMathLine(String line, TextStyle style) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal, // Allows swiping left/right on long equations
+        scrollDirection:
+            Axis.horizontal, // Allows swiping left/right on long equations
         physics: const BouncingScrollPhysics(), // Native iOS/Android feel
         child: Math.tex(
           line,
@@ -93,15 +97,15 @@ class StepItemWidget extends StatelessWidget {
         icon = Icons.calculate_rounded;
         break;
       case StepKind.substitution:
-        accentColor = FinalsTheme.primary;
+        accentColor = FinalsTheme.primaryFor(context);
         icon = Icons.subscript_rounded;
         break;
       case StepKind.tangentNormal:
-        accentColor = FinalsTheme.secondary;
+        accentColor = FinalsTheme.secondaryFor(context);
         icon = Icons.show_chart_rounded;
         break;
       default:
-        accentColor = FinalsTheme.primary;
+        accentColor = FinalsTheme.primaryFor(context);
         icon = Icons.circle;
     }
 
@@ -137,10 +141,10 @@ class StepItemWidget extends StatelessWidget {
                 Icon(icon, size: 14, color: accentColor),
                 const SizedBox(width: 8),
                 Text(
-                  step.label, 
+                  step.label,
                   style: TextStyle(
-                    color: accentColor, 
-                    fontWeight: FontWeight.w800, 
+                    color: accentColor,
+                    fontWeight: FontWeight.w800,
                     fontSize: 11,
                     letterSpacing: 0.5,
                   ),
@@ -148,21 +152,19 @@ class StepItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          
           if (step.hint != null) _buildHint(context, step.hint!),
-          
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: step.lines.map((line) {
                 if (line.trim().isEmpty) return const SizedBox(height: 6);
-                                
+
                 if (_isMathExpression(line)) {
                   return _buildMathLine(
-                    line, 
+                    line,
                     TextStyle(
-                      color: FinalsTheme.textPrimary(context), 
+                      color: FinalsTheme.textPrimary(context),
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),
@@ -171,7 +173,7 @@ class StepItemWidget extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Text(
-                      line, 
+                      line,
                       style: FinalsTheme.subtitleStyle(context).copyWith(
                         fontSize: 13,
                         height: 1.4,
@@ -194,17 +196,17 @@ class StepItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            Icons.info_outline_rounded, 
-            size: 14, 
+            Icons.info_outline_rounded,
+            size: 14,
             color: FinalsTheme.textSecondary(context).withValues(alpha: 0.5),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              step.lines.join(' '), 
+              step.lines.join(' '),
               style: TextStyle(
-                color: FinalsTheme.textSecondary(context), 
-                fontStyle: FontStyle.italic, 
+                color: FinalsTheme.textSecondary(context),
+                fontStyle: FontStyle.italic,
                 fontSize: 12, // Compact notes
                 height: 1.4,
               ),
@@ -222,19 +224,20 @@ class StepItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 32, height: 3, 
+            width: 32,
+            height: 3,
             decoration: BoxDecoration(
-              color: FinalsTheme.primary, 
+              color: FinalsTheme.primaryFor(context),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            step.label.toUpperCase(), 
-            style: const TextStyle(
-              color: FinalsTheme.primary, 
-              fontWeight: FontWeight.w900, 
-              fontSize: 16, 
+            step.label.toUpperCase(),
+            style: TextStyle(
+              color: FinalsTheme.primaryFor(context),
+              fontWeight: FontWeight.w900,
+              fontSize: 16,
               letterSpacing: 1.2,
             ),
           ),
@@ -250,7 +253,8 @@ class StepItemWidget extends StatelessWidget {
                     child: Math.tex(
                       line,
                       textStyle: TextStyle(
-                        color: FinalsTheme.textPrimary(context).withValues(alpha: 0.8),
+                        color: FinalsTheme.textPrimary(context)
+                            .withValues(alpha: 0.8),
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
@@ -270,11 +274,12 @@ class StepItemWidget extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
-                  line, 
+                  line,
                   style: TextStyle(
-                    color: FinalsTheme.textPrimary(context).withValues(alpha: 0.8), 
-                    fontSize: 13, 
-                    height: 1.4, 
+                    color:
+                        FinalsTheme.textPrimary(context).withValues(alpha: 0.8),
+                    fontSize: 13,
+                    height: 1.4,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -293,48 +298,49 @@ class StepItemWidget extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            FinalsTheme.primary.withValues(alpha: 0.12), 
+            FinalsTheme.primary.withValues(alpha: 0.12),
             FinalsTheme.danger.withValues(alpha: 0.12)
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.5), width: 1.5),
+        border: Border.all(
+            color: FinalsTheme.primary.withValues(alpha: 0.5), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: FinalsTheme.primary.withValues(alpha: 0.15), 
-            blurRadius: 16, 
-            offset: const Offset(0, 6)
-          ),
+              color: FinalsTheme.primary.withValues(alpha: 0.15),
+              blurRadius: 16,
+              offset: const Offset(0, 6)),
         ],
       ),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(children: [
-              Icon(Icons.check_circle, color: FinalsTheme.primary, size: 18),
-              SizedBox(width: 8),
+            Row(children: [
+              Icon(Icons.check_circle,
+                  color: FinalsTheme.primaryFor(context), size: 18),
+              const SizedBox(width: 8),
               ResponsiveText(
-          '', 
+                '',
                 style: TextStyle(
-                  color: FinalsTheme.primary, 
-                  fontWeight: FontWeight.w900, 
-                  letterSpacing: 1.2, 
+                  color: FinalsTheme.primaryFor(context),
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
                   fontSize: 11,
                 ),
               ),
             ]),
             const SizedBox(height: 12),
             ...step.lines.map((line) => _buildMathLine(
-              line, 
-              TextStyle(
-                color: FinalsTheme.textPrimary(context), 
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-              ),
-            )),
+                  line,
+                  TextStyle(
+                    color: FinalsTheme.textPrimary(context),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
+                )),
           ],
         ),
       ),

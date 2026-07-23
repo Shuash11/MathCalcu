@@ -121,12 +121,20 @@ class _StepBuilder {
         leftLabel: 'Find x?',
         rightLabel: 'Find y?',
         leftLatex: r'\begin{aligned}'
-            r'x_m &= \dfrac{' '$sumXs' r'}{2} \\'
-            r'&= \boxed{' '$resXs' r'}'
+            r'x_m &= \dfrac{'
+            '$sumXs'
+            r'}{2} \\'
+            r'&= \boxed{'
+            '$resXs'
+            r'}'
             r'\end{aligned}',
         rightLatex: r'\begin{aligned}'
-            r'y_m &= \dfrac{' '$sumYs' r'}{2} \\'
-            r'&= \boxed{' '$resYs' r'}'
+            r'y_m &= \dfrac{'
+            '$sumYs'
+            r'}{2} \\'
+            r'&= \boxed{'
+            '$resYs'
+            r'}'
             r'\end{aligned}',
       ),
 
@@ -145,9 +153,25 @@ class _StepBuilder {
         stepLabel: 'Step 5',
         guide: 'Answer + verify',
         latexContent: r'\begin{aligned}'
-            r'M &= \left(' '$resXs' r',\;' '$resYs' r'\right)\\'
-            r'x_m &= \dfrac{' '$x1s' r'+' '$x2s' r'}{2} = ' '$resXs' r'\;\checkmark \\'
-            r'y_m &= \dfrac{' '$y1s' r'+' '$y2s' r'}{2} = ' '$resYs' r'\;\checkmark'
+            r'M &= \left('
+            '$resXs'
+            r',\;'
+            '$resYs'
+            r'\right)\\'
+            r'x_m &= \dfrac{'
+            '$x1s'
+            r'+'
+            '$x2s'
+            r'}{2} = '
+            '$resXs'
+            r'\;\checkmark \\'
+            r'y_m &= \dfrac{'
+            '$y1s'
+            r'+'
+            '$y2s'
+            r'}{2} = '
+            '$resYs'
+            r'\;\checkmark'
             r'\end{aligned}',
       ),
     ];
@@ -206,14 +230,34 @@ class _StepBuilder {
         leftLabel: 'Solve x2',
         rightLabel: 'Solve y2',
         leftLatex: r'\begin{aligned}'
-            r'x_2 &= 2(' '$xms' r') - (' '$x1s' r') \\'
-            r'&= ' '$doubleXms' r' - ' '$x1s' r' \\'
-            r'&= \boxed{' '$resXs' r'}'
+            r'x_2 &= 2('
+            '$xms'
+            r') - ('
+            '$x1s'
+            r') \\'
+            r'&= '
+            '$doubleXms'
+            r' - '
+            '$x1s'
+            r' \\'
+            r'&= \boxed{'
+            '$resXs'
+            r'}'
             r'\end{aligned}',
         rightLatex: r'\begin{aligned}'
-            r'y_2 &= 2(' '$yms' r') - (' '$y1s' r') \\'
-            r'&= ' '$doubleYms' r' - ' '$y1s' r' \\'
-            r'&= \boxed{' '$resYs' r'}'
+            r'y_2 &= 2('
+            '$yms'
+            r') - ('
+            '$y1s'
+            r') \\'
+            r'&= '
+            '$doubleYms'
+            r' - '
+            '$y1s'
+            r' \\'
+            r'&= \boxed{'
+            '$resYs'
+            r'}'
             r'\end{aligned}',
       ),
 
@@ -223,9 +267,25 @@ class _StepBuilder {
         stepLabel: 'Step 5',
         guide: 'Answer + verify',
         latexContent: r'\begin{aligned}'
-            r'B &= \left(' '$resXs' r',\;' '$resYs' r'\right)\\'
-            r'x_m &= \dfrac{' '$x1s' r'+' '$resXs' r'}{2} = ' '$xms' r'\;\checkmark \\'
-            r'y_m &= \dfrac{' '$y1s' r'+' '$resYs' r'}{2} = ' '$yms' r'\;\checkmark'
+            r'B &= \left('
+            '$resXs'
+            r',\;'
+            '$resYs'
+            r'\right)\\'
+            r'x_m &= \dfrac{'
+            '$x1s'
+            r'+'
+            '$resXs'
+            r'}{2} = '
+            '$xms'
+            r'\;\checkmark \\'
+            r'y_m &= \dfrac{'
+            '$y1s'
+            r'+'
+            '$resYs'
+            r'}{2} = '
+            '$yms'
+            r'\;\checkmark'
             r'\end{aligned}',
       ),
     ];
@@ -566,7 +626,10 @@ class _GuideLabel extends StatelessWidget {
             text: '  ?  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
-              color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.4),
+              color: context
+                  .watch<ThemeProvider>()
+                  .textPrimary
+                  .withValues(alpha: 0.4),
             ),
           ),
           TextSpan(
@@ -625,7 +688,10 @@ class _SingleMathBox extends StatelessWidget {
               style: TextStyle(
                 fontSize: isSmall ? 12 : 13,
                 height: 1.75,
-                color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.5),
+                color: context
+                    .watch<ThemeProvider>()
+                    .textPrimary
+                    .withValues(alpha: 0.5),
                 fontWeight: FontWeight.w500,
                 fontFamily: 'monospace',
               ),
