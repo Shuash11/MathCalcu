@@ -61,6 +61,7 @@ class _CalculusAppState extends State<CalculusApp> {
   }
 
   Future<void> _requestInstallPermission() async {
+    if (kIsWeb) return;
     if (!Platform.isAndroid) return;
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('asked_install_permission') == true) return;
@@ -88,7 +89,8 @@ class _CalculusAppState extends State<CalculusApp> {
                 color: const Color(0xFF334155).withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFF334155)),
+              child: const Icon(Icons.system_update_rounded,
+                  size: 32, color: Color(0xFF334155)),
             ),
             const SizedBox(height: 16),
             Text(
@@ -123,7 +125,8 @@ class _CalculusAppState extends State<CalculusApp> {
                       Navigator.of(ctx).pop();
                       UpdateService.openInstallSettings();
                     },
-                    style: FilledButton.styleFrom(backgroundColor: const Color(0xFF334155)),
+                    style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF334155)),
                     child: const Text('Open Settings'),
                   ),
                 ),
@@ -132,7 +135,9 @@ class _CalculusAppState extends State<CalculusApp> {
                   width: double.infinity,
                   child: TextButton(
                     onPressed: () => Navigator.of(ctx).pop(),
-                    style: TextButton.styleFrom(foregroundColor: ctx.watch<ThemeProvider>().textSecondary),
+                    style: TextButton.styleFrom(
+                        foregroundColor:
+                            ctx.watch<ThemeProvider>().textSecondary),
                     child: const Text('Not now'),
                   ),
                 ),
@@ -180,7 +185,8 @@ class _CalculusAppState extends State<CalculusApp> {
       } else if (info != null) {
         ScaffoldMessenger.of(ctx).showSnackBar(
           SnackBar(
-            content: Text('\u2713 MathCalcu is up to date (v${info.currentVersion})'),
+            content: Text(
+                '\u2713 MathCalcu is up to date (v${info.currentVersion})'),
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 3),
           ),
@@ -245,7 +251,8 @@ class _CalculusAppState extends State<CalculusApp> {
       theme: themeProvider.isDark ? AppTheme.dark() : AppTheme.light(),
       routerConfig: AppRouter.router,
       builder: (context, child) {
-        return child ?? const Scaffold(body: Center(child: Text('Error loading app')));
+        return child ??
+            const Scaffold(body: Center(child: Text('Error loading app')));
       },
     );
   }

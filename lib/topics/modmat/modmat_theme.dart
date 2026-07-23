@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 
 class ModmatTheme {
-  static const Color primary = Color(0xFF0D9488);
-  static const Color secondary = Color(0xFF14B8A6);
-  static const Color accent = Color(0xFF5EEAD4);
-  static const Color background = Color(0xFFF0FDFA);
-  static const Color card = Color(0xFFFFFFFF);
+  static const Color accent = Color(0xFF334155);
+  static const Color accentLight = Color(0xFF3D4F6A);
   static const Color textPrimary = Color(0xFF0F172A);
   static const Color textSecondary = Color(0xFF475569);
   static const Color error = Color(0xFFEF4444);
   static const Color success = Color(0xFF22C55E);
   static const Color warning = Color(0xFFF59E0B);
 
-  static const Color tealLight = Color(0xFFCCFBF1);
-  static const Color tealDark = Color(0xFF0F766E);
+  static Color themeAccent(BuildContext context) =>
+      context.watch<ThemeProvider>().accentColor;
+
+  static Color surface(BuildContext context) =>
+      context.watch<ThemeProvider>().surface;
+
+  static Color card(BuildContext context) =>
+      context.watch<ThemeProvider>().card;
+
+  static Color shadowColor(BuildContext context) =>
+      context.watch<ThemeProvider>().shadowColor;
 
   static TextStyle titleStyle(BuildContext context) => TextStyle(
         fontSize: 28,
@@ -56,51 +64,39 @@ class ModmatTheme {
         letterSpacing: 0.5,
       );
 
-  static BoxDecoration cardDecoration(BuildContext context,
-          {bool hovered = false}) =>
-      BoxDecoration(
-        color: card,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
+  /// Card decoration matching the Calculus `_CalculusSectionCard` pattern.
+  /// Uses dynamic theme.card, theme.shadowColor, and accent via context.
+  static BoxDecoration cardDecoration(
+    BuildContext context, {
+    required Color accentColor,
+    bool hovered = false,
+  }) {
+    final theme = context.watch<ThemeProvider>();
+    return BoxDecoration(
+      color: theme.card,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: hovered
+            ? accentColor.withValues(alpha: 0.45)
+            : accentColor.withValues(alpha: 0.18),
+        width: hovered ? 1.5 : 1,
+      ),
+      boxShadow: [
+        BoxShadow(
           color: hovered
-              ? secondary.withValues(alpha: 0.45)
-              : primary.withValues(alpha: 0.25),
-          width: hovered ? 2 : 1,
+              ? accentColor.withValues(alpha: 0.22)
+              : accentColor.withValues(alpha: 0.07),
+          blurRadius: hovered ? 32 : 20,
+          offset: const Offset(0, 8),
+          spreadRadius: hovered ? 2 : 0,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: hovered
-                ? secondary.withValues(alpha: 0.2)
-                : primary.withValues(alpha: 0.1),
-            blurRadius: hovered ? 36 : 22,
-            offset: Offset(0, 8),
-            spreadRadius: hovered ? 2 : 0,
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 14,
-            offset: Offset(0, 4),
-            spreadRadius: -4,
-          ),
-        ],
-      );
-
-  static BoxDecoration inputDecoration(BuildContext context,
-          {bool focused = false, Color? accentColor}) =>
-      BoxDecoration(
-        color: context.brightness == Brightness.light
-            ? Colors.black.withValues(alpha: 0.03)
-            : Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: focused
-              ? (accentColor ?? primary).withValues(alpha: 0.5)
-              : primary.withValues(alpha: 0.2),
-          width: focused ? 1.5 : 1,
+        BoxShadow(
+          color: theme.shadowColor,
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+          spreadRadius: -4,
         ),
-      );
-}
-
-extension ContextBrightness on BuildContext {
-  Brightness get brightness => Theme.of(this).brightness;
+      ],
+    );
+  }
 }

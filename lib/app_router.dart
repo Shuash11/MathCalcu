@@ -1,6 +1,8 @@
 ﻿import 'package:calculus_system/topics/modmat/modmat_picker_screen.dart';
 import 'package:calculus_system/topics/modmat/midterm/modmat_foundations_screen.dart';
 import 'package:calculus_system/topics/modmat/midterm/modmat_advanced_screen.dart';
+import 'package:calculus_system/shared/screens/coming_soon_screen.dart';
+import 'package:calculus_system/topics/modmat/modmat_theme.dart';
 import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart';
 import 'topics/calculus/midterm/screens/circles_screen/radius/radiusui.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
@@ -54,6 +56,23 @@ class AppRouter {
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(opacity: animation, child: child);
       },
+    );
+  }
+
+  /// Helper to create a "Coming Soon" route for MODMAT modules
+  static GoRoute _modmatModuleRoute(
+    String path,
+    String label,
+    String subtitle,
+  ) {
+    return GoRoute(
+      path: path,
+      builder: (context, state) => ComingSoonScreen(
+        title: label,
+        subtitle: subtitle,
+        accentColor: ModmatTheme.accent,
+        icon: Icons.construction_rounded,
+      ),
     );
   }
 
@@ -149,11 +168,85 @@ class AppRouter {
                         path: 'foundations',
                         builder: (context, state) =>
                             const ModmatFoundationsScreen(),
+                        routes: [
+                          _modmatModuleRoute(
+                            'propositional_logic',
+                            'Propositional Logic',
+                            'Truth tables, connectives, equivalences',
+                          ),
+                          _modmatModuleRoute(
+                            'predicate_logic',
+                            'Predicate Logic',
+                            'Quantifiers, predicates, validity',
+                          ),
+                          _modmatModuleRoute(
+                            'set_theory',
+                            'Set Theory',
+                            'Operations, power sets, relations',
+                          ),
+                          _modmatModuleRoute(
+                            'relations_functions',
+                            'Relations & Functions',
+                            'Equivalence, order, compositions',
+                          ),
+                          _modmatModuleRoute(
+                            'proof_techniques',
+                            'Proof Techniques',
+                            'Direct, contradiction, induction',
+                          ),
+                          _modmatModuleRoute(
+                            'number_systems',
+                            'Number Systems',
+                            'N, Z, Q, R, C construction',
+                          ),
+                          _modmatModuleRoute(
+                            'combinatorics_basics',
+                            'Combinatorics Basics',
+                            'Counting, permutations, combinations',
+                          ),
+                          _modmatModuleRoute(
+                            'graph_theory_basics',
+                            'Graph Theory Basics',
+                            'Vertices, edges, paths, trees',
+                          ),
+                        ],
                       ),
                       GoRoute(
                         path: 'advanced',
                         builder: (context, state) =>
                             const ModmatAdvancedScreen(),
+                        routes: [
+                          _modmatModuleRoute(
+                            'advanced_graph_theory',
+                            'Advanced Graph Theory',
+                            'Coloring, planarity, algorithms',
+                          ),
+                          _modmatModuleRoute(
+                            'algebraic_structures',
+                            'Algebraic Structures',
+                            'Groups, rings, fields',
+                          ),
+                          _modmatModuleRoute(
+                            'real_analysis',
+                            'Real Analysis',
+                            'Sequences, limits, continuity',
+                          ),
+                          _modmatModuleRoute(
+                            'linear_algebra',
+                            'Linear Algebra',
+                            'Vector spaces, eigenvalues',
+                          ),
+                          _modmatModuleRoute(
+                            'number_theory',
+                            'Number Theory',
+                            'Primes, congruences, theorems',
+                          ),
+                          _modmatModuleRoute(
+                            'topology_basics',
+                            'Topology Basics',
+                            'Open sets, continuity, compactness',
+                          ),
+                        ],
                       ),
                     ],
                   ),

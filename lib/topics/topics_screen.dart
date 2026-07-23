@@ -52,7 +52,7 @@ class TopicsScreen extends StatelessWidget {
             HomeCard(
               icon: Icons.auto_awesome_rounded,
               label: 'Modern Math',
-              accent: ModmatTheme.primary,
+              accent: ModmatTheme.accent,
               onTap: () => context.push('/topics/modmat'),
             ),
           ],

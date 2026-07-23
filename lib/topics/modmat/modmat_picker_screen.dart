@@ -1,4 +1,5 @@
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   }
 
   Widget _buildHeader(ThemeProvider theme) {
-    const accent = Color(0xFF0F766E);
+    final accent = theme.accentColor;
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -86,21 +87,26 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () => context.pop(),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: theme.card,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: theme.textSecondary.withValues(alpha: 0.2)),
-                    ),
-                    child: Icon(
+                AccentGlow.iconHalo(
+                  context,
+                  child: IconButton(
+                    onPressed: () => context.pop(),
+                    icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 16,
-                      color: theme.textPrimary,
+                      color: accent,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: accent.withValues(alpha: 0.12),
+                      foregroundColor: accent,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: accent.withValues(alpha: 0.40),
+                          width: 1.5,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -147,6 +153,13 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                     color: theme.textPrimary,
                     height: 1.1,
                     letterSpacing: -1.5,
+                    shadows: [
+                      Shadow(
+                        color: accent.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: Offset.zero,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -159,6 +172,13 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                 style: TextStyle(
                   fontSize: 15,
                   color: theme.textSecondary,
+                  shadows: [
+                    Shadow(
+                      color: accent.withValues(alpha: 0.15),
+                      blurRadius: 4,
+                      offset: Offset.zero,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -170,7 +190,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   }
 
   Widget _buildBanner(ThemeProvider theme) {
-    const accent = Color(0xFF0F766E);
+    final accent = theme.accentColor;
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -249,18 +269,19 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   }
 
   Widget _buildList(ThemeProvider theme) {
+    final accent = theme.accentColor;
     final sections = [
       _Section(
         icon: Icons.auto_awesome_rounded,
         label: 'Foundations',
         subtitle: 'Logic, Sets, Proofs, Number Theory',
-        color: const Color(0xFF0F766E),
+        color: accent,
       ),
       _Section(
         icon: Icons.architecture_rounded,
         label: 'Advanced',
         subtitle: 'Algebra, Analysis, Topology, Geometry',
-        color: const Color(0xFF0F766E),
+        color: accent,
       ),
     ];
 
