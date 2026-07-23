@@ -1,0 +1,432 @@
+name: Release MathCalcu
+
+on:
+  workflow_dispatch:
+    inputs:
+      approved_sha:
+        description: Exact current main commit approved for release
+        required: true
+        type: string
+      expected_version:
+        description: Expected pubspec SemVer without the build suffix (for example, 1.12.8)
+        required: true
+        type: string
+      expected_build:
+        description: Expected positive integer pubspec build number (for example, 8)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.expected_version }}
+  cancel-in-progress: false
+
+env:
+  APPROVED_SHA: ${{ inputs.approved_sha }}
+  EXPECTED_VERSION: ${{ inputs.expected_version }}
+  EXPECTED_BUILD: ${{ inputs.expected_build }}
+  EXPECTED_TAG: v${{ inputs.expected_version }}
+  FLUTTER_VERSION: 3.41.6
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  verify:
+    name: Verify exact main release input
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the approved commit
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ inputs.approved_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Assert current main and checkout provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$APPROVED_SHA"
+          remote_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test -n "$remote_main"
+          test "$remote_main" = "$APPROVED_SHA"
+
+      - name: Validate release identity and immutable tag state
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$EXPECTED_VERSION" != ""
+          test "$EXPECTED_BUILD" != ""
+          [[ "$EXPECTED_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$EXPECTED_BUILD" =~ ^[1-9][0-9]*$ ]]
+          version_line="$(grep -E '^version: ' pubspec.yaml)"
+          test "$version_line" = "version: ${EXPECTED_VERSION}+${EXPECTED_BUILD}"
+          git fetch --tags --force origin
+          python3 - "$EXPECTED_VERSION" "$EXPECTED_BUILD" "$GITHUB_ENV" <<'PY'
+          import re
+          import subprocess
+          import sys
+
+          target_version = tuple(map(int, sys.argv[1].split(".")))
+          target_build = int(sys.argv[2])
+          github_env = sys.argv[3]
+          tags = subprocess.check_output(
+              ["git", "tag", "--list", "v[0-9]*"], text=True
+          ).splitlines()
+          parsed = []
+          for tag in tags:
+              match = re.fullmatch(r"v(\d+)\.(\d+)\.(\d+)", tag)
+              if match:
+                  parsed.append((tuple(map(int, match.groups())), tag))
+          if parsed:
+              previous_version, previous_tag = max(parsed)
+              if target_version <= previous_version:
+                  raise SystemExit("Expected SemVer must be newer than the latest valid release tag.")
+              previous_pubspec = subprocess.check_output(
+                  ["git", "show", f"{previous_tag}:pubspec.yaml"], text=True
+              )
+              match = re.search(r"^version:\s+\d+\.\d+\.\d+\+(\d+)\s*$", previous_pubspec, re.M)
+              if not match:
+                  raise SystemExit("Latest valid release tag has no parseable pubspec build number.")
+              if target_build <= int(match.group(1)):
+                  raise SystemExit("Expected build number must exceed the latest release build number.")
+              with open(github_env, "a", encoding="utf-8") as output:
+                  output.write(f"PREVIOUS_TAG={previous_tag}\n")
+          PY
+          existing_tag_ref="$(git ls-remote --refs origin "refs/tags/${EXPECTED_TAG}" | awk '{print $1}')"
+          if [[ -n "$existing_tag_ref" ]]; then
+            git fetch --no-tags origin "refs/tags/${EXPECTED_TAG}:refs/tags/${EXPECTED_TAG}"
+            test "$(git rev-list -n1 "$EXPECTED_TAG")" = "$APPROVED_SHA"
+          fi
+
+      - name: Set up Java
+        uses: actions/setup-java@v4.7.1
+        with:
+          distribution: zulu
+          java-version: '21'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Fetch dependencies
+        run: flutter pub get
+
+      - name: Check Dart formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${PREVIOUS_TAG:-}" ]]; then
+            dart format --output=none --set-exit-if-changed lib test
+            exit 0
+          fi
+          mapfile -t changed_dart < <(git diff --name-only --diff-filter=ACMR "$PREVIOUS_TAG" HEAD -- '*.dart')
+          if (( ${#changed_dart[@]} == 0 )); then
+            printf '%s\n' 'No Dart files changed since the prior release.'
+            exit 0
+          fi
+          dart format --output=none --set-exit-if-changed -- "${changed_dart[@]}"
+
+      - name: Compare static analysis against the prior release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${PREVIOUS_TAG:-}" ]]; then
+            flutter analyze
+            exit 0
+          fi
+          baseline="$RUNNER_TEMP/mathcalcu-release-baseline"
+          git worktree add --detach "$baseline" "$PREVIOUS_TAG"
+          trap 'git worktree remove --force "$baseline"' EXIT
+          (cd "$baseline" && flutter pub get)
+          set +e
+          flutter analyze --machine > analyzer-head.machine.txt 2>&1
+          head_status=$?
+          (cd "$baseline" && flutter analyze --machine) > analyzer-baseline.machine.txt 2>&1
+          baseline_status=$?
+          set -e
+          if (( head_status > 1 || baseline_status > 1 )); then
+            printf 'Analyzer did not complete normally (head=%s, baseline=%s).\n' "$head_status" "$baseline_status" >&2
+            exit 1
+          fi
+          python3 - "$GITHUB_WORKSPACE" "$baseline" analyzer-head.machine.txt analyzer-baseline.machine.txt > analyzer-added.machine.txt <<'PY'
+          import collections
+          import pathlib
+          import sys
+          import urllib.parse
+
+          head_root = pathlib.Path(sys.argv[1]).resolve()
+          baseline_root = pathlib.Path(sys.argv[2]).resolve()
+          head_report = pathlib.Path(sys.argv[3])
+          baseline_report = pathlib.Path(sys.argv[4])
+
+          def diagnostics(report, root):
+              result = collections.Counter()
+              for row in report.read_text(encoding="utf-8", errors="replace").splitlines():
+                  fields = row.split("|")
+                  if len(fields) < 8 or fields[0] not in {"ERROR", "WARNING"}:
+                      continue
+                  parsed = urllib.parse.urlparse(fields[3])
+                  path = pathlib.Path(urllib.parse.unquote(parsed.path))
+                  try:
+                      relative_path = path.resolve().relative_to(root).as_posix()
+                  except ValueError:
+                      relative_path = path.name
+                  result[(fields[0], fields[1], fields[2], relative_path, fields[7])] += 1
+              return result
+
+          for diagnostic, count in sorted((diagnostics(head_report, head_root) - diagnostics(baseline_report, baseline_root)).items()):
+              for _ in range(count):
+                  print("|".join(diagnostic))
+          PY
+          if [[ -s analyzer-added.machine.txt ]]; then
+            printf '%s\n' 'Analyzer warnings or errors added since the prior release:' >&2
+            cat analyzer-added.machine.txt >&2
+            exit 1
+          fi
+
+      - name: Run tests
+        run: flutter test
+
+  build_android:
+    name: Build signed Android APK
+    if: github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the approved commit
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ inputs.approved_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Assert exact checkout provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$APPROVED_SHA"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4.7.1
+        with:
+          distribution: zulu
+          java-version: '21'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Fetch dependencies
+        run: flutter pub get
+
+      - name: Build and verify signed release APK
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          umask 077
+          trap 'rm -f android/app/upload-keystore.jks android/key.properties' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyPassword=$ANDROID_KEY_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+          dart run flutter_launcher_icons
+          flutter build apk --release
+          apk="build/app/outputs/flutter-apk/app-release.apk"
+          test -s "$apk"
+          apksigner_path="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -n1)"
+          test -n "$apksigner_path"
+          "$apksigner_path" verify --verbose "$apk"
+          mkdir -p dist
+          cp "$apk" dist/MathCalcu.apk
+
+      - name: Upload signed Android release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-android-${{ inputs.approved_sha }}
+          path: dist/MathCalcu.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  build_windows:
+    name: Build Windows installer
+    if: github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: windows-latest
+    steps:
+      - name: Check out the approved commit
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ inputs.approved_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Assert exact checkout provenance
+        shell: powershell
+        run: |
+          if ((git rev-parse HEAD) -ne $env:APPROVED_SHA) { throw 'Checkout did not match approved SHA.' }
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Fetch dependencies
+        run: flutter pub get
+
+      - name: Generate launcher icons
+        run: dart run flutter_launcher_icons
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Install Inno Setup
+        shell: powershell
+        run: choco install innosetup --no-progress --confirm
+
+      - name: Compile installer from approved version
+        shell: powershell
+        run: |
+          iscc windows\installer.iss "/DMyAppVersion=$env:EXPECTED_VERSION"
+          $installer = Get-ChildItem "build\installer\MathCalcu-Setup-$env:EXPECTED_VERSION.exe"
+          if ($installer.Count -ne 1) { throw 'Expected exactly one versioned Windows installer.' }
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          Copy-Item $installer.FullName "dist\MathCalcu-Setup.exe"
+
+      - name: Upload Windows release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-windows-${{ inputs.approved_sha }}
+          path: dist/MathCalcu-Setup.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Create immutable tag and GitHub Release
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - verify
+      - build_android
+      - build_windows
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out the approved commit
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ inputs.approved_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Re-assert release identity immediately before publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$APPROVED_SHA"
+          remote_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$remote_main" = "$APPROVED_SHA"
+          test "$(grep -E '^version: ' pubspec.yaml)" = "version: ${EXPECTED_VERSION}+${EXPECTED_BUILD}"
+
+      - name: Download signed release candidates
+        uses: actions/download-artifact@v4
+        with:
+          name: release-android-${{ inputs.approved_sha }}
+          path: release-assets
+
+      - name: Download Windows release candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: release-windows-${{ inputs.approved_sha }}
+          path: release-assets
+
+      - name: Generate checksums and release manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release-assets
+          test -s MathCalcu.apk
+          test -s MathCalcu-Setup.exe
+          sha256sum MathCalcu.apk MathCalcu-Setup.exe > SHA256SUMS
+          export PUBLISHED_AT_UTC="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          files = [
+              ("MathCalcu.apk", "android", "universal"),
+              ("MathCalcu-Setup.exe", "windows", "x64"),
+          ]
+          assets = []
+          for name, platform, architecture in files:
+              path = Path(name)
+              assets.append({
+                  "name": name,
+                  "platform": platform,
+                  "architecture": architecture,
+                  "size": path.stat().st_size,
+                  "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+              })
+          manifest = {
+              "schema": 1,
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "version": os.environ["EXPECTED_VERSION"],
+              "tag": os.environ["EXPECTED_TAG"],
+              "commit": os.environ["APPROVED_SHA"],
+              "publishedAtUtc": os.environ["PUBLISHED_AT_UTC"],
+              "assets": assets,
+          }
+          Path("release-manifest.json").write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Create or verify immutable tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          existing_tag_ref="$(git ls-remote --refs origin "refs/tags/${EXPECTED_TAG}" | awk '{print $1}')"
+          if [[ -n "$existing_tag_ref" ]]; then
+            git fetch --no-tags origin "refs/tags/${EXPECTED_TAG}:refs/tags/${EXPECTED_TAG}"
+            test "$(git rev-list -n1 "$EXPECTED_TAG")" = "$APPROVED_SHA"
+          else
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/git/refs" \
+              -f "ref=refs/tags/${EXPECTED_TAG}" \
+              -f "sha=${APPROVED_SHA}"
+          fi
+
+      - name: Create or repair matching GitHub Release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release-assets
+          if gh release view "$EXPECTED_TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release edit "$EXPECTED_TAG" --repo "$GITHUB_REPOSITORY" --title "MathCalcu v${EXPECTED_VERSION}"
+            gh release upload "$EXPECTED_TAG" MathCalcu.apk MathCalcu-Setup.exe SHA256SUMS release-manifest.json \
+              --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$EXPECTED_TAG" MathCalcu.apk MathCalcu-Setup.exe SHA256SUMS release-manifest.json \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "MathCalcu v${EXPECTED_VERSION}" \
+              --notes "Release ${EXPECTED_TAG} from exact commit ${APPROVED_SHA}."
+          fi
