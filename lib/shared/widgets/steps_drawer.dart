@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +54,8 @@ class _StepsDrawerState extends State<StepsDrawer> {
   }
 
   String _stripLatex(String s) {
-    s = s.replaceAllMapped(RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}'), (m) => '${m[1]}/${m[2]}');
+    s = s.replaceAllMapped(
+        RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}'), (m) => '${m[1]}/${m[2]}');
     s = s
         .replaceAll(r'\lvert ', '|')
         .replaceAll(r'\lvert', '|')
@@ -102,14 +103,18 @@ class _StepsDrawerState extends State<StepsDrawer> {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
                         color: widget.accentColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         '${widget.steps.length} steps',
-                        style: TextStyle(fontSize: 12, color: widget.accentColor, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: widget.accentColor,
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -124,9 +129,12 @@ class _StepsDrawerState extends State<StepsDrawer> {
                         ),
                       ),
                     ),
-                    GestureDetector(
+                    Semantics(
+                      label: 'Copy solution',
+                      button: true,
                       onTap: () {
-                        Clipboard.setData(ClipboardData(text: _buildCopyText()));
+                        Clipboard.setData(
+                            ClipboardData(text: _buildCopyText()));
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: const Text('Solution copied to clipboard'),
@@ -135,17 +143,47 @@ class _StepsDrawerState extends State<StepsDrawer> {
                           ),
                         );
                       },
-                      child: Icon(Icons.copy_rounded, color: theme.textSecondary, size: 20),
+                      excludeSemantics: true,
+                      child: IconButton(
+                        tooltip: 'Copy solution',
+                        constraints:
+                            const BoxConstraints(minWidth: 44, minHeight: 44),
+                        onPressed: () {
+                          Clipboard.setData(
+                              ClipboardData(text: _buildCopyText()));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  const Text('Solution copied to clipboard'),
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.copy_rounded,
+                            color: theme.textSecondary, size: 20),
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    GestureDetector(
+                    const SizedBox(width: 4),
+                    Semantics(
+                      label: 'Close solution steps',
+                      button: true,
                       onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.close_rounded, color: theme.textSecondary, size: 20),
+                      excludeSemantics: true,
+                      child: IconButton(
+                        tooltip: 'Close solution steps',
+                        constraints:
+                            const BoxConstraints(minWidth: 44, minHeight: 44),
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(Icons.close_rounded,
+                            color: theme.textSecondary, size: 20),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Divider(height: 1, color: theme.textSecondary.withValues(alpha: 0.1)),
+              Divider(
+                  height: 1, color: theme.textSecondary.withValues(alpha: 0.1)),
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
@@ -155,15 +193,18 @@ class _StepsDrawerState extends State<StepsDrawer> {
                     decoration: BoxDecoration(
                       color: theme.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: widget.accentColor.withValues(alpha: 0.2)),
+                      border: Border.all(
+                          color: widget.accentColor.withValues(alpha: 0.2)),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: List.generate(widget.steps.length, (i) {
                         final s = widget.steps[i];
                         final last = i == widget.steps.length - 1;
-                        final hasDetails = s.details != null && s.details!.isNotEmpty;
+                        final hasDetails =
+                            s.details != null && s.details!.isNotEmpty;
                         final isExpanded = _expanded.contains(i);
 
                         return Padding(
@@ -186,7 +227,8 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                   width: 22,
                                   height: 22,
                                   decoration: BoxDecoration(
-                                    color: widget.accentColor.withValues(alpha: 0.1),
+                                    color: widget.accentColor
+                                        .withValues(alpha: 0.1),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Center(
@@ -203,7 +245,8 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       SelectableMath.tex(
                                         s.latex ?? '',
@@ -214,22 +257,25 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                           height: 1.5,
                                         ),
                                       ),
-                                      if (s.subLatex != null && s.subLatex!.isNotEmpty)
+                                      if (s.subLatex != null &&
+                                          s.subLatex!.isNotEmpty)
                                         ...s.subLatex!.map((l) => Padding(
-                                          padding: const EdgeInsets.only(top: 8),
-                                          child: SelectableMath.tex(
-                                            l,
-                                            mathStyle: MathStyle.text,
-                                            textStyle: TextStyle(
-                                              fontSize: 16,
-                                              color: theme.textPrimary,
-                                              height: 1.5,
-                                            ),
-                                          ),
-                                        )),
+                                              padding:
+                                                  const EdgeInsets.only(top: 8),
+                                              child: SelectableMath.tex(
+                                                l,
+                                                mathStyle: MathStyle.text,
+                                                textStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  color: theme.textPrimary,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                            )),
                                       if (s.hint != null && s.hint!.isNotEmpty)
                                         Padding(
-                                          padding: const EdgeInsets.only(top: 6),
+                                          padding:
+                                              const EdgeInsets.only(top: 6),
                                           child: ResponsiveText(
                                             s.hint!,
                                             style: TextStyle(
@@ -242,12 +288,14 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                         ),
                                       if (hasDetails)
                                         Padding(
-                                          padding: const EdgeInsets.only(top: 4),
+                                          padding:
+                                              const EdgeInsets.only(top: 4),
                                           child: Row(
                                             children: [
                                               AnimatedRotation(
                                                 turns: isExpanded ? 0.5 : 0,
-                                                duration: const Duration(milliseconds: 200),
+                                                duration: const Duration(
+                                                    milliseconds: 200),
                                                 child: Icon(
                                                   Icons.expand_more_rounded,
                                                   size: 16,
@@ -256,7 +304,9 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                               ),
                                               const SizedBox(width: 4),
                                               Text(
-                                                isExpanded ? 'Hide work' : 'Show work',
+                                                isExpanded
+                                                    ? 'Hide work'
+                                                    : 'Show work',
                                                 style: TextStyle(
                                                   fontSize: 11,
                                                   color: widget.accentColor,
@@ -267,52 +317,82 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                           ),
                                         ),
                                       AnimatedSize(
-                                        duration: const Duration(milliseconds: 250),
+                                        duration:
+                                            const Duration(milliseconds: 250),
                                         curve: Curves.easeInOut,
                                         alignment: Alignment.topCenter,
                                         child: isExpanded && hasDetails
                                             ? Padding(
-                                                padding: const EdgeInsets.only(top: 10),
+                                                padding: const EdgeInsets.only(
+                                                    top: 10),
                                                 child: Container(
                                                   width: double.infinity,
-                                                  padding: const EdgeInsets.all(10),
+                                                  padding:
+                                                      const EdgeInsets.all(10),
                                                   decoration: BoxDecoration(
                                                     color: theme.surface,
-                                                    borderRadius: BorderRadius.circular(8),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
                                                     border: Border.all(
-                                                      color: widget.accentColor.withValues(alpha: 0.12),
+                                                      color: widget.accentColor
+                                                          .withValues(
+                                                              alpha: 0.12),
                                                     ),
                                                   ),
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: s.details!.map((d) => Padding(
-                                                      padding: const EdgeInsets.only(bottom: 6),
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            '\u2022',
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: widget.accentColor,
-                                                              height: 1.8,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(width: 6),
-                                                          Expanded(
-                                                            child: SelectableMath.tex(
-                                                              d,
-                                                              mathStyle: MathStyle.text,
-                                                              textStyle: TextStyle(
-                                                                fontSize: 13,
-                                                                color: theme.textSecondary,
-                                                                height: 1.6,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: s.details!
+                                                        .map((d) => Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                          6),
+                                                              child: Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    '\u2022',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: widget
+                                                                          .accentColor,
+                                                                      height:
+                                                                          1.8,
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      width: 6),
+                                                                  Expanded(
+                                                                    child:
+                                                                        SelectableMath
+                                                                            .tex(
+                                                                      d,
+                                                                      mathStyle:
+                                                                          MathStyle
+                                                                              .text,
+                                                                      textStyle:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            13,
+                                                                        color: theme
+                                                                            .textSecondary,
+                                                                        height:
+                                                                            1.6,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )).toList(),
+                                                            ))
+                                                        .toList(),
                                                   ),
                                                 ),
                                               )

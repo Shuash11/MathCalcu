@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +20,8 @@ class SubstitutionAnswerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accentColor = FinalsTheme.primary;
-    
+    final accentColor = FinalsTheme.primaryFor(context);
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -45,7 +45,8 @@ class SubstitutionAnswerCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
+              color:
+                  accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
               blurRadius: isShowingSteps ? 30 : 20,
               offset: const Offset(0, 10),
             ),
@@ -55,7 +56,8 @@ class SubstitutionAnswerCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                _StatusIcon(isShowingSteps: isShowingSteps, accentColor: accentColor),
+                _StatusIcon(
+                    isShowingSteps: isShowingSteps, accentColor: accentColor),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -86,7 +88,7 @@ class SubstitutionAnswerCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             // Interaction hint
             AnimatedSize(
               duration: const Duration(milliseconds: 200),
@@ -96,7 +98,9 @@ class SubstitutionAnswerCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.expand_more_rounded, size: 16, color: accentColor.withValues(alpha: 0.5)),
+                          Icon(Icons.expand_more_rounded,
+                              size: 16,
+                              color: accentColor.withValues(alpha: 0.5)),
                           const SizedBox(width: 8),
                           ResponsiveText(
                             'TAP TO REVEAL SOLUTIONS',
@@ -108,7 +112,9 @@ class SubstitutionAnswerCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Icon(Icons.expand_more_rounded, size: 16, color: accentColor.withValues(alpha: 0.5)),
+                          Icon(Icons.expand_more_rounded,
+                              size: 16,
+                              color: accentColor.withValues(alpha: 0.5)),
                         ],
                       ),
                     )
@@ -134,7 +140,8 @@ class _StatusIcon extends StatelessWidget {
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: isShowingSteps ? accentColor : accentColor.withValues(alpha: 0.1),
+        color:
+            isShowingSteps ? accentColor : accentColor.withValues(alpha: 0.1),
         shape: BoxShape.circle,
         border: Border.all(
           color: accentColor.withValues(alpha: 0.3),
@@ -171,13 +178,18 @@ class _ValueDisplay extends StatelessWidget {
     } else if (answer!.isInfinite) {
       displayVal = answer! > 0 ? '∞' : '-∞';
     } else {
-      displayVal = answer! == answer!.toInt() ? answer!.toInt().toString() : answer!.toStringAsFixed(4);
+      displayVal = answer! == answer!.toInt()
+          ? answer!.toInt().toString()
+          : answer!.toStringAsFixed(4);
     }
 
-    return _buildTextDisplay(displayVal, accentColor, context, wrapFlexible: true);
+    return _buildTextDisplay(displayVal, accentColor, context,
+        wrapFlexible: true);
   }
 
-  Widget _buildTextDisplay(String displayVal, Color accentColor, BuildContext context, {required bool wrapFlexible}) {
+  Widget _buildTextDisplay(
+      String displayVal, Color accentColor, BuildContext context,
+      {required bool wrapFlexible}) {
     final container = Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(

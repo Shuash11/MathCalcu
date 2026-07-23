@@ -124,7 +124,8 @@ class DistanceSteps extends StatelessWidget {
       ),
       _Step(
         title: 'Substitute the given values',
-        latex: 'd = \\sqrt{\\left(${_signed(x2)}-${_signed(x1)}\\right)^2 + \\left(${_signed(y2!)}-${_signed(y1!)}\\right)^2}',
+        latex:
+            'd = \\sqrt{\\left(${_signed(x2)}-${_signed(x1)}\\right)^2 + \\left(${_signed(y2!)}-${_signed(y1!)}\\right)^2}',
         isResult: false,
       ),
       _Step(
@@ -170,7 +171,8 @@ class DistanceSteps extends StatelessWidget {
         ),
         _Step(
           title: 'Approximate the decimal value',
-          latex: 'd = ${r.coefficient}\\sqrt{${r.radicand}} \\approx ${r.toDecimalString()}',
+          latex:
+              'd = ${r.coefficient}\\sqrt{${r.radicand}} \\approx ${r.toDecimalString()}',
           isResult: true,
         ),
       ];
@@ -192,7 +194,8 @@ class DistanceSteps extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (int i = 0; i < steps.length; i++)
-          SolutionStepCard(design: AppDesign.app,
+          SolutionStepCard(
+            design: AppDesign.app,
             stepNumber: i + 1,
             title: steps[i].title,
             mathContent: SingleChildScrollView(
@@ -201,12 +204,11 @@ class DistanceSteps extends StatelessWidget {
                 steps[i].latex,
                 textStyle: TextStyle(
                   fontSize: 15,
-                  fontWeight: steps[i].isResult
-                      ? FontWeight.w600
-                      : FontWeight.w500,
+                  fontWeight:
+                      steps[i].isResult ? FontWeight.w600 : FontWeight.w500,
                   color: steps[i].isResult
-                      ? FinalsTheme.primary
-                      : Colors.white70,
+                      ? FinalsTheme.primaryFor(context)
+                      : FinalsTheme.textSecondary(context),
                 ),
               ),
             ),

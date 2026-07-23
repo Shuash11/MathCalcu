@@ -27,8 +27,6 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
   late final List<Animation<double>> _fadeAnims;
   late final List<Animation<Offset>> _slideAnims;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -83,7 +81,7 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
                 width: 3,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: FinalsTheme.primary,
+                  color: FinalsTheme.primaryFor(context),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -105,7 +103,8 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
             opacity: _fadeAnims[i],
             child: SlideTransition(
               position: _slideAnims[i],
-              child: SolutionStepCard(design: AppDesign.app,
+              child: SolutionStepCard(
+                design: AppDesign.app,
                 stepNumber: step.number,
                 title: step.title,
                 mathContent: _CombinedMathBlock(
@@ -113,7 +112,7 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
                   substitution: step.substitution,
                   result: step.result,
                   fontSize: 14,
-                  color: FinalsTheme.primary,
+                  color: FinalsTheme.primaryFor(context),
                 ),
               ),
             ),
@@ -181,7 +180,9 @@ class _CombinedMathBlock extends StatelessWidget {
           if (formula.isNotEmpty && substitution.isNotEmpty)
             const SizedBox(height: 6),
           if (substitution.isNotEmpty) _mathWidget(substitution),
-          if (substitution.isNotEmpty && result.isNotEmpty && result != substitution)
+          if (substitution.isNotEmpty &&
+              result.isNotEmpty &&
+              result != substitution)
             const SizedBox(height: 6),
           if (result.isNotEmpty && result != substitution) _mathWidget(result),
         ],
@@ -189,5 +190,3 @@ class _CombinedMathBlock extends StatelessWidget {
     );
   }
 }
-
-

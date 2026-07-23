@@ -80,12 +80,14 @@ class _SolutionStepsModal extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
                         color: design.accent,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.list_alt_rounded, color: Colors.white, size: 16),
+                      child: const Icon(Icons.list_alt_rounded,
+                          color: Colors.white, size: 16),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -99,19 +101,26 @@ class _SolutionStepsModal extends StatelessWidget {
                         ),
                       ),
                     ),
-                    GestureDetector(
+                    Semantics(
+                      label: 'Close solution steps',
+                      button: true,
                       onTap: () => Navigator.pop(context),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: design.accent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.close_rounded,
-                          color: Colors.white,
-                          size: 18,
+                      excludeSemantics: true,
+                      child: GestureDetector(
+                        excludeFromSemantics: true,
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: design.accent,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close_rounded,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       ),
                     ),

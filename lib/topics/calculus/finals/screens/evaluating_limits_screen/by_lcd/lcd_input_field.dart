@@ -178,13 +178,11 @@ class LCDInputField extends StatelessWidget {
     );
   }
 
-
-
   void _showVariablePicker(BuildContext context) {
     final variables = ['x', 'y', 'z', 't', 'n', 'u'];
     showModalBottomSheet(
       context: context,
-      backgroundColor: FinalsTheme.card(context),
+      backgroundColor: FinalsTheme.cardForEvent(context),
       barrierColor: Colors.black.withValues(alpha: 0.5),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -227,25 +225,29 @@ class LCDInputField extends StatelessWidget {
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: ListTile(
-                      title: ResponsiveText(
-                        v,
-                        style: FinalsTheme.titleStyle(ctx).copyWith(
-                          fontFamily: 'serif',
-                          fontSize: 18,
-                          color: isSelected ? FinalsTheme.danger : null,
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      child: ListTile(
+                        title: ResponsiveText(
+                          v,
+                          style: FinalsTheme.titleStyle(ctx).copyWith(
+                            fontFamily: 'serif',
+                            fontSize: 18,
+                            color: isSelected ? FinalsTheme.danger : null,
+                          ),
                         ),
+                        onTap: () {
+                          onVariableChanged(v);
+                          Navigator.pop(ctx);
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                        trailing: isSelected
+                            ? const Icon(Icons.check_circle_rounded,
+                                color: FinalsTheme.danger)
+                            : null,
                       ),
-                      onTap: () {
-                        onVariableChanged(v);
-                        Navigator.pop(ctx);
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      trailing: isSelected
-                          ? const Icon(Icons.check_circle_rounded,
-                              color: FinalsTheme.danger)
-                          : null,
                     ),
                   );
                 },
@@ -257,6 +259,4 @@ class LCDInputField extends StatelessWidget {
       ),
     );
   }
-
 }
-

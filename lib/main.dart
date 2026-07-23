@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -75,72 +75,79 @@ class _CalculusAppState extends State<CalculusApp> {
     await showDialog(
       context: ctx,
       barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        backgroundColor: ctx.watch<ThemeProvider>().surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: const Color(0xFF334155).withValues(alpha: 0.12),
-                shape: BoxShape.circle,
+      builder: (dialogContext) {
+        final theme = dialogContext.watch<ThemeProvider>();
+        return AlertDialog(
+          backgroundColor: theme.surface,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: theme.accentColor.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.system_update_rounded,
+                    size: 32, color: theme.accentColor),
               ),
-              child: const Icon(Icons.system_update_rounded, size: 32, color: Color(0xFF334155)),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Allow app updates',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: ctx.watch<ThemeProvider>().textPrimary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                'MathCalcu needs permission to install updates automatically.\n'
-                'Grant this once and future updates will work seamlessly.',
-                textAlign: TextAlign.center,
+              const SizedBox(height: 16),
+              Text(
+                'Allow app updates',
                 style: TextStyle(
-                  fontSize: 14,
-                  height: 1.4,
-                  color: ctx.watch<ThemeProvider>().textSecondary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: theme.textPrimary,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      UpdateService.openInstallSettings();
-                    },
-                    style: FilledButton.styleFrom(backgroundColor: const Color(0xFF334155)),
-                    child: const Text('Open Settings'),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  'MathCalcu needs permission to install updates automatically.\n'
+                  'Grant this once and future updates will work seamlessly.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.4,
+                    color: theme.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    style: TextButton.styleFrom(foregroundColor: ctx.watch<ThemeProvider>().textSecondary),
-                    child: const Text('Not now'),
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        UpdateService.openInstallSettings();
+                      },
+                      style: FilledButton.styleFrom(
+                          backgroundColor: theme.accentColor),
+                      child: const Text('Open Settings'),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      style: TextButton.styleFrom(
+                          foregroundColor: theme.textSecondary),
+                      child: const Text('Not now'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -180,7 +187,8 @@ class _CalculusAppState extends State<CalculusApp> {
       } else if (info != null) {
         ScaffoldMessenger.of(ctx).showSnackBar(
           SnackBar(
-            content: Text('\u2713 MathCalcu is up to date (v${info.currentVersion})'),
+            content: Text(
+                '\u2713 MathCalcu is up to date (v${info.currentVersion})'),
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 3),
           ),
@@ -245,7 +253,8 @@ class _CalculusAppState extends State<CalculusApp> {
       theme: themeProvider.isDark ? AppTheme.dark() : AppTheme.light(),
       routerConfig: AppRouter.router,
       builder: (context, child) {
-        return child ?? const Scaffold(body: Center(child: Text('Error loading app')));
+        return child ??
+            const Scaffold(body: Center(child: Text('Error loading app')));
       },
     );
   }

@@ -37,18 +37,19 @@ class LimitsStepGuide extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isConclusion
-                      ? FinalsTheme.primary
-                      : FinalsTheme.primary.withValues(alpha: 0.1),
+                      ? FinalsTheme.primaryFor(context)
+                      : FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
                 ),
                 child: Center(
                   child: isConclusion
-                      ? const Icon(Icons.check, size: 16, color: Colors.white)
+                      ? Icon(Icons.check,
+                          size: 16, color: FinalsTheme.primaryFor(context))
                       : Text(
                           '$stepNumber',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: FinalsTheme.primary,
+                            color: FinalsTheme.primaryFor(context),
                           ),
                         ),
                 ),
@@ -60,7 +61,8 @@ class LimitsStepGuide extends StatelessWidget {
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: isConclusion ? FinalsTheme.primary : null,
+                    color:
+                        isConclusion ? FinalsTheme.primaryFor(context) : null,
                   ),
                 ),
               ),
@@ -82,7 +84,8 @@ class LimitsStepGuide extends StatelessWidget {
                         subtitle!,
                         style: FinalsTheme.subtitleStyle(context).copyWith(
                           fontSize: 13,
-                          color: FinalsTheme.primary.withValues(alpha: 0.7),
+                          color: FinalsTheme.primaryFor(context)
+                              .withValues(alpha: 0.7),
                         ),
                       ),
                     ),
@@ -100,7 +103,7 @@ class LimitsStepGuide extends StatelessWidget {
                           color: FinalsTheme.primary.withValues(alpha: 0.1),
                         ),
                       ),
-                      child: _buildMathDisplay(mathExpression!),
+                      child: _buildMathDisplay(context, mathExpression!),
                     ),
 
                   // Short explanation (optional)
@@ -110,7 +113,8 @@ class LimitsStepGuide extends StatelessWidget {
                       style: FinalsTheme.subtitleStyle(context).copyWith(
                         fontSize: 13,
                         height: 1.5,
-                        color: FinalsTheme.primary.withValues(alpha: 0.8),
+                        color: FinalsTheme.primaryFor(context)
+                            .withValues(alpha: 0.8),
                       ),
                     ),
                 ],
@@ -121,15 +125,15 @@ class LimitsStepGuide extends StatelessWidget {
     );
   }
 
-  Widget _buildMathDisplay(String expr) {
+  Widget _buildMathDisplay(BuildContext context, String expr) {
     final latex = _toLatex(expr);
 
     try {
       return Math.tex(
         latex,
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
           fontSize: 15,
-          color: FinalsTheme.primary,
+          color: FinalsTheme.primaryFor(context),
           fontWeight: FontWeight.w500,
         ),
         onErrorFallback: (error) {

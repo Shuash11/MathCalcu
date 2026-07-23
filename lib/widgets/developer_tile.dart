@@ -35,7 +35,8 @@ class _DeveloperTileState extends State<DeveloperTile> {
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
     final dev = widget.developer;
-    final color = _avatarColors[widget.index % _avatarColors.length];
+    final baseColor = _avatarColors[widget.index % _avatarColors.length];
+    final color = theme.isDark ? theme.accentColor : baseColor;
     final initials = dev.name
         .split(' ')
         .take(2)
@@ -44,223 +45,239 @@ class _DeveloperTileState extends State<DeveloperTile> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
-      child: GestureDetector(
+      child: Semantics(
+        label: '${dev.name}, ${dev.role}',
+        button: true,
+        toggled: _expanded,
         onTap: () => setState(() => _expanded = !_expanded),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeOutCubic,
-          decoration: BoxDecoration(
-            color: _expanded ? color.withValues(alpha: 0.04) : theme.card,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: _expanded
-                  ? color.withValues(alpha: 0.6)
-                  : color.withValues(alpha: 0.15),
-              width: _expanded ? 2.5 : 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: _expanded ? 0.25 : 0.08),
-                blurRadius: _expanded ? 24 : 16,
-                offset: const Offset(0, 8),
+        excludeSemantics: true,
+        child: GestureDetector(
+          excludeFromSemantics: true,
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.easeOutCubic,
+            decoration: BoxDecoration(
+              color: _expanded ? color.withValues(alpha: 0.04) : theme.card,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: _expanded
+                    ? color.withValues(alpha: 0.6)
+                    : color.withValues(alpha: 0.15),
+                width: _expanded ? 2.5 : 1.5,
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: Column(
-              children: [
-                // Top accent bar
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: _expanded ? 4 : 3,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        color,
-                        color.withValues(alpha: 0.6),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Main content
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      // Avatar with ring
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        width: 56,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _expanded
-                              ? color.withValues(alpha: 0.15)
-                              : color.withValues(alpha: 0.08),
-                          border: Border.all(
-                            color: _expanded
-                                ? color.withValues(alpha: 0.8)
-                                : color.withValues(alpha: 0.3),
-                            width: _expanded ? 3 : 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            initials,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: color,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(width: 16),
-
-                      // Info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              dev.name,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: theme.textPrimary,
-                                letterSpacing: -0.3,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              dev.program,
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: theme.textSecondary,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 8),
-                            // Role pill
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                color: color.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: color.withValues(alpha: 0.4),
-                                ),
-                              ),
-                              child: Text(
-                                dev.role,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: color,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Expand icon
-                      AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 300),
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: _expanded
-                                ? color.withValues(alpha: 0.15)
-                                : theme.card,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 20,
-                            color: _expanded ? color : theme.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Expanded details
-                AnimatedCrossFade(
-                  firstChild: const SizedBox.shrink(),
-                  secondChild: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                    child: Column(
-                      children: [
-                        Divider(
-                          color: color.withValues(alpha: 0.2),
-                          height: 1,
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Details
-                        _InfoRow(
-                          icon: Icons.email_outlined,
-                          label: 'Email',
-                          value: dev.email.isNotEmpty ? dev.email : 'Not provided',
-                          color: color,
-                          theme: theme,
-                        ),
-                        const SizedBox(height: 12),
-                        _InfoRow(
-                          icon: Icons.emoji_emotions,
-                          label: 'Facebook',
-                          value: dev.facebook.isNotEmpty ? dev.facebook : 'Not provided',
-                          color: color,
-                          theme: theme,
-                        ),
-                        const SizedBox(height: 12),
-                        _InfoRow(
-                          icon: Icons.code_rounded,
-                          label: 'Contribution',
-                          value: dev.contribution.isNotEmpty ? dev.contribution : 'Not provided',
-                          color: color,
-                          theme: theme,
-                          isMultiline: true,
-                        ),
-                        const SizedBox(height: 12),
-                        _InfoRow(
-                          icon: Icons.phone_android,
-                          label: 'Contact',
-                          value: dev.phone,
-                          color: color,
-                          theme: theme,
-                        ),
-                        const SizedBox(height: 12),
-                        _InfoRow(
-                          icon: Icons.groups_rounded,
-                          label: 'Members',
-                          value: dev.groups.isNotEmpty ? dev.groups : 'Not specified',
-                          color: color,
-                          theme: theme,
-                          isMultiline: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                  crossFadeState: _expanded
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 300),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: _expanded ? 0.25 : 0.08),
+                  blurRadius: _expanded ? 24 : 16,
+                  offset: const Offset(0, 8),
                 ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Column(
+                children: [
+                  // Top accent bar
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    height: _expanded ? 4 : 3,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          color,
+                          color.withValues(alpha: 0.6),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Main content
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        // Avatar with ring
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _expanded
+                                ? color.withValues(alpha: 0.15)
+                                : color.withValues(alpha: 0.08),
+                            border: Border.all(
+                              color: _expanded
+                                  ? color.withValues(alpha: 0.8)
+                                  : color.withValues(alpha: 0.3),
+                              width: _expanded ? 3 : 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              initials,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                color: color,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 16),
+
+                        // Info
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                dev.name,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.textPrimary,
+                                  letterSpacing: -0.3,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                dev.program,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: theme.textSecondary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 8),
+                              // Role pill
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: color.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: color.withValues(alpha: 0.4),
+                                  ),
+                                ),
+                                child: Text(
+                                  dev.role,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: color,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Expand icon
+                        AnimatedRotation(
+                          turns: _expanded ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 300),
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: _expanded
+                                  ? color.withValues(alpha: 0.15)
+                                  : theme.card,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 20,
+                              color: _expanded ? color : theme.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Expanded details
+                  AnimatedCrossFade(
+                    firstChild: const SizedBox.shrink(),
+                    secondChild: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                      child: Column(
+                        children: [
+                          Divider(
+                            color: color.withValues(alpha: 0.2),
+                            height: 1,
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Details
+                          _InfoRow(
+                            icon: Icons.email_outlined,
+                            label: 'Email',
+                            value: dev.email.isNotEmpty
+                                ? dev.email
+                                : 'Not provided',
+                            color: color,
+                            theme: theme,
+                          ),
+                          const SizedBox(height: 12),
+                          _InfoRow(
+                            icon: Icons.emoji_emotions,
+                            label: 'Facebook',
+                            value: dev.facebook.isNotEmpty
+                                ? dev.facebook
+                                : 'Not provided',
+                            color: color,
+                            theme: theme,
+                          ),
+                          const SizedBox(height: 12),
+                          _InfoRow(
+                            icon: Icons.code_rounded,
+                            label: 'Contribution',
+                            value: dev.contribution.isNotEmpty
+                                ? dev.contribution
+                                : 'Not provided',
+                            color: color,
+                            theme: theme,
+                            isMultiline: true,
+                          ),
+                          const SizedBox(height: 12),
+                          _InfoRow(
+                            icon: Icons.phone_android,
+                            label: 'Contact',
+                            value: dev.phone,
+                            color: color,
+                            theme: theme,
+                          ),
+                          const SizedBox(height: 12),
+                          _InfoRow(
+                            icon: Icons.groups_rounded,
+                            label: 'Members',
+                            value: dev.groups.isNotEmpty
+                                ? dev.groups
+                                : 'Not specified',
+                            color: color,
+                            theme: theme,
+                            isMultiline: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                    crossFadeState: _expanded
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 300),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -291,7 +308,8 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment:
+          isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         Container(
           width: 32,
@@ -303,7 +321,6 @@ class _InfoRow extends StatelessWidget {
           child: Icon(icon, size: 16, color: color),
         ),
         const SizedBox(width: 12),
-
         Flexible(
           flex: 0,
           child: Container(
@@ -318,7 +335,6 @@ class _InfoRow extends StatelessWidget {
             ),
           ),
         ),
-
         Expanded(
           child: Text(
             value,

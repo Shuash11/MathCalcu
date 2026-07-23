@@ -40,7 +40,8 @@ const _developers = [
     Facebook: 'Joashua Marl Barimbao',
     contribution: 'From UI To solvers',
     phone: '09639201328',
-    groups: 'Mary Chris Malinao\nKym Alinsonorin\nAljhun Gallego(gwapo)\nCresa Delacruz(Documentation)\nJoseph Rebamonte\nMerjohn Pagente',
+    groups:
+        'Mary Chris Malinao\nKym Alinsonorin\nAljhun Gallego(gwapo)\nCresa Delacruz(Documentation)\nJoseph Rebamonte\nMerjohn Pagente',
   ),
   _Developer(
     name: 'Michaela Denise Ong',
@@ -50,7 +51,8 @@ const _developers = [
     email: 'michaeladenis11@gmail.com',
     contribution: 'Documentation',
     phone: '09452238406',
-    groups: 'Marie Joy Sebusana\nSusan Rhea Tamboboy\nVenus Caliguid\nAlche Paye\nVincent Padillio\nStephen Mark Maluto',
+    groups:
+        'Marie Joy Sebusana\nSusan Rhea Tamboboy\nVenus Caliguid\nAlche Paye\nVincent Padillio\nStephen Mark Maluto',
   ),
   _Developer(
     name: 'Nash Bruce Quiros',
@@ -60,7 +62,8 @@ const _developers = [
     Facebook: 'Nash Bruce Quiros',
     contribution: 'Testing',
     phone: '09953941510',
-    groups: 'Cabrera Carl Edward\nTyrus Regine\nRhea Mae Bustamante\nJoshua Barientos',
+    groups:
+        'Cabrera Carl Edward\nTyrus Regine\nRhea Mae Bustamante\nJoshua Barientos',
   ),
   _Developer(
     name: 'John Carlo Legaste',
@@ -80,7 +83,8 @@ const _developers = [
     contribution: 'Contrinuted/UI Polish',
     Facebook: 'Clifford Probetso',
     phone: '09510069125',
-    groups: 'Angelie Jerusalem\nIvan Rabanzo\nLausa Dave\nJanwell Nacario\nRoynuj Plaza',
+    groups:
+        'Angelie Jerusalem\nIvan Rabanzo\nLausa Dave\nJanwell Nacario\nRoynuj Plaza',
   ),
   _Developer(
     name: 'Johnlin Redido',
@@ -90,7 +94,8 @@ const _developers = [
     email: 'linzy21x@gmail.com',
     contribution: 'UI TESTING',
     phone: '09700455407',
-    groups: 'Gretechen Tumilap\nGonzaga Blessy\nJemson Tubis\nAllysa Sharise Cagui-at\nAlyssa Jean Toso',
+    groups:
+        'Gretechen Tumilap\nGonzaga Blessy\nJemson Tubis\nAllysa Sharise Cagui-at\nAlyssa Jean Toso',
   ),
 ];
 
@@ -119,12 +124,14 @@ class _FinalsAboutSheet extends StatelessWidget {
         // Wrap in LayoutBuilder to get exact screen width for scaling
         return LayoutBuilder(
           builder: (context, constraints) {
-            final double s = (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
+            final double s =
+                (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
 
             return Container(
               decoration: BoxDecoration(
                 color: FinalsTheme.surface(context),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(32)),
                 boxShadow: [
                   BoxShadow(
                     color: FinalsTheme.primary.withValues(alpha: 0.2),
@@ -150,7 +157,8 @@ class _FinalsAboutSheet extends StatelessWidget {
 
                   // -- Header with flame icon ----------------------
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 28 * s, vertical: 16 * s),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 28 * s, vertical: 16 * s),
                     child: Row(
                       children: [
                         Container(
@@ -161,7 +169,8 @@ class _FinalsAboutSheet extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18 * s),
                             boxShadow: [
                               BoxShadow(
-                                color: FinalsTheme.primary.withValues(alpha: 0.4),
+                                color:
+                                    FinalsTheme.primary.withValues(alpha: 0.4),
                                 blurRadius: 20 * s,
                                 offset: Offset(0, 6 * s),
                               ),
@@ -179,8 +188,9 @@ class _FinalsAboutSheet extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ShaderMask(
-                                shaderCallback: (bounds) =>
-                                    FinalsTheme.headerGradient.createShader(bounds),
+                                shaderCallback: (bounds) => FinalsTheme
+                                    .headerGradient
+                                    .createShader(bounds),
                                 child: Text(
                                   'Finals Team',
                                   style: TextStyle(
@@ -210,7 +220,8 @@ class _FinalsAboutSheet extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       controller: scrollController,
-                      padding: EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
+                      padding:
+                          EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
                       children: [
                         // -- Description card ------------------------
                         Container(
@@ -235,7 +246,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                                 children: [
                                   Icon(
                                     Icons.emoji_events_rounded,
-                                    color: FinalsTheme.primary,
+                                    color: FinalsTheme.primaryFor(context),
                                     size: 20 * s,
                                   ),
                                   SizedBox(width: 8 * s),
@@ -275,7 +286,8 @@ class _FinalsAboutSheet extends StatelessWidget {
                                   gradient: LinearGradient(
                                     colors: [
                                       Colors.transparent,
-                                      FinalsTheme.primary.withValues(alpha: 0.3),
+                                      FinalsTheme.primary
+                                          .withValues(alpha: 0.3),
                                     ],
                                   ),
                                 ),
@@ -309,7 +321,8 @@ class _FinalsAboutSheet extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      FinalsTheme.primary.withValues(alpha: 0.3),
+                                      FinalsTheme.primary
+                                          .withValues(alpha: 0.3),
                                       Colors.transparent,
                                     ],
                                   ),
@@ -547,7 +560,9 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                           child: Icon(
                             Icons.keyboard_arrow_down_rounded,
                             size: 20 * s,
-                            color: _expanded ? color : FinalsTheme.textSecondary(context),
+                            color: _expanded
+                                ? color
+                                : FinalsTheme.textSecondary(context),
                           ),
                         ),
                       ),
@@ -572,7 +587,8 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                         _DetailItem(
                           icon: Icons.email_outlined,
                           label: 'Email',
-                          value: dev.email.isNotEmpty ? dev.email : 'Not provided',
+                          value:
+                              dev.email.isNotEmpty ? dev.email : 'Not provided',
                           color: color,
                           scale: s,
                         ),
@@ -580,7 +596,9 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                         _DetailItem(
                           icon: Icons.facebook_rounded,
                           label: 'Facebook',
-                          value: dev.Facebook.isNotEmpty ? dev.Facebook : 'Not provided',
+                          value: dev.Facebook.isNotEmpty
+                              ? dev.Facebook
+                              : 'Not provided',
                           color: color,
                           scale: s,
                         ),
@@ -588,7 +606,9 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                         _DetailItem(
                           icon: Icons.code_rounded,
                           label: 'Contribution',
-                          value: dev.contribution.isEmpty ? 'Not specified' : dev.contribution,
+                          value: dev.contribution.isEmpty
+                              ? 'Not specified'
+                              : dev.contribution,
                           color: color,
                           scale: s,
                           isMultiline: true,
@@ -605,7 +625,8 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                         _DetailItem(
                           icon: Icons.groups_rounded,
                           label: 'Team Members',
-                          value: dev.groups.isEmpty ? 'Not specified' : dev.groups,
+                          value:
+                              dev.groups.isEmpty ? 'Not specified' : dev.groups,
                           color: color,
                           scale: s,
                           isMultiline: true,
@@ -651,7 +672,8 @@ class _DetailItem extends StatelessWidget {
     final s = scale;
 
     return Row(
-      crossAxisAlignment: isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment:
+          isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         Container(
           width: 32 * s,
@@ -663,12 +685,13 @@ class _DetailItem extends StatelessWidget {
           child: Icon(icon, size: 16 * s, color: color),
         ),
         SizedBox(width: 12 * s),
-        
+
         // Changed from fixed SizedBox to Flexible so labels don't crush values on tiny screens
         Flexible(
-          flex: 0, 
+          flex: 0,
           child: Container(
-            constraints: BoxConstraints(minWidth: 70 * s, maxWidth: 90 * s), // Responsive width bounds
+            constraints: BoxConstraints(
+                minWidth: 70 * s, maxWidth: 90 * s), // Responsive width bounds
             child: Text(
               label,
               style: TextStyle(
@@ -679,7 +702,7 @@ class _DetailItem extends StatelessWidget {
             ),
           ),
         ),
-        
+
         // Value text takes remaining space safely
         Expanded(
           child: Text(

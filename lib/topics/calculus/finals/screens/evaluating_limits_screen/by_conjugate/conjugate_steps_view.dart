@@ -21,28 +21,29 @@ class ConjugateStepsView extends StatelessWidget {
           description: step.explanation,
           design: AppDesign.app,
           mathContent: step.latexExpression != null
-              ? _buildLatex(step.latexExpression!)
+              ? _buildLatex(context, step.latexExpression!)
               : const SizedBox.shrink(),
         );
       }).toList(),
     );
   }
 
-  Widget _buildLatex(String latex) {
+  Widget _buildLatex(BuildContext context, String latex) {
+    final color = FinalsTheme.primaryFor(context);
     try {
       return Math.tex(
         latex,
         textStyle: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w600,
-          color: FinalsTheme.primary,
+          color: color,
         ),
         onErrorFallback: (err) => Text(
           latex,
           style: TextStyle(
             fontFamily: 'serif',
             fontSize: 15,
-            color: FinalsTheme.primary,
+            color: color,
           ),
         ),
       );
@@ -52,7 +53,7 @@ class ConjugateStepsView extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'serif',
           fontSize: 15,
-          color: FinalsTheme.primary,
+          color: color,
         ),
       );
     }

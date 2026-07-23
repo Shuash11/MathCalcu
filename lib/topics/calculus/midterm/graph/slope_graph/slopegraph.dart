@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
@@ -129,7 +129,8 @@ class SlopeGraphScreen extends StatelessWidget {
 
     items.add(FullScreenInfoItem(
       label: 'Slope',
-      value: result1.isVertical ? 'Undefined' : result1.slope.toStringAsFixed(1),
+      value:
+          result1.isVertical ? 'Undefined' : result1.slope.toStringAsFixed(1),
       color: accent,
     ));
 
@@ -192,7 +193,9 @@ class SlopeGraphScreen extends StatelessWidget {
         title: Text(
           'Slope Graph',
           style: TextStyle(
-              color: theme.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
+              color: theme.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w600),
         ),
         backgroundColor: theme.card,
         iconTheme: IconThemeData(color: accent),
@@ -244,12 +247,10 @@ class SlopeGraphScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
             child: Row(
               children: [
-                _LegendDot(
-                    color: accent, label: result1.equation),
+                _LegendDot(color: accent, label: result1.equation),
                 if (result2 != null && !_isCoincident) ...[
                   const SizedBox(width: 16),
-                  _LegendDot(
-                      color: accent, label: result2!.equation),
+                  _LegendDot(color: accent, label: result2!.equation),
                 ],
                 if (_isCoincident) ...[
                   const SizedBox(width: 8),
@@ -539,9 +540,11 @@ class _SlopePainter extends CustomPainter {
     }
 
     // ── Equation labels ───────────────────────────────────────
-    _drawLineLabel(canvas, result1, color1, size, scale, scaleFactor, verticalOffset: 0);
+    _drawLineLabel(canvas, result1, color1, size, scale, scaleFactor,
+        verticalOffset: 0);
     if (result2 != null && !isCoincident) {
-      _drawLineLabel(canvas, result2!, color2, size, scale, scaleFactor, verticalOffset: 16 * scaleFactor);
+      _drawLineLabel(canvas, result2!, color2, size, scale, scaleFactor,
+          verticalOffset: 16 * scaleFactor);
     }
 
     // ── Points ────────────────────────────────────────────────
@@ -607,7 +610,8 @@ class _SlopePainter extends CustomPainter {
     }
   }
 
-  void _drawCenteredBadge(Canvas canvas, Size size, String text, double scaleFactor) {
+  void _drawCenteredBadge(
+      Canvas canvas, Size size, String text, double scaleFactor) {
     final tp = TextPainter(
       textDirection: TextDirection.ltr,
       text: TextSpan(
@@ -641,5 +645,7 @@ class _SlopePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SlopePainter old) =>
-      old.result1 != result1 || old.result2 != result2 || old.accentColor != accentColor;
+      old.result1 != result1 ||
+      old.result2 != result2 ||
+      old.accentColor != accentColor;
 }

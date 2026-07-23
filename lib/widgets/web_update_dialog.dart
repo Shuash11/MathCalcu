@@ -15,11 +15,10 @@ class _WebUpdateDialog extends StatelessWidget {
   final String latestVersion;
   const _WebUpdateDialog({required this.latestVersion});
 
-  static const _accent = Color(0xFF334155);
-
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
 
     return AlertDialog(
       backgroundColor: theme.surface,
@@ -31,10 +30,10 @@ class _WebUpdateDialog extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: _accent.withValues(alpha: 0.12),
+              color: accent.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.system_update_rounded, size: 32, color: _accent),
+            child: Icon(Icons.system_update_rounded, size: 32, color: accent),
           ),
           const SizedBox(height: 16),
           Text(
@@ -71,7 +70,7 @@ class _WebUpdateDialog extends StatelessWidget {
                     reloadPage();
                   },
                   style: FilledButton.styleFrom(
-                    backgroundColor: _accent,
+                    backgroundColor: accent,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   child: const Text('Update'),

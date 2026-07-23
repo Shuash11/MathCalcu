@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
@@ -32,13 +32,11 @@ class _HomeCardState extends State<HomeCard> {
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) {
-          setState(() => _pressed = false);
-          widget.onTap();
-        },
-        onTapCancel: () => setState(() => _pressed = false),
+      child: Semantics(
+        label: widget.label,
+        button: true,
+        onTap: widget.onTap,
+        excludeSemantics: true,
         child: AnimatedScale(
           scale: _pressed ? 0.96 : 1.0,
           duration: const Duration(milliseconds: 120),
@@ -72,10 +70,14 @@ class _HomeCardState extends State<HomeCard> {
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(20),
               child: InkWell(
+                excludeFromSemantics: true,
                 borderRadius: BorderRadius.circular(20),
                 onTap: widget.onTap,
+                onHighlightChanged: (highlighted) =>
+                    setState(() => _pressed = highlighted),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -103,7 +105,9 @@ class _HomeCardState extends State<HomeCard> {
                         child: Icon(
                           widget.icon,
                           size: 24,
-                          color: Colors.white,
+                          color: widget.accent.computeLuminance() > 0.4
+                              ? theme.surface
+                              : Colors.white,
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -115,9 +119,9 @@ class _HomeCardState extends State<HomeCard> {
                           color: theme.textPrimary,
                           letterSpacing: -0.2,
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
               ),

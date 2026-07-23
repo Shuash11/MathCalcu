@@ -89,14 +89,15 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                              color:
-                                  FinalsTheme.primary.withValues(alpha: 0.3)),
+                              color: FinalsTheme.primaryFor(context)
+                                  .withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.arrow_back_ios_new_rounded,
-                                size: 12, color: FinalsTheme.primary),
+                            Icon(Icons.arrow_back_ios_new_rounded,
+                                size: 12,
+                                color: FinalsTheme.primaryFor(context)),
                             const SizedBox(width: 8),
                             ResponsiveText(
                               'Back to Finals',

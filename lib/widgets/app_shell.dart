@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -11,12 +11,9 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
-    final isLight = themeProvider.isLight;
-    final card = isLight ? const Color(0xFFF4F4F1) : const Color(0xFF232340);
-    final accent = isLight ? const Color(0xFF334155) : const Color(0xFFE9ECEF);
-    final textMuted = isLight
-        ? const Color(0xFF64748B).withValues(alpha: 0.5)
-        : const Color(0xFFF4F4F1).withValues(alpha: 0.4);
+    final card = themeProvider.card;
+    final accent = themeProvider.accentColor;
+    final textMuted = themeProvider.textSecondary;
 
     return Scaffold(
       body: navigationShell,

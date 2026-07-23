@@ -29,10 +29,9 @@ class SubstitutionInputField extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isCompact = screenWidth < 380;
     final isTablet = screenWidth > 600;
-    const accentColor = FinalsTheme.primary;
+    final accentColor = FinalsTheme.primaryFor(context);
 
     final expressionFontSize = isCompact ? 16.0 : (isTablet ? 20.0 : 18.0);
-    final variableFontSize = isCompact ? 13.0 : (isTablet ? 18.0 : 15.0);
     final inputHeight = isCompact ? 38.0 : (isTablet ? 48.0 : 44.0);
     final limitTextSize = isCompact ? 14.0 : (isTablet ? 22.0 : 18.0);
 
@@ -81,7 +80,8 @@ class SubstitutionInputField extends StatelessWidget {
                         fontSize: isCompact ? 13 : 14,
                       ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: isCompact ? 8 : 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: isCompact ? 8 : 12),
                     ),
                   ),
                 ),
@@ -96,7 +96,8 @@ class SubstitutionInputField extends StatelessWidget {
 
           // ── Limit Meta Row
           Padding(
-            padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
+            padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12, isCompact ? 8 : 12,
+                isCompact ? 8 : 12, isCompact ? 8 : 12),
             child: Row(
               children: [
                 ResponsiveText(
@@ -116,8 +117,8 @@ class SubstitutionInputField extends StatelessWidget {
                   onTap: () => _showVariablePicker(context),
                 ),
 
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: Icon(
                     Icons.arrow_forward_rounded,
                     size: 12,
@@ -163,7 +164,6 @@ class SubstitutionInputField extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -176,7 +176,7 @@ class SubstitutionInputField extends StatelessWidget {
     final variables = ['x', 'y', 'z', 't', 'n', 'u'];
     showModalBottomSheet(
       context: context,
-      backgroundColor: FinalsTheme.card(context),
+      backgroundColor: FinalsTheme.cardForEvent(context),
       barrierColor: Colors.black.withValues(alpha: 0.5),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -215,29 +215,34 @@ class SubstitutionInputField extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? FinalsTheme.primary.withValues(alpha: 0.1)
+                          ? FinalsTheme.primaryFor(ctx).withValues(alpha: 0.1)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: ListTile(
-                      title: ResponsiveText(
-                        v,
-                        style: FinalsTheme.titleStyle(ctx).copyWith(
-                          fontFamily: 'serif',
-                          fontSize: 18,
-                          color: isSelected ? FinalsTheme.primary : null,
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      child: ListTile(
+                        title: ResponsiveText(
+                          v,
+                          style: FinalsTheme.titleStyle(ctx).copyWith(
+                            fontFamily: 'serif',
+                            fontSize: 18,
+                            color:
+                                isSelected ? FinalsTheme.primaryFor(ctx) : null,
+                          ),
                         ),
+                        onTap: () {
+                          onVariableChanged(v);
+                          Navigator.pop(ctx);
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                        trailing: isSelected
+                            ? Icon(Icons.check_circle_rounded,
+                                color: FinalsTheme.primaryFor(ctx))
+                            : null,
                       ),
-                      onTap: () {
-                        onVariableChanged(v);
-                        Navigator.pop(ctx);
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      trailing: isSelected
-                          ? const Icon(Icons.check_circle_rounded,
-                              color: FinalsTheme.primary)
-                          : null,
                     ),
                   );
                 },
@@ -249,6 +254,4 @@ class SubstitutionInputField extends StatelessWidget {
       ),
     );
   }
-
 }
-

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 
@@ -10,10 +10,10 @@ import 'package:calculus_system/theme/theme_provider.dart';
 
 class FinalsTheme {
   // ── Brand colors — white/ice for dark mode ────────────────
-  static const Color primary   = Color(0xFFE9ECEF);
+  static const Color primary = Color(0xFFE9ECEF);
   static const Color secondary = Color(0xFF0C0C09);
-  static const Color tertiary  = Color(0xFF16A34A);
-  static const Color danger    = Color(0xFFFF6B6B);
+  static const Color tertiary = Color(0xFF16A34A);
+  static const Color danger = Color(0xFFFF6B6B);
 
   // ── Surface / card — delegates to ThemeProvider ───────────
   static Color surface(BuildContext context) =>
@@ -21,6 +21,10 @@ class FinalsTheme {
 
   static Color card(BuildContext context) =>
       context.watch<ThemeProvider>().card;
+
+  /// Reads the card token from a gesture callback, where listening is invalid.
+  static Color cardForEvent(BuildContext context) =>
+      context.read<ThemeProvider>().card;
 
   static Color cardSecondary(BuildContext context) =>
       context.watch<ThemeProvider>().cardSecondary;
@@ -31,6 +35,17 @@ class FinalsTheme {
   static Color textSecondary(BuildContext context) =>
       context.watch<ThemeProvider>().textSecondary;
 
+  /// Context-aware semantic accents. Static legacy colors cannot meet contrast
+  /// requirements on both the light and dark application surfaces.
+  static Color primaryFor(BuildContext context) =>
+      context.watch<ThemeProvider>().accentColor;
+
+  static Color secondaryFor(BuildContext context) =>
+      context.watch<ThemeProvider>().textPrimary;
+
+  static Color onPrimaryFor(BuildContext context) =>
+      context.watch<ThemeProvider>().surface;
+
   static Color shadowColor(BuildContext context) =>
       context.watch<ThemeProvider>().shadowColor;
 
@@ -38,7 +53,8 @@ class FinalsTheme {
       context.watch<ThemeProvider>().isLight;
 
   // ── Typography ────────────────────────────────────────────
-  static TextStyle titleStyle(BuildContext context, {bool responsive = false}) =>
+  static TextStyle titleStyle(BuildContext context,
+          {bool responsive = false}) =>
       TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
@@ -61,7 +77,7 @@ class FinalsTheme {
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.1,
-        color: primary.withValues(alpha: 0.8),
+        color: textSecondary(context),
       );
 
   // ── Gradients ─────────────────────────────────────────────

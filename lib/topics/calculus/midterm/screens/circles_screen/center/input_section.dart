@@ -86,7 +86,10 @@ class _PointCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
@@ -313,8 +316,8 @@ class _FieldState extends State<_Field> {
             ),
           ),
         ),
-        ],
-      );
+      ],
+    );
   }
 }
 
@@ -362,10 +365,7 @@ class _ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [
-                    const Color(0xFF334155),
-                    const Color(0xFF334155)
-                  ],
+                  colors: [const Color(0xFF334155), const Color(0xFF334155)],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [

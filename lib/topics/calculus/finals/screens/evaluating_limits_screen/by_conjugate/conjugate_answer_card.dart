@@ -1,6 +1,5 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class ConjugateAnswerCard extends StatelessWidget {
   final String problemNotation;
@@ -45,6 +44,7 @@ class ConjugateAnswerCard extends StatelessWidget {
     );
   }
 }
+
 class _ConjugateAnswerCardContent extends StatelessWidget {
   final bool isCompact;
   final bool isMedium;
@@ -70,7 +70,7 @@ class _ConjugateAnswerCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accentColor = FinalsTheme.secondary;
+    final accentColor = FinalsTheme.secondaryFor(context);
 
     final cardPadding = isCompact ? 16.0 : (isMedium ? 18.0 : 20.0);
     final methodBadgePaddingH = isCompact ? 8.0 : (isMedium ? 9.0 : 10.0);
@@ -113,7 +113,9 @@ class _ConjugateAnswerCardContent extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: methodBadgePaddingH, vertical: methodBadgePaddingV),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: methodBadgePaddingH,
+                      vertical: methodBadgePaddingV),
                   decoration: BoxDecoration(
                     color: accentColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),

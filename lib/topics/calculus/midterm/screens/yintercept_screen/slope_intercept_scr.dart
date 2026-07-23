@@ -129,9 +129,9 @@ class _YInterceptScreenState extends State<YInterceptScreen>
 
   @override
   Widget build(BuildContext context) {
-    final emeraldColor = const Color(0xFF334155);
-    final goldColor = const Color(0xFF334155);
     final accent = context.watch<ThemeProvider>().accentColor;
+    final emeraldColor = accent;
+    final goldColor = accent;
 
     return Scaffold(
       backgroundColor: context.watch<ThemeProvider>().surface,
@@ -141,7 +141,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
             _buildHeader(context),
             const SizedBox(height: 16),
             Expanded(
-              child:               YInterceptTab(
+              child: YInterceptTab(
                 mCtrl: _mCtrl,
                 bCtrl: _bCtrl,
                 sfCtrl: _sfCtrl,

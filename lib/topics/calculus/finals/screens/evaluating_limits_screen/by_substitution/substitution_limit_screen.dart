@@ -14,10 +14,12 @@ class SubstitutionLimitScreen extends StatefulWidget {
   const SubstitutionLimitScreen({super.key});
 
   @override
-  State<SubstitutionLimitScreen> createState() => _SubstitutionLimitScreenState();
+  State<SubstitutionLimitScreen> createState() =>
+      _SubstitutionLimitScreenState();
 }
 
-class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with TickerProviderStateMixin {
+class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
+    with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   final _expressionFocus = FocusNode();
@@ -25,7 +27,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
   TextEditingController? _activeController;
   final _hideKeyboardSignal = ValueNotifier<int>(0);
   String _currentVariable = 'x';
-  
+
   SubstitutionResult? _result;
   List<SolutionStep> _steps = [];
   bool _isSolving = false;
@@ -41,11 +43,13 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim = CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
+    _fadeAnim =
+        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
     _slideAnim = Tween<Offset>(
       begin: const Offset(0, 0.05),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(
+        parent: _contentController, curve: Curves.easeOutCubic));
 
     _contentController.forward();
 
@@ -80,13 +84,16 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
 
   void _solve() {
     _hideKeyboardSignal.value++;
-    if (_expressionController.text.isEmpty || _approachController.text.isEmpty) {
+    if (_expressionController.text.isEmpty ||
+        _approachController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please enter both an expression and an approach value.'),
+          content: const Text(
+              'Please enter both an expression and an approach value.'),
           backgroundColor: FinalsTheme.danger,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
       return;
@@ -99,7 +106,8 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
     // parse approach value
     double approachVal = 0;
     try {
-      approachVal = double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
+      approachVal =
+          double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
     } catch (e) {
       approachVal = 0;
     }
@@ -107,17 +115,17 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
     // Call engine after a short delay for UX feel
     Future.delayed(const Duration(milliseconds: 300), () {
       if (!mounted) return;
-      
+
       try {
         final engine = SubstitutionEngine();
         final result = engine.solve(LimitProblem(
           expression: _expressionController.text,
           approachValue: approachVal,
         ));
-        
+
         final stepsGen = SubstitutionStepsGenerator();
         final steps = stepsGen.generate(result);
-        
+
         setState(() {
           _result = result;
           _steps = steps;
@@ -166,7 +174,8 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
                           expressionFocus: _expressionFocus,
                           approachFocus: _approachFocus,
                           currentVariable: _currentVariable,
-                          onVariableChanged: (v) => setState(() => _currentVariable = v),
+                          onVariableChanged: (v) =>
+                              setState(() => _currentVariable = v),
                           onSolve: _solve,
                           isLoading: _isSolving,
                         ),
@@ -194,7 +203,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
             ),
             MathKeyboard(
               controller: _activeController ?? _expressionController,
-              accentColor: FinalsTheme.primary,
+              accentColor: FinalsTheme.primaryFor(context),
               hideSignal: _hideKeyboardSignal,
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -217,8 +226,11 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
               backgroundColor: FinalsTheme.card(context),
               foregroundColor: FinalsTheme.textPrimary(context),
               padding: const EdgeInsets.all(12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              side: BorderSide(color: FinalsTheme.primary.withValues(alpha: 0.1)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              side: BorderSide(
+                  color:
+                      FinalsTheme.primaryFor(context).withValues(alpha: 0.1)),
             ),
           ),
           const SizedBox(width: 20),
@@ -242,18 +254,21 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen> with 
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: FinalsTheme.primary.withValues(alpha: 0.1),
+              color: FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.2)),
+              border: Border.all(
+                  color:
+                      FinalsTheme.primaryFor(context).withValues(alpha: 0.2)),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.swap_horiz_rounded, size: 14, color: FinalsTheme.primary),
-                SizedBox(width: 6),
+                Icon(Icons.swap_horiz_rounded,
+                    size: 14, color: FinalsTheme.primaryFor(context)),
+                const SizedBox(width: 6),
                 ResponsiveText(
                   'BY SUBSTITUTION',
                   style: TextStyle(
-                    color: FinalsTheme.primary,
+                    color: FinalsTheme.primaryFor(context),
                     fontWeight: FontWeight.w800,
                     fontSize: 10,
                   ),

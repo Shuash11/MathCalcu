@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/screens/inequality.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +149,7 @@ class _CategoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF334155);
+    final accent = theme.accentColor;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 48, 28, 16),
@@ -161,20 +161,28 @@ class _CategoryHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Back button
-              GestureDetector(
+              Semantics(
+                label: 'Back',
+                button: true,
                 onTap: () => context.pop(),
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: theme.card,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: theme.textSecondary.withValues(alpha: 0.2)),
-                  ),
-                  child: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 16,
-                    color: theme.textPrimary,
+                excludeSemantics: true,
+                child: GestureDetector(
+                  excludeFromSemantics: true,
+                  onTap: () => context.pop(),
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: theme.card,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: theme.textSecondary.withValues(alpha: 0.2)),
+                    ),
+                    child: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 16,
+                      color: theme.textPrimary,
+                    ),
                   ),
                 ),
               ),
@@ -189,9 +197,7 @@ class _CategoryHeader extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 20),
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -213,9 +219,7 @@ class _CategoryHeader extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 12),
-
           Padding(
             padding: const EdgeInsets.only(left: 52),
             child: Text(

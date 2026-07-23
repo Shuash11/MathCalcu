@@ -64,13 +64,13 @@ class PointSlopeSteps extends StatelessWidget {
     required this.standardForm,
   });
 
-  Widget _mathLatex(String tex) => SingleChildScrollView(
+  Widget _mathLatex(BuildContext context, String tex) => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SelectableMath.tex(
           tex,
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontSize: 14,
-            color: FinalsTheme.primary,
+            color: FinalsTheme.primaryFor(context),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -122,10 +122,10 @@ class PointSlopeSteps extends StatelessWidget {
     final mParaOpen = mSimplified.contains('/') ? r'(' : '';
     final mParaClose = mSimplified.contains('/') ? r')' : '';
     return 'y $y1Sign $y1Abs = '
-        '$mParaOpen$mSimplified$mParaClose'
-        r'(x $x1Sign $x1Abs)'
-            .replaceAll(r'$x1Sign', x1Sign)
-            .replaceAll(r'$x1Abs', x1Abs);
+            '$mParaOpen$mSimplified$mParaClose'
+            r'(x $x1Sign $x1Abs)'
+        .replaceAll(r'$x1Sign', x1Sign)
+        .replaceAll(r'$x1Abs', x1Abs);
   }
 
   String _buildStep4LeftLatex(
@@ -161,7 +161,8 @@ class PointSlopeSteps extends StatelessWidget {
     final product = mVal * xVal;
     final sign = product < 0 ? '+' : '-';
     final absVal = product.abs().toString();
-    final mWithParens = mSimplified.contains('/') ? '($mSimplified)' : mSimplified;
+    final mWithParens =
+        mSimplified.contains('/') ? '($mSimplified)' : mSimplified;
     final mulSymbol = mSimplified.contains('/') ? r' \cdot ' : ' ';
     return r'\begin{aligned}'
         'y $y1Sign $y1Abs = $mWithParens$mulSymbol'
@@ -177,7 +178,8 @@ class PointSlopeSteps extends StatelessWidget {
     } else {
       bSign = b.trimLeft().startsWith('-') ? '-' : '+';
     }
-    final mWithParens = mSimplified.contains('/') ? '($mSimplified)' : mSimplified;
+    final mWithParens =
+        mSimplified.contains('/') ? '($mSimplified)' : mSimplified;
     final dot = mSimplified.contains('/') ? r' \cdot ' : '';
     return 'y = $mWithParens${dot}x $bSign ${bSimplified.replaceAll('-', '')}';
   }
@@ -192,8 +194,8 @@ class PointSlopeSteps extends StatelessWidget {
     final x1Abs = x1.startsWith('-') ? x1.substring(1) : x1;
     final x1Sign = x1.startsWith('-') ? '+' : '-';
 
-    final step3Latex = _buildStep3Latex(
-        mSimplified, y1Sign, y1Abs, x1Sign, x1Abs);
+    final step3Latex =
+        _buildStep3Latex(mSimplified, y1Sign, y1Abs, x1Sign, x1Abs);
 
     final step4LeftLatex = _buildStep4LeftLatex(
       mSimplified,
@@ -218,25 +220,29 @@ class PointSlopeSteps extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        SolutionStepCard(design: AppDesign.app,
+        SolutionStepCard(
+          design: AppDesign.app,
           stepNumber: 1,
           title: 'Identify given values',
           description: 'Step 1',
           mathContent: _mathText(context, 'Point:  ($x1, $y1)\nSlope:  m = $m'),
         ),
-        SolutionStepCard(design: AppDesign.app,
+        SolutionStepCard(
+          design: AppDesign.app,
           stepNumber: 2,
           title: 'Point-Slope formula',
           description: 'Step 2',
-          mathContent: _mathLatex(r'y - y_1 = m(x - x_1)'),
+          mathContent: _mathLatex(context, r'y - y_1 = m(x - x_1)'),
         ),
-        SolutionStepCard(design: AppDesign.app,
+        SolutionStepCard(
+          design: AppDesign.app,
           stepNumber: 3,
           title: 'Substitute values',
           description: 'Step 3',
-          mathContent: _mathLatex(step3Latex),
+          mathContent: _mathLatex(context, step3Latex),
         ),
-        SolutionStepCard(design: AppDesign.app,
+        SolutionStepCard(
+          design: AppDesign.app,
           stepNumber: 4,
           title: 'Distribute slope (m)',
           description: 'Step 4',
@@ -247,23 +253,26 @@ class PointSlopeSteps extends StatelessWidget {
             rightLatex: step4RightLatex,
           ),
         ),
-        SolutionStepCard(design: AppDesign.app,
+        SolutionStepCard(
+          design: AppDesign.app,
           stepNumber: 5,
           title: 'Solve for y (Slope-Intercept)',
           description: 'Step 5',
-          mathContent: _mathLatex(step5Latex),
+          mathContent: _mathLatex(context, step5Latex),
         ),
-        SolutionStepCard(design: AppDesign.app,
+        SolutionStepCard(
+          design: AppDesign.app,
           stepNumber: 6,
           title: 'General Form (Ax + By + C = 0)',
           description: 'Step 6',
-          mathContent: _mathLatex(generalForm),
+          mathContent: _mathLatex(context, generalForm),
         ),
-        SolutionStepCard(design: AppDesign.app,
+        SolutionStepCard(
+          design: AppDesign.app,
           stepNumber: 7,
           title: 'Standard Form (Ax + By = C)',
           description: 'Step 7',
-          mathContent: _mathLatex(standardForm),
+          mathContent: _mathLatex(context, standardForm),
         ),
       ],
     );
@@ -303,10 +312,10 @@ class _CasePanel extends StatelessWidget {
             child: Text(
               label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
-                color: FinalsTheme.primary,
+                color: FinalsTheme.primaryFor(context),
                 letterSpacing: 0.3,
               ),
             ),
@@ -317,9 +326,9 @@ class _CasePanel extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: SelectableMath.tex(
                 latex,
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontSize: 14,
-                  color: FinalsTheme.primary,
+                  color: FinalsTheme.primaryFor(context),
                   fontWeight: FontWeight.w500,
                 ),
               ),

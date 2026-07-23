@@ -35,14 +35,14 @@ class YInterceptSteps extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: steps
-          .map((s) => _buildStep(context, s))
-          .toList(growable: false),
+      children:
+          steps.map((s) => _buildStep(context, s)).toList(growable: false),
     );
   }
 
   Widget _buildStep(BuildContext context, YISolverStep step) {
-    return SolutionStepCard(design: AppDesign.app,
+    return SolutionStepCard(
+      design: AppDesign.app,
       stepNumber: step.number,
       title: step.title,
       mathContent: step.layout == YIStepLayout.dual
@@ -77,8 +77,7 @@ class YInterceptSteps extends StatelessWidget {
               )),
           const SizedBox(height: 10),
         ],
-        if (step.resultLatex.isNotEmpty)
-          _ResultBox(latex: step.resultLatex),
+        if (step.resultLatex.isNotEmpty) _ResultBox(latex: step.resultLatex),
         if (step.explanation.isNotEmpty) ...[
           const SizedBox(height: 8),
           _ExplanationText(text: step.explanation, context: context),
@@ -129,9 +128,9 @@ class _FormulaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: FinalsTheme.cardSecondary(context),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
       ),
@@ -139,7 +138,7 @@ class _FormulaChip extends StatelessWidget {
         latex,
         textStyle: TextStyle(
           fontSize: 13,
-          color: FinalsTheme.primary.withValues(alpha: 0.6),
+          color: FinalsTheme.primaryFor(context).withValues(alpha: 0.6),
         ),
       ),
     );
@@ -171,21 +170,22 @@ class _ResultBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = FinalsTheme.primaryFor(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       decoration: BoxDecoration(
-        color: FinalsTheme.primary.withValues(alpha: 0.10),
+        color: primaryColor.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: FinalsTheme.primary.withValues(alpha: 0.35),
+          color: primaryColor.withValues(alpha: 0.35),
         ),
       ),
       child: Math.tex(
         latex,
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
           fontSize: 16,
-          color: FinalsTheme.primary,
+          color: primaryColor,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -277,12 +277,13 @@ class _DualPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = FinalsTheme.primaryFor(context);
     return Container(
       decoration: BoxDecoration(
-        color: FinalsTheme.primary.withValues(alpha: 0.08),
+        color: primaryColor.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: FinalsTheme.primary.withValues(alpha: 0.25),
+          color: primaryColor.withValues(alpha: 0.25),
           width: 1,
         ),
       ),
@@ -294,7 +295,7 @@ class _DualPanel extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: FinalsTheme.primary.withValues(alpha: 0.15),
+              color: primaryColor.withValues(alpha: 0.15),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -306,7 +307,7 @@ class _DualPanel extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: FinalsTheme.primary.withValues(alpha: 0.85),
+                color: primaryColor.withValues(alpha: 0.85),
               ),
             ),
           ),
@@ -314,9 +315,9 @@ class _DualPanel extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: SelectableMath.tex(
               latex,
-              textStyle: const TextStyle(
+              textStyle: TextStyle(
                 fontSize: 16,
-                color: FinalsTheme.primary,
+                color: primaryColor,
               ),
             ),
           ),

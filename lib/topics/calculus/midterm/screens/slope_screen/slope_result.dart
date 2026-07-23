@@ -55,13 +55,23 @@ class SlopeAnswerCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            _SlopeDisplay(slopeStr: slopeStr, isVertical: isVertical, isHorizontal: isHorizontal),
+            _SlopeDisplay(
+                slopeStr: slopeStr,
+                isVertical: isVertical,
+                isHorizontal: isHorizontal),
             const SizedBox(height: 4),
             Math.tex(
-              isVertical ? r'x = c' : (isHorizontal ? r'm = 0' : r'm = ' + _toLatexSlope(slopeStr)),
+              isVertical
+                  ? r'x = c'
+                  : (isHorizontal
+                      ? r'm = 0'
+                      : r'm = ' + _toLatexSlope(slopeStr)),
               textStyle: TextStyle(
                 fontSize: 11,
-                color: context.watch<ThemeProvider>().textSecondary.withValues(alpha: 0.5),
+                color: context
+                    .watch<ThemeProvider>()
+                    .textSecondary
+                    .withValues(alpha: 0.5),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -135,7 +145,8 @@ class SlopeComparisonCard extends StatelessWidget {
     required this.onTap,
   });
 
-  Color _color(BuildContext context) => context.watch<ThemeProvider>().accentColor;
+  Color _color(BuildContext context) =>
+      context.watch<ThemeProvider>().accentColor;
 
   String get _label => result.isPerpendicular ? 'Perpendicular' : 'Parallel';
 
@@ -224,8 +235,10 @@ class SlopeComparisonCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color:
-                      context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.75),
+                  color: context
+                      .watch<ThemeProvider>()
+                      .textPrimary
+                      .withValues(alpha: 0.75),
                   height: 1.5,
                 ),
               ),

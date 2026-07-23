@@ -54,13 +54,33 @@ class YInterceptTab extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [context.watch<ThemeProvider>().card, context.watch<ThemeProvider>().surface]),
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                context.watch<ThemeProvider>().card,
+                context.watch<ThemeProvider>().surface
+              ]),
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(
-            color: const Color(0xFF334155).withValues(alpha: 0.25),
+            color: context
+                .watch<ThemeProvider>()
+                .accentColor
+                .withValues(alpha: 0.25),
             width: 1.5,
           ),
-          boxShadow: [BoxShadow(color: const Color(0xFF334155).withValues(alpha: context.watch<ThemeProvider>().isLight ? 0.08 : 0.15), blurRadius: 30, offset: const Offset(0, 10)), BoxShadow(color: context.watch<ThemeProvider>().shadowColor, blurRadius: 20, offset: const Offset(0, -5))],
+          boxShadow: [
+            BoxShadow(
+                color: context.watch<ThemeProvider>().accentColor.withValues(
+                    alpha:
+                        context.watch<ThemeProvider>().isLight ? 0.08 : 0.15),
+                blurRadius: 30,
+                offset: const Offset(0, 10)),
+            BoxShadow(
+                color: context.watch<ThemeProvider>().shadowColor,
+                blurRadius: 20,
+                offset: const Offset(0, -5))
+          ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20.0),
@@ -70,12 +90,14 @@ class YInterceptTab extends StatelessWidget {
               Positioned(
                 top: -60,
                 right: -60,
-                child: _glow(200, const Color(0xFF334155), 0.1),
+                child:
+                    _glow(200, context.watch<ThemeProvider>().accentColor, 0.1),
               ),
               Positioned(
                 bottom: -40,
                 left: -40,
-                child: _glow(150, const Color(0xFF334155), 0.08),
+                child: _glow(
+                    150, context.watch<ThemeProvider>().accentColor, 0.08),
               ),
               // Main content
               Padding(
@@ -107,7 +129,8 @@ class YInterceptTab extends StatelessWidget {
                                     '0',
                                     mFocus,
                                     textInputAction: TextInputAction.next,
-                                    onEditingComplete: () => bFocus.requestFocus(),
+                                    onEditingComplete: () =>
+                                        bFocus.requestFocus(),
                                   ),
                                 ),
                                 const SizedBox(width: 16),
@@ -147,7 +170,21 @@ class YInterceptTab extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 8),
                               child: Text(
                                 err,
-                                style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3).copyWith(
+                                style: TextStyle(
+                                        fontSize: 13,
+                                        color: context
+                                                .watch<ThemeProvider>()
+                                                .isLight
+                                            ? context
+                                                .watch<ThemeProvider>()
+                                                .accentColor
+                                                .withValues(alpha: 0.8)
+                                            : context
+                                                .watch<ThemeProvider>()
+                                                .accentColor
+                                                .withValues(alpha: 0.7),
+                                        height: 1.3)
+                                    .copyWith(
                                   color: const Color(0xFFFF6B6B),
                                 ),
                               ),
@@ -160,7 +197,7 @@ class YInterceptTab extends StatelessWidget {
                       child: Container(
                         height: 52,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF334155),
+                          color: context.watch<ThemeProvider>().accentColor,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Center(
@@ -169,7 +206,7 @@ class YInterceptTab extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: const Color(0xFF334155),
+                              color: context.watch<ThemeProvider>().surface,
                               letterSpacing: 0.3,
                             ),
                           ),
@@ -195,7 +232,9 @@ class YInterceptTab extends StatelessWidget {
                               onTap: () {
                                 final slope = result.slope?.toDouble();
                                 final yInt = result.yIntercept?.toDouble();
-                                final xInt = (slope != null && slope != 0 && yInt != null)
+                                final xInt = (slope != null &&
+                                        slope != 0 &&
+                                        yInt != null)
                                     ? -yInt / slope
                                     : null;
                                 Navigator.of(context).push(
@@ -208,31 +247,47 @@ class YInterceptTab extends StatelessWidget {
                                           FullScreenInfoItem(
                                             label: 'Slope (m)',
                                             value: slope.toStringAsFixed(1),
-                                            color: context.watch<ThemeProvider>().accentColor,
+                                            color: context
+                                                .watch<ThemeProvider>()
+                                                .accentColor,
                                           ),
                                         if (yInt != null)
                                           FullScreenInfoItem(
                                             label: 'Y-intercept (b)',
                                             value: yInt.toStringAsFixed(1),
-                                            color: context.watch<ThemeProvider>().accentColor,
+                                            color: context
+                                                .watch<ThemeProvider>()
+                                                .accentColor,
                                           ),
                                         if (xInt != null)
                                           FullScreenInfoItem(
                                             label: 'X-intercept',
                                             value: xInt.toStringAsFixed(1),
-                                            color: context.watch<ThemeProvider>().accentColor,
+                                            color: context
+                                                .watch<ThemeProvider>()
+                                                .accentColor,
                                           ),
                                       ],
-                                      accentColor: context.watch<ThemeProvider>().accentColor,
-                                       graph: YInterceptGraph(
+                                      accentColor: context
+                                          .watch<ThemeProvider>()
+                                          .accentColor,
+                                      graph: YInterceptGraph(
                                         mText: result.slope != null
-                                            ? result.slope!.toDouble().toString()
+                                            ? result.slope!
+                                                .toDouble()
+                                                .toString()
                                             : '',
                                         bText: result.yIntercept != null
-                                            ? result.yIntercept!.toDouble().toString()
+                                            ? result.yIntercept!
+                                                .toDouble()
+                                                .toString()
                                             : '',
-                                        accentColor: context.watch<ThemeProvider>().accentColor,
-                                        backgroundColor: context.watch<ThemeProvider>().surface,
+                                        accentColor: context
+                                            .watch<ThemeProvider>()
+                                            .accentColor,
+                                        backgroundColor: context
+                                            .watch<ThemeProvider>()
+                                            .surface,
                                       ),
                                     ),
                                   ),
@@ -246,8 +301,10 @@ class YInterceptTab extends StatelessWidget {
                                 bText: result.yIntercept != null
                                     ? result.yIntercept!.toDouble().toString()
                                     : '',
-                                accentColor: context.watch<ThemeProvider>().accentColor,
-                                backgroundColor: context.watch<ThemeProvider>().surface,
+                                accentColor:
+                                    context.watch<ThemeProvider>().accentColor,
+                                backgroundColor:
+                                    context.watch<ThemeProvider>().surface,
                               ),
                             ),
                           ],
@@ -276,17 +333,23 @@ class YInterceptTab extends StatelessWidget {
           height: 52,
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              const Color(0xFF334155).withValues(alpha: 0.3),
-              const Color(0xFF334155).withValues(alpha: 0.2),
+              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.3),
+              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2),
             ]),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: const Color(0xFF334155).withValues(alpha: 0.4),
+              color: context
+                  .watch<ThemeProvider>()
+                  .accentColor
+                  .withValues(alpha: 0.4),
               width: 2,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF334155).withValues(alpha: 0.2),
+                color: context
+                    .watch<ThemeProvider>()
+                    .accentColor
+                    .withValues(alpha: 0.2),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -297,7 +360,9 @@ class YInterceptTab extends StatelessWidget {
               animation: pulseAnim,
               builder: (_, __) => Icon(
                 Icons.trending_up_rounded,
-                color: const Color(0xFF334155)
+                color: context
+                    .watch<ThemeProvider>()
+                    .accentColor
                     .withValues(alpha: 0.8 + pulseAnim.value * 0.2),
                 size: 26,
               ),
@@ -313,7 +378,11 @@ class YInterceptTab extends StatelessWidget {
                 children: [
                   Text(
                     'Y-Intercept Form',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -0.5),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: context.watch<ThemeProvider>().textPrimary,
+                        letterSpacing: -0.5),
                   ),
                   const SizedBox(width: 10),
                   AnimatedBuilder(
@@ -323,10 +392,12 @@ class YInterceptTab extends StatelessWidget {
                       height: 8,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xFF334155),
+                        color: context.watch<ThemeProvider>().accentColor,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF334155)
+                            color: context
+                                .watch<ThemeProvider>()
+                                .accentColor
                                 .withValues(alpha: pulseAnim.value),
                             blurRadius: pulseAnim.value * 14,
                             spreadRadius: pulseAnim.value * 2,
@@ -342,7 +413,18 @@ class YInterceptTab extends StatelessWidget {
                 mode == InputMode.slopeIntercept
                     ? 'Enter slope and y-intercept directly'
                     : 'Enter a standard form equation',
-                style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.8) : const Color(0xFF334155).withValues(alpha: 0.7), height: 1.3),
+                style: TextStyle(
+                    fontSize: 13,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.8)
+                        : context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.7),
+                    height: 1.3),
               ),
             ],
           ),
@@ -359,10 +441,12 @@ class YInterceptTab extends StatelessWidget {
     return Container(
       height: 44,
       decoration: BoxDecoration(
-        color: const Color(0xFF334155).withValues(alpha: 0.06),
+        color:
+            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: const Color(0xFF334155).withValues(alpha: 0.2),
+          color:
+              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.2),
           width: 1.5,
         ),
       ),
@@ -401,7 +485,10 @@ class YInterceptTab extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF334155).withValues(alpha: 0.15)
+              ? context
+                  .watch<ThemeProvider>()
+                  .accentColor
+                  .withValues(alpha: 0.15)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
         ),
@@ -413,8 +500,11 @@ class YInterceptTab extends StatelessWidget {
               icon,
               size: 18,
               color: isSelected
-                  ? const Color(0xFF334155)
-                  : const Color(0xFF334155).withValues(alpha: 0.5),
+                  ? context.watch<ThemeProvider>().accentColor
+                  : context
+                      .watch<ThemeProvider>()
+                      .accentColor
+                      .withValues(alpha: 0.5),
             ),
             const SizedBox(width: 6),
             Flexible(
@@ -426,8 +516,11 @@ class YInterceptTab extends StatelessWidget {
                   fontSize: 13,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   color: isSelected
-                      ? const Color(0xFF334155)
-                      : const Color(0xFF334155).withValues(alpha: 0.6),
+                      ? context.watch<ThemeProvider>().accentColor
+                      : context
+                          .watch<ThemeProvider>()
+                          .accentColor
+                          .withValues(alpha: 0.6),
                 ),
               ),
             ),
@@ -449,31 +542,57 @@ class YInterceptTab extends StatelessWidget {
         key: ValueKey(mode),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
         decoration: BoxDecoration(
-          color: const Color(0xFF334155).withValues(alpha: 0.08),
+          color: context
+              .watch<ThemeProvider>()
+              .accentColor
+              .withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFF334155).withValues(alpha: 0.25),
+            color: context
+                .watch<ThemeProvider>()
+                .accentColor
+                .withValues(alpha: 0.25),
           ),
         ),
         child: Column(
           children: [
             Text(
               isSI ? 'SLOPE-INTERCEPT FORM' : 'STANDARD FORM',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2).copyWith(
-                color: const Color(0xFF334155).withValues(alpha: 0.6),
+              style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: context.watch<ThemeProvider>().isLight
+                          ? context
+                              .watch<ThemeProvider>()
+                              .accentColor
+                              .withValues(alpha: 0.7)
+                          : context
+                              .watch<ThemeProvider>()
+                              .accentColor
+                              .withValues(alpha: 0.5),
+                      letterSpacing: 1.2)
+                  .copyWith(
+                color: context
+                    .watch<ThemeProvider>()
+                    .accentColor
+                    .withValues(alpha: 0.6),
               ),
             ),
             const SizedBox(height: 6),
             RichText(
               text: isSI
                   ? TextSpan(
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: context.watch<ThemeProvider>().textPrimary, fontFamily: 'monospace'),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: context.watch<ThemeProvider>().textPrimary,
+                          fontFamily: 'monospace'),
                       children: [
                         const TextSpan(text: 'y = '),
                         TextSpan(
                           text: 'm',
                           style: TextStyle(
-                            color: const Color(0xFF334155),
+                            color: context.watch<ThemeProvider>().accentColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -481,19 +600,23 @@ class YInterceptTab extends StatelessWidget {
                         TextSpan(
                           text: 'b',
                           style: TextStyle(
-                            color: const Color(0xFF334155),
+                            color: context.watch<ThemeProvider>().accentColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
                     )
                   : TextSpan(
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: context.watch<ThemeProvider>().textPrimary, fontFamily: 'monospace'),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: context.watch<ThemeProvider>().textPrimary,
+                          fontFamily: 'monospace'),
                       children: [
                         TextSpan(
                           text: 'A',
                           style: TextStyle(
-                            color: const Color(0xFF334155),
+                            color: context.watch<ThemeProvider>().accentColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -501,7 +624,7 @@ class YInterceptTab extends StatelessWidget {
                         TextSpan(
                           text: 'B',
                           style: TextStyle(
-                            color: const Color(0xFF334155),
+                            color: context.watch<ThemeProvider>().accentColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -544,8 +667,27 @@ class YInterceptTab extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('$label  ', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2)),
-            Text(variable, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155))),
+            Text('$label  ',
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.7)
+                        : context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.5),
+                    letterSpacing: 1.2)),
+            Text(variable,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context.watch<ThemeProvider>().accentColor
+                        : context.watch<ThemeProvider>().accentColor)),
           ],
         ),
         const SizedBox(height: 6),
@@ -556,7 +698,10 @@ class YInterceptTab extends StatelessWidget {
                 : Colors.white.withValues(alpha: 0.04),
             borderRadius: BorderRadius.circular(12.0),
             border: Border.all(
-              color: const Color(0xFF334155).withValues(alpha: 0.2),
+              color: context
+                  .watch<ThemeProvider>()
+                  .accentColor
+                  .withValues(alpha: 0.2),
               width: 1.5,
             ),
           ),
@@ -566,7 +711,11 @@ class YInterceptTab extends StatelessWidget {
             keyboardType: TextInputType.text,
             textInputAction: textInputAction,
             onEditingComplete: onEditingComplete,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: context.watch<ThemeProvider>().textPrimary, fontFamily: 'monospace'),
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: context.watch<ThemeProvider>().textPrimary,
+                fontFamily: 'monospace'),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
@@ -574,7 +723,12 @@ class YInterceptTab extends StatelessWidget {
               ),
               border: InputBorder.none,
               hintText: hint,
-              hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: context.watch<ThemeProvider>().textPrimary, fontFamily: 'monospace').copyWith(
+              hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: context.watch<ThemeProvider>().textPrimary,
+                      fontFamily: 'monospace')
+                  .copyWith(
                 color: isLight
                     ? Colors.black.withValues(alpha: 0.2)
                     : Colors.white.withValues(alpha: 0.2),
@@ -591,8 +745,8 @@ class YInterceptTab extends StatelessWidget {
   // ---------------------------------------------------------
 
   Widget _buildAnswerCard(BuildContext context, YIResult? result) {
-    final emerald = const Color(0xFF334155);
-    final amber = const Color(0xFF334155);
+    final emerald = context.watch<ThemeProvider>().accentColor;
+    final amber = context.watch<ThemeProvider>().accentColor;
     final has = result != null;
 
     return AnimatedContainer(
@@ -647,7 +801,20 @@ class YInterceptTab extends StatelessWidget {
       children: [
         Text(
           'SLOPE-INTERCEPT FORM (y = mx + b)',
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2).copyWith(
+          style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: context.watch<ThemeProvider>().isLight
+                      ? context
+                          .watch<ThemeProvider>()
+                          .accentColor
+                          .withValues(alpha: 0.7)
+                      : context
+                          .watch<ThemeProvider>()
+                          .accentColor
+                          .withValues(alpha: 0.5),
+                  letterSpacing: 1.2)
+              .copyWith(
             color: emerald.withValues(alpha: 0.7),
             fontSize: 10,
             letterSpacing: 1.2,
@@ -677,7 +844,7 @@ class YInterceptTab extends StatelessWidget {
                 'Standard Form',
                 'Ax + By = C',
                 r.standardForm,
-                const Color(0xFF334155),
+                context.watch<ThemeProvider>().accentColor,
                 () => onShowStandardFormSteps(r),
               ),
             ),
@@ -688,7 +855,7 @@ class YInterceptTab extends StatelessWidget {
                 'General Form',
                 'Ax + By + C = 0',
                 r.generalForm,
-                const Color(0xFF334155),
+                context.watch<ThemeProvider>().accentColor,
                 () => onShowGeneralFormSteps(r),
               ),
             ),
@@ -722,7 +889,20 @@ class YInterceptTab extends StatelessWidget {
         children: [
           Text(
             'YOUR EQUATION',
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2).copyWith(
+            style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.7)
+                        : context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.5),
+                    letterSpacing: 1.2)
+                .copyWith(
               color: accent.withValues(alpha: 0.75),
               fontSize: 9,
               fontWeight: FontWeight.w700,
@@ -732,7 +912,14 @@ class YInterceptTab extends StatelessWidget {
           const SizedBox(height: 10),
           Math.tex(
             r.equation,
-            textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontFamily: 'monospace').copyWith(
+            textStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context.watch<ThemeProvider>().accentColor
+                        : context.watch<ThemeProvider>().accentColor,
+                    fontFamily: 'monospace')
+                .copyWith(
               color: accent,
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -781,7 +968,20 @@ class YInterceptTab extends StatelessWidget {
               Flexible(
                 child: Text(
                   label,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2).copyWith(
+                  style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: context.watch<ThemeProvider>().isLight
+                              ? context
+                                  .watch<ThemeProvider>()
+                                  .accentColor
+                                  .withValues(alpha: 0.7)
+                              : context
+                                  .watch<ThemeProvider>()
+                                  .accentColor
+                                  .withValues(alpha: 0.5),
+                          letterSpacing: 1.2)
+                      .copyWith(
                     color: accent.withValues(alpha: 0.85),
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
@@ -793,7 +993,14 @@ class YInterceptTab extends StatelessWidget {
           const SizedBox(height: 7),
           Text(
             value,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontFamily: 'monospace').copyWith(
+            style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context.watch<ThemeProvider>().accentColor
+                        : context.watch<ThemeProvider>().accentColor,
+                    fontFamily: 'monospace')
+                .copyWith(
               color: accent,
               fontSize: 15,
               fontWeight: FontWeight.w700,
@@ -844,7 +1051,20 @@ class YInterceptTab extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2).copyWith(
+                style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: context.watch<ThemeProvider>().isLight
+                            ? context
+                                .watch<ThemeProvider>()
+                                .accentColor
+                                .withValues(alpha: 0.7)
+                            : context
+                                .watch<ThemeProvider>()
+                                .accentColor
+                                .withValues(alpha: 0.5),
+                        letterSpacing: 1.2)
+                    .copyWith(
                   color: accent.withValues(alpha: 0.9),
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
@@ -854,7 +1074,20 @@ class YInterceptTab extends StatelessWidget {
               const SizedBox(height: 3),
               Text(
                 subtitle,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5), letterSpacing: 1.2).copyWith(
+                style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: context.watch<ThemeProvider>().isLight
+                            ? context
+                                .watch<ThemeProvider>()
+                                .accentColor
+                                .withValues(alpha: 0.7)
+                            : context
+                                .watch<ThemeProvider>()
+                                .accentColor
+                                .withValues(alpha: 0.5),
+                        letterSpacing: 1.2)
+                    .copyWith(
                   color: accent.withValues(alpha: 0.5),
                   fontSize: 8,
                 ),
@@ -864,7 +1097,14 @@ class YInterceptTab extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155) : const Color(0xFF334155), fontFamily: 'monospace').copyWith(
+            style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context.watch<ThemeProvider>().accentColor
+                        : context.watch<ThemeProvider>().accentColor,
+                    fontFamily: 'monospace')
+                .copyWith(
               color: accent,
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -904,17 +1144,37 @@ class YInterceptTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF334155).withValues(alpha: 0.12),
+        color:
+            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10.0),
         border: Border.all(
-          color: const Color(0xFF334155).withValues(alpha: 0.3),
+          color:
+              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.3),
         ),
       ),
       child: RichText(
         text: TextSpan(
           children: [
-            TextSpan(text: '$key: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().isLight ? const Color(0xFF334155).withValues(alpha: 0.7) : const Color(0xFF334155).withValues(alpha: 0.5))),
-            TextSpan(text: value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textPrimary)),
+            TextSpan(
+                text: '$key: ',
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().isLight
+                        ? context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.7)
+                        : context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.5))),
+            TextSpan(
+                text: value,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: context.watch<ThemeProvider>().textPrimary)),
           ],
         ),
       ),
@@ -931,7 +1191,7 @@ class YInterceptTab extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Colors.transparent,
-              const Color(0xFF334155).withValues(alpha: 0.3),
+              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.3),
               Colors.transparent,
             ],
           ),

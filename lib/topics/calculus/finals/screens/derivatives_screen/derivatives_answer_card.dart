@@ -73,8 +73,8 @@ class DerivativeAnswerCard extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.copy_rounded, size: 18),
-                        color: FinalsTheme.primary,
+                        icon: Icon(Icons.copy_rounded, size: 18),
+                        color: FinalsTheme.primaryFor(context),
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: answerExpr));
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,12 +88,13 @@ class DerivativeAnswerCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: FinalsTheme.primary.withValues(alpha: 0.15),
+                          color: FinalsTheme.primaryFor(context)
+                              .withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: FinalsTheme.primary,
+                          color: FinalsTheme.primaryFor(context),
                           size: 18,
                         ),
                       ),
@@ -113,7 +114,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ResponsiveText(
-          '',
+                    '',
                     style: FinalsTheme.subtitleStyle(context),
                   ),
                   Flexible(
@@ -138,7 +139,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                       "f'(x) = ",
                       style: FinalsTheme.titleStyle(context).copyWith(
                         fontSize: 20,
-                        color: FinalsTheme.primary,
+                        color: FinalsTheme.primaryFor(context),
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -155,7 +156,7 @@ class DerivativeAnswerCard extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: ResponsiveText(
-          '',
+                  '',
                   style: FinalsTheme.labelStyle(context).copyWith(
                     fontSize: 9,
                     letterSpacing: 0.5,
@@ -169,23 +170,29 @@ class DerivativeAnswerCard extends StatelessWidget {
     );
   }
 
-String _toLatex(String expr) {
+  String _toLatex(String expr) {
     if (expr.isEmpty) return '';
 
     String result = expr;
     result = result.replaceAll(' ', '');
     result = result.replaceAll('*', '##MUL##');
-    
-    result = result.replaceAllMapped(RegExp(r'(\w)\^(-?\d+)'), (m) => '${m[1]}^{${m[2]}}');
-    result = result.replaceAllMapped(RegExp(r'(\w)\)\^(-?\d+)'), (m) => '${m[1]}^{${m[2]}}');
-    result = result.replaceAllMapped(RegExp(r'\(\s*\^\s*(-?\d+)\)'), (m) => '^{${m[1]}}');
+
+    result = result.replaceAllMapped(
+        RegExp(r'(\w)\^(-?\d+)'), (m) => '${m[1]}^{${m[2]}}');
+    result = result.replaceAllMapped(
+        RegExp(r'(\w)\)\^(-?\d+)'), (m) => '${m[1]}^{${m[2]}}');
+    result = result.replaceAllMapped(
+        RegExp(r'\(\s*\^\s*(-?\d+)\)'), (m) => '^{${m[1]}}');
     result = result.replaceAll('^ -', '^{-');
-    result = result.replaceAllMapped(RegExp(r'\^(\()(-?\d+)(\))'), (m) => '^{${m[2]}}');
-    
+    result = result.replaceAllMapped(
+        RegExp(r'\^(\()(-?\d+)(\))'), (m) => '^{${m[2]}}');
+
     result = _convertFractions(result);
     result = _convertMultiplication(result);
     result = result.replaceAll('+', ' + ');
-    result = result.replaceAllMapped(RegExp(r'(?<![\^])([a-zA-Z0-9\)])-([a-zA-Z0-9\(])'), (m) => '${m[1]} - ${m[2]}');
+    result = result.replaceAllMapped(
+        RegExp(r'(?<![\^])([a-zA-Z0-9\)])-([a-zA-Z0-9\(])'),
+        (m) => '${m[1]} - ${m[2]}');
 
     result = result
         .replaceAll('sqrt(', r'\sqrt{')
@@ -199,33 +206,39 @@ String _toLatex(String expr) {
     return result;
   }
 
-String _convertMultiplication(String expr) {
+  String _convertMultiplication(String expr) {
     String result = expr;
-    
+
     // 1. Digit * Variable -> digitvariable (e.g., 2*x -> 2x) - ONLY this gets merged
-    result = result.replaceAllMapped(RegExp(r'([0-9])##MUL##([a-zA-Z])'), (m) => '${m[1]}${m[2]}');
-    
+    result = result.replaceAllMapped(
+        RegExp(r'([0-9])##MUL##([a-zA-Z])'), (m) => '${m[1]}${m[2]}');
+
     // 2. Digit * ( -> digit( (e.g., 2*( -> 2()
-    result = result.replaceAllMapped(RegExp(r'([0-9])##MUL##\('), (m) => '${m[1]}(');
-    
+    result =
+        result.replaceAllMapped(RegExp(r'([0-9])##MUL##\('), (m) => '${m[1]}(');
+
     // 3. ) * Digit -> )digit (e.g., )*2 -> )2
-    result = result.replaceAllMapped(RegExp(r'\)##MUL##([0-9])'), (m) => ')${m[1]}');
-    
+    result =
+        result.replaceAllMapped(RegExp(r'\)##MUL##([0-9])'), (m) => ')${m[1]}');
+
     // 4. Variable * Variable -> variablevariable (e.g., x*y -> xy)
-    result = result.replaceAllMapped(RegExp(r'([a-zA-Z])##MUL##([a-zA-Z])'), (m) => '${m[1]}${m[2]}');
-    
+    result = result.replaceAllMapped(
+        RegExp(r'([a-zA-Z])##MUL##([a-zA-Z])'), (m) => '${m[1]}${m[2]}');
+
     // 5. Variable * ( -> variable( (e.g., x*( -> x()
-    result = result.replaceAllMapped(RegExp(r'([a-zA-Z])##MUL##\('), (m) => '${m[1]}(');
-    
+    result = result.replaceAllMapped(
+        RegExp(r'([a-zA-Z])##MUL##\('), (m) => '${m[1]}(');
+
     // 6. ) * Variable -> )variable (e.g., )*x -> )x
-    result = result.replaceAllMapped(RegExp(r'\)##MUL##([a-zA-Z])'), (m) => ')${m[1]}');
-    
+    result = result.replaceAllMapped(
+        RegExp(r'\)##MUL##([a-zA-Z])'), (m) => ')${m[1]}');
+
     // 7. ) * ( -> )(
     result = result.replaceAllMapped(RegExp(r'\)##MUL##\('), (m) => ')(');
-    
+
     // 8. All remaining ##MUL## become \cdot (including x*2, 2*3, etc.)
     result = result.replaceAll('##MUL##', r'\cdot ');
-    
+
     return result;
   }
 
@@ -252,7 +265,7 @@ String _convertMultiplication(String expr) {
         den = _stripOuterParens(den);
 
         String frac = '\\frac{$num}{$den}';
-        
+
         buffer.write(expr.substring(lastWritePos, numStart));
         buffer.write(frac);
         lastWritePos = denEnd;
@@ -293,10 +306,16 @@ String _convertMultiplication(String expr) {
     int depth = 0;
     int i = slashPos - 1;
     while (i >= 0) {
-      if (s[i] == ' ') { i--; continue; }
+      if (s[i] == ' ') {
+        i--;
+        continue;
+      }
       if (s[i] == ')') {
         int match = _findMatchingOpen(s, i);
-        if (match == -1) { i--; continue; }
+        if (match == -1) {
+          i--;
+          continue;
+        }
         depth++;
         i = match - 1;
       } else if (s[i] == '(') {
@@ -322,10 +341,16 @@ String _convertMultiplication(String expr) {
     int depth = 0;
     int i = slashPos + 1;
     while (i < s.length) {
-      if (s[i] == ' ') { i++; continue; }
+      if (s[i] == ' ') {
+        i++;
+        continue;
+      }
       if (s[i] == '(') {
         int match = _findMatchingClose(s, i);
-        if (match == -1) { i++; continue; }
+        if (match == -1) {
+          i++;
+          continue;
+        }
         depth++;
         i = match + 1;
       } else if (s[i] == ')') {
@@ -333,7 +358,13 @@ String _convertMultiplication(String expr) {
         depth--;
         i++;
       } else {
-        if (depth == 0 && (s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '#' || s[i] == '^' || s[i] == ')')) {
+        if (depth == 0 &&
+            (s[i] == '+' ||
+                s[i] == '-' ||
+                s[i] == '*' ||
+                s[i] == '#' ||
+                s[i] == '^' ||
+                s[i] == ')')) {
           return i;
         }
         i++;
@@ -346,7 +377,10 @@ String _convertMultiplication(String expr) {
     int depth = 1;
     for (int i = closePos - 1; i >= 0; i--) {
       if (s[i] == ')') depth++;
-      if (s[i] == '(') { depth--; if (depth == 0) return i; }
+      if (s[i] == '(') {
+        depth--;
+        if (depth == 0) return i;
+      }
     }
     return -1;
   }
@@ -355,7 +389,10 @@ String _convertMultiplication(String expr) {
     int depth = 1;
     for (int i = openPos + 1; i < s.length; i++) {
       if (s[i] == '(') depth++;
-      if (s[i] == ')') { depth--; if (depth == 0) return i; }
+      if (s[i] == ')') {
+        depth--;
+        if (depth == 0) return i;
+      }
     }
     return -1;
   }
@@ -367,15 +404,19 @@ String _convertMultiplication(String expr) {
         scrollDirection: Axis.horizontal,
         child: SelectableMath.tex(
           tex,
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontSize: 18,
-            color: FinalsTheme.primary,
+            color: FinalsTheme.primaryFor(ctx),
             fontWeight: FontWeight.w800,
           ),
         ),
       );
     } catch (e) {
-      return Text(tex, style: const TextStyle(fontSize: 18, color: FinalsTheme.primary, fontWeight: FontWeight.w800));
+      return Text(tex,
+          style: TextStyle(
+              fontSize: 18,
+              color: FinalsTheme.primaryFor(ctx),
+              fontWeight: FontWeight.w800));
     }
   }
 }
