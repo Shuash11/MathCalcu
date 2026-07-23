@@ -28,6 +28,7 @@ class InequalityGraph extends BaseGraph {
       backgroundColor: backgroundColor,
       axisColor: resolvedSecondary,
       labelColor: resolvedSecondary,
+      axisArrowColor: accentColor,
       solutionColor: accentColor,
       shadeColor: accentColor.withValues(alpha: 0.18),
     );
@@ -57,6 +58,7 @@ class InequalityGraphPalette {
   final Color backgroundColor;
   final Color axisColor;
   final Color labelColor;
+  final Color axisArrowColor;
   final Color solutionColor;
   final Color shadeColor;
 
@@ -64,6 +66,7 @@ class InequalityGraphPalette {
     required this.backgroundColor,
     required this.axisColor,
     required this.labelColor,
+    required this.axisArrowColor,
     required this.solutionColor,
     required this.shadeColor,
   });
@@ -145,7 +148,7 @@ class _NumberLinePainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final arrowPaint = Paint()
-      ..color = palette.solutionColor
+      ..color = palette.axisArrowColor
       ..style = PaintingStyle.fill;
 
     final boundaryPaint = Paint()
@@ -168,10 +171,8 @@ class _NumberLinePainter extends CustomPainter {
 
     canvas.drawLine(
         const Offset(lineLeft, cy), Offset(lineRight, cy), linePaint);
-    _drawArrow(canvas, Offset(lineRight + 4, cy), true,
-        arrowPaint..color = accentColor.withValues(alpha: 0.3));
-    _drawArrow(canvas, const Offset(lineLeft - 4, cy), false,
-        arrowPaint..color = accentColor.withValues(alpha: 0.3));
+    _drawArrow(canvas, Offset(lineRight + 4, cy), true, arrowPaint);
+    _drawArrow(canvas, const Offset(lineLeft - 4, cy), false, arrowPaint);
 
     // Collect boundary x-positions so we can skip overlapping tick labels
     final boundaryXs =

@@ -5,7 +5,10 @@ import 'package:calculus_system/shared/widgets/module_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/shared/widgets/steps_drawer.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_math_display.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_substitution/substitution_limit_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/widgetsScreens/finals_about_sheets.dart';
+import 'package:calculus_system/topics/calculus/midterm/screens/distance_screen/distancescreen.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/services/update_service.dart';
 import 'package:calculus_system/widgets/donate_sheet.dart';
@@ -99,6 +102,59 @@ void main() {
       (tester.widget<Icon>(find.byIcon(Icons.calculate_rounded))).color,
       theme.surface,
     );
+  });
+
+  testWidgets(
+      'accent-filled distance mode labels use the theme on-accent color',
+      (WidgetTester tester) async {
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      await tester.pumpWidget(_app(const Distancescreen(), theme));
+
+      final label = tester.widget<Text>(find.text('Number Line (1D)'));
+      expect(label.style?.color, theme.surface);
+    }
+  });
+
+  testWidgets('finals conclusion indicators use the theme on-accent color',
+      (WidgetTester tester) async {
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      await tester.pumpWidget(
+        _app(
+          const LimitsSolutionStep(
+            title: 'Conclusion',
+            type: SolutionStepType.conclusion,
+            stepIndex: 0,
+          ),
+          theme,
+        ),
+      );
+
+      final indicator = tester.widget<Icon>(find.byIcon(Icons.check_rounded));
+      expect(indicator.color, theme.surface);
+    }
+  });
+
+  testWidgets('finals about header icon uses the theme on-accent color',
+      (WidgetTester tester) async {
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      await tester.pumpWidget(_app(const SizedBox(), theme));
+      showFinalsAboutSheet(tester.element(find.byType(Scaffold)));
+      await tester.pumpAndSettle();
+
+      final icon = tester.widget<Icon>(
+        find.byIcon(Icons.local_fire_department_rounded),
+      );
+      expect(icon.color, theme.surface);
+      final title = tester.widget<Text>(find.text('Finals Team'));
+      expect(title.style?.color, theme.textPrimary);
+      final developers = tester.widget<Text>(find.text('DEVELOPERS'));
+      expect(developers.style?.color, theme.surface);
+      Navigator.of(tester.element(find.byType(Scaffold))).pop();
+      await tester.pumpAndSettle();
+    }
   });
 
   testWidgets('O3/O4 update dialogs render actual widgets in both themes',

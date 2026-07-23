@@ -149,7 +149,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                       width: 48 * s,
                       height: 5 * s,
                       decoration: BoxDecoration(
-                        gradient: FinalsTheme.headerGradient,
+                        color: FinalsTheme.primaryFor(context),
                         borderRadius: BorderRadius.circular(3 * s),
                       ),
                     ),
@@ -165,7 +165,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                           width: 56 * s,
                           height: 56 * s,
                           decoration: BoxDecoration(
-                            gradient: FinalsTheme.headerGradient,
+                            color: FinalsTheme.primaryFor(context),
                             borderRadius: BorderRadius.circular(18 * s),
                             boxShadow: [
                               BoxShadow(
@@ -178,7 +178,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                           ),
                           child: Icon(
                             Icons.local_fire_department_rounded,
-                            color: Colors.white,
+                            color: FinalsTheme.onPrimaryFor(context),
                             size: 30 * s,
                           ),
                         ),
@@ -187,18 +187,13 @@ class _FinalsAboutSheet extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ShaderMask(
-                                shaderCallback: (bounds) => FinalsTheme
-                                    .headerGradient
-                                    .createShader(bounds),
-                                child: Text(
-                                  'Finals Team',
-                                  style: TextStyle(
-                                    fontSize: 28 * s,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white,
-                                    letterSpacing: -0.8 * s,
-                                  ),
+                              Text(
+                                'Finals Team',
+                                style: TextStyle(
+                                  fontSize: 28 * s,
+                                  fontWeight: FontWeight.w800,
+                                  color: FinalsTheme.textPrimary(context),
+                                  letterSpacing: -0.8 * s,
                                 ),
                               ),
                               SizedBox(height: 4 * s),
@@ -301,7 +296,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                                   vertical: 6 * s,
                                 ),
                                 decoration: BoxDecoration(
-                                  gradient: FinalsTheme.headerGradient,
+                                  color: FinalsTheme.primaryFor(context),
                                   borderRadius: BorderRadius.circular(20 * s),
                                 ),
                                 child: Text(
@@ -310,7 +305,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                                     fontSize: 11 * s,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 1.2,
-                                    color: Colors.white,
+                                    color: FinalsTheme.onPrimaryFor(context),
                                   ),
                                 ),
                               ),

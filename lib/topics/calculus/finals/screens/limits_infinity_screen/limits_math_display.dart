@@ -127,10 +127,10 @@ class LimitsSolutionStep extends StatelessWidget {
           ),
           child: Center(
             child: isConclusion
-                ? const Icon(
+                ? Icon(
                     Icons.check_rounded,
                     size: 16,
-                    color: Colors.white,
+                    color: FinalsTheme.onPrimaryFor(context),
                   )
                 : Text(
                     '${stepIndex + 1}',

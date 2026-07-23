@@ -348,6 +348,11 @@ void main() {
         accentColor: darkAccent,
         secondaryTextColor: darkSecondary,
       );
+      final light = InequalityGraph.paletteFor(
+        backgroundColor: const Color(0xFFE8E6E2),
+        accentColor: const Color(0xFF334155),
+        secondaryTextColor: const Color(0x990C0C09),
+      );
 
       expect(embedded.backgroundColor, darkSurface);
       expect(fullscreen.backgroundColor, const Color(0xFF232340));
@@ -356,6 +361,10 @@ void main() {
       expect(_contrastRatio(embedded.labelColor, embedded.backgroundColor),
           greaterThanOrEqualTo(4.5));
       expect(_contrastRatio(embedded.solutionColor, embedded.backgroundColor),
+          greaterThanOrEqualTo(3));
+      expect(_contrastRatio(embedded.axisArrowColor, embedded.backgroundColor),
+          greaterThanOrEqualTo(3));
+      expect(_contrastRatio(light.axisArrowColor, light.backgroundColor),
           greaterThanOrEqualTo(3));
     });
 

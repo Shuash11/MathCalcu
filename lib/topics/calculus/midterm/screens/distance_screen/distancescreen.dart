@@ -246,6 +246,7 @@ class _DistancescreenState extends State<Distancescreen>
   }
 
   Widget _buildModeButton(String label, bool active, VoidCallback onTap) {
+    final theme = context.watch<ThemeProvider>();
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -262,10 +263,10 @@ class _DistancescreenState extends State<Distancescreen>
             label,
             textAlign: TextAlign.center,
             style: active
-                ? const TextStyle(
+                ? TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white)
+                    color: theme.surface)
                 : TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,

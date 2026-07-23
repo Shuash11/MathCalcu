@@ -69,7 +69,7 @@ class LimitsStepTile extends StatelessWidget {
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: step.type == StepType.conclusion
-                          ? Colors.white
+                          ? FinalsTheme.onPrimaryFor(context)
                           : FinalsTheme.primaryFor(context),
                     ),
                   ),
