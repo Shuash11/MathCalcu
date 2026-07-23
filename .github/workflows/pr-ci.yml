@@ -1,0 +1,337 @@
+name: PR CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+  EXPECTED_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+
+jobs:
+  verify:
+    name: Verify exact PR head
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out exact PR base for baseline comparison
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v4.7.1
+        with:
+          distribution: zulu
+          java-version: '21'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.41.6'
+
+      - name: Assert exact checkout provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_head_sha="$(git -C head rev-parse HEAD)"
+          actual_base_sha="$(git -C base rev-parse HEAD)"
+          test "$actual_head_sha" = "$EXPECTED_HEAD_SHA"
+          test "$actual_base_sha" = "$EXPECTED_BASE_SHA"
+          export actual_head_sha actual_base_sha
+          mkdir -p evidence
+          python3 - <<'PY'
+          import json
+          import os
+
+          provenance = {
+              "artifactType": "verification-logs",
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "pullRequest": os.environ["PR_NUMBER"],
+              "workflowRunId": os.environ["GITHUB_RUN_ID"],
+              "job": os.environ["GITHUB_JOB"],
+              "expectedHeadSha": os.environ["EXPECTED_HEAD_SHA"],
+              "actualHeadSha": os.environ["actual_head_sha"],
+              "expectedBaseSha": os.environ["EXPECTED_BASE_SHA"],
+              "actualBaseSha": os.environ["actual_base_sha"],
+          }
+          with open("evidence/provenance.json", "w", encoding="utf-8") as output:
+              json.dump(provenance, output, indent=2, sort_keys=True)
+              output.write("\n")
+          PY
+
+      - name: Fetch dependencies for exact head and baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd head && flutter pub get) 2>&1 | tee evidence/flutter-pub-get-head.txt
+          (cd base && flutter pub get) 2>&1 | tee evidence/flutter-pub-get-base.txt
+
+      - name: Check formatting of changed Dart files
+        working-directory: head
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed_dart < <(git diff --name-only --diff-filter=ACMR "$EXPECTED_BASE_SHA" "$EXPECTED_HEAD_SHA" -- '*.dart')
+          if (( ${#changed_dart[@]} == 0 )); then
+            printf '%s\n' 'No changed Dart files.' | tee ../evidence/dart-format.txt
+            exit 0
+          fi
+          dart format --set-exit-if-changed -- "${changed_dart[@]}" 2>&1 | tee ../evidence/dart-format.txt
+
+      - name: Analyze changed Dart scope
+        working-directory: head
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed_dart < <(git diff --name-only --diff-filter=ACMR "$EXPECTED_BASE_SHA" "$EXPECTED_HEAD_SHA" -- '*.dart')
+          if (( ${#changed_dart[@]} == 0 )); then
+            printf '%s\n' 'No changed Dart files.' | tee ../evidence/analyzer-changed-scope.txt
+            exit 0
+          fi
+          set +e
+          flutter analyze --no-fatal-warnings --no-fatal-infos "${changed_dart[@]}" 2>&1 | tee ../evidence/analyzer-changed-scope.txt
+          analyze_status=${PIPESTATUS[0]}
+          set -e
+          if (( analyze_status > 1 )); then
+            printf '%s\n' 'Changed-scope analysis did not complete normally.' >&2
+            exit 1
+          fi
+
+      - name: Compare full analyzer diagnostics against exact base
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          (cd base && flutter analyze --machine) > evidence/analyzer-base.machine.txt 2>&1
+          base_status=$?
+          (cd head && flutter analyze --machine) > evidence/analyzer-head.machine.txt 2>&1
+          head_status=$?
+          set -e
+          printf 'base analyzer exit: %s\nhead analyzer exit: %s\n' "$base_status" "$head_status" | tee evidence/analyzer-exit-status.txt
+          if (( base_status > 1 || head_status > 1 )); then
+            printf '%s\n' 'flutter analyze did not complete normally.' >&2
+            exit 1
+          fi
+          python3 - "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head" evidence/analyzer-base.machine.txt evidence/analyzer-head.machine.txt > evidence/analyzer-added-head.txt <<'PY'
+          import collections
+          import os
+          import pathlib
+          import sys
+          import urllib.parse
+
+          base_root = pathlib.Path(sys.argv[1]).resolve()
+          head_root = pathlib.Path(sys.argv[2]).resolve()
+          base_report = pathlib.Path(sys.argv[3])
+          head_report = pathlib.Path(sys.argv[4])
+
+          def diagnostics(report, root):
+              result = collections.Counter()
+              for row in report.read_text(encoding="utf-8", errors="replace").splitlines():
+                  fields = row.split("|")
+                  if len(fields) < 8 or fields[0] not in {"ERROR", "WARNING"}:
+                      continue
+                  parsed = urllib.parse.urlparse(fields[3])
+                  candidate = pathlib.Path(urllib.parse.unquote(parsed.path))
+                  try:
+                      relative_path = candidate.resolve().relative_to(root).as_posix()
+                  except ValueError:
+                      relative_path = candidate.name
+                  result[(fields[0], fields[1], fields[2], relative_path, fields[7])] += 1
+              return result
+
+          baseline = diagnostics(base_report, base_root)
+          candidate = diagnostics(head_report, head_root)
+          for diagnostic, count in sorted((candidate - baseline).items()):
+              for _ in range(count):
+                  print("|".join(diagnostic))
+          PY
+          if [[ -s evidence/analyzer-added-head.txt ]]; then
+            printf '%s\n' 'Analyzer warnings or errors added by the PR head:' >&2
+            cat evidence/analyzer-added-head.txt >&2
+            exit 1
+          fi
+
+      - name: Run full test suite on exact head
+        working-directory: head
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter test 2>&1 | tee ../evidence/flutter-test.txt
+
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathcalcu-verification-logs-${{ github.event.pull_request.head.sha }}
+          path: evidence
+          if-no-files-found: error
+          retention-days: 14
+
+  build-web:
+    name: Build web from exact PR head
+    needs: verify
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.41.6'
+
+      - name: Assert exact checkout provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_head_sha="$(git -C head rev-parse HEAD)"
+          test "$actual_head_sha" = "$EXPECTED_HEAD_SHA"
+          export actual_head_sha
+          mkdir -p evidence
+          python3 - <<'PY'
+          import json
+          import os
+
+          provenance = {
+              "artifactType": "web-build",
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "pullRequest": os.environ["PR_NUMBER"],
+              "workflowRunId": os.environ["GITHUB_RUN_ID"],
+              "job": os.environ["GITHUB_JOB"],
+              "expectedHeadSha": os.environ["EXPECTED_HEAD_SHA"],
+              "actualHeadSha": os.environ["actual_head_sha"],
+          }
+          with open("evidence/provenance.json", "w", encoding="utf-8") as output:
+              json.dump(provenance, output, indent=2, sort_keys=True)
+              output.write("\n")
+          PY
+
+      - name: Fetch dependencies and build web
+        working-directory: head
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter pub get
+          flutter build web --release --base-href "/MathCalcu/" --pwa-strategy=offline-first
+          cp web/flutter_service_worker.js build/web/flutter_service_worker.js
+
+      - name: Upload web build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathcalcu-web-${{ github.event.pull_request.head.sha }}
+          path: |
+            evidence/provenance.json
+            head/build/web
+          if-no-files-found: error
+          retention-days: 14
+
+  build-android-debug:
+    name: Build Android debug from exact PR head
+    needs: verify
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v4.7.1
+        with:
+          distribution: zulu
+          java-version: '21'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.41.6'
+
+      - name: Assert exact checkout provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_head_sha="$(git -C head rev-parse HEAD)"
+          test "$actual_head_sha" = "$EXPECTED_HEAD_SHA"
+          export actual_head_sha
+          mkdir -p evidence
+          python3 - <<'PY'
+          import json
+          import os
+
+          provenance = {
+              "artifactType": "android-debug-unsigned-apk",
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "pullRequest": os.environ["PR_NUMBER"],
+              "workflowRunId": os.environ["GITHUB_RUN_ID"],
+              "job": os.environ["GITHUB_JOB"],
+              "expectedHeadSha": os.environ["EXPECTED_HEAD_SHA"],
+              "actualHeadSha": os.environ["actual_head_sha"],
+          }
+          with open("evidence/provenance.json", "w", encoding="utf-8") as output:
+              json.dump(provenance, output, indent=2, sort_keys=True)
+              output.write("\n")
+          PY
+
+      - name: Build unsigned debug APK without release signing material
+        working-directory: head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e android/key.properties
+          if find android -type f \( -name '*.jks' -o -name '*.keystore' \) -print -quit | grep -q .; then
+            printf '%s\n' 'A keystore is present in the checked-out source.' >&2
+            exit 1
+          fi
+          flutter pub get
+          flutter build apk --debug
+          mkdir -p ../evidence/apk-contents
+          unzip -q build/app/outputs/flutter-apk/app-debug.apk -d ../evidence/apk-contents
+          rm -f ../evidence/apk-contents/META-INF/*.RSA ../evidence/apk-contents/META-INF/*.SF ../evidence/apk-contents/META-INF/*.MF
+          (cd ../evidence/apk-contents && zip -X -q -r ../MathCalcu-debug-unsigned.apk .)
+
+      - name: Upload Android debug build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathcalcu-android-debug-${{ github.event.pull_request.head.sha }}
+          path: |
+            evidence/provenance.json
+            evidence/MathCalcu-debug-unsigned.apk
+          if-no-files-found: error
+          retention-days: 14
