@@ -133,6 +133,9 @@ class _StatusIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onDanger = FinalsTheme.isLight(context)
+        ? FinalsTheme.textPrimary(context)
+        : FinalsTheme.onPrimaryFor(context);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: size,
@@ -147,7 +150,7 @@ class _StatusIcon extends StatelessWidget {
       ),
       child: Icon(
         isShowingSteps ? Icons.auto_awesome_rounded : Icons.check_rounded,
-        color: isShowingSteps ? Colors.white : accentColor,
+        color: isShowingSteps ? onDanger : accentColor,
         size: size * 0.5,
       ),
     );

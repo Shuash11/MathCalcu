@@ -43,7 +43,7 @@ class LimitsStepGuide extends StatelessWidget {
                 child: Center(
                   child: isConclusion
                       ? Icon(Icons.check,
-                          size: 16, color: FinalsTheme.primaryFor(context))
+                          size: 16, color: FinalsTheme.onPrimaryFor(context))
                       : Text(
                           '$stepNumber',
                           style: TextStyle(

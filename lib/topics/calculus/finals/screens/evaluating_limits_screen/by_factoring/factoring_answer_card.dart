@@ -214,7 +214,7 @@ class _StatusIcon extends StatelessWidget {
       ),
       child: Icon(
         isShowingSteps ? Icons.auto_awesome_rounded : Icons.check_rounded,
-        color: isShowingSteps ? Colors.white : accentColor,
+        color: isShowingSteps ? FinalsTheme.onPrimaryFor(context) : accentColor,
         size: childSize,
       ),
     );

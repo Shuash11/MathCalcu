@@ -202,7 +202,7 @@ class _AboutSheet extends StatelessWidget {
                                     fontSize: 11 * s,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 1.2,
-                                    color: Colors.white,
+                                    color: theme.surface,
                                   ),
                                 ),
                               ),

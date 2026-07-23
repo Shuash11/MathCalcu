@@ -800,18 +800,19 @@ class _SolveButtonState extends State<_SolveButton> {
               borderRadius: BorderRadius.circular(14),
               boxShadow: [AccentGlow.halo(context)],
             ),
-            child: const Center(
+            child: Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.calculate_rounded, color: Colors.white, size: 18),
-                  SizedBox(width: 8),
+                  Icon(Icons.calculate_rounded,
+                      color: FinalsTheme.onPrimaryFor(context), size: 18),
+                  const SizedBox(width: 8),
                   ResponsiveText(
                     'Solve',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: FinalsTheme.onPrimaryFor(context),
                       letterSpacing: 0.3,
                     ),
                   ),
@@ -1135,10 +1136,10 @@ class _MiniStepColumn extends StatelessWidget {
             child: Center(
               child: ResponsiveText(
                 stepNumber.toString(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: FinalsTheme.onPrimaryFor(context),
                 ),
               ),
             ),

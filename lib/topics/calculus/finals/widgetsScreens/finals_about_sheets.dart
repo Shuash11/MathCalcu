@@ -369,6 +369,7 @@ class _FinalsDeveloperCard extends StatefulWidget {
 
 class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
   bool _expanded = false;
+  static const _avatarInk = Color(0xFF0C0C09);
 
   static const _cardColors = [
     Color(0xFFFFB020),
@@ -454,7 +455,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                               ? LinearGradient(
                                   colors: [
                                     color,
-                                    color.withValues(alpha: 0.7),
+                                    Color.lerp(color, Colors.white, 0.08)!,
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -478,7 +479,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                             style: TextStyle(
                               fontSize: 18 * s,
                               fontWeight: FontWeight.w800,
-                              color: _expanded ? Colors.white : color,
+                              color: _expanded ? _avatarInk : color,
                             ),
                           ),
                         ),

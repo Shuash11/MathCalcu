@@ -1,11 +1,16 @@
 import 'package:calculus_system/calculator/calculator_screen.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
+import 'package:calculus_system/screens/about_sheets.dart';
 import 'package:calculus_system/shared/widgets/module_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/shared/widgets/steps_drawer.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_math_display.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/limits_infinity_screen/limits_step_guide.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_factoring/factoring_answer_card.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lcd/lcd_answer_card.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_substitution/substitution_answer_card.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_substitution/substitution_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/widgetsScreens/finals_about_sheets.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/distance_screen/distancescreen.dart';
@@ -42,6 +47,18 @@ ThemeProvider _theme(bool isDark) {
 void _mockClipboard() {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(SystemChannels.platform, (call) async => null);
+}
+
+double _contrastRatio(Color foreground, Color background) {
+  final foregroundLuminance = foreground.computeLuminance();
+  final backgroundLuminance = background.computeLuminance();
+  final light = foregroundLuminance > backgroundLuminance
+      ? foregroundLuminance
+      : backgroundLuminance;
+  final dark = foregroundLuminance > backgroundLuminance
+      ? backgroundLuminance
+      : foregroundLuminance;
+  return (light + 0.05) / (dark + 0.05);
 }
 
 void main() {
@@ -152,6 +169,122 @@ void main() {
       expect(title.style?.color, theme.textPrimary);
       final developers = tester.widget<Text>(find.text('DEVELOPERS'));
       expect(developers.style?.color, theme.surface);
+      Navigator.of(tester.element(find.byType(Scaffold))).pop();
+      await tester.pumpAndSettle();
+    }
+  });
+
+  testWidgets('finals accent indicators use contrast-safe foregrounds',
+      (WidgetTester tester) async {
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      final primaryForeground = theme.surface;
+      final dangerForeground = isDark ? theme.surface : theme.textPrimary;
+
+      await tester.pumpWidget(
+        _app(
+          const LimitsStepGuide(
+            title: 'Conclusion',
+            isConclusion: true,
+            stepNumber: 1,
+          ),
+          theme,
+        ),
+      );
+      expect(tester.widget<Icon>(find.byIcon(Icons.check)).color,
+          primaryForeground);
+
+      await tester.pumpWidget(
+        _app(
+          FactoringAnswerCard(
+            answer: 1,
+            method: 'Factoring',
+            isShowingSteps: true,
+            onTap: () {},
+          ),
+          theme,
+        ),
+      );
+      expect(
+        tester.widget<Icon>(find.byIcon(Icons.auto_awesome_rounded)).color,
+        primaryForeground,
+      );
+
+      await tester.pumpWidget(
+        _app(
+          SubstitutionAnswerCard(
+            answer: 1,
+            method: 'Substitution',
+            isShowingSteps: true,
+            onTap: () {},
+          ),
+          theme,
+        ),
+      );
+      expect(
+        tester.widget<Icon>(find.byIcon(Icons.auto_awesome_rounded)).color,
+        primaryForeground,
+      );
+
+      await tester.pumpWidget(
+        _app(
+          LCDAnswerCard(
+            answer: 1,
+            method: 'LCD',
+            isShowingSteps: true,
+            onTap: () {},
+          ),
+          theme,
+        ),
+      );
+      expect(
+        tester.widget<Icon>(find.byIcon(Icons.auto_awesome_rounded)).color,
+        dangerForeground,
+      );
+    }
+  });
+
+  testWidgets('about-sheet accent labels use the theme on-accent color',
+      (WidgetTester tester) async {
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      await tester.pumpWidget(_app(const SizedBox(), theme));
+      showAboutSheet(tester.element(find.byType(Scaffold)));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.widget<Text>(find.text('DEVELOPERS')).style?.color,
+        theme.surface,
+      );
+      Navigator.of(tester.element(find.byType(Scaffold))).pop();
+      await tester.pumpAndSettle();
+    }
+  });
+
+  testWidgets('finals avatar ink remains readable across fixed avatar colors',
+      (WidgetTester tester) async {
+    const avatarInk = Color(0xFF0C0C09);
+    const avatarColors = [
+      Color(0xFFFFB020),
+      Color(0xFFFF6B35),
+      Color(0xFFFFD166),
+      Color(0xFFEF476F),
+      Color(0xFF06D6A0),
+      Color(0xFF118AB2),
+    ];
+    for (final color in avatarColors) {
+      expect(_contrastRatio(avatarInk, color), greaterThanOrEqualTo(4.5));
+    }
+
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      await tester.pumpWidget(_app(const SizedBox(), theme));
+      showFinalsAboutSheet(tester.element(find.byType(Scaffold)));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('JM'));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<Text>(find.text('JM')).style?.color, avatarInk);
       Navigator.of(tester.element(find.byType(Scaffold))).pop();
       await tester.pumpAndSettle();
     }

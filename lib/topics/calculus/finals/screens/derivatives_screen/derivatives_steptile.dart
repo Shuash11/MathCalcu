@@ -70,7 +70,7 @@ class DerivativeStepTile extends StatelessWidget {
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: step.type == StepType.finalResult
-                          ? Colors.white
+                          ? FinalsTheme.onPrimaryFor(context)
                           : FinalsTheme.primaryFor(context),
                     ),
                   ),
