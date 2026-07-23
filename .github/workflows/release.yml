@@ -343,7 +343,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$APPROVED_SHA"
           remote_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
           test "$remote_main" = "$APPROVED_SHA"
-          test "$(grep -E '^version: ' pubspec.yaml)" = "version: ${EXPECTED_VERSION}+${EXPECTED_BUILD}"
+          test "$(grep -E '^version: ' pubspec.yaml | tr -d '\r')" = "version: ${EXPECTED_VERSION}+${EXPECTED_BUILD}"
 
       - name: Download signed release candidates
         uses: actions/download-artifact@v4
