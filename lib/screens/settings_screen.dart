@@ -1,15 +1,16 @@
-﻿import 'dart:convert';
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:http/http.dart' as http;
+import 'package:calculus_system/services/update_service.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/widgets/donate_sheet.dart';
 
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, this.updateChecker});
+
+  final Future<UpdateInfo> Function()? updateChecker;
+
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
@@ -17,10 +18,8 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
   Color get _accent => context.read<ThemeProvider>().accentColor;
-  static const _owner = 'Shuash11';
-  static const _repo = 'MathCalcu';
-  String _appVersion = '';
-  String _latestVersion = '';
+  UpdateInfo? _updateInfo;
+  bool _updateFailed = false;
   late final AnimationController _staggerController;
 
   @override
@@ -30,8 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     )..forward();
-    _loadVersion();
-    _loadLatestVersion();
+    _loadUpdateStatus();
   }
 
   @override
@@ -40,31 +38,40 @@ class _SettingsScreenState extends State<SettingsScreen>
     super.dispose();
   }
 
-  Future<void> _loadVersion() async {
+  Future<void> _loadUpdateStatus() async {
     try {
-      final info = await PackageInfo.fromPlatform();
-      if (mounted) setState(() => _appVersion = 'v${info.version}');
+      final info = await (widget.updateChecker?.call() ??
+          UpdateService.checkForUpdate());
+      if (!mounted) return;
+      setState(() => _updateInfo = info);
     } catch (_) {
-      if (mounted) setState(() => _appVersion = 'v1.4.2');
+      if (!mounted) return;
+      setState(() => _updateFailed = true);
     }
   }
 
-  Future<void> _loadLatestVersion() async {
-    try {
-      final uri = Uri.parse('https://api.github.com/repos/$_owner/$_repo/releases/latest');
-      final res = await http.get(uri, headers: {'Accept': 'application/vnd.github.v3+json'});
-      if (res.statusCode == 200) {
-        final data = jsonDecode(res.body) as Map<String, dynamic>;
-        final tag = data['tag_name'] as String? ?? '';
-        if (mounted) setState(() => _latestVersion = tag);
-      }
-    } catch (_) {}
-  }
-
   String get _versionSubtitle {
-    if (_latestVersion.isEmpty) return _appVersion;
-    if (_appVersion == _latestVersion) return '$_appVersion — up to date';
-    return '$_appVersion ? update to $_latestVersion';
+    if (_updateFailed) return 'Update status unavailable';
+    final info = _updateInfo;
+    if (info == null) return 'Checking for updates…';
+    final installed = info.installedVersion;
+    switch (info.status) {
+      case UpdateStatus.updateAvailable:
+        final base = installed == null || installed.isEmpty
+            ? 'v${info.latestVersion}'
+            : 'v$installed';
+        return '$base — update to v${info.latestVersion}';
+      case UpdateStatus.upToDate:
+        final base = installed == null || installed.isEmpty
+            ? 'v${info.latestVersion}'
+            : 'v$installed';
+        return '$base — up to date';
+      case UpdateStatus.unavailable:
+        if (installed == null || installed.isEmpty) {
+          return 'Update status unavailable';
+        }
+        return 'v$installed — update status unavailable';
+    }
   }
 
   Animation<double> _fadeFor(int index) {

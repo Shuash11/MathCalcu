@@ -1,5 +1,8 @@
+﻿import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/screens/inequality.dart';
+import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
+import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +27,9 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
     with SingleTickerProviderStateMixin {
   AnimationController? _staggerController;
   late final List<ModuleEntry> _modules;
+  final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
+  String _query = '';
 
   @override
   void initState() {
@@ -38,7 +44,32 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
   @override
   void dispose() {
     _staggerController?.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  List<ModuleEntry> get _filtered {
+    final q = _query.trim().toLowerCase();
+    if (q.isEmpty) return _modules;
+    return _modules
+        .where((m) =>
+            m.label.toLowerCase().contains(q) ||
+            m.subtitle.toLowerCase().contains(q))
+        .toList();
+  }
+
+  /// Curriculum hits (G6 seed + G7–College stubs) for the same query.
+  /// Empty when the search box is blank so the default list shows.
+  List<CurriculumSearchHit> get _curriculumHits {
+    if (_query.trim().isEmpty) return const [];
+    return CurriculumRegistry.search(_query);
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _query = '');
+    _searchFocusNode.requestFocus();
   }
 
   Animation<double> _fadeFor(int index) {
@@ -90,6 +121,54 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
     return _ModuleCard(module: module);
   }
 
+  Widget _buildSearchBar(ThemeProvider theme) {
+    final isFocused = _searchFocusNode.hasFocus;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        decoration: BoxDecoration(
+          color: theme.card,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: theme.accentColor.withValues(
+              alpha: isFocused ? 0.45 : 0.18,
+            ),
+            width: isFocused ? 1.5 : 1,
+          ),
+        ),
+        child: TextField(
+          controller: _searchController,
+          focusNode: _searchFocusNode,
+          onChanged: (query) => setState(() => _query = query),
+          style: TextStyle(color: theme.textPrimary),
+          cursorColor: theme.accentColor,
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            hintText: 'Search topics, e.g. slope, midpoint',
+            hintStyle: TextStyle(color: theme.textSecondary),
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: isFocused ? theme.accentColor : theme.textSecondary,
+            ),
+            suffixIcon: _query.trim().isEmpty
+                ? null
+                : IconButton(
+                    tooltip: 'Clear search',
+                    onPressed: _clearSearch,
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: theme.textSecondary,
+                    ),
+                  ),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 15),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
@@ -105,29 +184,45 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
               moduleCount: _modules.length,
               theme: theme,
             ),
+            _buildSearchBar(theme),
             // List takes the remaining bounded space
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
-                physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics(),
-                ),
-                itemCount: _modules.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: FadeTransition(
-                      opacity: _fadeFor(index),
-                      child: SlideTransition(
-                        position: _slideFor(index),
-                        child: RepaintBoundary(
-                          child: _buildModuleCard(_modules[index]),
-                        ),
+              child: _filtered.isEmpty && _curriculumHits.isEmpty
+                  ? ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
+                      children: [
+                        NoTopicsEmptyState(onClear: _clearSearch),
+                      ],
+                    )
+                  : ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
                       ),
+                      children: [
+                        for (int index = 0;
+                            index < _filtered.length;
+                            index++)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: FadeTransition(
+                              opacity: _fadeFor(index),
+                              child: SlideTransition(
+                                position: _slideFor(index),
+                                child: RepaintBoundary(
+                                  child: _buildModuleCard(_filtered[index]),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (_curriculumHits.isNotEmpty) ...[
+                          CurriculumMatchesSection(
+                            query: _query,
+                            padding: const EdgeInsets.only(top: 4),
+                          ),
+                        ],
+                      ],
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -149,7 +244,7 @@ class _CategoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = theme.accentColor;
+    const accent = Color(0xFF334155);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 48, 28, 16),
@@ -161,28 +256,20 @@ class _CategoryHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Back button
-              Semantics(
-                label: 'Back',
-                button: true,
+              GestureDetector(
                 onTap: () => context.pop(),
-                excludeSemantics: true,
-                child: GestureDetector(
-                  excludeFromSemantics: true,
-                  onTap: () => context.pop(),
-                  child: Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: theme.card,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: theme.textSecondary.withValues(alpha: 0.2)),
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 16,
-                      color: theme.textPrimary,
-                    ),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: theme.card,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: theme.textSecondary.withValues(alpha: 0.2)),
+                  ),
+                  child: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 16,
+                    color: theme.textPrimary,
                   ),
                 ),
               ),
@@ -197,7 +284,9 @@ class _CategoryHeader extends StatelessWidget {
               ),
             ],
           ),
+
           const SizedBox(height: 20),
+
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -219,7 +308,9 @@ class _CategoryHeader extends StatelessWidget {
               ),
             ],
           ),
+
           const SizedBox(height: 12),
+
           Padding(
             padding: const EdgeInsets.only(left: 52),
             child: Text(

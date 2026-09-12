@@ -293,11 +293,11 @@ void main() {
   testWidgets('O3/O4 update dialogs render actual widgets in both themes',
       (WidgetTester tester) async {
     const info = UpdateInfo(
+      status: UpdateStatus.updateAvailable,
+      installedVersion: '1.2.2',
       latestVersion: '1.2.3',
-      currentVersion: '1.2.2',
       releaseUrl: 'https://example.invalid/release',
       releaseNotes: 'Accessibility fixes',
-      hasUpdate: true,
     );
 
     for (final isDark in [false, true]) {

@@ -27,19 +27,32 @@ class CalculatorEngine {
     return _parseAddSub(expr, pos);
   }
 
+  static int _skipSpaces(String expr, int pos) {
+    while (pos < expr.length) {
+      final c = expr[pos];
+      if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+        pos++;
+      } else {
+        break;
+      }
+    }
+    return pos;
+  }
+
   static (double, int) _parseAddSub(String expr, int pos) {
+    pos = _skipSpaces(expr, pos);
     final (left, newPos) = _parseMulDiv(expr, pos);
-    int p = newPos;
+    int p = _skipSpaces(expr, newPos);
     double result = left;
     while (p < expr.length) {
       if (expr[p] == '+') {
         final (right, np) = _parseMulDiv(expr, p + 1);
         result += right;
-        p = np;
+        p = _skipSpaces(expr, np);
       } else if (expr[p] == '-') {
         final (right, np) = _parseMulDiv(expr, p + 1);
         result -= right;
-        p = np;
+        p = _skipSpaces(expr, np);
       } else {
         break;
       }
@@ -48,18 +61,19 @@ class CalculatorEngine {
   }
 
   static (double, int) _parseMulDiv(String expr, int pos) {
+    pos = _skipSpaces(expr, pos);
     final (left, newPos) = _parseUnary(expr, pos);
-    int p = newPos;
+    int p = _skipSpaces(expr, newPos);
     double result = left;
     while (p < expr.length) {
       if (expr[p] == '*') {
         final (right, np) = _parseUnary(expr, p + 1);
         result *= right;
-        p = np;
+        p = _skipSpaces(expr, np);
       } else if (expr[p] == '/') {
         final (right, np) = _parseUnary(expr, p + 1);
         result /= right;
-        p = np;
+        p = _skipSpaces(expr, np);
       } else {
         break;
       }
@@ -68,6 +82,7 @@ class CalculatorEngine {
   }
 
   static (double, int) _parseUnary(String expr, int pos) {
+    pos = _skipSpaces(expr, pos);
     if (pos < expr.length && expr[pos] == '-') {
       final (val, newPos) = _parsePower(expr, pos + 1);
       return (-val, newPos);
@@ -76,8 +91,9 @@ class CalculatorEngine {
   }
 
   static (double, int) _parsePower(String expr, int pos) {
+    pos = _skipSpaces(expr, pos);
     final (base, newPos) = _parseAtom(expr, pos);
-    int p = newPos;
+    int p = _skipSpaces(expr, newPos);
     if (p < expr.length && expr[p] == '^') {
       final (exp, np) = _parseUnary(expr, p + 1);
       return (math.pow(base, exp).toDouble(), np);
@@ -86,13 +102,11 @@ class CalculatorEngine {
   }
 
   static (double, int) _parseAtom(String expr, int pos) {
-    while (pos < expr.length && expr[pos] == ' ') {
-      pos++;
-    }
+    pos = _skipSpaces(expr, pos);
 
     if (pos < expr.length && expr[pos] == '(') {
       final (val, newPos) = _parseExpression(expr, pos + 1);
-      int p = newPos;
+      int p = _skipSpaces(expr, newPos);
       if (p < expr.length && expr[p] == ')') p++;
       return (val, p);
     }
@@ -117,13 +131,10 @@ class CalculatorEngine {
 
     for (final fn in functions.keys) {
       if (expr.substring(pos).startsWith(fn)) {
-        int p = pos + fn.length;
-        while (p < expr.length && expr[p] == ' ') {
-          p++;
-        }
+        int p = _skipSpaces(expr, pos + fn.length);
         if (p < expr.length && expr[p] == '(') {
           final (arg, argEnd) = _parseExpression(expr, p + 1);
-          int end = argEnd;
+          int end = _skipSpaces(expr, argEnd);
           if (end < expr.length && expr[end] == ')') end++;
           return (functions[fn]!(arg), end);
         } else {

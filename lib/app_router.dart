@@ -38,6 +38,19 @@ import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_factoring/factoring_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/calculus_picker_screen.dart';
+import 'package:calculus_system/search/global_search_screen.dart';
+import 'package:calculus_system/topics/grade6/grade6_picker_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/fractions_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/decimals_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/percent_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/ratio_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/gemdas_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/algebra_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/integers_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/geometry_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/volume_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/pie_screen.dart';
+import 'package:calculus_system/topics/grade6/screens/probability_screen.dart';
 import 'package:calculus_system/home/home_screen.dart';
 import 'package:calculus_system/topics/topics_screen.dart';
 import 'package:calculus_system/calculator/calculator_screen.dart';
@@ -314,6 +327,68 @@ class AppRouter {
               state.pageKey,
               const FindingCenterRadiusScreen(),
             ),
+          ),
+        ],
+      ),
+
+      // ── Global search (Task 3: unified offline index) ──────────────
+      GoRoute(
+        path: '/search',
+        name: 'search',
+        parentNavigatorKey: navigatorKey,
+        pageBuilder: (context, state) =>
+            _fadeRoute(state.pageKey, const GlobalSearchScreen()),
+      ),
+
+      // ── Grade 6 (Task 5: Phase-1 UI, paths match CurriculumRegistry) ──
+      GoRoute(
+        path: '/grade6',
+        name: 'grade6',
+        builder: (context, state) => const Grade6PickerScreen(),
+        routes: [
+          GoRoute(
+            path: 'fractions',
+            builder: (context, state) => const Grade6FractionsScreen(),
+          ),
+          GoRoute(
+            path: 'decimals',
+            builder: (context, state) => const Grade6DecimalsScreen(),
+          ),
+          GoRoute(
+            path: 'percent',
+            builder: (context, state) => const Grade6PercentScreen(),
+          ),
+          GoRoute(
+            path: 'ratio',
+            builder: (context, state) => const Grade6RatioScreen(),
+          ),
+          GoRoute(
+            path: 'gemdas',
+            builder: (context, state) => const Grade6GemdasScreen(),
+          ),
+          GoRoute(
+            path: 'algebra',
+            builder: (context, state) => const Grade6AlgebraScreen(),
+          ),
+          GoRoute(
+            path: 'integers',
+            builder: (context, state) => const Grade6IntegersScreen(),
+          ),
+          GoRoute(
+            path: 'geometry',
+            builder: (context, state) => const Grade6GeometryScreen(),
+          ),
+          GoRoute(
+            path: 'volume',
+            builder: (context, state) => const Grade6VolumeScreen(),
+          ),
+          GoRoute(
+            path: 'pie',
+            builder: (context, state) => const Grade6PieScreen(),
+          ),
+          GoRoute(
+            path: 'probability',
+            builder: (context, state) => const Grade6ProbabilityScreen(),
           ),
         ],
       ),

@@ -3,6 +3,7 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/midpoint_solver/
 import 'package:calculus_system/topics/calculus/midterm/screens/midpoint_screen/midpointsteps.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
+import 'package:calculus_system/shared/widgets/input_validation.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +44,9 @@ class _MidpointScreenState extends State<MidpointScreen> {
   Fraction? _savedResX;
   Fraction? _savedResY;
 
+  // Per-field inline errors keyed by field label (never silent on empty).
+  final Map<String, String?> _fieldErrors = {};
+
   @override
   void dispose() {
     _aXCtrl.dispose();
@@ -64,6 +68,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
       _aYCtrl.clear();
       _bXCtrl.clear();
       _bYCtrl.clear();
+      _fieldErrors.clear();
       _solved = false;
     });
   }
@@ -91,6 +96,32 @@ class _MidpointScreenState extends State<MidpointScreen> {
 
   void _onCalculate() {
     final MidpointResult result;
+
+    // Empty-submit guard: inline errorText + SnackBar, never silent.
+    // Keys are stable field slots (labels repeat, e.g. 'M?' twice).
+    final slots = ['fieldA_x', 'fieldA_y', 'fieldB_x', 'fieldB_y'];
+    final ctrls = [_aXCtrl, _aYCtrl, _bXCtrl, _bYCtrl];
+    final slotLabels = [_fieldAX, _fieldAY, _fieldBX, _fieldBY];
+    final slotErrors = <String, String?>{};
+    for (var i = 0; i < slots.length; i++) {
+      slotErrors[slots[i]] = FieldValidators.number(ctrls[i].text, slotLabels[i]);
+    }
+    if (slotErrors.values.any((e) => e != null)) {
+      setState(() {
+        _fieldErrors
+          ..clear()
+          ..addAll(slotErrors);
+        _solved = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enter a value to solve — e.g. (1,2), (4,6)'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    setState(() => _fieldErrors.clear());
 
     if (_mode == StepMode.midpoint) {
       result = MidpointSolver.solve(
@@ -134,18 +165,15 @@ class _MidpointScreenState extends State<MidpointScreen> {
     });
   }
 
-  String get _groupALabel =>
-      _mode == StepMode.midpoint ? 'POINT A' : 'MIDPOINT';
-  String get _groupBLabel =>
-      _mode == StepMode.midpoint ? 'POINT B' : 'KNOWN POINT';
+  String get _groupALabel => _mode == StepMode.midpoint ? 'POINT A' : 'MIDPOINT';
+  String get _groupBLabel => _mode == StepMode.midpoint ? 'POINT B' : 'KNOWN POINT';
 
   String get _fieldAX => _mode == StepMode.midpoint ? 'x1' : 'M?';
   String get _fieldAY => _mode == StepMode.midpoint ? 'y1' : 'M?';
   String get _fieldBX => _mode == StepMode.midpoint ? 'x2' : 'x1';
   String get _fieldBY => _mode == StepMode.midpoint ? 'y2' : 'y1';
 
-  String get _resultLabel =>
-      _mode == StepMode.midpoint ? 'MIDPOINT' : 'ENDPOINT';
+  String get _resultLabel => _mode == StepMode.midpoint ? 'MIDPOINT' : 'ENDPOINT';
   String get _resultPrefix => _mode == StepMode.midpoint ? 'M' : 'B';
 
   String get _formulaHint => _mode == StepMode.midpoint
@@ -220,8 +248,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
       ),
       child: Row(
         children: [
-          _buildSegment(
-              'Midpoint', Icons.center_focus_strong_rounded, StepMode.midpoint),
+          _buildSegment('Midpoint', Icons.center_focus_strong_rounded, StepMode.midpoint),
           _buildSegment('Endpoint', Icons.adjust_rounded, StepMode.endpoint),
         ],
       ),
@@ -247,10 +274,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                   size: 14,
                   color: isActive
                       ? context.watch<ThemeProvider>().surface
-                      : context
-                          .watch<ThemeProvider>()
-                          .textPrimary
-                          .withValues(alpha: 0.4)),
+                      : context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.4)),
               const SizedBox(width: 6),
               ResponsiveText(
                 label,
@@ -259,10 +283,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                   fontWeight: FontWeight.w600,
                   color: isActive
                       ? context.watch<ThemeProvider>().surface
-                      : context
-                          .watch<ThemeProvider>()
-                          .textPrimary
-                          .withValues(alpha: 0.4),
+                      : context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.4),
                 ),
               ),
             ],
@@ -272,63 +293,63 @@ class _MidpointScreenState extends State<MidpointScreen> {
     );
   }
 
+  static const _hintForLabel = {
+    'x1': 'e.g. 1',
+    'y1': 'e.g. 2',
+    'x2': 'e.g. 4',
+    'y2': 'e.g. 6',
+  };
+
   Widget _buildInputField({
     required String label,
     required TextEditingController controller,
     required FocusNode focusNode,
     TextInputAction? textInputAction,
     VoidCallback? onEditingComplete,
+    required String errorKey,
   }) {
+    final error = _fieldErrors[errorKey];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ResponsiveText(label,
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: context
-                    .watch<ThemeProvider>()
-                    .textPrimary
-                    .withValues(alpha: 0.4),
-                letterSpacing: 0.8)),
+        ResponsiveText(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.4), letterSpacing: 0.8)),
         const SizedBox(height: 6.0),
         Container(
-          decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().card,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.15),
-                  width: 1)),
+          decoration: BoxDecoration(color: context.watch<ThemeProvider>().card, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.15), width: 1)),
           child: TextField(
             controller: controller,
             focusNode: focusNode,
             keyboardType: TextInputType.text,
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: context.watch<ThemeProvider>().textPrimary),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: context.watch<ThemeProvider>().textPrimary),
             textInputAction: textInputAction,
             onEditingComplete: onEditingComplete,
             decoration: InputDecoration(
-              hintText: '0',
-              hintStyle: TextStyle(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .textPrimary
-                      .withValues(alpha: 0.2),
-                  fontSize: 18),
+              hintText: _hintForLabel[label] ?? 'e.g. 3',
+              hintStyle: TextStyle(color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.2), fontSize: 18),
               border: InputBorder.none,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
-            onChanged: null,
+            onChanged: (_) {
+              if (_fieldErrors[errorKey] != null) {
+                setState(() => _fieldErrors.remove(errorKey));
+              }
+            },
             autocorrect: false,
             enableSuggestions: false,
             cursorWidth: 2,
             cursorColor: context.watch<ThemeProvider>().accentColor,
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        ResponsiveText(
+          error ?? InputHints.coordinateHelper,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: error != null ? FontWeight.w600 : FontWeight.w400,
+            color: error != null
+                ? const Color(0xFFFF6B6B)
+                : context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.4),
           ),
         ),
       ],
@@ -345,10 +366,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
       width: double.infinity,
       padding: EdgeInsets.all(cardPadding),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          accent.withValues(alpha: 0.15),
-          accent.withValues(alpha: 0.06)
-        ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(colors: [accent.withValues(alpha: 0.15), accent.withValues(alpha: 0.06)], begin: Alignment.topLeft, end: Alignment.bottomRight),
         borderRadius: BorderRadius.circular(18.0),
         border: Border.all(
           color: accent.withValues(alpha: 0.3),
@@ -363,17 +381,11 @@ class _MidpointScreenState extends State<MidpointScreen> {
             spacing: 8,
             runSpacing: 6,
             children: [
-              ResponsiveText(_resultLabel,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: accent.withValues(alpha: 0.5),
-                      letterSpacing: 1.4)),
+              ResponsiveText(_resultLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accent.withValues(alpha: 0.5), letterSpacing: 1.4)),
               GestureDetector(
                 onTap: _openStepsModal,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: accent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
@@ -384,7 +396,8 @@ class _MidpointScreenState extends State<MidpointScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.receipt_long_rounded, size: 14, color: accent),
+                      Icon(Icons.receipt_long_rounded,
+                          size: 14, color: accent),
                       const SizedBox(width: 4),
                       ResponsiveText(
                         'Show steps',
@@ -407,11 +420,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
           const SizedBox(height: 10.0),
           ResponsiveText(
             '$_resultPrefix = (${_resX ?? '\u2014'}, ${_resY ?? '\u2014'})',
-            style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.w700,
-                color: theme.textPrimary,
-                letterSpacing: -1.0),
+            style: TextStyle(fontSize: 36, fontWeight: FontWeight.w700, color: theme.textPrimary, letterSpacing: -1.0),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -420,31 +429,24 @@ class _MidpointScreenState extends State<MidpointScreen> {
               const SizedBox(height: 12.0),
               Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 10.0),
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius:
+                      BorderRadius.circular(8.0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ResponsiveText(
                       _formulaX ?? '',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: theme.textPrimary.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w500,
-                          height: 1.4),
+                      style: TextStyle(fontSize: 12, color: theme.textPrimary.withValues(alpha: 0.5), fontWeight: FontWeight.w500, height: 1.4),
                     ),
                     const SizedBox(height: 4),
                     ResponsiveText(
                       _formulaY ?? '',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: theme.textPrimary.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w500,
-                          height: 1.4),
+                      style: TextStyle(fontSize: 12, color: theme.textPrimary.withValues(alpha: 0.5), fontWeight: FontWeight.w500, height: 1.4),
                     ),
                   ],
                 ),
@@ -463,12 +465,14 @@ class _MidpointScreenState extends State<MidpointScreen> {
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: accent.withValues(alpha: 0.2)),
+        border: Border.all(
+            color: accent.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.show_chart_rounded, size: 14, color: accent),
+          Icon(Icons.show_chart_rounded,
+              size: 14, color: accent),
           const SizedBox(width: 4),
           ResponsiveText(
             'Graph',
@@ -493,282 +497,222 @@ class _MidpointScreenState extends State<MidpointScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.fromLTRB(hPad, 28, hPad, 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  AccentGlow.iconHalo(
-                    context,
-                    child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(Icons.arrow_back_rounded,
-                          color: context.watch<ThemeProvider>().accentColor,
-                          size: 22),
-                      style: IconButton.styleFrom(
-                        backgroundColor: context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.12),
-                        foregroundColor:
-                            context.watch<ThemeProvider>().accentColor,
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
-                            color: context
-                                .watch<ThemeProvider>()
-                                .accentColor
-                                .withValues(alpha: 0.40),
-                            width: 1.5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AccentGlow.iconHalo(
+                      context,
+                      child: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Icon(Icons.arrow_back_rounded,
+                            color: context.watch<ThemeProvider>().accentColor, size: 22),
+                        style: IconButton.styleFrom(
+                          backgroundColor: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.12),
+                          foregroundColor: context.watch<ThemeProvider>().accentColor,
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.40),
+                              width: 1.5,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 14),
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                        color: context.watch<ThemeProvider>().accentColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color: context
-                                .watch<ThemeProvider>()
-                                .accentColor
-                                .withValues(alpha: 0.15))),
-                    child: Icon(Icons.center_focus_strong_rounded,
-                        color: context.watch<ThemeProvider>().surface,
-                        size: 22),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ResponsiveText(
-                          _mode == StepMode.midpoint ? 'Midpoint' : 'Endpoint',
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: context.watch<ThemeProvider>().textPrimary,
-                              letterSpacing: -0.5,
-                              shadows: [
-                                Shadow(
-                                  color: context
-                                      .watch<ThemeProvider>()
-                                      .accentColor
-                                      .withValues(alpha: 0.3),
-                                  blurRadius: 8,
-                                  offset: Offset.zero,
-                                ),
-                              ]),
-                        ),
-                      ],
+                    const SizedBox(width: 14),
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(color: context.watch<ThemeProvider>().accentColor, borderRadius: BorderRadius.circular(12), border: Border.all(color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15))),
+                      child: Icon(Icons.center_focus_strong_rounded,
+                          color: context.watch<ThemeProvider>().surface, size: 22),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28.0),
-              _buildSegmentedControl(),
-              const SizedBox(height: 28.0),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10.0),
-                decoration: BoxDecoration(
-                    color: context
-                        .watch<ThemeProvider>()
-                        .accentColor
-                        .withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        color: context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.1))),
-                child: Row(
-                  children: [
-                    Icon(Icons.functions_rounded,
-                        color: context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.5),
-                        size: 16),
-                    const SizedBox(width: 14.0),
+                    const SizedBox(width: 14),
                     Expanded(
-                      child: ResponsiveText(
-                        _formulaHint,
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: context
-                                .watch<ThemeProvider>()
-                                .textPrimary
-                                .withValues(alpha: 0.5),
-                            fontWeight: FontWeight.w500),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ResponsiveText(
+                            _mode == StepMode.midpoint
+                                ? 'Midpoint'
+                                : 'Endpoint',
+                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().textPrimary, letterSpacing: -0.5,
+                                shadows: [
+                                  Shadow(
+                                    color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.3),
+                                    blurRadius: 8,
+                                    offset: Offset.zero,
+                                  ),
+                                ]),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 28.0),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ResponsiveText(_groupALabel,
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: context
-                                    .watch<ThemeProvider>()
-                                    .accentColor
-                                    .withValues(alpha: 0.5),
-                                letterSpacing: 1.2)),
-                        const SizedBox(height: 10.0),
-                        _buildInputField(
-                          label: _fieldAX,
-                          controller: _aXCtrl,
-                          focusNode: _aXFocus,
-                          textInputAction: TextInputAction.next,
-                          onEditingComplete: () => _aYFocus.requestFocus(),
-                        ),
-                        const SizedBox(height: 10.0),
-                        _buildInputField(
-                          label: _fieldAY,
-                          controller: _aYCtrl,
-                          focusNode: _aYFocus,
-                          textInputAction: TextInputAction.next,
-                          onEditingComplete: () => _bXFocus.requestFocus(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 52),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                                const Color(0xFF334155).withValues(alpha: 0.3),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                                const Color(0xFF334155).withValues(alpha: 0.15),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ResponsiveText(_groupBLabel,
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: context
-                                    .watch<ThemeProvider>()
-                                    .accentColor
-                                    .withValues(alpha: 0.5),
-                                letterSpacing: 1.2)),
-                        const SizedBox(height: 10.0),
-                        _buildInputField(
-                          label: _fieldBX,
-                          controller: _bXCtrl,
-                          focusNode: _bXFocus,
-                          textInputAction: TextInputAction.next,
-                          onEditingComplete: () => _bYFocus.requestFocus(),
-                        ),
-                        const SizedBox(height: 10.0),
-                        _buildInputField(
-                          label: _fieldBY,
-                          controller: _bYCtrl,
-                          focusNode: _bYFocus,
-                          textInputAction: TextInputAction.done,
-                          onEditingComplete: () => _bYFocus.unfocus(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24.0),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14.0),
-                  boxShadow: [AccentGlow.halo(context)],
-                ),
-                child: ElevatedButton(
-                  onPressed: _onCalculate,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.watch<ThemeProvider>().accentColor,
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14.0)),
-                    elevation: 0,
-                    shadowColor: Colors.transparent,
-                  ),
+                const SizedBox(height: 28.0),
+                _buildSegmentedControl(),
+                const SizedBox(height: 28.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 10.0),
+                  decoration: BoxDecoration(color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.06), borderRadius: BorderRadius.circular(10), border: Border.all(color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1))),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.calculate_rounded,
-                          color: context.watch<ThemeProvider>().surface,
-                          size: 18),
-                      const SizedBox(width: 8.0),
-                      ResponsiveText(_buttonLabel,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: context.watch<ThemeProvider>().surface,
-                              letterSpacing: 0.3)),
+                      Icon(Icons.functions_rounded,
+                          color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.5), size: 16),
+                      const SizedBox(width: 14.0),
+                      Expanded(
+                        child: ResponsiveText(
+                          _formulaHint,
+                          style: TextStyle(fontSize: 13, color: context.watch<ThemeProvider>().textPrimary.withValues(alpha: 0.5), fontWeight: FontWeight.w500),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              if (_solved) ...[
+                const SizedBox(height: 28.0),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ResponsiveText(_groupALabel,
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.5), letterSpacing: 1.2)),
+                          const SizedBox(height: 10.0),
+                          _buildInputField(
+                            label: _fieldAX,
+                            controller: _aXCtrl,
+                            focusNode: _aXFocus,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => _aYFocus.requestFocus(),
+                            errorKey: 'fieldA_x',
+                          ),
+                          const SizedBox(height: 10.0),
+                          _buildInputField(
+                            label: _fieldAY,
+                            controller: _aYCtrl,
+                            focusNode: _aYFocus,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => _bXFocus.requestFocus(),
+                            errorKey: 'fieldA_y',
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 52),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFF334155).withValues(alpha: 0.3),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFF334155).withValues(alpha: 0.15),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ResponsiveText(_groupBLabel,
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.5), letterSpacing: 1.2)),
+                          const SizedBox(height: 10.0),
+                          _buildInputField(
+                            label: _fieldBX,
+                            controller: _bXCtrl,
+                            focusNode: _bXFocus,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () => _bYFocus.requestFocus(),
+                            errorKey: 'fieldB_x',
+                          ),
+                          const SizedBox(height: 10.0),
+                          _buildInputField(
+                            label: _fieldBY,
+                            controller: _bYCtrl,
+                            focusNode: _bYFocus,
+                            textInputAction: TextInputAction.done,
+                            onEditingComplete: () => _bYFocus.unfocus(),
+                            errorKey: 'fieldB_y',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 24.0),
-                if (_hasError)
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: const BoxDecoration(color: Color(0xFFFF6B6B)),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14.0),
+                    boxShadow: [AccentGlow.halo(context)],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: _onCalculate,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.watch<ThemeProvider>().accentColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
+                    ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error_outline_rounded,
-                            color: const Color(0xFFFF6B6B), size: 18),
-                        const SizedBox(width: 14.0),
-                        Expanded(
-                            child: ResponsiveText(_errorMsg,
-                                style:
-                                    const TextStyle(color: Color(0xFFFF6B6B)))),
+                        Icon(Icons.calculate_rounded,
+                            color: context.watch<ThemeProvider>().surface, size: 18),
+                        const SizedBox(width: 8.0),
+                        ResponsiveText(_buttonLabel,
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: context.watch<ThemeProvider>().surface, letterSpacing: 0.3)),
                       ],
                     ),
-                  )
-                else
-                  _buildResultCard(screenWidth),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                if (_solved) ...[
+                  const SizedBox(height: 24.0),
+                  if (_hasError)
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: const BoxDecoration(color: Color(0xFFFF6B6B)),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline_rounded,
+                              color: const Color(0xFFFF6B6B), size: 18),
+                          const SizedBox(width: 14.0),
+                          Expanded(
+                              child: ResponsiveText(_errorMsg,
+                                   style: const TextStyle(color: Color(0xFFFF6B6B)))),
+                        ],
+                      ),
+                    )
+                  else
+                    _buildResultCard(screenWidth),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-      ),
     );
   }
 }

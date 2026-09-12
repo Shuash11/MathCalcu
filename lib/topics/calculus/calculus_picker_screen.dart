@@ -1,4 +1,7 @@
 ﻿import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/core/curriculum_registry.dart';
+import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
+import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +19,9 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
   late final List<AnimationController> _controllers;
   late final List<Animation<double>> _fadeAnims;
   late final List<Animation<Offset>> _slideAnims;
+  final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
+  String _query = '';
 
   @override
   void initState() {
@@ -51,7 +57,15 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
     for (final c in _controllers) {
       c.dispose();
     }
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _query = '');
+    _searchFocusNode.requestFocus();
   }
 
   @override
@@ -65,6 +79,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
           slivers: [
             _buildHeader(theme),
             _buildBanner(theme),
+            _buildSearchBar(theme),
             _buildList(theme),
             const SliverToBoxAdapter(child: SizedBox(height: 40)),
           ],
@@ -286,34 +301,108 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
         color: accent,
       ),
     ];
+    final q = _query.trim().toLowerCase();
+    final hits = q.isEmpty
+        ? sections
+        : sections
+            .where((s) =>
+                s.label.toLowerCase().contains(q) ||
+                s.subtitle.toLowerCase().contains(q))
+            .toList();
+    final curriculumHits =
+        q.isEmpty ? const <CurriculumSearchHit>[] : CurriculumRegistry.search(q);
+
+    if (hits.isEmpty && curriculumHits.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+          child: NoTopicsEmptyState(onClear: _clearSearch),
+        ),
+      );
+    }
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final section = sections[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: FadeTransition(
-                opacity: _fadeAnims[index],
-                child: SlideTransition(
-                  position: _slideAnims[index],
-                  child: _CalculusSectionCard(
-                    section: section,
-                    onTap: () {
-                      if (section.label == 'Midterm') {
-                        context.push('/topics/calculus/midterm');
-                      } else {
-                        context.push('/topics/calculus/finals');
-                      }
-                    },
+            if (index < hits.length) {
+              final section = hits[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: FadeTransition(
+                  opacity: _fadeAnims[index],
+                  child: SlideTransition(
+                    position: _slideAnims[index],
+                    child: _CalculusSectionCard(
+                      section: section,
+                      onTap: () {
+                        if (section.label == 'Midterm') {
+                          context.push('/topics/calculus/midterm');
+                        } else {
+                          context.push('/topics/calculus/finals');
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: CurriculumMatchesSection(query: _query),
             );
           },
-          childCount: sections.length,
+          childCount: hits.length + (curriculumHits.isEmpty ? 0 : 1),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(ThemeProvider theme) {
+    final accent = theme.accentColor;
+    final isFocused = _searchFocusNode.hasFocus;
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          decoration: BoxDecoration(
+            color: theme.card,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: accent.withValues(alpha: isFocused ? 0.45 : 0.18),
+              width: isFocused ? 1.5 : 1,
+            ),
+          ),
+          child: TextField(
+            controller: _searchController,
+            focusNode: _searchFocusNode,
+            onChanged: (query) => setState(() => _query = query),
+            style: TextStyle(color: theme.textPrimary),
+            cursorColor: accent,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: 'Search topics, e.g. midterm, finals',
+              hintStyle: TextStyle(color: theme.textSecondary),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: isFocused ? accent : theme.textSecondary,
+              ),
+              suffixIcon: _query.trim().isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: 'Clear search',
+                      onPressed: _clearSearch,
+                      icon: Icon(
+                        Icons.close_rounded,
+                        color: theme.textSecondary,
+                      ),
+                    ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+            ),
+          ),
         ),
       ),
     );

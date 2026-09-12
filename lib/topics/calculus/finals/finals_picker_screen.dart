@@ -1,5 +1,8 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_module_registry.dart';
+import 'package:calculus_system/core/curriculum_registry.dart';
+import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
+import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/derivatives/derevatives_card.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/evaluationg_limits.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/slope_using_derivatives/finding_slope_derevatives_card.dart';
@@ -37,6 +40,9 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   late final List<Animation<Offset>> _slideAnims;
 
   final List<FinalsModuleEntry> _modules = FinalsModuleRegistry.modules;
+  final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
+  String _query = '';
 
   @override
   void initState() {
@@ -76,7 +82,31 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     for (final c in _controllers) {
       c.dispose();
     }
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  List<FinalsModuleEntry> get _filtered {
+    final q = _query.trim().toLowerCase();
+    if (q.isEmpty) return _modules;
+    return _modules
+        .where((m) =>
+            m.label.toLowerCase().contains(q) ||
+            m.subtitle.toLowerCase().contains(q))
+        .toList();
+  }
+
+  /// Curriculum hits (G6 seed + G7–College stubs) for the same query.
+  List<CurriculumSearchHit> get _curriculumHits {
+    if (_query.trim().isEmpty) return const [];
+    return CurriculumRegistry.search(_query);
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _query = '');
+    _searchFocusNode.requestFocus();
   }
 
   Widget _buildModuleCard(FinalsModuleEntry module) {
@@ -109,6 +139,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
           slivers: [
             _buildHeader(),
             _buildBanner(),
+            _buildSearchBar(),
             _buildList(),
             const SliverToBoxAdapter(child: SizedBox(height: 40)),
           ],
@@ -330,7 +361,19 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   // -- Module list -------------------------------------------
 
   Widget _buildList() {
-    if (_modules.isEmpty) {
+    final hits = _filtered;
+    final curriculumHits = _curriculumHits;
+    if (_query.trim().isNotEmpty &&
+        hits.isEmpty &&
+        curriculumHits.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+          child: NoTopicsEmptyState(onClear: _clearSearch),
+        ),
+      );
+    }
+    if (hits.isEmpty && curriculumHits.isEmpty) {
       return SliverToBoxAdapter(
         child: FadeTransition(
           opacity: _fadeAnims[0],
@@ -347,19 +390,79 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final module = _modules[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: FadeTransition(
-                opacity: _fadeAnims[index],
-                child: SlideTransition(
-                  position: _slideAnims[index],
-                  child: _buildModuleCard(module),
+            if (index < hits.length) {
+              final module = hits[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: FadeTransition(
+                  opacity: _fadeAnims[index],
+                  child: SlideTransition(
+                    position: _slideAnims[index],
+                    child: _buildModuleCard(module),
+                  ),
                 ),
-              ),
+              );
+            }
+            // Curriculum matches render below the local hits.
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: CurriculumMatchesSection(query: _query),
             );
           },
-          childCount: _modules.length,
+          childCount:
+              hits.length + (curriculumHits.isEmpty ? 0 : 1),
+        ),
+      ),
+    );
+  }
+
+  // -- Search bar (reuses ModMat pattern) ----------------------
+
+  Widget _buildSearchBar() {
+    final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
+    final isFocused = _searchFocusNode.hasFocus;
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          decoration: BoxDecoration(
+            color: theme.card,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: accent.withValues(alpha: isFocused ? 0.45 : 0.18),
+              width: isFocused ? 1.5 : 1,
+            ),
+          ),
+          child: TextField(
+            controller: _searchController,
+            focusNode: _searchFocusNode,
+            onChanged: (query) => setState(() => _query = query),
+            style: TextStyle(color: theme.textPrimary),
+            cursorColor: accent,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: 'Search topics, e.g. derivative, limit',
+              hintStyle: TextStyle(color: theme.textSecondary),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: isFocused ? accent : theme.textSecondary,
+              ),
+              suffixIcon: _query.trim().isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: 'Clear search',
+                      onPressed: _clearSearch,
+                      icon: Icon(
+                        Icons.close_rounded,
+                        color: theme.textSecondary,
+                      ),
+                    ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 15),
+            ),
+          ),
         ),
       ),
     );

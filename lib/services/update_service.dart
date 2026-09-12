@@ -6,21 +6,42 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
+import 'package:package_info_plus/package_info_plus.dart';
+
+/// Shared update conclusion consumed by the app entry point, the Settings
+/// screen, and their widget tests.
+enum UpdateStatus {
+  updateAvailable,
+  upToDate,
+  unavailable,
+}
+
 class UpdateInfo {
+  final UpdateStatus status;
+  final String? installedVersion;
   final String latestVersion;
-  final String currentVersion;
   final String releaseUrl;
   final String releaseNotes;
-  final bool hasUpdate;
 
   const UpdateInfo({
-    required this.latestVersion,
-    required this.currentVersion,
-    required this.releaseUrl,
-    required this.releaseNotes,
-    required this.hasUpdate,
+    required this.status,
+    this.installedVersion,
+    this.latestVersion = '',
+    this.releaseUrl = '',
+    this.releaseNotes = '',
   });
+
+  bool get hasUpdate => status == UpdateStatus.updateAvailable;
 }
+
+/// Loads the installed package metadata. Injectable for tests.
+typedef PackageInfoLoader = Future<PackageInfo> Function();
+
+/// Fetches the latest-release payload. Injectable for tests.
+typedef ReleaseFetcher = Future<http.Response> Function(
+  Uri url,
+  Map<String, String> headers,
+);
 
 class UpdateService {
   static const String _owner = 'Shuash11';
@@ -28,38 +49,98 @@ class UpdateService {
   static const String _apiUrl =
       'https://api.github.com/repos/$_owner/$_repo/releases/latest';
 
-  static Future<UpdateInfo?> checkForUpdate(String currentVersion) async {
+  static const Map<String, String> _headers = {
+    'Accept': 'application/vnd.github.v3+json',
+  };
+
+  /// Check for an update, normalizing installed and remote versions so
+  /// surrounding whitespace, a single leading `v`, and build metadata
+  /// never leak into the UI. Never throws — failures map to
+  /// [UpdateStatus.unavailable].
+  static Future<UpdateInfo> checkForUpdate({
+    PackageInfoLoader? packageInfoLoader,
+    ReleaseFetcher? releaseFetcher,
+  }) async {
+    String? installedVersion;
     try {
-      final response = await http
-          .get(
-            Uri.parse(_apiUrl),
-            headers: {'Accept': 'application/vnd.github.v3+json'},
-          )
+      final packageInfo =
+          await (packageInfoLoader?.call() ?? PackageInfo.fromPlatform());
+      installedVersion = _normalizeVersion(packageInfo.version);
+      if (installedVersion == null) {
+        return const UpdateInfo(status: UpdateStatus.unavailable);
+      }
+    } catch (_) {
+      return const UpdateInfo(status: UpdateStatus.unavailable);
+    }
+
+    try {
+      final fetch =
+          releaseFetcher ?? ((url, headers) => http.get(url, headers: headers));
+      final response = await fetch(Uri.parse(_apiUrl), _headers)
           .timeout(const Duration(seconds: 10));
 
-      if (response.statusCode != 200) return null;
+      if (response.statusCode != 200) {
+        return UpdateInfo(
+          status: UpdateStatus.unavailable,
+          installedVersion: installedVersion,
+        );
+      }
 
       final data = jsonDecode(response.body);
-      final tagName = data['tag_name'] as String? ?? '';
-      final latestVersion = tagName.replaceAll(RegExp(r'^v'), '');
+      if (data is! Map<String, dynamic>) {
+        return UpdateInfo(
+          status: UpdateStatus.unavailable,
+          installedVersion: installedVersion,
+        );
+      }
+      final latestVersion =
+          _normalizeVersion(data['tag_name'] as String? ?? '');
+      if (latestVersion == null) {
+        return UpdateInfo(
+          status: UpdateStatus.unavailable,
+          installedVersion: installedVersion,
+        );
+      }
+
       final releaseUrl = data['html_url'] as String? ?? '';
-      final releaseNotes = data['body'] as String? ?? 'No release notes available.';
-      final currentClean = currentVersion.split('+').first;
-
-      if (tagName.isEmpty || latestVersion.isEmpty) return null;
-
-      final hasUpdate = _compareVersions(latestVersion, currentClean) > 0;
+      final releaseNotes = data['body'] as String? ?? '';
+      final hasUpdate =
+          _compareVersions(latestVersion, installedVersion) > 0;
 
       return UpdateInfo(
+        status:
+            hasUpdate ? UpdateStatus.updateAvailable : UpdateStatus.upToDate,
+        installedVersion: installedVersion,
         latestVersion: latestVersion,
-        currentVersion: currentClean,
         releaseUrl: releaseUrl,
         releaseNotes: releaseNotes,
-        hasUpdate: hasUpdate,
       );
     } catch (_) {
-      return null;
+      return UpdateInfo(
+        status: UpdateStatus.unavailable,
+        installedVersion: installedVersion,
+      );
     }
+  }
+
+  static final RegExp _corePattern = RegExp(r'^\d+(\.\d+)*$');
+  static final RegExp _buildPattern =
+      RegExp(r'^[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*$');
+
+  /// Normalize a raw version string to its numeric core (`1.12.8`).
+  /// Returns null when the string is not a valid semver-ish version.
+  static String? _normalizeVersion(String raw) {
+    var cleaned = raw.trim();
+    if (cleaned.startsWith('v') || cleaned.startsWith('V')) {
+      cleaned = cleaned.substring(1);
+    }
+    if (cleaned.isEmpty) return null;
+    final plusIndex = cleaned.indexOf('+');
+    final core = plusIndex < 0 ? cleaned : cleaned.substring(0, plusIndex);
+    final build = plusIndex < 0 ? null : cleaned.substring(plusIndex + 1);
+    if (!_corePattern.hasMatch(core)) return null;
+    if (build != null && !_buildPattern.hasMatch(build)) return null;
+    return core;
   }
 
   /// Compare two semver strings (e.g. "1.2.3" vs "2.0.1").

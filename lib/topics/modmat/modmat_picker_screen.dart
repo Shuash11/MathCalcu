@@ -1,4 +1,8 @@
+import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
+import 'package:calculus_system/topics/modmat/modmat_module_registry.dart';
+import 'package:calculus_system/topics/modmat/modmat_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -15,10 +19,17 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   late final List<AnimationController> _controllers;
   late final List<Animation<double>> _fadeAnims;
   late final List<Animation<Offset>> _slideAnims;
+  late final TextEditingController _searchController;
+  late final FocusNode _searchFocusNode;
+  String _query = '';
 
   @override
   void initState() {
     super.initState();
+
+    _searchController = TextEditingController();
+    _searchFocusNode = FocusNode();
+    _searchFocusNode.addListener(() => setState(() {}));
 
     _controllers = List.generate(
         2,
@@ -49,6 +60,8 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
 
   @override
   void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     for (final c in _controllers) {
       c.dispose();
     }
@@ -66,6 +79,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
           slivers: [
             _buildHeader(theme),
             _buildBanner(theme),
+            _buildSearch(theme),
             _buildList(theme),
             const SliverToBoxAdapter(child: SizedBox(height: 40)),
           ],
@@ -146,14 +160,16 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  'Modern Math',
-                  style: TextStyle(
-                    fontSize: 42,
-                    fontWeight: FontWeight.w800,
-                    color: theme.textPrimary,
-                    height: 1.1,
-                    letterSpacing: -1.5,
+                Expanded(
+                  child: Text(
+                    'Modern Math',
+                    style: TextStyle(
+                      fontSize: 42,
+                      fontWeight: FontWeight.w800,
+                      color: theme.textPrimary,
+                      height: 1.1,
+                      letterSpacing: -1.5,
+                    ),
                   ),
                 ),
               ],
@@ -211,7 +227,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'MODMAT',
                       style: TextStyle(
                         fontSize: 11,
@@ -255,19 +271,183 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
     );
   }
 
+  Widget _buildSearch(ThemeProvider theme) {
+    const accent = Color(0xFF0F766E);
+    final isFocused = _searchFocusNode.hasFocus;
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        child: Semantics(
+          label: 'Search Modern Math topics',
+          textField: true,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            decoration: ModmatTheme.inputDecoration(
+              context,
+              focused: isFocused,
+              accentColor: accent,
+            ),
+            child: TextField(
+              key: const Key('modmat-search-field'),
+              controller: _searchController,
+              focusNode: _searchFocusNode,
+              onChanged: (query) => setState(() => _query = query),
+              style: TextStyle(color: theme.textPrimary),
+              cursorColor: accent,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: 'Search Modern Math topics',
+                hintStyle: TextStyle(color: theme.textSecondary),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: isFocused ? accent : theme.textSecondary,
+                ),
+                suffixIcon: _query.trim().isEmpty
+                    ? null
+                    : Tooltip(
+                        message: 'Clear search',
+                        child: IconButton(
+                          key: const Key('modmat-search-clear'),
+                          tooltip: 'Clear search',
+                          onPressed: _clearSearch,
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: theme.textSecondary,
+                          ),
+                        ),
+                      ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(vertical: 15),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _query = '');
+    _searchFocusNode.requestFocus();
+  }
+
+  Widget _buildSearchResults(ThemeProvider theme) {
+    final hits = ModmatModuleRegistry.search(_query);
+    final curriculumHits = CurriculumRegistry.search(_query);
+    if (hits.isEmpty && curriculumHits.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+          child: Semantics(
+            liveRegion: true,
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: theme.card,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: ModmatTheme.primary.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.search_off_rounded,
+                    color: theme.textSecondary,
+                    size: 36,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'No topics found',
+                    style: TextStyle(
+                      color: theme.textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Try another title or subtitle.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: theme.textSecondary, height: 1.4),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton.icon(
+                    onPressed: _clearSearch,
+                    icon: const Icon(Icons.close_rounded),
+                    label: const Text('Clear search'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverMainAxisGroup(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(
+                'Search results',
+                style: TextStyle(
+                  color: theme.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final hit = hits[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _ModmatSearchResultCard(
+                    hit: hit,
+                    onTap: () => context.push(hit.module.route),
+                  ),
+                );
+              },
+              childCount: hits.length,
+            ),
+          ),
+          if (curriculumHits.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: CurriculumMatchesSection(query: _query),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildList(ThemeProvider theme) {
+    if (_query.trim().isNotEmpty) {
+      return _buildSearchResults(theme);
+    }
+
     final sections = [
-      _Section(
+      const _Section(
         icon: Icons.auto_awesome_rounded,
         label: 'Foundations',
         subtitle: 'Logic, Sets, Proofs, Number Theory',
-        color: const Color(0xFF0F766E),
+        color: Color(0xFF0F766E),
       ),
-      _Section(
+      const _Section(
         icon: Icons.architecture_rounded,
         label: 'Advanced',
         subtitle: 'Algebra, Analysis, Topology, Geometry',
-        color: const Color(0xFF0F766E),
+        color: Color(0xFF0F766E),
       ),
     ];
 
@@ -316,6 +496,138 @@ class _Section {
     required this.subtitle,
     required this.color,
   });
+}
+
+class _ModmatSearchResultCard extends StatefulWidget {
+  final ModmatSearchHit hit;
+  final VoidCallback onTap;
+
+  const _ModmatSearchResultCard({required this.hit, required this.onTap});
+
+  @override
+  State<_ModmatSearchResultCard> createState() =>
+      _ModmatSearchResultCardState();
+}
+
+class _ModmatSearchResultCardState extends State<_ModmatSearchResultCard> {
+  bool _hovered = false;
+  bool _focused = false;
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    final module = widget.hit.module;
+    final accent = module.accent;
+    final highlighted = _hovered || _focused;
+
+    return Semantics(
+      button: true,
+      label: '${module.label}, ${widget.hit.section}',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: Key('modmat-search-result-${module.route}'),
+          onTap: widget.onTap,
+          onTapDown: (_) => setState(() => _pressed = true),
+          onTapUp: (_) => setState(() => _pressed = false),
+          onTapCancel: () => setState(() => _pressed = false),
+          onHover: (hovered) => setState(() => _hovered = hovered),
+          onFocusChange: (focused) => setState(() => _focused = focused),
+          borderRadius: BorderRadius.circular(20),
+          hoverColor: accent.withValues(alpha: 0.08),
+          focusColor: accent.withValues(alpha: 0.12),
+          highlightColor: accent.withValues(alpha: 0.14),
+          child: AnimatedScale(
+            scale: _pressed ? 0.98 : 1,
+            duration: const Duration(milliseconds: 120),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: theme.card,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: accent.withValues(alpha: highlighted ? 0.5 : 0.2),
+                  width: highlighted ? 1.5 : 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: accent.withValues(alpha: highlighted ? 0.16 : 0.06),
+                    blurRadius: highlighted ? 24 : 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(module.icon, color: accent),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          module.label,
+                          style: TextStyle(
+                            color: theme.textPrimary,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          module.subtitle,
+                          style: TextStyle(
+                            color: theme.textSecondary,
+                            height: 1.35,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: accent.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            widget.hit.section,
+                            style: TextStyle(
+                              color: accent,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: accent.withValues(alpha: 0.65),
+                    size: 16,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _ModmatSectionCard extends StatefulWidget {

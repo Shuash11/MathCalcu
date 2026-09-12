@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +10,6 @@ import 'services/update_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'widgets/update_dialog.dart';
 import 'widgets/web_update_dialog.dart';
-import 'version.dart';
 
 void main() async {
   // ── PRE-RUN INITIALIZATION ──
@@ -44,24 +40,46 @@ void main() async {
 }
 
 class CalculusApp extends StatefulWidget {
-  const CalculusApp({super.key});
+  const CalculusApp({
+    super.key,
+    this.updateChecker,
+    this.isWeb,
+    this.isAndroid,
+    this.isWindows,
+    this.showNativeUpdate,
+    this.showWebUpdate,
+    this.showReleaseLinkUpdate,
+    this.navigatorContext,
+  });
+
+  final Future<UpdateInfo> Function()? updateChecker;
+  final bool? isWeb;
+  final bool Function()? isAndroid;
+  final bool Function()? isWindows;
+  final void Function(BuildContext, UpdateInfo)? showNativeUpdate;
+  final void Function(BuildContext, String)? showWebUpdate;
+  final void Function(BuildContext, UpdateInfo)? showReleaseLinkUpdate;
+  final BuildContext? Function()? navigatorContext;
 
   @override
   State<CalculusApp> createState() => _CalculusAppState();
 }
 
 class _CalculusAppState extends State<CalculusApp> {
+  bool _hasCheckedForUpdates = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _requestInstallPermission();
-      _checkForUpdates();
+      if (!mounted) return;
+      await _checkForUpdates();
     });
   }
 
   Future<void> _requestInstallPermission() async {
-    if (!Platform.isAndroid) return;
+    if (kIsWeb || !Platform.isAndroid) return;
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('asked_install_permission') == true) return;
     await prefs.setBool('asked_install_permission', true);
@@ -69,7 +87,7 @@ class _CalculusAppState extends State<CalculusApp> {
     final canInstall = await UpdateService.canInstallPackages();
     if (canInstall || !mounted) return;
 
-    final ctx = AppRouter.navigatorKey.currentContext;
+    final ctx = _navigatorContext();
     if (ctx == null || !ctx.mounted) return;
 
     await showDialog(
@@ -78,169 +96,180 @@ class _CalculusAppState extends State<CalculusApp> {
       builder: (dialogContext) {
         final theme = dialogContext.watch<ThemeProvider>();
         return AlertDialog(
-          backgroundColor: theme.surface,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: theme.accentColor.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.system_update_rounded,
-                    size: 32, color: theme.accentColor),
+        backgroundColor: theme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: theme.accentColor.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Allow app updates',
+              child: Icon(Icons.system_update_rounded,
+                  size: 32, color: theme.accentColor),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Allow app updates',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: theme.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                'MathCalcu needs permission to install updates automatically.\n'
+                'Grant this once and future updates will work seamlessly.',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: theme.textPrimary,
+                  fontSize: 14,
+                  height: 1.4,
+                  color: theme.textSecondary,
                 ),
               ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Text(
-                  'MathCalcu needs permission to install updates automatically.\n'
-                  'Grant this once and future updates will work seamlessly.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.4,
-                    color: theme.textSecondary,
+            ),
+            const SizedBox(height: 20),
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      UpdateService.openInstallSettings();
+                    },
+                    style: FilledButton.styleFrom(
+                        backgroundColor: theme.accentColor),
+                    child: const Text('Open Settings'),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                        UpdateService.openInstallSettings();
-                      },
-                      style: FilledButton.styleFrom(
-                          backgroundColor: theme.accentColor),
-                      child: const Text('Open Settings'),
-                    ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    style: TextButton.styleFrom(
+                        foregroundColor: theme.textSecondary),
+                    child: const Text('Not now'),
                   ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () => Navigator.of(ctx).pop(),
-                      style: TextButton.styleFrom(
-                          foregroundColor: theme.textSecondary),
-                      child: const Text('Not now'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
+        ),
         );
       },
     );
   }
 
   Future<void> _checkForUpdates() async {
+    if (_hasCheckedForUpdates || !mounted) return;
+    _hasCheckedForUpdates = true;
+
     try {
+      final info = await (widget.updateChecker?.call() ??
+          UpdateService.checkForUpdate());
       if (!mounted) return;
-
-      // Web: fetch version.json and compare against current
-      if (kIsWeb) {
-        await _checkForWebUpdate();
-        return;
-      }
-
-      // Android/Windows: use GitHub API
-      final packageInfo = await PackageInfo.fromPlatform();
-      final currentVersion = packageInfo.version;
-      final info = await UpdateService.checkForUpdate(currentVersion);
-      if (!mounted) return;
-      final ctx = AppRouter.navigatorKey.currentContext;
+      final ctx = _navigatorContext();
       if (ctx == null || !ctx.mounted) return;
-      if (info != null && info.hasUpdate) {
-        if (Platform.isAndroid || Platform.isWindows) {
-          showUpdateDialog(ctx, info);
-        } else {
+
+      switch (info.status) {
+        case UpdateStatus.updateAvailable:
+          _presentUpdate(ctx, info);
+          break;
+        case UpdateStatus.upToDate:
+          final installedVersion = info.installedVersion;
+          final versionSuffix =
+              installedVersion == null || installedVersion.isEmpty
+                  ? ''
+                  : ' (v$installedVersion)';
           ScaffoldMessenger.of(ctx).showSnackBar(
             SnackBar(
-              content: Text('Update v${info.latestVersion} available'),
-              action: SnackBarAction(
-                label: 'Open',
-                onPressed: () => launchUrl(Uri.parse(info.releaseUrl)),
-              ),
+              content: Text('MathCalcu is up to date$versionSuffix'),
               behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 10),
+              duration: const Duration(seconds: 3),
             ),
           );
-        }
-      } else if (info != null) {
-        ScaffoldMessenger.of(ctx).showSnackBar(
-          SnackBar(
-            content: Text(
-                '\u2713 MathCalcu is up to date (v${info.currentVersion})'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(ctx).showSnackBar(
-          SnackBar(
-            content: Text('v$currentVersion - Could not check for updates'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+          break;
+        case UpdateStatus.unavailable:
+          break;
       }
     } catch (_) {
       if (!mounted) return;
-      final ctx = AppRouter.navigatorKey.currentContext;
-      if (ctx == null || !ctx.mounted) return;
-      ScaffoldMessenger.of(ctx).showSnackBar(
-        const SnackBar(
-          content: Text('Could not check for updates'),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 3),
-        ),
-      );
+      // Update checks are nonblocking. The Settings screen can report the
+      // unavailable status when the user opens it.
     }
   }
 
-  Future<void> _checkForWebUpdate() async {
-    try {
-      // Fetch version.json with cache-bust timestamp
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final response = await http
-          .get(Uri.parse('version.json?v=$timestamp'))
-          .timeout(const Duration(seconds: 5));
-      if (response.statusCode != 200) return;
-
-      final data = jsonDecode(response.body);
-      final latestVersion = data['version'] as String?;
-      if (latestVersion == null) return;
-
-      // Get current version from the version constant
-      final currentVersion = kAppVersion;
-
-      if (latestVersion != currentVersion && mounted) {
-        final ctx = AppRouter.navigatorKey.currentContext;
-        if (ctx != null && ctx.mounted) {
-          showWebUpdateDialog(ctx, latestVersion);
-        }
-      }
-    } catch (_) {
-      // Silently ignore ? not critical
+  void _presentUpdate(BuildContext context, UpdateInfo info) {
+    final isWeb = widget.isWeb ?? kIsWeb;
+    if (isWeb) {
+      (widget.showWebUpdate ?? showWebUpdateDialog)(
+          context, info.latestVersion);
+      return;
     }
+
+    final isAndroid = widget.isAndroid?.call() ?? Platform.isAndroid;
+    final isWindows = widget.isWindows?.call() ?? Platform.isWindows;
+    if (isAndroid || isWindows) {
+      (widget.showNativeUpdate ?? showUpdateDialog)(context, info);
+      return;
+    }
+
+    if (_trustedReleaseUri(info.releaseUrl) == null) {
+      return;
+    }
+    (widget.showReleaseLinkUpdate ?? _showReleaseLinkUpdate)(context, info);
+  }
+
+  void _showReleaseLinkUpdate(BuildContext context, UpdateInfo info) {
+    final releaseUri = _trustedReleaseUri(info.releaseUrl);
+    if (releaseUri == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Update v${info.latestVersion} available'),
+        action: SnackBarAction(
+          label: 'Open',
+          onPressed: () async {
+            try {
+              await launchUrl(
+                releaseUri,
+                mode: LaunchMode.externalApplication,
+              );
+            } catch (_) {}
+          },
+        ),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 10),
+      ),
+    );
+  }
+
+  Uri? _trustedReleaseUri(String releaseUrl) {
+    final releaseUri = Uri.tryParse(releaseUrl);
+    if (releaseUri == null ||
+        !releaseUri.isAbsolute ||
+        releaseUri.scheme != 'https' ||
+        releaseUri.host != 'github.com' ||
+        releaseUri.userInfo.isNotEmpty ||
+        !releaseUri.path.startsWith('/Shuash11/MathCalcu/releases/')) {
+      return null;
+    }
+    return releaseUri;
+  }
+
+  BuildContext? _navigatorContext() {
+    final contextLookup = widget.navigatorContext;
+    if (contextLookup != null) {
+      return contextLookup();
+    }
+    return AppRouter.navigatorKey.currentContext;
   }
 
   @override

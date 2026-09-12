@@ -2,6 +2,13 @@ import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/topics/modmat/modmat_theme.dart';
 import 'package:flutter/material.dart';
 
+class ModmatSearchHit {
+  final String section;
+  final ModuleEntry module;
+
+  const ModmatSearchHit({required this.section, required this.module});
+}
+
 class ModmatModuleRegistry {
   static final List<ModuleEntry> foundationsModules = [
     const ModuleEntry(
@@ -125,5 +132,26 @@ class ModmatModuleRegistry {
     } catch (_) {
       return null;
     }
+  }
+
+  static List<ModmatSearchHit> search(String query) {
+    final normalizedQuery = query.trim().toLowerCase();
+    if (normalizedQuery.isEmpty) {
+      return [];
+    }
+
+    return [
+      for (final module in foundationsModules)
+        if (_matches(module, normalizedQuery))
+          ModmatSearchHit(section: 'Foundations', module: module),
+      for (final module in advancedModules)
+        if (_matches(module, normalizedQuery))
+          ModmatSearchHit(section: 'Advanced', module: module),
+    ];
+  }
+
+  static bool _matches(ModuleEntry module, String normalizedQuery) {
+    return module.label.toLowerCase().contains(normalizedQuery) ||
+        module.subtitle.toLowerCase().contains(normalizedQuery);
   }
 }

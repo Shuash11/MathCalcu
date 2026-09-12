@@ -15,6 +15,9 @@ class MathInputField extends StatefulWidget {
   final String hint;
   final VoidCallback onSolve;
   final ValueChanged<String>? onChanged;
+  final String? helperText;
+  final String? errorText;
+  final String? Function(String)? validator;
   const MathInputField({
     super.key,
     required this.controller,
@@ -22,6 +25,9 @@ class MathInputField extends StatefulWidget {
     required this.hint,
     required this.onSolve,
     this.onChanged,
+    this.helperText,
+    this.errorText,
+    this.validator,
   });
 
   @override
@@ -41,12 +47,18 @@ class _MathInputFieldState extends State<MathInputField> {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    return Container(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
       decoration: BoxDecoration(
         color: theme.card,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: (theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155)).withValues(alpha: 0.2),
+          color: widget.errorText != null
+              ? theme.accentColor.withValues(alpha: 0.6)
+              : (theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155)).withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -74,6 +86,7 @@ class _MathInputFieldState extends State<MathInputField> {
                   vertical: 18,
                 ),
               ),
+              onChanged: widget.onChanged,
               // onSubmitted: user presses Enter key on keyboard
               onSubmitted: (_) {
                 widget.onSolve();
@@ -106,6 +119,28 @@ class _MathInputFieldState extends State<MathInputField> {
           ),
         ],
       ),
+    ),
+        if (widget.errorText != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            widget.errorText!,
+            style: TextStyle(
+              color: theme.accentColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ] else if (widget.helperText != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            widget.helperText!,
+            style: TextStyle(
+              color: theme.textSecondary,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
