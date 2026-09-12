@@ -1,7 +1,6 @@
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -172,7 +171,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                   fontSize:
                                       (displayHeight * 0.15).clamp(10.0, 16.0),
                                   fontWeight: FontWeight.w400,
-                                  color: theme.accentColor,
+                                  color: _result == 'Error'
+                                      ? theme.errorColor
+                                      : theme.accentColor,
                                 ),
                               ),
                             ],
@@ -261,8 +262,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       textColor = theme.accentColor;
       fontWeight = FontWeight.w600;
     } else if (isSpecial) {
-      bgColor = FinalsTheme.danger.withValues(alpha: 0.15);
-      textColor = FinalsTheme.danger;
+      bgColor = theme.errorColor.withValues(alpha: 0.15);
+      textColor = theme.errorColor;
     } else if (isFunction || isConstant) {
       bgColor = theme.cardSecondary;
       textColor = theme.textPrimary;

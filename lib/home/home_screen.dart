@@ -86,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                         HomeCard(
                           icon: Icons.calculate_rounded,
                           label: 'Calculator',
-                          accent: FinalsTheme.tertiary,
+                          accent: theme.accentColor,
                           onTap: () => context.go('/calculator'),
                         ),
                       ],

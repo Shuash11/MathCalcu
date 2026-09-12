@@ -1,8 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
-import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
-import 'package:calculus_system/topics/modmat/modmat_theme.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/services/history_service.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
@@ -158,15 +156,15 @@ class _TopicsScreenState extends State<TopicsScreen> {
                                 HomeCard(
                                   icon: Icons.calculate_rounded,
                                   label: 'Calculus',
-                                  accent: FinalsTheme.primary,
+                                  accent: theme.accentColor,
                                   onTap: () =>
                                       context.push('/topics/calculus'),
                                 ),
-                              if (showModmat)
+                                if (showModmat)
                                 HomeCard(
                                   icon: Icons.auto_awesome_rounded,
                                   label: 'Modern Math',
-                                  accent: ModmatTheme.primary,
+                                  accent: theme.modmatAccent,
                                   onTap: () =>
                                       context.push('/topics/modmat'),
                                 ),

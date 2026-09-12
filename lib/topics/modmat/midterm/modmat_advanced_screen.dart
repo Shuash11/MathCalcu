@@ -118,7 +118,7 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: ModmatTheme.primary,
+                    color: ModmatTheme.tealDark,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -132,11 +132,11 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: ModmatTheme.secondary,
+                    color: ModmatTheme.tealDark,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: ModmatTheme.secondary.withValues(alpha: 0.35),
+                        color: ModmatTheme.tealDark.withValues(alpha: 0.35),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -186,10 +186,10 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ModmatTheme.secondary.withValues(alpha: 0.08),
+            color: ModmatTheme.tealDark.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: ModmatTheme.secondary.withValues(alpha: 0.25),
+              color: ModmatTheme.tealDark.withValues(alpha: 0.25),
               width: 1.5,
             ),
           ),
@@ -198,7 +198,7 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: ModmatTheme.secondary,
+                  color: ModmatTheme.tealDark,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -217,7 +217,7 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
-                        color: ModmatTheme.secondary,
+                        color: theme.modmatAccent,
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -236,7 +236,7 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: ModmatTheme.secondary,
+                  color: ModmatTheme.tealDark,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -368,8 +368,8 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                         child: Icon(
                           widget.module.icon,
                           color: _hovered
-                              ? ModmatTheme.secondary
-                              : ModmatTheme.secondary.withValues(alpha: 0.85),
+                              ? theme.modmatAccent
+                              : theme.modmatAccent.withValues(alpha: 0.85),
                           size: 26 * s,
                         ),
                       ),
@@ -384,7 +384,7 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                                 fontSize: 18 * s,
                                 fontWeight: FontWeight.w700,
                                 color: _hovered
-                                    ? ModmatTheme.secondary
+                                    ? theme.modmatAccent
                                     : theme.textPrimary,
                                 letterSpacing: -0.3 * s,
                               ),
@@ -396,8 +396,7 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                               style: TextStyle(
                                 fontSize: 13 * s,
                                 color: _hovered
-                                    ? ModmatTheme.secondary
-                                        .withValues(alpha: 0.65)
+                                    ? theme.modmatAccent
                                     : theme.textSecondary,
                                 height: 1.4,
                               ),
@@ -431,8 +430,8 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                           child: Icon(
                             Icons.arrow_forward_ios_rounded,
                             color: _hovered
-                                ? ModmatTheme.secondary
-                                : ModmatTheme.secondary.withValues(alpha: 0.5),
+                                ? theme.modmatAccent
+                                : theme.modmatAccent.withValues(alpha: 0.85),
                             size: 15 * s,
                           ),
                         ),

@@ -153,9 +153,9 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.calculate_rounded,
-                    color: Colors.white,
+                    color: theme.surface,
                     size: 26,
                   ),
                 ),
@@ -231,9 +231,9 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                   color: accent,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.school_rounded,
-                  color: Colors.white,
+                  color: theme.surface,
                   size: 16,
                 ),
               ),
@@ -268,10 +268,10 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                   color: accent,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
+                child: Text(
                   '2',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: theme.surface,
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.8,
@@ -577,7 +577,7 @@ class _CalculusSectionCardState extends State<_CalculusSectionCard> {
                         Icons.arrow_forward_ios_rounded,
                         color: _hovered
                             ? accent
-                            : accent.withValues(alpha: 0.5),
+                            : accent.withValues(alpha: 0.85),
                         size: 15,
                       ),
                     ),

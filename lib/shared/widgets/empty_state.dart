@@ -64,8 +64,14 @@ class NoTopicsEmptyState extends StatelessWidget {
             const SizedBox(height: 12),
             TextButton.icon(
               onPressed: onClear,
-              icon: const Icon(Icons.close_rounded),
-              label: Text(clearLabel),
+              icon: Icon(
+                Icons.close_rounded,
+                color: theme.accentColor,
+              ),
+              label: Text(
+                clearLabel,
+                style: TextStyle(color: theme.accentColor),
+              ),
             ),
           ],
         ],

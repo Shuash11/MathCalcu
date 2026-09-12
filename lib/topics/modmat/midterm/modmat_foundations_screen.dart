@@ -119,7 +119,7 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: ModmatTheme.primary,
+                    color: ModmatTheme.tealDark,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -133,11 +133,11 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: ModmatTheme.primary,
+                    color: ModmatTheme.tealDark,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: ModmatTheme.primary.withValues(alpha: 0.35),
+                        color: ModmatTheme.tealDark.withValues(alpha: 0.35),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -187,10 +187,10 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ModmatTheme.primary.withValues(alpha: 0.08),
+            color: ModmatTheme.tealDark.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: ModmatTheme.primary.withValues(alpha: 0.25),
+              color: ModmatTheme.tealDark.withValues(alpha: 0.25),
               width: 1.5,
             ),
           ),
@@ -199,7 +199,7 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: ModmatTheme.primary,
+                  color: ModmatTheme.tealDark,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -218,7 +218,7 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
-                        color: ModmatTheme.primary,
+                        color: theme.modmatAccent,
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -237,7 +237,7 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: ModmatTheme.primary,
+                  color: ModmatTheme.tealDark,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -369,8 +369,8 @@ class _FoundationsModuleCardState extends State<_FoundationsModuleCard> {
                         child: Icon(
                           widget.module.icon,
                           color: _hovered
-                              ? ModmatTheme.primary
-                              : ModmatTheme.primary.withValues(alpha: 0.85),
+                              ? theme.modmatAccent
+                              : theme.modmatAccent.withValues(alpha: 0.85),
                           size: 26 * s,
                         ),
                       ),
@@ -385,7 +385,7 @@ class _FoundationsModuleCardState extends State<_FoundationsModuleCard> {
                                 fontSize: 18 * s,
                                 fontWeight: FontWeight.w700,
                                 color: _hovered
-                                    ? ModmatTheme.primary
+                                    ? theme.modmatAccent
                                     : theme.textPrimary,
                                 letterSpacing: -0.3 * s,
                               ),
@@ -397,8 +397,7 @@ class _FoundationsModuleCardState extends State<_FoundationsModuleCard> {
                               style: TextStyle(
                                 fontSize: 13 * s,
                                 color: _hovered
-                                    ? ModmatTheme.primary
-                                        .withValues(alpha: 0.65)
+                                    ? theme.modmatAccent
                                     : theme.textSecondary,
                                 height: 1.4,
                               ),
@@ -430,8 +429,8 @@ class _FoundationsModuleCardState extends State<_FoundationsModuleCard> {
                           child: Icon(
                             Icons.arrow_forward_ios_rounded,
                             color: _hovered
-                                ? ModmatTheme.primary
-                                : ModmatTheme.primary.withValues(alpha: 0.5),
+                                ? theme.modmatAccent
+                                : theme.modmatAccent.withValues(alpha: 0.85),
                             size: 15 * s,
                           ),
                         ),

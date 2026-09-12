@@ -188,7 +188,7 @@ class CurriculumResultCard extends StatelessWidget {
               const SizedBox(width: 8),
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: accent.withValues(alpha: 0.65),
+                color: accent.withValues(alpha: 0.85),
                 size: 16,
               ),
             ],
@@ -273,7 +273,7 @@ class UnifiedResultCard extends StatelessWidget {
               const SizedBox(width: 8),
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: accent.withValues(alpha: 0.65),
+                color: accent.withValues(alpha: 0.85),
                 size: 16,
               ),
             ],

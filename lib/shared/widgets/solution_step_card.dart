@@ -69,7 +69,7 @@ class SolutionStepCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white.withValues(alpha: 0.45),
+                    color: FinalsTheme.textSecondary(context),
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -79,18 +79,19 @@ class SolutionStepCard extends StatelessWidget {
                 // Thin divider line
                 Container(
                   height: 1,
-                  color: Colors.white.withValues(alpha: 0.12),
+                  color: FinalsTheme.textSecondary(context)
+                      .withValues(alpha: 0.3),
                 ),
 
                 const SizedBox(height: 10),
 
-                // Title — bold white
+                // Title
                 ResponsiveText(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: FinalsTheme.textPrimary(context),
                     letterSpacing: -0.3,
                   ),
                 ),
