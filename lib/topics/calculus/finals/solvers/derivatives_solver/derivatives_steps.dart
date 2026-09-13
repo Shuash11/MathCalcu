@@ -1,4 +1,4 @@
-﻿// =====================================================
+// =====================================================
 // DERIVATIVE STEPS - Classroom-Style Step Generator
 // Provides detailed, educational explanations
 // =====================================================
@@ -45,7 +45,7 @@ class ClassroomStepFormatter {
     }
   }
 
-static String _getExplanation(DerivativeStep step, String variable) {
+  static String _getExplanation(DerivativeStep step, String variable) {
     switch (step.type) {
       case StepType.original:
         return 'f($variable) = ${step.expression}';
@@ -53,7 +53,7 @@ static String _getExplanation(DerivativeStep step, String variable) {
         return step.rule ?? '';
       case StepType.applyRule:
         return "d/d$variable [${step.expression.toString()}]";
-case StepType.simplify:
+      case StepType.simplify:
         return step.expression.toString();
 
       case StepType.finalResult:

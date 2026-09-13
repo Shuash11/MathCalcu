@@ -49,8 +49,7 @@ void main() {
     });
 
     test('simple interest computes total', () {
-      final r =
-          InterestEquation('P = 10000, r = 5%, t = 2, simple').solve();
+      final r = InterestEquation('P = 10000, r = 5%, t = 2, simple').solve();
       expect(r.hasError, isFalse);
       expect(r.answer, contains('Total'));
     });

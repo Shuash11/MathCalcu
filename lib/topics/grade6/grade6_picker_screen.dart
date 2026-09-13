@@ -94,8 +94,8 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                               color: theme.card,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: theme.textSecondary
-                                    .withValues(alpha: 0.2),
+                                color:
+                                    theme.textSecondary.withValues(alpha: 0.2),
                               ),
                             ),
                             child: Icon(
@@ -203,8 +203,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                               ),
                             ),
                       border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 15),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15),
                     ),
                   ),
                 ),
@@ -224,8 +223,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                   child: FutureBuilder<List<String>>(
                     future: _history.getRecentSearches(),
                     builder: (context, snapshot) {
-                      final searches =
-                          snapshot.data ?? const <String>[];
+                      final searches = snapshot.data ?? const <String>[];
                       return RecentSearchesSection(
                         searches: searches,
                         onPick: _pickRecent,

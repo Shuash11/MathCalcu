@@ -33,8 +33,7 @@ class InterestEquation extends BaseEquation {
   double? _param(List<String> names) {
     final t = rawInput.toLowerCase().replaceAll('−', '-');
     for (final n in names) {
-      final m = RegExp('$n\\s*=\\s*(-?\\d+(?:\\.\\d+)?)')
-          .firstMatch(t);
+      final m = RegExp('$n\\s*=\\s*(-?\\d+(?:\\.\\d+)?)').firstMatch(t);
       if (m != null) return double.parse(m.group(1)!);
     }
     return null;
@@ -58,8 +57,8 @@ class InterestEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'P = 10000, r = 5%, t = 2, compound');
+    final empty = FieldValidators.notEmpty(rawInput,
+        example: 'P = 10000, r = 5%, t = 2, compound');
     if (empty != null) {
       _error = empty;
       return false;
@@ -76,19 +75,22 @@ class InterestEquation extends BaseEquation {
   SolveResult solve() {
     final mode = _mode();
     if (mode == null) {
-      return SolveResult.error(_error ?? 'Add a mode: simple/compound/annuity/loan.');
+      return SolveResult.error(
+          _error ?? 'Add a mode: simple/compound/annuity/loan.');
     }
     final p = _param(['p']);
     final r = _rate();
     final t = _param(['t', 'n']);
     if (mode == 'simple') {
       if (p == null || r == null || t == null) {
-        return SolveResult.error('Simple needs P, r, t — e.g. P = 10000, r = 5%, t = 2, simple.');
+        return SolveResult.error(
+            'Simple needs P, r, t — e.g. P = 10000, r = 5%, t = 2, simple.');
       }
       if (p < 0 || t < 0) return SolveResult.error('P and t must be ≥ 0.');
       final i = p * r * t;
       return SolveResult(
-        answer: 'Interest = ${G6Format.money(i)}, Total = ${G6Format.money(p + i)}',
+        answer:
+            'Interest = ${G6Format.money(i)}, Total = ${G6Format.money(p + i)}',
         points: [i, p + i],
         customData: [
           {'kind': 'interest', 'mode': 'simple', 'interest': i, 'total': p + i}
@@ -97,13 +99,15 @@ class InterestEquation extends BaseEquation {
     }
     if (mode == 'compound') {
       if (p == null || r == null || t == null) {
-        return SolveResult.error('Compound needs P, r, t — e.g. P = 10000, r = 5%, t = 2, compound.');
+        return SolveResult.error(
+            'Compound needs P, r, t — e.g. P = 10000, r = 5%, t = 2, compound.');
       }
       if (p < 0 || t < 0) return SolveResult.error('P and t must be ≥ 0.');
       final m = _param(['m']);
       final freq = m ?? 1;
       if (freq <= 0 || freq != freq.roundToDouble()) {
-        return SolveResult.error('m (compounds/year) must be a positive whole number.');
+        return SolveResult.error(
+            'm (compounds/year) must be a positive whole number.');
       }
       final fv = p * math.pow(1 + r / freq, freq * t);
       if (!fv.isFinite) return SolveResult.error('Value overflows.');
@@ -120,7 +124,8 @@ class InterestEquation extends BaseEquation {
       final i = _rate();
       final n = _param(['n', 't']);
       if (pay == null || i == null || n == null) {
-        return SolveResult.error('Annuity needs R, i, n — e.g. R = 1000, i = 1%, n = 12, annuity.');
+        return SolveResult.error(
+            'Annuity needs R, i, n — e.g. R = 1000, i = 1%, n = 12, annuity.');
       }
       if (n <= 0 || n != n.roundToDouble()) {
         return SolveResult.error('n must be a positive whole number.');
@@ -154,7 +159,8 @@ class InterestEquation extends BaseEquation {
     final i = _rate();
     final n = _param(['n', 't']);
     if (loan == null || i == null || n == null) {
-      return SolveResult.error('Loan needs L, i, n — e.g. loan L = 100000, i = 1%, n = 12.');
+      return SolveResult.error(
+          'Loan needs L, i, n — e.g. loan L = 100000, i = 1%, n = 12.');
     }
     if (n <= 0 || n != n.roundToDouble()) {
       return SolveResult.error('n must be a positive whole number.');
@@ -199,7 +205,8 @@ class InterestEquation extends BaseEquation {
       StepModel(stepNumber: 1, title: 'Formula', explanation: formula),
       const StepModel(
           stepNumber: 2, title: 'Rate as decimal', explanation: '5% → 0.05.'),
-      StepModel(stepNumber: 3, title: 'Substitute + compute', explanation: r.answer),
+      StepModel(
+          stepNumber: 3, title: 'Substitute + compute', explanation: r.answer),
     ];
   }
 }

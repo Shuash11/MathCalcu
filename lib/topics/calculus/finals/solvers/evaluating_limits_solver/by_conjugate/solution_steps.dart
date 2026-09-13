@@ -1,4 +1,4 @@
-﻿import 'solver_engine.dart';
+import 'solver_engine.dart';
 import 'parser.dart';
 
 class ConjugateStep {
@@ -52,8 +52,7 @@ class ConjugateStepsGenerator {
         title: 'Try Substitution',
         explanation:
             'Substitute $varName = $approachStr directly into the expression.',
-        latexExpression:
-            '\\text{Substituting } $varName = $approachStr',
+        latexExpression: '\\text{Substituting } $varName = $approachStr',
       ),
       ConjugateStep(
         stepNumber: 3,
@@ -148,8 +147,7 @@ class ConjugateStepsGenerator {
         stepNumber: 6,
         title: 'Expand the Denominator',
         explanation: 'The denominator remains multiplied by the conjugate.',
-        latexExpression:
-            '\\text{Denominator: } $denTex \\cdot $conjTex',
+        latexExpression: '\\text{Denominator: } $denTex \\cdot $conjTex',
       ));
     } else {
       steps.add(ConjugateStep(
@@ -181,7 +179,8 @@ class ConjugateStepsGenerator {
       title: 'Cancel Common Factors',
       explanation:
           'Look for any ${varName} terms that can be cancelled from numerator and denominator.',
-      latexExpression: '\\frac{$ratNumTex}{$ratDenTex} \\Rightarrow \\text{cancelled form}',
+      latexExpression:
+          '\\frac{$ratNumTex}{$ratDenTex} \\Rightarrow \\text{cancelled form}',
     ));
 
     final newNumVal = result.rationalizedNumerator
@@ -213,7 +212,8 @@ class ConjugateStepsGenerator {
   }
 
   String _expandNode(ASTNode node) {
-    if (node is BinaryOpNode && (node.operator == '+' || node.operator == '-')) {
+    if (node is BinaryOpNode &&
+        (node.operator == '+' || node.operator == '-')) {
       final left = node.left;
       final right = node.right;
       final op = node.operator;

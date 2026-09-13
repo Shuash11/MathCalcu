@@ -88,8 +88,7 @@ class _LabeledQuickKeyFieldState extends State<LabeledQuickKeyField>
           decoration: InputDecoration(
             hintText: widget.field.hint,
             hintStyle: TextStyle(
-              color:
-                  const Color(0xFF94A3B8).withValues(alpha: 0.4),
+              color: const Color(0xFF94A3B8).withValues(alpha: 0.4),
               fontSize: 13,
               fontWeight: FontWeight.normal,
             ),

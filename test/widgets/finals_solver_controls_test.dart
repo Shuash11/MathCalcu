@@ -91,7 +91,8 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('renders different variable letters', (WidgetTester tester) async {
+    testWidgets('renders different variable letters',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         buildTestApp(
           FinalsVariableChip(variable: 'θ', onTap: () {}),

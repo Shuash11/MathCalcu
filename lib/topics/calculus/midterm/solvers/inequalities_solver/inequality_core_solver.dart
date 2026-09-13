@@ -1,4 +1,4 @@
-﻿class InequalityCoreSolver {
+class InequalityCoreSolver {
   static String normalize(String input) {
     String s = input
         .trim()
@@ -43,9 +43,8 @@
       if (value == 0) return;
       final sign = value < 0 ? '-' : (terms.isEmpty ? '' : '+');
       final magnitude = value.abs();
-      final coefficient = variable.isNotEmpty && magnitude == 1
-          ? ''
-          : fmt(magnitude);
+      final coefficient =
+          variable.isNotEmpty && magnitude == 1 ? '' : fmt(magnitude);
       terms.add('$sign$coefficient$variable');
     }
 
@@ -101,7 +100,8 @@
 
   static String fmt(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite) return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    if (!n.isFinite)
+      return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int denom = 2; denom <= 20; denom++) {
       final numer = (n * denom).round();
@@ -119,12 +119,12 @@
   static int _gcd(int a, int b) => b == 0 ? a : _gcd(b, a % b);
 
   static bool _isStrict(String normalized) {
-    // Check if the inequality uses ONLY strict operators (< or >) 
+    // Check if the inequality uses ONLY strict operators (< or >)
     // If it has any non-strict operators (≠¤ or ≠¥), it's non-strict
     // If it has BOTH strict and non-strict, it's continued (return null via new method)
     final hasNonStrict = normalized.contains('≠¤') || normalized.contains('≠¥');
     if (hasNonStrict) return false;
-    
+
     // If it has strict operators and no non-strict operators, it's strict
     final hasStrict = normalized.contains('<') || normalized.contains('>');
     return hasStrict;
@@ -141,31 +141,34 @@
     // Check for continued (mixed operators) first
     if (_isContinued(normalized)) {
       final strictnessStr = '-continued';
-      
+
       if (normalized.contains('|')) return 'absolute$strictnessStr';
       final hasRadical = normalized.contains('sqrt') ||
           normalized.contains('root') ||
           normalized.contains('\u221A') ||
           normalized.contains('√');
-      if (hasRadical && normalized.contains('/')) return 'sqrtRational$strictnessStr';
+      if (hasRadical && normalized.contains('/'))
+        return 'sqrtRational$strictnessStr';
       if (hasRadical) return 'radical$strictnessStr';
       if (normalized.contains('^2')) return 'quadratic$strictnessStr';
       if (normalized.contains('/')) return 'rational$strictnessStr';
       return 'linear$strictnessStr';
     }
-    
+
     // Otherwise, check for strict vs non-strict
     final strictnessStr = _isStrict(normalized) ? '-strict' : '-non-strict';
-    
+
     if (normalized.contains('|')) return 'absolute$strictnessStr';
     final hasRadical = normalized.contains('sqrt') ||
         normalized.contains('root') ||
         normalized.contains('\u221A') ||
         normalized.contains('√');
-    if (hasRadical && normalized.contains('/')) return 'sqrtRational$strictnessStr';
+    if (hasRadical && normalized.contains('/'))
+      return 'sqrtRational$strictnessStr';
     if (hasRadical) return 'radical$strictnessStr';
     if (normalized.contains('^2')) return 'quadratic$strictnessStr';
-    if (normalized.contains('√') && normalized.contains('/')) return 'sqrtRational$strictnessStr';
+    if (normalized.contains('√') && normalized.contains('/'))
+      return 'sqrtRational$strictnessStr';
     if (normalized.contains('√')) return 'radical$strictnessStr';
     if (normalized.contains('/')) return 'rational$strictnessStr';
     return 'linear$strictnessStr';

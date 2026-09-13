@@ -1,4 +1,4 @@
-﻿/// Token types for mathematical expressions
+/// Token types for mathematical expressions
 enum TokenType {
   number,
   variable,
@@ -123,8 +123,7 @@ class Tokenizer {
           currentToken = Token(TokenType.function, 'sqrt', _position);
           _position++;
         } else {
-          throw TokenizerException(
-              'Unexpected character "$char"', _position);
+          throw TokenizerException('Unexpected character "$char"', _position);
         }
       }
 

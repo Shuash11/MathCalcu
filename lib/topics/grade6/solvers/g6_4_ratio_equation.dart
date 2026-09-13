@@ -41,8 +41,8 @@ class G6RatioEquation extends BaseEquation {
 
   G6RatioEquation(this.rawInput);
 
-  static final RegExp _partitive =
-      RegExp(r'^(?:divide\s+)?(-?\d+(?:\.\d+)?)\s+in(?:to)?(?:\s+ratio)?\s+([\d\s:.,;]+)$');
+  static final RegExp _partitive = RegExp(
+      r'^(?:divide\s+)?(-?\d+(?:\.\d+)?)\s+in(?:to)?(?:\s+ratio)?\s+([\d\s:.,;]+)$');
   static final RegExp _direct = RegExp(
     r'^direct\b.*?x\s*=\s*(-?\d+(?:\.\d+)?).*?y\s*=\s*(-?\d+(?:\.\d+)?)(?:.*?x\s*=\s*(-?\d+(?:\.\d+)?))?.*?$',
   );
@@ -142,8 +142,7 @@ class G6RatioEquation extends BaseEquation {
         final List<String>? right = _sideTokens(sides[1]);
         if (left != null && right != null) {
           final List<String> all = [...left, ...right];
-          final int unknowns =
-              all.where((tok) => _isUnknown(tok)).length;
+          final int unknowns = all.where((tok) => _isUnknown(tok)).length;
           if (unknowns == 1) {
             final List<double> values = all.map((tok) {
               if (_isUnknown(tok)) {
@@ -340,9 +339,7 @@ class G6RatioEquation extends BaseEquation {
         }
         final List<double> shares =
             p.parts.map((part) => p.total * part / sum).toList();
-        final String answer = shares
-            .map((s) => G6Format.num(s))
-            .join(' : ');
+        final String answer = shares.map((s) => G6Format.num(s)).join(' : ');
         return SolveResult(
           answer: answer,
           points: shares,

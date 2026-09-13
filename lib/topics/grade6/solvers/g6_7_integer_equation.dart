@@ -55,7 +55,8 @@ class G6IntegerEquation extends BaseEquation {
   _IntParsed? _parse() {
     final String t = _normalized().toLowerCase();
     final RegExpMatch? cmp = _compare.firstMatch(t);
-    if (cmp != null && (t.contains(RegExp(r'<=|>=|<|>|=')) || t.startsWith('compare'))) {
+    if (cmp != null &&
+        (t.contains(RegExp(r'<=|>=|<|>|=')) || t.startsWith('compare'))) {
       // Distinguish `-5 + 8` (arithmetic) from comparisons: arithmetic
       // ops bind first when the operator is + - * / without compare word.
       final String op = cmp.group(2)!;

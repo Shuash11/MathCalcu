@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 
 // ═════════════════════════════════════════════════════════════
 // POINT-SLOPE SOLVER  (generated via SymPy)
@@ -21,17 +21,21 @@ class Fraction {
   });
 
   factory Fraction.fromDouble(double v) {
-    if (v.isNaN || v.isInfinite) return const Fraction(numerator: 0, denominator: 1);
+    if (v.isNaN || v.isInfinite)
+      return const Fraction(numerator: 0, denominator: 1);
     final r = v.round();
-    if ((v - r).abs() < 1e-6) return Fraction(numerator: r, denominator: 1, isWhole: true);
+    if ((v - r).abs() < 1e-6)
+      return Fraction(numerator: r, denominator: 1, isWhole: true);
     final s = (v * 1000).round();
     if ((s / 1000 - v).abs() < 0.0001) return _simplify(s, 1000);
     final str = v.toStringAsFixed(4);
     final dot = str.indexOf('.');
-    if (dot == -1) return Fraction(numerator: v.toInt(), denominator: 1, isWhole: true);
+    if (dot == -1)
+      return Fraction(numerator: v.toInt(), denominator: 1, isWhole: true);
     final whole = int.parse(str.substring(0, dot));
     var dec = str.substring(dot + 1).replaceAll(RegExp(r'0+$'), '');
-    if (dec.isEmpty) return Fraction(numerator: whole, denominator: 1, isWhole: true);
+    if (dec.isEmpty)
+      return Fraction(numerator: whole, denominator: 1, isWhole: true);
     if (dec.length > 4) dec = dec.substring(0, 4);
     final den = _pow10(dec.length);
     final num = whole * den + (v < 0 ? -int.parse(dec) : int.parse(dec));
@@ -47,14 +51,14 @@ class Fraction {
   double toDouble() => numerator / denominator;
 
   Fraction operator +(Fraction o) => _simplify(
-    numerator * o.denominator + o.numerator * denominator,
-    denominator * o.denominator,
-  );
+        numerator * o.denominator + o.numerator * denominator,
+        denominator * o.denominator,
+      );
 
   Fraction operator -(Fraction o) => _simplify(
-    numerator * o.denominator - o.numerator * denominator,
-    denominator * o.denominator,
-  );
+        numerator * o.denominator - o.numerator * denominator,
+        denominator * o.denominator,
+      );
 
   Fraction operator *(Fraction o) {
     final g1 = _gcd(numerator.abs(), o.denominator);
@@ -66,20 +70,27 @@ class Fraction {
   }
 
   Fraction operator /(Fraction o) => this * o.reciprocal();
-  Fraction operator -() => Fraction(numerator: -numerator, denominator: denominator);
+  Fraction operator -() =>
+      Fraction(numerator: -numerator, denominator: denominator);
 
-  Fraction abs() => Fraction(numerator: numerator.abs(), denominator: denominator, isWhole: isWhole);
+  Fraction abs() => Fraction(
+      numerator: numerator.abs(), denominator: denominator, isWhole: isWhole);
   Fraction reciprocal() => _simplify(denominator, numerator);
 
   Fraction simplified() {
     if (denominator == 0) return const Fraction(numerator: 0, denominator: 1);
-    if (denominator == 1 || numerator == 0) return Fraction(numerator: numerator, denominator: 1, isWhole: true);
+    if (denominator == 1 || numerator == 0)
+      return Fraction(numerator: numerator, denominator: 1, isWhole: true);
     int n = numerator;
     int d = denominator;
-    if (d < 0) { n = -n; d = -d; }
+    if (d < 0) {
+      n = -n;
+      d = -d;
+    }
     final g = _gcd(n.abs(), d);
     if (g == 1) return Fraction(numerator: n, denominator: d);
-    n ~/= g; d ~/= g;
+    n ~/= g;
+    d ~/= g;
     if (d == 1) return Fraction(numerator: n, denominator: 1, isWhole: true);
     return Fraction(numerator: n, denominator: d);
   }
@@ -89,16 +100,24 @@ class Fraction {
 
 Fraction _simplify(int n, int d) {
   if (d == 0) return const Fraction(numerator: 0, denominator: 1);
-  if (d < 0) { n = -n; d = -d; }
+  if (d < 0) {
+    n = -n;
+    d = -d;
+  }
   final g = _gcd(n.abs(), d);
   if (g == 1) return Fraction(numerator: n, denominator: d);
-  n ~/= g; d ~/= g;
+  n ~/= g;
+  d ~/= g;
   if (d == 1) return Fraction(numerator: n, denominator: 1, isWhole: true);
   return Fraction(numerator: n, denominator: d);
 }
 
 int _gcd(int a, int b) {
-  while (b != 0) { final t = b; b = a % b; a = t; }
+  while (b != 0) {
+    final t = b;
+    b = a % b;
+    a = t;
+  }
   return a;
 }
 
@@ -106,7 +125,9 @@ int _lcm(int a, int b) => (a * b) ~/ _gcd(a, b);
 
 int _pow10(int e) {
   int r = 1;
-  for (int i = 0; i < e; i++) { r *= 10; }
+  for (int i = 0; i < e; i++) {
+    r *= 10;
+  }
   return r;
 }
 
@@ -116,7 +137,8 @@ class SolveStep {
   final String title;
   final String explanation;
   final String result;
-  const SolveStep({required this.title, required this.explanation, required this.result});
+  const SolveStep(
+      {required this.title, required this.explanation, required this.result});
 }
 
 class PointSlopeSolver {
@@ -127,13 +149,20 @@ class PointSlopeSolver {
   const PointSlopeSolver({required this.m, required this.x1, required this.y1});
 
   factory PointSlopeSolver.fromDoubles({
-    required double m, required double x1, required double y1,
-  }) => PointSlopeSolver(
-    m: Fraction.fromDouble(m), x1: Fraction.fromDouble(x1), y1: Fraction.fromDouble(y1),
-  );
+    required double m,
+    required double x1,
+    required double y1,
+  }) =>
+      PointSlopeSolver(
+        m: Fraction.fromDouble(m),
+        x1: Fraction.fromDouble(x1),
+        y1: Fraction.fromDouble(y1),
+      );
 
   factory PointSlopeSolver.fromStrings({
-    required String mText, required String x1Text, required String y1Text,
+    required String mText,
+    required String x1Text,
+    required String y1Text,
   }) {
     final mF = _parseFrac(mText);
     final xF = _parseFrac(x1Text);
@@ -162,8 +191,16 @@ class PointSlopeSolver {
     int bc = -l;
     int c = -(bs.numerator * (l ~/ bs.denominator));
     final g = _gcd(_gcd(a.abs(), bc.abs()), c.abs());
-    if (g > 1) { a ~/= g; bc ~/= g; c ~/= g; }
-    if (a < 0) { a = -a; bc = -bc; c = -c; }
+    if (g > 1) {
+      a ~/= g;
+      bc ~/= g;
+      c ~/= g;
+    }
+    if (a < 0) {
+      a = -a;
+      bc = -bc;
+      c = -c;
+    }
     return '${_fmtCoeff(a, 'x', true)}${_fmtCoeff(bc, 'y', false)}= $c';
   }
 
@@ -181,35 +218,40 @@ class PointSlopeSolver {
   String get simplifiedAnswer => standardForm;
 
   List<SolveStep> get steps => [
-    SolveStep(
-      title: 'Point-Slope Form',
-      explanation: 'Write the equation using the point and slope: y - y1 = m(x - x1).',
-      result: pointSlopeForm,
-    ),
-    const SolveStep(
-      title: 'Expand to Slope-Intercept Form',
-      explanation: 'Distribute m: y - y1 = m * (x - x1). Then, solve for y.',
-      result: 'y = y1 + m(x - x1)',
-    ),
-    SolveStep(
-      title: 'Simplify Constant Term',
-      explanation: 'Combine y1 and -m*x1 into a single constant term.',
-      result: 'y = (${y1.toString()}) + ${m.simplified()}(x ${x1.numerator >= 0 ? '-' : '+'} ${x1.abs()})',
-    ),
-    SolveStep(
-      title: 'Convert to General Form',
-      explanation: 'Bring all terms to one side: mx - y + (y1 - m*x1) = 0.',
-      result: generalForm,
-    ),
-    SolveStep(
-      title: 'Convert to Standard Form',
-      explanation: 'Rearrange to get Ax + By = C.',
-      result: standardForm,
-    ),
-  ];
+        SolveStep(
+          title: 'Point-Slope Form',
+          explanation:
+              'Write the equation using the point and slope: y - y1 = m(x - x1).',
+          result: pointSlopeForm,
+        ),
+        const SolveStep(
+          title: 'Expand to Slope-Intercept Form',
+          explanation:
+              'Distribute m: y - y1 = m * (x - x1). Then, solve for y.',
+          result: 'y = y1 + m(x - x1)',
+        ),
+        SolveStep(
+          title: 'Simplify Constant Term',
+          explanation: 'Combine y1 and -m*x1 into a single constant term.',
+          result:
+              'y = (${y1.toString()}) + ${m.simplified()}(x ${x1.numerator >= 0 ? '-' : '+'} ${x1.abs()})',
+        ),
+        SolveStep(
+          title: 'Convert to General Form',
+          explanation: 'Bring all terms to one side: mx - y + (y1 - m*x1) = 0.',
+          result: generalForm,
+        ),
+        SolveStep(
+          title: 'Convert to Standard Form',
+          explanation: 'Rearrange to get Ax + By = C.',
+          result: standardForm,
+        ),
+      ];
 
   static PointSlopeSolver? tryParse({
-    required String mText, required String x1Text, required String y1Text,
+    required String mText,
+    required String x1Text,
+    required String y1Text,
   }) {
     final mF = _parseFrac(mText);
     final xF = _parseFrac(x1Text);
@@ -232,8 +274,16 @@ class PointSlopeSolver {
     int bc = -l;
     int c = bs.numerator * (l ~/ bs.denominator);
     final g = _gcd(_gcd(a.abs(), bc.abs()), c.abs());
-    if (g > 1) { a ~/= g; bc ~/= g; c ~/= g; }
-    if (a < 0) { a = -a; bc = -bc; c = -c; }
+    if (g > 1) {
+      a ~/= g;
+      bc ~/= g;
+      c ~/= g;
+    }
+    if (a < 0) {
+      a = -a;
+      bc = -bc;
+      c = -c;
+    }
     return '${_fmtCoeff(a, 'x', true)}${_fmtCoeff(bc, 'y', false)}${_fmtConst(c)} = 0';
   }
 
@@ -278,7 +328,8 @@ class PointSlopeSolver {
       }
     }
     final iv = int.tryParse(text);
-    if (iv != null) return Fraction(numerator: iv, denominator: 1, isWhole: true);
+    if (iv != null)
+      return Fraction(numerator: iv, denominator: 1, isWhole: true);
     final dv = double.tryParse(text);
     if (dv != null) return Fraction.fromDouble(dv);
     return null;

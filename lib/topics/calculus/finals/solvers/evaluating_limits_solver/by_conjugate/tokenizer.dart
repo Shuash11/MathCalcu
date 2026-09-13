@@ -1,4 +1,4 @@
-﻿class TokenType {
+class TokenType {
   static const int number = 0;
   static const int variable = 1;
   static const int operator = 2;
@@ -179,7 +179,8 @@ class Tokenizer {
     while (pos < s.length && (_isDigit(s[pos]) || s[pos] == '.')) {
       if (s[pos] == '.') dotCount++;
       if (dotCount > 1) {
-        throw TokenizerException('Invalid number near "${s.substring(start, pos + 1)}"');
+        throw TokenizerException(
+            'Invalid number near "${s.substring(start, pos + 1)}"');
       }
       pos++;
     }

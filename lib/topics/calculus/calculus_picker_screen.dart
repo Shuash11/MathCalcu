@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/shared/widgets/empty_state.dart';
@@ -27,10 +27,12 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
   void initState() {
     super.initState();
 
-    _controllers = List.generate(2, (i) => AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    ));
+    _controllers = List.generate(
+        2,
+        (i) => AnimationController(
+              vsync: this,
+              duration: const Duration(milliseconds: 600),
+            ));
 
     _fadeAnims = _controllers
         .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOut))
@@ -133,9 +135,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                 ),
               ],
             ),
-
             const SizedBox(height: 24),
-
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -179,9 +179,7 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
-
             Padding(
               padding: const EdgeInsets.only(left: 60),
               child: Text(
@@ -199,7 +197,6 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
           ],
         ),
@@ -263,7 +260,8 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: accent,
                   borderRadius: BorderRadius.circular(20),
@@ -309,8 +307,9 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                 s.label.toLowerCase().contains(q) ||
                 s.subtitle.toLowerCase().contains(q))
             .toList();
-    final curriculumHits =
-        q.isEmpty ? const <CurriculumSearchHit>[] : CurriculumRegistry.search(q);
+    final curriculumHits = q.isEmpty
+        ? const <CurriculumSearchHit>[]
+        : CurriculumRegistry.search(q);
 
     if (hits.isEmpty && curriculumHits.isEmpty) {
       return SliverToBoxAdapter(
@@ -511,7 +510,8 @@ class _CalculusSectionCardState extends State<_CalculusSectionCard> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: accent.withValues(alpha: _hovered ? 0.28 : 0.12),
+                          color:
+                              accent.withValues(alpha: _hovered ? 0.28 : 0.12),
                           blurRadius: _hovered ? 14 : 6,
                           offset: const Offset(0, 3),
                         ),
@@ -575,9 +575,8 @@ class _CalculusSectionCardState extends State<_CalculusSectionCard> {
                       ),
                       child: Icon(
                         Icons.arrow_forward_ios_rounded,
-                        color: _hovered
-                            ? accent
-                            : accent.withValues(alpha: 0.85),
+                        color:
+                            _hovered ? accent : accent.withValues(alpha: 0.85),
                         size: 15,
                       ),
                     ),

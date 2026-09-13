@@ -50,7 +50,8 @@ class RationalEquation extends BaseEquation {
     if (sides.length != 2) return null;
 
     // Pattern A: p/x + q = r   (q, r plain numbers)
-    var m = RegExp(r'^([+-]?\d+(?:\.\d+)?)/x([+-]\d+(?:\.\d+)?/)?([+-]?\d+(?:\.\d+)?)?$')
+    var m = RegExp(
+            r'^([+-]?\d+(?:\.\d+)?)/x([+-]\d+(?:\.\d+)?/)?([+-]?\d+(?:\.\d+)?)?$')
         .firstMatch(sides[0]);
     // General approach for A: split LHS into fraction + rest.
     final rSide = double.tryParse(sides[1]);
@@ -87,9 +88,9 @@ class RationalEquation extends BaseEquation {
         ];
       }
       // Pattern B: a/(x+b) (+q) = r
-      final bm = RegExp(
-              r'^([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)([+-].+)?$')
-          .firstMatch(left);
+      final bm =
+          RegExp(r'^([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)([+-].+)?$')
+              .firstMatch(left);
       if (bm != null) {
         final a = double.parse(bm.group(1)!);
         final b = double.parse(bm.group(2)!);
@@ -189,8 +190,7 @@ class RationalEquation extends BaseEquation {
             title: isExtraneous ? 'Extraneous root' : 'Invalid input',
             explanation: isExtraneous
                 ? 'Candidate zeroes a denominator — no solution.'
-                : (_error ??
-                    'Use 1/x + 1/2 = 3/4 or a/(x+b) = c/(x+d).'))
+                : (_error ?? 'Use 1/x + 1/2 = 3/4 or a/(x+b) = c/(x+d).'))
       ];
     }
     final ex = (s[1] as List).cast<double>();
@@ -202,13 +202,18 @@ class RationalEquation extends BaseEquation {
           explanation:
               'Denominators ≠ 0, so x ≠ ${ex.map(G6Format.num).join(', ')}.'),
       StepModel(
-          stepNumber: 2, title: 'Clear denominators', explanation: s[2] as String),
+          stepNumber: 2,
+          title: 'Clear denominators',
+          explanation: s[2] as String),
       StepModel(
-          stepNumber: 3, title: 'Solve the linear equation', explanation: r.answer),
+          stepNumber: 3,
+          title: 'Solve the linear equation',
+          explanation: r.answer),
       const StepModel(
           stepNumber: 4,
           title: 'Check for extraneous roots',
-          explanation: 'Substitute back — reject any x that zeroes a denominator.'),
+          explanation:
+              'Substitute back — reject any x that zeroes a denominator.'),
     ];
   }
 }

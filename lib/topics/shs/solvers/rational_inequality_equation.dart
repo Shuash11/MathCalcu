@@ -30,8 +30,9 @@ class RationalInequalityEquation extends BaseEquation {
   /// Parses (mx+b)/(nx+c) <op> rhs(num). Returns map or null.
   Map<String, dynamic>? _parse() {
     final t = _n();
-    final m = RegExp(r'^\(?([^()]*x[^()]*)\)?/\(?([^()]*x[^()]*)\)?(<=|>=|<|>)(.+)$')
-        .firstMatch(t);
+    final m =
+        RegExp(r'^\(?([^()]*x[^()]*)\)?/\(?([^()]*x[^()]*)\)?(<=|>=|<|>)(.+)$')
+            .firstMatch(t);
     if (m == null) return null;
     final numE = m.group(1)!, denE = m.group(2)!;
     final op = m.group(3)!;
@@ -64,8 +65,8 @@ class RationalInequalityEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: '(x - 1)/(x + 2) > 0');
+    final empty =
+        FieldValidators.notEmpty(rawInput, example: '(x - 1)/(x + 2) > 0');
     if (empty != null) {
       _error = empty;
       return false;
@@ -101,8 +102,7 @@ class RationalInequalityEquation extends BaseEquation {
   SolveResult solve() {
     final p = _parse();
     if (p == null) {
-      return SolveResult.error(
-          _error ?? 'Use (ax + b)/(cx + d) > 0.');
+      return SolveResult.error(_error ?? 'Use (ax + b)/(cx + d) > 0.');
     }
     final a = p['a'] as double, b = p['b'] as double;
     final c = p['c'] as double, d = p['d'] as double;
@@ -143,10 +143,16 @@ class RationalInequalityEquation extends BaseEquation {
       // Endpoints: hole always open; numerator zero closed when non-strict.
       var leftBracket = '(';
       var rightBracket = ')';
-      if (!lo.isInfinite && !zeroN.isNaN && (lo - zeroN).abs() < 1e-9 && !strict) {
+      if (!lo.isInfinite &&
+          !zeroN.isNaN &&
+          (lo - zeroN).abs() < 1e-9 &&
+          !strict) {
         leftBracket = '[';
       }
-      if (!hi.isInfinite && !zeroN.isNaN && (hi - zeroN).abs() < 1e-9 && !strict) {
+      if (!hi.isInfinite &&
+          !zeroN.isNaN &&
+          (hi - zeroN).abs() < 1e-9 &&
+          !strict) {
         rightBracket = ']';
       }
       final _ = l;
@@ -207,7 +213,8 @@ class RationalInequalityEquation extends BaseEquation {
       const StepModel(
           stepNumber: 1,
           title: 'Excluded value + asymptotes',
-          explanation: 'Denominator ≠ 0 gives the vertical asymptote (open dot).'),
+          explanation:
+              'Denominator ≠ 0 gives the vertical asymptote (open dot).'),
       const StepModel(
           stepNumber: 2,
           title: 'Move everything left',

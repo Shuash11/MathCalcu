@@ -32,8 +32,8 @@ class SequenceEquation extends BaseEquation {
 
   List<double> _listed() {
     // Numbers not attached to a param name.
-    final stripped = rawInput.replaceAll(
-        RegExp(r'[a-zA-Z]+\s*=\s*-?\d+(?:\.\d+)?'), ' ');
+    final stripped =
+        rawInput.replaceAll(RegExp(r'[a-zA-Z]+\s*=\s*-?\d+(?:\.\d+)?'), ' ');
     return RegExp(r'-?\d+(?:\.\d+)?')
         .allMatches(stripped)
         .map((m) => double.parse(m.group(0)!))
@@ -42,8 +42,8 @@ class SequenceEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'arith a1 = 2, d = 3, n = 5');
+    final empty = FieldValidators.notEmpty(rawInput,
+        example: 'arith a1 = 2, d = 3, n = 5');
     if (empty != null) {
       _error = empty;
       return false;
@@ -60,12 +60,15 @@ class SequenceEquation extends BaseEquation {
   SolveResult solve() {
     final mode = _mode();
     if (mode == null) {
-      return SolveResult.error(
-          _error ?? 'Start with arith or geom.');
+      return SolveResult.error(_error ?? 'Start with arith or geom.');
     }
     final nRaw = _param('n');
-    if (nRaw == null || nRaw <= 0 || nRaw != nRaw.roundToDouble() || nRaw > 10000) {
-      return SolveResult.error('n must be a positive whole number — e.g. n = 5.');
+    if (nRaw == null ||
+        nRaw <= 0 ||
+        nRaw != nRaw.roundToDouble() ||
+        nRaw > 10000) {
+      return SolveResult.error(
+          'n must be a positive whole number — e.g. n = 5.');
     }
     final n = nRaw.toInt();
     if (mode == 'arith') {
@@ -77,17 +80,28 @@ class SequenceEquation extends BaseEquation {
         d ??= list[1] - list[0];
       }
       if (a1 == null || d == null) {
-        return SolveResult.error('Arithmetic needs a1 and d — e.g. arith a1 = 2, d = 3, n = 5.');
+        return SolveResult.error(
+            'Arithmetic needs a1 and d — e.g. arith a1 = 2, d = 3, n = 5.');
       }
       final an = a1 + (n - 1) * d;
       final sn = n / 2 * (2 * a1 + (n - 1) * d);
-      final terms = [for (var i = 1; i <= (n < 8 ? n : 8); i++) a1 + (i - 1) * d];
+      final terms = [
+        for (var i = 1; i <= (n < 8 ? n : 8); i++) a1 + (i - 1) * d
+      ];
       return SolveResult(
-        answer:
-            'a($n) = ${G6Format.num(an)}, S($n) = ${G6Format.num(sn)}',
+        answer: 'a($n) = ${G6Format.num(an)}, S($n) = ${G6Format.num(sn)}',
         points: terms,
         customData: [
-          {'kind': 'sequence', 'mode': 'arith', 'a1': a1, 'd': d, 'n': n, 'an': an, 'sum': sn, 'terms': terms}
+          {
+            'kind': 'sequence',
+            'mode': 'arith',
+            'a1': a1,
+            'd': d,
+            'n': n,
+            'an': an,
+            'sum': sn,
+            'terms': terms
+          }
         ],
       );
     }
@@ -99,7 +113,8 @@ class SequenceEquation extends BaseEquation {
       if (list[0] != 0) r ??= list[1] / list[0];
     }
     if (a1 == null || r == null) {
-      return SolveResult.error('Geometric needs a1 and r — e.g. geom a1 = 3, r = 2, n = 4.');
+      return SolveResult.error(
+          'Geometric needs a1 and r — e.g. geom a1 = 3, r = 2, n = 4.');
     }
     final an = a1 * math.pow(r, n - 1);
     double sn;
@@ -115,10 +130,20 @@ class SequenceEquation extends BaseEquation {
       for (var i = 1; i <= (n < 8 ? n : 8); i++) a1 * math.pow(r, i - 1)
     ];
     return SolveResult(
-      answer: 'a($n) = ${G6Format.num(an.toDouble())}, S($n) = ${G6Format.num(sn.toDouble())}',
+      answer:
+          'a($n) = ${G6Format.num(an.toDouble())}, S($n) = ${G6Format.num(sn.toDouble())}',
       points: terms.map((e) => (e as num).toDouble()).toList(),
       customData: [
-        {'kind': 'sequence', 'mode': 'geom', 'a1': a1, 'r': r, 'n': n, 'an': an, 'sum': sn, 'terms': terms}
+        {
+          'kind': 'sequence',
+          'mode': 'geom',
+          'a1': a1,
+          'r': r,
+          'n': n,
+          'an': an,
+          'sum': sn,
+          'terms': terms
+        }
       ],
     );
   }
@@ -142,7 +167,8 @@ class SequenceEquation extends BaseEquation {
           explanation: isArith
               ? 'a(n) = a1 + (n−1)d, S(n) = n/2·(2a1 + (n−1)d).'
               : 'a(n) = a1·r^(n−1), S(n) = a1(r^n − 1)/(r − 1).'),
-      StepModel(stepNumber: 2, title: 'Substitute', explanation: rawInput.trim()),
+      StepModel(
+          stepNumber: 2, title: 'Substitute', explanation: rawInput.trim()),
       StepModel(stepNumber: 3, title: 'nth term + sum', explanation: r.answer),
     ];
   }

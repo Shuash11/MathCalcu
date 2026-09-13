@@ -142,8 +142,7 @@ class G6FractionEquation extends BaseEquation {
       return false;
     }
     if (_expr.firstMatch(_normalized()) == null) {
-      _error =
-          'Use a/b or mixed a b/c with + - × ÷ — e.g. 2 1/3 + 1 1/2.';
+      _error = 'Use a/b or mixed a b/c with + - × ÷ — e.g. 2 1/3 + 1 1/2.';
       return false;
     }
     _error = null;
@@ -152,7 +151,9 @@ class G6FractionEquation extends BaseEquation {
 
   @override
   SolveResult solve() {
-    if (!validate() && _error != null && _expr.firstMatch(_normalized()) == null) {
+    if (!validate() &&
+        _error != null &&
+        _expr.firstMatch(_normalized()) == null) {
       return SolveResult.error(_error!);
     }
     final RegExpMatch? m = _expr.firstMatch(_normalized());
@@ -179,8 +180,7 @@ class G6FractionEquation extends BaseEquation {
         result = left.value / right.value;
       }
       final String exact = display(result);
-      final String decimal =
-          CalculatorEngine.formatResult(result.toDouble());
+      final String decimal = CalculatorEngine.formatResult(result.toDouble());
       final String answer = exact == decimal ? exact : '$exact = $decimal';
       final int lcd = G6Math.lcm(
         left.value.denominator.abs(),
@@ -265,15 +265,13 @@ class G6FractionEquation extends BaseEquation {
         StepModel(
           stepNumber: 3,
           title: '$opWord the fractions',
-          explanation:
-              '${display(left.value)} $op ${display(right.value)} = '
+          explanation: '${display(left.value)} $op ${display(right.value)} = '
               '${result.numerator}/${result.denominator} before simplifying.',
         ),
         StepModel(
           stepNumber: 4,
           title: 'Simplify and convert back',
-          explanation:
-              'Simplified: ${display(result)} '
+          explanation: 'Simplified: ${display(result)} '
               '(≈ ${CalculatorEngine.formatResult(result.toDouble())}).',
         ),
       ];

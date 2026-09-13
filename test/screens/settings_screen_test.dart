@@ -81,6 +81,48 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('manual check presents dialog when update is available',
+      (tester) async {
+    var dialogCount = 0;
+    UpdateInfo? dialogInfo;
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(),
+        child: MaterialApp(
+          home: SettingsScreen(
+            key: UniqueKey(),
+            updateChecker: () async => const UpdateInfo(
+              status: UpdateStatus.updateAvailable,
+              installedVersion: '1.12.8',
+              latestVersion: '1.12.9',
+              releaseUrl:
+                  'https://github.com/Shuash11/MathCalcu/releases/tag/v1.12.9',
+            ),
+            isWeb: false,
+            isAndroid: () => true,
+            isWindows: () => false,
+            showNativeUpdate: (_, info) {
+              dialogCount += 1;
+              dialogInfo = info;
+            },
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+
+    expect(find.text('Check for updates'), findsOneWidget);
+    await tester.tap(find.text('Check for updates'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(dialogCount, 1);
+    expect(dialogInfo?.latestVersion, '1.12.9');
+    expect(tester.takeException(), isNull);
+  });
+
   test('default SettingsScreen constructor remains valid for AppRouter', () {
     expect(const SettingsScreen(), isA<SettingsScreen>());
     expect(AppRouter.router, isNotNull);

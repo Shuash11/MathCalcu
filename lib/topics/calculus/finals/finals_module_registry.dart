@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 // ─────────────────────────────────────────────────────────────
 // FINALS MODULE REGISTRY
@@ -50,6 +50,7 @@ class FinalsModuleRegistry {
     // ─────────────────────────────────────────────────────
   ];
 }
+
 class FinalsModuleEntry {
   final String label;
   final String subtitle;

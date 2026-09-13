@@ -91,8 +91,7 @@ class G6GemdasEquation extends BaseEquation {
     final List<String> mulDiv = [];
     final List<String> addSub = [];
     final RegExp md = RegExp(r'-?\d+(?:\.\d+)?\s*[*/]\s*-?\d+(?:\.\d+)?');
-    final RegExp as =
-        RegExp(r'-?\d+(?:\.\d+)?\s*[+\-]\s*-?\d+(?:\.\d+)?');
+    final RegExp as = RegExp(r'-?\d+(?:\.\d+)?\s*[+\-]\s*-?\d+(?:\.\d+)?');
     mulDiv.addAll(_scan(compact, md));
     addSub.addAll(_scan(compact, as));
     return GemdasTrace(

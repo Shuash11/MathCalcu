@@ -94,14 +94,17 @@ class ExpLogEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'log2(x) + log2(x - 2) = 3');
+    final empty = FieldValidators.notEmpty(rawInput,
+        example: 'log2(x) + log2(x - 2) = 3');
     if (empty != null) {
       _error = empty;
       return false;
     }
     final t = _n().toLowerCase();
-    if (!t.contains('^') && !t.contains('log') && !t.contains('ln') && !t.contains('exp')) {
+    if (!t.contains('^') &&
+        !t.contains('log') &&
+        !t.contains('ln') &&
+        !t.contains('exp')) {
       _error = 'Include ^, log, or ln — e.g. 2^x = 32.';
       return false;
     }
@@ -127,7 +130,8 @@ class ExpLogEquation extends BaseEquation {
         return SolveResult.error('Base must be positive and ≠ 1.');
       }
       if (rhs <= 0) {
-        return SolveResult.error('No real solution — b^(…) is always positive.');
+        return SolveResult.error(
+            'No real solution — b^(…) is always positive.');
       }
       if (mm.abs() < 1e-12) {
         return SolveResult.error('Exponent must include x.');
@@ -151,7 +155,8 @@ class ExpLogEquation extends BaseEquation {
       if (!arg.isFinite) return SolveResult.error('Value overflows.');
       final x = arg - k;
       if (x + k <= 0) {
-        return SolveResult.error('No solution — log argument must be positive.');
+        return SolveResult.error(
+            'No solution — log argument must be positive.');
       }
       return SolveResult(
         answer: 'x = ${G6Format.num(x)}',

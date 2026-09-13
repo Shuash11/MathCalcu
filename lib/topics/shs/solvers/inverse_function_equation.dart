@@ -65,8 +65,7 @@ class InverseFunctionEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'f(x) = 2x + 3');
+    final empty = FieldValidators.notEmpty(rawInput, example: 'f(x) = 2x + 3');
     if (empty != null) {
       _error = empty;
       return false;
@@ -120,15 +119,24 @@ class InverseFunctionEquation extends BaseEquation {
       return coef < 0 ? ' - $body' : ' + $body';
     }
 
-    final numS = '${term(d, 'x', first: true)}${b.abs() < 1e-12 ? '' : (b > 0 ? ' - ${G6Format.num(b)}' : ' + ${G6Format.num(b.abs())}')}'
-        .trim();
-    final denS = '${term(c, 'x', first: true)}${a.abs() < 1e-12 ? '' : (a > 0 ? ' - ${G6Format.num(a)}' : ' + ${G6Format.num(a.abs())}')}'
-        .trim();
+    final numS =
+        '${term(d, 'x', first: true)}${b.abs() < 1e-12 ? '' : (b > 0 ? ' - ${G6Format.num(b)}' : ' + ${G6Format.num(b.abs())}')}'
+            .trim();
+    final denS =
+        '${term(c, 'x', first: true)}${a.abs() < 1e-12 ? '' : (a > 0 ? ' - ${G6Format.num(a)}' : ' + ${G6Format.num(a.abs())}')}'
+            .trim();
     return SolveResult(
       answer: 'f⁻¹(x) = ($numS)/($denS)',
       points: const [],
       customData: [
-        {'kind': 'inverse', 'type': 'fractional', 'a': a, 'b': b, 'c': c, 'd': d}
+        {
+          'kind': 'inverse',
+          'type': 'fractional',
+          'a': a,
+          'b': b,
+          'c': c,
+          'd': d
+        }
       ],
     );
   }

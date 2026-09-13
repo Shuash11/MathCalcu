@@ -140,7 +140,8 @@ void main() {
     });
 
     test('reversed meter errors', () {
-      expect(G6RateEquation('prev=1380 pres=1250 rate=12').solve().hasError, isTrue);
+      expect(G6RateEquation('prev=1380 pres=1250 rate=12').solve().hasError,
+          isTrue);
     });
   });
 }

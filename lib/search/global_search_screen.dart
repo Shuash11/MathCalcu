@@ -67,7 +67,8 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
     final accent = theme.accentColor;
     final isFocused = _searchFocusNode.hasFocus;
     final trimmed = _query.trim();
-    final hits = trimmed.isEmpty ? const <UnifiedHit>[] : UnifiedSearch.search(trimmed);
+    final hits =
+        trimmed.isEmpty ? const <UnifiedHit>[] : UnifiedSearch.search(trimmed);
 
     return Scaffold(
       backgroundColor: theme.surface,

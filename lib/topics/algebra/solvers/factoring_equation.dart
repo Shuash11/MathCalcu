@@ -67,8 +67,7 @@ class FactoringEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'x^2 + 5x + 6');
+    final empty = FieldValidators.notEmpty(rawInput, example: 'x^2 + 5x + 6');
     if (empty != null) {
       _error = empty;
       return false;
@@ -101,7 +100,8 @@ class FactoringEquation extends BaseEquation {
     }
     final ai = _asInt(cf[0]), bi = _asInt(cf[1]), ci = _asInt(cf[2]);
     if (ai == null || bi == null || ci == null || ai == 0) {
-      return SolveResult.error('Integer coefficients only — e.g. x^2 + 5x + 6.');
+      return SolveResult.error(
+          'Integer coefficients only — e.g. x^2 + 5x + 6.');
     }
     // GCF across non-zero terms.
     final nz = [ai, bi, ci].where((v) => v != 0).toList();
@@ -115,9 +115,8 @@ class FactoringEquation extends BaseEquation {
     if (b == 0 && c != 0) {
       // a x^2 + c: DOTS when signs differ.
       if (a * c < 0) {
-        final p = _intSqrt((c ~/ -a * (a < 0 ? -1 : 1)).abs() == 0
-            ? 0
-            : (-c ~/ a));
+        final p =
+            _intSqrt((c ~/ -a * (a < 0 ? -1 : 1)).abs() == 0 ? 0 : (-c ~/ a));
         if (p != null) {
           factored = '(x+$p)(x-$p)';
           kind = 'dots';
@@ -179,7 +178,12 @@ class FactoringEquation extends BaseEquation {
       // Divisor-based search for big c.
       for (var m = 1; m * m <= c.abs() + 1; m++) {
         if (c != 0 && c % m != 0) continue;
-        for (final s in [m, -m, c ~/ (m == 0 ? 1 : m), -(c ~/ (m == 0 ? 1 : m))]) {
+        for (final s in [
+          m,
+          -m,
+          c ~/ (m == 0 ? 1 : m),
+          -(c ~/ (m == 0 ? 1 : m))
+        ]) {
           final n = b - s;
           if (s * n == c) return _fmtFactor(1, s) + _fmtFactor(1, n);
         }
@@ -239,7 +243,9 @@ class FactoringEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1, title: 'No integer factors', explanation: r.errorMessage ?? '')
+            stepNumber: 1,
+            title: 'No integer factors',
+            explanation: r.errorMessage ?? '')
       ];
     }
     final m = (r.customData!.first as Map)['factorKind'] as String;

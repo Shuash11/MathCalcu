@@ -55,7 +55,10 @@ class LHopitalEquation extends BaseEquation {
       final am = RegExp(r'a\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
       if (am == null) return null;
       a = double.parse(am.group(1)!);
-      body = t.replaceFirst(am.group(0)!, '').trim().replaceAll(RegExp(r'^[,;]\s*'), '');
+      body = t
+          .replaceFirst(am.group(0)!, '')
+          .trim()
+          .replaceAll(RegExp(r'^[,;]\s*'), '');
       if (body.isEmpty) return null;
     }
     // Split f/g: explicit '/' or 'f=..., g=...' or comma pair.
@@ -93,8 +96,8 @@ class LHopitalEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'lim x->0 sin(x)/x');
+    final empty =
+        FieldValidators.notEmpty(rawInput, example: 'lim x->0 sin(x)/x');
     if (empty != null) {
       _error = empty;
       return false;
@@ -111,8 +114,7 @@ class LHopitalEquation extends BaseEquation {
   SolveResult solve() {
     final p = _parse();
     if (p == null) {
-      return SolveResult.error(
-          _error ?? 'Use lim x->a f/g.');
+      return SolveResult.error(_error ?? 'Use lim x->a f/g.');
     }
     final f = p[0] as String, g = p[1] as String, a = p[2] as double;
     // Direct values near a (avoid exact singular point).
@@ -120,12 +122,14 @@ class LHopitalEquation extends BaseEquation {
     final fv = _ev(f, a) ?? _ev(f, a + h);
     final gv = _ev(g, a) ?? _ev(g, a + h);
     if (fv == null || gv == null) {
-      return SolveResult.error('Could not evaluate f and g near x = ${G6Format.num(a)}.');
+      return SolveResult.error(
+          'Could not evaluate f and g near x = ${G6Format.num(a)}.');
     }
     final is00 = fv.abs() < 1e-4 && gv.abs() < 1e-4;
     final fp = _deriv(f, a), gp = _deriv(g, a);
     if (fp == null || gp == null) {
-      return SolveResult.error('Could not differentiate numerically at x = ${G6Format.num(a)}.');
+      return SolveResult.error(
+          'Could not differentiate numerically at x = ${G6Format.num(a)}.');
     }
     if (gp.abs() < 1e-12) {
       return SolveResult.error("L'Hôpital does not apply — g′(a) = 0.");
@@ -167,7 +171,9 @@ class LHopitalEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1, title: 'Cannot apply', explanation: r.errorMessage ?? '')
+            stepNumber: 1,
+            title: 'Cannot apply',
+            explanation: r.errorMessage ?? '')
       ];
     }
     final d = r.customData!.first as Map;
@@ -181,10 +187,7 @@ class LHopitalEquation extends BaseEquation {
           title: "Differentiate top and bottom",
           explanation:
               'f′ ≈ ${G6Format.num((d['fPrime'] as num).toDouble())}, g′ ≈ ${G6Format.num((d['gPrime'] as num).toDouble())}.'),
-      StepModel(
-          stepNumber: 3,
-          title: 'Limit of f′/g′',
-          explanation: r.answer),
+      StepModel(stepNumber: 3, title: 'Limit of f′/g′', explanation: r.answer),
       const StepModel(
           stepNumber: 4,
           title: 'Sanity check',

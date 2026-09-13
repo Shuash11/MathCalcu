@@ -16,7 +16,8 @@ class LCDLimitScreen extends StatefulWidget {
   State<LCDLimitScreen> createState() => _LCDLimitScreenState();
 }
 
-class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStateMixin {
+class _LCDLimitScreenState extends State<LCDLimitScreen>
+    with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   final _expressionFocus = FocusNode();
@@ -24,7 +25,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
   TextEditingController? _activeController;
   final _hideKeyboardSignal = ValueNotifier<int>(0);
   String _currentVariable = 'x';
-  
+
   LimitSolution? _solution;
   bool _isSolving = false;
 
@@ -39,11 +40,13 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim = CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
+    _fadeAnim =
+        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
     _slideAnim = Tween<Offset>(
       begin: const Offset(0, 0.05),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(
+        parent: _contentController, curve: Curves.easeOutCubic));
 
     _contentController.forward();
 
@@ -78,13 +81,16 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
 
   void _solve() {
     _hideKeyboardSignal.value++;
-    if (_expressionController.text.isEmpty || _approachController.text.isEmpty) {
+    if (_expressionController.text.isEmpty ||
+        _approachController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please enter both an expression and an approach value.'),
+          content: const Text(
+              'Please enter both an expression and an approach value.'),
           backgroundColor: FinalsTheme.danger,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
       return;
@@ -104,13 +110,17 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
           content: const Text('Please enter an approach value.'),
           backgroundColor: FinalsTheme.danger,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
       return;
     }
 
-    if (approachText == 'inf' || approachText == '+inf' || approachText == 'infinity' || approachText == '+infinity') {
+    if (approachText == 'inf' ||
+        approachText == '+inf' ||
+        approachText == 'infinity' ||
+        approachText == '+infinity') {
       approachVal = double.infinity;
     } else if (approachText == '-inf' || approachText == '-infinity') {
       approachVal = double.negativeInfinity;
@@ -119,10 +129,12 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
       if (parsed == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Invalid approach value "$approachText". Please enter a number or infinity.'),
+            content: Text(
+                'Invalid approach value "$approachText". Please enter a number or infinity.'),
             backgroundColor: FinalsTheme.danger,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
         return;
@@ -137,7 +149,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
         _currentVariable,
         approachVal,
       );
-      
+
       setState(() {
         _solution = sol;
         _isSolving = false;
@@ -185,11 +197,11 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
                         LCDInputField(
                           expressionFocus: _expressionFocus,
                           approachFocus: _approachFocus,
-
                           expressionController: _expressionController,
                           approachController: _approachController,
                           currentVariable: _currentVariable,
-                          onVariableChanged: (v) => setState(() => _currentVariable = v),
+                          onVariableChanged: (v) =>
+                              setState(() => _currentVariable = v),
                           onSolve: _solve,
                           isLoading: _isSolving,
                         ),
@@ -240,8 +252,10 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
               backgroundColor: FinalsTheme.card(context),
               foregroundColor: FinalsTheme.textPrimary(context),
               padding: const EdgeInsets.all(12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              side: BorderSide(color: FinalsTheme.danger.withValues(alpha: 0.1)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              side:
+                  BorderSide(color: FinalsTheme.danger.withValues(alpha: 0.1)),
             ),
           ),
           const SizedBox(width: 20),
@@ -267,7 +281,8 @@ class _LCDLimitScreenState extends State<LCDLimitScreen> with TickerProviderStat
             decoration: BoxDecoration(
               color: FinalsTheme.danger.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: FinalsTheme.danger.withValues(alpha: 0.2)),
+              border:
+                  Border.all(color: FinalsTheme.danger.withValues(alpha: 0.2)),
             ),
             child: const Row(
               children: [

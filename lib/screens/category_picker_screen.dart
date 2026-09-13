@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/core/curriculum_registry.dart';
+import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/screens/inequality.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
@@ -200,9 +200,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
                       children: [
-                        for (int index = 0;
-                            index < _filtered.length;
-                            index++)
+                        for (int index = 0; index < _filtered.length; index++)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 16),
                             child: FadeTransition(
@@ -264,7 +262,8 @@ class _CategoryHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: theme.card,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: theme.textSecondary.withValues(alpha: 0.2)),
+                    border: Border.all(
+                        color: theme.textSecondary.withValues(alpha: 0.2)),
                   ),
                   child: Icon(
                     Icons.arrow_back_ios_new_rounded,
@@ -284,9 +283,7 @@ class _CategoryHeader extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 20),
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -308,9 +305,7 @@ class _CategoryHeader extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 12),
-
           Padding(
             padding: const EdgeInsets.only(left: 52),
             child: Text(

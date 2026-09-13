@@ -165,7 +165,8 @@ class G6PercentEquation extends BaseEquation {
       return false;
     }
     if (_parse() == null) {
-      _error = 'Use 25% of 200, R=? P=50 B=200, 500 less 20%, or P=1000 R=5% T=2.';
+      _error =
+          'Use 25% of 200, R=? P=50 B=200, 500 less 20%, or P=1000 R=5% T=2.';
       return false;
     }
     _error = null;
@@ -248,9 +249,8 @@ class G6PercentEquation extends BaseEquation {
         ),
       ];
     }
-    final String warn = p.rate > 100
-        ? ' Note: rate exceeds 100% — check if intended.'
-        : '';
+    final String warn =
+        p.rate > 100 ? ' Note: rate exceeds 100% — check if intended.' : '';
     switch (p.mode) {
       case _PercentMode.of:
       case _PercentMode.findPart:
@@ -278,12 +278,14 @@ class G6PercentEquation extends BaseEquation {
           StepModel(
             stepNumber: 1,
             title: 'Write the triad',
-            explanation: 'P = ${G6Format.num(p.part)}, B = ${G6Format.num(p.base)}.',
+            explanation:
+                'P = ${G6Format.num(p.part)}, B = ${G6Format.num(p.base)}.',
           ),
           StepModel(
             stepNumber: 2,
             title: 'R = P ÷ B × 100%',
-            explanation: 'R = ${G6Format.num(p.part)} ÷ ${G6Format.num(p.base)} × 100%.',
+            explanation:
+                'R = ${G6Format.num(p.part)} ÷ ${G6Format.num(p.base)} × 100%.',
           ),
           StepModel(
             stepNumber: 3,
@@ -297,13 +299,13 @@ class G6PercentEquation extends BaseEquation {
           StepModel(
             stepNumber: 1,
             title: 'Write the triad',
-            explanation: 'P = ${G6Format.num(p.part)}, R = ${G6Format.num(p.rate)}%.',
+            explanation:
+                'P = ${G6Format.num(p.part)}, R = ${G6Format.num(p.rate)}%.',
           ),
           StepModel(
             stepNumber: 2,
             title: 'B = P ÷ R',
-            explanation:
-                'B = ${G6Format.num(p.part)} ÷ ${p.rate}/100.',
+            explanation: 'B = ${G6Format.num(p.part)} ÷ ${p.rate}/100.',
           ),
           StepModel(
             stepNumber: 3,
@@ -322,8 +324,7 @@ class G6PercentEquation extends BaseEquation {
           StepModel(
             stepNumber: 2,
             title: 'Discount amount',
-            explanation:
-                '${G6Format.money(p.base)} × ${p.rate}/100 = '
+            explanation: '${G6Format.money(p.base)} × ${p.rate}/100 = '
                 '${G6Format.money(p.base * p.rate / 100)}.',
           ),
           StepModel(
@@ -343,8 +344,7 @@ class G6PercentEquation extends BaseEquation {
           StepModel(
             stepNumber: 2,
             title: 'Tax amount',
-            explanation:
-                '${G6Format.money(p.base)} × ${p.rate}/100 = '
+            explanation: '${G6Format.money(p.base)} × ${p.rate}/100 = '
                 '${G6Format.money(p.base * p.rate / 100)}.',
           ),
           StepModel(
@@ -371,8 +371,7 @@ class G6PercentEquation extends BaseEquation {
           StepModel(
             stepNumber: 3,
             title: 'Multiply and add',
-            explanation:
-                'Interest = ${G6Format.money(interest)}. '
+            explanation: 'Interest = ${G6Format.money(interest)}. '
                 'Amount = ${G6Format.money(p.base + interest)}.',
           ),
         ];

@@ -17,8 +17,7 @@ class Grade6GemdasScreen extends StatelessWidget {
         icon: Icons.format_list_numbered_rounded,
         // CalculatorEngine.evaluate stops at the first space —
         // strip spaces before evaluation.
-        createEquation: (input) =>
-            G6GemdasEquation(input.replaceAll(' ', '')),
+        createEquation: (input) => G6GemdasEquation(input.replaceAll(' ', '')),
       ),
     );
   }

@@ -1,6 +1,5 @@
-﻿import 'expressions_evaluator.dart';
+import 'expressions_evaluator.dart';
 import 'substitution_engine.dart';
-
 
 /// Represents a single step in the solution
 class SolutionStep {
@@ -39,7 +38,7 @@ class SubstitutionStepsGenerator {
     }
 
     if (result.needsDifferentMethod) {
-      if (result.isFraction && 
+      if (result.isFraction &&
           result.numeratorResult != null &&
           result.denominatorResult != null &&
           (result.numeratorResult!.value.abs()) < 1e-9 &&
@@ -65,14 +64,20 @@ class SubstitutionStepsGenerator {
       stepNumber: 1,
       title: 'Write the Limit',
       explanation: 'Write the original limit problem.',
-      mathExpression: r'\lim_{x \to ' + _fmt(result.approachValue) + r'} \left( ' + _toLatexOriginal(result.normalizedExpression) + r'\right)',
+      mathExpression: r'\lim_{x \to ' +
+          _fmt(result.approachValue) +
+          r'} \left( ' +
+          _toLatexOriginal(result.normalizedExpression) +
+          r'\right)',
     ));
 
     steps.add(SolutionStep(
       stepNumber: 2,
       title: 'Substitute the Value Directly',
-      explanation: 'Replace x with ${_fmt(result.approachValue)} in the expression.',
-      mathExpression: 'f(${_fmt(result.approachValue)}) = ' + _toLatexExpression(result.normalizedExpression, result.approachValue),
+      explanation:
+          'Replace x with ${_fmt(result.approachValue)} in the expression.',
+      mathExpression: 'f(${_fmt(result.approachValue)}) = ' +
+          _toLatexExpression(result.normalizedExpression, result.approachValue),
     ));
 
     steps.add(SolutionStep(
@@ -86,7 +91,12 @@ class SubstitutionStepsGenerator {
       stepNumber: 4,
       title: 'Final Answer',
       explanation: 'The limit exists and equals the computed value.',
-      mathExpression: r'\lim_{x \to ' + _fmt(result.approachValue) + r'} \left( ' + _toLatexOriginal(result.normalizedExpression) + r'\right) = ' + (result.finalValue?.toString() ?? 'undefined'),
+      mathExpression: r'\lim_{x \to ' +
+          _fmt(result.approachValue) +
+          r'} \left( ' +
+          _toLatexOriginal(result.normalizedExpression) +
+          r'\right) = ' +
+          (result.finalValue?.toString() ?? 'undefined'),
     ));
 
     return steps;
@@ -95,7 +105,8 @@ class SubstitutionStepsGenerator {
   String _toLatexOriginal(String expr) {
     String result = expr.replaceAll('*', '');
     result = result.replaceAll(RegExp(r'\s+'), ' ');
-    result = result.replaceAllMapped(RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
+    result = result.replaceAllMapped(
+        RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
     return result.trim();
   }
 
@@ -111,7 +122,8 @@ class SubstitutionStepsGenerator {
 
     result = result.replaceAll('*', '');
 
-    result = result.replaceAllMapped(RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
+    result = result.replaceAllMapped(
+        RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
 
     return result;
   }
@@ -128,8 +140,10 @@ class SubstitutionStepsGenerator {
       SolutionStep(
         stepNumber: 2,
         title: 'Apply Direct Substitution',
-        explanation: 'Let\'s try substituting x = ${_fmt(result.approachValue)} directly.',
-        mathExpression: 'Numerator at x = ${_fmt(result.approachValue)}: ${result.numeratorResult?.description ?? "0"}\n'
+        explanation:
+            'Let\'s try substituting x = ${_fmt(result.approachValue)} directly.',
+        mathExpression:
+            'Numerator at x = ${_fmt(result.approachValue)}: ${result.numeratorResult?.description ?? "0"}\n'
             'Denominator at x = ${_fmt(result.approachValue)}: ${result.denominatorResult?.description ?? "0"}\n\n'
             'Result: 0/0',
       ),
@@ -147,7 +161,8 @@ class SubstitutionStepsGenerator {
       SolutionStep(
         stepNumber: 4,
         title: 'Recommendation',
-        explanation: '${result.suggestedMethod ?? "Try a different method."}\n\n'
+        explanation:
+            '${result.suggestedMethod ?? "Try a different method."}\n\n'
             'For rational functions (polynomial ? polynomial) that give 0/0, '
             'the most common approach is:\n\n'
             '1. FACTOR both numerator and denominator\n'
@@ -157,7 +172,8 @@ class SubstitutionStepsGenerator {
             '• L\'Hôpital\'s Rule (take derivatives)\n'
             '• Rationalization (for roots)\n'
             '• Algebraic manipulation',
-        mathExpression: 'This limit CANNOT be solved by direct substitution alone.\n'
+        mathExpression:
+            'This limit CANNOT be solved by direct substitution alone.\n'
             'Try the "Factoring" method instead.',
       ),
     ];
@@ -176,9 +192,9 @@ class SubstitutionStepsGenerator {
         stepNumber: 2,
         title: 'Apply Direct Substitution',
         explanation: 'Let\'s substitute x = ${_fmt(result.approachValue)}.',
-        mathExpression: result.isFraction 
+        mathExpression: result.isFraction
             ? 'Numerator: ${result.numeratorResult?.description ?? "?"}\n'
-              'Denominator: ${result.denominatorResult?.description ?? "?"}'
+                'Denominator: ${result.denominatorResult?.description ?? "?"}'
             : 'f(${_fmt(result.approachValue)}) = ${result.finalValueDescription}',
       ),
       SolutionStep(
@@ -186,18 +202,20 @@ class SubstitutionStepsGenerator {
         title: 'Analyze the Result',
         explanation: result.isFraction
             ? 'The numerator evaluates to a non-zero value, but the denominator is zero.\n\n'
-              'This means the function grows without bound as x approaches ${_fmt(result.approachValue)}.\n\n'
-              'To determine whether it\'s +∞ or -∞, we need to check the signs:\n'
-              '• Numerator sign: ${_getSign(result.numeratorResult?.value)}\n'
-              '• Denominator sign near ${_fmt(result.approachValue)}: ${_getSign(result.denominatorResult?.value)}'
+                'This means the function grows without bound as x approaches ${_fmt(result.approachValue)}.\n\n'
+                'To determine whether it\'s +∞ or -∞, we need to check the signs:\n'
+                '• Numerator sign: ${_getSign(result.numeratorResult?.value)}\n'
+                '• Denominator sign near ${_fmt(result.approachValue)}: ${_getSign(result.denominatorResult?.value)}'
             : 'The function evaluates to infinity, meaning it grows without bound.',
       ),
       SolutionStep(
         stepNumber: 4,
         title: 'Final Answer',
-        explanation: 'The limit does not exist as a finite number. The function '
+        explanation:
+            'The limit does not exist as a finite number. The function '
             'grows without bound.',
-        mathExpression: 'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression} '
+        mathExpression:
+            'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression} '
             '= ${result.finalValueDescription}',
       ),
     ];
@@ -215,13 +233,15 @@ class SubstitutionStepsGenerator {
       SolutionStep(
         stepNumber: 2,
         title: 'Apply Direct Substitution',
-        explanation: 'Substituting x = ${_fmt(result.approachValue)} gives an undefined result.',
+        explanation:
+            'Substituting x = ${_fmt(result.approachValue)} gives an undefined result.',
         mathExpression: 'f(${_fmt(result.approachValue)}) = undefined',
       ),
       SolutionStep(
         stepNumber: 3,
         title: 'Analysis',
-        explanation: 'The expression is undefined at this point. This could be due to:\n'
+        explanation:
+            'The expression is undefined at this point. This could be due to:\n'
             '• Division by zero\n'
             '• Square root of a negative number\n'
             '• Logarithm of zero or negative number\n\n'

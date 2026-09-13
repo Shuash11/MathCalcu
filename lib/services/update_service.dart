@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -104,8 +104,7 @@ class UpdateService {
 
       final releaseUrl = data['html_url'] as String? ?? '';
       final releaseNotes = data['body'] as String? ?? '';
-      final hasUpdate =
-          _compareVersions(latestVersion, installedVersion) > 0;
+      final hasUpdate = _compareVersions(latestVersion, installedVersion) > 0;
 
       return UpdateInfo(
         status:
@@ -147,10 +146,12 @@ class UpdateService {
   /// Handles pre-release suffixes (e.g. "1.0.2-rc1" → major=1, minor=0, patch=2).
   /// Handles variable-length segments (covers all, not just 3).
   static int _compareVersions(String a, String b) {
-    final _clean = (String s) => int.tryParse(s.replaceAll(RegExp(r'[^0-9].*$'), '')) ?? 0;
+    final _clean =
+        (String s) => int.tryParse(s.replaceAll(RegExp(r'[^0-9].*$'), '')) ?? 0;
     final aParts = a.split('.').map(_clean).toList();
     final bParts = b.split('.').map(_clean).toList();
-    final maxLen = aParts.length > bParts.length ? aParts.length : bParts.length;
+    final maxLen =
+        aParts.length > bParts.length ? aParts.length : bParts.length;
 
     for (int i = 0; i < maxLen; i++) {
       final aVal = i < aParts.length ? aParts[i] : 0;
@@ -207,7 +208,9 @@ class UpdateService {
 
     // Check first bytes for HTML content (GitHub redirect/error pages)
     final head = String.fromCharCodes(bytes.take(20));
-    if (head.contains('<!') || head.contains('<html') || head.contains('Not Found')) {
+    if (head.contains('<!') ||
+        head.contains('<html') ||
+        head.contains('Not Found')) {
       return 'Downloaded an error page instead of APK. Please try again.';
     }
 
@@ -225,14 +228,16 @@ class UpdateService {
 
   /// Download the latest release binary and trigger installation.
   /// Returns null on success, or an error message string on failure.
-  static Future<String?> downloadAndInstall(void Function(double progress)? onProgress) async {
+  static Future<String?> downloadAndInstall(
+      void Function(double progress)? onProgress) async {
     try {
       // Clean up any leftover temp files from previous attempts
       await cleanupTempFiles();
 
       final isWin = Platform.isWindows;
       final binaryName = isWin ? 'MathCalcu-Setup.exe' : 'MathCalcu.apk';
-      final url = 'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
+      final url =
+          'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
 
       final client = http.Client();
       try {
@@ -308,7 +313,8 @@ class UpdateService {
 
               if (Platform.isAndroid) {
                 try {
-                  await _installerChannel.invokeMethod('installApk', {'apkPath': file.path});
+                  await _installerChannel
+                      .invokeMethod('installApk', {'apkPath': file.path});
                   completer.complete(null);
                 } on PlatformException catch (e) {
                   if (e.message == 'NEED_PERMISSION') {

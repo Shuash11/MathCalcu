@@ -106,7 +106,15 @@ class CurriculumRegistry {
       subtitle: 'e.g. 2 1/3 + 1 1/2 — mixed & improper',
       route: '/grade6/fractions',
       icon: Icons.pie_chart_outline_rounded,
-      tags: ['fraction', 'mixed', 'praksiyon', 'add', 'subtract', 'M6NS', 'lcd'],
+      tags: [
+        'fraction',
+        'mixed',
+        'praksiyon',
+        'add',
+        'subtract',
+        'M6NS',
+        'lcd'
+      ],
       difficulty: 'intro',
       depedCode: 'M6NS-Ia-86',
     ),
@@ -142,7 +150,14 @@ class CurriculumRegistry {
       subtitle: 'e.g. 12:18 or 3/4 = x/20 — bar strips',
       route: '/grade6/ratio',
       icon: Icons.balance_rounded,
-      tags: ['ratio', 'proportion', 'proporsiyon', 'missing term', 'M6NS', 'bar'],
+      tags: [
+        'ratio',
+        'proportion',
+        'proporsiyon',
+        'missing term',
+        'M6NS',
+        'bar'
+      ],
       difficulty: 'standard',
       depedCode: 'M6NS-Id-140',
     ),
@@ -190,7 +205,15 @@ class CurriculumRegistry {
       subtitle: 'e.g. rect 6×4 — shape diagram + units',
       route: '/grade6/geometry',
       icon: Icons.crop_square_rounded,
-      tags: ['geometry', 'heometriya', 'perimeter', 'area', 'angle', 'shape', 'M6GE'],
+      tags: [
+        'geometry',
+        'heometriya',
+        'perimeter',
+        'area',
+        'angle',
+        'shape',
+        'M6GE'
+      ],
       difficulty: 'standard',
       depedCode: 'M6GE-IIIc-37',
     ),
@@ -453,7 +476,15 @@ class CurriculumRegistry {
       subtitle: 'e.g. sin x = 1/2 — solutions on [0, 2π)',
       route: '/shs/trig-equations',
       icon: Icons.show_chart_rounded,
-      tags: ['trigonometry', 'equation', 'sine', 'cosine', 'G11', 'precalc', 'shs'],
+      tags: [
+        'trigonometry',
+        'equation',
+        'sine',
+        'cosine',
+        'G11',
+        'precalc',
+        'shs'
+      ],
       difficulty: 'standard',
       depedCode: '',
     ),
@@ -465,7 +496,15 @@ class CurriculumRegistry {
       subtitle: 'e.g. prove sin² + cos² = 1 — proof steps',
       route: '/shs/trig-identities',
       icon: Icons.verified_rounded,
-      tags: ['trigonometry', 'identity', 'proof', 'pythagorean', 'G11', 'precalc', 'shs'],
+      tags: [
+        'trigonometry',
+        'identity',
+        'proof',
+        'pythagorean',
+        'G11',
+        'precalc',
+        'shs'
+      ],
       difficulty: 'standard',
       depedCode: '',
     ),
@@ -516,7 +555,14 @@ class CurriculumRegistry {
       subtitle: 'e.g. maximize area — graph + diagram',
       route: '/shs/optimization',
       icon: Icons.insights_rounded,
-      tags: ['optimization', 'maximum', 'minimum', 'related rates', 'G12', 'shs'],
+      tags: [
+        'optimization',
+        'maximum',
+        'minimum',
+        'related rates',
+        'G12',
+        'shs'
+      ],
       difficulty: 'challenge',
       depedCode: '',
     ),
@@ -562,7 +608,8 @@ class CurriculumRegistry {
   ];
 
   /// Every topic: G6 seed + G7–College stubs.
-  static List<CurriculumTopic> allTopics() => [...grade6Topics, ...futureTopics];
+  static List<CurriculumTopic> allTopics() =>
+      [...grade6Topics, ...futureTopics];
 
   /// Topics for one grade ('G6' … 'G12', 'College').
   /// Case-insensitive; unknown grade returns [].
@@ -574,7 +621,8 @@ class CurriculumRegistry {
   }
 
   /// Alias kept for picker call-sites.
-  static List<CurriculumTopic> byGrade(String gradeLevel) => getByGrade(gradeLevel);
+  static List<CurriculumTopic> byGrade(String gradeLevel) =>
+      getByGrade(gradeLevel);
 
   /// Find a topic by its future route path. Null when unknown.
   static CurriculumTopic? getByRoute(String route) {
@@ -651,7 +699,8 @@ class Grade6ModuleRegistry {
             topic.subtitle.toLowerCase().contains(normalizedQuery) ||
             topic.subject.toLowerCase().contains(normalizedQuery) ||
             topic.depedCode.toLowerCase().contains(normalizedQuery) ||
-            topic.tags.any((tag) => tag.toLowerCase().contains(normalizedQuery)))
+            topic.tags
+                .any((tag) => tag.toLowerCase().contains(normalizedQuery)))
           CurriculumSearchHit(gradeLevel: topic.gradeLevel, topic: topic),
     ];
   }

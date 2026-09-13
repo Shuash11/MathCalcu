@@ -1,6 +1,5 @@
 // lib/Screens/SubScreens/result_section.dart
 
-
 import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_solver.dart';
 import 'package:flutter/material.dart';
 
@@ -82,8 +81,7 @@ class CenterResultSection extends StatelessWidget {
                     if (showKApprox)
                       const Text(
                         '    ',
-                        style:
-                            TextStyle(color: const Color(0xFF94A3B8)),
+                        style: TextStyle(color: const Color(0xFF94A3B8)),
                       ),
                   ],
                   if (showKApprox)

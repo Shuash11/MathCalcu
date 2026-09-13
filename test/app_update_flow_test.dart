@@ -152,6 +152,10 @@ void main() {
 
     expect(offerCount, 0);
     expect(find.text('Update available'), findsNothing);
+    // Consume the single scheduled retry so no timer outlives the test.
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
+    expect(offerCount, 0);
 
     await _pumpApp(
       tester,
@@ -162,9 +166,12 @@ void main() {
 
     expect(offerCount, 0);
     expect(tester.takeException(), isNull);
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
+    expect(offerCount, 0);
   });
 
-  testWidgets('does not offer a completed result without a navigator context',
+  testWidgets('defers an updateAvailable result without a navigator context',
       (tester) async {
     var offerCount = 0;
 
@@ -180,7 +187,55 @@ void main() {
       showWebUpdate: (_, __) => offerCount += 1,
     );
 
+    // First attempt has no context: nothing presented yet, retry scheduled.
     expect(offerCount, 0);
+    expect(tester.takeException(), isNull);
+    // Retry still has no context, so still deferred (no crash, no timer leak).
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
+    expect(offerCount, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('presents a deferred update once a context is available',
+      (tester) async {
+    var offerCount = 0;
+    var calls = 0;
+    BuildContext? realContext;
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(),
+        child: Builder(
+          builder: (captureContext) {
+            realContext = captureContext;
+            return CalculusApp(
+              key: UniqueKey(),
+              updateChecker: () async => const UpdateInfo(
+                status: UpdateStatus.updateAvailable,
+                installedVersion: '1.12.8',
+                latestVersion: '1.12.9',
+              ),
+              navigatorContext: () {
+                calls += 1;
+                // First attempt simulates startup with no context yet.
+                if (calls == 1) return null;
+                return realContext;
+              },
+              isWeb: true,
+              showWebUpdate: (_, __) => offerCount += 1,
+            );
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+    expect(offerCount, 0);
+
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
+    expect(offerCount, 1);
     expect(tester.takeException(), isNull);
   });
 
@@ -216,7 +271,8 @@ void main() {
     expect(const CalculusApp(), isA<CalculusApp>());
   });
 
-  testWidgets('runs one update check across a rebuild', (tester) async {
+  testWidgets('runs one update check across a rebuild, then one retry',
+      (tester) async {
     var checkCount = 0;
     final theme = ThemeProvider();
     final app = CalculusApp(
@@ -235,7 +291,13 @@ void main() {
         .pumpWidget(ChangeNotifierProvider.value(value: theme, child: app));
     await tester.pump();
 
+    // Rebuilds do not trigger duplicate automatic checks.
     expect(checkCount, 1);
+
+    // The single scheduled retry fires once after the delay.
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump();
+    expect(checkCount, 2);
   });
 }
 

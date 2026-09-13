@@ -46,7 +46,8 @@ void handleCurriculumTap(BuildContext context, CurriculumTopic topic) {
     return;
   }
   // Task 7: record recently opened (fire-and-forget, offline prefs).
-  const HistoryService().addRecentSolved(label: topic.label, route: topic.route);
+  const HistoryService()
+      .addRecentSolved(label: topic.label, route: topic.route);
   context.push(topic.route);
 }
 

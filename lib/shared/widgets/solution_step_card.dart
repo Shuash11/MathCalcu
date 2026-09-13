@@ -79,8 +79,8 @@ class SolutionStepCard extends StatelessWidget {
                 // Thin divider line
                 Container(
                   height: 1,
-                  color: FinalsTheme.textSecondary(context)
-                      .withValues(alpha: 0.3),
+                  color:
+                      FinalsTheme.textSecondary(context).withValues(alpha: 0.3),
                 ),
 
                 const SizedBox(height: 10),
@@ -110,8 +110,8 @@ class SolutionStepCard extends StatelessWidget {
                 // Math content in a dark card
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: FinalsTheme.cardSecondary(context),
                     borderRadius: BorderRadius.circular(10),

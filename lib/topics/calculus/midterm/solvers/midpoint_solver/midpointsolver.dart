@@ -1,4 +1,4 @@
-﻿// ═════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════
 // MIDPOINT SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
 // Calculates midpoint between two points and finds missing
@@ -37,28 +37,41 @@ class MidpointResult {
   final String? errorMessage;
 
   const MidpointResult({
-    this.x, this.y, this.formulaX, this.formulaY,
-    this.hasError = false, this.errorMessage,
+    this.x,
+    this.y,
+    this.formulaX,
+    this.formulaY,
+    this.hasError = false,
+    this.errorMessage,
   });
 
   factory MidpointResult.error(String message) =>
       const MidpointResult()._copyWith(hasError: true, errorMessage: message);
 
   factory MidpointResult.success({
-    required Fraction x, required Fraction y,
-    required String formulaX, required String formulaY,
-  }) => MidpointResult(x: x, y: y, formulaX: formulaX, formulaY: formulaY);
+    required Fraction x,
+    required Fraction y,
+    required String formulaX,
+    required String formulaY,
+  }) =>
+      MidpointResult(x: x, y: y, formulaX: formulaX, formulaY: formulaY);
 
   MidpointResult _copyWith({
-    Fraction? x, Fraction? y,
-    String? formulaX, String? formulaY,
-    bool hasError = false, String? errorMessage,
-  }) => MidpointResult(
-    x: x ?? this.x, y: y ?? this.y,
-    formulaX: formulaX ?? this.formulaX,
-    formulaY: formulaY ?? this.formulaY,
-    hasError: hasError, errorMessage: errorMessage ?? this.errorMessage,
-  );
+    Fraction? x,
+    Fraction? y,
+    String? formulaX,
+    String? formulaY,
+    bool hasError = false,
+    String? errorMessage,
+  }) =>
+      MidpointResult(
+        x: x ?? this.x,
+        y: y ?? this.y,
+        formulaX: formulaX ?? this.formulaX,
+        formulaY: formulaY ?? this.formulaY,
+        hasError: hasError,
+        errorMessage: errorMessage ?? this.errorMessage,
+      );
 }
 
 class MidpointSolver {
@@ -67,8 +80,10 @@ class MidpointSolver {
   // ── Main API ──────────────────────────────────────────────
 
   static MidpointResult solve({
-    required String x1, required String y1,
-    required String x2, required String y2,
+    required String x1,
+    required String y1,
+    required String x2,
+    required String y2,
   }) {
     final p = _parseAll(x1, y1, x2, y2);
     if (p.hasError) return MidpointResult.error(p.error!);
@@ -76,15 +91,18 @@ class MidpointSolver {
     final midX = midOfFractions(a, c);
     final midY = midOfFractions(b, d);
     return MidpointResult.success(
-      x: midX, y: midY,
+      x: midX,
+      y: midY,
       formulaX: '($a + $c) / 2 = $midX',
       formulaY: '($b + $d) / 2 = $midY',
     );
   }
 
   static MidpointResult findEndpointFromMidpoint({
-    required String midpointX, required String midpointY,
-    required String knownX, required String knownY,
+    required String midpointX,
+    required String midpointY,
+    required String knownX,
+    required String knownY,
   }) {
     final p = _parseAll(midpointX, midpointY, knownX, knownY);
     if (p.hasError) return MidpointResult.error(p.error!);
@@ -92,7 +110,8 @@ class MidpointSolver {
     final fx = subtractFractions(multiplyFractionByInt(xm, 2), x1);
     final fy = subtractFractions(multiplyFractionByInt(ym, 2), y1);
     return MidpointResult.success(
-      x: fx, y: fy,
+      x: fx,
+      y: fy,
       formulaX: 'x2 = 2($xm) - $x1 = $fx',
       formulaY: 'y2 = 2($ym) - $y1 = $fy',
     );
@@ -115,26 +134,39 @@ class MidpointSolver {
 
   static Fraction simplify(int n, int d) {
     if (d == 0) return const Fraction(numerator: 0, denominator: 1);
-    if (d < 0) { n = -n; d = -d; }
+    if (d < 0) {
+      n = -n;
+      d = -d;
+    }
     final g = _gcd(n.abs(), d.abs());
-    n ~/= g; d ~/= g;
+    n ~/= g;
+    d ~/= g;
     if (d == 1) return Fraction(numerator: n, denominator: 1, isWhole: true);
     return Fraction(numerator: n, denominator: d);
   }
 
   static int _gcd(int a, int b) {
-    while (b != 0) { final t = b; b = a % b; a = t; }
+    while (b != 0) {
+      final t = b;
+      b = a % b;
+      a = t;
+    }
     return a;
   }
 
   // ── Parsing ───────────────────────────────────────────────
 
   static _ParseResult _parseAll(String a, String b, String c, String d) {
-    final f1 = parseFraction(a, 'x1'); if (f1.hasError) return _ParseResult(error: f1.error);
-    final f2 = parseFraction(b, 'y1'); if (f2.hasError) return _ParseResult(error: f2.error);
-    final f3 = parseFraction(c, 'x2'); if (f3.hasError) return _ParseResult(error: f3.error);
-    final f4 = parseFraction(d, 'y2'); if (f4.hasError) return _ParseResult(error: f4.error);
-    return _ParseResult(f1: f1.fraction, f2: f2.fraction, f3: f3.fraction, f4: f4.fraction);
+    final f1 = parseFraction(a, 'x1');
+    if (f1.hasError) return _ParseResult(error: f1.error);
+    final f2 = parseFraction(b, 'y1');
+    if (f2.hasError) return _ParseResult(error: f2.error);
+    final f3 = parseFraction(c, 'x2');
+    if (f3.hasError) return _ParseResult(error: f3.error);
+    final f4 = parseFraction(d, 'y2');
+    if (f4.hasError) return _ParseResult(error: f4.error);
+    return _ParseResult(
+        f1: f1.fraction, f2: f2.fraction, f3: f3.fraction, f4: f4.fraction);
   }
 
   static FractionParse parseFraction(String raw, String label) {
@@ -151,7 +183,8 @@ class MidpointSolver {
 
     final dv = double.tryParse(t);
     if (dv == null || dv.isNaN || dv.isInfinite) {
-      return FractionParse.error('$label must be a number or fraction (e.g. 3/4)');
+      return FractionParse.error(
+          '$label must be a number or fraction (e.g. 3/4)');
     }
     return FractionParse.success(_fromDouble(dv));
   }
@@ -174,7 +207,9 @@ class MidpointSolver {
 
   static int _pow10(int e) {
     int r = 1;
-    for (int i = 0; i < e; i++) { r *= 10; }
+    for (int i = 0; i < e; i++) {
+      r *= 10;
+    }
     return r;
   }
 }

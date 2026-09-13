@@ -1,4 +1,4 @@
-﻿// display.dart
+// display.dart
 // Two pure display classes that read a SlopeResult and produce output.
 // Nothing here does any mathematics — it only formats and prints.
 //   StepExplainer  — builds a list of step-by-step explanation strings
@@ -157,12 +157,12 @@ class StepExplainer {
 // ==================== PRETTY PRINTER ====================
 
 class PrettyPrinter {
-  static const _reset  = '\x1B[0m';
-  static const _bold   = '\x1B[1m';
-  static const _cyan   = '\x1B[36m';
-  static const _green  = '\x1B[32m';
+  static const _reset = '\x1B[0m';
+  static const _bold = '\x1B[1m';
+  static const _cyan = '\x1B[36m';
+  static const _green = '\x1B[32m';
   static const _yellow = '\x1B[33m';
-  static const _blue   = '\x1B[34m';
+  static const _blue = '\x1B[34m';
 
   /// Prints a fully-formatted, ANSI-coloured result block to stdout.
   static void print(SlopeResult result) {
@@ -175,8 +175,8 @@ class PrettyPrinter {
     _writeln('');
 
     final typeLabel = {
-      ProblemType.explicit:   '  EXPLICIT  ',
-      ProblemType.implicit:   '  IMPLICIT  ',
+      ProblemType.explicit: '  EXPLICIT  ',
+      ProblemType.implicit: '  IMPLICIT  ',
       ProblemType.parametric: ' PARAMETRIC ',
     }[result.type]!;
     _writeln('$_bold$_blue[$typeLabel]$_reset  ${result.originalInput}');
@@ -203,29 +203,25 @@ class PrettyPrinter {
 
     if (result.secondDerivative != null) {
       final sd = result.secondDerivative!.toMathString();
-      _writeln(
-          '$_bold$_green│$_reset  2nd deriv:   $sd'
+      _writeln('$_bold$_green│$_reset  2nd deriv:   $sd'
           '${' ' * _pad(sd, w - 15)}'
           '$_bold$_green│$_reset');
     }
     if (result.slopeValue != null) {
       final sv = _fmtD(result.slopeValue!);
-      _writeln(
-          '$_bold$_green│$_reset  Slope value: $sv'
+      _writeln('$_bold$_green│$_reset  Slope value: $sv'
           '${' ' * _pad(sv, w - 15)}'
           '$_bold$_green│$_reset');
     }
     if (result.tangentLineEquation != null) {
       final tl = result.tangentLineEquation!;
-      _writeln(
-          '$_bold$_green│$_reset  Tangent:     $tl'
+      _writeln('$_bold$_green│$_reset  Tangent:     $tl'
           '${' ' * _pad(tl, w - 15)}'
           '$_bold$_green│$_reset');
     }
     if (result.normalLineEquation != null) {
       final nl = result.normalLineEquation!;
-      _writeln(
-          '$_bold$_green│$_reset  Normal:      $nl'
+      _writeln('$_bold$_green│$_reset  Normal:      $nl'
           '${' ' * _pad(nl, w - 15)}'
           '$_bold$_green│$_reset');
     }

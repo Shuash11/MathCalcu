@@ -147,7 +147,8 @@ class _NumberLinePainter extends CustomPainter {
           ..color = textSecondary.withValues(alpha: 0.35)
           ..strokeWidth = 1.5,
       );
-      _label(canvas, '$t', Offset(x, midY + 20), color: textSecondary, size: 10);
+      _label(canvas, '$t', Offset(x, midY + 20),
+          color: textSecondary, size: 10);
     }
 
     // Jump arrow from a to the answer, arcing above the axis.
@@ -212,8 +213,7 @@ class _NumberLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _NumberLinePainter oldDelegate) =>
-      oldDelegate.data != data ||
-      oldDelegate.accent != accent;
+      oldDelegate.data != data || oldDelegate.accent != accent;
 }
 
 // ── Bar strips (G6-4 ratio) ─────────────────────────────────────
@@ -430,8 +430,10 @@ class _ShapePainter extends CustomPainter {
         _label(canvas, 'b = ${_dim(dims, 'b')}', Offset(cx, cy + 66),
             color: textPrimary);
       case 'composite':
-        final r1 = Rect.fromCenter(center: Offset(cx - 44, cy), width: 88, height: 96);
-        final r2 = Rect.fromCenter(center: Offset(cx + 52, cy + 20), width: 64, height: 56);
+        final r1 =
+            Rect.fromCenter(center: Offset(cx - 44, cy), width: 88, height: 96);
+        final r2 = Rect.fromCenter(
+            center: Offset(cx + 52, cy + 20), width: 64, height: 56);
         for (final r in [r1, r2]) {
           canvas.drawRect(r, fill);
           canvas.drawRect(r, outline);
@@ -439,7 +441,8 @@ class _ShapePainter extends CustomPainter {
       default:
         // square / rectangle fallback.
         final w = shape == 'square' ? 110.0 : 150.0;
-        final rect = Rect.fromCenter(center: Offset(cx, cy), width: w, height: 100);
+        final rect =
+            Rect.fromCenter(center: Offset(cx, cy), width: w, height: 100);
         canvas.drawRect(rect, fill);
         canvas.drawRect(rect, outline);
         final keys = dims.keys.map((e) => '$e').toList();
@@ -452,7 +455,8 @@ class _ShapePainter extends CustomPainter {
           color: textPrimary,
         );
     }
-    _label(canvas, shape.isEmpty ? 'shape' : shape, Offset(cx, size.height - 18),
+    _label(
+        canvas, shape.isEmpty ? 'shape' : shape, Offset(cx, size.height - 18),
         color: textSecondary, size: 10);
   }
 
@@ -546,14 +550,19 @@ class _WireframePainter extends CustomPainter {
         Rect.fromCenter(center: Offset(cx, cy - h / 2), width: w, height: 30),
         edge,
       );
-      canvas.drawLine(Offset(cx - w / 2, cy - h / 2), Offset(cx - w / 2, cy + h / 2), edge);
-      canvas.drawLine(Offset(cx + w / 2, cy - h / 2), Offset(cx + w / 2, cy + h / 2), edge);
+      canvas.drawLine(
+          Offset(cx - w / 2, cy - h / 2), Offset(cx - w / 2, cy + h / 2), edge);
+      canvas.drawLine(
+          Offset(cx + w / 2, cy - h / 2), Offset(cx + w / 2, cy + h / 2), edge);
       canvas.drawOval(
         Rect.fromCenter(center: Offset(cx, cy + h / 2), width: w, height: 30),
         edge,
       );
     } else if (solid == 'cone' || solid == 'pyramid') {
-      final base = Rect.fromCenter(center: Offset(cx, cy + 52), width: 140, height: solid == 'cone' ? 30 : 26);
+      final base = Rect.fromCenter(
+          center: Offset(cx, cy + 52),
+          width: 140,
+          height: solid == 'cone' ? 30 : 26);
       if (solid == 'cone') {
         canvas.drawOval(base, edge);
       } else {
@@ -570,7 +579,8 @@ class _WireframePainter extends CustomPainter {
       const h = 100.0;
       const dx = 34.0;
       const dy = -26.0;
-      final front = Rect.fromCenter(center: Offset(cx - 10, cy + 6), width: w, height: h);
+      final front =
+          Rect.fromCenter(center: Offset(cx - 10, cy + 6), width: w, height: h);
       final back = front.shift(const Offset(dx, dy));
       canvas.drawRect(back, edge);
       _dashedLine(canvas, back.topLeft, front.topLeft, hidden);
@@ -680,10 +690,13 @@ class _PiePainter extends CustomPainter {
       );
       start += sweep;
     }
-    canvas.drawCircle(center, radius, Paint()
-      ..color = accent
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2);
+    canvas.drawCircle(
+        center,
+        radius,
+        Paint()
+          ..color = accent
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2);
 
     // Legend on the right.
     var ly = 34.0;

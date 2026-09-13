@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +118,8 @@ class _AnswerCardState extends State<AnswerCard>
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w700,
-                                color: context.watch<ThemeProvider>().textPrimary,
+                                color:
+                                    context.watch<ThemeProvider>().textPrimary,
                                 letterSpacing: -0.5,
                               ),
                             ),

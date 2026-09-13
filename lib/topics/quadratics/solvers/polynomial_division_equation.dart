@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 // POLYNOMIAL DIVISION — G10. Synthetic division by (x − a):
 // quotient + remainder (Remainder theorem). Never throws.
-// e.g. '(x^3+2x^2-5x+1)/(x-1)' -> quotient + R=... 
+// e.g. '(x^3+2x^2-5x+1)/(x-1)' -> quotient + R=...
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/core/base_equation.dart';
@@ -17,7 +17,8 @@ class PolyDivisionEquation extends BaseEquation {
 
   PolyDivisionEquation(this.rawInput);
 
-  String _n() => rawInput.replaceAll(' ', '').replaceAll('−', '-').replaceAll('X', 'x');
+  String _n() =>
+      rawInput.replaceAll(' ', '').replaceAll('−', '-').replaceAll('X', 'x');
 
   /// Parses polynomial coeffs highest→constant. Null on failure.
   List<double>? _polyCoeffs(String e) {
@@ -26,9 +27,11 @@ class PolyDivisionEquation extends BaseEquation {
       final v = double.tryParse(s);
       return v == null ? null : [v];
     }
-    if (RegExp(r'x\^?([3-9]\d*)').hasMatch(s.replaceAll('x^2', 'Q').replaceAll('x²', 'Q'))) {
+    if (RegExp(r'x\^?([3-9]\d*)')
+        .hasMatch(s.replaceAll('x^2', 'Q').replaceAll('x²', 'Q'))) {
       // Allow degree 1..6 only.
-      final degs = RegExp(r'x\^(\d+)').allMatches(s).map((m) => int.parse(m.group(1)!));
+      final degs =
+          RegExp(r'x\^(\d+)').allMatches(s).map((m) => int.parse(m.group(1)!));
       if (degs.any((d) => d > 6)) return null;
     }
     final terms = <String, double>{};
@@ -88,8 +91,8 @@ class PolyDivisionEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: '(x^3 + 2x^2 - 5x + 1)/(x - 1)');
+    final empty = FieldValidators.notEmpty(rawInput,
+        example: '(x^3 + 2x^2 - 5x + 1)/(x - 1)');
     if (empty != null) {
       _error = empty;
       return false;
@@ -106,8 +109,7 @@ class PolyDivisionEquation extends BaseEquation {
   SolveResult solve() {
     final p = _parse();
     if (p == null) {
-      return SolveResult.error(
-          _error ?? 'Use P(x)/(x - a).');
+      return SolveResult.error(_error ?? 'Use P(x)/(x - a).');
     }
     final coeffs = (p[0] as List).cast<double>();
     final a = p[1] as double;
@@ -174,11 +176,13 @@ class PolyDivisionEquation extends BaseEquation {
           stepNumber: 2,
           title: 'Bring down, multiply, add',
           explanation: 'Repeat across the row — multiply by a, add to next.'),
-      StepModel(stepNumber: 3, title: 'Quotient + remainder', explanation: r.answer),
+      StepModel(
+          stepNumber: 3, title: 'Quotient + remainder', explanation: r.answer),
       const StepModel(
           stepNumber: 4,
           title: 'Remainder theorem',
-          explanation: 'Remainder equals P(a) — zero means (x − a) is a factor.'),
+          explanation:
+              'Remainder equals P(a) — zero means (x − a) is a factor.'),
     ];
   }
 }

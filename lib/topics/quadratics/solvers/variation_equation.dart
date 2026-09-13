@@ -27,7 +27,8 @@ class VariationEquation extends BaseEquation {
 
   String? _kind() {
     final t = rawInput.toLowerCase();
-    if (t.contains('joint') || (t.contains('x') && t.contains('z') && t.contains('kxy'))) {
+    if (t.contains('joint') ||
+        (t.contains('x') && t.contains('z') && t.contains('kxy'))) {
       return 'joint';
     }
     if (t.startsWith('inverse') || t.contains('inverse') || t.contains('k/x')) {
@@ -41,14 +42,15 @@ class VariationEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'direct, x = 2, y = 10, x = 5');
+    final empty = FieldValidators.notEmpty(rawInput,
+        example: 'direct, x = 2, y = 10, x = 5');
     if (empty != null) {
       _error = empty;
       return false;
     }
     if (_kind() == null) {
-      _error = 'Start with direct, inverse, or joint — e.g. direct, x = 2, y = 10.';
+      _error =
+          'Start with direct, inverse, or joint — e.g. direct, x = 2, y = 10.';
       return false;
     }
     if (_nums() == null) {
@@ -81,12 +83,14 @@ class VariationEquation extends BaseEquation {
     }
     final x1 = xs.first, y1 = ys.first;
     if (kind == 'direct') {
-      if (x1 == 0) return SolveResult.error('x cannot be zero for direct variation.');
+      if (x1 == 0)
+        return SolveResult.error('x cannot be zero for direct variation.');
       final k = y1 / x1;
       if (xs.length > 1) {
         final y2 = k * xs[1];
         return SolveResult(
-          answer: 'k = ${G6Format.num(k)}, y = ${G6Format.num(y2)} when x = ${G6Format.num(xs[1])}',
+          answer:
+              'k = ${G6Format.num(k)}, y = ${G6Format.num(y2)} when x = ${G6Format.num(xs[1])}',
           points: [k, y2],
           customData: [
             {'kind': 'variation', 'mode': 'direct', 'k': k, 'x': xs[1], 'y': y2}
@@ -109,10 +113,17 @@ class VariationEquation extends BaseEquation {
         }
         final y2 = k / xs[1];
         return SolveResult(
-          answer: 'k = ${G6Format.num(k)}, y = ${G6Format.num(y2)} when x = ${G6Format.num(xs[1])}',
+          answer:
+              'k = ${G6Format.num(k)}, y = ${G6Format.num(y2)} when x = ${G6Format.num(xs[1])}',
           points: [k, y2],
           customData: [
-            {'kind': 'variation', 'mode': 'inverse', 'k': k, 'x': xs[1], 'y': y2}
+            {
+              'kind': 'variation',
+              'mode': 'inverse',
+              'k': k,
+              'x': xs[1],
+              'y': y2
+            }
           ],
         );
       }
@@ -129,7 +140,8 @@ class VariationEquation extends BaseEquation {
         .allMatches(rawInput)
         .map((m) => double.parse(m.group(1)!))
         .toList();
-    if (zs.isEmpty) return SolveResult.error('Joint variation needs z = kxy with a z value.');
+    if (zs.isEmpty)
+      return SolveResult.error('Joint variation needs z = kxy with a z value.');
     if (x1 == 0 || y1 == 0) {
       return SolveResult.error('x and y cannot be zero for joint variation.');
     }

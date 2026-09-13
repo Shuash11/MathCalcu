@@ -1,4 +1,4 @@
-﻿// ═════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════
 // CENTER-RADIUS FORM SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
 // Converts between center-radius form (x-h)?+(y-k)?=r? and
@@ -40,7 +40,10 @@ class GeneralFormResult {
 
 String _fmt(double v) {
   if (v == v.truncateToDouble()) return v.truncate().toString();
-  return v.toStringAsFixed(3).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+  return v
+      .toStringAsFixed(3)
+      .replaceAll(RegExp(r'0+$'), '')
+      .replaceAll(RegExp(r'\.$'), '');
 }
 
 String _signed(double v, {bool leading = false}) {
@@ -54,13 +57,25 @@ String _signed(double v, {bool leading = false}) {
 class GeneralFormParser {
   static GeneralFormResult parse(String raw) {
     String input = raw
-        .toLowerCase().trim()
-        .replaceAll('?', '2').replaceAll('\u00B2', '2')
-        .replaceAll('??', '-').replaceAll('–', '-').replaceAll('—', '-')
-        .replaceAll('\u2212', '-').replaceAll('\u2013', '-').replaceAll('\u2014', '-')
-        .replaceAll('??', '').replaceAll('?', '').replaceAll('\u00D7', '').replaceAll('\u00B7', '').replaceAll('*', '')
-        .replaceAll(RegExp(r'x\s*\^\s*2'), 'x2').replaceAll(RegExp(r'y\s*\^\s*2'), 'y2')
-        .replaceAll(RegExp(r'x\s*2'), 'x2').replaceAll(RegExp(r'y\s*2'), 'y2')
+        .toLowerCase()
+        .trim()
+        .replaceAll('?', '2')
+        .replaceAll('\u00B2', '2')
+        .replaceAll('??', '-')
+        .replaceAll('–', '-')
+        .replaceAll('—', '-')
+        .replaceAll('\u2212', '-')
+        .replaceAll('\u2013', '-')
+        .replaceAll('\u2014', '-')
+        .replaceAll('??', '')
+        .replaceAll('?', '')
+        .replaceAll('\u00D7', '')
+        .replaceAll('\u00B7', '')
+        .replaceAll('*', '')
+        .replaceAll(RegExp(r'x\s*\^\s*2'), 'x2')
+        .replaceAll(RegExp(r'y\s*\^\s*2'), 'y2')
+        .replaceAll(RegExp(r'x\s*2'), 'x2')
+        .replaceAll(RegExp(r'y\s*2'), 'y2')
         .replaceAll(' ', '');
 
     input = input.replaceAllMapped(
@@ -72,11 +87,18 @@ class GeneralFormParser {
     String lhs = sides[0];
     String rhs = sides.length > 1 ? sides[1] : '0';
 
-    if (lhs == '0') { final t = lhs; lhs = rhs; rhs = t; }
+    if (lhs == '0') {
+      final t = lhs;
+      lhs = rhs;
+      rhs = t;
+    }
 
     if (rhs != '0') {
       if (!rhs.startsWith('-') && !rhs.startsWith('+')) rhs = '+$rhs';
-      final flipped = rhs.replaceAll('+', '__POS__').replaceAll('-', '+').replaceAll('__POS__', '-');
+      final flipped = rhs
+          .replaceAll('+', '__POS__')
+          .replaceAll('-', '+')
+          .replaceAll('__POS__', '-');
       lhs += flipped;
     }
 
@@ -84,7 +106,11 @@ class GeneralFormParser {
     int iters = 0;
     do {
       prev = lhs;
-      lhs = lhs.replaceAll('+-', '-').replaceAll('-+', '-').replaceAll('--', '+').replaceAll('++', '+');
+      lhs = lhs
+          .replaceAll('+-', '-')
+          .replaceAll('-+', '-')
+          .replaceAll('--', '+')
+          .replaceAll('++', '+');
       iters++;
     } while (lhs != prev && iters < 10);
 
@@ -93,7 +119,10 @@ class GeneralFormParser {
     final tokens = <String>[];
     int start = 0;
     for (int i = 1; i < lhs.length; i++) {
-      if (lhs[i] == '+' || lhs[i] == '-') { tokens.add(lhs.substring(start, i)); start = i; }
+      if (lhs[i] == '+' || lhs[i] == '-') {
+        tokens.add(lhs.substring(start, i));
+        start = i;
+      }
     }
     tokens.add(lhs.substring(start));
 
@@ -119,7 +148,8 @@ class GeneralFormParser {
         E += sign * (np.isEmpty ? 1.0 : (double.tryParse(np) ?? 1.0));
       } else {
         final p = double.tryParse(body);
-        if (p == null) throw FormatException('Cannot parse: "$body" in token "$token"');
+        if (p == null)
+          throw FormatException('Cannot parse: "$body" in token "$token"');
         F += sign * p;
       }
     }
@@ -131,7 +161,9 @@ class GeneralFormParser {
       throw ArgumentError('Not a circle: x?=$x2coeff ≠? y?=$y2coeff');
     }
     if ((x2coeff - 1.0).abs() > eps) {
-      D /= x2coeff; E /= x2coeff; F /= x2coeff;
+      D /= x2coeff;
+      E /= x2coeff;
+      F /= x2coeff;
     }
 
     return GeneralFormResult(D: D, E: E, F: F);
@@ -144,7 +176,9 @@ class CircleEquationSolver {
   /// Standard -> General: (x-h)?+(y-k)?=r? -> x?+y?+Dx+Ey+F=0
   ///   D = -2h, E = -2k, F = h?+k?-r?
   static List<SolverStep> standardToGeneral({
-    required double h, required double k, required double r,
+    required double h,
+    required double k,
+    required double r,
   }) {
     final D = -2 * h;
     final E = -2 * k;
@@ -154,25 +188,38 @@ class CircleEquationSolver {
     final kSq = k * k;
 
     return [
-      SolverStep(label: 'Center-Radius Form', arrow: true,
-        equation: '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(r)}?',
-        color: SolverColors.teal),
-      SolverStep(label: 'Substitute r? = ${_fmt(rSq)}',
-        equation: '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(rSq)}'),
-      SolverStep(label: 'Expand binomial squares',
-        equation: 'x? ${_signed(-2 * h)}x + ${_fmt(hSq)} + y? ${_signed(-2 * k)}y + ${_fmt(kSq)} = ${_fmt(rSq)}'),
-      SolverStep(label: 'Move ${_fmt(rSq)} to left',
-        equation: 'x? + y? ${_signed(-2 * h)}x ${_signed(-2 * k)}y + ${_fmt(hSq + kSq - rSq)} = 0'),
-      SolverStep(label: 'General Form', isFinal: true,
-        equation: 'x? + y? ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
-        color: SolverColors.cyan),
+      SolverStep(
+          label: 'Center-Radius Form',
+          arrow: true,
+          equation:
+              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(r)}?',
+          color: SolverColors.teal),
+      SolverStep(
+          label: 'Substitute r? = ${_fmt(rSq)}',
+          equation:
+              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(rSq)}'),
+      SolverStep(
+          label: 'Expand binomial squares',
+          equation:
+              'x? ${_signed(-2 * h)}x + ${_fmt(hSq)} + y? ${_signed(-2 * k)}y + ${_fmt(kSq)} = ${_fmt(rSq)}'),
+      SolverStep(
+          label: 'Move ${_fmt(rSq)} to left',
+          equation:
+              'x? + y? ${_signed(-2 * h)}x ${_signed(-2 * k)}y + ${_fmt(hSq + kSq - rSq)} = 0'),
+      SolverStep(
+          label: 'General Form',
+          isFinal: true,
+          equation: 'x? + y? ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
+          color: SolverColors.cyan),
     ];
   }
 
   /// General -> Standard: x?+y?+Dx+Ey+F=0 -> (x-h)?+(y-k)?=r?
   ///   h = -D/2, k = -E/2, r? = h?+k?-F
   static List<SolverStep> generalToStandard({
-    required double D, required double E, required double F,
+    required double D,
+    required double E,
+    required double F,
   }) {
     final h = -D / 2;
     final k = -E / 2;
@@ -182,25 +229,41 @@ class CircleEquationSolver {
     final halfESq = halfE * halfE;
     final rSq = halfDSq + halfESq - F;
 
-    if (rSq <= 0) throw ArgumentError('Invalid: r? = $_fmt(rSq) ≠? 0 (imaginary circle)');
+    if (rSq <= 0)
+      throw ArgumentError('Invalid: r? = $_fmt(rSq) ≠? 0 (imaginary circle)');
 
     final r = sqrt(rSq);
     final rightSide = -F + halfDSq + halfESq;
 
     return [
-      SolverStep(label: 'General Form', arrow: true,
-        equation: 'x? + y? ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
-        color: SolverColors.teal),
-      SolverStep(label: 'Group terms; move constant to right',
-        equation: '(x? ${_signed(D)}x) + (y? ${_signed(E)}y) = ${_signed(-F, leading: true)}'),
-      SolverStep(label: 'Complete the square:\n  x: add (${_fmt(halfD)})? = ${_fmt(halfDSq)}\n  y: add (${_fmt(halfE)})? = ${_fmt(halfESq)}',
-        equation: '(x? ${_signed(D)}x ${_signed(halfDSq)}) + (y? ${_signed(E)}y ${_signed(halfESq)}) = ${_fmt(rightSide)}'),
-      SolverStep(label: 'Factor as perfect squares',
-        equation: '(x ${_signed(halfD)})? + (y ${_signed(halfE)})? = ${_fmt(rSq)}'),
-      SolverStep(label: 'Center-Radius Form', isFinal: true,
-        equation: '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(r)}?',
-        subLines: ['Center: (${_fmt(h)}, ${_fmt(k)})', 'Radius: r = ${_fmt(r)}'],
-        color: SolverColors.cyan),
+      SolverStep(
+          label: 'General Form',
+          arrow: true,
+          equation: 'x? + y? ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
+          color: SolverColors.teal),
+      SolverStep(
+          label: 'Group terms; move constant to right',
+          equation:
+              '(x? ${_signed(D)}x) + (y? ${_signed(E)}y) = ${_signed(-F, leading: true)}'),
+      SolverStep(
+          label:
+              'Complete the square:\n  x: add (${_fmt(halfD)})? = ${_fmt(halfDSq)}\n  y: add (${_fmt(halfE)})? = ${_fmt(halfESq)}',
+          equation:
+              '(x? ${_signed(D)}x ${_signed(halfDSq)}) + (y? ${_signed(E)}y ${_signed(halfESq)}) = ${_fmt(rightSide)}'),
+      SolverStep(
+          label: 'Factor as perfect squares',
+          equation:
+              '(x ${_signed(halfD)})? + (y ${_signed(halfE)})? = ${_fmt(rSq)}'),
+      SolverStep(
+          label: 'Center-Radius Form',
+          isFinal: true,
+          equation:
+              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(r)}?',
+          subLines: [
+            'Center: (${_fmt(h)}, ${_fmt(k)})',
+            'Radius: r = ${_fmt(r)}'
+          ],
+          color: SolverColors.cyan),
     ];
   }
 

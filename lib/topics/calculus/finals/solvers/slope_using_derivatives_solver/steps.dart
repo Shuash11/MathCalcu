@@ -1,4 +1,4 @@
-﻿// solution_steps.dart
+// solution_steps.dart
 // Classroom Solution Steps — Slope Solver
 // ════════════════════════════════════════
 // Depends on: slope_solver.dart (share the same directory)
@@ -257,7 +257,7 @@ class SolutionBuilder {
 // ══════════════════════════════════════════════════════════════════════════════
 
 class ExplicitSolutionBuilder {
-static ClassroomSolution build(SlopeResult r) {
+  static ClassroomSolution build(SlopeResult r) {
     final steps = <ClassroomStep>[];
     final x = r.independentVar;
     final y = r.dependentVar ?? 'y';
@@ -266,7 +266,8 @@ static ClassroomSolution build(SlopeResult r) {
     final rawLatex = r.derivative.toLatexString();
     final simpLatex = r.simplifiedDerivative.toLatexString();
     final hasPoint = r.point.containsKey(x);
-    final showSimplify = r.derivative.toMathString() != r.simplifiedDerivative.toMathString();
+    final showSimplify =
+        r.derivative.toMathString() != r.simplifiedDerivative.toMathString();
     final ruleLines = DerivativeNarrator.narrate(f, x);
 
     // ── Given ───
@@ -339,7 +340,9 @@ static ClassroomSolution build(SlopeResult r) {
       }
 
       // ── Normal Line ─── (normal ONLY)
-      if (yVal != null && r.normalLineEquation != null && r.normalSlope != null) {
+      if (yVal != null &&
+          r.normalLineEquation != null &&
+          r.normalSlope != null) {
         final mN = r.normalSlope!;
         steps.add(ClassroomStep(
           kind: StepKind.tangentNormal,
@@ -503,7 +506,8 @@ class ImplicitSolutionBuilder {
       steps.add(ClassroomStep(
         kind: StepKind.substitution,
         label: 'Evaluate',
-        hint: 'Substitute x = ${_fmt(xVal)}, y = ${_fmt(yVal)} into the slope formula',
+        hint:
+            'Substitute x = ${_fmt(xVal)}, y = ${_fmt(yVal)} into the slope formula',
         lines: [
           '\\frac{dy}{dx} = $slopeLatex  at  (${_fmt(xVal)}, ${_fmt(yVal)})',
           '',
@@ -609,7 +613,8 @@ class ParametricSolutionBuilder {
     steps.add(ClassroomStep(
       kind: StepKind.algebra,
       label: 'Find Derivatives',
-      hint: 'Use Chain Rule: dy/dx = (dy/dt)/(dx/dt). Differentiate x(t) and y(t) with respect to t',
+      hint:
+          'Use Chain Rule: dy/dx = (dy/dt)/(dx/dt). Differentiate x(t) and y(t) with respect to t',
       lines: [
         '\\frac{dx}{dt}:',
         ...dxRuleLines.map((l) => '  → $l'),

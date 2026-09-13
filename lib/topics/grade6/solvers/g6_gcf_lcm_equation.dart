@@ -86,9 +86,8 @@ class G6GcfLcmEquation extends BaseEquation {
     if (numbers.any((n) => n <= 0)) {
       return SolveResult.error('Use positive whole numbers.');
     }
-    final int value = _isLcm
-        ? G6Math.lcmList(numbers)
-        : G6Math.gcdList(numbers);
+    final int value =
+        _isLcm ? G6Math.lcmList(numbers) : G6Math.gcdList(numbers);
     return SolveResult(
       answer: '${_isLcm ? 'LCM' : 'GCF'} = $value',
       points: [value.toDouble()],
@@ -112,9 +111,8 @@ class G6GcfLcmEquation extends BaseEquation {
     }
     final int value =
         _isLcm ? G6Math.lcmList(numbers) : G6Math.gcdList(numbers);
-    final String listed = numbers
-        .map((n) => '$n: ${factors(n).join(', ')}')
-        .join(' | ');
+    final String listed =
+        numbers.map((n) => '$n: ${factors(n).join(', ')}').join(' | ');
     return [
       StepModel(
         stepNumber: 1,
@@ -128,7 +126,9 @@ class G6GcfLcmEquation extends BaseEquation {
       ),
       StepModel(
         stepNumber: 3,
-        title: _isLcm ? 'Take the least common multiple' : 'Take the greatest common factor',
+        title: _isLcm
+            ? 'Take the least common multiple'
+            : 'Take the greatest common factor',
         explanation: _isLcm
             ? 'Smallest number in all lists: $value.'
             : 'Largest number in all lists: $value.',
@@ -136,8 +136,7 @@ class G6GcfLcmEquation extends BaseEquation {
       StepModel(
         stepNumber: 4,
         title: 'Check with division',
-        explanation:
-            '${_isLcm ? 'LCM' : 'GCF'} = $value; verify by division.',
+        explanation: '${_isLcm ? 'LCM' : 'GCF'} = $value; verify by division.',
       ),
     ];
   }

@@ -1,4 +1,4 @@
-﻿import 'tokenizer.dart';
+import 'tokenizer.dart';
 import 'parser.dart';
 import 'polynomial.dart';
 import 'factorizer.dart';
@@ -99,12 +99,12 @@ class LimitSolverEngine {
   SolutionResult solve(LimitProblem problem) {
     try {
       String processedExpression = problem.expression.trim();
-      
+
       // ✨ SMART PRE-PARSING
-      // If the expression has exactly one '/' and NO parentheses, 
+      // If the expression has exactly one '/' and NO parentheses,
       // we assume the user meant (everything_before) / (everything_after).
-      if (processedExpression.contains('/') && 
-          !processedExpression.contains('(') && 
+      if (processedExpression.contains('/') &&
+          !processedExpression.contains('(') &&
           !processedExpression.contains(')')) {
         final parts = processedExpression.split('/');
         if (parts.length == 2) {

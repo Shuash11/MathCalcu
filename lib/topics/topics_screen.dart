@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -73,8 +73,9 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final showGrade6 = q.isEmpty ||
         'grade 6 arithmetic g6 fractions decimals percent ratio gemdas algebra integers geometry volume pie probability'
             .contains(q);
-    final curriculumHits =
-        q.isEmpty ? const <CurriculumSearchHit>[] : CurriculumRegistry.search(q);
+    final curriculumHits = q.isEmpty
+        ? const <CurriculumSearchHit>[]
+        : CurriculumRegistry.search(q);
     final hasLocalHits = showCalculus || showModmat || showGrade6;
 
     return Scaffold(
@@ -157,16 +158,14 @@ class _TopicsScreenState extends State<TopicsScreen> {
                                   icon: Icons.calculate_rounded,
                                   label: 'Calculus',
                                   accent: theme.accentColor,
-                                  onTap: () =>
-                                      context.push('/topics/calculus'),
+                                  onTap: () => context.push('/topics/calculus'),
                                 ),
-                                if (showModmat)
+                              if (showModmat)
                                 HomeCard(
                                   icon: Icons.auto_awesome_rounded,
                                   label: 'Modern Math',
                                   accent: theme.modmatAccent,
-                                  onTap: () =>
-                                      context.push('/topics/modmat'),
+                                  onTap: () => context.push('/topics/modmat'),
                                 ),
                               if (showGrade6)
                                 HomeCard(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -65,17 +66,41 @@ class CalculusApp extends StatefulWidget {
   State<CalculusApp> createState() => _CalculusAppState();
 }
 
-class _CalculusAppState extends State<CalculusApp> {
+class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
   bool _hasCheckedForUpdates = false;
+  bool _retryScheduled = false;
+  bool _needsResumeRecheck = false;
+  UpdateInfo? _pendingUpdate;
+  Timer? _retryTimer;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _requestInstallPermission();
       if (!mounted) return;
       await _checkForUpdates();
     });
+  }
+
+  @override
+  void dispose() {
+    _retryTimer?.cancel();
+    _retryTimer = null;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !mounted) return;
+    if (_pendingUpdate != null) {
+      _tryPresentPending();
+    } else if (_needsResumeRecheck) {
+      _needsResumeRecheck = false;
+      _checkForUpdates(isRetry: true);
+    }
   }
 
   Future<void> _requestInstallPermission() async {
@@ -96,92 +121,111 @@ class _CalculusAppState extends State<CalculusApp> {
       builder: (dialogContext) {
         final theme = dialogContext.watch<ThemeProvider>();
         return AlertDialog(
-        backgroundColor: theme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: theme.accentColor.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
+          backgroundColor: theme.surface,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: theme.accentColor.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.system_update_rounded,
+                    size: 32, color: theme.accentColor),
               ),
-              child: Icon(Icons.system_update_rounded,
-                  size: 32, color: theme.accentColor),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Allow app updates',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: theme.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                'MathCalcu needs permission to install updates automatically.\n'
-                'Grant this once and future updates will work seamlessly.',
-                textAlign: TextAlign.center,
+              const SizedBox(height: 16),
+              Text(
+                'Allow app updates',
                 style: TextStyle(
-                  fontSize: 14,
-                  height: 1.4,
-                  color: theme.textSecondary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: theme.textPrimary,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      UpdateService.openInstallSettings();
-                    },
-                    style: FilledButton.styleFrom(
-                        backgroundColor: theme.accentColor),
-                    child: const Text('Open Settings'),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  'MathCalcu needs permission to install updates automatically.\n'
+                  'Grant this once and future updates will work seamlessly.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.4,
+                    color: theme.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    style: TextButton.styleFrom(
-                        foregroundColor: theme.textSecondary),
-                    child: const Text('Not now'),
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        UpdateService.openInstallSettings();
+                      },
+                      style: FilledButton.styleFrom(
+                          backgroundColor: theme.accentColor),
+                      child: const Text('Open Settings'),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      style: TextButton.styleFrom(
+                          foregroundColor: theme.textSecondary),
+                      child: const Text('Not now'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
   }
 
-  Future<void> _checkForUpdates() async {
-    if (_hasCheckedForUpdates || !mounted) return;
+  Future<void> _checkForUpdates({bool isRetry = false}) async {
+    if (!mounted) return;
+    if (_hasCheckedForUpdates && !isRetry) return;
     _hasCheckedForUpdates = true;
 
     try {
       final info = await (widget.updateChecker?.call() ??
           UpdateService.checkForUpdate());
-      if (!mounted) return;
+      if (!mounted) {
+        debugPrint('Update check: widget unmounted before result handled.');
+        return;
+      }
       final ctx = _navigatorContext();
-      if (ctx == null || !ctx.mounted) return;
+      if (ctx == null || !ctx.mounted) {
+        debugPrint(
+          'Update check: navigator context unavailable '
+          '(status=${info.status}). Scheduling retry.',
+        );
+        if (info.status == UpdateStatus.updateAvailable) {
+          _pendingUpdate = info;
+        } else if (info.status == UpdateStatus.unavailable) {
+          _needsResumeRecheck = true;
+        }
+        _scheduleRetry();
+        return;
+      }
 
       switch (info.status) {
         case UpdateStatus.updateAvailable:
+          _pendingUpdate = info;
           _presentUpdate(ctx, info);
+          _pendingUpdate = null;
           break;
         case UpdateStatus.upToDate:
           final installedVersion = info.installedVersion;
@@ -198,13 +242,48 @@ class _CalculusAppState extends State<CalculusApp> {
           );
           break;
         case UpdateStatus.unavailable:
+          debugPrint(
+            'Update check: release status unavailable. '
+            'Will retry once and on app resume.',
+          );
+          _needsResumeRecheck = true;
+          _scheduleRetry();
           break;
       }
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
+      debugPrint('Update check failed: $e. Scheduling one retry.');
       // Update checks are nonblocking. The Settings screen can report the
       // unavailable status when the user opens it.
+      _needsResumeRecheck = true;
+      _scheduleRetry();
     }
+  }
+
+  void _scheduleRetry() {
+    if (_retryScheduled || !mounted) return;
+    _retryScheduled = true;
+    _retryTimer?.cancel();
+    _retryTimer = Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      if (_pendingUpdate != null) {
+        _tryPresentPending();
+      } else {
+        _checkForUpdates(isRetry: true);
+      }
+    });
+  }
+
+  void _tryPresentPending() {
+    final info = _pendingUpdate;
+    if (info == null || !mounted) return;
+    final ctx = _navigatorContext();
+    if (ctx == null || !ctx.mounted) {
+      debugPrint('Update check: pending update still has no context.');
+      return;
+    }
+    _presentUpdate(ctx, info);
+    _pendingUpdate = null;
   }
 
   void _presentUpdate(BuildContext context, UpdateInfo info) {

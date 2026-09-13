@@ -1,4 +1,5 @@
-﻿library lcd_math_engine;
+library lcd_math_engine;
+
 /// src/lcd_engine.dart
 import 'dart:math';
 
@@ -178,31 +179,34 @@ class Parser {
       _current++;
       final funcName = token.value;
       _expect(TokenType.lparen);
-      
+
       // Handle empty function argument like sqrt()
-      if (_current < tokens.length && tokens[_current].type == TokenType.rparen) {
+      if (_current < tokens.length &&
+          tokens[_current].type == TokenType.rparen) {
         _current++;
         return FunctionNode(funcName, const NumberNode(0));
       }
-      
+
       final arg = _parseExpression();
       _expect(TokenType.rparen);
       return FunctionNode(funcName, arg);
     } else if (token.type == TokenType.lparen) {
       _current++;
-      
+
       // Handle empty parentheses ()
-      if (_current < tokens.length && tokens[_current].type == TokenType.rparen) {
+      if (_current < tokens.length &&
+          tokens[_current].type == TokenType.rparen) {
         _current++;
         return const NumberNode(0);
       }
-      
+
       final expr = _parseExpression();
       _expect(TokenType.rparen);
       return expr;
     }
-    
-    throw Exception("Math Error: Unexpected '${token.value}' at this position.");
+
+    throw Exception(
+        "Math Error: Unexpected '${token.value}' at this position.");
   }
 
   void _expect(TokenType type) {
@@ -222,11 +226,11 @@ class LimitEngine {
       String equation, String variable, double approachValue) {
     // Clean up input
     equation = equation.replaceAll(' ', '').replaceAll('lim', '');
-    
+
     // Normalize Unicode characters to ASCII equivalents
     equation = _normalizeUnicode(equation);
-    
-    // Smart Preprocessing: If user types "1/x - 1/3 / x-3", help them by wrapping 
+
+    // Smart Preprocessing: If user types "1/x - 1/3 / x-3", help them by wrapping
     // the likely numerator and denominator.
     equation = _smartPreprocess(equation);
 
@@ -258,7 +262,8 @@ class LimitEngine {
       solution = StepGenerator.solveByConjugate(
           equation, variable, approachValue, ast);
     } else if (strategy == LimitStrategy.lcd) {
-      solution = StepGenerator.solveByLCD(equation, variable, approachValue, ast);
+      solution =
+          StepGenerator.solveByLCD(equation, variable, approachValue, ast);
     } else {
       solution = StepGenerator.unknownForm(equation, variable, approachValue);
     }
@@ -266,7 +271,8 @@ class LimitEngine {
     // DEBUG: Log solution details for development
     assert(() {
       // ignore: avoid_print
-      print('LCD_DEBUG methodUsed: ${solution.methodUsed}, steps.length: ${solution.steps.length}');
+      print(
+          'LCD_DEBUG methodUsed: ${solution.methodUsed}, steps.length: ${solution.steps.length}');
       for (int i = 0; i < solution.steps.length; i++) {
         final stepPreview = solution.steps[i].length > 100
             ? solution.steps[i].substring(0, 100)
@@ -367,42 +373,42 @@ class LimitEngine {
     int slashCount = '/'.allMatches(input).length;
     if (slashCount < 2) return input; // Only one slash, ambiguity is low
 
-    // Heuristic: Find the division that splits the expression into a complex numerator 
+    // Heuristic: Find the division that splits the expression into a complex numerator
     // and a simple binomial denominator (common in limit problems).
     // Usually the 'main' division is the LAST one that isn't inside parentheses,
     // OR it's the one splitting the expression into the largest chunks.
-    
+
     // For "1/x - 1/3 / x - 3", the divisions are at indices 1, 9, and 13.
     // If we pick index 9: numerator "1/x-1/3", denominator "x-3".
     // This looks like a valid limit problem!
-    
-    // We try to find a division index 'i' such that 
+
+    // We try to find a division index 'i' such that
     // numerator = input.substring(0, i) and denominator = input.substring(i+1)
     // and numerator contains a '/' while denominator does NOT (for standard LCD/Conjugate).
     for (int i = input.length - 1; i >= 0; i--) {
       if (input[i] == '/') {
         String num = input.substring(0, i);
         String den = input.substring(i + 1);
-        
+
         // If numerator has its own division and denominator looks like a linear factor (no /)
         if (num.contains('/') && !den.contains('/')) {
-           return "($num)/($den)";
+          return "($num)/($den)";
         }
       }
     }
 
-    return input; 
+    return input;
   }
 
   static String _normalizeUnicode(String input) {
     return input
-      .replaceAll('??', '-')
-      .replaceAll('–', '-')
-      .replaceAll('—', '-')
-      .replaceAll('??', '*')
-      .replaceAll('?', '/')
-      .replaceAll('√', 'sqrt')
-      .replaceAll('?', '^2')
-      .replaceAll('³', '^3');
+        .replaceAll('??', '-')
+        .replaceAll('–', '-')
+        .replaceAll('—', '-')
+        .replaceAll('??', '*')
+        .replaceAll('?', '/')
+        .replaceAll('√', 'sqrt')
+        .replaceAll('?', '^2')
+        .replaceAll('³', '^3');
   }
 }

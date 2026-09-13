@@ -170,8 +170,8 @@ class TrigIdentityEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'prove: sin^2 + cos^2 = 1');
+    final empty =
+        FieldValidators.notEmpty(rawInput, example: 'prove: sin^2 + cos^2 = 1');
     if (empty != null) {
       _error = empty;
       return false;
@@ -187,8 +187,7 @@ class TrigIdentityEquation extends BaseEquation {
   @override
   SolveResult solve() {
     if (!rawInput.contains('=')) {
-      return SolveResult.error(
-          _error ?? 'Write an identity with = sign.');
+      return SolveResult.error(_error ?? 'Write an identity with = sign.');
     }
     final sides = _norm().split('=');
     if (sides.length != 2 || sides.any((s) => s.isEmpty)) {
@@ -238,7 +237,9 @@ class TrigIdentityEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1, title: 'Check failed', explanation: r.errorMessage ?? '')
+            stepNumber: 1,
+            title: 'Check failed',
+            explanation: r.errorMessage ?? '')
       ];
     }
     final data = r.customData!.first as Map;

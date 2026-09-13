@@ -1,4 +1,4 @@
-﻿// ═════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════
 // SLOPE SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
 // Calculates slope between two points with detailed results
@@ -24,11 +24,17 @@ class SlopeSolverResult {
   final String? error;
 
   SlopeSolverResult({
-    required this.x1, required this.y1,
-    required this.x2, required this.y2,
-    required this.slope, required this.deltaY, required this.deltaX,
-    required this.isVertical, required this.isHorizontal,
-    required this.equation, required this.slopeDisplay,
+    required this.x1,
+    required this.y1,
+    required this.x2,
+    required this.y2,
+    required this.slope,
+    required this.deltaY,
+    required this.deltaX,
+    required this.isVertical,
+    required this.isHorizontal,
+    required this.equation,
+    required this.slopeDisplay,
     this.error,
   });
 
@@ -42,8 +48,10 @@ class SlopeComparisonResult {
   final String explanation;
 
   SlopeComparisonResult({
-    required this.slope1, required this.slope2,
-    required this.relationship, required this.relationshipIcon,
+    required this.slope1,
+    required this.slope2,
+    required this.relationship,
+    required this.relationshipIcon,
     required this.explanation,
   });
 
@@ -81,9 +89,15 @@ class SlopeSolver {
 
     if (deltaX == 0) {
       return SlopeSolverResult(
-        x1: x1, y1: y1, x2: x2, y2: y2,
-        slope: double.infinity, deltaY: deltaY, deltaX: deltaX,
-        isVertical: true, isHorizontal: false,
+        x1: x1,
+        y1: y1,
+        x2: x2,
+        y2: y2,
+        slope: double.infinity,
+        deltaY: deltaY,
+        deltaX: deltaX,
+        isVertical: true,
+        isHorizontal: false,
         equation: 'x = ${_fmt(x1)}',
         slopeDisplay: 'Undefined',
       );
@@ -96,15 +110,25 @@ class SlopeSolver {
     final equation = _buildEq(slope, b);
 
     return SlopeSolverResult(
-      x1: x1, y1: y1, x2: x2, y2: y2,
-      slope: slope, deltaY: deltaY, deltaX: deltaX,
-      isVertical: false, isHorizontal: isHorizontal,
-      equation: equation, slopeDisplay: slopeDisplay,
+      x1: x1,
+      y1: y1,
+      x2: x2,
+      y2: y2,
+      slope: slope,
+      deltaY: deltaY,
+      deltaX: deltaX,
+      isVertical: false,
+      isHorizontal: isHorizontal,
+      equation: equation,
+      slopeDisplay: slopeDisplay,
     );
   }
 
   static SlopeSolverResult solveFromStrings(
-    String sx1, String sy1, String sx2, String sy2,
+    String sx1,
+    String sy1,
+    String sx2,
+    String sy2,
   ) {
     final x1 = parseCoordinate(sx1);
     final y1 = parseCoordinate(sy1);
@@ -125,8 +149,10 @@ class SlopeSolver {
     if (r.isVertical) {
       return [
         SlopeStep(label: 'Given Points', equation: pts),
-        SlopeStep(label: 'Find dx', equation: 'dx = ${_fmt(x2)} - ${_fmt(x1)} = 0'),
-        const SlopeStep(label: 'Conclusion', equation: 'dx = 0 -> Slope is undefined'),
+        SlopeStep(
+            label: 'Find dx', equation: 'dx = ${_fmt(x2)} - ${_fmt(x1)} = 0'),
+        const SlopeStep(
+            label: 'Conclusion', equation: 'dx = 0 -> Slope is undefined'),
         SlopeStep(label: 'Equation', equation: r.equation),
       ];
     }
@@ -134,7 +160,8 @@ class SlopeSolver {
     if (r.isHorizontal) {
       return [
         SlopeStep(label: 'Given Points', equation: pts),
-        SlopeStep(label: 'Find dy', equation: 'dy = ${_fmt(y2)} - ${_fmt(y1)} = 0'),
+        SlopeStep(
+            label: 'Find dy', equation: 'dy = ${_fmt(y2)} - ${_fmt(y1)} = 0'),
         const SlopeStep(label: 'Conclusion', equation: 'dy = 0 -> m = 0'),
         SlopeStep(label: 'Equation', equation: 'y = ${_fmt(r.y1)}'),
       ];
@@ -143,8 +170,13 @@ class SlopeSolver {
     return [
       SlopeStep(label: 'Given Points', equation: pts),
       const SlopeStep(label: 'Formula', equation: 'm = (y2 - y1) / (x2 - x1)'),
-      SlopeStep(label: 'Substitute', equation: 'm = (${_fmt(y2)} - ${_fmt(y1)}) / (${_fmt(x2)} - ${_fmt(x1)})'),
-      SlopeStep(label: 'Simplify', equation: 'm = ${_fmt(r.deltaY)} / ${_fmt(r.deltaX)}'),
+      SlopeStep(
+          label: 'Substitute',
+          equation:
+              'm = (${_fmt(y2)} - ${_fmt(y1)}) / (${_fmt(x2)} - ${_fmt(x1)})'),
+      SlopeStep(
+          label: 'Simplify',
+          equation: 'm = ${_fmt(r.deltaY)} / ${_fmt(r.deltaX)}'),
       SlopeStep(label: 'Slope', equation: 'm = ${r.slopeDisplay}'),
       SlopeStep(label: 'Line Equation', equation: r.equation),
     ];
@@ -153,21 +185,27 @@ class SlopeSolver {
   // ── Comparison ────────────────────────────────────────────
 
   static SlopeComparisonResult compareSlopes(
-    SlopeSolverResult a, SlopeSolverResult b,
+    SlopeSolverResult a,
+    SlopeSolverResult b,
   ) {
     if (a.isVertical && b.isVertical) {
-      return _cmp(a, b, 'parallel', 'parallel', 'Both lines are vertical (parallel)');
+      return _cmp(
+          a, b, 'parallel', 'parallel', 'Both lines are vertical (parallel)');
     }
     if (a.isVertical || b.isVertical) {
-      return _cmp(a, b, 'perpendicular', 'perpendicular', 'One vertical, one not (perpendicular)');
+      return _cmp(a, b, 'perpendicular', 'perpendicular',
+          'One vertical, one not (perpendicular)');
     }
     if ((a.slope - b.slope).abs() < 1e-10) {
-      return _cmp(a, b, 'parallel', 'parallel', 'Lines have equal slopes (parallel)');
+      return _cmp(
+          a, b, 'parallel', 'parallel', 'Lines have equal slopes (parallel)');
     }
     if ((a.slope * b.slope + 1).abs() < 1e-10) {
-      return _cmp(a, b, 'perpendicular', 'perpendicular', 'Product of slopes equals -1 (perpendicular)');
+      return _cmp(a, b, 'perpendicular', 'perpendicular',
+          'Product of slopes equals -1 (perpendicular)');
     }
-    return _cmp(a, b, 'neither', 'trending_flat', 'Lines are neither parallel nor perpendicular');
+    return _cmp(a, b, 'neither', 'trending_flat',
+        'Lines are neither parallel nor perpendicular');
   }
 
   static List<SlopeStep> getComparisonSteps(SlopeComparisonResult c) {
@@ -180,9 +218,15 @@ class SlopeSolver {
             ? 'm1 x m2 = -1 -> Perpendicular'
             : 'm1 != m2 and m1 x m2 != -1 -> Neither';
     return [
-      SlopeStep(label: 'Line 1 - Points', equation: '(${_fmt(a.x1)}, ${_fmt(a.y1)}) and (${_fmt(a.x2)}, ${_fmt(a.y2)})'),
+      SlopeStep(
+          label: 'Line 1 - Points',
+          equation:
+              '(${_fmt(a.x1)}, ${_fmt(a.y1)}) and (${_fmt(a.x2)}, ${_fmt(a.y2)})'),
       SlopeStep(label: 'Line 1 - Slope', equation: 'm1 = $m1'),
-      SlopeStep(label: 'Line 2 - Points', equation: '(${_fmt(b.x1)}, ${_fmt(b.y1)}) and (${_fmt(b.x2)}, ${_fmt(b.y2)})'),
+      SlopeStep(
+          label: 'Line 2 - Points',
+          equation:
+              '(${_fmt(b.x1)}, ${_fmt(b.y1)}) and (${_fmt(b.x2)}, ${_fmt(b.y2)})'),
       SlopeStep(label: 'Line 2 - Slope', equation: 'm2 = $m2'),
       SlopeStep(label: 'Check', equation: check),
       SlopeStep(label: 'Result', equation: c.relationship.toUpperCase()),
@@ -201,18 +245,40 @@ class SlopeSolver {
   // ── Private Helpers ───────────────────────────────────────
 
   static SlopeSolverResult _error(String msg) => SlopeSolverResult(
-    x1: 0, y1: 0, x2: 0, y2: 0, slope: 0, deltaY: 0, deltaX: 0,
-    isVertical: false, isHorizontal: false, equation: '', slopeDisplay: '', error: msg,
-  );
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 0,
+        slope: 0,
+        deltaY: 0,
+        deltaX: 0,
+        isVertical: false,
+        isHorizontal: false,
+        equation: '',
+        slopeDisplay: '',
+        error: msg,
+      );
 
   static SlopeComparisonResult _cmp(
-    SlopeSolverResult a, SlopeSolverResult b,
-    String rel, String icon, String explanation,
-  ) => SlopeComparisonResult(slope1: a, slope2: b, relationship: rel, relationshipIcon: icon, explanation: explanation);
+    SlopeSolverResult a,
+    SlopeSolverResult b,
+    String rel,
+    String icon,
+    String explanation,
+  ) =>
+      SlopeComparisonResult(
+          slope1: a,
+          slope2: b,
+          relationship: rel,
+          relationshipIcon: icon,
+          explanation: explanation);
 
   static String _fmt(double n) {
     if (n == n.truncateToDouble()) return n.toInt().toString();
-    return n.toStringAsFixed(2).replaceAll(RegExp(r'\.[0-9]*?0+$'), '').replaceAll(RegExp(r'\.$'), '');
+    return n
+        .toStringAsFixed(2)
+        .replaceAll(RegExp(r'\.[0-9]*?0+$'), '')
+        .replaceAll(RegExp(r'\.$'), '');
   }
 
   static String _toFraction(double num, double den) {
@@ -221,7 +287,8 @@ class SlopeSolver {
       int n = num.toInt(), d = den.toInt();
       if (d == 0) return 'Undefined';
       final g = _gcd(n.abs(), d.abs());
-      n ~/= g; d ~/= g;
+      n ~/= g;
+      d ~/= g;
       if (d == 1) return '$n';
       if (d == -1) return '${-n}';
       if (d < 0) return '${-n}/${-d}';
@@ -243,7 +310,11 @@ class SlopeSolver {
   }
 
   static int _gcd(int a, int b) {
-    while (b != 0) { final t = b; b = a % b; a = t; }
+    while (b != 0) {
+      final t = b;
+      b = a % b;
+      a = t;
+    }
     return a;
   }
 
@@ -251,7 +322,10 @@ class SlopeSolver {
     final mStr = _toFraction(m, 1);
     final bStr = b == b.truncateToDouble()
         ? b.toInt().toString()
-        : b.toStringAsFixed(2).replaceAll(RegExp(r'\.[0-9]*?0+$'), '').replaceAll(RegExp(r'\.$'), '');
+        : b
+            .toStringAsFixed(2)
+            .replaceAll(RegExp(r'\.[0-9]*?0+$'), '')
+            .replaceAll(RegExp(r'\.$'), '');
     if (b == 0) return 'y = ${mStr}x';
     if (b > 0) return 'y = ${mStr}x + $bStr';
     return 'y = ${mStr}x - $bStr';

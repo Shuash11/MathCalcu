@@ -169,7 +169,8 @@ class G6RateEquation extends BaseEquation {
       return false;
     }
     if (_parse() == null) {
-      _error = 'Use R=? D=120 T=2, compare 500g 120 vs 1kg 220, or prev=1250 pres=1380 rate=12.';
+      _error =
+          'Use R=? D=120 T=2, compare 500g 120 vs 1kg 220, or prev=1250 pres=1380 rate=12.';
       return false;
     }
     _error = null;
@@ -218,7 +219,11 @@ class G6RateEquation extends BaseEquation {
         final double q2 = _toBase(p.third, p.unitB);
         final double u1 = p.second / q1;
         final double u2 = p.fourth / q2;
-        final String winner = u1 < u2 ? 'First' : u2 < u1 ? 'Second' : 'Tie';
+        final String winner = u1 < u2
+            ? 'First'
+            : u2 < u1
+                ? 'Second'
+                : 'Tie';
         return SolveResult(
           answer: '$winner is cheaper '
               '(${G6Format.money(u1)} vs ${G6Format.money(u2)} per unit)',
@@ -270,28 +275,81 @@ class G6RateEquation extends BaseEquation {
     switch (p.kind) {
       case _RateKind.distance:
         return [
-          const StepModel(stepNumber: 1, title: 'Write D = R × T', explanation: 'Distance equals rate times time.'),          StepModel(stepNumber: 2, title: 'Substitute', explanation: 'D = ${G6Format.num(p.first)} × ${G6Format.num(p.second)}.'),
-          StepModel(stepNumber: 3, title: 'Multiply with units', explanation: '${solve().answer}.'),
+          const StepModel(
+              stepNumber: 1,
+              title: 'Write D = R × T',
+              explanation: 'Distance equals rate times time.'),
+          StepModel(
+              stepNumber: 2,
+              title: 'Substitute',
+              explanation:
+                  'D = ${G6Format.num(p.first)} × ${G6Format.num(p.second)}.'),
+          StepModel(
+              stepNumber: 3,
+              title: 'Multiply with units',
+              explanation: '${solve().answer}.'),
         ];
       case _RateKind.speed:
         return [
-          const StepModel(stepNumber: 1, title: 'Write R = D ÷ T', explanation: 'Speed equals distance over time.'),          StepModel(stepNumber: 2, title: 'Substitute', explanation: 'R = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.'),
-          StepModel(stepNumber: 3, title: 'Divide with units', explanation: '${solve().answer}.'),
+          const StepModel(
+              stepNumber: 1,
+              title: 'Write R = D ÷ T',
+              explanation: 'Speed equals distance over time.'),
+          StepModel(
+              stepNumber: 2,
+              title: 'Substitute',
+              explanation:
+                  'R = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.'),
+          StepModel(
+              stepNumber: 3,
+              title: 'Divide with units',
+              explanation: '${solve().answer}.'),
         ];
       case _RateKind.time:
         return [
-          const StepModel(stepNumber: 1, title: 'Write T = D ÷ R', explanation: 'Time equals distance over rate.'),          StepModel(stepNumber: 2, title: 'Substitute', explanation: 'T = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.'),
-          StepModel(stepNumber: 3, title: 'Divide with units', explanation: '${solve().answer}.'),
+          const StepModel(
+              stepNumber: 1,
+              title: 'Write T = D ÷ R',
+              explanation: 'Time equals distance over rate.'),
+          StepModel(
+              stepNumber: 2,
+              title: 'Substitute',
+              explanation:
+                  'T = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.'),
+          StepModel(
+              stepNumber: 3,
+              title: 'Divide with units',
+              explanation: '${solve().answer}.'),
         ];
       case _RateKind.bestBuy:
         return [
-          const StepModel(stepNumber: 1, title: 'Convert to same units', explanation: 'g/kg and ml/L to one base unit.'),
-          const StepModel(stepNumber: 2, title: 'Unit price each', explanation: 'Price ÷ quantity per offer.'),          StepModel(stepNumber: 3, title: 'Compare', explanation: '${solve().answer}.'),
+          const StepModel(
+              stepNumber: 1,
+              title: 'Convert to same units',
+              explanation: 'g/kg and ml/L to one base unit.'),
+          const StepModel(
+              stepNumber: 2,
+              title: 'Unit price each',
+              explanation: 'Price ÷ quantity per offer.'),
+          StepModel(
+              stepNumber: 3,
+              title: 'Compare',
+              explanation: '${solve().answer}.'),
         ];
       case _RateKind.meter:
         return [
-          const StepModel(stepNumber: 1, title: 'Subtract readings', explanation: 'Use = present − previous.'),
-          const StepModel(stepNumber: 2, title: 'Multiply by rate', explanation: 'Bill = use × rate.'),          StepModel(stepNumber: 3, title: 'Label kWh and pesos', explanation: '${solve().answer}.'),
+          const StepModel(
+              stepNumber: 1,
+              title: 'Subtract readings',
+              explanation: 'Use = present − previous.'),
+          const StepModel(
+              stepNumber: 2,
+              title: 'Multiply by rate',
+              explanation: 'Bill = use × rate.'),
+          StepModel(
+              stepNumber: 3,
+              title: 'Label kWh and pesos',
+              explanation: '${solve().answer}.'),
         ];
     }
   }

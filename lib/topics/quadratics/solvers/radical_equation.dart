@@ -63,13 +63,13 @@ class RadicalEquation extends BaseEquation {
       _error = empty;
       return false;
     }
-    if (!rawInput.toLowerCase().contains('sqrt') &&
-        !rawInput.contains('√')) {
+    if (!rawInput.toLowerCase().contains('sqrt') && !rawInput.contains('√')) {
       _error = 'Include sqrt — e.g. sqrt(x + 5) = 3.';
       return false;
     }
     if (_parse() == null) {
-      _error = 'One square root of a linear expression — e.g. sqrt(2x + 1) - 1 = 2.';
+      _error =
+          'One square root of a linear expression — e.g. sqrt(2x + 1) - 1 = 2.';
       return false;
     }
     _error = null;
@@ -146,7 +146,9 @@ class RadicalEquation extends BaseEquation {
           title: 'Square both sides',
           explanation: 'Squaring is not reversible — verify at the end.'),
       StepModel(
-          stepNumber: 4, title: 'Verify (extraneous check)', explanation: r.answer),
+          stepNumber: 4,
+          title: 'Verify (extraneous check)',
+          explanation: r.answer),
     ];
   }
 }

@@ -43,8 +43,7 @@ class RadiusResultCard extends StatelessWidget {
                 'r = ',
                 style: TextStyle(
                   fontSize: 20,
-                  color:
-                      const Color(0xFF94A3B8).withValues(alpha: 0.8),
+                  color: const Color(0xFF94A3B8).withValues(alpha: 0.8),
                 ),
               ),
               Text(

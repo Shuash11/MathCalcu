@@ -1,4 +1,4 @@
-﻿// ═════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════
 // RADIUS SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
 // Computes the radius of a circle given a point on the circle
@@ -35,15 +35,27 @@ class RadiusResult {
   final String? rawX, rawY, rawH, rawK;
 
   const RadiusResult({
-    required this.x, required this.y, required this.h, required this.k,
-    required this.dx, required this.dy, required this.dx2, required this.dy2,
-    required this.sum, required this.radius,
-    this.rawX, this.rawY, this.rawH, this.rawK,
+    required this.x,
+    required this.y,
+    required this.h,
+    required this.k,
+    required this.dx,
+    required this.dy,
+    required this.dx2,
+    required this.dy2,
+    required this.sum,
+    required this.radius,
+    this.rawX,
+    this.rawY,
+    this.rawH,
+    this.rawK,
   });
 
   String _fmt(double v, String? raw) {
     if (raw != null && raw.contains('/')) return raw;
-    return v == v.truncateToDouble() ? v.toInt().toString() : v.toStringAsFixed(4);
+    return v == v.truncateToDouble()
+        ? v.toInt().toString()
+        : v.toStringAsFixed(4);
   }
 
   String _f(double v) =>
@@ -61,7 +73,10 @@ class RadiusResult {
     if ((n - intN).abs() > 1e-6) return (1, intN);
     int coeff = 1, remaining = intN;
     for (int i = 2; i * i <= remaining; i++) {
-      while (remaining % (i * i) == 0) { coeff *= i; remaining ~/= (i * i); }
+      while (remaining % (i * i) == 0) {
+        coeff *= i;
+        remaining ~/= (i * i);
+      }
     }
     return (coeff, remaining);
   }
@@ -88,7 +103,8 @@ class RadiusResult {
   String get steps {
     final buf = StringBuffer();
     buf.writeln('r = √((x ?? h)? + (y ?? k)?)');
-    buf.writeln('r = √((${_fmt(x, rawX)} ?? ${_fmt(h, rawH)})? + (${_fmt(y, rawY)} ?? ${_fmt(k, rawK)})?)');
+    buf.writeln(
+        'r = √((${_fmt(x, rawX)} ?? ${_fmt(h, rawH)})? + (${_fmt(y, rawY)} ?? ${_fmt(k, rawK)})?)');
     buf.writeln('r = √((${_f(dx)})? + (${_f(dy)})?)');
     buf.writeln('r = √(${_f(dx2)} + ${_f(dy2)})');
     buf.writeln('r = √${_f(sum)}');
@@ -107,30 +123,52 @@ class RadiusResult {
 
 class RadiusSolver {
   static RadiusResult solveFromStrings({
-    required String x, required String y,
-    required String h, required String k,
+    required String x,
+    required String y,
+    required String h,
+    required String k,
   }) {
     return solve(
-      x: _parseFrac(x), y: _parseFrac(y),
-      h: _parseFrac(h), k: _parseFrac(k),
-      rawX: x.trim(), rawY: y.trim(), rawH: h.trim(), rawK: k.trim(),
+      x: _parseFrac(x),
+      y: _parseFrac(y),
+      h: _parseFrac(h),
+      k: _parseFrac(k),
+      rawX: x.trim(),
+      rawY: y.trim(),
+      rawH: h.trim(),
+      rawK: k.trim(),
     );
   }
 
   static RadiusResult solve({
-    required double x, required double y,
-    required double h, required double k,
-    String? rawX, String? rawY, String? rawH, String? rawK,
+    required double x,
+    required double y,
+    required double h,
+    required double k,
+    String? rawX,
+    String? rawY,
+    String? rawH,
+    String? rawK,
   }) {
     final dx = x - h, dy = y - k;
     final dx2 = dx * dx, dy2 = dy * dy;
     final sum = dx2 + dy2;
     final r = sqrt(sum);
     return RadiusResult(
-      x: x, y: y, h: h, k: k,
-      dx: dx, dy: dy, dx2: dx2, dy2: dy2,
-      sum: sum, radius: r,
-      rawX: rawX, rawY: rawY, rawH: rawH, rawK: rawK,
+      x: x,
+      y: y,
+      h: h,
+      k: k,
+      dx: dx,
+      dy: dy,
+      dx2: dx2,
+      dy2: dy2,
+      sum: sum,
+      radius: r,
+      rawX: rawX,
+      rawY: rawY,
+      rawH: rawH,
+      rawK: rawK,
     );
   }
 }

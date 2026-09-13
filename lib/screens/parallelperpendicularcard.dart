@@ -97,7 +97,8 @@ class _ParallelPerpendicularModuleCardState
                             shape: BoxShape.circle,
                             gradient: RadialGradient(
                               colors: [
-                                theme.accentColor.withValues(alpha: _hovered ? 0.14 : 0.07),
+                                theme.accentColor
+                                    .withValues(alpha: _hovered ? 0.14 : 0.07),
                                 Colors.transparent,
                               ],
                             ),
@@ -116,7 +117,8 @@ class _ParallelPerpendicularModuleCardState
                             shape: BoxShape.circle,
                             gradient: RadialGradient(
                               colors: [
-                                _indigo.withValues(alpha: _hovered ? 0.12 : 0.06),
+                                _indigo.withValues(
+                                    alpha: _hovered ? 0.12 : 0.06),
                                 Colors.transparent,
                               ],
                             ),
@@ -163,7 +165,8 @@ class _ParallelPerpendicularModuleCardState
                                 border: Border.all(
                                   color: _hovered
                                       ? _sky.withValues(alpha: 0.6)
-                                      : theme.accentColor.withValues(alpha: 0.3),
+                                      : theme.accentColor
+                                          .withValues(alpha: 0.3),
                                   width: _hovered ? 2 * s : 1.5 * s,
                                 ),
                               ),
@@ -178,12 +181,14 @@ class _ParallelPerpendicularModuleCardState
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
                                     transform: _hovered
-                                        ? (Matrix4.translationValues(0.0, -2.0 * s, 0.0)
+                                        ? (Matrix4.translationValues(
+                                            0.0, -2.0 * s, 0.0)
                                           ..scaleByDouble(1.12, 1.12, 1.0, 1.0))
                                         : Matrix4.identity(),
                                     child: Icon(
                                       widget.module.icon,
-                                      color: _hovered ? _sky : theme.accentColor,
+                                      color:
+                                          _hovered ? _sky : theme.accentColor,
                                       size: 25 * s,
                                     ),
                                   ),
@@ -195,28 +200,29 @@ class _ParallelPerpendicularModuleCardState
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
-children: [
-                                    ResponsiveText(
-                                      widget.module.label,
-                                      style: TextStyle(
-                                        fontSize: 16 * s,
-                                        fontWeight: FontWeight.w600,
-                                        color: _hovered ? _sky : theme.textPrimary,
-                                        letterSpacing: -0.4 * s,
-                                        height: 1.2,
-                                      ),
+                                children: [
+                                  ResponsiveText(
+                                    widget.module.label,
+                                    style: TextStyle(
+                                      fontSize: 16 * s,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          _hovered ? _sky : theme.textPrimary,
+                                      letterSpacing: -0.4 * s,
+                                      height: 1.2,
                                     ),
+                                  ),
                                   SizedBox(height: 4 * s),
-                                    ResponsiveText(
-                                      widget.module.subtitle,
-                                      style: TextStyle(
-                                        fontSize: 12 * s,
-                                        color: _hovered
-                                            ? _sky.withValues(alpha: 0.72)
-                                            : theme.textSecondary,
-                                        height: 1.3,
-                                      ),
+                                  ResponsiveText(
+                                    widget.module.subtitle,
+                                    style: TextStyle(
+                                      fontSize: 12 * s,
+                                      color: _hovered
+                                          ? _sky.withValues(alpha: 0.72)
+                                          : theme.textSecondary,
+                                      height: 1.3,
                                     ),
+                                  ),
                                   SizedBox(height: 10 * s),
                                   Wrap(
                                     spacing: 6 * s,
@@ -247,7 +253,8 @@ children: [
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 transform: _hovered
-                                    ? Matrix4.translationValues(6.0 * s, 0.0, 0.0)
+                                    ? Matrix4.translationValues(
+                                        6.0 * s, 0.0, 0.0)
                                     : Matrix4.identity(),
                                 child: Container(
                                   width: 40 * s,
@@ -259,13 +266,15 @@ children: [
                                       end: Alignment.bottomRight,
                                       colors: [
                                         _indigo.withValues(alpha: 0.12),
-                                        theme.accentColor.withValues(alpha: 0.08),
+                                        theme.accentColor
+                                            .withValues(alpha: 0.08),
                                       ],
                                     ),
                                     border: Border.all(
                                       color: _hovered
                                           ? _sky.withValues(alpha: 0.55)
-                                          : theme.accentColor.withValues(alpha: 0.22),
+                                          : theme.accentColor
+                                              .withValues(alpha: 0.22),
                                       width: 1.5 * s,
                                     ),
                                   ),
@@ -273,7 +282,8 @@ children: [
                                     Icons.arrow_forward_rounded,
                                     color: _hovered
                                         ? _sky
-                                        : theme.accentColor.withValues(alpha: 0.75),
+                                        : theme.accentColor
+                                            .withValues(alpha: 0.75),
                                     size: 20 * s,
                                   ),
                                 ),

@@ -67,8 +67,7 @@ class LinearOneVarEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: '2x - 5 = 9');
+    final empty = FieldValidators.notEmpty(rawInput, example: '2x - 5 = 9');
     if (empty != null) {
       _error = empty;
       return false;
@@ -89,7 +88,8 @@ class LinearOneVarEquation extends BaseEquation {
   SolveResult solve() {
     final c = _parse();
     if (c == null) {
-      return SolveResult.error(_error ?? 'Enter a linear equation — e.g. 2x - 5 = 9.');
+      return SolveResult.error(
+          _error ?? 'Enter a linear equation — e.g. 2x - 5 = 9.');
     }
     final a = c[0], b = c[1];
     if (a.abs() < 1e-12) {
@@ -101,7 +101,8 @@ class LinearOneVarEquation extends BaseEquation {
               {'kind': 'line', 'identity': true}
             ]);
       }
-      return SolveResult.error('No solution — parallel lines (0 = ${b.toStringAsFixed(2)}).');
+      return SolveResult.error(
+          'No solution — parallel lines (0 = ${b.toStringAsFixed(2)}).');
     }
     final x = b / a;
     return SolveResult(
@@ -154,7 +155,8 @@ class LinearOneVarEquation extends BaseEquation {
       StepModel(
           stepNumber: 4,
           title: 'Check',
-          explanation: 'Substitute x = ${G6Format.num(b / a)} back into both sides.'),
+          explanation:
+              'Substitute x = ${G6Format.num(b / a)} back into both sides.'),
     ];
   }
 }

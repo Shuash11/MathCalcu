@@ -44,7 +44,11 @@ class TrigEquationSolver extends BaseEquation {
       if ((rad - n * math.pi / d).abs() < 1e-9 && n.abs() <= 4 * d) {
         if (n == 0) return '0';
         if (d == 1) {
-          return n == 1 ? 'π' : n == -1 ? '-π' : '$nπ';
+          return n == 1
+              ? 'π'
+              : n == -1
+                  ? '-π'
+                  : '$nπ';
         }
         final g = _gcd(n.abs(), d);
         final nn = n ~/ g, dd = d ~/ g;
@@ -67,8 +71,7 @@ class TrigEquationSolver extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'sin x = 1/2');
+    final empty = FieldValidators.notEmpty(rawInput, example: 'sin x = 1/2');
     if (empty != null) {
       _error = empty;
       return false;
@@ -85,8 +88,7 @@ class TrigEquationSolver extends BaseEquation {
   SolveResult solve() {
     final p = _parse();
     if (p == null) {
-      return SolveResult.error(
-          _error ?? 'Use sin x = 1/2 on [0, 2π).');
+      return SolveResult.error(_error ?? 'Use sin x = 1/2 on [0, 2π).');
     }
     final fn = p[0] as String, k = p[1] as double;
     const twoPi = 2 * math.pi;
@@ -96,27 +98,27 @@ class TrigEquationSolver extends BaseEquation {
         return SolveResult.error('No solution — |sin x| ≤ 1.');
       }
       final a = math.asin(k.clamp(-1, 1));
-      sols = k.abs() > 1 - 1e-12
-          ? [a < 0 ? a + twoPi : a]
-          : [a, math.pi - a];
+      sols = k.abs() > 1 - 1e-12 ? [a < 0 ? a + twoPi : a] : [a, math.pi - a];
     } else if (fn == 'cos') {
       if (k.abs() > 1 + 1e-12) {
         return SolveResult.error('No solution — |cos x| ≤ 1.');
       }
       final a = math.acos(k.clamp(-1, 1));
-      sols = (k - 1).abs() < 1e-12 || (k + 1).abs() < 1e-12 ? [a] : [a, twoPi - a];
+      sols =
+          (k - 1).abs() < 1e-12 || (k + 1).abs() < 1e-12 ? [a] : [a, twoPi - a];
     } else {
       final a = math.atan(k);
       sols = [a < 0 ? a + math.pi : a, (a < 0 ? a + math.pi : a) + math.pi];
     }
     sols = sols
-        .map((e) => e < 0 ? e + twoPi : (e >= twoPi && (e - twoPi).abs() < 1e-9 ? 0.0 : e))
+        .map((e) => e < 0
+            ? e + twoPi
+            : (e >= twoPi && (e - twoPi).abs() < 1e-9 ? 0.0 : e))
         .toSet()
         .toList()
       ..sort();
     final degs = sols.map((e) => G6Format.num(e * 180 / math.pi)).join('°, ');
-    final ans =
-        'x = ${sols.map(_fmtPi).join(', ')}  ($degs° on [0, 2π))';
+    final ans = 'x = ${sols.map(_fmtPi).join(', ')}  ($degs° on [0, 2π))';
     return SolveResult(
       answer: ans,
       points: sols,
@@ -152,7 +154,8 @@ class TrigEquationSolver extends BaseEquation {
           stepNumber: 2,
           title: 'Quadrants by sign',
           explanation: 'sin + in I/II, cos + in I/IV, tan + in I/III.'),
-      StepModel(stepNumber: 3, title: 'Solutions on [0, 2π)', explanation: r.answer),
+      StepModel(
+          stepNumber: 3, title: 'Solutions on [0, 2π)', explanation: r.answer),
     ];
   }
 }

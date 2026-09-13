@@ -272,7 +272,8 @@ class G6AlgebraEquation extends BaseEquation {
       StepModel(
         stepNumber: 1,
         title: 'Identify the operation',
-        explanation: '${p.variable} is combined with ${G6Format.num(p.operand)} '
+        explanation:
+            '${p.variable} is combined with ${G6Format.num(p.operand)} '
             'using ${p.op == '*' ? '×' : p.op}.',
       ),
       StepModel(

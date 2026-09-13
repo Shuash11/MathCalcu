@@ -1,4 +1,4 @@
-﻿// ═════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════
 // TWO-POINT SLOPE SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
 // Computes slope, y-intercept, and line equation forms from
@@ -198,12 +198,20 @@ class TwoPointSlopeSolver {
     }
 
     return TwoPointSlopeResult(
-      x1: x1, y1: y1, x2: x2, y2: y2,
-      slope: slope, yIntercept: yIntercept,
-      isVertical: isVertical, isHorizontal: isHorizontal,
-      slopeDisplay: slopeDisplay, lineEquation: lineEquation,
-      standardForm: standardForm, generalForm: generalForm,
-      slopeType: slopeType, steps: steps,
+      x1: x1,
+      y1: y1,
+      x2: x2,
+      y2: y2,
+      slope: slope,
+      yIntercept: yIntercept,
+      isVertical: isVertical,
+      isHorizontal: isHorizontal,
+      slopeDisplay: slopeDisplay,
+      lineEquation: lineEquation,
+      standardForm: standardForm,
+      generalForm: generalForm,
+      slopeType: slopeType,
+      steps: steps,
     );
   }
 

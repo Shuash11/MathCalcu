@@ -1,4 +1,4 @@
-﻿// ═════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════
 // DISTANCE SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
 // Calculates distance between two points:
@@ -89,14 +89,14 @@ class DistanceSolver {
     final diff = x2 - x1;
     final distance = diff.abs();
 
-    final formula = '|${_fmt(x2)} - ${_fmt(x1)}| = |${_fmt(diff)}| = ${_fmt(distance)}';
+    final formula =
+        '|${_fmt(x2)} - ${_fmt(x1)}| = |${_fmt(diff)}| = ${_fmt(distance)}';
 
     return DistanceResult.success(distance: distance, formula: formula);
   }
 
   /// 2D distance: sqrt((x2-x1)^2 + (y2-y1)^2)
-  static DistanceResult _solve2D(
-      double x1, double y1, double x2, double y2) {
+  static DistanceResult _solve2D(double x1, double y1, double x2, double y2) {
     final dx = x2 - x1;
     final dy = y2 - y1;
     final squaredSum = dx * dx + dy * dy;

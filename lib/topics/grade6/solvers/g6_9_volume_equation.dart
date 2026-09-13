@@ -186,18 +186,35 @@ class G6VolumeEquation extends BaseEquation {
     final _VolParsed? p = _parse();
     if (p == null) {
       return [
-        StepModel(stepNumber: 1, title: 'Invalid input', explanation: _error ?? 'Use L x W x H — e.g. 5 x 3 x 2.'),
+        StepModel(
+            stepNumber: 1,
+            title: 'Invalid input',
+            explanation: _error ?? 'Use L x W x H — e.g. 5 x 3 x 2.'),
       ];
     }
     final SolveResult r = solve();
     if (r.hasError) {
-      return [StepModel(stepNumber: 1, title: 'Invalid input', explanation: r.errorMessage ?? 'Invalid dimensions.')];
+      return [
+        StepModel(
+            stepNumber: 1,
+            title: 'Invalid input',
+            explanation: r.errorMessage ?? 'Invalid dimensions.')
+      ];
     }
     return [
-      StepModel(stepNumber: 1, title: 'Write the formula', explanation: _formula(p.solid)),
-      StepModel(stepNumber: 2, title: 'Substitute', explanation: 'Given: ${p.dims.map(G6Format.num).join(', ')}.'),
+      StepModel(
+          stepNumber: 1,
+          title: 'Write the formula',
+          explanation: _formula(p.solid)),
+      StepModel(
+          stepNumber: 2,
+          title: 'Substitute',
+          explanation: 'Given: ${p.dims.map(G6Format.num).join(', ')}.'),
       StepModel(stepNumber: 3, title: 'Multiply', explanation: r.answer),
-      const StepModel(stepNumber: 4, title: 'Attach cubic units', explanation: 'Volume is in unit³ (cm³).'),
+      const StepModel(
+          stepNumber: 4,
+          title: 'Attach cubic units',
+          explanation: 'Volume is in unit³ (cm³).'),
     ];
   }
 }

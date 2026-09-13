@@ -1,4 +1,4 @@
-﻿import 'solver_engine.dart';
+import 'solver_engine.dart';
 
 /// Represents a single step in the solution process
 class SolutionStep {
@@ -93,8 +93,7 @@ class SolutionStepsGenerator {
         stepNumber: 4,
         title: 'Substitute x = $approachStr',
         explanation: 'Now substitute the value into the expression.',
-        mathematicalExpression:
-            '= ${_fmt(result.finalValue)}',
+        mathematicalExpression: '= ${_fmt(result.finalValue)}',
       ),
       SolutionStep(
         stepNumber: 5,
@@ -186,7 +185,7 @@ class SolutionStepsGenerator {
   List<SolutionStep> _generateUnsolvableSteps(SolutionResult result) {
     final approachStr = _fmt(result.approachValue);
     final varName = 'x';
-    
+
     return [
       SolutionStep(
         stepNumber: 1,

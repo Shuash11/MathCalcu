@@ -12,7 +12,8 @@ class FinalsLimitsCard extends StatelessWidget {
     return ModuleCard(
       icon: Icons.functions_rounded,
       title: 'Evaluating Limits',
-      subtitle: 'Direct substitution, factoring, rationalization & special limits',
+      subtitle:
+          'Direct substitution, factoring, rationalization & special limits',
       onTap: () => context.go(module.route),
     );
   }

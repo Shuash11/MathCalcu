@@ -52,74 +52,78 @@ class _MathInputFieldState extends State<MathInputField> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-      decoration: BoxDecoration(
-        color: theme.card,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: widget.errorText != null
-              ? theme.accentColor.withValues(alpha: 0.6)
-              : (theme.isDark ? const Color(0xFFE9ECEF) : const Color(0xFF334155)).withValues(alpha: 0.2),
-          width: 1,
+          decoration: BoxDecoration(
+            color: theme.card,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: widget.errorText != null
+                  ? theme.accentColor.withValues(alpha: 0.6)
+                  : (theme.isDark
+                          ? const Color(0xFFE9ECEF)
+                          : const Color(0xFF334155))
+                      .withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: widget.controller,
+                  focusNode: _focusNode, // stable focus � no more pausing
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: theme.textPrimary,
+                    letterSpacing: 0.2,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: widget.hint,
+                    hintStyle: TextStyle(
+                      color: theme.textSecondary,
+                      fontSize: 16,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 18,
+                    ),
+                  ),
+                  onChanged: widget.onChanged,
+                  // onSubmitted: user presses Enter key on keyboard
+                  onSubmitted: (_) {
+                    widget.onSolve();
+                    // Keep focus after submitting so user can retype
+                    _focusNode.requestFocus();
+                  },
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  widget.onSolve();
+                  // Keep focus after tapping the button
+                  _focusNode.requestFocus();
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(6),
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: theme.accentColor,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [AccentGlow.halo(context)],
+                  ),
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    color:
+                        theme.isDark ? const Color(0xFF1A1A2E) : Colors.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: widget.controller,
-              focusNode: _focusNode, // stable focus � no more pausing
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: theme.textPrimary,
-                letterSpacing: 0.2,
-              ),
-              decoration: InputDecoration(
-                hintText: widget.hint,
-                hintStyle: TextStyle(
-                  color: theme.textSecondary,
-                  fontSize: 16,
-                ),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 18,
-                ),
-              ),
-              onChanged: widget.onChanged,
-              // onSubmitted: user presses Enter key on keyboard
-              onSubmitted: (_) {
-                widget.onSolve();
-                // Keep focus after submitting so user can retype
-                _focusNode.requestFocus();
-              },
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              widget.onSolve();
-              // Keep focus after tapping the button
-              _focusNode.requestFocus();
-            },
-            child: Container(
-              margin: const EdgeInsets.all(6),
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: theme.accentColor,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [AccentGlow.halo(context)],
-              ),
-              child: Icon(
-                Icons.arrow_forward_rounded,
-                color: theme.isDark ? const Color(0xFF1A1A2E) : Colors.white,
-                size: 20,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
         if (widget.errorText != null) ...[
           const SizedBox(height: 6),
           Text(

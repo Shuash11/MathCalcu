@@ -1,4 +1,4 @@
-﻿// ═════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════
 // CENTER SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
 // Finds the circle center from two endpoints of a diameter.
@@ -76,13 +76,19 @@ class CenterFraction {
   }
 
   static int _gcd(int a, int b) {
-    while (b != 0) { final t = b; b = a % b; a = t; }
+    while (b != 0) {
+      final t = b;
+      b = a % b;
+      a = t;
+    }
     return a;
   }
 
   static int _pow10(int n) {
     var r = 1;
-    for (var i = 0; i < n; i++) { r *= 10; }
+    for (var i = 0; i < n; i++) {
+      r *= 10;
+    }
     return r;
   }
 }
@@ -104,21 +110,27 @@ class CenterResult {
     if ((d * 10).round() / 10 == d) return d.toStringAsFixed(1);
     if ((d * 100).round() / 100 == d) return d.toStringAsFixed(2);
     if ((d * 1000).round() / 1000 == d) return d.toStringAsFixed(3);
-    return d.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+    return d
+        .toStringAsFixed(4)
+        .replaceAll(RegExp(r'0+$'), '')
+        .replaceAll(RegExp(r'\.$'), '');
   }
 }
 
 class CenterSolver {
   static CenterResult? computeExact({
-    required String x1, required String y1,
-    required String x2, required String y2,
+    required String x1,
+    required String y1,
+    required String x2,
+    required String y2,
   }) {
     final fx1 = CenterFraction.parse(x1);
     final fy1 = CenterFraction.parse(y1);
     final fx2 = CenterFraction.parse(x2);
     final fy2 = CenterFraction.parse(y2);
     if (fx1 == null || fy1 == null || fx2 == null || fy2 == null) return null;
-    if (fx1.toDouble() == fx2.toDouble() && fy1.toDouble() == fy2.toDouble()) return null;
+    if (fx1.toDouble() == fx2.toDouble() && fy1.toDouble() == fy2.toDouble())
+      return null;
 
     final h = (fx1 + fx2) / 2;
     final k = (fy1 + fy2) / 2;
@@ -148,8 +160,12 @@ class CenterSolver {
       if ((v * 10).round() / 10 == v) return v.toStringAsFixed(1);
       if ((v * 100).round() / 100 == v) return v.toStringAsFixed(2);
       if ((v * 1000).round() / 1000 == v) return v.toStringAsFixed(3);
-      return v.toStringAsFixed(4).replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+      return v
+          .toStringAsFixed(4)
+          .replaceAll(RegExp(r'0+$'), '')
+          .replaceAll(RegExp(r'\.$'), '');
     }
+
     return ' ≈ ${fmt(d)}';
   }
 }

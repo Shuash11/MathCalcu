@@ -41,7 +41,8 @@ class System2x2Equation extends BaseEquation {
   List<double>? _row(String eq) {
     if ('='.allMatches(eq).length != 1) return null;
     final sides = eq.split('=');
-    double? f(int x, int y) => _evalAt('${sides[0]}-(${sides[1]})', x.toDouble(), y.toDouble());
+    double? f(int x, int y) =>
+        _evalAt('${sides[0]}-(${sides[1]})', x.toDouble(), y.toDouble());
     final f00 = f(0, 0), f10 = f(1, 0), f01 = f(0, 1);
     if (f00 == null || f10 == null || f01 == null) return null;
     final a = f10 - f00, b = f01 - f00;
@@ -53,7 +54,11 @@ class System2x2Equation extends BaseEquation {
 
   List<List<double>>? _parse() {
     final t = rawInput.replaceAll('−', '-').trim();
-    final parts = t.split(RegExp(r'[,;\n]+')).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    final parts = t
+        .split(RegExp(r'[,;\n]+'))
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
     if (parts.length != 2) return null;
     final r1 = _row(parts[0]);
     final r2 = _row(parts[1]);

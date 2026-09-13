@@ -20,8 +20,8 @@ class RelatedRatesEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'max xy, x + y = 20');
+    final empty =
+        FieldValidators.notEmpty(rawInput, example: 'max xy, x + y = 20');
     if (empty != null) {
       _error = empty;
       return false;
@@ -36,8 +36,7 @@ class RelatedRatesEquation extends BaseEquation {
             t.contains('balloon') ||
             t.contains('ladder'));
     if (!ok) {
-      _error =
-          'Supported: max xy with x+y=S, rect P=…, sphere r=… dr/dt=….';
+      _error = 'Supported: max xy with x+y=S, rect P=…, sphere r=… dr/dt=….';
       return false;
     }
     _error = null;
@@ -45,17 +44,16 @@ class RelatedRatesEquation extends BaseEquation {
   }
 
   double? _num(String name) {
-    final m = RegExp('$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)',
-            caseSensitive: false)
+    final m = RegExp('$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)', caseSensitive: false)
         .firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
 
   double? _sumXY() {
     // 'x+y=20' (spaces optional).
-    final m = RegExp(r'x\s*\+\s*y\s*=\s*(-?\d+(?:\.\d+)?)',
-            caseSensitive: false)
-        .firstMatch(rawInput);
+    final m =
+        RegExp(r'x\s*\+\s*y\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
+            .firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
 
@@ -71,14 +69,22 @@ class RelatedRatesEquation extends BaseEquation {
             'x = ${G6Format.num(x)}, y = ${G6Format.num(y)}, max xy = ${G6Format.num(prod)}',
         points: [x, y, prod],
         customData: [
-          {'kind': 'optimization', 'mode': 'sum-constraint', 'x': x, 'y': y, 'max': prod, 's': s}
+          {
+            'kind': 'optimization',
+            'mode': 'sum-constraint',
+            'x': x,
+            'y': y,
+            'max': prod,
+            's': s
+          }
         ],
       );
     }
     if (t.contains('rect')) {
       final p = _num('p');
       if (p == null || p <= 0) {
-        return SolveResult.error('Rectangle needs P > 0 — e.g. rect P = 40 max area.');
+        return SolveResult.error(
+            'Rectangle needs P > 0 — e.g. rect P = 40 max area.');
       }
       final side = p / 4, area = side * side;
       return SolveResult(
@@ -86,7 +92,13 @@ class RelatedRatesEquation extends BaseEquation {
             'Square ${G6Format.num(side)} × ${G6Format.num(side)}, max area = ${G6Format.num(area)}',
         points: [side, area],
         customData: [
-          {'kind': 'optimization', 'mode': 'rectangle', 'side': side, 'area': area, 'p': p}
+          {
+            'kind': 'optimization',
+            'mode': 'rectangle',
+            'side': side,
+            'area': area,
+            'p': p
+          }
         ],
       );
     }
@@ -94,12 +106,13 @@ class RelatedRatesEquation extends BaseEquation {
       final r = _num('r');
       // Accept 'dr=0.5' or 'dr/dt=0.5'.
       double? rate;
-      final m = RegExp(r'dr(?:/dt)?\s*=\s*(-?\d+(?:\.\d+)?)',
-              caseSensitive: false)
-          .firstMatch(rawInput);
+      final m =
+          RegExp(r'dr(?:/dt)?\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
+              .firstMatch(rawInput);
       if (m != null) rate = double.parse(m.group(1)!);
       if (r == null || rate == null || r <= 0) {
-        return SolveResult.error('Sphere needs r > 0 and dr/dt — e.g. sphere r = 3, dr/dt = 0.5.');
+        return SolveResult.error(
+            'Sphere needs r > 0 and dr/dt — e.g. sphere r = 3, dr/dt = 0.5.');
       }
       final dv = 4 * math.pi * r * r * rate;
       final da = 8 * math.pi * r * rate;
@@ -108,7 +121,14 @@ class RelatedRatesEquation extends BaseEquation {
             'dV/dt = ${G6Format.num(dv)}, dA/dt = ${G6Format.num(da)} (V = 4/3πr³, A = 4πr²)',
         points: [dv, da],
         customData: [
-          {'kind': 'related-rates', 'mode': 'sphere', 'r': r, 'dr': rate, 'dv': dv, 'da': da}
+          {
+            'kind': 'related-rates',
+            'mode': 'sphere',
+            'r': r,
+            'dr': rate,
+            'dv': dv,
+            'da': da
+          }
         ],
       );
     }
@@ -125,14 +145,17 @@ class RelatedRatesEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1, title: 'Invalid input', explanation: r.errorMessage ?? '')
+            stepNumber: 1,
+            title: 'Invalid input',
+            explanation: r.errorMessage ?? '')
       ];
     }
     return [
       const StepModel(
           stepNumber: 1,
           title: 'Constraint → one variable',
-          explanation: 'Use the constraint (x + y = S, P = 2l + 2w) to eliminate y.'),
+          explanation:
+              'Use the constraint (x + y = S, P = 2l + 2w) to eliminate y.'),
       const StepModel(
           stepNumber: 2,
           title: 'Derivative = 0',

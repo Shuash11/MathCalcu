@@ -1,15 +1,34 @@
-﻿import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:calculus_system/services/update_service.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/widgets/donate_sheet.dart';
-
+import 'package:calculus_system/widgets/update_dialog.dart';
+import 'package:calculus_system/widgets/web_update_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key, this.updateChecker});
+  const SettingsScreen({
+    super.key,
+    this.updateChecker,
+    this.isWeb,
+    this.isAndroid,
+    this.isWindows,
+    this.showNativeUpdate,
+    this.showWebUpdate,
+    this.showReleaseLinkUpdate,
+  });
 
   final Future<UpdateInfo> Function()? updateChecker;
+  final bool? isWeb;
+  final bool Function()? isAndroid;
+  final bool Function()? isWindows;
+  final void Function(BuildContext, UpdateInfo)? showNativeUpdate;
+  final void Function(BuildContext, String)? showWebUpdate;
+  final void Function(BuildContext, UpdateInfo)? showReleaseLinkUpdate;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -20,6 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   Color get _accent => context.read<ThemeProvider>().accentColor;
   UpdateInfo? _updateInfo;
   bool _updateFailed = false;
+  bool _checkingUpdate = false;
   late final AnimationController _staggerController;
 
   @override
@@ -43,11 +63,139 @@ class _SettingsScreenState extends State<SettingsScreen>
       final info = await (widget.updateChecker?.call() ??
           UpdateService.checkForUpdate());
       if (!mounted) return;
-      setState(() => _updateInfo = info);
-    } catch (_) {
+      setState(() {
+        _updateInfo = info;
+        _updateFailed = false;
+      });
+    } catch (e) {
+      debugPrint('Settings update status check failed: $e');
       if (!mounted) return;
       setState(() => _updateFailed = true);
     }
+  }
+
+  /// Manual "Check for updates": refreshes [_updateInfo] and always presents
+  /// the update dialog when the result is [UpdateStatus.updateAvailable].
+  Future<void> _manualCheckForUpdates() async {
+    if (_checkingUpdate) return;
+    setState(() {
+      _checkingUpdate = true;
+      _updateFailed = false;
+    });
+    try {
+      final info = await (widget.updateChecker?.call() ??
+          UpdateService.checkForUpdate());
+      if (!mounted) return;
+      setState(() {
+        _updateInfo = info;
+        _checkingUpdate = false;
+        _updateFailed = false;
+      });
+      if (!mounted) return;
+      switch (info.status) {
+        case UpdateStatus.updateAvailable:
+          _presentUpdate(info);
+          break;
+        case UpdateStatus.upToDate:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                info.installedVersion == null || info.installedVersion!.isEmpty
+                    ? 'MathCalcu is up to date'
+                    : 'MathCalcu is up to date (v${info.installedVersion})',
+              ),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+          break;
+        case UpdateStatus.unavailable:
+          debugPrint('Settings manual update check: status unavailable.');
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Update status unavailable. Try again later.'),
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 3),
+            ),
+          );
+          break;
+      }
+    } catch (e) {
+      debugPrint('Settings manual update check failed: $e');
+      if (!mounted) return;
+      setState(() {
+        _checkingUpdate = false;
+        _updateFailed = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Update status unavailable. Try again later.'),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  void _presentUpdate(UpdateInfo info) {
+    if (!mounted) return;
+    final context = this.context;
+    final isWeb = widget.isWeb ?? kIsWeb;
+    if (isWeb) {
+      (widget.showWebUpdate ?? showWebUpdateDialog)(
+          context, info.latestVersion);
+      return;
+    }
+    final isAndroid = widget.isAndroid?.call() ?? Platform.isAndroid;
+    final isWindows = widget.isWindows?.call() ?? Platform.isWindows;
+    if (isAndroid || isWindows) {
+      (widget.showNativeUpdate ?? showUpdateDialog)(context, info);
+      return;
+    }
+    if (_trustedReleaseUri(info.releaseUrl) == null) {
+      debugPrint('Settings update: untrusted release URL, dialog suppressed.');
+      return;
+    }
+    (widget.showReleaseLinkUpdate ?? _showReleaseLinkUpdate)(context, info);
+  }
+
+  void _showReleaseLinkUpdate(BuildContext context, UpdateInfo info) {
+    final releaseUri = _trustedReleaseUri(info.releaseUrl);
+    if (releaseUri == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Update v${info.latestVersion} available'),
+        action: SnackBarAction(
+          label: 'Open',
+          onPressed: () async {
+            try {
+              await launchUrl(
+                releaseUri,
+                mode: LaunchMode.externalApplication,
+              );
+            } catch (e) {
+              debugPrint('Settings update: failed to open release link: $e');
+            }
+          },
+        ),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 10),
+      ),
+    );
+  }
+
+  Uri? _trustedReleaseUri(String releaseUrl) {
+    final releaseUri = Uri.tryParse(releaseUrl);
+    if (releaseUri == null ||
+        !releaseUri.isAbsolute ||
+        releaseUri.scheme != 'https' ||
+        releaseUri.host != 'github.com' ||
+        releaseUri.userInfo.isNotEmpty ||
+        !releaseUri.path.startsWith('/Shuash11/MathCalcu/releases/')) {
+      return null;
+    }
+    return releaseUri;
   }
 
   String get _versionSubtitle {
@@ -140,123 +288,168 @@ class _SettingsScreenState extends State<SettingsScreen>
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         children: [
           _sectionHeader('Theme'),
-          buildAnimatedRow(0, _buildCard(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF9CA3AF).withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      theme.isDark ? Icons.dark_mode : Icons.light_mode,
-                      size: 20,
-                      color: const Color(0xFF9CA3AF),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Dark Mode',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: theme.textPrimary,
-                          ),
+          buildAnimatedRow(
+              0,
+              _buildCard(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF9CA3AF).withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Text(
-                            theme.isDark ? 'Dark theme active' : 'Light theme active',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: theme.textSecondary,
+                        child: Icon(
+                          theme.isDark ? Icons.dark_mode : Icons.light_mode,
+                          size: 20,
+                          color: const Color(0xFF9CA3AF),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Dark Mode',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: theme.textPrimary,
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Text(
+                                theme.isDark
+                                    ? 'Dark theme active'
+                                    : 'Light theme active',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: theme.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      Switch.adaptive(
+                        value: theme.isDark,
+                        activeColor: const Color(0xFF9CA3AF),
+                        onChanged: (_) {
+                          theme.toggleTheme();
+                          theme.saveTheme();
+                        },
+                      ),
+                    ],
                   ),
-                  Switch.adaptive(
-                    value: theme.isDark,
-                    activeColor: const Color(0xFF9CA3AF),
-                    onChanged: (_) {
-                      theme.toggleTheme();
-                      theme.saveTheme();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          )),
+                ),
+              )),
           sectionDivider(),
           _sectionHeader('Support'),
-          buildAnimatedRow(1, _buildTappableCard(
-            child: _SettingsRow(
-              icon: Icons.coffee_rounded,
-              label: 'Donate',
-              subtitle: 'Support the developer',
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: _accent.withValues(alpha: 0.6)),
-            ),
-            onTap: () => showDonateSheet(context),
-          )),
+          buildAnimatedRow(
+              1,
+              _buildTappableCard(
+                child: _SettingsRow(
+                  icon: Icons.coffee_rounded,
+                  label: 'Donate',
+                  subtitle: 'Support the developer',
+                  trailing: Icon(Icons.arrow_forward_ios_rounded,
+                      size: 14, color: _accent.withValues(alpha: 0.6)),
+                ),
+                onTap: () => showDonateSheet(context),
+              )),
           sectionDivider(),
           _sectionHeader('About'),
-          buildAnimatedRow(2, _buildCard(
-            child: _SettingsRow(
-              icon: Icons.info_outline_rounded,
-              label: 'MathCalcu',
-              subtitle: _versionSubtitle,
+          buildAnimatedRow(
+              2,
+              _buildCard(
+                child: _SettingsRow(
+                  icon: Icons.info_outline_rounded,
+                  label: 'MathCalcu',
+                  subtitle: _versionSubtitle,
+                ),
+              )),
+          buildAnimatedRow(
+            3,
+            _buildTappableCard(
+              child: _SettingsRow(
+                icon: Icons.refresh_rounded,
+                label: _checkingUpdate ? 'Checking…' : 'Check for updates',
+                subtitle: _checkingUpdate
+                    ? 'Contacting GitHub releases…'
+                    : 'Check now for the latest version',
+                trailing: _checkingUpdate
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Icon(Icons.arrow_forward_ios_rounded,
+                        size: 14, color: _accent.withValues(alpha: 0.6)),
+              ),
+              onTap: () => _manualCheckForUpdates(),
             ),
-          )),
-          buildAnimatedRow(3, _buildTappableCard(
-            child: _SettingsRow(
-              icon: Icons.language_rounded,
-              label: 'Website',
-              subtitle: 'mathcalc-calculus.netlify.app',
-              trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
-            ),
-            onTap: () async {
-              try {
-                await launchUrl(Uri.parse('https://mathcalc-calculus.netlify.app/'), mode: LaunchMode.externalApplication);
-              } catch (_) {}
-            },
-          )),
-          buildAnimatedRow(4, _buildTappableCard(
-            child: _SettingsRow(
-              icon: Icons.code_rounded,
-              label: 'GitHub',
-              subtitle: 'Shuash11',
-              trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
-            ),
-            onTap: () async {
-              try {
-                await launchUrl(Uri.parse('https://github.com/Shuash11'), mode: LaunchMode.externalApplication);
-              } catch (_) {}
-            },
-          )),
+          ),
+          buildAnimatedRow(
+              4,
+              _buildTappableCard(
+                child: _SettingsRow(
+                  icon: Icons.language_rounded,
+                  label: 'Website',
+                  subtitle: 'mathcalc-calculus.netlify.app',
+                  trailing:
+                      Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+                ),
+                onTap: () async {
+                  try {
+                    await launchUrl(
+                        Uri.parse('https://mathcalc-calculus.netlify.app/'),
+                        mode: LaunchMode.externalApplication);
+                  } catch (_) {}
+                },
+              )),
+          buildAnimatedRow(
+              5,
+              _buildTappableCard(
+                child: _SettingsRow(
+                  icon: Icons.code_rounded,
+                  label: 'GitHub',
+                  subtitle: 'Shuash11',
+                  trailing:
+                      Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+                ),
+                onTap: () async {
+                  try {
+                    await launchUrl(Uri.parse('https://github.com/Shuash11'),
+                        mode: LaunchMode.externalApplication);
+                  } catch (_) {}
+                },
+              )),
           sectionDivider(),
           _sectionHeader('Team'),
-          buildAnimatedRow(5, _buildTappableCard(
-            child: _SettingsRow(
-              icon: Icons.group_rounded,
-              label: 'Meet the Team',
-              subtitle: 'mathcalcu-build.netlify.app',
-              trailing: Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
-            ),
-            onTap: () async {
-              try {
-                await launchUrl(Uri.parse('https://mathcalcu-build.netlify.app/'), mode: LaunchMode.externalApplication);
-              } catch (_) {}
-            },
-          )),
+          buildAnimatedRow(
+              6,
+              _buildTappableCard(
+                child: _SettingsRow(
+                  icon: Icons.group_rounded,
+                  label: 'Meet the Team',
+                  subtitle: 'mathcalcu-build.netlify.app',
+                  trailing:
+                      Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+                ),
+                onTap: () async {
+                  try {
+                    await launchUrl(
+                        Uri.parse('https://mathcalcu-build.netlify.app/'),
+                        mode: LaunchMode.externalApplication);
+                  } catch (_) {}
+                },
+              )),
           const SizedBox(height: 32),
         ],
       ),
@@ -282,7 +475,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  Widget _buildTappableCard({required Widget child, required VoidCallback onTap}) {
+  Widget _buildTappableCard(
+      {required Widget child, required VoidCallback onTap}) {
     return _TappableCard(onTap: onTap, child: child);
   }
 
@@ -425,5 +619,3 @@ class _SettingsRow extends StatelessWidget {
     );
   }
 }
-
-

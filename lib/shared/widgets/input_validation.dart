@@ -16,8 +16,7 @@ class FieldValidators {
     r'^\(\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*\)\s*,\s*\(\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*\)$',
   );
 
-  static const String emptyDefault =
-      'Enter an expression — e.g. x^2+3*x';
+  static const String emptyDefault = 'Enter an expression — e.g. x^2+3*x';
 
   /// Returns an error string when [value] is empty, else null.
   static String? notEmpty(String value, {String? example}) {

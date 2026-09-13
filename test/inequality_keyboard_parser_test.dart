@@ -21,7 +21,8 @@ void main() {
       expect(result.intervalNotation, '[2, ∞)');
     });
 
-    test('parses a linear inequality with a trailing decimal right-hand side', () {
+    test('parses a linear inequality with a trailing decimal right-hand side',
+        () {
       final result = InequalitySolverRouter.solve('2x - 4 > 3.');
 
       expect(result.hasError, isFalse);

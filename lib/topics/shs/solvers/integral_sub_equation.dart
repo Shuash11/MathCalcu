@@ -18,7 +18,8 @@ class IntegralSubEquation extends BaseEquation {
 
   IntegralSubEquation(this.rawInput);
 
-  String _n() => rawInput.replaceAll(' ', '').replaceAll('−', '-').replaceAll('X', 'x');
+  String _n() =>
+      rawInput.replaceAll(' ', '').replaceAll('−', '-').replaceAll('X', 'x');
 
   double? _ev(String e, double x) {
     try {
@@ -68,7 +69,8 @@ class IntegralSubEquation extends BaseEquation {
     }
     // k*(m*x+b)^n with outer k optional: '2x(x^2+1)^3' handled as chain
     // u=x^2+1 special-case below; general linear-inner:
-    m = RegExp(r'^([+-]?\d+(?:\.\d+)?)?\*?\(([+-]?\d+(?:\.\d+)?)\*?x([+-]\d+(?:\.\d+)?)?\)\^(\d+)$')
+    m = RegExp(
+            r'^([+-]?\d+(?:\.\d+)?)?\*?\(([+-]?\d+(?:\.\d+)?)\*?x([+-]\d+(?:\.\d+)?)?\)\^(\d+)$')
         .firstMatch(f);
     if (m != null) {
       final k = m.group(1) == null || m.group(1)!.isEmpty
@@ -81,7 +83,8 @@ class IntegralSubEquation extends BaseEquation {
       return '${G6Format.num(c)}(${G6Format.num(mi)}x${m.group(3) ?? ''})^${pw + 1} + C';
     }
     // 2x*(x^2+1)^n chain: outer derivative of inner.
-    m = RegExp(r'^([+-]?\d+(?:\.\d+)?)\*?x\*?\(x\^2([+-]\d+(?:\.\d+)?)?\)\^(\d+)$')
+    m = RegExp(
+            r'^([+-]?\d+(?:\.\d+)?)\*?x\*?\(x\^2([+-]\d+(?:\.\d+)?)?\)\^(\d+)$')
         .firstMatch(f);
     if (m != null) {
       final k = double.parse(m.group(1)!);
@@ -94,8 +97,8 @@ class IntegralSubEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(
-        rawInput, example: 'def a = 0, b = 2, f = x^2');
+    final empty = FieldValidators.notEmpty(rawInput,
+        example: 'def a = 0, b = 2, f = x^2');
     if (empty != null) {
       _error = empty;
       return false;
@@ -118,7 +121,8 @@ class IntegralSubEquation extends BaseEquation {
       final bm = RegExp(r'b\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
       final fm = RegExp(r'f\s*=\s*(.+)$').firstMatch(t);
       if (am == null || bm == null || fm == null) {
-        return SolveResult.error(_error ?? 'Definite needs a, b, f — e.g. def a = 0, b = 2, f = x^2.');
+        return SolveResult.error(_error ??
+            'Definite needs a, b, f — e.g. def a = 0, b = 2, f = x^2.');
       }
       final a = double.parse(am.group(1)!), b = double.parse(bm.group(1)!);
       final f = fm.group(1)!;
@@ -138,12 +142,21 @@ class IntegralSubEquation extends BaseEquation {
         answer: ans,
         points: pts,
         customData: [
-          {'kind': 'definite', 'a': a, 'b': b, 'f': f, 'area': area, 'antiderivative': anti}
+          {
+            'kind': 'definite',
+            'a': a,
+            'b': b,
+            'f': f,
+            'area': area,
+            'antiderivative': anti
+          }
         ],
       );
     }
     // Indefinite: strip 'int' and 'dx'.
-    var f = t.replaceAll(RegExp(r'^int', caseSensitive: false), '').replaceAll(RegExp(r'dx$', caseSensitive: false), '');
+    var f = t
+        .replaceAll(RegExp(r'^int', caseSensitive: false), '')
+        .replaceAll(RegExp(r'dx$', caseSensitive: false), '');
     f = f.replaceAll('(', '(').trim();
     final anti = _antiderivative(f);
     if (anti == null) {
@@ -172,7 +185,9 @@ class IntegralSubEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1, title: 'Cannot integrate', explanation: r.errorMessage ?? '')
+            stepNumber: 1,
+            title: 'Cannot integrate',
+            explanation: r.errorMessage ?? '')
       ];
     }
     if (isDef) {
@@ -198,7 +213,8 @@ class IntegralSubEquation extends BaseEquation {
           stepNumber: 2,
           title: 'Rewrite in u',
           explanation: 'Integrate the power: ∫u^n du = u^(n+1)/(n+1).'),
-      StepModel(stepNumber: 3, title: 'Back-substitute + C', explanation: r.answer),
+      StepModel(
+          stepNumber: 3, title: 'Back-substitute + C', explanation: r.answer),
     ];
   }
 }

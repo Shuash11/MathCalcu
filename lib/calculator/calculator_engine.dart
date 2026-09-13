@@ -1,4 +1,4 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 
 class CalculatorEngine {
   static double evaluate(String expression) {
@@ -204,8 +204,10 @@ class CalculatorEngine {
 
       if (k > maxDenominator) break;
 
-      h2 = h1; h1 = h;
-      k2 = k1; k1 = k;
+      h2 = h1;
+      h1 = h;
+      k2 = k1;
+      k1 = k;
 
       if (r < tolerance) {
         if (k == 0) return null;

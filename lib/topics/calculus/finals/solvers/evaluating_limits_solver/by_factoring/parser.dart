@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 import 'tokenizer.dart';
 
 /// Exception thrown when parsing fails
@@ -239,12 +239,13 @@ class Parser {
 
     if (token.type == TokenType.leftParen) {
       _current++;
-      
-      if (_current < tokens.length && tokens[_current].type == TokenType.rightParen) {
+
+      if (_current < tokens.length &&
+          tokens[_current].type == TokenType.rightParen) {
         _current++;
         return NumberNode(0);
       }
-      
+
       final expr = _parseExpression();
       if (tokens[_current].type != TokenType.rightParen) {
         throw ParserException(
@@ -275,8 +276,7 @@ class Parser {
         final arg = _parseExpression();
         if (_current >= tokens.length ||
             tokens[_current].type != TokenType.rightParen) {
-          throw ParserException(
-              'Expected ")" after function argument',
+          throw ParserException('Expected ")" after function argument',
               _current < tokens.length ? tokens[_current] : null);
         }
         _current++;

@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 
 /// Represents a polynomial in one variable (x).
 ///
@@ -178,14 +178,14 @@ class Polynomial {
 
   String _formatTermTex(double coeff, int deg, bool isFirst) {
     if (deg == 0) return _formatNumber(coeff);
-    
+
     final varPart = deg == 1 ? 'x' : 'x^{$deg}';
-    
+
     if ((coeff.abs() - 1.0).abs() < 1e-9) {
       if (isFirst && coeff < 0) return '-$varPart';
       return varPart;
     }
-    
+
     return '${_formatNumber(coeff)}$varPart';
   }
 

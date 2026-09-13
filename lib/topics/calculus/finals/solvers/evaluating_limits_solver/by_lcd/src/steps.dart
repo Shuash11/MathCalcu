@@ -1,4 +1,4 @@
-﻿// ignore_for_file: duplicate_ignore, prefer_const_declarations
+// ignore_for_file: duplicate_ignore, prefer_const_declarations
 
 library steps;
 
@@ -43,7 +43,7 @@ class StepGenerator {
       String eq, String varName, double val, double result, MathNode ast) {
     final valStr = _doubleToStr(val);
     final eqTex = _nodeToTex(ast);
-    
+
     // Try to get exact rational answer first
     final rationalAns = _evaluateToRational(ast, varName, val);
     final String resStr;
@@ -110,19 +110,63 @@ class StepGenerator {
 
     // Step 1: Write the given limit
     final step1 = "Write the given limit.\n" +
-        r"$$" + r"\lim_{" + varName + r" \to " + valStr + r"} \frac{\frac{" + n1Tex + r"}{" + d1Tex + r"} - \frac{" + n2Tex + r"}{" + d2Tex + r"}}{" + denTex + r"}$$";
+        r"$$" +
+        r"\lim_{" +
+        varName +
+        r" \to " +
+        valStr +
+        r"} \frac{\frac{" +
+        n1Tex +
+        r"}{" +
+        d1Tex +
+        r"} - \frac{" +
+        n2Tex +
+        r"}{" +
+        d2Tex +
+        r"}}{" +
+        denTex +
+        r"}$$";
 
     // Step 2: Find the LCD of the fractions in the numerator
     final step2 = "Find the LCD of the fractions in the numerator.\n" +
-        r"$$" + r"\text{LCD} = " + lcdTex + r"$$";
+        r"$$" +
+        r"\text{LCD} = " +
+        lcdTex +
+        r"$$";
 
     // Step 3: Rewrite the numerator as a single fraction
     final step3 = "Rewrite the numerator as a single fraction.\n" +
-        r"$$" + r"\frac{" + n1Tex + r"}{" + d1Tex + r"} - \frac{" + n2Tex + r"}{" + d2Tex + r"} = \frac{" + combinedNumTex + r"}{" + lcdTex + r"}$$";
+        r"$$" +
+        r"\frac{" +
+        n1Tex +
+        r"}{" +
+        d1Tex +
+        r"} - \frac{" +
+        n2Tex +
+        r"}{" +
+        d2Tex +
+        r"} = \frac{" +
+        combinedNumTex +
+        r"}{" +
+        lcdTex +
+        r"}$$";
 
     // Step 4: Rewrite the entire complex fraction
     final step4 = "Rewrite the entire complex fraction.\n" +
-        r"$$" + r"\frac{\frac{" + combinedNumTex + r"}{" + lcdTex + r"}}{" + denTex + r"} = \frac{" + combinedNumTex + r"}{(" + lcdTex + ")(" + denTex + r")}$$";
+        r"$$" +
+        r"\frac{\frac{" +
+        combinedNumTex +
+        r"}{" +
+        lcdTex +
+        r"}}{" +
+        denTex +
+        r"} = \frac{" +
+        combinedNumTex +
+        r"}{(" +
+        lcdTex +
+        ")(" +
+        denTex +
+        r")}$$";
 
     // Check if this is a sqrt case that needs rationalization
     final isSqrtRationalization = _isSqrtRationalizationCase(
@@ -180,7 +224,9 @@ class StepGenerator {
 
     // Step 5: Simplify and cancel common factors
     final step5 = "Simplify and cancel common factors.\n" +
-        r"$$" + substitutionExpr + r"$$";
+        r"$$" +
+        substitutionExpr +
+        r"$$";
 
     // Step 6: Substitute the approach value
     final step6 = "Substitute $varName = $valStr.\n";
@@ -189,8 +235,8 @@ class StepGenerator {
     // ignore: unused_local_variable
     String exactAnswerTex;
     String approxAnswerTex;
-    final numLimitAns = rationalAns != null 
-        ? rationalAns.numerator / rationalAns.denominator 
+    final numLimitAns = rationalAns != null
+        ? rationalAns.numerator / rationalAns.denominator
         : _calculateNumericalLimit(ast, varName, val);
 
     if (rationalAns != null && !hasSqrt) {
@@ -209,13 +255,19 @@ class StepGenerator {
 
     // Step 7: State the exact answer
     final step7 = "State the exact answer.\n" +
-        r"$$" + r"\text{Exact answer: }" + exactAnswerTex + r"$$";
+        r"$$" +
+        r"\text{Exact answer: }" +
+        exactAnswerTex +
+        r"$$";
 
     // Step 8: State the approximation (only for irrational)
     final String step8;
     if (hasSqrt && approxAnswerTex.isNotEmpty) {
       step8 = "State the approximation.\n" +
-          r"$$" + r"\text{Approximation: }" + approxAnswerTex + r"$$";
+          r"$$" +
+          r"\text{Approximation: }" +
+          approxAnswerTex +
+          r"$$";
     } else {
       step8 = "";
     }
@@ -237,7 +289,7 @@ class StepGenerator {
         valStr,
       );
       step6Full = step6 + r"$$" + substitutedExpr + r" = " + ansTex + r"$$";
-      steps = step8.isNotEmpty 
+      steps = step8.isNotEmpty
           ? [step1, step2, step3, step4, step5, step6Full, step7, step8]
           : [step1, step2, step3, step4, step5, step6Full, step7];
     }
@@ -270,7 +322,7 @@ class StepGenerator {
     final conjTex =
         "${_nodeToTex(target.left)} ${target.op == '+' ? '-' : '+'} ${_nodeToTex(target.right)}";
     final valStr = _doubleToStr(val);
-    
+
     // Try to get exact rational answer first
     final rationalAns = _evaluateToRational(ast, varName, val);
     final String ansTex;
@@ -354,9 +406,8 @@ class StepGenerator {
               combinedNumTex.contains("$aStr - $sqrtTerm");
           final sign = numeratorIsNegative ? "-" : "";
           final conjugate = "$aStr + $sqrtTerm";
-          final rationalizedNumerator = numeratorIsNegative
-              ? "$aStr^2 - $varName"
-              : "$varName - $aStr^2";
+          final rationalizedNumerator =
+              numeratorIsNegative ? "$aStr^2 - $varName" : "$varName - $aStr^2";
           final simplified = sign +
               r"\frac{1}{" +
               lcdTex +
@@ -439,7 +490,9 @@ class StepGenerator {
         final simplified = "$sign" + r"\frac{1}{" + lcdTex + r"}";
 
         final cancelMsg = isNegative
-            ? r'**Factor -1: $-x = -($varName)**' '\n' r'**Cancel the common factor ($varName):**'
+            ? r'**Factor -1: $-x = -($varName)**'
+                '\n'
+                r'**Cancel the common factor ($varName):**'
             : r'**Cancel the common factor ($varName):**';
 
         final factorStep = "$cancelMsg\n"
@@ -483,7 +536,8 @@ class StepGenerator {
     return BinaryOpNode('/', node, const NumberNode(1));
   }
 
-  static _RationalResult? _evaluateToRational(MathNode node, String varName, double val) {
+  static _RationalResult? _evaluateToRational(
+      MathNode node, String varName, double val) {
     try {
       return _evalNodeToRational(node, varName, val);
     } catch (_) {
@@ -491,7 +545,8 @@ class StepGenerator {
     }
   }
 
-  static _RationalResult? _evalNodeToRational(MathNode node, String varName, double val) {
+  static _RationalResult? _evalNodeToRational(
+      MathNode node, String varName, double val) {
     if (node is NumberNode) {
       return _RationalResult(node.value.toInt(), 1);
     }
@@ -513,11 +568,13 @@ class StepGenerator {
       int num, den;
       switch (node.op) {
         case '+':
-          num = left.numerator * right.denominator + right.numerator * left.denominator;
+          num = left.numerator * right.denominator +
+              right.numerator * left.denominator;
           den = left.denominator * right.denominator;
           break;
         case '-':
-          num = left.numerator * right.denominator - right.numerator * left.denominator;
+          num = left.numerator * right.denominator -
+              right.numerator * left.denominator;
           den = left.denominator * right.denominator;
           break;
         case '*':
@@ -694,7 +751,8 @@ class StepGenerator {
         int gcd = _gcd(numerator, denominator);
         numerator = numerator ~/ gcd;
         denominator = denominator ~/ gcd;
-        if (denominator <= 1000) { // Only return if denominator is reasonable
+        if (denominator <= 1000) {
+          // Only return if denominator is reasonable
           final result = denominator == 1
               ? (val < 0 ? "-$numerator" : "$numerator")
               : "${val < 0 ? '-' : ''}\\frac{$numerator}{$denominator}";
@@ -706,7 +764,7 @@ class StepGenerator {
     return val.toString().replaceAll(RegExp(r'\.0+$'), '');
   }
 
-static int _gcd(int a, int b) {
+  static int _gcd(int a, int b) {
     while (b != 0) {
       final t = b;
       b = a % b;
@@ -775,7 +833,7 @@ static int _gcd(int a, int b) {
       String valStr,
       _SqrtRationalizationData data) {
     final ans = _calculateNumericalLimit(ast, varName, val);
-    
+
     // Try to get exact rational answer first
     final rationalAns = _evaluateToRational(ast, varName, val);
     final String ansTex;
@@ -795,25 +853,95 @@ static int _gcd(int a, int b) {
 
     final conjugate = aStr + r" + " + sqrtTerm;
     // ignore: unused_local_variable
-    final rationalizedNum = numeratorIsNegative ? aStr + r"^2 - " + varName : varName + r" - " + aStr + r"^2";
+    final rationalizedNum = numeratorIsNegative
+        ? aStr + r"^2 - " + varName
+        : varName + r" - " + aStr + r"^2";
     final simplified = numeratorIsNegative ? r"-" : r"";
-    final finalExpr = simplified + r"\frac{1}{" + lcdTex + r" \cdot (" + sqrtTerm + r" + " + aStr + r")}";
+    final finalExpr = simplified +
+        r"\frac{1}{" +
+        lcdTex +
+        r" \cdot (" +
+        sqrtTerm +
+        r" + " +
+        aStr +
+        r")}";
 
     // ignore: prefer_const_declarations
     final step1 = "Identify the complex fraction.\n" +
-        r"$$" + r"\lim_{" + varName + r" \to " + valStr + r"} \frac{\frac{" + n1Tex + r"}{" + data.d1Tex + r"} - \frac{" + n2Tex + r"}{" + data.d2Tex + r"}}{" + denTex + r"}$$";
+        r"$$" +
+        r"\lim_{" +
+        varName +
+        r" \to " +
+        valStr +
+        r"} \frac{\frac{" +
+        n1Tex +
+        r"}{" +
+        data.d1Tex +
+        r"} - \frac{" +
+        n2Tex +
+        r"}{" +
+        data.d2Tex +
+        r"}}{" +
+        denTex +
+        r"}$$";
 
     // ignore: prefer_const_declarations
     final step2 = "Find the LCD of the numerator terms.\n" +
-        r"$$" + r"\text{LCD} = " + data.d1Tex + r" \cdot " + data.d2Tex + r" = " + lcdTex + r"$$";
+        r"$$" +
+        r"\text{LCD} = " +
+        data.d1Tex +
+        r" \cdot " +
+        data.d2Tex +
+        r" = " +
+        lcdTex +
+        r"$$";
 
     final step3 = "Rewrite with common denominator.\n" +
-        r"$$" + r"\frac{" + aStr + r" - " + sqrtTerm + r"}{" + lcdTex + r"} \cdot \frac{1}{" + denTex + r"} = \frac{" + aStr + r" - " + sqrtTerm + r"}{" + lcdTex + r" \cdot (" + denTex + r")}$$";
+        r"$$" +
+        r"\frac{" +
+        aStr +
+        r" - " +
+        sqrtTerm +
+        r"}{" +
+        lcdTex +
+        r"} \cdot \frac{1}{" +
+        denTex +
+        r"} = \frac{" +
+        aStr +
+        r" - " +
+        sqrtTerm +
+        r"}{" +
+        lcdTex +
+        r" \cdot (" +
+        denTex +
+        r")}$$";
 
     final step4 = "Rationalize by multiplying by the conjugate.\n" +
-        r"$$" + r"\frac{" + aStr + r" - " + sqrtTerm + r"}{" + lcdTex + r" \cdot (" + denTex + r")} \cdot \frac{" + conjugate + r"}{" + conjugate + r"} = \frac{" + rationalizedNum + r"}{" + lcdTex + r" \cdot (" + denTex + r")(" + conjugate + r")}$$";
+        r"$$" +
+        r"\frac{" +
+        aStr +
+        r" - " +
+        sqrtTerm +
+        r"}{" +
+        lcdTex +
+        r" \cdot (" +
+        denTex +
+        r")} \cdot \frac{" +
+        conjugate +
+        r"}{" +
+        conjugate +
+        r"} = \frac{" +
+        rationalizedNum +
+        r"}{" +
+        lcdTex +
+        r" \cdot (" +
+        denTex +
+        r")(" +
+        conjugate +
+        r")}$$";
 
-    final step5 = "Apply difference of squares: $denTex \\cdot $conjugate = ${numeratorIsNegative ? "-" : ""}($denTex)\$\$\nThen simplify the numerator.";
+    final step5 =
+        "Apply difference of squares: $denTex \\cdot $conjugate = ${numeratorIsNegative ? "-" : ""}($denTex)\$\$\nThen simplify the numerator.";
 
     final step6 = "Substitute $varName = $valStr and simplify.\n" +
         "${finalExpr.replaceAll(r'\sqrt{' + varName + r'}', aStr)} = $ansTex";

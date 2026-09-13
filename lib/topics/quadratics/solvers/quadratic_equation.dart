@@ -94,7 +94,14 @@ class QuadraticEquation extends BaseEquation {
         answer: 'No real roots (D = ${G6Format.num(disc)} < 0)',
         points: const [],
         customData: [
-          {'kind': 'parabola', 'a': a, 'b': b, 'c': c, 'discriminant': disc, 'roots': []}
+          {
+            'kind': 'parabola',
+            'a': a,
+            'b': b,
+            'c': c,
+            'discriminant': disc,
+            'roots': []
+          }
         ],
       );
     }
@@ -104,7 +111,14 @@ class QuadraticEquation extends BaseEquation {
         answer: 'x = ${G6Format.num(x)} (double root, D = 0)',
         points: [x],
         customData: [
-          {'kind': 'parabola', 'a': a, 'b': b, 'c': c, 'discriminant': 0, 'roots': [x]}
+          {
+            'kind': 'parabola',
+            'a': a,
+            'b': b,
+            'c': c,
+            'discriminant': 0,
+            'roots': [x]
+          }
         ],
       );
     }
@@ -114,7 +128,8 @@ class QuadraticEquation extends BaseEquation {
     final lo = x1 < x2 ? x1 : x2;
     final hi = x1 < x2 ? x2 : x1;
     return SolveResult(
-      answer: 'x = ${G6Format.num(lo)}, ${G6Format.num(hi)} (D = ${G6Format.num(disc)})',
+      answer:
+          'x = ${G6Format.num(lo)}, ${G6Format.num(hi)} (D = ${G6Format.num(disc)})',
       points: [lo, hi],
       customData: [
         {
@@ -166,7 +181,8 @@ class QuadraticEquation extends BaseEquation {
           stepNumber: 3,
           title: 'Quadratic formula',
           explanation: 'x = (−b ± √D) / 2a.'),
-      StepModel(stepNumber: 4, title: 'Roots + parabola', explanation: r.answer),
+      StepModel(
+          stepNumber: 4, title: 'Roots + parabola', explanation: r.answer),
     ];
   }
 }

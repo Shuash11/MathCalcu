@@ -1,4 +1,4 @@
-﻿import 'package:calculus_system/core/solve_result.dart';
+import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_solver/generated_linear_solver.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_solver/generated_absolute_solver.dart';
@@ -81,13 +81,15 @@ class InequalitySolverRouter {
     // Strip -strict, -non-strict, or -continued suffix to get base type
     // Check for more specific suffixes first (-non-strict before -strict)
     if (detectedType.endsWith('-non-strict')) {
-      return detectedType.substring(0, detectedType.length - '-non-strict'.length);
+      return detectedType.substring(
+          0, detectedType.length - '-non-strict'.length);
     }
     if (detectedType.endsWith('-strict')) {
       return detectedType.substring(0, detectedType.length - '-strict'.length);
     }
     if (detectedType.endsWith('-continued')) {
-      return detectedType.substring(0, detectedType.length - '-continued'.length);
+      return detectedType.substring(
+          0, detectedType.length - '-continued'.length);
     }
     return detectedType;
   }

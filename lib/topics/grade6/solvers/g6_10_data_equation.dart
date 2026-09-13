@@ -137,16 +137,34 @@ class G6PieEquation extends BaseEquation {
     final List<G6PieSlice>? slices = _slices();
     if (slices == null) {
       return [
-        StepModel(stepNumber: 1, title: 'Invalid input', explanation: _error ?? 'Values must be ≥ 0 with sum > 0.'),
+        StepModel(
+            stepNumber: 1,
+            title: 'Invalid input',
+            explanation: _error ?? 'Values must be ≥ 0 with sum > 0.'),
       ];
     }
     final double total = slices.fold(0.0, (s, e) => s + e.value);
     return [
-      StepModel(stepNumber: 1, title: 'Find the total', explanation: 'Total = ${G6Format.num(total)}.'),
-      const StepModel(stepNumber: 2, title: 'Percent each slice', explanation: 'value ÷ total × 100%.'),
-      const StepModel(stepNumber: 3, title: 'Percent to degrees', explanation: 'degrees = % × 3.6° (360° ÷ 100).'),
-      StepModel(stepNumber: 4, title: 'Draw the slices', explanation: '${slices.length} slices in order of size.'),
-      StepModel(stepNumber: 5, title: 'Label each slice', explanation: solve().answer),
+      StepModel(
+          stepNumber: 1,
+          title: 'Find the total',
+          explanation: 'Total = ${G6Format.num(total)}.'),
+      const StepModel(
+          stepNumber: 2,
+          title: 'Percent each slice',
+          explanation: 'value ÷ total × 100%.'),
+      const StepModel(
+          stepNumber: 3,
+          title: 'Percent to degrees',
+          explanation: 'degrees = % × 3.6° (360° ÷ 100).'),
+      StepModel(
+          stepNumber: 4,
+          title: 'Draw the slices',
+          explanation: '${slices.length} slices in order of size.'),
+      StepModel(
+          stepNumber: 5,
+          title: 'Label each slice',
+          explanation: solve().answer),
     ];
   }
 }
@@ -179,8 +197,7 @@ class G6ProbabilityEquation extends BaseEquation {
         return [int.parse(outOf.group(1)!), int.parse(outOf.group(2)!)];
       }
     }
-    final RegExpMatch? plus =
-        RegExp(r'(\d+)\s*\w*\s*\+\s*(\d+)').firstMatch(t);
+    final RegExpMatch? plus = RegExp(r'(\d+)\s*\w*\s*\+\s*(\d+)').firstMatch(t);
     if (plus != null && t.contains('p(')) {
       final int fav = int.parse(plus.group(1)!);
       final int rest = int.parse(plus.group(2)!);
@@ -240,7 +257,8 @@ class G6ProbabilityEquation extends BaseEquation {
     final int sn = p[0] ~/ g, sd = p[1] ~/ g;
     final double dec = p[0] / p[1];
     return SolveResult(
-      answer: 'P = $sn/$sd = ${G6Format.num(dec)} = ${G6Format.num(dec * 100)}%',
+      answer:
+          'P = $sn/$sd = ${G6Format.num(dec)} = ${G6Format.num(dec * 100)}%',
       points: [dec],
       customData: [
         {'favorable': p[0], 'total': p[1], 'decimal': dec}
@@ -253,14 +271,26 @@ class G6ProbabilityEquation extends BaseEquation {
     final List<int>? p = _parse();
     if (p == null || p[1] <= 0) {
       return [
-        StepModel(stepNumber: 1, title: 'Invalid input', explanation: _error ?? 'Use 3 out of 5.'),
+        StepModel(
+            stepNumber: 1,
+            title: 'Invalid input',
+            explanation: _error ?? 'Use 3 out of 5.'),
       ];
     }
     final SolveResult r = solve();
     return [
-      StepModel(stepNumber: 1, title: 'Count all outcomes', explanation: 'Total = ${p[1]}.'),
-      StepModel(stepNumber: 2, title: 'Count favorable', explanation: 'Favorable = ${p[0]}.'),
-      StepModel(stepNumber: 3, title: 'Write favorable/total and simplify', explanation: r.answer),
+      StepModel(
+          stepNumber: 1,
+          title: 'Count all outcomes',
+          explanation: 'Total = ${p[1]}.'),
+      StepModel(
+          stepNumber: 2,
+          title: 'Count favorable',
+          explanation: 'Favorable = ${p[0]}.'),
+      StepModel(
+          stepNumber: 3,
+          title: 'Write favorable/total and simplify',
+          explanation: r.answer),
     ];
   }
 }

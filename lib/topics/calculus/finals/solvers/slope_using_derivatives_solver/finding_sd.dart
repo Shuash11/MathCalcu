@@ -1,4 +1,4 @@
-﻿  // slope_solver.dart
+// slope_solver.dart
 // Comprehensive solver for finding slopes using derivatives.
 // Handles: explicit functions, implicit equations, and parametric equations.
 //
@@ -1193,7 +1193,7 @@ class SlopeResult {
     this.paramYExpr,
     this.dxDt,
     this.dyDt,
-    this.secondDerivative,   // ── FIX 2: wired into constructor ──
+    this.secondDerivative, // ── FIX 2: wired into constructor ──
     this.tangentSlope,
     this.tangentYIntercept,
     this.normalSlope,
@@ -1538,7 +1538,7 @@ class SlopeSolver {
       paramYExpr: yExpr,
       dxDt: dxDt,
       dyDt: dyDt,
-      secondDerivative: secondDeriv,   // ── FIX 2: wired in ──
+      secondDerivative: secondDeriv, // ── FIX 2: wired in ──
       tangentSlope: tangentSlope,
       tangentLineEquation: tangentEq,
       normalSlope: normalSlope,
@@ -1745,7 +1745,6 @@ class PrettyPrinter {
   static const _green = '\x1B[32m';
   static const _yellow = '\x1B[33m';
   static const _blue = '\x1B[34m';
-
 
   static void print(SlopeResult result) {
     const w = 62;

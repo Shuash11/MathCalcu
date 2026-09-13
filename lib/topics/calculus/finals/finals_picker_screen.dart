@@ -363,9 +363,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   Widget _buildList() {
     final hits = _filtered;
     final curriculumHits = _curriculumHits;
-    if (_query.trim().isNotEmpty &&
-        hits.isEmpty &&
-        curriculumHits.isEmpty) {
+    if (_query.trim().isNotEmpty && hits.isEmpty && curriculumHits.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
@@ -409,8 +407,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
               child: CurriculumMatchesSection(query: _query),
             );
           },
-          childCount:
-              hits.length + (curriculumHits.isEmpty ? 0 : 1),
+          childCount: hits.length + (curriculumHits.isEmpty ? 0 : 1),
         ),
       ),
     );
@@ -619,18 +616,18 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                     curve: Curves.easeOut,
                     bottom: _hovered ? -25 : -18,
                     left: _hovered ? -25 : -18,
-child: AnimatedContainer(
-                       duration: const Duration(milliseconds: 280),
-                       width: _hovered ? 120 : 90,
-                       height: _hovered ? 120 : 90,
-                       decoration: BoxDecoration(
-                         shape: BoxShape.circle,
-                         color: accent.withValues(
-                           alpha: _hovered ? 0.10 : 0.04,
-                         ),
-                       ),
-                     ),
-                   ),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 280),
+                      width: _hovered ? 120 : 90,
+                      height: _hovered ? 120 : 90,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: accent.withValues(
+                          alpha: _hovered ? 0.10 : 0.04,
+                        ),
+                      ),
+                    ),
+                  ),
 
                   // -- Content
                   Padding(

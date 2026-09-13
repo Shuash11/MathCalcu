@@ -18,16 +18,15 @@ class TrigRatioEquation extends BaseEquation {
   TrigRatioEquation(this.rawInput);
 
   double? _num(String name) {
-    final m = RegExp('$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)',
-            caseSensitive: false)
+    final m = RegExp('$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)', caseSensitive: false)
         .firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'sin 30° or opp = 3, hyp = 6');
+    final empty = FieldValidators.notEmpty(rawInput,
+        example: 'sin 30° or opp = 3, hyp = 6');
     if (empty != null) {
       _error = empty;
       return false;
@@ -36,7 +35,8 @@ class TrigRatioEquation extends BaseEquation {
     final hasFn = t.contains('sin') || t.contains('cos') || t.contains('tan');
     final hasSide = t.contains('opp') || t.contains('adj') || t.contains('hyp');
     if (!hasFn && !hasSide) {
-      _error = 'Use sin/cos/tan or opp/adj/hyp — e.g. sin 30° or opp = 3, hyp = 6.';
+      _error =
+          'Use sin/cos/tan or opp/adj/hyp — e.g. sin 30° or opp = 3, hyp = 6.';
       return false;
     }
     _error = null;
@@ -45,7 +45,8 @@ class TrigRatioEquation extends BaseEquation {
 
   @override
   SolveResult solve() {
-    final t = rawInput.toLowerCase().replaceAll('°', '').replaceAll('deg', '').trim();
+    final t =
+        rawInput.toLowerCase().replaceAll('°', '').replaceAll('deg', '').trim();
     // Case 1: ratio of an angle: 'sin 30'.
     final rm = RegExp(r'(sin|cos|tan)\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
     if (rm != null && !_hasSides()) {
@@ -68,7 +69,13 @@ class TrigRatioEquation extends BaseEquation {
         answer: '$fn(${G6Format.num(deg)}°) = ${G6Format.num(rounded)}',
         points: [rounded],
         customData: [
-          {'kind': 'trig-ratio', 'mode': 'ratio', 'fn': fn, 'deg': deg, 'value': rounded}
+          {
+            'kind': 'trig-ratio',
+            'mode': 'ratio',
+            'fn': fn,
+            'deg': deg,
+            'value': rounded
+          }
         ],
       );
     }
@@ -123,7 +130,14 @@ class TrigRatioEquation extends BaseEquation {
             'θ = ${G6Format.num(a)}°, adj = ${G6Format.num(ad)} (sin θ = opp/hyp)',
         points: [a, ad],
         customData: [
-          {'kind': 'trig-ratio', 'mode': 'triangle', 'theta': a, 'opp': opp, 'adj': ad, 'hyp': hyp}
+          {
+            'kind': 'trig-ratio',
+            'mode': 'triangle',
+            'theta': a,
+            'opp': opp,
+            'adj': ad,
+            'hyp': hyp
+          }
         ],
       );
     }
@@ -135,7 +149,14 @@ class TrigRatioEquation extends BaseEquation {
             'θ = ${G6Format.num(a)}°, opp = ${G6Format.num(op)} (cos θ = adj/hyp)',
         points: [a, op],
         customData: [
-          {'kind': 'trig-ratio', 'mode': 'triangle', 'theta': a, 'opp': op, 'adj': adj, 'hyp': hyp}
+          {
+            'kind': 'trig-ratio',
+            'mode': 'triangle',
+            'theta': a,
+            'opp': op,
+            'adj': adj,
+            'hyp': hyp
+          }
         ],
       );
     }
@@ -148,7 +169,14 @@ class TrigRatioEquation extends BaseEquation {
           'hyp = ${G6Format.num(h)}, θ = ${G6Format.num(a)}° (tan θ = opp/adj)',
       points: [h, a],
       customData: [
-        {'kind': 'trig-ratio', 'mode': 'triangle', 'theta': a, 'opp': o, 'adj': j, 'hyp': h}
+        {
+          'kind': 'trig-ratio',
+          'mode': 'triangle',
+          'theta': a,
+          'opp': o,
+          'adj': j,
+          'hyp': h
+        }
       ],
     );
   }
