@@ -8,8 +8,9 @@ class GeneratedRationalSolver {
   static SolveResult solve(String input) {
     try {
       final p = _parse(input);
-      if (p == null)
+      if (p == null) {
         return SolveResult.error('Could not parse rational expression.');
+      }
 
       final intervals = _buildIntervals(p);
       if (intervals.isEmpty) {
@@ -71,8 +72,8 @@ class GeneratedRationalSolver {
     String s = input
         .trim()
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤');
+        .replaceAll('>=', '≥')
+        .replaceAll('<=', '≤');
 
     final op = _extractOp(s);
     if (op == null) return null;
@@ -113,8 +114,8 @@ class GeneratedRationalSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('≠¥')) return '≠¥';
-    if (s.contains('≠¤')) return '≠¤';
+    if (s.contains('≥')) return '≥';
+    if (s.contains('≤')) return '≤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -139,9 +140,9 @@ class GeneratedRationalSolver {
     for (final tok in tokens) {
       if (tok.contains('x')) {
         final cs = tok.split('x')[0];
-        if (cs.isEmpty || cs == '+')
+        if (cs.isEmpty || cs == '+') {
           xCoef += 1;
-        else if (cs == '-')
+        } else if (cs == '-')
           xCoef -= 1;
         else
           xCoef += double.tryParse(cs) ?? 0;
@@ -187,8 +188,9 @@ class GeneratedRationalSolver {
 
   static String _fmtLatex(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite)
+    if (!n.isFinite) {
       return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    }
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -197,8 +199,9 @@ class GeneratedRationalSolver {
         final sn = num ~/ g;
         final sd = d ~/ g;
         if (sd == 1) return sn.toString();
-        if (sn < 0)
+        if (sn < 0) {
           return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        }
         return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
       }
     }
@@ -214,9 +217,9 @@ class GeneratedRationalSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case '≠¥':
+      case '≥':
         return '\\geq';
-      case '≠¤':
+      case '≤':
         return '\\leq';
       case '>':
         return '>';
@@ -233,9 +236,9 @@ class GeneratedRationalSolver {
         return left > right;
       case '<':
         return left < right;
-      case '≠¥':
+      case '≥':
         return left >= right;
-      case '≠¤':
+      case '≤':
         return left <= right;
       default:
         return false;

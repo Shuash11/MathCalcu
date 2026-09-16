@@ -152,8 +152,7 @@ class UpdateService {
         releaseNotes: releaseNotes,
         apkSha256: apkResolved.sha256Hex,
         exeSha256: exeResolved.sha256Hex,
-        checksumUrl:
-            apkResolved.checksumFileUrl ?? exeResolved.checksumFileUrl,
+        checksumUrl: apkResolved.checksumFileUrl ?? exeResolved.checksumFileUrl,
       );
     } catch (_) {
       return UpdateInfo(
@@ -187,10 +186,10 @@ class UpdateService {
   /// Handles pre-release suffixes (e.g. "1.0.2-rc1" → major=1, minor=0, patch=2).
   /// Handles variable-length segments (covers all, not just 3).
   static int _compareVersions(String a, String b) {
-    final _clean =
-        (String s) => int.tryParse(s.replaceAll(RegExp(r'[^0-9].*$'), '')) ?? 0;
-    final aParts = a.split('.').map(_clean).toList();
-    final bParts = b.split('.').map(_clean).toList();
+    int clean(String s) =>
+        int.tryParse(s.replaceAll(RegExp(r'[^0-9].*$'), '')) ?? 0;
+    final aParts = a.split('.').map(clean).toList();
+    final bParts = b.split('.').map(clean).toList();
     final maxLen =
         aParts.length > bParts.length ? aParts.length : bParts.length;
 
@@ -311,8 +310,7 @@ class UpdateService {
       final data = jsonDecode(response.body);
       if (data is! Map<String, dynamic>) return null;
 
-      final resolved =
-          UpdateChecksum.resolveFromReleaseJson(data, binaryName);
+      final resolved = UpdateChecksum.resolveFromReleaseJson(data, binaryName);
       if (resolved.hasDirectHash) return resolved.sha256Hex;
 
       final manifestUrl = resolved.checksumFileUrl;
@@ -324,10 +322,9 @@ class UpdateService {
         return null;
       }
 
-      final manifestFetch =
-          checksumFetcher ?? ((url) => http.get(url));
-      final manifest = await manifestFetch(manifestUri)
-          .timeout(const Duration(seconds: 10));
+      final manifestFetch = checksumFetcher ?? ((url) => http.get(url));
+      final manifest =
+          await manifestFetch(manifestUri).timeout(const Duration(seconds: 10));
       if (manifest.statusCode != 200) return null;
       return UpdateChecksum.parseChecksumFile(manifest.body, binaryName);
     } catch (_) {

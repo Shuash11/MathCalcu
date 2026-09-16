@@ -353,7 +353,7 @@ List<YISolverStep> buildXInterceptSteps(
   YIFraction b,
   YIFraction? xInt,
 ) {
-  if (m.isZero)
+  if (m.isZero) {
     return [
       YISolverStep.single(
           number: 1,
@@ -370,8 +370,10 @@ List<YISolverStep> buildXInterceptSteps(
           resultLatex: r'\text{No solution}',
           explanation: 'Horizontal lines never cross the x-axis.'),
     ];
+  }
   if (xInt == null) return [];
-  final negB = (b * YIFraction(numerator: -1, denominator: 1)).simplified();
+  final negB =
+      (b * const YIFraction(numerator: -1, denominator: 1)).simplified();
   return [
     YISolverStep.single(
         number: 1,

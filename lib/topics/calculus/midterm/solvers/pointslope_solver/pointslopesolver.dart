@@ -21,21 +21,25 @@ class Fraction {
   });
 
   factory Fraction.fromDouble(double v) {
-    if (v.isNaN || v.isInfinite)
+    if (v.isNaN || v.isInfinite) {
       return const Fraction(numerator: 0, denominator: 1);
+    }
     final r = v.round();
-    if ((v - r).abs() < 1e-6)
+    if ((v - r).abs() < 1e-6) {
       return Fraction(numerator: r, denominator: 1, isWhole: true);
+    }
     final s = (v * 1000).round();
     if ((s / 1000 - v).abs() < 0.0001) return _simplify(s, 1000);
     final str = v.toStringAsFixed(4);
     final dot = str.indexOf('.');
-    if (dot == -1)
+    if (dot == -1) {
       return Fraction(numerator: v.toInt(), denominator: 1, isWhole: true);
+    }
     final whole = int.parse(str.substring(0, dot));
     var dec = str.substring(dot + 1).replaceAll(RegExp(r'0+$'), '');
-    if (dec.isEmpty)
+    if (dec.isEmpty) {
       return Fraction(numerator: whole, denominator: 1, isWhole: true);
+    }
     if (dec.length > 4) dec = dec.substring(0, 4);
     final den = _pow10(dec.length);
     final num = whole * den + (v < 0 ? -int.parse(dec) : int.parse(dec));
@@ -79,8 +83,9 @@ class Fraction {
 
   Fraction simplified() {
     if (denominator == 0) return const Fraction(numerator: 0, denominator: 1);
-    if (denominator == 1 || numerator == 0)
+    if (denominator == 1 || numerator == 0) {
       return Fraction(numerator: numerator, denominator: 1, isWhole: true);
+    }
     int n = numerator;
     int d = denominator;
     if (d < 0) {
@@ -328,8 +333,9 @@ class PointSlopeSolver {
       }
     }
     final iv = int.tryParse(text);
-    if (iv != null)
+    if (iv != null) {
       return Fraction(numerator: iv, denominator: 1, isWhole: true);
+    }
     final dv = double.tryParse(text);
     if (dv != null) return Fraction.fromDouble(dv);
     return null;

@@ -148,8 +148,9 @@ class GeneralFormParser {
         E += sign * (np.isEmpty ? 1.0 : (double.tryParse(np) ?? 1.0));
       } else {
         final p = double.tryParse(body);
-        if (p == null)
+        if (p == null) {
           throw FormatException('Cannot parse: "$body" in token "$token"');
+        }
         F += sign * p;
       }
     }
@@ -229,8 +230,9 @@ class CircleEquationSolver {
     final halfESq = halfE * halfE;
     final rSq = halfDSq + halfESq - F;
 
-    if (rSq <= 0)
+    if (rSq <= 0) {
       throw ArgumentError('Invalid: r? = $_fmt(rSq) ≠? 0 (imaginary circle)');
+    }
 
     final r = sqrt(rSq);
     final rightSide = -F + halfDSq + halfESq;

@@ -105,7 +105,7 @@ class _DistancescreenState extends State<Distancescreen>
   /// - For 1D: returns absolute value (integer or trimmed decimal).
   /// - For 2D:
   ///   - Perfect square ? integer (e.g., "5")
-  ///   - Non-perfect square ? exact radical + approximation (e.g., "v5 � 2.2361")
+  ///   - Non-perfect square ? exact radical + approximation (e.g., "v5 ≈ 2.2361")
   String _formatDistance(double value, bool is2D) {
     if (!is2D) {
       final abs = value.abs();
@@ -150,7 +150,7 @@ class _DistancescreenState extends State<Distancescreen>
         .replaceAll(RegExp(r'0+$'), '')
         .replaceAll(RegExp(r'\.$'), '');
 
-    return '$exact � $approx';
+    return '$exact ≈ $approx';
   }
 
   void _onCalculate() {

@@ -178,7 +178,7 @@ class ConjugateStepsGenerator {
       stepNumber: 8,
       title: 'Cancel Common Factors',
       explanation:
-          'Look for any ${varName} terms that can be cancelled from numerator and denominator.',
+          'Look for any $varName terms that can be cancelled from numerator and denominator.',
       latexExpression:
           '\\frac{$ratNumTex}{$ratDenTex} \\Rightarrow \\text{cancelled form}',
     ));
@@ -276,7 +276,7 @@ class ConjugateStepsGenerator {
     if (n.isNaN) return '\\text{undefined}';
     if (n.isInfinite) return n > 0 ? '\\infty' : '-\\infty';
 
-    final tolerance = 1e-9;
+    const tolerance = 1e-9;
     if ((n - n.round()).abs() < tolerance) {
       return n.round().toString();
     }

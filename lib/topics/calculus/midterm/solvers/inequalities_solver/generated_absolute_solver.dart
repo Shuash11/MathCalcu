@@ -8,35 +8,38 @@ class GeneratedAbsoluteSolver {
   static SolveResult solve(String input) {
     try {
       final p = _parse(input);
-      if (p == null)
+      if (p == null) {
         return SolveResult.error('Could not parse absolute value inequality.');
+      }
 
       bool absOnLeft = p.absOnLeft;
       String effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-      final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
-    // Internal non-strict tokens (shared with InequalityCoreSolver):
-    // '≠¥' (>=) and '≠¤' (<=).
+      final isNarrow = effectiveOp == '<' || effectiveOp == '≤';
 
       if (isNarrow) {
-        if (p.k < 0)
+        if (p.k < 0) {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
-        if (p.k == 0 && effectiveOp == '<')
+        }
+        if (p.k == 0 && effectiveOp == '<') {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
-        if (p.k == 0 && effectiveOp == '≠¤') {
-          if (p.a == 0)
+        }
+        if (p.k == 0 && effectiveOp == '≤') {
+          if (p.a == 0) {
             return const SolveResult(
                 answer: 'No solution', points: [], intervalNotation: '∅');
+          }
           final root = -p.b / p.a;
           return SolveResult(
               answer: 'x = ${_fmt(root)}',
               points: [root],
               intervalNotation: '{${_fmt(root)}}');
         }
-        if (p.a == 0)
+        if (p.a == 0) {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
+        }
 
         final v1 = (-p.k - p.b) / p.a;
         final v2 = (p.k - p.b) / p.a;
@@ -50,19 +53,22 @@ class GeneratedAbsoluteSolver {
           intervalNotation: '$lb${_fmt(l)}, ${_fmt(h)}$rb',
         );
       } else {
-        if (p.k < 0)
+        if (p.k < 0) {
           return const SolveResult(
               answer: 'All real numbers',
               points: [],
               intervalNotation: '(-∞, ∞)');
-        if (p.k == 0 && effectiveOp == '≠¥')
+        }
+        if (p.k == 0 && effectiveOp == '≥') {
           return const SolveResult(
               answer: 'All real numbers',
               points: [],
               intervalNotation: '(-∞, ∞)');
-        if (p.a == 0)
+        }
+        if (p.a == 0) {
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
+        }
         if (p.k == 0 && effectiveOp == '>') {
           final root = -p.b / p.a;
           final fR = _fmt(root);
@@ -111,13 +117,13 @@ class GeneratedAbsoluteSolver {
     final kStr = _fmtLatex(p.k);
     final absOnLeft = p.absOnLeft;
     final effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-    final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
+    final isNarrow = effectiveOp == '<' || effectiveOp == '≤';
 
     // ---- Edge cases ----
     if (p.a == 0) {
       steps.add(StepModel(
         stepNumber: n++,
-        hint: 'No variable term ? evaluate the constant directly',
+        hint: 'No variable term — evaluate the constant directly',
         latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
       ));
       return steps;
@@ -153,7 +159,7 @@ class GeneratedAbsoluteSolver {
     }
 
     if (p.k == 0 && effectiveOp == '>') {
-      // |ax+b| > 0  =>  ax+b != 0  =>  x != -b/a
+      // |ax+b| > 0  =>  ax+b ≠ 0  =>  x ≠ -b/a
       final root = _fmtLatex(-p.b / p.a);
       steps.add(StepModel(
         stepNumber: n++,
@@ -188,7 +194,7 @@ class GeneratedAbsoluteSolver {
       // ──────────────────────────────────────────────────────────
 
       // ──────────────────────────────────────────────────────────
-      // Step 2: Apply Theorem 1 ? |X| < k  =>  -k < X < k
+      // Step 2: Apply Theorem 1 — |X| < k  =>  -k < X < k
       steps.add(StepModel(
         stepNumber: n++,
         hint: 'Apply Theorem 1',
@@ -209,7 +215,7 @@ class GeneratedAbsoluteSolver {
       ));
 
       // ──────────────────────────────────────────────────────────
-      // Step 3: Isolate x-term ? subtract/add constant
+      // Step 3: Isolate x-term — subtract/add constant
       if (p.b != 0) {
         final bAbs = _fmtLatex(p.b.abs());
         final bStr = _fmtLatex(p.b);
@@ -299,7 +305,7 @@ class GeneratedAbsoluteSolver {
       // ──────────────────────────────────────────────────────────
 
       // ──────────────────────────────────────────────────────────
-      // Step 2: Apply Theorem 2 ? |X| > k  =>  X < -k  or  X > k
+      // Step 2: Apply Theorem 2 — |X| > k  =>  X < -k  or  X > k
       steps.add(StepModel(
         stepNumber: n++,
         hint: 'Apply Theorem 2',
@@ -389,20 +395,20 @@ class GeneratedAbsoluteSolver {
                 aStr +
                 '}',
             r'\Downarrow',
-            'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+            'x ${_texOp(leftOp)} $leftVal \\text{ or } x ${_texOp(rightOp)} $rightVal',
           ],
           latex:
-              'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+              'x ${_texOp(leftOp)} $leftVal \\text{ or } x ${_texOp(rightOp)} $rightVal',
         ));
       } else if (p.a == -1) {
         steps.add(StepModel(
           stepNumber: n++,
           hint: 'Multiply by -1, flip signs',
           details: [
-            'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+            'x ${_texOp(leftOp)} $leftVal \\text{ or } x ${_texOp(rightOp)} $rightVal',
           ],
           latex:
-              'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+              'x ${_texOp(leftOp)} $leftVal \\text{ or } x ${_texOp(rightOp)} $rightVal',
         ));
       }
 
@@ -422,10 +428,10 @@ class GeneratedAbsoluteSolver {
     String s = input
         .trim()
         .replaceAll('−', '-')
-        .replaceAll('?', '^2')
+        .replaceAll('²', '^2')
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤');
+        .replaceAll('>=', '≥')
+        .replaceAll('<=', '≤');
 
     if (!s.contains('|')) return null;
 
@@ -464,8 +470,8 @@ class GeneratedAbsoluteSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('≠¥')) return '≠¥';
-    if (s.contains('≠¤')) return '≠¤';
+    if (s.contains('≥')) return '≥';
+    if (s.contains('≤')) return '≤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -490,9 +496,9 @@ class GeneratedAbsoluteSolver {
     for (final tok in tokens) {
       if (tok.contains('x')) {
         final cs = tok.split('x')[0];
-        if (cs.isEmpty || cs == '+')
+        if (cs.isEmpty || cs == '+') {
           xCoef += 1;
-        else if (cs == '-')
+        } else if (cs == '-')
           xCoef -= 1;
         else
           xCoef += double.tryParse(cs) ?? 0;
@@ -530,8 +536,9 @@ class GeneratedAbsoluteSolver {
 
   static String _fmtLatex(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite)
+    if (!n.isFinite) {
       return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    }
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -540,8 +547,9 @@ class GeneratedAbsoluteSolver {
         final sn = num ~/ g;
         final sd = d ~/ g;
         if (sd == 1) return sn.toString();
-        if (sn < 0)
+        if (sn < 0) {
           return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        }
         return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
       }
     }
@@ -557,9 +565,9 @@ class GeneratedAbsoluteSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case '≠¥':
+      case '≥':
         return '\\geq';
-      case '≠¤':
+      case '≤':
         return '\\leq';
       case '>':
         return '>';
@@ -576,10 +584,10 @@ class GeneratedAbsoluteSolver {
         return '<';
       case '<':
         return '>';
-      case '≠¥':
-        return '≠¤';
-      case '≠¤':
-        return '≠¥';
+      case '≥':
+        return '≤';
+      case '≤':
+        return '≥';
       default:
         return op;
     }

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 // -------------------------------------------------------------
 // MATH INPUT FIELD
-// StatefulWidget � owns its own FocusNode so it never loses
+// StatefulWidget — owns its own FocusNode so it never loses
 // focus when the parent screen rebuilds after solve() is called.
 // -------------------------------------------------------------
 
@@ -35,7 +35,7 @@ class MathInputField extends StatefulWidget {
 }
 
 class _MathInputFieldState extends State<MathInputField> {
-  // FocusNode lives here � survives parent rebuilds
+  // FocusNode lives here — survives parent rebuilds
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -70,7 +70,7 @@ class _MathInputFieldState extends State<MathInputField> {
               Expanded(
                 child: TextField(
                   controller: widget.controller,
-                  focusNode: _focusNode, // stable focus � no more pausing
+                  focusNode: _focusNode, // stable focus — no more pausing
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,

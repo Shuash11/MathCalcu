@@ -83,8 +83,9 @@ class VariationEquation extends BaseEquation {
     }
     final x1 = xs.first, y1 = ys.first;
     if (kind == 'direct') {
-      if (x1 == 0)
+      if (x1 == 0) {
         return SolveResult.error('x cannot be zero for direct variation.');
+      }
       final k = y1 / x1;
       if (xs.length > 1) {
         final y2 = k * xs[1];
@@ -140,8 +141,9 @@ class VariationEquation extends BaseEquation {
         .allMatches(rawInput)
         .map((m) => double.parse(m.group(1)!))
         .toList();
-    if (zs.isEmpty)
+    if (zs.isEmpty) {
       return SolveResult.error('Joint variation needs z = kxy with a z value.');
+    }
     if (x1 == 0 || y1 == 0) {
       return SolveResult.error('x and y cannot be zero for joint variation.');
     }

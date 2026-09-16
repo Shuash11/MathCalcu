@@ -142,9 +142,9 @@ class Tokenizer {
           pos++;
           break;
         default:
-          if (_isDigit(ch) || ch == '.')
+          if (_isDigit(ch) || ch == '.') {
             tokens.add(_readNumber());
-          else if (_isAlpha(ch) || ch == '_')
+          } else if (_isAlpha(ch) || ch == '_')
             tokens.add(_readIdent());
           else
             throw FormatException('Unexpected "$ch" at $pos');
@@ -159,9 +159,9 @@ class Tokenizer {
     bool dot = false;
     while (pos < input.length) {
       final c = input[pos];
-      if (_isDigit(c))
+      if (_isDigit(c)) {
         pos++;
-      else if (c == '.' && !dot) {
+      } else if (c == '.' && !dot) {
         dot = true;
         pos++;
       } else
@@ -173,8 +173,9 @@ class Tokenizer {
   Token _readIdent() {
     final start = pos;
     while (pos < input.length &&
-        (_isAlpha(input[pos]) || _isDigit(input[pos]) || input[pos] == '_'))
+        (_isAlpha(input[pos]) || _isDigit(input[pos]) || input[pos] == '_')) {
       pos++;
+    }
     return Token(TokenType.ident, input.substring(start, pos));
   }
 
@@ -228,11 +229,14 @@ class Parser {
   Expr _factor() {
     final parts = <Expr>[];
     parts.add(_unary());
-    while (_canStartAtom(current) && current.type != TokenType.eof)
+    while (_canStartAtom(current) && current.type != TokenType.eof) {
       parts.add(_unary());
+    }
     if (parts.length == 1) return parts.first;
     var r = parts[0];
-    for (int i = 1; i < parts.length; i++) r = BinOp(r, '*', parts[i]);
+    for (int i = 1; i < parts.length; i++) {
+      r = BinOp(r, '*', parts[i]);
+    }
     return r;
   }
 
@@ -289,8 +293,10 @@ class Parser {
       }
       if (current.type == TokenType.lparen) {
         advance();
-        while (current.type != TokenType.rparen &&
-            current.type != TokenType.eof) advance();
+        while (
+            current.type != TokenType.rparen && current.type != TokenType.eof) {
+          advance();
+        }
         if (current.type == TokenType.rparen) advance();
         return const Var('y');
       }
@@ -306,9 +312,10 @@ class Parser {
   }
 
   void _expect(TokenType type) {
-    if (current.type != type)
+    if (current.type != type) {
       throw FormatException(
           'Expected ${type.name} but got "${current.value}" at $pos');
+    }
     advance();
   }
 }
@@ -331,10 +338,12 @@ class ExprUtils {
   static bool containsDerivSym(Expr e) {
     if (e is DerivSym) return true;
     if (e is Num || e is Const || e is Var) return false;
-    if (e is BinOp)
+    if (e is BinOp) {
       return containsDerivSym(e.left) || containsDerivSym(e.right);
-    if (e is Pow)
+    }
+    if (e is Pow) {
       return containsDerivSym(e.base) || containsDerivSym(e.exponent);
+    }
     if (e is UnaryNeg) return containsDerivSym(e.operand);
     if (e is Func) return containsDerivSym(e.arg);
     return false;
@@ -353,10 +362,12 @@ class ExprUtils {
   static Expr substitute(Expr e, String v, Expr r) {
     if (e is Var && e.name == v) return r.clone();
     if (e is Num || e is Const || e is DerivSym || e is Var) return e.clone();
-    if (e is BinOp)
+    if (e is BinOp) {
       return BinOp(substitute(e.left, v, r), e.op, substitute(e.right, v, r));
-    if (e is Pow)
+    }
+    if (e is Pow) {
       return Pow(substitute(e.base, v, r), substitute(e.exponent, v, r));
+    }
     if (e is UnaryNeg) return UnaryNeg(substitute(e.operand, v, r));
     if (e is Func) return Func(e.name, substitute(e.arg, v, r));
     return e.clone();
@@ -390,10 +401,11 @@ class ExprUtils {
           throw Exception('Unknown op: ${e.op}');
       }
     }
-    if (e is Pow)
+    if (e is Pow) {
       return math
           .pow(evaluate(e.base, vals), evaluate(e.exponent, vals))
           .toDouble();
+    }
     if (e is UnaryNeg) return -evaluate(e.operand, vals);
     if (e is Func) {
       final a = evaluate(e.arg, vals);
@@ -463,8 +475,9 @@ class Simplifier {
       if (i is UnaryNeg) return i.operand;
       if (i is Num) return Num(-i.value);
       if (i is BinOp && i.op == '-') return BinOp(i.right, '-', i.left);
-      if (i is BinOp && i.op == '*' && i.left is Num)
+      if (i is BinOp && i.op == '*' && i.left is Num) {
         return BinOp(Num(-(i.left as Num).value), '*', i.right);
+      }
       return UnaryNeg(i);
     }
     if (e is Func) return Func(e.name, _once(e.arg));
@@ -472,15 +485,17 @@ class Simplifier {
       final b = _once(e.base), exp = _once(e.exponent);
       if (exp is Num && exp.isZero) return const Num(1);
       if (exp is Num && exp.isOne) return b;
-      if (b is Num && b.isZero && exp is Num && exp.value > 0)
+      if (b is Num && b.isZero && exp is Num && exp.value > 0) {
         return const Num(0);
+      }
       if (b is Num && b.isOne) return const Num(1);
       if (b is Num && exp is Num) {
         final r = math.pow(b.value, exp.value);
         if (r.isFinite) return Num(r.toDouble());
       }
-      if (b is Pow && exp is Num)
+      if (b is Pow && exp is Num) {
         return _once(Pow(b.base, BinOp(b.exponent, '*', exp)));
+      }
       return Pow(b, exp);
     }
     if (e is BinOp) return _simpOp(_once(e.left), e.op, _once(e.right));
@@ -520,14 +535,18 @@ class Simplifier {
         if (r is Num && r.isOne) return l;
         if (l is Num && l.isMinusOne) return UnaryNeg(r);
         if (r is Num && r.isMinusOne) return UnaryNeg(l);
-        if (l is Num && r is BinOp && r.op == '*' && r.left is Num)
+        if (l is Num && r is BinOp && r.op == '*' && r.left is Num) {
           return _simpOp(Num(l.value * (r.left as Num).value), '*', r.right);
-        if (r is Num && l is BinOp && l.op == '*' && l.left is Num)
+        }
+        if (r is Num && l is BinOp && l.op == '*' && l.left is Num) {
           return _simpOp(Num((l.left as Num).value * r.value), '*', l.right);
-        if (r is BinOp && r.op == '/')
+        }
+        if (r is BinOp && r.op == '/') {
           return _simpOp(BinOp(l, '*', r.left), '/', r.right);
-        if (l is BinOp && l.op == '/')
+        }
+        if (l is BinOp && l.op == '/') {
           return _simpOp(BinOp(l.left, '*', r), '/', l.right);
+        }
         if (l is UnaryNeg) return UnaryNeg(_simpOp(l.operand, '*', r));
         if (r is UnaryNeg) return UnaryNeg(_simpOp(l, '*', r.operand));
         break;
@@ -537,13 +556,18 @@ class Simplifier {
         if (l.toMathString() == r.toMathString()) return const Num(1);
         if (l is BinOp &&
             l.op == '*' &&
-            l.right.toMathString() == r.toMathString()) return l.left;
-        if (l is UnaryNeg && r is! UnaryNeg)
+            l.right.toMathString() == r.toMathString()) {
+          return l.left;
+        }
+        if (l is UnaryNeg && r is! UnaryNeg) {
           return UnaryNeg(_simpOp(l.operand, '/', r));
-        if (r is UnaryNeg && l is! UnaryNeg)
+        }
+        if (r is UnaryNeg && l is! UnaryNeg) {
           return UnaryNeg(_simpOp(l, '/', r.operand));
-        if (l is UnaryNeg && r is UnaryNeg)
+        }
+        if (l is UnaryNeg && r is UnaryNeg) {
           return _simpOp(l.operand, '/', r.operand);
+        }
         break;
     }
     return BinOp(l, op, r);
@@ -616,9 +640,10 @@ class Differentiator {
       return const Num(0);
     }
     if (e is DerivSym) return const Num(0);
-    if (e is UnaryNeg)
+    if (e is UnaryNeg) {
       return Simplifier.simplify(
           UnaryNeg(differentiate(e.operand, v, dependentVars: dependentVars)));
+    }
     if (e is BinOp && (e.op == '+' || e.op == '-')) {
       return Simplifier.simplify(BinOp(
           differentiate(e.left, v, dependentVars: dependentVars),
@@ -713,7 +738,7 @@ class Differentiator {
         od = BinOp(const Num(1), '/', u);
         break;
       case 'log':
-        od = BinOp(const Num(1), '/', BinOp(u, '*', Func('ln', const Num(10))));
+        od = BinOp(const Num(1), '/', BinOp(u, '*', const Func('ln', Num(10))));
         break;
       case 'exp':
         od = Func('exp', u);
@@ -742,22 +767,25 @@ class SlopeSolver {
     if (_isParametric(t)) return _solveParametric(t, pointValues ?? {});
     final toks = Tokenizer(t).tokenize();
     final (l, r) = Parser(toks).parse();
-    if (r == null)
+    if (r == null) {
       return _solveExplicit(const Var('y'), l, t, pointValues ?? {});
-    if (l is Var && l.name == 'y')
+    }
+    if (l is Var && l.name == 'y') {
       return _solveExplicit(l, r, t, pointValues ?? {});
+    }
     final rV = ExprUtils.collectVars(r);
-    if (l is Var && (l.name == 'y' || !rV.contains('y')))
+    if (l is Var && (l.name == 'y' || !rV.contains('y'))) {
       return _solveExplicit(l, r, t, pointValues ?? {});
+    }
     return _solveImplicit(l, r, t, pointValues ?? {});
   }
 
   static bool _isParametric(String s) {
     int d = 0;
     for (int i = 0; i < s.length; i++) {
-      if (s[i] == '(')
+      if (s[i] == '(') {
         d++;
-      else if (s[i] == ')')
+      } else if (s[i] == ')')
         d--;
       else if (s[i] == ',' && d == 0) return true;
     }
@@ -765,8 +793,9 @@ class SlopeSolver {
   }
 
   static String _fmt(double v) {
-    if (v == v.truncateToDouble() && v.abs() < 1e10)
+    if (v == v.truncateToDouble() && v.abs() < 1e10) {
       return v.toInt().toString();
+    }
     return v.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
@@ -783,9 +812,9 @@ class SlopeSolver {
     final p = <String>[];
     int d = 0, st = 0;
     for (int i = 0; i < s.length; i++) {
-      if (s[i] == '(')
+      if (s[i] == '(') {
         d++;
-      else if (s[i] == ')')
+      } else if (s[i] == ')')
         d--;
       else if (s[i] == ',' && d == 0) {
         p.add(s.substring(st, i).trim());
@@ -886,7 +915,7 @@ class SlopeSolver {
 
   static SlopeResult _solveParametric(String input, Map<String, double> pv) {
     final parts = _splitTop(input);
-    if (parts.length != 2) throw FormatException('Need two expressions');
+    if (parts.length != 2) throw const FormatException('Need two expressions');
     Expr? xE, yE;
     String pv2 = 't';
     for (final part in parts) {
@@ -902,8 +931,9 @@ class SlopeSolver {
       } else
         throw FormatException('Expected x=... y=..., got "${part.trim()}"');
     }
-    if (xE == null || yE == null)
+    if (xE == null || yE == null) {
       throw const FormatException('Both x(t) and y(t) required');
+    }
     final aV = ExprUtils.collectVars(xE)
         .union(ExprUtils.collectVars(yE))
         .difference({'x', 'y'});

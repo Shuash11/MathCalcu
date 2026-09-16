@@ -65,22 +65,22 @@ class GeneratedLinearSolver {
       final simplified =
           '${_coefLatex(a)}x ${b >= 0 ? "+ ${_fmtLatex(b)}" : "- ${_fmtLatex(b.abs())}"} ${_texOp(p.op)} 0';
 
-      List<String> _parts = [];
+      List<String> parts = [];
       if (p.ra != 0) {
         final absRa = p.ra.abs();
         final term = absRa == 1 ? 'x' : '${_fmt(absRa)}x';
-        _parts.add(p.ra > 0 ? 'subtract $term' : 'add $term');
+        parts.add(p.ra > 0 ? 'subtract $term' : 'add $term');
       }
       if (p.rb != 0) {
-        _parts.add(p.rb > 0
+        parts.add(p.rb > 0
             ? 'subtract ${_fmt(p.rb.abs())}'
             : 'add ${_fmt(p.rb.abs())}');
       }
-      final hint = '${_parts.join(', ')} from both sides';
+      final hint = '${parts.join(', ')} from both sides';
 
-      List<String>? _moveDetails;
+      List<String>? moveDetails;
       if (p.rb != 0) {
-        _moveDetails = [
+        moveDetails = [
           '${_fmtLatex(p.b)} ${p.rb > 0 ? "-" : "+"} ${_fmtLatex(p.rb.abs())} = ${_fmtLatex(b)}'
         ];
       }
@@ -89,7 +89,7 @@ class GeneratedLinearSolver {
         steps.add(StepModel(
           stepNumber: n++,
           hint: hint,
-          details: _moveDetails,
+          details: moveDetails,
           latex: intermediate,
           subLatex: [simplified],
         ));
@@ -97,7 +97,7 @@ class GeneratedLinearSolver {
         steps.add(StepModel(
           stepNumber: n++,
           hint: hint,
-          details: _moveDetails,
+          details: moveDetails,
           latex: simplified,
         ));
       }
@@ -137,26 +137,24 @@ class GeneratedLinearSolver {
       final flip = a < 0;
       final divOp = flip ? _flipOp(p.op) : p.op;
       final divDetails = <String>[
-        r'\frac{' +
-            '${_coefLatex(a)}x' +
-            r'}{' +
-            '${_fmtLatex(a)}' +
+        r'\frac{' '${_coefLatex(a)}x' r'}{' +
+            _fmtLatex(a) +
             r'} ' +
             '${_texOp(divOp)} ' +
             r'\frac{' +
-            '${_fmtLatex(-b)}' +
+            _fmtLatex(-b) +
             r'}{' +
-            '${_fmtLatex(a)}' +
+            _fmtLatex(a) +
             r'}',
         'x ${_texOp(divOp)} ${_fmtLatex(-b / a)}',
       ];
       if (flip) {
         divDetails.add(r'\text{Dividing by }' +
-            '${_fmt(a)}' +
+            _fmt(a) +
             r'\text{ flips }' +
-            '${_texOp(p.op)}' +
+            _texOp(p.op) +
             r'\text{ to }' +
-            '${_texOp(divOp)}');
+            _texOp(divOp));
       }
       steps.add(StepModel(
         stepNumber: n++,
@@ -207,17 +205,17 @@ class GeneratedLinearSolver {
         .trim()
         .replaceAll('\u2212', '-')
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤')
-        .replaceAll('=>', '≠¥')
-        .replaceAll('=<', '≠¤')
+        .replaceAll('>=', '≥')
+        .replaceAll('<=', '≤')
+        .replaceAll('=>', '≥')
+        .replaceAll('=<', '≤')
         .replaceAll('x²', 'x^2')
         .replaceAll('²', '^2');
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('≠¥')) return '≠¥';
-    if (s.contains('≠¤')) return '≠¤';
+    if (s.contains('≥')) return '≥';
+    if (s.contains('≤')) return '≤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -242,9 +240,9 @@ class GeneratedLinearSolver {
     for (final tok in tokens) {
       if (tok.contains('x')) {
         final cs = tok.split('x')[0];
-        if (cs.isEmpty || cs == '+')
+        if (cs.isEmpty || cs == '+') {
           xCoef += 1;
-        else if (cs == '-')
+        } else if (cs == '-')
           xCoef -= 1;
         else
           xCoef += double.tryParse(cs) ?? 0;
@@ -282,8 +280,9 @@ class GeneratedLinearSolver {
 
   static String _fmtLatex(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite)
+    if (!n.isFinite) {
       return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    }
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -292,8 +291,9 @@ class GeneratedLinearSolver {
         final sn = num ~/ g;
         final sd = d ~/ g;
         if (sd == 1) return sn.toString();
-        if (sn < 0)
+        if (sn < 0) {
           return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        }
         return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
       }
     }
@@ -302,9 +302,9 @@ class GeneratedLinearSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case '≠¥':
+      case '≥':
         return '\\geq';
-      case '≠¤':
+      case '≤':
         return '\\leq';
       case '>':
         return '>';
@@ -321,10 +321,10 @@ class GeneratedLinearSolver {
         return '<';
       case '<':
         return '>';
-      case '≠¥':
-        return '≠¤';
-      case '≠¤':
-        return '≠¥';
+      case '≥':
+        return '≤';
+      case '≤':
+        return '≥';
       default:
         return op;
     }
@@ -336,9 +336,9 @@ class GeneratedLinearSolver {
         return left > right;
       case '<':
         return left < right;
-      case '≠¥':
+      case '≥':
         return left >= right;
-      case '≠¤':
+      case '≤':
         return left <= right;
       default:
         return false;
@@ -350,11 +350,11 @@ class GeneratedLinearSolver {
     switch (op) {
       case '>':
         return '($bs, \\infty)';
-      case '≠¥':
+      case '≥':
         return '[$bs, \\infty)';
       case '<':
         return '(-\\infty, $bs)';
-      case '≠¤':
+      case '≤':
         return '(-\\infty, $bs]';
       default:
         return '';
@@ -366,11 +366,11 @@ class GeneratedLinearSolver {
     switch (op) {
       case '>':
         return '($bs, ∞)';
-      case '≠¥':
+      case '≥':
         return '[$bs, ∞)';
       case '<':
         return '(-∞, $bs)';
-      case '≠¤':
+      case '≤':
         return '(-∞, $bs]';
       default:
         return '';

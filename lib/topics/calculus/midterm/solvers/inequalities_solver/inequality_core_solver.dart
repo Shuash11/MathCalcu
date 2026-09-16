@@ -8,10 +8,10 @@ class InequalityCoreSolver {
         .replaceAll('\u2264', '<=')
         .replaceAll('\u2265', '>=')
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤')
-        .replaceAll('=>', '≠¥')
-        .replaceAll('=<', '≠¤')
+        .replaceAll('>=', '≥')
+        .replaceAll('<=', '≤')
+        .replaceAll('=>', '≥')
+        .replaceAll('=<', '≤')
         .replaceAll('x²', 'x^2')
         .replaceAll('²', '^2')
         .replaceAllMapped(RegExp(r'abs\(([^)]+)\)'), (m) => '|${m.group(1)}|');
@@ -100,8 +100,9 @@ class InequalityCoreSolver {
 
   static String fmt(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite)
+    if (!n.isFinite) {
       return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    }
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int denom = 2; denom <= 20; denom++) {
       final numer = (n * denom).round();
@@ -120,9 +121,9 @@ class InequalityCoreSolver {
 
   static bool _isStrict(String normalized) {
     // Check if the inequality uses ONLY strict operators (< or >)
-    // If it has any non-strict operators (≠¤ or ≠¥), it's non-strict
+    // If it has any non-strict operators (≤ or ≥), it's non-strict
     // If it has BOTH strict and non-strict, it's continued (return null via new method)
-    final hasNonStrict = normalized.contains('≠¤') || normalized.contains('≠¥');
+    final hasNonStrict = normalized.contains('≤') || normalized.contains('≥');
     if (hasNonStrict) return false;
 
     // If it has strict operators and no non-strict operators, it's strict
@@ -133,22 +134,23 @@ class InequalityCoreSolver {
   static bool _isContinued(String normalized) {
     // Check if inequality has BOTH strict and non-strict operators (mixed)
     final hasStrict = normalized.contains('<') || normalized.contains('>');
-    final hasNonStrict = normalized.contains('≠¤') || normalized.contains('≠¥');
+    final hasNonStrict = normalized.contains('≤') || normalized.contains('≥');
     return hasStrict && hasNonStrict;
   }
 
   static String detectType(String normalized) {
     // Check for continued (mixed operators) first
     if (_isContinued(normalized)) {
-      final strictnessStr = '-continued';
+      const strictnessStr = '-continued';
 
       if (normalized.contains('|')) return 'absolute$strictnessStr';
       final hasRadical = normalized.contains('sqrt') ||
           normalized.contains('root') ||
           normalized.contains('\u221A') ||
           normalized.contains('√');
-      if (hasRadical && normalized.contains('/'))
+      if (hasRadical && normalized.contains('/')) {
         return 'sqrtRational$strictnessStr';
+      }
       if (hasRadical) return 'radical$strictnessStr';
       if (normalized.contains('^2')) return 'quadratic$strictnessStr';
       if (normalized.contains('/')) return 'rational$strictnessStr';
@@ -163,12 +165,14 @@ class InequalityCoreSolver {
         normalized.contains('root') ||
         normalized.contains('\u221A') ||
         normalized.contains('√');
-    if (hasRadical && normalized.contains('/'))
+    if (hasRadical && normalized.contains('/')) {
       return 'sqrtRational$strictnessStr';
+    }
     if (hasRadical) return 'radical$strictnessStr';
     if (normalized.contains('^2')) return 'quadratic$strictnessStr';
-    if (normalized.contains('√') && normalized.contains('/'))
+    if (normalized.contains('√') && normalized.contains('/')) {
       return 'sqrtRational$strictnessStr';
+    }
     if (normalized.contains('√')) return 'radical$strictnessStr';
     if (normalized.contains('/')) return 'rational$strictnessStr';
     return 'linear$strictnessStr';
@@ -183,10 +187,10 @@ class InequalityCoreSolver {
         .replaceAll('\u2264', '<=')
         .replaceAll('\u2265', '>=')
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤')
-        .replaceAll('=>', '≠¥')
-        .replaceAll('=<', '≠¤')
+        .replaceAll('>=', '≥')
+        .replaceAll('<=', '≤')
+        .replaceAll('=>', '≥')
+        .replaceAll('=<', '≤')
         .replaceAll('x²', 'x^2')
         .replaceAll('²', '^2')
         .replaceAllMapped(RegExp(r'abs\(([^)]+)\)'), (m) => '|${m.group(1)}|');
@@ -196,8 +200,8 @@ class InequalityCoreSolver {
   }
 
   static String? extractOperator(String expr) {
-    if (expr.contains('≠¥')) return '≠¥';
-    if (expr.contains('≠¤')) return '≠¤';
+    if (expr.contains('≥')) return '≥';
+    if (expr.contains('≤')) return '≤';
     if (expr.contains('>')) return '>';
     if (expr.contains('<')) return '<';
     return null;
@@ -340,10 +344,10 @@ class InequalityCoreSolver {
         return '<';
       case '<':
         return '>';
-      case '≠¥':
-        return '≠¤';
-      case '≠¤':
-        return '≠¥';
+      case '≥':
+        return '≤';
+      case '≤':
+        return '≥';
       default:
         return op;
     }
@@ -355,9 +359,9 @@ class InequalityCoreSolver {
         return left > right;
       case '<':
         return left < right;
-      case '≠¥':
+      case '≥':
         return left >= right;
-      case '≠¤':
+      case '≤':
         return left <= right;
       default:
         return false;
@@ -369,11 +373,11 @@ class InequalityCoreSolver {
     switch (op) {
       case '>':
         return '($b, \\infty)';
-      case '≠¥':
+      case '≥':
         return '[$b, \\infty)';
       case '<':
         return '(-\\infty, $b)';
-      case '≠¤':
+      case '≤':
         return '(-\\infty, $b]';
       default:
         return '';

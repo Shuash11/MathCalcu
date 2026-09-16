@@ -20,8 +20,8 @@ class GeneratedQuadraticSolver {
 
       if (disc < 0) {
         final allSat = p.a > 0
-            ? (p.op == '>' || p.op == '≠¥')
-            : (p.op == '<' || p.op == '≠¤');
+            ? (p.op == '>' || p.op == '≥')
+            : (p.op == '<' || p.op == '≤');
         return SolveResult(
           answer: allSat ? 'All real numbers' : 'No solution',
           points: [],
@@ -40,9 +40,9 @@ class GeneratedQuadraticSolver {
         final opensUp = p.a > 0;
         if (opensUp) {
           if (p.op == '<') {
-            return SolveResult(
+            return const SolveResult(
                 answer: 'No solution', points: [], intervalNotation: '∅');
-          } else if (p.op == '≠¤') {
+          } else if (p.op == '≤') {
             return SolveResult(
                 answer: 'x = ${_fmt(root)}',
                 points: [root],
@@ -53,7 +53,7 @@ class GeneratedQuadraticSolver {
                 points: [root],
                 intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)');
           } else {
-            return SolveResult(
+            return const SolveResult(
                 answer: 'All real numbers',
                 points: [],
                 intervalNotation: '(-∞, ∞)');
@@ -64,13 +64,13 @@ class GeneratedQuadraticSolver {
                 answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}',
                 points: [root],
                 intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)');
-          } else if (p.op == '≠¤') {
-            return SolveResult(
+          } else if (p.op == '≤') {
+            return const SolveResult(
                 answer: 'All real numbers',
                 points: [],
                 intervalNotation: '(-∞, ∞)');
           } else if (p.op == '>') {
-            return SolveResult(
+            return const SolveResult(
                 answer: 'No solution', points: [], intervalNotation: '∅');
           } else {
             return SolveResult(
@@ -84,10 +84,10 @@ class GeneratedQuadraticSolver {
       final strict = p.op == '<' || p.op == '>';
       final lb = strict ? '(' : '[';
       final rb = strict ? ')' : ']';
-      final between = (p.op == '<' || p.op == '≠¤') ? p.a > 0 : p.a < 0;
+      final between = (p.op == '<' || p.op == '≤') ? p.a > 0 : p.a < 0;
 
       if (between) {
-        final innerOp = strict ? '<' : '≠¤';
+        final innerOp = strict ? '<' : '≤';
         return SolveResult(
           answer: '${_fmt(lo)} $innerOp x $innerOp ${_fmt(hi)}',
           points: [lo, hi],
@@ -96,7 +96,7 @@ class GeneratedQuadraticSolver {
       } else {
         return SolveResult(
           answer:
-              'x ${strict ? '<' : '≠¤'} ${_fmt(lo)} or x ${strict ? '>' : '≠¥'} ${_fmt(hi)}',
+              'x ${strict ? '<' : '≤'} ${_fmt(lo)} or x ${strict ? '>' : '≥'} ${_fmt(hi)}',
           points: [lo, hi],
           intervalNotation: '(-∞, ${_fmt(lo)}$rb ∪ $lb${_fmt(hi)}, ∞)',
         );
@@ -182,9 +182,8 @@ class GeneratedQuadraticSolver {
     ));
 
     if (disc < 0) {
-      final allSat = p.a > 0
-          ? (p.op == '>' || p.op == '≠¥')
-          : (p.op == '<' || p.op == '≠¤');
+      final allSat =
+          p.a > 0 ? (p.op == '>' || p.op == '≥') : (p.op == '<' || p.op == '≤');
       steps.add(StepModel(
         stepNumber: n++,
         hint: allSat
@@ -276,7 +275,7 @@ class GeneratedQuadraticSolver {
 
     // Step 5: Sign and solution
     final opensUp = p.a > 0;
-    final between = (p.op == '<' || p.op == '≠¤') ? opensUp : !opensUp;
+    final between = (p.op == '<' || p.op == '≤') ? opensUp : !opensUp;
 
     String solLatex;
     if (between) {
@@ -312,8 +311,8 @@ class GeneratedQuadraticSolver {
         .trim()
         .replaceAll('²', '^2')
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤');
+        .replaceAll('>=', '≥')
+        .replaceAll('<=', '≤');
 
     final op = _extractOp(s);
     if (op == null) return null;
@@ -337,8 +336,8 @@ class GeneratedQuadraticSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('≠¥')) return '≠¥';
-    if (s.contains('≠¤')) return '≠¤';
+    if (s.contains('≥')) return '≥';
+    if (s.contains('≤')) return '≤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -451,8 +450,9 @@ class GeneratedQuadraticSolver {
 
   static String _fmtLatex(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite)
+    if (!n.isFinite) {
       return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    }
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -461,8 +461,9 @@ class GeneratedQuadraticSolver {
         final sn = num ~/ g;
         final sd = d ~/ g;
         if (sd == 1) return sn.toString();
-        if (sn < 0)
+        if (sn < 0) {
           return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        }
         return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
       }
     }
@@ -482,10 +483,10 @@ class GeneratedQuadraticSolver {
         return '<';
       case '<':
         return '>';
-      case '≠¥':
-        return '≠¤';
-      case '≠¤':
-        return '≠¥';
+      case '≥':
+        return '≤';
+      case '≤':
+        return '≥';
       default:
         return op;
     }
@@ -497,9 +498,9 @@ class GeneratedQuadraticSolver {
         return left > right;
       case '<':
         return left < right;
-      case '≠¥':
+      case '≥':
         return left >= right;
-      case '≠¤':
+      case '≤':
         return left <= right;
       default:
         return false;
@@ -538,8 +539,9 @@ class GeneratedQuadraticSolver {
         if (den != 0 && coeff % den.abs() == 0) {
           final c = coeff ~/ den.abs();
           final rem = sqrtStr.substring(m[1]!.length);
-          if (a < 0)
+          if (a < 0) {
             return (plus ? '-' : '') + (c == 1 ? '' : c.toString()) + rem;
+          }
           return (plus ? '' : '-') + (c == 1 ? '' : c.toString()) + rem;
         }
       }
@@ -567,11 +569,11 @@ class GeneratedQuadraticSolver {
     switch (op) {
       case '>':
         return '($bs, ∞)';
-      case '≠¥':
+      case '≥':
         return '[$bs, ∞)';
       case '<':
         return '(-∞, $bs)';
-      case '≠¤':
+      case '≤':
         return '(-∞, $bs]';
       default:
         return '';

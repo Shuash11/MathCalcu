@@ -60,8 +60,9 @@ class YIFraction {
   double toDouble() => numerator / denominator;
 
   factory YIFraction.fromDouble(double v) {
-    if (v == v.truncateToDouble())
+    if (v == v.truncateToDouble()) {
       return YIFraction(numerator: v.toInt(), denominator: 1);
+    }
     final s = (v * 1000).round();
     return YIFraction(numerator: s, denominator: 1000).simplified();
   }

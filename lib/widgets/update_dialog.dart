@@ -224,7 +224,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
       );
     }
 
-    // Initial state � simple "Update available" with Update/Later
+    // Initial state — simple "Update available" with Update/Later
     return AlertDialog(
       backgroundColor: theme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),

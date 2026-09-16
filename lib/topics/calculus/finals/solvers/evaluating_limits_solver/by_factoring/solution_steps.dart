@@ -63,7 +63,7 @@ class SolutionStepsGenerator {
   /// Steps for when direct substitution works
   List<SolutionStep> _generateDirectSubstitutionSteps(SolutionResult result) {
     final approachStr = _fmt(result.approachValue);
-    final varName = 'x';
+    const varName = 'x';
 
     return [
       SolutionStep(
@@ -109,7 +109,7 @@ class SolutionStepsGenerator {
   List<SolutionStep> _generateFactoringSteps(SolutionResult result) {
     final steps = <SolutionStep>[];
     final approachStr = _fmt(result.approachValue);
-    final varName = 'x';
+    const varName = 'x';
 
     // Step 1: Write the equation
     steps.add(SolutionStep(
@@ -184,7 +184,7 @@ class SolutionStepsGenerator {
   /// Steps for when factoring doesn't work
   List<SolutionStep> _generateUnsolvableSteps(SolutionResult result) {
     final approachStr = _fmt(result.approachValue);
-    final varName = 'x';
+    const varName = 'x';
 
     return [
       SolutionStep(

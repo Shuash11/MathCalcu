@@ -191,19 +191,21 @@ YIFraction? parseFractionString(String text) {
         final w = int.tryParse(p[0]), fp = p[1].split('/');
         if (w != null && fp.length == 2) {
           final n = int.tryParse(fp[0]), d = int.tryParse(fp[1]);
-          if (n != null && d != null && d != 0)
+          if (n != null && d != null && d != 0) {
             return YIFraction(
                     numerator: (w.abs() * d + n) * (w < 0 ? -1 : 1),
                     denominator: d)
                 .simplified();
+          }
         }
       }
     }
     final p = text.split('/');
     if (p.length == 2) {
       final n = int.tryParse(p[0]), d = int.tryParse(p[1]);
-      if (n != null && d != null && d != 0)
+      if (n != null && d != null && d != 0) {
         return YIFraction(numerator: n, denominator: d).simplified();
+      }
     }
   }
   final iv = int.tryParse(text);
@@ -362,18 +364,18 @@ class YInterceptSolver {
 
     YIFraction lA = zeroFrac, lB = zeroFrac, lC = zeroFrac;
     for (final t in _tokenise(lhs)) {
-      if (t.variable == 'x')
+      if (t.variable == 'x') {
         lA += t.coeff;
-      else if (t.variable == 'y')
+      } else if (t.variable == 'y')
         lB += t.coeff;
       else
         lC += t.coeff;
     }
     YIFraction rA = zeroFrac, rB = zeroFrac, rC = zeroFrac;
     for (final t in _tokenise(rhs)) {
-      if (t.variable == 'x')
+      if (t.variable == 'x') {
         rA += t.coeff;
-      else if (t.variable == 'y')
+      } else if (t.variable == 'y')
         rB += t.coeff;
       else
         rC += t.coeff;
@@ -475,7 +477,7 @@ class YInterceptSolver {
     final sfTex = sfLatex(A, B, C), gfTex = gfLatex(A, B, -C);
 
     if (B == 0) {
-      if (A == 0)
+      if (A == 0) {
         return YIResult(
           yIntercept: null,
           xIntercept: null,
@@ -493,6 +495,7 @@ class YInterceptSolver {
           standardFormSteps: const [],
           generalFormSteps: const [],
         );
+      }
       final xVal = YIFraction(numerator: C, denominator: A).simplified();
       return YIResult(
         yIntercept: null,
@@ -600,9 +603,9 @@ class ParallelPerpendicularSolver {
         final tok = m.group(0)!;
         final tokSign = tok[0] == '-' ? -1 : 1;
         final body = tok.substring(1);
-        if (body.contains('x'))
+        if (body.contains('x')) {
           A += sign * tokSign * _coeff(body.replaceAll('x', ''));
-        else if (body.contains('y'))
+        } else if (body.contains('y'))
           B += sign * tokSign * _coeff(body.replaceAll('y', ''));
         else {
           final v = int.tryParse(body);
@@ -669,16 +672,18 @@ class ParallelPerpendicularSolver {
   }
 
   static PPRelationship _classify(_SIResult s1, _SIResult s2) {
-    if (s1.isVertical && s2.isVertical)
+    if (s1.isVertical && s2.isVertical) {
       return s1.equation == s2.equation
           ? PPRelationship.sameLine
           : PPRelationship.parallel;
+    }
     if (s1.isVertical || s2.isVertical) return PPRelationship.neither;
     final m1 = s1.slope!, m2 = s2.slope!;
-    if (m1 == m2)
+    if (m1 == m2) {
       return (s1.yInt != null && s2.yInt != null && s1.yInt == s2.yInt)
           ? PPRelationship.sameLine
           : PPRelationship.parallel;
+    }
     return (m1 * m2).simplified().numerator ==
             -(m1 * m2).simplified().denominator
         ? PPRelationship.perpendicular
@@ -776,7 +781,7 @@ class ParallelPerpendicularSolver {
             title: 'Convert $label to slope-intercept',
             groupKey: 'si',
             blocks: [
-              PPStepBlock(
+              const PPStepBlock(
                   type: PPBlockType.note,
                   content:
                       'B=0, no y-term. Vertical line with undefined slope.'),
@@ -792,7 +797,7 @@ class ParallelPerpendicularSolver {
               PPStepBlock(
                   type: PPBlockType.result,
                   latex: si.latexEquation,
-                  content: '${si.equation}'),
+                  content: si.equation),
             ]);
       }
       final mFrac = YIFraction(numerator: -l.A, denominator: l.B).simplified();

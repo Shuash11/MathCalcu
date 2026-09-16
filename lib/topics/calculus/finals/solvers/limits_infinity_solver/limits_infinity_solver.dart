@@ -55,8 +55,9 @@ class Num extends Expr {
   const Num(this.value);
   @override
   String toMathString() {
-    if (value == value.truncateToDouble() && value.abs() < 1e15)
+    if (value == value.truncateToDouble() && value.abs() < 1e15) {
       return value.toInt().toString();
+    }
     if (value.isInfinite) return value > 0 ? 'oo' : '-oo';
     return value.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
   }
@@ -145,15 +146,17 @@ class UnaryNeg extends Expr {
 
   @override
   String toMathString() {
-    if (operand is BinOp || operand is Pow)
+    if (operand is BinOp || operand is Pow) {
       return '-(${operand.toMathString()})';
+    }
     return '-${operand.toMathString()}';
   }
 
   @override
   String toLatexString() {
-    if (operand is BinOp || operand is Pow)
+    if (operand is BinOp || operand is Pow) {
       return '-(${operand.toLatexString()})';
+    }
     return '-${operand.toLatexString()}';
   }
 
@@ -306,9 +309,9 @@ class Tokenizer {
           pos++;
           break;
         default:
-          if (_isDigit(ch) || ch == '.')
+          if (_isDigit(ch) || ch == '.') {
             tokens.add(_readNumber());
-          else if (_isAlpha(ch))
+          } else if (_isAlpha(ch))
             tokens.add(_readIdent());
           else
             throw FormatException('Unexpected "$ch" at $pos');
@@ -323,9 +326,9 @@ class Tokenizer {
     bool dot = false;
     while (pos < input.length) {
       final c = input[pos];
-      if (_isDigit(c))
+      if (_isDigit(c)) {
         pos++;
-      else if (c == '.' && !dot) {
+      } else if (c == '.' && !dot) {
         dot = true;
         pos++;
       } else
@@ -336,8 +339,10 @@ class Tokenizer {
 
   Token _readIdent() {
     final start = pos;
-    while (pos < input.length && (_isAlpha(input[pos]) || _isDigit(input[pos])))
+    while (
+        pos < input.length && (_isAlpha(input[pos]) || _isDigit(input[pos]))) {
       pos++;
+    }
     return Token(TokenType.ident, input.substring(start, pos));
   }
 
@@ -384,11 +389,14 @@ class Parser {
   Expr _factor() {
     final parts = <Expr>[];
     parts.add(_unary());
-    while (_canStartAtom(current) && current.type != TokenType.eof)
+    while (_canStartAtom(current) && current.type != TokenType.eof) {
       parts.add(_unary());
+    }
     if (parts.length == 1) return parts.first;
     var r = parts[0];
-    for (int i = 1; i < parts.length; i++) r = BinOp(r, '*', parts[i]);
+    for (int i = 1; i < parts.length; i++) {
+      r = BinOp(r, '*', parts[i]);
+    }
     return r;
   }
 
@@ -453,8 +461,9 @@ class Parser {
   }
 
   void _expect(TokenType type) {
-    if (current.type != type)
+    if (current.type != type) {
       throw FormatException('Expected ${type.name} at $pos');
+    }
     advance();
   }
 }
@@ -486,10 +495,11 @@ class ExprUtils {
           throw Exception('Unknown op: ${e.op}');
       }
     }
-    if (e is Pow)
+    if (e is Pow) {
       return math
           .pow(evaluate(e.base, vals), evaluate(e.exponent, vals))
           .toDouble();
+    }
     if (e is UnaryNeg) return -evaluate(e.operand, vals);
     if (e is Func) {
       final a = evaluate(e.arg, vals);
@@ -529,16 +539,19 @@ class ExprUtils {
     if (e is Num) return 0;
     if (e is Var) return 1;
     if (e is UnaryNeg) return getDegree(e.operand);
-    if (e is Pow && e.base is Var && e.exponent is Num)
+    if (e is Pow && e.base is Var && e.exponent is Num) {
       return (e.exponent as Num).value.toInt();
+    }
     if (e is BinOp && (e.op == '+' || e.op == '-')) {
       final ld = getDegree(e.left), rd = getDegree(e.right);
       return ld > rd ? ld : rd;
     }
-    if (e is BinOp && e.op == '*')
+    if (e is BinOp && e.op == '*') {
       return getDegree(e.left) + getDegree(e.right);
-    if (e is BinOp && e.op == '/')
+    }
+    if (e is BinOp && e.op == '/') {
       return getDegree(e.left) - getDegree(e.right);
+    }
     return 0;
   }
 
@@ -552,10 +565,12 @@ class ExprUtils {
       return ld >= rd ? getLeadingCoeff(e.left) : getLeadingCoeff(e.right);
     }
     if (e is BinOp && e.op == '*') {
-      if (e.left is Num)
+      if (e.left is Num) {
         return (e.left as Num).value * getLeadingCoeff(e.right);
-      if (e.right is Num)
+      }
+      if (e.right is Num) {
         return (e.right as Num).value * getLeadingCoeff(e.left);
+      }
       return getLeadingCoeff(e.left) * getLeadingCoeff(e.right);
     }
     return 1;
@@ -837,8 +852,9 @@ class LimitSolver {
   static String _fmt(double v) {
     if (v.isNaN) return 'Undefined';
     if (v.isInfinite) return v > 0 ? '∞' : '-∞';
-    if (v == v.truncateToDouble() && v.abs() < 1e10)
+    if (v == v.truncateToDouble() && v.abs() < 1e10) {
       return v.toInt().toString();
+    }
     return v.toStringAsFixed(4).replaceAll(RegExp(r'\.?0+$'), '');
   }
 }

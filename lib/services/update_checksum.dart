@@ -13,8 +13,7 @@ class UpdateChecksum {
   static const String windowsBinary = 'MathCalcu-Setup.exe';
 
   static final RegExp _hex64 = RegExp(r'[0-9a-fA-F]{64}');
-  static final RegExp _gnuLine =
-      RegExp(r'^([0-9a-fA-F]{64})\s+\*?(.+?)\s*$');
+  static final RegExp _gnuLine = RegExp(r'^([0-9a-fA-F]{64})\s+\*?(.+?)\s*$');
   static final RegExp _bsdLine = RegExp(
     r'SHA-?256\s*\(\s*(.+?)\s*\)\s*=\s*([0-9a-fA-F]{64})',
     caseSensitive: false,
@@ -141,7 +140,12 @@ class UpdateChecksum {
   }
 
   static bool _looksLikeManifest(String name) {
-    final lower = name.toLowerCase();
+    final lower = _baseName(name).toLowerCase().trim();
+    // Published asset is extensionless `SHA256SUMS` (release.yml); it holds
+    // GNU sha256sum lines, so it must resolve as the tier-3 manifest.
+    // `release-manifest.json` is intentionally NOT matched: it is JSON, not
+    // a GNU/BSD checksum file parseable by [parseChecksumFile].
+    if (lower == 'sha256sums' || lower == 'checksums') return true;
     final isChecksumName = lower.contains('checksum') ||
         lower.contains('sha256') ||
         lower.contains('sha256sums');
@@ -168,6 +172,6 @@ class ResolvedChecksum {
 
   bool get hasDirectHash =>
       sha256Hex != null && UpdateChecksum.isSha256Hex(sha256Hex);
-  bool get hasLookup => hasDirectHash ||
-      (checksumFileUrl != null && checksumFileUrl!.isNotEmpty);
+  bool get hasLookup =>
+      hasDirectHash || (checksumFileUrl != null && checksumFileUrl!.isNotEmpty);
 }

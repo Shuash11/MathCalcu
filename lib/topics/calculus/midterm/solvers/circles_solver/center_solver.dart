@@ -129,8 +129,9 @@ class CenterSolver {
     final fx2 = CenterFraction.parse(x2);
     final fy2 = CenterFraction.parse(y2);
     if (fx1 == null || fy1 == null || fx2 == null || fy2 == null) return null;
-    if (fx1.toDouble() == fx2.toDouble() && fy1.toDouble() == fy2.toDouble())
+    if (fx1.toDouble() == fx2.toDouble() && fy1.toDouble() == fy2.toDouble()) {
       return null;
+    }
 
     final h = (fx1 + fx2) / 2;
     final k = (fy1 + fy2) / 2;

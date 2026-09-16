@@ -21,8 +21,9 @@ class Num extends Expr {
   const Num(this.value);
   @override
   String toMathString() {
-    if (value == value.truncateToDouble() && value.abs() < 1e15)
+    if (value == value.truncateToDouble() && value.abs() < 1e15) {
       return value.toInt().toString();
+    }
     return value.toStringAsFixed(6).replaceAll(RegExp(r'\.?0+$'), '');
   }
 
@@ -75,8 +76,9 @@ class BinOp extends Expr {
     if (left is UnaryNeg && _prec('*') <= _prec(op)) l = '($l)';
     if (right is BinOp) {
       final rp = _prec((right as BinOp).op);
-      if (rp < _prec(op) || (rp == _prec(op) && (op == '-' || op == '/')))
+      if (rp < _prec(op) || (rp == _prec(op) && (op == '-' || op == '/'))) {
         r = '($r)';
+      }
     }
     if (right is UnaryNeg && (op == '+' || op == '-')) r = '($r)';
     return '$l $op $r';
@@ -92,7 +94,9 @@ class BinOp extends Expr {
         return '$l - $r';
       case '*':
         if ((left is Num && (right is Var || right is Pow)) ||
-            (right is Num && (left is Var || left is Pow))) return '$l \\, $r';
+            (right is Num && (left is Var || left is Pow))) {
+          return '$l \\, $r';
+        }
         if (left is Num || right is Num) return '$l \\cdot $r';
         return '$l \\, $r';
       case '/':
@@ -140,15 +144,17 @@ class UnaryNeg extends Expr {
 
   @override
   String toMathString() {
-    if (operand is BinOp || operand is Pow)
+    if (operand is BinOp || operand is Pow) {
       return '-(${operand.toMathString()})';
+    }
     return '-${operand.toMathString()}';
   }
 
   @override
   String toLatexString() {
-    if (operand is BinOp || operand is Pow || operand is Func)
+    if (operand is BinOp || operand is Pow || operand is Func) {
       return '-(${operand.toLatexString()})';
+    }
     return '-${operand.toLatexString()}';
   }
 

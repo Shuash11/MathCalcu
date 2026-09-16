@@ -8,14 +8,15 @@ class GeneratedRadicalSolver {
   static SolveResult solve(String input) {
     try {
       final p = _parse(input);
-      if (p == null)
+      if (p == null) {
         return SolveResult.error('Could not parse radical inequality.');
+      }
 
       // For sqrt(bx + c) op k
       if (p.k < 0) {
-        if (p.op == '>' || p.op == '≠¥') {
+        if (p.op == '>' || p.op == '≥') {
           return SolveResult(
-              answer: 'x ≠¥ ${_fmt(-p.c / p.b)} (domain only)',
+              answer: 'x ≥ ${_fmt(-p.c / p.b)} (domain only)',
               points: [],
               intervalNotation: '');
         }
@@ -34,22 +35,22 @@ class GeneratedRadicalSolver {
       // Combine domain and squared inequality
       // Case analysis based on operation
       String answer, interval;
-      final f = _fmt;
+      const f = _fmt;
       final dB = f(domainBoundary);
       final sB = f(squaredBoundary);
 
-      if (p.op == '<' || p.op == '≠¤') {
+      if (p.op == '<' || p.op == '≤') {
         // sqrt(...) < k => domain AND x < (k^2 - c)/b
         // Upper bound is min of what?
         if (domainReversed) {
-          answer = '$sB ≠¤ x ≠¤ $dB';
+          answer = '$sB ≤ x ≤ $dB';
           interval = '[$sB, $dB]';
         } else {
           if (squaredBoundary < domainBoundary) {
             answer = 'No solution';
             interval = '∅';
           } else {
-            answer = '$dB ≠¤ x $sB';
+            answer = '$dB ≤ x $sB';
             interval = '[$dB, $sB]';
           }
         }
@@ -57,18 +58,18 @@ class GeneratedRadicalSolver {
         // sqrt(...) > k => domain AND x > (k^2 - c)/b
         if (domainReversed) {
           if (squaredBoundary < domainBoundary) {
-            answer = 'x ≠¥ $dB';
+            answer = 'x ≥ $dB';
             interval = '[$dB, ∞)';
           } else {
-            answer = 'x ≠¥ $sB';
+            answer = 'x ≥ $sB';
             interval = '[$sB, ∞)';
           }
         } else {
           if (squaredBoundary < domainBoundary) {
-            answer = 'x ≠¥ $dB';
+            answer = 'x ≥ $dB';
             interval = '[$dB, ∞)';
           } else {
-            answer = 'x ≠¥ $sB';
+            answer = 'x ≥ $sB';
             interval = '[$sB, ∞)';
           }
         }
@@ -135,8 +136,8 @@ class GeneratedRadicalSolver {
         .trim()
         .toLowerCase()
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠¥')
-        .replaceAll('<=', '≠¤')
+        .replaceAll('>=', '≥')
+        .replaceAll('<=', '≤')
         .replaceAll('²', '^2')
         .replaceAll('\u221a', 'sqrt');
 
@@ -152,7 +153,7 @@ class GeneratedRadicalSolver {
       if (depth != 0) continue;
       if (s[i] == op) {
         // Check for multi-char ops
-        if (op == '≠¥' && i > 0) {
+        if (op == '≥' && i > 0) {
           if (s[i - 1] == '>') continue; // already matched with >
         }
         opIdx = i;
@@ -185,8 +186,8 @@ class GeneratedRadicalSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('≠¥')) return '≠¥';
-    if (s.contains('≠¤')) return '≠¤';
+    if (s.contains('≥')) return '≥';
+    if (s.contains('≤')) return '≤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -211,9 +212,9 @@ class GeneratedRadicalSolver {
     for (final tok in tokens) {
       if (tok.contains('x')) {
         final cs = tok.split('x')[0];
-        if (cs.isEmpty || cs == '+')
+        if (cs.isEmpty || cs == '+') {
           xCoef += 1;
-        else if (cs == '-')
+        } else if (cs == '-')
           xCoef -= 1;
         else
           xCoef += double.tryParse(cs) ?? 0;
@@ -252,8 +253,9 @@ class GeneratedRadicalSolver {
 
   static String _fmtLatex(double n) {
     if (n == 0) return '0';
-    if (!n.isFinite)
+    if (!n.isFinite) {
       return n.isNaN ? 'NaN' : (n.isNegative ? r'-\infty' : r'\infty');
+    }
     if (n == n.roundToDouble()) return n.toInt().toString();
     for (int d = 2; d <= 20; d++) {
       final num = (n * d).round();
@@ -262,8 +264,9 @@ class GeneratedRadicalSolver {
         final sn = num ~/ g;
         final sd = d ~/ g;
         if (sd == 1) return sn.toString();
-        if (sn < 0)
+        if (sn < 0) {
           return r'-\frac{' + (-sn).toString() + '}{' + sd.toString() + '}';
+        }
         return r'\frac{' + sn.toString() + '}{' + sd.toString() + '}';
       }
     }
@@ -279,9 +282,9 @@ class GeneratedRadicalSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case '≠¥':
+      case '≥':
         return '\\geq';
-      case '≠¤':
+      case '≤':
         return '\\leq';
       case '>':
         return '>';

@@ -73,7 +73,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.copy_rounded, size: 18),
+                        icon: const Icon(Icons.copy_rounded, size: 18),
                         color: FinalsTheme.primaryFor(context),
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: answerExpr));

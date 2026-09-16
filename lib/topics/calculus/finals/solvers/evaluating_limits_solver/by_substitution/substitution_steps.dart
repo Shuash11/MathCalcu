@@ -76,8 +76,8 @@ class SubstitutionStepsGenerator {
       title: 'Substitute the Value Directly',
       explanation:
           'Replace x with ${_fmt(result.approachValue)} in the expression.',
-      mathExpression: 'f(${_fmt(result.approachValue)}) = ' +
-          _toLatexExpression(result.normalizedExpression, result.approachValue),
+      mathExpression:
+          'f(${_fmt(result.approachValue)}) = ${_toLatexExpression(result.normalizedExpression, result.approachValue)}',
     ));
 
     steps.add(SolutionStep(
