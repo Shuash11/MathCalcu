@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/shared/widgets/module_card.dart';
-import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 
 class LcdCard extends StatelessWidget {
   const LcdCard({super.key});

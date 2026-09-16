@@ -21,7 +21,7 @@ class CenterHeaderBar extends StatelessWidget {
             ),
             child: const Icon(
               Icons.arrow_back_ios_new_rounded,
-              color: const Color(0xFF334155),
+              color: Color(0xFF334155),
               size: 18,
             ),
           ),
@@ -31,7 +31,7 @@ class CenterHeaderBar extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [const Color(0xFF334155), const Color(0xFF334155)],
+              colors: [Color(0xFF334155), Color(0xFF334155)],
             ),
             borderRadius: BorderRadius.circular(16),
           ),
@@ -48,7 +48,7 @@ class CenterHeaderBar extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFFE8E8F0),
+                  color: Color(0xFFE8E8F0),
                 ),
               ),
               SizedBox(height: 2),
@@ -56,7 +56,7 @@ class CenterHeaderBar extends StatelessWidget {
                 'Midpoint formula method',
                 style: TextStyle(
                   fontSize: 13,
-                  color: const Color(0xFF94A3B8),
+                  color: Color(0xFF94A3B8),
                 ),
               ),
             ],

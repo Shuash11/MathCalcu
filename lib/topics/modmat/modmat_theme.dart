@@ -15,7 +15,7 @@ class ModmatTheme {
   static const Color tealLight = Color(0xFFCCFBF1);
   static const Color tealDark = Color(0xFF0F766E);
 
-  static TextStyle titleStyle(BuildContext context) => TextStyle(
+  static TextStyle titleStyle(BuildContext context) => const TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.w700,
         color: textPrimary,
@@ -23,20 +23,20 @@ class ModmatTheme {
         height: 1.2,
       );
 
-  static TextStyle subtitleStyle(BuildContext context) => TextStyle(
+  static TextStyle subtitleStyle(BuildContext context) => const TextStyle(
         fontSize: 15,
         color: textSecondary,
         height: 1.4,
       );
 
-  static TextStyle buttonStyle(BuildContext context) => TextStyle(
+  static TextStyle buttonStyle(BuildContext context) => const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w700,
         color: Colors.white,
         letterSpacing: 0.3,
       );
 
-  static TextStyle cardTitleStyle(BuildContext context) => TextStyle(
+  static TextStyle cardTitleStyle(BuildContext context) => const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: textPrimary,
@@ -44,13 +44,13 @@ class ModmatTheme {
         height: 1.2,
       );
 
-  static TextStyle cardSubtitleStyle(BuildContext context) => TextStyle(
+  static TextStyle cardSubtitleStyle(BuildContext context) => const TextStyle(
         fontSize: 12,
         color: textSecondary,
         height: 1.3,
       );
 
-  static TextStyle tagStyle(BuildContext context) => TextStyle(
+  static TextStyle tagStyle(BuildContext context) => const TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
@@ -73,13 +73,13 @@ class ModmatTheme {
                 ? secondary.withValues(alpha: 0.2)
                 : primary.withValues(alpha: 0.1),
             blurRadius: hovered ? 36 : 22,
-            offset: Offset(0, 8),
+            offset: const Offset(0, 8),
             spreadRadius: hovered ? 2 : 0,
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 14,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
             spreadRadius: -4,
           ),
         ],

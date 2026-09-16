@@ -42,19 +42,19 @@ class CenterFormulaCard extends StatelessWidget {
           const SizedBox(height: 12),
           Math.tex(
             r'h = \frac{x_1 + x_2}{2}',
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFFE8E8F0),
+              color: Color(0xFFE8E8F0),
             ),
           ),
           const SizedBox(height: 4),
           Math.tex(
             r'k = \frac{y_1 + y_2}{2}',
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFFE8E8F0),
+              color: Color(0xFFE8E8F0),
             ),
           ),
           const SizedBox(height: 10),

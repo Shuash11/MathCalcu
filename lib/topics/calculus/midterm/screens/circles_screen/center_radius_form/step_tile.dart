@@ -37,9 +37,10 @@ class StepTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final accentColor = _resolveColor(step.color);
 
-    if (step.isFinal)
+    if (step.isFinal) {
       return _FinalBox(
           step: step, accentColor: accentColor, onCopy: _copyToClipboard);
+    }
 
     return IntrinsicHeight(
       child: Row(

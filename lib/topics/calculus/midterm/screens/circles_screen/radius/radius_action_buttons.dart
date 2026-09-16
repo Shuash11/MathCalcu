@@ -33,7 +33,7 @@ class RadiusActionButtons extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF334155),
+                    color: Color(0xFF334155),
                   ),
                 ),
               ),
@@ -50,7 +50,7 @@ class RadiusActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [const Color(0xFF334155), const Color(0xFF334155)],
+                  colors: [Color(0xFF334155), Color(0xFF334155)],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [

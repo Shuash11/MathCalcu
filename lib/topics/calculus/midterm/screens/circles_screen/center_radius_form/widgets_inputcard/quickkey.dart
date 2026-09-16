@@ -81,7 +81,7 @@ class _LabeledQuickKeyFieldState extends State<LabeledQuickKeyField>
           ],
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: const Color(0xFFE8E8F0),
+            color: Color(0xFFE8E8F0),
             fontWeight: FontWeight.w700,
             fontSize: 18,
           ),

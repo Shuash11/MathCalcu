@@ -71,30 +71,30 @@ class AppShell extends StatelessWidget {
                 initialLocation: index == navigationShell.currentIndex,
               );
             },
-            destinations: [
+            destinations: const [
               NavigationDestination(
-                icon: const Icon(Icons.home_outlined),
-                selectedIcon: const Icon(Icons.home_rounded),
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home_rounded),
                 label: 'Home',
               ),
               NavigationDestination(
-                icon: const Icon(Icons.book_outlined),
-                selectedIcon: const Icon(Icons.book_rounded),
+                icon: Icon(Icons.book_outlined),
+                selectedIcon: Icon(Icons.book_rounded),
                 label: 'Topics',
               ),
               NavigationDestination(
-                icon: const Icon(Icons.sticky_note_2_outlined),
-                selectedIcon: const Icon(Icons.sticky_note_2_rounded),
+                icon: Icon(Icons.sticky_note_2_outlined),
+                selectedIcon: Icon(Icons.sticky_note_2_rounded),
                 label: 'Notes',
               ),
               NavigationDestination(
-                icon: const Icon(Icons.calculate_outlined),
-                selectedIcon: const Icon(Icons.calculate_rounded),
+                icon: Icon(Icons.calculate_outlined),
+                selectedIcon: Icon(Icons.calculate_rounded),
                 label: 'Calc',
               ),
               NavigationDestination(
-                icon: const Icon(Icons.settings_outlined),
-                selectedIcon: const Icon(Icons.settings_rounded),
+                icon: Icon(Icons.settings_outlined),
+                selectedIcon: Icon(Icons.settings_rounded),
                 label: 'Settings',
               ),
             ],

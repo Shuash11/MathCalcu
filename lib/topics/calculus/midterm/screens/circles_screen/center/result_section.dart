@@ -40,7 +40,7 @@ class CenterResultSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF94A3B8),
+              color: Color(0xFF94A3B8),
               letterSpacing: 1.5,
             ),
           ),
@@ -52,7 +52,7 @@ class CenterResultSection extends StatelessWidget {
             style: const TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF334155),
+              color: Color(0xFF334155),
             ),
           ),
 
@@ -75,13 +75,13 @@ class CenterResultSection extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF94A3B8),
+                        color: Color(0xFF94A3B8),
                       ),
                     ),
                     if (showKApprox)
                       const Text(
                         '    ',
-                        style: TextStyle(color: const Color(0xFF94A3B8)),
+                        style: TextStyle(color: Color(0xFF94A3B8)),
                       ),
                   ],
                   if (showKApprox)
@@ -90,7 +90,7 @@ class CenterResultSection extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF94A3B8),
+                        color: Color(0xFF94A3B8),
                       ),
                     ),
                 ],

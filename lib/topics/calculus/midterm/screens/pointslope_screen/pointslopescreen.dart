@@ -226,14 +226,14 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                   icon: const Icon(
                                     Icons.receipt_long_rounded,
                                     size: 14,
-                                    color: const Color(0xFF334155),
+                                    color: Color(0xFF334155),
                                   ),
                                   label: const Text(
                                     'Show Steps',
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF334155),
+                                      color: Color(0xFF334155),
                                     ),
                                   ),
                                   style: OutlinedButton.styleFrom(
@@ -315,8 +315,9 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                           ValueListenableBuilder<Map<String, String>?>(
                             valueListenable: _badgesNotifier,
                             builder: (context, badges, _) {
-                              if (badges == null)
+                              if (badges == null) {
                                 return const SizedBox.shrink();
+                              }
                               return PSBadges(
                                 direction: badges['direction']!,
                                 angle: badges['angle']!,

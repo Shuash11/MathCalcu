@@ -11,7 +11,7 @@ import 'distancecard.dart';
 import 'slopecard.dart';
 import 'midpointcard.dart';
 import 'pointslopecard.dart';
-import 'y-interceptcard.dart';
+import 'y_intercept_card.dart';
 import 'circlecard.dart';
 import 'twopointslopecard.dart';
 import 'parallelperpendicularcard.dart';

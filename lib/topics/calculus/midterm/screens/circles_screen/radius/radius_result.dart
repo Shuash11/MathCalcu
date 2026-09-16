@@ -31,7 +31,7 @@ class RadiusResultCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF94A3B8),
+              color: Color(0xFF94A3B8),
               letterSpacing: 1.5,
             ),
           ),
@@ -51,7 +51,7 @@ class RadiusResultCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF334155),
+                  color: Color(0xFF334155),
                 ),
               ),
             ],

@@ -813,7 +813,7 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     child: Row(
                       children: [
                         const Icon(Icons.error_outline_rounded,
-                            color: const Color(0xFFFF6B6B), size: 18),
+                            color: Color(0xFFFF6B6B), size: 18),
                         const SizedBox(width: 14.0),
                         Expanded(
                             child: ResponsiveText(_errorMsg,

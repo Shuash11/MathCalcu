@@ -339,7 +339,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ),
                       Switch.adaptive(
                         value: theme.isDark,
-                        activeColor: const Color(0xFF9CA3AF),
+                        activeThumbColor: const Color(0xFF9CA3AF),
                         onChanged: (_) {
                           theme.toggleTheme();
                           theme.saveTheme();

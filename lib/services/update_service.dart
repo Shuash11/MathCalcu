@@ -8,6 +8,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'update_checksum.dart';
+
 /// Shared update conclusion consumed by the app entry point, the Settings
 /// screen, and their widget tests.
 enum UpdateStatus {
@@ -23,15 +25,38 @@ class UpdateInfo {
   final String releaseUrl;
   final String releaseNotes;
 
+  /// Expected SHA-256 digests published with the release (null when the
+  /// release predates checksum publication). Populated by [checkForUpdate]
+  /// without extra I/O; [downloadAndInstall] re-resolves (fetching a
+  /// `checksums.txt` manifest when needed) and refuses to install when no
+  /// digest can be established.
+  final String? apkSha256;
+  final String? exeSha256;
+
+  /// Manifest URL carrying the digests when no inline hash was published.
+  final String? checksumUrl;
+
   const UpdateInfo({
     required this.status,
     this.installedVersion,
     this.latestVersion = '',
     this.releaseUrl = '',
     this.releaseNotes = '',
+    this.apkSha256,
+    this.exeSha256,
+    this.checksumUrl,
   });
 
   bool get hasUpdate => status == UpdateStatus.updateAvailable;
+
+  /// Digest for [binaryName] (`MathCalcu.apk` / `MathCalcu-Setup.exe`),
+  /// or null when unknown.
+  String? sha256ForBinary(String binaryName) {
+    final lower = binaryName.toLowerCase();
+    if (lower.endsWith('.apk')) return apkSha256;
+    if (lower.endsWith('.exe')) return exeSha256;
+    return null;
+  }
 }
 
 /// Loads the installed package metadata. Injectable for tests.
@@ -42,6 +67,9 @@ typedef ReleaseFetcher = Future<http.Response> Function(
   Uri url,
   Map<String, String> headers,
 );
+
+/// Fetches a checksum manifest. Injectable for tests.
+typedef ChecksumFetcher = Future<http.Response> Function(Uri url);
 
 class UpdateService {
   static const String _owner = 'Shuash11';
@@ -106,6 +134,15 @@ class UpdateService {
       final releaseNotes = data['body'] as String? ?? '';
       final hasUpdate = _compareVersions(latestVersion, installedVersion) > 0;
 
+      final apkResolved = UpdateChecksum.resolveFromReleaseJson(
+        data,
+        UpdateChecksum.androidBinary,
+      );
+      final exeResolved = UpdateChecksum.resolveFromReleaseJson(
+        data,
+        UpdateChecksum.windowsBinary,
+      );
+
       return UpdateInfo(
         status:
             hasUpdate ? UpdateStatus.updateAvailable : UpdateStatus.upToDate,
@@ -113,6 +150,10 @@ class UpdateService {
         latestVersion: latestVersion,
         releaseUrl: releaseUrl,
         releaseNotes: releaseNotes,
+        apkSha256: apkResolved.sha256Hex,
+        exeSha256: exeResolved.sha256Hex,
+        checksumUrl:
+            apkResolved.checksumFileUrl ?? exeResolved.checksumFileUrl,
       );
     } catch (_) {
       return UpdateInfo(
@@ -199,9 +240,10 @@ class UpdateService {
     } catch (_) {}
   }
 
-  /// Validate that downloaded bytes are a real APK (not an HTML error page).
-  /// Returns null if valid, or an error message string.
-  static String? _validateApkBytes(List<int> bytes, int totalBytes) {
+  /// Shared sniffing: reject HTML error pages masquerading as binaries.
+  /// Returns an error message, or null when the head looks binary.
+  static String? _sniffHtmlError(
+      List<int> bytes, int totalBytes, String binaryName) {
     if (totalBytes < 1000) {
       return 'Downloaded file is too small ($totalBytes bytes). Please try again.';
     }
@@ -211,8 +253,17 @@ class UpdateService {
     if (head.contains('<!') ||
         head.contains('<html') ||
         head.contains('Not Found')) {
-      return 'Downloaded an error page instead of APK. Please try again.';
+      return 'Downloaded an error page instead of $binaryName. '
+          'Please try again.';
     }
+    return null;
+  }
+
+  /// Validate that downloaded bytes are a real APK (not an HTML error page).
+  /// Returns null if valid, or an error message string.
+  static String? _validateApkBytes(List<int> bytes, int totalBytes) {
+    final sniffed = _sniffHtmlError(bytes, totalBytes, 'APK');
+    if (sniffed != null) return sniffed;
 
     // APK files start with the ZIP magic number: PK (0x04, 0x03)
     if (bytes.length >= 2 && bytes[0] == 0x50 && bytes[1] == 0x4B) {
@@ -226,18 +277,107 @@ class UpdateService {
     return null;
   }
 
-  /// Download the latest release binary and trigger installation.
+  /// Validate that downloaded bytes are a real Windows installer (not an
+  /// HTML error page). Returns null if valid, or an error message string.
+  static String? _validateExeBytes(List<int> bytes, int totalBytes) {
+    final sniffed = _sniffHtmlError(bytes, totalBytes, 'installer');
+    if (sniffed != null) return sniffed;
+
+    // PE executables start with the MZ magic number (0x4D, 0x5A)
+    if (bytes.length >= 2 && bytes[0] == 0x4D && bytes[1] == 0x5A) {
+      return null; // Valid EXE header
+    }
+
+    debugPrint('UpdateService: EXE header check: first bytes = '
+        '${bytes.take(4).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ')}');
+    return null;
+  }
+
+  /// Resolve the expected SHA-256 for [binaryName] from release metadata,
+  /// fetching a checksum manifest when the release only publishes one.
+  /// Returns null when no digest can be established.
+  static Future<String?> _resolveExpectedSha256({
+    required String binaryName,
+    ReleaseFetcher? releaseFetcher,
+    ChecksumFetcher? checksumFetcher,
+  }) async {
+    try {
+      final fetch =
+          releaseFetcher ?? ((url, headers) => http.get(url, headers: headers));
+      final response = await fetch(Uri.parse(_apiUrl), _headers)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode != 200) return null;
+
+      final data = jsonDecode(response.body);
+      if (data is! Map<String, dynamic>) return null;
+
+      final resolved =
+          UpdateChecksum.resolveFromReleaseJson(data, binaryName);
+      if (resolved.hasDirectHash) return resolved.sha256Hex;
+
+      final manifestUrl = resolved.checksumFileUrl;
+      if (manifestUrl == null) return null;
+      final manifestUri = Uri.tryParse(manifestUrl);
+      if (manifestUri == null ||
+          !manifestUri.isAbsolute ||
+          manifestUri.scheme != 'https') {
+        return null;
+      }
+
+      final manifestFetch =
+          checksumFetcher ?? ((url) => http.get(url));
+      final manifest = await manifestFetch(manifestUri)
+          .timeout(const Duration(seconds: 10));
+      if (manifest.statusCode != 200) return null;
+      return UpdateChecksum.parseChecksumFile(manifest.body, binaryName);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Download the latest release binary, verify its SHA-256 checksum, and
+  /// trigger installation. Refuses to install when no published checksum can
+  /// be established or the digest mismatches (fail closed).
   /// Returns null on success, or an error message string on failure.
+  ///
+  /// [expectedSha256] overrides checksum resolution (tests / callers that
+  /// already ran [checkForUpdate]); [releaseFetcher] and [checksumFetcher]
+  /// inject the metadata and manifest downloads for tests.
   static Future<String?> downloadAndInstall(
-      void Function(double progress)? onProgress) async {
+    void Function(double progress)? onProgress, {
+    String? expectedSha256,
+    ReleaseFetcher? releaseFetcher,
+    ChecksumFetcher? checksumFetcher,
+  }) async {
     try {
       // Clean up any leftover temp files from previous attempts
       await cleanupTempFiles();
 
       final isWin = Platform.isWindows;
-      final binaryName = isWin ? 'MathCalcu-Setup.exe' : 'MathCalcu.apk';
+      final binaryName =
+          isWin ? UpdateChecksum.windowsBinary : UpdateChecksum.androidBinary;
       final url =
           'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
+
+      // Establish integrity expectations BEFORE downloading (fail fast when
+      // the release publishes nothing to verify against).
+      var expected = expectedSha256?.trim().toLowerCase();
+      if (expected != null &&
+          expected.isNotEmpty &&
+          !UpdateChecksum.isSha256Hex(expected)) {
+        return 'Update verification misconfigured: invalid expected checksum.';
+      }
+      expected = (expected == null || expected.isEmpty) ? null : expected;
+      expected ??= await _resolveExpectedSha256(
+        binaryName: binaryName,
+        releaseFetcher: releaseFetcher,
+        checksumFetcher: checksumFetcher,
+      );
+      if (expected == null) {
+        return 'Update cannot be verified: no SHA-256 checksum is published '
+            'for $binaryName. Please download it manually from the releases page.';
+      }
+      final verifiedSha = expected;
 
       final client = http.Client();
       try {
@@ -258,7 +398,8 @@ class UpdateService {
         // Verify we're getting binary content, not HTML
         final contentType = response.headers['content-type'] ?? '';
         if (contentType.contains('text/html')) {
-          return 'Download failed: got HTML instead of APK. Please try again.';
+          return 'Download failed: got HTML instead of $binaryName. '
+              'Please try again.';
         }
 
         final contentLength = response.contentLength ?? 0;
@@ -291,14 +432,26 @@ class UpdateService {
                 return;
               }
 
-              // Validate APK content before writing
-              if (Platform.isAndroid) {
-                final error = _validateApkBytes(bytes, bytes.length);
-                if (error != null) {
-                  completer.complete(error);
-                  client.close();
-                  return;
-                }
+              // Validate binary content before writing
+              final validationError = isWin
+                  ? _validateExeBytes(bytes, bytes.length)
+                  : _validateApkBytes(bytes, bytes.length);
+              if (validationError != null) {
+                completer.complete(validationError);
+                client.close();
+                return;
+              }
+
+              // Integrity gate: never write or launch an unverified payload.
+              final actualSha256 = UpdateChecksum.sha256Hex(bytes);
+              if (!UpdateChecksum.hashesEqual(actualSha256, verifiedSha)) {
+                completer.complete(
+                  'Download verification failed: checksum mismatch for '
+                  '$binaryName. The file may be corrupted or tampered with. '
+                  'Please try again.',
+                );
+                client.close();
+                return;
               }
 
               final dir = await getTemporaryDirectory();

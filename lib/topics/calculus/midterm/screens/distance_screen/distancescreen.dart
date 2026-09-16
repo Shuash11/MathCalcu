@@ -528,7 +528,7 @@ class _DistancescreenState extends State<Distancescreen>
                     const Padding(
                       padding: EdgeInsets.only(top: 22),
                       child: Icon(Icons.arrow_forward_rounded,
-                          color: const Color(0x4D334155), size: 20),
+                          color: Color(0x4D334155), size: 20),
                     ),
                     const SizedBox(width: 12.0),
                     Expanded(
@@ -583,7 +583,7 @@ class _DistancescreenState extends State<Distancescreen>
                             height: 6,
                             decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: const Color(0x4D334155)),
+                                color: Color(0x4D334155)),
                           ),
                           const SizedBox(height: 6),
                           Container(
@@ -591,7 +591,7 @@ class _DistancescreenState extends State<Distancescreen>
                             height: 6,
                             decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: const Color(0x26334155)),
+                                color: Color(0x26334155)),
                           ),
                         ],
                       ),
@@ -686,7 +686,7 @@ class _DistancescreenState extends State<Distancescreen>
                     child: Row(
                       children: [
                         const Icon(Icons.error_outline_rounded,
-                            color: const Color(0xFFFF6B6B), size: 18),
+                            color: Color(0xFFFF6B6B), size: 18),
                         const SizedBox(width: 14.0),
                         Expanded(
                             child: ResponsiveText(_errorMsg,

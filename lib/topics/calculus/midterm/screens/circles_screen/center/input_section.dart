@@ -273,7 +273,7 @@ class _FieldState extends State<_Field> {
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF94A3B8),
+                color: Color(0xFF94A3B8),
               ),
             ),
             if (_isFocused) ...[
@@ -292,7 +292,7 @@ class _FieldState extends State<_Field> {
           textInputAction: widget.textInputAction,
           onEditingComplete: widget.onEditingComplete,
           style: const TextStyle(
-            color: const Color(0xFFE8E8F0),
+            color: Color(0xFFE8E8F0),
             fontSize: 16,
           ),
           decoration: InputDecoration(
@@ -349,7 +349,7 @@ class _ActionButtons extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF334155),
+                    color: Color(0xFF334155),
                   ),
                 ),
               ),
@@ -365,7 +365,7 @@ class _ActionButtons extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [const Color(0xFF334155), const Color(0xFF334155)],
+                  colors: [Color(0xFF334155), Color(0xFF334155)],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [

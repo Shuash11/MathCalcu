@@ -20,10 +20,12 @@ dependencies:
 
   
   # ── Math rendering ───────────────────────────────────────────
-  flutter_math_fork: 
+  # Pinned to a reviewed commit (Cycle 1 Batch C Item 2). Do not float `main`:
+  # re-pin deliberately and update pubspec.lock together.
+  flutter_math_fork:
     git:
       url: https://github.com/simpleclub/flutter_math
-      ref: main
+      ref: 2f270aee06d3ca02ca6d108420921472fd10e5cb
 
   # ── Math computation (per README) ─────────────────────────────
   equations: ^6.0.0             # Equation solving
@@ -43,6 +45,7 @@ dependencies:
   shared_preferences: ^2.5.3
 
   # ── Auto-updater ────────────────────────────────────────────
+  crypto: ^3.0.6
   http: ^1.2.0
   url_launcher: ^6.2.0
   package_info_plus: ^8.0.0

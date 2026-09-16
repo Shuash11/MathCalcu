@@ -83,7 +83,7 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
         child: Text(
           char,
           style: const TextStyle(
-            color: const Color(0xFF334155),
+            color: Color(0xFF334155),
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
@@ -104,7 +104,7 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF94A3B8),
+                color: Color(0xFF94A3B8),
               ),
             ),
             if (_isFocused) ...[
@@ -129,7 +129,7 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
             FilteringTextInputFormatter.allow(RegExp(r'[-0-9./]')),
           ],
           style: const TextStyle(
-            color: const Color(0xFFE8E8F0),
+            color: Color(0xFFE8E8F0),
             fontSize: 16,
           ),
           decoration: InputDecoration(
@@ -146,7 +146,7 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: const Color(0xFF334155),
+                color: Color(0xFF334155),
                 width: 1.5,
               ),
             ),

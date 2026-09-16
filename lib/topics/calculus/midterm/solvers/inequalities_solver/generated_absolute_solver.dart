@@ -13,7 +13,9 @@ class GeneratedAbsoluteSolver {
 
       bool absOnLeft = p.absOnLeft;
       String effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-      final isNarrow = effectiveOp == '<' || effectiveOp == '≠?';
+      final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
+    // Internal non-strict tokens (shared with InequalityCoreSolver):
+    // '≠¥' (>=) and '≠¤' (<=).
 
       if (isNarrow) {
         if (p.k < 0)
@@ -22,7 +24,7 @@ class GeneratedAbsoluteSolver {
         if (p.k == 0 && effectiveOp == '<')
           return const SolveResult(
               answer: 'No solution', points: [], intervalNotation: '∅');
-        if (p.k == 0 && effectiveOp == '≠?') {
+        if (p.k == 0 && effectiveOp == '≠¤') {
           if (p.a == 0)
             return const SolveResult(
                 answer: 'No solution', points: [], intervalNotation: '∅');
@@ -53,7 +55,7 @@ class GeneratedAbsoluteSolver {
               answer: 'All real numbers',
               points: [],
               intervalNotation: '(-∞, ∞)');
-        if (p.k == 0 && effectiveOp == '≠?')
+        if (p.k == 0 && effectiveOp == '≠¥')
           return const SolveResult(
               answer: 'All real numbers',
               points: [],
@@ -109,7 +111,7 @@ class GeneratedAbsoluteSolver {
     final kStr = _fmtLatex(p.k);
     final absOnLeft = p.absOnLeft;
     final effectiveOp = absOnLeft ? p.op : _flipOp(p.op);
-    final isNarrow = effectiveOp == '<' || effectiveOp == '≠?';
+    final isNarrow = effectiveOp == '<' || effectiveOp == '≠¤';
 
     // ---- Edge cases ----
     if (p.a == 0) {
@@ -151,7 +153,7 @@ class GeneratedAbsoluteSolver {
     }
 
     if (p.k == 0 && effectiveOp == '>') {
-      // |ax+b| > 0  =>  ax+b ≠? 0  =>  x ≠? -b/a
+      // |ax+b| > 0  =>  ax+b != 0  =>  x != -b/a
       final root = _fmtLatex(-p.b / p.a);
       steps.add(StepModel(
         stepNumber: n++,
@@ -422,8 +424,8 @@ class GeneratedAbsoluteSolver {
         .replaceAll('−', '-')
         .replaceAll('?', '^2')
         .replaceAll(' ', '')
-        .replaceAll('>=', '≠?')
-        .replaceAll('<=', '≠?');
+        .replaceAll('>=', '≠¥')
+        .replaceAll('<=', '≠¤');
 
     if (!s.contains('|')) return null;
 
@@ -462,8 +464,8 @@ class GeneratedAbsoluteSolver {
   }
 
   static String? _extractOp(String s) {
-    if (s.contains('≠?')) return '≠?';
-    if (s.contains('≠?')) return '≠?';
+    if (s.contains('≠¥')) return '≠¥';
+    if (s.contains('≠¤')) return '≠¤';
     if (s.contains('>')) return '>';
     if (s.contains('<')) return '<';
     return null;
@@ -555,9 +557,9 @@ class GeneratedAbsoluteSolver {
 
   static String _texOp(String op) {
     switch (op) {
-      case '≠?':
+      case '≠¥':
         return '\\geq';
-      case '≠?':
+      case '≠¤':
         return '\\leq';
       case '>':
         return '>';
@@ -574,10 +576,10 @@ class GeneratedAbsoluteSolver {
         return '<';
       case '<':
         return '>';
-      case '≠?':
-        return '≠?';
-      case '≠?':
-        return '≠?';
+      case '≠¥':
+        return '≠¤';
+      case '≠¤':
+        return '≠¥';
       default:
         return op;
     }

@@ -60,7 +60,7 @@ class InputCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFFE8E8F0),
+              color: Color(0xFFE8E8F0),
             ),
           ),
         ),

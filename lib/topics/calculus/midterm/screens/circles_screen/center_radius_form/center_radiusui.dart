@@ -132,7 +132,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
               ),
               child: const Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: const Color(0xFF334155),
+                color: Color(0xFF334155),
                 size: 18,
               ),
             ),
@@ -143,8 +143,8 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [
-                  const Color(0xFF334155),
-                  const Color(0xFF334155),
+                  Color(0xFF334155),
+                  Color(0xFF334155),
                 ],
               ),
               borderRadius: BorderRadius.circular(14),
@@ -164,7 +164,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFFE8E8F0),
+                  color: Color(0xFFE8E8F0),
                 ),
               ),
               ResponsiveText(
@@ -203,8 +203,8 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                   gradient: active
                       ? const LinearGradient(
                           colors: [
-                            const Color(0xFF334155),
-                            const Color(0xFF334155),
+                            Color(0xFF334155),
+                            Color(0xFF334155),
                           ],
                         )
                       : null,

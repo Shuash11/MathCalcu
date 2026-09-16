@@ -51,3 +51,18 @@ key.properties
 # Build logs
 build_log.txt
 build_output.txt
+
+# Cycle 1 Batch C hygiene (Item 5): ad-hoc analyzer dumps, Node/pptx sidecar
+# files, and the OpenCode installer script are local-only and must stay
+# untracked. Signing keystores must live outside the repo (see android
+# release-signing docs); the *.jks / key.properties rules above already cover
+# nested paths, and the entries below guard the repo root explicitly.
+/analysis.txt
+/analyze_out.txt
+/analyze_output.txt
+/tutorial/frames_concat.txt
+/package.json
+/package-lock.json
+/install.sh
+/upload-keystore.jks
+/key.properties

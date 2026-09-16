@@ -136,9 +136,9 @@ class _StepsDrawerState extends State<StepsDrawer> {
                         Clipboard.setData(
                             ClipboardData(text: _buildCopyText()));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Solution copied to clipboard'),
-                            duration: const Duration(seconds: 2),
+                          const SnackBar(
+                            content: Text('Solution copied to clipboard'),
+                            duration: Duration(seconds: 2),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
@@ -152,10 +152,10 @@ class _StepsDrawerState extends State<StepsDrawer> {
                           Clipboard.setData(
                               ClipboardData(text: _buildCopyText()));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content:
-                                  const Text('Solution copied to clipboard'),
-                              duration: const Duration(seconds: 2),
+                                  Text('Solution copied to clipboard'),
+                              duration: Duration(seconds: 2),
                               behavior: SnackBarBehavior.floating,
                             ),
                           );

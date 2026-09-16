@@ -24,5 +24,19 @@ linter:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
+    # ── Cycle 1 Batch C Item 11 (PROPOSAL ONLY — do not enable yet) ──────────
+    # Contingent on frontend Item 7 cleanup landing with `flutter analyze`
+    # at zero warnings. Enabling any of these today would flood the CI
+    # analyzer-diff gate, so they stay commented until the baseline is clean.
+    # Candidate tightening, in rollout order:
+    #   1. `avoid_print` — route diagnostics through debugPrint / a logger.
+    #   2. `prefer_single_quotes` — match the existing single-quote style.
+    #   3. `unnecessary_null_checks`, `unnecessary_non_null_assertion` —
+    #      remove dead null handling once the baseline is warning-free.
+    #   4. `prefer_final_locals`, `prefer_final_in_for_each` — immutability
+    #      where the value never changes.
+    # Rollout: enable one rule, run `flutter analyze`, fix or revert, then
+    # proceed to the next. Never enable the whole set at once.
+
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

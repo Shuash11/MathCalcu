@@ -107,7 +107,7 @@ class SlopeStepItem extends StatelessWidget {
         result = result.replaceRange(
           match.start,
           match.end,
-          r'\frac{' + num + '}{' + den + '}',
+          '\\frac{$num}{$den}',
         );
       }
     }
@@ -142,7 +142,7 @@ class _TimelineRail extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF334155),
+                  color: Color(0xFF334155),
                 ),
               ),
             ),
@@ -198,7 +198,7 @@ class _FinalBox extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
-                color: const Color(0xFF334155),
+                color: Color(0xFF334155),
                 letterSpacing: 1.2,
               ),
             ),
@@ -247,7 +247,7 @@ class _FinalBox extends StatelessWidget {
         result = result.replaceRange(
           match.start,
           match.end,
-          r'\frac{' + num + '}{' + den + '}',
+          '\\frac{$num}{$den}',
         );
       }
     }

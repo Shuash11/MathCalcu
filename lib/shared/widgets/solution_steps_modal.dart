@@ -25,8 +25,8 @@ Future<void> showSolutionStepsModal({
     backgroundColor: Colors.transparent,
     builder: (_) => _SolutionStepsModal(
       title: title,
-      child: child,
       design: design,
+      child: child,
     ),
   );
 }

@@ -95,7 +95,7 @@ class _SlopeInputFieldState extends State<SlopeInputField> {
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
                 ),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: 'e.g. 3',
                   contentPadding:

@@ -81,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  crypto:
+    dependency: "direct main"
+    description:
+      name: crypto
+      sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.7"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -162,7 +170,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
+      ref: "2f270aee06d3ca02ca6d108420921472fd10e5cb"
       resolved-ref: "2f270aee06d3ca02ca6d108420921472fd10e5cb"
       url: "https://github.com/simpleclub/flutter_math"
     source: git

@@ -50,7 +50,7 @@ class CenterStepsSection extends StatelessWidget {
                     line,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: const Color(0xFFE8E8F0),
+                      color: Color(0xFFE8E8F0),
                       height: 1.5,
                       fontFamily: 'monospace',
                     ),

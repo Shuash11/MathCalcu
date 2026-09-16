@@ -21,39 +21,61 @@ A Flutter math solver for calculus and analytic geometry topics, built with offl
 
 ```
 lib/
-├── Finals/                          # Calculus (Derivatives, Limits, Slope)
-│   ├── screens/                     # Per-topic screens
-│   │   ├── derivatives_screen/
-│   │   ├── evaluating_limits_screen/
-│   │   │   ├── by_substitution/
-│   │   │   ├── by_factoring/
-│   │   │   ├── by_conjugate/
-│   │   │   └── by_lcd/
-│   │   ├── limits_infinity_screen/
-│   │   └── slope_using_derivatives_screen/
-│   ├── solvers/                     # Math engines per topic
-│   └── finals_theme.dart
+├── main.dart / app_router.dart        # Entry point + GoRouter navigation
 │
-├── midterm/                         # Analytic geometry
-│   ├── screens/
-│   │   ├── circles_screen/          # Center, radius, general form
-│   │   ├── distance_screen/
-│   │   ├── inequalities_screen/
-│   │   ├── midpoint_screen/
-│   │   ├── pointslope_screen/
-│   │   ├── slope_screen/
-│   │   ├── two_point_slope_screen/
-│   │   └── yintercept_screen/
-│   ├── solvers/
-│   ├── graph/                       # Shared graph widgets
-│   └── theme/
+├── topics/                            # Per-curriculum feature modules
+│   ├── calculus/
+│   │   ├── finals/                    # Calculus (Derivatives, Limits, Slope)
+│   │   │   ├── cards/                 # Topic cards (per-mode step tiles)
+│   │   │   ├── graph/                 # Per-topic graph painters
+│   │   │   ├── screens/               # Per-topic screens (per-mode subfolders)
+│   │   │   │   ├── derivatives_screen/
+│   │   │   │   ├── evaluating_limits_screen/
+│   │   │   │   │   ├── by_substitution/
+│   │   │   │   │   ├── by_factoring/
+│   │   │   │   │   ├── by_conjugate/
+│   │   │   │   │   └── by_lcd/
+│   │   │   │   ├── limits_infinity_screen/
+│   │   │   │   └── slope_using_derivatives_screen/
+│   │   │   ├── solvers/               # Math engines per topic
+│   │   │   ├── theme/                 # Per-topic theme helpers
+│   │   │   ├── widgets/ + widgetsScreens/
+│   │   │   └── finals_theme.dart
+│   │   │
+│   │   └── midterm/                   # Analytic geometry
+│   │       ├── cards/                 # circles, inequalities cards
+│   │       ├── core/                  # Shared midterm logic
+│   │       ├── graph/                 # Shared graph widgets per topic
+│   │       ├── screens/               # Per-topic screens (per-mode subfolders)
+│   │       │   ├── circles_screen/    # center, radius, center_radius_form
+│   │       │   ├── distance_screen/
+│   │       │   ├── inequalities_screen/
+│   │       │   ├── midpoint_screen/
+│   │       │   ├── pointslope_screen/
+│   │       │   ├── slope_screen/
+│   │       │   ├── two_point_slope_screen/
+│   │       │   └── yintercept_screen/
+│   │       └── solvers/               # Math engines per topic
+│   │
+│   ├── algebra/solvers/               # Algebra engines
+│   ├── grade6/                        # Grade 6 screens + solvers
+│   ├── modmat/                        # Modern Math (midterm + theme)
+│   ├── quadratics/solvers/            # Quadratics engines
+│   └── shs/solvers/                   # Senior High School engines
 │
-├── shared/
-│   └── widgets/
-│       └── math_keyboard.dart       # Custom math input keyboard
-│
-├── screens/                         # General screens (about, etc.)
-└── theme/
+├── calculator/                        # Basic calculator (engine + screen)
+├── core/                              # Base classes, registries, shared models
+├── home/                              # Home screen + cards
+├── models/                            # Shared data models
+├── notes/                             # Notes screen
+├── screens/                           # Category picker, settings, about,
+│                                      # developers, topic entry cards
+├── search/                            # Global + unified search
+├── services/                          # History service, update service
+├── shared/widgets/                    # Reusable widgets (math keyboard,
+│                                      # solution steps, responsive helpers)
+├── theme/                             # App design system + theme provider
+└── widgets/                           # App shell, update dialogs, web updater
 ```
 
 ---

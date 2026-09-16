@@ -84,8 +84,7 @@ class SlopeAnswerCard extends StatelessWidget {
   String _toLatexSlope(String slopeStr) {
     if (slopeStr.contains('/')) {
       final parts = slopeStr.split('/');
-      // ignore: prefer_interpolation_to_compose_strings
-      return r'\frac{' + parts[0] + '}{' + parts[1] + '}';
+      return '\\frac{${parts[0]}}{${parts[1]}}';
     }
     return slopeStr;
   }
@@ -129,7 +128,7 @@ class _SlopeDisplay extends StatelessWidget {
   String _toLatexFrac(String slopeStr) {
     if (slopeStr.contains('/')) {
       final parts = slopeStr.split('/');
-      return r'\frac{' + parts[0] + '}{' + parts[1] + '}';
+      return '\\frac{${parts[0]}}{${parts[1]}}';
     }
     return slopeStr;
   }
@@ -325,7 +324,7 @@ class SlopeInfoChip extends StatelessWidget {
   String _toLatexFrac(String slopeStr) {
     if (slopeStr.contains('/')) {
       final parts = slopeStr.split('/');
-      return r'\frac{' + parts[0] + '}{' + parts[1] + '}';
+      return '\\frac{${parts[0]}}{${parts[1]}}';
     }
     return slopeStr;
   }

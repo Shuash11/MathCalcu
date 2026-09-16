@@ -24,7 +24,7 @@ class _DonateSheet extends StatelessWidget {
       barrierColor: Colors.black87,
       builder: (_) => Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: GestureDetector(
           onTap: () => Navigator.of(context).pop(),
           child: Column(
@@ -35,7 +35,7 @@ class _DonateSheet extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Image.asset(
                   'assets/images/qr.jpeg',
                   width: MediaQuery.of(context).size.width * 0.8,
@@ -43,8 +43,8 @@ class _DonateSheet extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              SizedBox(height: 12),
-              Text(
+              const SizedBox(height: 12),
+              const Text(
                 'Tap anywhere to close',
                 style: TextStyle(
                   color: Colors.white70,

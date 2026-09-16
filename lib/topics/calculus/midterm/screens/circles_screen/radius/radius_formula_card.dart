@@ -44,7 +44,7 @@ class RadiusFormulaCard extends StatelessWidget {
             textStyle: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFFE8E8F0),
+              color: Color(0xFFE8E8F0),
             ),
           ),
           const SizedBox(height: 8),

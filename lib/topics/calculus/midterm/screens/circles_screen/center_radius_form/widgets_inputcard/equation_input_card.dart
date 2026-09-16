@@ -127,7 +127,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFFE8E8F0),
+                    color: Color(0xFFE8E8F0),
                   ),
                 ),
               ),
@@ -171,7 +171,7 @@ class _EquationInputCardState extends State<EquationInputCard> {
             controller: widget.ctrl,
             focusNode: _focusNode,
             style: const TextStyle(
-              color: const Color(0xFFE8E8F0),
+              color: Color(0xFFE8E8F0),
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

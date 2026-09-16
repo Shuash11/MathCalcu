@@ -109,7 +109,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
                 color: Colors.red.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.error_outline_rounded,
                 size: 32,
                 color: Colors.red,

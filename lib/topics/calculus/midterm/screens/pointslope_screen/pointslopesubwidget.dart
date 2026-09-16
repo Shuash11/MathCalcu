@@ -27,7 +27,6 @@ class PSCard extends StatelessWidget {
             color: context
                 .watch<ThemeProvider>()
                 .accentColor
-                .withValues(alpha: 0.25)
                 .withValues(alpha: 0.15),
             width: 1.5 * s),
         boxShadow: [
@@ -274,7 +273,7 @@ class PSFormulaBanner extends StatelessWidget {
                               color: context
                                   .watch<ThemeProvider>()
                                   .accentColor
-                                  .withOpacity(0.3),
+                                  .withValues(alpha: 0.3),
                               blurRadius: 3)
                         ])),
                 const TextSpan(text: ' = '),
@@ -290,7 +289,7 @@ class PSFormulaBanner extends StatelessWidget {
                               color: context
                                   .watch<ThemeProvider>()
                                   .accentColor
-                                  .withOpacity(0.3),
+                                  .withValues(alpha: 0.3),
                               blurRadius: 3)
                         ])),
                 const TextSpan(text: '(x - '),
@@ -306,7 +305,7 @@ class PSFormulaBanner extends StatelessWidget {
                               color: context
                                   .watch<ThemeProvider>()
                                   .accentColor
-                                  .withOpacity(0.3),
+                                  .withValues(alpha: 0.3),
                               blurRadius: 3)
                         ])),
                 const TextSpan(text: ')'),
@@ -473,7 +472,6 @@ class PSTextField extends StatelessWidget {
           color: context
               .watch<ThemeProvider>()
               .accentColor
-              .withValues(alpha: 0.2)
               .withValues(alpha: 0.15),
           width: 1.5 * s,
         ),
@@ -524,7 +522,7 @@ class PSDivider extends StatelessWidget {
         context.watch<ThemeProvider>().accentColor,
         context.watch<ThemeProvider>().accentColor,
         Colors.transparent
-      ], stops: [
+      ], stops: const [
         0,
         0.3,
         0.7,
@@ -794,7 +792,7 @@ class SimpleGraphPainter extends CustomPainter {
     }
 
     final gridPaint = Paint()
-      ..color = accentColor.withOpacity(0.1)
+      ..color = accentColor.withValues(alpha: 0.1)
       ..strokeWidth = 0.5 * s;
 
     for (int gx = xMin.ceil(); gx <= xMax.floor(); gx++) {
@@ -816,7 +814,7 @@ class SimpleGraphPainter extends CustomPainter {
     }
 
     final axisPaint = Paint()
-      ..color = accentColor.withOpacity(0.25)
+      ..color = accentColor.withValues(alpha: 0.25)
       ..strokeWidth = 1 * s;
 
     if (yMin <= 0 && yMax >= 0) {
@@ -838,7 +836,7 @@ class SimpleGraphPainter extends CustomPainter {
     }
 
     final glowPaint = Paint()
-      ..color = accentColor.withOpacity(0.6)
+      ..color = accentColor.withValues(alpha: 0.6)
       ..strokeWidth = 4 * s
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3 * s);
 
