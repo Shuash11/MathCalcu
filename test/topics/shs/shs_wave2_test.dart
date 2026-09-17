@@ -116,7 +116,7 @@ void main() {
     });
   });
 
-  group('SHS registry wiring', () {
+  group('SHS registry wiring (Cycle 8: engines + screens + routes)', () {
     test('solver-backed SHS ids are available with /shs routes', () {
       for (final id in [
         'g11-logarithms',
@@ -132,6 +132,8 @@ void main() {
       ]) {
         final topic =
             CurriculumRegistry.allTopics().firstWhere((t) => t.id == id);
+        // P1-2: backend engine (waves 1-3) + frontend screen
+        // (topics/shs/screens) + GoRoute (/shs/*) all landed.
         expect(topic.solverAvailable, isTrue, reason: id);
         expect(topic.route.startsWith('/shs/'), isTrue, reason: id);
       }

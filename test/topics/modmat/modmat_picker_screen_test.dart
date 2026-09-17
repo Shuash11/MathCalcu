@@ -145,7 +145,8 @@ void main() {
     expect(find.text('Advanced'), findsOneWidget);
   });
 
-  testWidgets('activating a result uses its exact registry route',
+  testWidgets(
+      'activating a leaf result is gated (coming-soon, never a dead push)',
       (tester) async {
     await _pumpPicker(tester, router);
     final module = ModmatModuleRegistry.foundationsModules.first;
@@ -158,7 +159,10 @@ void main() {
     await tester.tap(find.byKey(Key('modmat-search-result-${module.route}')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Navigated to ${module.route}'), findsOneWidget);
+    // Cycle 8: leaf routes are unwired — the tap is gated with the
+    // coming-soon SnackBar instead of navigating.
+    expect(find.text('Navigated to ${module.route}'), findsNothing);
+    expect(find.textContaining("isn't built yet"), findsOneWidget);
   });
 
   testWidgets('search results support keyboard activation', (tester) async {
@@ -176,7 +180,9 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
-    expect(find.text('Navigated to ${module.route}'), findsOneWidget);
+    // Cycle 8: keyboard activation is gated the same as taps.
+    expect(find.text('Navigated to ${module.route}'), findsNothing);
+    expect(find.textContaining("isn't built yet"), findsOneWidget);
   });
 
   testWidgets(
