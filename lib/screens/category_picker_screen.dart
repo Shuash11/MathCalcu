@@ -1,6 +1,7 @@
 import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/screens/inequality.dart';
+import 'package:calculus_system/shared/widgets/accessible_back_button.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -242,7 +243,7 @@ class _CategoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF334155);
+    final accent = theme.accentColor;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 48, 28, 16),
@@ -253,25 +254,8 @@ class _CategoryHeader extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Back button
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: theme.card,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        color: theme.textSecondary.withValues(alpha: 0.2)),
-                  ),
-                  child: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 16,
-                    color: theme.textPrimary,
-                  ),
-                ),
-              ),
+              // P1-1: 48dp Material back target with Semantics + tooltip.
+              const AccessibleBackButton(),
               // Accent bar
               Container(
                 width: 36,
@@ -340,73 +324,82 @@ class _ModuleCardState extends State<_ModuleCard> {
     final theme = context.read<ThemeProvider>();
     final accent = theme.accentColor;
 
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) {
-        setState(() => _pressed = false);
-        context.push(widget.module.route);
-      },
-      onTapCancel: () => setState(() => _pressed = false),
-      child: AnimatedScale(
-        scale: _pressed ? 0.97 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        child: Container(
-          decoration: BoxDecoration(
-            color: theme.card,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: accent.withValues(alpha: 0.18)),
-            boxShadow: [
-              BoxShadow(
-                color: accent.withValues(alpha: 0.08),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+    // P1-1: keyboard-focusable card with Semantics label + 48dp arrow hit.
+    return Semantics(
+      label: '${widget.module.label}, ${widget.module.subtitle}',
+      button: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => context.push(widget.module.route),
+          onHighlightChanged: (h) => setState(() => _pressed = h),
+          child: AnimatedScale(
+            scale: _pressed ? 0.97 : 1.0,
+            duration: const Duration(milliseconds: 100),
+            child: Container(
+              decoration: BoxDecoration(
+                color: theme.card,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: accent.withValues(alpha: 0.18)),
+                boxShadow: [
+                  BoxShadow(
+                    color: accent.withValues(alpha: 0.08),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
-            ],
-          ),
-          padding: const EdgeInsets.all(24),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(widget.module.icon, color: accent),
-              ),
-              const SizedBox(width: 18),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      widget.module.label,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: theme.textPrimary,
-                      ),
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.module.subtitle,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: theme.textSecondary,
-                      ),
+                    child: Icon(widget.module.icon, color: accent),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.module.label,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.module.subtitle,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: theme.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: accent.withValues(alpha: 0.6),
+                      size: 16,
+                    ),
+                  ),
+                ],
               ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: accent.withValues(alpha: 0.6),
-                size: 16,
-              ),
-            ],
+            ),
           ),
         ),
       ),

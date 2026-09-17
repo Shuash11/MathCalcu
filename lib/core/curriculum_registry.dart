@@ -10,9 +10,20 @@
 // here (Task 3 / Phase 1 will add GoRouter `/grade6` entries).
 //
 // Search reuses the ModMat pattern:
-//   modmat_module_registry.dart:137 — lowercase contains filter.
+//   modmat_module_registry.dart — lowercase contains filter, all
+//   whitespace-separated tokens must match (AND).
 // Styling: accent defaults to AppDesign.app.accent (no hardcoded
 // hex in this file).
+//
+// ROUTING INVARIANT (Cycle 8 middle-end): solverAvailable == true
+// IFF a GoRouter destination exists for [CurriculumTopic.route].
+// Taps on solverAvailable == false topics show the "Coming in
+// Phase 1" SnackBar (see handleCurriculumTap) — never a push to a
+// missing route. The 10 /shs/* entries are solver-backed AND
+// screen-backed (topics/shs/screens + /shs/* GoRoutes); G7-G10 /
+// G11-limits / G12-derivatives / College-matrix+stats entries stay
+// gated until their screens land. To gate: set solverAvailable to
+// false (taps become inert SnackBars, no router change needed).
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/core/module_registry.dart';
@@ -483,7 +494,7 @@ class CurriculumRegistry {
         'cosine',
         'G11',
         'precalc',
-        'shs'
+        'shs',
       ],
       difficulty: 'standard',
       depedCode: '',
@@ -503,7 +514,7 @@ class CurriculumRegistry {
         'pythagorean',
         'G11',
         'precalc',
-        'shs'
+        'shs',
       ],
       difficulty: 'standard',
       depedCode: '',
@@ -561,7 +572,7 @@ class CurriculumRegistry {
         'minimum',
         'related rates',
         'G12',
-        'shs'
+        'shs',
       ],
       difficulty: 'challenge',
       depedCode: '',
@@ -624,6 +635,38 @@ class CurriculumRegistry {
   static List<CurriculumTopic> byGrade(String gradeLevel) =>
       getByGrade(gradeLevel);
 
+  /// Topic-first filter (E-1/E-3): subjects, not grade labels.
+  ///
+  /// Case-insensitive exact match on [CurriculumTopic.subject].
+  /// 'All'/empty returns [allTopics]. Provided here (read-only query,
+  /// no engine logic) so pickers share one truthful filter; the
+  /// middle-end owns solver wiring and routes.
+  static List<CurriculumTopic> bySubject(String subject) {
+    final normalized = subject.trim().toLowerCase();
+    if (normalized.isEmpty || normalized == 'all') return allTopics();
+    return allTopics()
+        .where((t) => t.subject.toLowerCase() == normalized)
+        .toList();
+  }
+
+  /// Distinct subjects in first-seen order (for filter chips).
+  static List<String> get subjects {
+    final seen = <String>[];
+    for (final t in allTopics()) {
+      if (!seen.contains(t.subject)) seen.add(t.subject);
+    }
+    return seen;
+  }
+
+  /// Distinct G6 subjects (11 topics) for the Grade 6 picker chips.
+  static List<String> get grade6Subjects {
+    final seen = <String>[];
+    for (final t in grade6Topics) {
+      if (!seen.contains(t.subject)) seen.add(t.subject);
+    }
+    return seen;
+  }
+
   /// Find a topic by its future route path. Null when unknown.
   static CurriculumTopic? getByRoute(String route) {
     final normalized = route.trim();
@@ -635,25 +678,39 @@ class CurriculumRegistry {
   }
 
   /// In-memory search over label + subtitle + tags + DepEd code
-  /// (+ subject/grade). Same pattern as ModMat `search()`.
+  /// (+ subject/grade). Same pattern as ModMat `search()`, with
+  /// AND token logic: every whitespace-separated token must match
+  /// somewhere in the topic haystack, so subject chips compose
+  /// with the text query (e.g. 'trig G11' only hits G11 trig).
   static List<CurriculumSearchHit> search(String query) {
-    final normalizedQuery = query.trim().toLowerCase();
-    if (normalizedQuery.isEmpty) return [];
+    final tokens = _tokenize(query);
+    if (tokens.isEmpty) return [];
 
     return [
       for (final topic in allTopics())
-        if (_matches(topic, normalizedQuery))
+        if (_matches(topic, tokens))
           CurriculumSearchHit(gradeLevel: topic.gradeLevel, topic: topic),
     ];
   }
 
-  static bool _matches(CurriculumTopic topic, String normalizedQuery) {
-    return topic.label.toLowerCase().contains(normalizedQuery) ||
-        topic.subtitle.toLowerCase().contains(normalizedQuery) ||
-        topic.subject.toLowerCase().contains(normalizedQuery) ||
-        topic.gradeLevel.toLowerCase().contains(normalizedQuery) ||
-        topic.depedCode.toLowerCase().contains(normalizedQuery) ||
-        topic.tags.any((tag) => tag.toLowerCase().contains(normalizedQuery));
+  /// Split a raw query into lowercase AND tokens.
+  static List<String> _tokenize(String query) => query
+      .trim()
+      .toLowerCase()
+      .split(RegExp(r'\s+'))
+      .where((t) => t.isNotEmpty)
+      .toList();
+
+  static bool _matches(CurriculumTopic topic, List<String> tokens) {
+    final haystack = [
+      topic.label,
+      topic.subtitle,
+      topic.subject,
+      topic.gradeLevel,
+      topic.depedCode,
+      ...topic.tags,
+    ].join(' ').toLowerCase();
+    return tokens.every(haystack.contains);
   }
 
   /// Grade levels offered, in display order.
@@ -679,6 +736,18 @@ class CurriculumRegistry {
 class Grade6ModuleRegistry {
   static List<CurriculumTopic> get modules => CurriculumRegistry.grade6Topics;
 
+  /// Distinct G6 subjects for the picker chips (delegates to the
+  /// central registry so chips and search share one source).
+  static List<String> get subjects => CurriculumRegistry.grade6Subjects;
+
+  /// G6 topics for one subject chip. 'All'/empty returns everything.
+  /// Case-insensitive; unknown subject returns [].
+  static List<CurriculumTopic> bySubject(String subject) {
+    final normalized = subject.trim().toLowerCase();
+    if (normalized.isEmpty || normalized == 'all') return modules;
+    return modules.where((t) => t.subject.toLowerCase() == normalized).toList();
+  }
+
   static List<ModuleEntry> get moduleEntries =>
       modules.map((t) => t.toModuleEntry()).toList();
 
@@ -691,16 +760,27 @@ class Grade6ModuleRegistry {
   }
 
   static List<CurriculumSearchHit> search(String query) {
-    final normalizedQuery = query.trim().toLowerCase();
-    if (normalizedQuery.isEmpty) return [];
+    final tokens = query
+        .trim()
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((t) => t.isNotEmpty)
+        .toList();
+    if (tokens.isEmpty) return [];
+    bool matches(CurriculumTopic topic) {
+      final haystack = [
+        topic.label,
+        topic.subtitle,
+        topic.subject,
+        topic.depedCode,
+        ...topic.tags,
+      ].join(' ').toLowerCase();
+      return tokens.every(haystack.contains);
+    }
+
     return [
       for (final topic in modules)
-        if (topic.label.toLowerCase().contains(normalizedQuery) ||
-            topic.subtitle.toLowerCase().contains(normalizedQuery) ||
-            topic.subject.toLowerCase().contains(normalizedQuery) ||
-            topic.depedCode.toLowerCase().contains(normalizedQuery) ||
-            topic.tags
-                .any((tag) => tag.toLowerCase().contains(normalizedQuery)))
+        if (matches(topic))
           CurriculumSearchHit(gradeLevel: topic.gradeLevel, topic: topic),
     ];
   }

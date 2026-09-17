@@ -1,6 +1,8 @@
 ﻿import 'package:calculus_system/topics/modmat/modmat_picker_screen.dart';
 import 'package:calculus_system/topics/modmat/midterm/modmat_foundations_screen.dart';
 import 'package:calculus_system/topics/modmat/midterm/modmat_advanced_screen.dart';
+import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart';
 import 'topics/calculus/midterm/screens/circles_screen/radius/radiusui.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
@@ -51,6 +53,18 @@ import 'package:calculus_system/topics/grade6/screens/geometry_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/volume_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/pie_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/probability_screen.dart';
+import 'package:calculus_system/topics/shs/shs_picker_screen.dart';
+import 'package:calculus_system/topics/shs/screens/logarithms_screen.dart';
+import 'package:calculus_system/topics/shs/screens/interest_screen.dart';
+import 'package:calculus_system/topics/shs/screens/inverse_functions_screen.dart';
+import 'package:calculus_system/topics/shs/screens/rational_inequality_screen.dart';
+import 'package:calculus_system/topics/shs/screens/trig_equations_screen.dart';
+import 'package:calculus_system/topics/shs/screens/trig_identities_screen.dart';
+import 'package:calculus_system/topics/shs/screens/trig_ratios_screen.dart';
+import 'package:calculus_system/topics/shs/screens/definite_integral_screen.dart';
+import 'package:calculus_system/topics/shs/screens/optimization_screen.dart';
+import 'package:calculus_system/topics/shs/screens/lhopital_screen.dart';
+import 'package:calculus_system/topics/topic_hub_screen.dart';
 import 'package:calculus_system/home/home_screen.dart';
 import 'package:calculus_system/topics/topics_screen.dart';
 import 'package:calculus_system/calculator/calculator_screen.dart';
@@ -73,6 +87,12 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: '/',
+    // Cycle 8 never-dead-end: any push to an unknown location (stale
+    // history entry, deep link, or a route whose screen has not
+    // landed) renders the coming-soon screen instead of the default
+    // GoRouter error page.
+    errorBuilder: (context, state) =>
+        _RouteNotFoundScreen(location: state.uri.toString()),
     routes: [
       // ── Shell with bottom nav (Home / Topics / Notes / Calculator / Settings) ──
       StatefulShellRoute.indexedStack(
@@ -169,6 +189,16 @@ class AppRouter {
                             const ModmatAdvancedScreen(),
                       ),
                     ],
+                  ),
+                  // Cycle 8: SHS picker (thin solver screens below).
+                  GoRoute(
+                    path: 'shs',
+                    builder: (context, state) => const ShsPickerScreen(),
+                  ),
+                  // Cycle 8: topic-first hub (subject cards + filters).
+                  GoRoute(
+                    path: 'hub',
+                    builder: (context, state) => const TopicHubScreen(),
                   ),
                 ],
               ),
@@ -401,6 +431,123 @@ class AppRouter {
         pageBuilder: (context, state) =>
             _fadeRoute(state.pageKey, const DevelopersScreen()),
       ),
+
+      // ── SHS (Cycle 8: paths match CurriculumRegistry /shs/*) ────────
+      GoRoute(
+        path: '/shs',
+        name: 'shs',
+        builder: (context, state) => const ShsPickerScreen(),
+        routes: [
+          GoRoute(
+            path: 'trig-ratios',
+            builder: (context, state) => const ShsTrigRatiosScreen(),
+          ),
+          GoRoute(
+            path: 'logarithms',
+            builder: (context, state) => const ShsLogarithmsScreen(),
+          ),
+          GoRoute(
+            path: 'interest',
+            builder: (context, state) => const ShsInterestScreen(),
+          ),
+          GoRoute(
+            path: 'inverse-functions',
+            builder: (context, state) => const ShsInverseFunctionsScreen(),
+          ),
+          GoRoute(
+            path: 'rational-inequality',
+            builder: (context, state) => const ShsRationalInequalityScreen(),
+          ),
+          GoRoute(
+            path: 'trig-equations',
+            builder: (context, state) => const ShsTrigEquationsScreen(),
+          ),
+          GoRoute(
+            path: 'trig-identities',
+            builder: (context, state) => const ShsTrigIdentitiesScreen(),
+          ),
+          GoRoute(
+            path: 'definite-integral',
+            builder: (context, state) => const ShsDefiniteIntegralScreen(),
+          ),
+          GoRoute(
+            path: 'optimization',
+            builder: (context, state) => const ShsOptimizationScreen(),
+          ),
+          GoRoute(
+            path: 'lhopital',
+            builder: (context, state) => const ShsLHopitalScreen(),
+          ),
+        ],
+      ),
     ],
   );
+}
+
+/// Fallback for unknown locations (see [AppRouter] errorBuilder).
+///
+/// Friendly coming-soon screen with a way back — never a dead-end.
+/// Styling via ThemeProvider only.
+class _RouteNotFoundScreen extends StatelessWidget {
+  final String location;
+
+  const _RouteNotFoundScreen({required this.location});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    final accent = theme.accentColor;
+    return Scaffold(
+      backgroundColor: theme.surface,
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Icon(
+                    Icons.construction_rounded,
+                    color: accent,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Topic coming soon',
+                  style: TextStyle(
+                    color: theme.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '“$location” isn\'t available in this version yet.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: theme.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  onPressed: () => context.go('/topics'),
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  label: const Text('Back to Topics'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

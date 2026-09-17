@@ -181,23 +181,27 @@ class _DeveloperTileState extends State<DeveloperTile> {
                           ),
                         ),
 
-                        // Expand icon
+                        // Expand icon (P1-1: 48dp touch target)
                         AnimatedRotation(
                           turns: _expanded ? 0.5 : 0,
                           duration: const Duration(milliseconds: 300),
-                          child: Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              color: _expanded
-                                  ? color.withValues(alpha: 0.15)
-                                  : theme.card,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 20,
-                              color: _expanded ? color : theme.textSecondary,
+                          child: Semantics(
+                            label: _expanded ? 'Collapse' : 'Expand',
+                            button: true,
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: _expanded
+                                    ? color.withValues(alpha: 0.15)
+                                    : theme.card,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 20,
+                                color: _expanded ? color : theme.textSecondary,
+                              ),
                             ),
                           ),
                         ),

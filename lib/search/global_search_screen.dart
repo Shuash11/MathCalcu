@@ -10,14 +10,16 @@
 // Clear-search action. Stub taps show "Coming in Phase 1".
 // ─────────────────────────────────────────────────────────────
 
+import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/search/unified_search.dart';
 import 'package:calculus_system/services/history_service.dart';
+import 'package:calculus_system/shared/widgets/accessible_back_button.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:calculus_system/shared/widgets/recent_history.dart';
+import 'package:calculus_system/shared/widgets/subject_filter_chips.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class GlobalSearchScreen extends StatefulWidget {
@@ -32,6 +34,7 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
   final _searchFocusNode = FocusNode();
   final _history = const HistoryService();
   String _query = '';
+  String _subject = 'All';
 
   @override
   void dispose() {
@@ -67,8 +70,12 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
     final accent = theme.accentColor;
     final isFocused = _searchFocusNode.hasFocus;
     final trimmed = _query.trim();
-    final hits =
+    final rawHits =
         trimmed.isEmpty ? const <UnifiedHit>[] : UnifiedSearch.search(trimmed);
+    // Topic-first: subject chip ANDs with the query.
+    final hits = _subject == 'All'
+        ? rawHits
+        : rawHits.where((h) => h.curriculumTopic?.subject == _subject).toList();
 
     return Scaffold(
       backgroundColor: theme.surface,
@@ -80,25 +87,7 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
               padding: const EdgeInsets.fromLTRB(28, 48, 28, 16),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: theme.card,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: theme.textSecondary.withValues(alpha: 0.2),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 16,
-                        color: theme.textPrimary,
-                      ),
-                    ),
-                  ),
+                  const AccessibleBackButton(),
                   const SizedBox(width: 12),
                   Text(
                     'Search',
@@ -154,6 +143,14 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
                     contentPadding: const EdgeInsets.symmetric(vertical: 15),
                   ),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: SubjectFilterChips(
+                subjects: CurriculumRegistry.subjects.take(12).toList(),
+                selected: _subject,
+                onSelected: (s) => setState(() => _subject = s),
               ),
             ),
             Expanded(

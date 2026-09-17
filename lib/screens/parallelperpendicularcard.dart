@@ -257,8 +257,8 @@ class _ParallelPerpendicularModuleCardState
                                         6.0 * s, 0.0, 0.0)
                                     : Matrix4.identity(),
                                 child: Container(
-                                  width: 40 * s,
-                                  height: 40 * s,
+                                  width: 48 * s,
+                                  height: 48 * s,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(

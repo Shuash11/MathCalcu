@@ -1,5 +1,8 @@
 import 'package:calculus_system/core/module_registry.dart';
+import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/accessible_back_button.dart';
+import 'package:calculus_system/shared/widgets/catalogue_disclosure.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -81,6 +84,7 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
   }
 
   Widget _buildHeader(ThemeProvider theme) {
+    final accent = theme.modmatAccent;
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(28, 48, 28, 0),
@@ -90,36 +94,12 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Semantics(
-                  label: 'Back',
-                  button: true,
-                  onTap: () => context.pop(),
-                  excludeSemantics: true,
-                  child: GestureDetector(
-                    excludeFromSemantics: true,
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: theme.card,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: theme.textSecondary.withValues(alpha: 0.2)),
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 16,
-                        color: theme.textPrimary,
-                      ),
-                    ),
-                  ),
-                ),
+                const AccessibleBackButton(),
                 Container(
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: ModmatTheme.tealDark,
+                    color: accent,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -133,11 +113,11 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: ModmatTheme.tealDark,
+                    color: accent,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: ModmatTheme.tealDark.withValues(alpha: 0.35),
+                        color: accent.withValues(alpha: 0.35),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -165,13 +145,26 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(left: 60),
-              child: Text(
-                '${_modules.length} topics available',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: theme.textSecondary,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    // P0-2: truthful catalogue count from the registry.
+                    '${_modules.length} topics · catalogue',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: theme.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SectionPill(label: 'Foundations', accent: accent),
+                ],
               ),
+            ),
+            const SizedBox(height: 12),
+            const CatalogueDisclosure(
+              solverBacked: 0,
+              catalogueOnly: 8,
+              catalogueName: 'Foundations',
             ),
             const SizedBox(height: 20),
           ],
@@ -181,16 +174,17 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
   }
 
   Widget _buildBanner(ThemeProvider theme) {
+    final accent = theme.modmatAccent;
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ModmatTheme.tealDark.withValues(alpha: 0.08),
+            color: accent.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: ModmatTheme.tealDark.withValues(alpha: 0.25),
+              color: accent.withValues(alpha: 0.25),
               width: 1.5,
             ),
           ),
@@ -199,7 +193,7 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: ModmatTheme.tealDark,
+                  color: accent,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -237,7 +231,7 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: ModmatTheme.tealDark,
+                  color: accent,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -272,7 +266,17 @@ class _ModmatFoundationsScreenState extends State<ModmatFoundationsScreen>
                   position: _slideAnims[index],
                   child: _FoundationsModuleCard(
                     module: module,
-                    onTap: () => context.push(module.route),
+                    // Cycle 8: leaf routes are unwired until their
+                    // screens land — gate instead of dead-pushing.
+                    onTap: () {
+                      if (!ModmatModuleRegistry.isRouteAvailable(
+                        module.route,
+                      )) {
+                        showTopicComingSoon(context, module.label);
+                        return;
+                      }
+                      context.push(module.route);
+                    },
                   ),
                 ),
               ),
@@ -315,127 +319,145 @@ class _FoundationsModuleCardState extends State<_FoundationsModuleCard> {
         return MouseRegion(
           onEnter: (_) => setState(() => _hovered = true),
           onExit: (_) => setState(() => _hovered = false),
-          child: GestureDetector(
-            onTapDown: (_) => setState(() => _pressed = true),
-            onTapUp: (_) {
-              setState(() => _pressed = false);
-              widget.onTap();
-            },
-            onTapCancel: () => setState(() => _pressed = false),
-            child: AnimatedScale(
-              scale: _pressed ? 0.97 : 1.0,
-              duration: const Duration(milliseconds: 120),
-              curve: Curves.easeOut,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 260),
-                curve: Curves.easeOutCubic,
-                decoration:
-                    ModmatTheme.cardDecoration(context, hovered: _hovered),
-                child: Padding(
-                  padding: EdgeInsets.all(22 * s),
-                  child: Row(
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 220),
-                        width: 56 * s,
-                        height: 56 * s,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              ModmatTheme.primary
-                                  .withValues(alpha: _hovered ? 0.22 : 0.13),
-                              ModmatTheme.secondary
-                                  .withValues(alpha: _hovered ? 0.10 : 0.05),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(16 * s),
-                          border: Border.all(
-                            color: _hovered
-                                ? ModmatTheme.primary.withValues(alpha: 0.55)
-                                : ModmatTheme.primary.withValues(alpha: 0.25),
-                            width: _hovered ? 1.5 * s : 1 * s,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: ModmatTheme.primary
-                                  .withValues(alpha: _hovered ? 0.28 : 0.12),
-                              blurRadius: _hovered ? 14 * s : 6 * s,
-                              offset: Offset(0, 3 * s),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          widget.module.icon,
-                          color: _hovered
-                              ? theme.modmatAccent
-                              : theme.modmatAccent.withValues(alpha: 0.85),
-                          size: 26 * s,
-                        ),
-                      ),
-                      SizedBox(width: 18 * s),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AnimatedDefaultTextStyle(
-                              duration: const Duration(milliseconds: 180),
-                              style: TextStyle(
-                                fontSize: 18 * s,
-                                fontWeight: FontWeight.w700,
-                                color: _hovered
-                                    ? theme.modmatAccent
-                                    : theme.textPrimary,
-                                letterSpacing: -0.3 * s,
-                              ),
-                              child: Text(widget.module.label),
-                            ),
-                            SizedBox(height: 4 * s),
-                            AnimatedDefaultTextStyle(
-                              duration: const Duration(milliseconds: 180),
-                              style: TextStyle(
-                                fontSize: 13 * s,
-                                color: _hovered
-                                    ? theme.modmatAccent
-                                    : theme.textSecondary,
-                                height: 1.4,
-                              ),
-                              child: Text(widget.module.subtitle),
-                            ),
-                          ],
-                        ),
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        transform: _hovered
-                            ? Matrix4.translationValues(3.0 * s, 0.0, 0.0)
-                            : Matrix4.identity(),
-                        child: Container(
-                          width: 34 * s,
-                          height: 34 * s,
+          child: Semantics(
+            label: '${widget.module.label}, Foundations section',
+            button: true,
+            child: GestureDetector(
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) {
+                setState(() => _pressed = false);
+                widget.onTap();
+              },
+              onTapCancel: () => setState(() => _pressed = false),
+              child: AnimatedScale(
+                scale: _pressed ? 0.97 : 1.0,
+                duration: const Duration(milliseconds: 120),
+                curve: Curves.easeOut,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 260),
+                  curve: Curves.easeOutCubic,
+                  decoration:
+                      ModmatTheme.cardDecoration(context, hovered: _hovered),
+                  child: Padding(
+                    padding: EdgeInsets.all(22 * s),
+                    child: Row(
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          width: 56 * s,
+                          height: 56 * s,
                           decoration: BoxDecoration(
-                            color: _hovered
-                                ? ModmatTheme.primary.withValues(alpha: 0.15)
-                                : Colors.transparent,
-                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                ModmatTheme.primary
+                                    .withValues(alpha: _hovered ? 0.22 : 0.13),
+                                ModmatTheme.secondary
+                                    .withValues(alpha: _hovered ? 0.10 : 0.05),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(16 * s),
                             border: Border.all(
                               color: _hovered
-                                  ? ModmatTheme.primary.withValues(alpha: 0.45)
-                                  : ModmatTheme.primary.withValues(alpha: 0.2),
-                              width: 1.5 * s,
+                                  ? ModmatTheme.primary.withValues(alpha: 0.55)
+                                  : ModmatTheme.primary.withValues(alpha: 0.25),
+                              width: _hovered ? 1.5 * s : 1 * s,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: ModmatTheme.primary
+                                    .withValues(alpha: _hovered ? 0.28 : 0.12),
+                                blurRadius: _hovered ? 14 * s : 6 * s,
+                                offset: Offset(0, 3 * s),
+                              ),
+                            ],
                           ),
                           child: Icon(
-                            Icons.arrow_forward_ios_rounded,
+                            widget.module.icon,
                             color: _hovered
                                 ? theme.modmatAccent
                                 : theme.modmatAccent.withValues(alpha: 0.85),
-                            size: 15 * s,
+                            size: 26 * s,
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 18 * s),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 180),
+                                style: TextStyle(
+                                  fontSize: 18 * s,
+                                  fontWeight: FontWeight.w700,
+                                  color: _hovered
+                                      ? theme.modmatAccent
+                                      : theme.textPrimary,
+                                  letterSpacing: -0.3 * s,
+                                ),
+                                child: Text(widget.module.label),
+                              ),
+                              SizedBox(height: 4 * s),
+                              AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 180),
+                                style: TextStyle(
+                                  fontSize: 13 * s,
+                                  color: _hovered
+                                      ? theme.modmatAccent
+                                      : theme.textSecondary,
+                                  height: 1.4,
+                                ),
+                                child: Text(widget.module.subtitle),
+                              ),
+                              // P0-2 topic-first: section pill per card.
+                              SizedBox(height: 8 * s),
+                              SectionPill(
+                                label: 'Foundations',
+                                accent: theme.modmatAccent,
+                              ),
+                            ],
+                          ),
+                        ),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          transform: _hovered
+                              ? Matrix4.translationValues(3.0 * s, 0.0, 0.0)
+                              : Matrix4.identity(),
+                          child: Semantics(
+                            label: 'Open ${widget.module.label}',
+                            button: true,
+                            child: Container(
+                              width: 48 * s,
+                              height: 48 * s,
+                              decoration: BoxDecoration(
+                                color: _hovered
+                                    ? ModmatTheme.primary
+                                        .withValues(alpha: 0.15)
+                                    : Colors.transparent,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: _hovered
+                                      ? ModmatTheme.primary
+                                          .withValues(alpha: 0.45)
+                                      : ModmatTheme.primary
+                                          .withValues(alpha: 0.2),
+                                  width: 1.5 * s,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: _hovered
+                                    ? theme.modmatAccent
+                                    : theme.modmatAccent
+                                        .withValues(alpha: 0.85),
+                                size: 15 * s,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

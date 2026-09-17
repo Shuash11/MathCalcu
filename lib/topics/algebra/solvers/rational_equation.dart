@@ -43,6 +43,19 @@ class RationalEquation extends BaseEquation {
     return true;
   }
 
+  /// Plain number or simple fraction (e.g. '3/4') for the RHS.
+  double? _numberOrFraction(String s) {
+    final direct = double.tryParse(s);
+    if (direct != null) return direct;
+    final parts = s.split('/');
+    if (parts.length == 2) {
+      final num = double.tryParse(parts[0]);
+      final den = double.tryParse(parts[1]);
+      if (num != null && den != null && den != 0) return num / den;
+    }
+    return null;
+  }
+
   /// Tries supported patterns; returns (x, excluded, steps-text).
   List<dynamic>? _solve() {
     var t = _n().replaceAll('X', 'x');
@@ -54,7 +67,7 @@ class RationalEquation extends BaseEquation {
             r'^([+-]?\d+(?:\.\d+)?)/x([+-]\d+(?:\.\d+)?/)?([+-]?\d+(?:\.\d+)?)?$')
         .firstMatch(sides[0]);
     // General approach for A: split LHS into fraction + rest.
-    final rSide = double.tryParse(sides[1]);
+    final rSide = _numberOrFraction(sides[1]);
     if (rSide != null) {
       final left = sides[0];
       final fm = RegExp(r'([+-]?\d+(?:\.\d+)?)/x').firstMatch(left);

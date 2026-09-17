@@ -10,6 +10,21 @@ class ModmatSearchHit {
 }
 
 class ModmatModuleRegistry {
+  /// Leaf topic routes have no GoRouter destination yet — only the
+  /// picker ('/topics/modmat') and the two section screens
+  /// ('/topics/modmat/foundations', '/topics/modmat/advanced') are
+  /// wired. Cycle 8 middle-end invariant: taps on leaf routes must
+  /// be gated via [isRouteAvailable] (coming-soon SnackBar) until
+  /// the leaf screens land — never a push to a missing route.
+  static bool isLeafRoute(String route) {
+    final normalized = route.trim();
+    return normalized.startsWith('/modmat/foundations/') ||
+        normalized.startsWith('/modmat/advanced/');
+  }
+
+  /// True when [route] resolves to a registered GoRouter destination.
+  static bool isRouteAvailable(String route) => !isLeafRoute(route.trim());
+
   static final List<ModuleEntry> foundationsModules = [
     const ModuleEntry(
       label: 'Propositional Logic',
@@ -135,23 +150,28 @@ class ModmatModuleRegistry {
   }
 
   static List<ModmatSearchHit> search(String query) {
-    final normalizedQuery = query.trim().toLowerCase();
-    if (normalizedQuery.isEmpty) {
+    final tokens = query
+        .trim()
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((t) => t.isNotEmpty)
+        .toList();
+    if (tokens.isEmpty) {
       return [];
     }
 
     return [
       for (final module in foundationsModules)
-        if (_matches(module, normalizedQuery))
+        if (_matches(module, tokens))
           ModmatSearchHit(section: 'Foundations', module: module),
       for (final module in advancedModules)
-        if (_matches(module, normalizedQuery))
+        if (_matches(module, tokens))
           ModmatSearchHit(section: 'Advanced', module: module),
     ];
   }
 
-  static bool _matches(ModuleEntry module, String normalizedQuery) {
-    return module.label.toLowerCase().contains(normalizedQuery) ||
-        module.subtitle.toLowerCase().contains(normalizedQuery);
+  static bool _matches(ModuleEntry module, List<String> tokens) {
+    final haystack = '${module.label} ${module.subtitle}'.toLowerCase();
+    return tokens.every(haystack.contains);
   }
 }

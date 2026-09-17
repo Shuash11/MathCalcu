@@ -56,13 +56,21 @@ class UnifiedHit {
   /// curriculum hit is a stub iff its topic reports
   /// solverAvailable == false. Non-curriculum hits fall back to
   /// the route guard for unwired future paths.
+  ///
+  /// Cycle 8: ModMat leaf routes (/modmat/foundations/*,
+  /// /modmat/advanced/*) have no GoRouter destination yet — only
+  /// the picker + section screens are wired — so they are stubs
+  /// too, as is any /shs/* hit without a curriculum topic.
   bool get isStub {
     final topic = curriculumTopic;
     if (topic != null) return !topic.solverAvailable;
     // Non-curriculum hit: guard unwired future paths only.
-    if (route.startsWith('/grade') || route.startsWith('/college')) {
+    if (route.startsWith('/grade') ||
+        route.startsWith('/college') ||
+        route.startsWith('/shs')) {
       return true;
     }
+    if (ModmatModuleRegistry.isLeafRoute(route)) return true;
     return false;
   }
 }

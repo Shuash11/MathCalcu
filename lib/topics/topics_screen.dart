@@ -8,6 +8,7 @@ import 'package:calculus_system/shared/widgets/recent_history.dart';
 import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/core/curriculum_registry.dart';
+import 'package:calculus_system/search/unified_search.dart';
 import 'package:provider/provider.dart';
 
 class TopicsScreen extends StatefulWidget {
@@ -57,26 +58,70 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final theme = context.watch<ThemeProvider>();
     final width = MediaQuery.of(context).size.width;
 
+    // P1-1: phone / tablet / desktop breakpoints; 320px reflows to 2 cols.
     int crossAxisCount;
     if (width < 600) {
       crossAxisCount = 2;
-    } else {
+    } else if (width < 900) {
       crossAxisCount = 3;
+    } else {
+      crossAxisCount = 4;
     }
 
     final q = _query.trim().toLowerCase();
-    final showCalculus =
-        q.isEmpty || 'calculus'.contains(q) || 'midterm finals'.contains(q);
-    final showModmat = q.isEmpty ||
-        'modern math'.contains(q) ||
-        'modmat foundations advanced'.contains(q);
-    final showGrade6 = q.isEmpty ||
-        'grade 6 arithmetic g6 fractions decimals percent ratio gemdas algebra integers geometry volume pie probability'
-            .contains(q);
+    // Cycle 8: hub visibility is registry-driven (one UnifiedSearch
+    // fan-out) instead of hardcoded topic-word lists. A hub card
+    // shows when the query is blank, matches the hub name, or hits
+    // that hub's section in any registry.
+    final unifiedHits =
+        q.isEmpty ? const <UnifiedHit>[] : UnifiedSearch.search(_query);
+    bool showHub(String hubName, bool Function(UnifiedHit) inSection) {
+      if (q.isEmpty) return true;
+      if (hubName.contains(q)) return true;
+      return unifiedHits.any(inSection);
+    }
+
+    final showCalculus = showHub(
+      'calculus midterm finals',
+      (h) => h.source == 'Midterm' || h.source == 'Finals',
+    );
+    final showModmat = showHub(
+      'modern math modmat foundations advanced',
+      (h) => h.source == 'Modern Math',
+    );
+    final showGrade6 = showHub(
+      'grade 6 g6',
+      (h) => h.source == 'G6',
+    );
+    // Cycle 8: topic-hub card. Shows on blank queries or name
+    // matches (it lists the whole catalogue via bySubject).
+    final showHubCard = q.isEmpty || 'topic hub all subjects'.contains(q);
+    // E-3 topic-first: subject visibility via CurriculumRegistry.bySubject
+    // (no grade-label magic strings). Each subject card shows when the
+    // query is blank, matches its name, or has registry entries.
+    bool showSubject(String subject) {
+      if (q.isEmpty) return true;
+      if (subject.toLowerCase().contains(q)) return true;
+      return CurriculumRegistry.bySubject(subject).isNotEmpty &&
+          CurriculumRegistry.search(q).any(
+              (h) => h.topic.subject.toLowerCase() == subject.toLowerCase());
+    }
+
+    final showShs = showHub(
+      'shs senior high genmath precalculus basic calculus',
+      (h) =>
+          h.route.startsWith('/shs') ||
+          h.curriculumTopic?.route.startsWith('/shs') == true,
+    );
     final curriculumHits = q.isEmpty
         ? const <CurriculumSearchHit>[]
         : CurriculumRegistry.search(q);
-    final hasLocalHits = showCalculus || showModmat || showGrade6;
+    final hasLocalHits = showCalculus ||
+        showModmat ||
+        showGrade6 ||
+        showShs ||
+        showHubCard ||
+        q.isNotEmpty && curriculumHits.isNotEmpty;
 
     return Scaffold(
       backgroundColor: theme.surface,
@@ -174,8 +219,93 @@ class _TopicsScreenState extends State<TopicsScreen> {
                                   accent: theme.accentColor,
                                   onTap: () => context.push('/grade6'),
                                 ),
+                              if (showShs)
+                                HomeCard(
+                                  icon: Icons.school_rounded,
+                                  label: 'Senior High',
+                                  accent: theme.modmatAccent,
+                                  onTap: () => context.push('/topics/shs'),
+                                ),
+                              if (showHubCard)
+                                HomeCard(
+                                  icon: Icons.dashboard_rounded,
+                                  label: 'Topic Hub',
+                                  accent: theme.accentColor,
+                                  onTap: () => context.push('/topics/hub'),
+                                ),
                             ],
                           ),
+                        // E-3 topic-first hub: browse by subject, not grade.
+                        if (q.isEmpty ||
+                            showSubject('Fractions') ||
+                            showSubject('Algebra') ||
+                            showSubject('Geometry') ||
+                            showSubject('Derivatives') ||
+                            showSubject('Data & Graphs') ||
+                            showSubject('Trigonometry')) ...[
+                          const SizedBox(height: 20),
+                          Text(
+                            'Browse by topic',
+                            style: TextStyle(
+                              color: theme.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          GridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 1.0,
+                            children: [
+                              if (q.isEmpty || showSubject('Fractions'))
+                                HomeCard(
+                                  icon: Icons.pie_chart_outline_rounded,
+                                  label: 'Arithmetic',
+                                  accent: theme.accentColor,
+                                  onTap: () => context.push('/grade6'),
+                                ),
+                              if (q.isEmpty || showSubject('Simple Algebra'))
+                                HomeCard(
+                                  icon: Icons.functions_rounded,
+                                  label: 'Algebra',
+                                  accent: theme.accentColor,
+                                  onTap: () => context.push('/grade6'),
+                                ),
+                              if (q.isEmpty || showSubject('Geometry'))
+                                HomeCard(
+                                  icon: Icons.crop_square_rounded,
+                                  label: 'Geometry',
+                                  accent: theme.accentColor,
+                                  onTap: () => context.push('/grade6'),
+                                ),
+                              if (q.isEmpty || showSubject('Derivatives'))
+                                HomeCard(
+                                  icon: Icons.show_chart_rounded,
+                                  label: 'Calculus',
+                                  accent: theme.accentColor,
+                                  onTap: () => context.push('/topics/calculus'),
+                                ),
+                              if (q.isEmpty || showSubject('Data & Graphs'))
+                                HomeCard(
+                                  icon: Icons.bar_chart_rounded,
+                                  label: 'Data',
+                                  accent: theme.accentColor,
+                                  onTap: () => context.push('/grade6'),
+                                ),
+                              if (q.isEmpty || showSubject('Trigonometry'))
+                                HomeCard(
+                                  icon: Icons.change_history_rounded,
+                                  label: 'Trig & SHS',
+                                  accent: theme.modmatAccent,
+                                  onTap: () => context.push('/topics/shs'),
+                                ),
+                            ],
+                          ),
+                        ],
                         if (curriculumHits.isNotEmpty) ...[
                           const SizedBox(height: 20),
                           Text(

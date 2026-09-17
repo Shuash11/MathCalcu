@@ -1,5 +1,7 @@
 import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/shared/widgets/accessible_back_button.dart';
+import 'package:calculus_system/shared/widgets/catalogue_disclosure.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/topics/modmat/modmat_module_registry.dart';
 import 'package:calculus_system/topics/modmat/modmat_theme.dart';
@@ -89,7 +91,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   }
 
   Widget _buildHeader(ThemeProvider theme) {
-    const accent = Color(0xFF0F766E);
+    final accent = theme.modmatAccent;
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -100,31 +102,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Semantics(
-                  label: 'Back',
-                  button: true,
-                  onTap: () => context.pop(),
-                  excludeSemantics: true,
-                  child: GestureDetector(
-                    excludeFromSemantics: true,
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: theme.card,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: theme.textSecondary.withValues(alpha: 0.2)),
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 16,
-                        color: theme.textPrimary,
-                      ),
-                    ),
-                  ),
-                ),
+                const AccessibleBackButton(),
                 Container(
                   width: 36,
                   height: 4,
@@ -193,7 +171,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   }
 
   Widget _buildBanner(ThemeProvider theme) {
-    const accent = Color(0xFF0F766E);
+    final accent = theme.modmatAccent;
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -227,7 +205,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'MODMAT',
                       style: TextStyle(
                         fontSize: 11,
@@ -272,7 +250,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   }
 
   Widget _buildSearch(ThemeProvider theme) {
-    const accent = Color(0xFF0F766E);
+    final accent = theme.modmatAccent;
     final isFocused = _searchFocusNode.hasFocus;
 
     return SliverToBoxAdapter(
@@ -412,7 +390,17 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _ModmatSearchResultCard(
                     hit: hit,
-                    onTap: () => context.push(hit.module.route),
+                    // Cycle 8: leaf routes are unwired until their
+                    // screens land — gate instead of dead-pushing.
+                    onTap: () {
+                      if (!ModmatModuleRegistry.isRouteAvailable(
+                        hit.module.route,
+                      )) {
+                        showTopicComingSoon(context, hit.module.label);
+                        return;
+                      }
+                      context.push(hit.module.route);
+                    },
                   ),
                 );
               },
@@ -436,50 +424,70 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
       return _buildSearchResults(theme);
     }
 
+    // P0-2 contract: truthful catalogue counts (registry truth).
+    final foundationsCount = ModmatModuleRegistry.foundationsModules.length;
+    final advancedCount = ModmatModuleRegistry.advancedModules.length;
+    final accent = theme.modmatAccent;
     final sections = [
-      const _Section(
+      _Section(
         icon: Icons.auto_awesome_rounded,
         label: 'Foundations',
-        subtitle: 'Logic, Sets, Proofs, Number Theory',
-        color: Color(0xFF0F766E),
+        subtitle:
+            '$foundationsCount topics · Logic, Sets, Proofs, Number Theory',
+        color: accent,
       ),
-      const _Section(
+      _Section(
         icon: Icons.architecture_rounded,
         label: 'Advanced',
-        subtitle: 'Algebra, Analysis, Topology, Geometry',
-        color: Color(0xFF0F766E),
+        subtitle:
+            '$advancedCount topics · Algebra, Analysis, Topology, Geometry',
+        color: accent,
       ),
     ];
 
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final section = sections[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: FadeTransition(
-                opacity: _fadeAnims[index],
-                child: SlideTransition(
-                  position: _slideAnims[index],
-                  child: _ModmatSectionCard(
-                    section: section,
-                    onTap: () {
-                      if (section.label == 'Foundations') {
-                        context.push('/topics/modmat/foundations');
-                      } else {
-                        context.push('/topics/modmat/advanced');
-                      }
-                    },
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final section = sections[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: FadeTransition(
+                    opacity: _fadeAnims[index],
+                    child: SlideTransition(
+                      position: _slideAnims[index],
+                      child: _ModmatSectionCard(
+                        section: section,
+                        onTap: () {
+                          if (section.label == 'Foundations') {
+                            context.push('/topics/modmat/foundations');
+                          } else {
+                            context.push('/topics/modmat/advanced');
+                          }
+                        },
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
-          childCount: sections.length,
+                );
+              },
+              childCount: sections.length,
+            ),
+          ),
         ),
-      ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+            child: CatalogueDisclosure(
+              solverBacked: 0,
+              catalogueOnly: foundationsCount + advancedCount,
+              catalogueName: 'Modern Math',
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -615,10 +623,14 @@ class _ModmatSearchResultCardState extends State<_ModmatSearchResultCard> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: accent.withValues(alpha: 0.65),
-                    size: 16,
+                  SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: accent.withValues(alpha: 0.65),
+                      size: 16,
+                    ),
                   ),
                 ],
               ),
@@ -649,147 +661,152 @@ class _ModmatSectionCardState extends State<_ModmatSectionCard> {
     final accent = widget.section.color;
     final theme = context.watch<ThemeProvider>();
 
+    // P0-2: explicit Open action (48dp) with destination label.
+    final openLabel = 'Open ${widget.section.label}';
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) {
-          setState(() => _pressed = false);
-          widget.onTap();
-        },
-        onTapCancel: () => setState(() => _pressed = false),
-        child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1.0,
-          duration: const Duration(milliseconds: 120),
-          curve: Curves.easeOut,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeOutCubic,
-            decoration: BoxDecoration(
-              color: theme.card,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: _hovered
-                    ? accent.withValues(alpha: 0.45)
-                    : accent.withValues(alpha: 0.18),
-                width: _hovered ? 1.5 : 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: _hovered
-                      ? accent.withValues(alpha: 0.22)
-                      : accent.withValues(alpha: 0.07),
-                  blurRadius: _hovered ? 32 : 20,
-                  offset: const Offset(0, 8),
-                  spreadRadius: _hovered ? 2 : 0,
+      child: Semantics(
+        label: '${widget.section.label}, ${widget.section.subtitle}',
+        button: true,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: widget.onTap,
+            onHighlightChanged: (h) => setState(() => _pressed = h),
+            child: AnimatedScale(
+              scale: _pressed ? 0.97 : 1.0,
+              duration: const Duration(milliseconds: 120),
+              curve: Curves.easeOut,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutCubic,
+                decoration: BoxDecoration(
+                  color: theme.card,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: _hovered
+                        ? accent.withValues(alpha: 0.45)
+                        : accent.withValues(alpha: 0.18),
+                    width: _hovered ? 1.5 : 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _hovered
+                          ? accent.withValues(alpha: 0.22)
+                          : accent.withValues(alpha: 0.07),
+                      blurRadius: _hovered ? 32 : 20,
+                      offset: const Offset(0, 8),
+                      spreadRadius: _hovered ? 2 : 0,
+                    ),
+                    BoxShadow(
+                      color: theme.shadowColor,
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                      spreadRadius: -4,
+                    ),
+                  ],
                 ),
-                BoxShadow(
-                  color: theme.shadowColor,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  spreadRadius: -4,
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(22),
-              child: Row(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          accent.withValues(alpha: _hovered ? 0.22 : 0.13),
-                          accent.withValues(alpha: _hovered ? 0.10 : 0.05),
+                child: Padding(
+                  padding: const EdgeInsets.all(22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 220),
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  accent.withValues(
+                                      alpha: _hovered ? 0.22 : 0.13),
+                                  accent.withValues(
+                                      alpha: _hovered ? 0.10 : 0.05),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: _hovered
+                                    ? accent.withValues(alpha: 0.55)
+                                    : accent.withValues(alpha: 0.25),
+                                width: _hovered ? 1.5 : 1,
+                              ),
+                            ),
+                            child: Icon(
+                              widget.section.icon,
+                              color: _hovered
+                                  ? accent
+                                  : accent.withValues(alpha: 0.85),
+                              size: 26,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.section.label,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color:
+                                        _hovered ? accent : theme.textPrimary,
+                                    letterSpacing: -0.3,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  widget.section.subtitle,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: theme.textSecondary,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: _hovered
-                            ? accent.withValues(alpha: 0.55)
-                            : accent.withValues(alpha: 0.25),
-                        width: _hovered ? 1.5 : 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              accent.withValues(alpha: _hovered ? 0.28 : 0.12),
-                          blurRadius: _hovered ? 14 : 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      widget.section.icon,
-                      color: _hovered ? accent : accent.withValues(alpha: 0.85),
-                      size: 26,
-                    ),
-                  ),
-                  const SizedBox(width: 18),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 180),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: _hovered ? accent : theme.textPrimary,
-                            letterSpacing: -0.3,
+                      const SizedBox(height: 16),
+                      Semantics(
+                        label: openLabel,
+                        button: true,
+                        child: Tooltip(
+                          message: openLabel,
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: OutlinedButton.icon(
+                              onPressed: widget.onTap,
+                              icon: const Icon(
+                                Icons.arrow_forward_rounded,
+                                size: 18,
+                              ),
+                              label: Text(openLabel),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: accent,
+                                side: BorderSide(
+                                  color: accent.withValues(alpha: 0.45),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
                           ),
-                          child: Text(widget.section.label),
-                        ),
-                        const SizedBox(height: 4),
-                        AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 180),
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: _hovered
-                                ? accent.withValues(alpha: 0.65)
-                                : theme.textSecondary,
-                            height: 1.4,
-                          ),
-                          child: Text(widget.section.subtitle),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    transform: _hovered
-                        ? Matrix4.translationValues(3.0, 0.0, 0.0)
-                        : Matrix4.identity(),
-                    child: Container(
-                      width: 34,
-                      height: 34,
-                      decoration: BoxDecoration(
-                        color: _hovered
-                            ? accent.withValues(alpha: 0.15)
-                            : Colors.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: _hovered
-                              ? accent.withValues(alpha: 0.45)
-                              : accent.withValues(alpha: 0.2),
-                          width: 1.5,
                         ),
                       ),
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color:
-                            _hovered ? accent : accent.withValues(alpha: 0.5),
-                        size: 15,
-                      ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

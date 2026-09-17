@@ -1,18 +1,17 @@
 // ─────────────────────────────────────────────────────────────
-// GRADE 6 PICKER — Phase-1 UI entry listing the 11 G6 topics.
+// SHS PICKER — Cycle 8 UI entry listing the 10 SHS solver topics.
 //
-// Source: Grade6ModuleRegistry (11 solver-backed entries).
-// Search reuses the registry filter; zero hits show
-// NoTopicsEmptyState with a Clear action. Rows reuse
-// CurriculumResultCard (grade badge included). Taps push the
-// topic route via handleCurriculumTap (solverAvailable=true).
-//
-// Styling via ThemeProvider only. Offline.
+// Pattern: Grade6PickerScreen (search + recent + CurriculumResultCard).
+// Source: CurriculumRegistry routes starting with '/shs' (10 thin
+// solver screens reuse Grade6SolverConfig — no duplicated layout).
+// Topic-first: subject chips AND with the text query. Styling via
+// ThemeProvider only. Offline. Route (wired by middle-end): /topics/shs.
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/services/history_service.dart';
 import 'package:calculus_system/shared/widgets/accessible_back_button.dart';
+import 'package:calculus_system/shared/widgets/catalogue_disclosure.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:calculus_system/shared/widgets/recent_history.dart';
@@ -21,14 +20,19 @@ import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Grade6PickerScreen extends StatefulWidget {
-  const Grade6PickerScreen({super.key});
+/// SHS topics = registry entries routed under '/shs'.
+List<CurriculumTopic> shsTopics() => CurriculumRegistry.allTopics()
+    .where((t) => t.route.startsWith('/shs'))
+    .toList();
+
+class ShsPickerScreen extends StatefulWidget {
+  const ShsPickerScreen({super.key});
 
   @override
-  State<Grade6PickerScreen> createState() => _Grade6PickerScreenState();
+  State<ShsPickerScreen> createState() => _ShsPickerScreenState();
 }
 
-class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
+class _ShsPickerScreenState extends State<ShsPickerScreen> {
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
   final _history = const HistoryService();
@@ -66,21 +70,26 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeProvider>();
-    final accent = theme.accentColor;
+    final accent = theme.modmatAccent;
     final q = _query.trim();
+    final all = shsTopics();
+    final subjects = <String>[];
+    for (final t in all) {
+      if (!subjects.contains(t.subject)) subjects.add(t.subject);
+    }
 
-    // E-1 topic-first: subject chip ANDs with the text query.
-    final List<CurriculumTopic> base = _subject == 'All'
-        ? Grade6ModuleRegistry.modules
-        : Grade6ModuleRegistry.modules
-            .where((t) => t.subject == _subject)
-            .toList();
-    final List<CurriculumTopic> topics = q.isEmpty
-        ? base
-        : Grade6ModuleRegistry.search(q)
-            .map((h) => h.topic)
-            .where((t) => _subject == 'All' || t.subject == _subject)
-            .toList();
+    bool matches(CurriculumTopic t) {
+      if (_subject != 'All' && t.subject != _subject) return false;
+      if (q.isEmpty) return true;
+      final nq = q.toLowerCase();
+      return t.label.toLowerCase().contains(nq) ||
+          t.subtitle.toLowerCase().contains(nq) ||
+          t.subject.toLowerCase().contains(nq) ||
+          t.tags.any((tag) => tag.toLowerCase().contains(nq));
+    }
+
+    final topics = all.where(matches).toList();
+    final solverBacked = all.where((t) => t.solverAvailable).length;
 
     return Scaffold(
       backgroundColor: theme.surface,
@@ -107,7 +116,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            '${Grade6ModuleRegistry.modules.length} topics',
+                            '${all.length} topics',
                             style: TextStyle(
                               color: accent,
                               fontSize: 11,
@@ -133,7 +142,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                             ),
                           ),
                           child: Icon(
-                            Icons.calculate_rounded,
+                            Icons.school_rounded,
                             color: accent,
                             size: 26,
                           ),
@@ -141,7 +150,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Grade 6',
+                            'Senior High',
                             style: TextStyle(
                               fontSize: 42,
                               fontWeight: FontWeight.w800,
@@ -157,12 +166,18 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                     Padding(
                       padding: const EdgeInsets.only(left: 60),
                       child: Text(
-                        '${Grade6ModuleRegistry.modules.length} topics · DepEd-aligned',
+                        '${all.length} topics · GenMath to Basic Calculus',
                         style: TextStyle(
                           fontSize: 15,
                           color: theme.textSecondary,
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    CatalogueDisclosure(
+                      solverBacked: solverBacked,
+                      catalogueOnly: all.length - solverBacked,
+                      catalogueName: 'SHS',
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -193,8 +208,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                     cursorColor: accent,
                     textInputAction: TextInputAction.search,
                     decoration: InputDecoration(
-                      hintText:
-                          'Search Grade 6 topics, e.g. ratio, pie, fraction',
+                      hintText: 'Search SHS topics, e.g. log, interest, trig',
                       hintStyle: TextStyle(color: theme.textSecondary),
                       prefixIcon: Icon(
                         Icons.search_rounded,
@@ -223,7 +237,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                 child: SubjectFilterChips(
-                  subjects: CurriculumRegistry.grade6Subjects,
+                  subjects: subjects,
                   selected: _subject,
                   onSelected: (s) => setState(() => _subject = s),
                 ),
@@ -236,7 +250,7 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                   child: NoTopicsEmptyState(onClear: _clearSearch),
                 ),
               ),
-            if (topics.isNotEmpty && q.isEmpty)
+            if (topics.isNotEmpty && q.isEmpty && _subject == 'All')
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
@@ -249,29 +263,6 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
                         onPick: _pickRecent,
                         onClear: () async {
                           await _history.clearRecentSearches();
-                          if (mounted) setState(() {});
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            if (topics.isNotEmpty && q.isEmpty)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                  child: FutureBuilder<List<SolvedHistoryEntry>>(
-                    future: _history.getRecentSolved(),
-                    builder: (context, snapshot) {
-                      final entries =
-                          snapshot.data ?? const <SolvedHistoryEntry>[];
-                      final g6 = entries
-                          .where((e) => e.route.startsWith('/grade6'))
-                          .toList();
-                      return RecentlySolvedSection(
-                        entries: g6,
-                        onClear: () async {
-                          await _history.clearRecentSolved();
                           if (mounted) setState(() {});
                         },
                       );

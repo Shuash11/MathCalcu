@@ -8,9 +8,9 @@
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/services/history_service.dart';
+import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 /// Horizontal wrap of recent search chips with a Clear action.
@@ -97,6 +97,10 @@ class RecentSearchesSection extends StatelessWidget {
 
 /// "Recently opened" solver list (label + timestamp, taps push
 /// the stored route). Hidden entirely when [entries] is empty.
+///
+/// Cycle 8: stored routes are re-validated before pushing — a route
+/// whose screen has not landed (or was re-gated) shows the
+/// coming-soon SnackBar instead of a dead link.
 class RecentlySolvedSection extends StatelessWidget {
   final List<SolvedHistoryEntry> entries;
   final VoidCallback onClear;
@@ -140,7 +144,7 @@ class RecentlySolvedSection extends StatelessWidget {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => context.push(entry.route),
+              onTap: () => pushHistoryRoute(context, entry),
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.symmetric(

@@ -15,9 +15,12 @@ class HomeScreen extends StatelessWidget {
     final theme = context.watch<ThemeProvider>();
     final width = MediaQuery.of(context).size.width;
 
+    // P1-1: phone / tablet / desktop breakpoints (600 cap kept).
     int crossAxisCount;
     if (width < 600) {
       crossAxisCount = 2;
+    } else if (width < 900) {
+      crossAxisCount = 3;
     } else {
       crossAxisCount = 3;
     }

@@ -300,13 +300,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF9CA3AF).withValues(alpha: 0.1),
+                          color: theme.textSecondary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           theme.isDark ? Icons.dark_mode : Icons.light_mode,
                           size: 20,
-                          color: const Color(0xFF9CA3AF),
+                          color: theme.textSecondary,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -339,7 +339,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ),
                       Switch.adaptive(
                         value: theme.isDark,
-                        activeThumbColor: const Color(0xFF9CA3AF),
+                        activeThumbColor: theme.textSecondary,
                         onChanged: (_) {
                           theme.toggleTheme();
                           theme.saveTheme();
@@ -581,10 +581,10 @@ class _SettingsRow extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFF9CA3AF).withValues(alpha: 0.1),
+              color: theme.textSecondary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: const Color(0xFF9CA3AF)),
+            child: Icon(icon, size: 20, color: theme.textSecondary),
           ),
           const SizedBox(width: 16),
           Expanded(
