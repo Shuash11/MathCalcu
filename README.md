@@ -204,12 +204,25 @@ The app uses `flutter_math_fork` for all math rendering. Expressions from solver
 
 ```yaml
 dependencies:
-  flutter_math_fork: ^0.7.2     # LaTeX rendering
-  equations: ^6.0.0             # Equation solving
-  math_expressions: ^2.6.0      # Expression parsing and differentiation
-  fn_express: ^1.0.0            # Symbolic derivatives
-  provider: ^6.1.1              # State management
-  shared_preferences: ^2.2.2    # Local storage
+  cupertino_icons: ^1.0.8          # iOS-style icons
+  go_router: ^13.0.0               # Routing
+  fl_chart: ^0.68.0                # Graphing
+  flutter_math_fork:               # LaTeX rendering (pinned to reviewed commit 2f270ae, see pubspec.yaml)
+    git:
+      url: https://github.com/simpleclub/flutter_math
+      ref: 2f270aee06d3ca02ca6d108420921472fd10e5cb
+  equations: ^6.0.0                # Equation solving
+  math_expressions: ^2.6.0         # Expression parsing and differentiation
+  fn_express: ^1.0.0               # Symbolic derivatives
+  provider: ^6.1.0                 # State management
+  equatable: ^2.0.5                # Value equality
+  visibility_detector: ^0.4.0+2    # Animation optimization
+  shared_preferences: ^2.5.3       # Local storage
+  crypto: ^3.0.6                   # Auto-updater checksum
+  http: ^1.2.0                     # Auto-updater download
+  url_launcher: ^6.2.0             # Open release page
+  package_info_plus: ^8.0.0        # Installed version query
+  path_provider: ^2.1.0            # Download directory
 ```
 
 ---
