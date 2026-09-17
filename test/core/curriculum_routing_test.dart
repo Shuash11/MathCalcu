@@ -143,8 +143,15 @@ void main() {
     test('every solverAvailable==true topic has a wired route', () {
       for (final topic in CurriculumRegistry.allTopics()) {
         if (topic.solverAvailable) {
+          // Cycle 9: wired families are /grade6/*, /shs/*,
+          // /grade9/* + /grade10/* (quadratics thin screens) and
+          // /topics/calculus/finals/* (G11-limits + G12-derivatives
+          // reuse the existing finals screens).
           final wired = topic.route.startsWith('/grade6/') ||
-              topic.route.startsWith('/shs/');
+              topic.route.startsWith('/shs/') ||
+              topic.route.startsWith('/grade9/') ||
+              topic.route.startsWith('/grade10/') ||
+              topic.route.startsWith('/topics/calculus/');
           expect(wired, isTrue, reason: '${topic.id} -> ${topic.route}');
         }
       }
@@ -159,16 +166,38 @@ void main() {
   });
 
   group('ModmatModuleRegistry route availability', () {
-    test('leaf routes are unavailable, sections are available', () {
+    test('all 14 leaves are wired (screens + GoRoutes landed)', () {
+      // Cycle 9 F1+F2: M1–M6 wave 1 + M7–M14 wave 2.
+      const wired = [
+        '/modmat/foundations/propositional_logic',
+        '/modmat/foundations/predicate_logic',
+        '/modmat/foundations/set_theory',
+        '/modmat/foundations/relations_functions',
+        '/modmat/foundations/proof_techniques',
+        '/modmat/foundations/number_systems',
+        '/modmat/foundations/combinatorics_basics',
+        '/modmat/foundations/graph_theory_basics',
+        '/modmat/advanced/advanced_graph_theory',
+        '/modmat/advanced/algebraic_structures',
+        '/modmat/advanced/real_analysis',
+        '/modmat/advanced/linear_algebra',
+        '/modmat/advanced/number_theory',
+        '/modmat/advanced/topology_basics',
+      ];
       for (final m in [
         ...ModmatModuleRegistry.foundationsModules,
         ...ModmatModuleRegistry.advancedModules,
       ]) {
         expect(ModmatModuleRegistry.isLeafRoute(m.route), isTrue,
             reason: m.route);
-        expect(ModmatModuleRegistry.isRouteAvailable(m.route), isFalse,
+        expect(ModmatModuleRegistry.isRouteAvailable(m.route),
+            wired.contains(m.route),
             reason: m.route);
       }
+      expect(
+        ModmatModuleRegistry.wiredLeafRoutes,
+        unorderedEquals(wired),
+      );
       expect(
         ModmatModuleRegistry.isRouteAvailable('/topics/modmat'),
         isTrue,
@@ -182,15 +211,51 @@ void main() {
         isTrue,
       );
     });
+
+    test('Cycle 9 F1+F3 topics are solver-backed with wired routes', () {
+      const ids = [
+        'g9-quadratic-formula',
+        'g9-radical-equations',
+        'g9-variation',
+        'g10-sequences',
+        'g10-polynomial-division',
+        'g11-limits-intro',
+        'g12-derivatives',
+      ];
+      for (final id in ids) {
+        final topic =
+            CurriculumRegistry.allTopics().firstWhere((t) => t.id == id);
+        expect(topic.solverAvailable, isTrue, reason: id);
+      }
+      expect(
+        CurriculumRegistry.allTopics()
+            .firstWhere((t) => t.id == 'g11-limits-intro')
+            .route,
+        '/topics/calculus/finals/limits',
+      );
+      expect(
+        CurriculumRegistry.allTopics()
+            .firstWhere((t) => t.id == 'g12-derivatives')
+            .route,
+        '/topics/calculus/finals/derivatives',
+      );
+    });
   });
 
   group('UnifiedHit.isStub', () {
-    test('modmat leaves and future paths are stubs', () {
-      final modmatHits = UnifiedSearch.search('propositional');
-      expect(modmatHits, isNotEmpty);
-      for (final hit in modmatHits
+    test('wired modmat leaves and future paths classify correctly', () {
+      // Cycle 9: all 14 M1–M14 leaves are solver-backed, not stubs.
+      final wiredHits = UnifiedSearch.search('propositional');
+      expect(wiredHits, isNotEmpty);
+      for (final hit in wiredHits
           .where((h) => h.route.startsWith('/modmat/foundations/'))) {
-        expect(hit.isStub, isTrue, reason: hit.route);
+        expect(hit.isStub, isFalse, reason: hit.route);
+      }
+      final wave2Hits = UnifiedSearch.search('predicate');
+      expect(wave2Hits, isNotEmpty);
+      for (final hit in wave2Hits
+          .where((h) => h.route.startsWith('/modmat/foundations/'))) {
+        expect(hit.isStub, isFalse, reason: hit.route);
       }
       // Gated SHS curriculum hits are stubs too.
       final gated = CurriculumRegistry.allTopics().firstWhere(
@@ -256,6 +321,50 @@ void main() {
         expect(find.text('Topic coming soon'), findsNothing, reason: entry.key);
         expect(tester.takeException(), isNull);
       }
+    });
+
+    testWidgets('Cycle 9: modmat leaves + grade9/10 routes resolve',
+        (tester) async {
+      await pumpRouter(tester);
+      const routesToTitles = {
+        '/modmat/foundations/propositional_logic': 'Propositional Logic',
+        '/modmat/foundations/predicate_logic': 'Predicate Logic',
+        '/modmat/foundations/set_theory': 'Set Theory',
+        '/modmat/foundations/relations_functions': 'Relations & Functions',
+        '/modmat/foundations/proof_techniques': 'Proof Techniques',
+        '/modmat/foundations/number_systems': 'Number Systems',
+        '/modmat/foundations/combinatorics_basics': 'Combinatorics',
+        '/modmat/foundations/graph_theory_basics': 'Graph Theory Basics',
+        '/modmat/advanced/advanced_graph_theory': 'Advanced Graph Theory',
+        '/modmat/advanced/algebraic_structures': 'Algebraic Structures',
+        '/modmat/advanced/real_analysis': 'Real Analysis',
+        '/modmat/advanced/linear_algebra': 'Linear Algebra',
+        '/modmat/advanced/number_theory': 'Number Theory',
+        '/modmat/advanced/topology_basics': 'Topology Basics',
+        '/grade9/quadratic-formula': 'Quadratic Formula',
+        '/grade9/radical-equations': 'Radical Equations',
+        '/grade9/variation': 'Direct & Inverse Variation',
+        '/grade10/sequences': 'Arithmetic Sequences',
+        '/grade10/polynomial-division': 'Polynomial Division',
+      };
+      for (final entry in routesToTitles.entries) {
+        AppRouter.router.go(entry.key);
+        await tester.pumpAndSettle();
+        expect(find.textContaining(entry.value), findsWidgets,
+            reason: entry.key);
+        expect(find.text('Topic coming soon'), findsNothing, reason: entry.key);
+        expect(tester.takeException(), isNull);
+      }
+      // F3 repoints land on the existing finals screens.
+      AppRouter.router.go('/topics/calculus/finals/limits');
+      await tester.pumpAndSettle();
+      expect(find.text('Topic coming soon'), findsNothing);
+      expect(tester.takeException(), isNull);
+
+      AppRouter.router.go('/topics/calculus/finals/derivatives');
+      await tester.pumpAndSettle();
+      expect(find.text('Topic coming soon'), findsNothing);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('/topics/shs and /topics/hub pickers resolve', (tester) async {

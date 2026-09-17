@@ -6,10 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ModmatSolverRegistry wiring', () {
-    test('6 specs, unique ids, byId round-trip', () {
-      expect(ModmatSolverRegistry.specs, hasLength(6));
+    test('14 specs, unique ids, byId round-trip', () {
+      expect(ModmatSolverRegistry.specs, hasLength(14));
       final ids = ModmatSolverRegistry.specs.map((s) => s.id).toList();
-      expect(ids.toSet(), hasLength(6));
+      expect(ids.toSet(), hasLength(14));
       for (final s in ModmatSolverRegistry.specs) {
         expect(ModmatSolverRegistry.byId(s.id), isNotNull);
       }

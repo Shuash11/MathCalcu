@@ -98,14 +98,18 @@ void main() {
       (tester) async {
     await _pumpPicker(tester, router);
 
-    expect(find.text('Foundations'), findsOneWidget);
-    expect(find.text('Advanced'), findsOneWidget);
+    expect(find.text('Open Foundations'), findsOneWidget);
+    // F6 chips sliver pushes the second card below the first paint:
+    // scroll so the lazy SliverList builds it.
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
+    await tester.pump();
+    expect(find.text('Open Advanced'), findsOneWidget);
 
     await tester.enterText(find.byKey(const Key('modmat-search-field')), '   ');
     await tester.pump();
 
-    expect(find.text('Foundations'), findsOneWidget);
-    expect(find.text('Advanced'), findsOneWidget);
+    expect(find.text('Open Foundations'), findsOneWidget);
+    expect(find.text('Open Advanced'), findsOneWidget);
   });
 
   testWidgets(
@@ -120,8 +124,15 @@ void main() {
     await tester.pump();
 
     expect(find.text('Linear Algebra'), findsOneWidget);
-    expect(find.text('Advanced'), findsOneWidget);
-    expect(find.text('Foundations'), findsNothing);
+    expect(
+      find.byKey(
+        const Key('modmat-search-result-/modmat/advanced/linear_algebra'),
+      ),
+      findsOneWidget,
+    );
+    // No Foundations-section hit for this query.
+    expect(find.text('Set Theory'), findsNothing);
+    expect(find.text('Graph Theory Basics'), findsNothing);
   });
 
   testWidgets('shows an intentional no-results state and clears the query',
@@ -141,14 +152,36 @@ void main() {
     await tester.tap(find.byKey(const Key('modmat-search-clear')));
     await tester.pump();
 
-    expect(find.text('Foundations'), findsOneWidget);
-    expect(find.text('Advanced'), findsOneWidget);
+    expect(find.text('Open Foundations'), findsOneWidget);
+    // Same lazy-build scroll as above for the second card.
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
+    await tester.pump();
+    expect(find.text('Open Advanced'), findsOneWidget);
   });
 
-  testWidgets(
-      'activating a leaf result is gated (coming-soon, never a dead push)',
+  testWidgets('activating a wave-2 leaf result navigates (no gate)',
       (tester) async {
     await _pumpPicker(tester, router);
+    // Predicate Logic is wired (Cycle 9 F1+F2) — pushes through.
+    final module = ModmatModuleRegistry.foundationsModules[1];
+
+    await tester.enterText(
+      find.byKey(const Key('modmat-search-field')),
+      module.label,
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(Key('modmat-search-result-${module.route}')));
+    await tester.pumpAndSettle();
+
+    // Cycle 9: all 14 leaves are wired — the tap navigates.
+    expect(find.text('Navigated to ${module.route}'), findsOneWidget);
+    expect(find.textContaining("isn't built yet"), findsNothing);
+  });
+
+  testWidgets('activating a wired leaf result navigates (no gate)',
+      (tester) async {
+    await _pumpPicker(tester, router);
+    // Propositional Logic is wired (Cycle 9 F1) — pushes through.
     final module = ModmatModuleRegistry.foundationsModules.first;
 
     await tester.enterText(
@@ -159,30 +192,48 @@ void main() {
     await tester.tap(find.byKey(Key('modmat-search-result-${module.route}')));
     await tester.pumpAndSettle();
 
-    // Cycle 8: leaf routes are unwired — the tap is gated with the
-    // coming-soon SnackBar instead of navigating.
-    expect(find.text('Navigated to ${module.route}'), findsNothing);
-    expect(find.textContaining("isn't built yet"), findsOneWidget);
+    expect(find.text('Navigated to ${module.route}'), findsOneWidget);
+    expect(find.textContaining("isn't built yet"), findsNothing);
+  });
+
+  testWidgets('unknown leaf-like routes stay gated at registry level',
+      (tester) async {
+    // No widget push can land here: the allowlist is explicit.
+    expect(
+      ModmatModuleRegistry.isRouteAvailable('/modmat/foundations/nope'),
+      isFalse,
+    );
+    expect(
+      ModmatModuleRegistry.isRouteAvailable(
+        '/modmat/foundations/propositional_logic',
+      ),
+      isTrue,
+    );
   });
 
   testWidgets('search results support keyboard activation', (tester) async {
     await _pumpPicker(tester, router);
-    final module = ModmatModuleRegistry.foundationsModules.first;
+    final module = ModmatModuleRegistry.foundationsModules[1];
 
     await tester.enterText(
       find.byKey(const Key('modmat-search-field')),
       module.label,
     );
     await tester.pump();
+    // Focus order: field → clear button → 3 subject chips → result
+    // card (F6 chips are focusable). Five tabs reach the card.
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
 
-    // Cycle 8: keyboard activation is gated the same as taps.
-    expect(find.text('Navigated to ${module.route}'), findsNothing);
-    expect(find.textContaining("isn't built yet"), findsOneWidget);
+    // Cycle 9: keyboard activation navigates the same as taps.
+    expect(find.text('Navigated to ${module.route}'), findsOneWidget);
+    expect(find.textContaining("isn't built yet"), findsNothing);
   });
 
   testWidgets(
@@ -201,6 +252,51 @@ void main() {
         expect(tester.takeException(), isNull);
       }
     }
+  });
+
+  testWidgets('F6: subject filter chips are mounted (All + sections)',
+      (tester) async {
+    await _pumpPicker(tester, router);
+
+    expect(find.text('All'), findsOneWidget);
+    // Chip labels share names with the section cards, so both match.
+    expect(find.text('Foundations'), findsWidgets);
+    expect(find.text('Advanced'), findsWidgets);
+  });
+
+  testWidgets('F6: section chip filters the browse list', (tester) async {
+    await _pumpPicker(tester, router);
+
+    await tester.tap(find.text('Foundations').first);
+    await tester.pump();
+
+    expect(find.text('Open Foundations'), findsOneWidget);
+    expect(find.text('Open Advanced'), findsNothing);
+
+    await tester.tap(find.text('Advanced').first);
+    await tester.pump();
+
+    expect(find.text('Open Advanced'), findsOneWidget);
+    expect(find.text('Open Foundations'), findsNothing);
+  });
+
+  testWidgets('F6: section chip ANDs with the text query', (tester) async {
+    await _pumpPicker(tester, router);
+
+    await tester.enterText(
+      find.byKey(const Key('modmat-search-field')),
+      'theory',
+    );
+    await tester.pump();
+    expect(find.text('Search results'), findsOneWidget);
+
+    await tester.tap(find.text('Foundations').first);
+    await tester.pump();
+
+    expect(find.text('Set Theory'), findsOneWidget);
+    expect(find.text('Graph Theory Basics'), findsOneWidget);
+    expect(find.text('Advanced Graph Theory'), findsNothing);
+    expect(find.text('Number Theory'), findsNothing);
   });
 }
 
