@@ -1,7 +1,7 @@
 import 'derivatives_answer_card.dart';
 import 'derivatives_input_field.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_steps.dart';
-import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/deriviatives_solver.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';

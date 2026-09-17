@@ -10,8 +10,11 @@ from sympy import symbols, expand, solve, Eq, latex, Rational, simplify, gcd
 
 A, B, C, x, y = symbols('A B C x y')
 PROJECT_ROOT = Path(__file__).parent.parent
-DART_DIR = PROJECT_ROOT / "lib" / "midterm" / "solvers" / "yintercept_solver"
+LIVE_TOPICS_ROOT = PROJECT_ROOT / "lib" / "topics" / "calculus"
+assert LIVE_TOPICS_ROOT.is_dir(), f"Live topics tree missing: {LIVE_TOPICS_ROOT}"
+DART_DIR = LIVE_TOPICS_ROOT / "midterm" / "solvers" / "yintercept_solver"
 DART_DIR.mkdir(parents=True, exist_ok=True)
+assert DART_DIR.is_dir(), f"Generator target missing: {DART_DIR}"
 
 # ── SymPy Verification ─────────────────────────────────────────────────
 
@@ -76,6 +79,7 @@ def verify():
 # ── File Writers ────────────────────────────────────────────────────────
 
 def write_dart(filename, content):
+    assert DART_DIR.is_dir(), f"Generator target missing: {DART_DIR}"
     path = DART_DIR / filename
     path.write_text(content, encoding='utf-8')
     lines = content.count('\n')
@@ -1255,7 +1259,7 @@ def main():
     write_dart("yi_solver.dart", YI_SOLVER_DART)
 
     print("\n" + "=" * 60)
-    print("Done! 3 Dart files generated in lib/midterm/solvers/yintercept_solver/")
+    print("Done! 3 Dart files generated in lib/topics/calculus/midterm/solvers/yintercept_solver/")
     print("=" * 60)
 
 if __name__ == "__main__":

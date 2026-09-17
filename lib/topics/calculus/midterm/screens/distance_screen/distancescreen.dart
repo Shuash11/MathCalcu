@@ -1,10 +1,10 @@
-import 'dart:math';
 import 'package:calculus_system/topics/calculus/midterm/graph/distance_graph/distance_graph.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/distance_solver/distancesolver.dart';
 import 'package:calculus_system/shared/widgets/input_validation.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
+import 'distance_format.dart';
 import 'distancesteps.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -101,57 +101,13 @@ class _DistancescreenState extends State<Distancescreen>
     );
   }
 
-  /// Formats the distance for display.
+  /// Formats the distance for display (delegates to [DistanceFormat]).
   /// - For 1D: returns absolute value (integer or trimmed decimal).
   /// - For 2D:
   ///   - Perfect square ? integer (e.g., "5")
-  ///   - Non-perfect square ? exact radical + approximation (e.g., "v5 ≈ 2.2361")
-  String _formatDistance(double value, bool is2D) {
-    if (!is2D) {
-      final abs = value.abs();
-      return abs == abs.toInt()
-          ? abs.toInt().toString()
-          : abs
-              .toStringAsFixed(6)
-              .replaceAll(RegExp(r'0+$'), '')
-              .replaceAll(RegExp(r'\.$'), '');
-    }
-
-    final int squared = (value * value).round();
-    final double sqrtVal = sqrt(squared);
-
-    // Perfect square ? return integer only
-    if (sqrtVal == sqrtVal.roundToDouble()) {
-      return sqrtVal.round().toString();
-    }
-
-    // Simplify radical
-    int largestSquare = 1;
-    int remaining = squared;
-    for (int i = 2; i * i <= squared; i++) {
-      while (remaining % (i * i) == 0) {
-        largestSquare *= i;
-        remaining ~/= (i * i);
-      }
-    }
-
-    String exact;
-    if (remaining == 1) {
-      exact = largestSquare.toString();
-    } else if (largestSquare == 1) {
-      exact = 'v$remaining';
-    } else {
-      exact = '$largestSquare√$remaining';
-    }
-
-    // Decimal approximation (trimmed to 4 decimal places)
-    final approx = value
-        .toStringAsFixed(4)
-        .replaceAll(RegExp(r'0+$'), '')
-        .replaceAll(RegExp(r'\.$'), '');
-
-    return '$exact ≈ $approx';
-  }
+  ///   - Non-perfect square ? exact radical + approximation (e.g., "√5 ≈ 2.2361")
+  String _formatDistance(double value, bool is2D) =>
+      DistanceFormat.formatDistance(value, is2D);
 
   void _onCalculate() {
     // Empty-submit guard: inline errorText + SnackBar, never silent.
@@ -493,7 +449,7 @@ class _DistancescreenState extends State<Distancescreen>
                           const SizedBox(width: 14.0),
                           ResponsiveText(
                             _is2D
-                                ? 'd = v((x2-x1)² + (y2-y1)²)'
+                                ? 'd = √((x2-x1)² + (y2-y1)²)'
                                 : 'd = |x2 - x1|',
                             style: TextStyle(
                                 fontSize: 13,

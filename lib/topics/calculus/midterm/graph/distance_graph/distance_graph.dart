@@ -74,7 +74,7 @@ class DistanceGraphScreen extends StatelessWidget {
     required this.distanceLabel,
   });
 
-  String get _formula => is2D ? 'd = v((x2-x1)² + (y2-y1)²)' : 'd = |x2 - x1|';
+  String get _formula => is2D ? 'd = √((x2-x1)² + (y2-y1)²)' : 'd = |x2 - x1|';
 
   List<FullScreenInfoItem> _keyInfo(Color accent) => [
         FullScreenInfoItem(

@@ -10,8 +10,11 @@ from sympy import symbols, simplify, latex, pi, atan, Rational, Integer
 
 x, y, m, x1, y1, b = symbols('x y m x1 y1 b')
 PROJECT_ROOT = Path(__file__).parent.parent
-DART_DIR = PROJECT_ROOT / "lib" / "midterm" / "solvers" / "pointslope_solver"
+LIVE_TOPICS_ROOT = PROJECT_ROOT / "lib" / "topics" / "calculus"
+assert LIVE_TOPICS_ROOT.is_dir(), f"Live topics tree missing: {LIVE_TOPICS_ROOT}"
+DART_DIR = LIVE_TOPICS_ROOT / "midterm" / "solvers" / "pointslope_solver"
 DART_DIR.mkdir(parents=True, exist_ok=True)
+assert DART_DIR.is_dir(), f"Generator target missing: {DART_DIR}"
 
 # ── SymPy Verification ─────────────────────────────────────────────────
 

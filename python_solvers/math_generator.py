@@ -14,9 +14,12 @@ from sympy import (
 x = symbols("x")
 PROJECT_ROOT = Path(__file__).parent.parent
 OUTPUT_DIR = PROJECT_ROOT / "python_solvers" / "generated"
-DART_LIB_DIR = PROJECT_ROOT / "lib" / "midterm" / "solvers" / "inequalities_solver"
+LIVE_TOPICS_ROOT = PROJECT_ROOT / "lib" / "topics" / "calculus"
+assert LIVE_TOPICS_ROOT.is_dir(), f"Live topics tree missing: {LIVE_TOPICS_ROOT}"
+DART_LIB_DIR = LIVE_TOPICS_ROOT / "midterm" / "solvers" / "inequalities_solver"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 DART_LIB_DIR.mkdir(parents=True, exist_ok=True)
+assert DART_LIB_DIR.is_dir(), f"Generator target missing: {DART_LIB_DIR}"
 
 # Unicode chars used in Dart output
 U_INFINITY = '\u221e'
@@ -46,6 +49,7 @@ def write_json(fn, data):
     print(f"  + JSON: {p.name}")
 
 def write_dart(fn, content):
+    assert DART_LIB_DIR.is_dir(), f"Generator target missing: {DART_LIB_DIR}"
     p = DART_LIB_DIR / fn
     content = re.sub(
         r"\s+title:\s*'[^']*',\s*\n\s+explanation:\s*'[^']*',\s*\n",
@@ -1781,7 +1785,7 @@ def main():
     write_dart("generated_radical_solver.dart", RAD_CODE)
 
     print("\n" + "=" * 60)
-    print("Done! 5 Dart solver files generated in lib/midterm/solvers/inequalities_solver/")
+    print("Done! 5 Dart solver files generated in lib/topics/calculus/midterm/solvers/inequalities_solver/")
     print("=" * 60)
 
 

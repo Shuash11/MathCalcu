@@ -4,6 +4,8 @@ SymPy-verified Dart code generator for Derivatives module.
 Generates: derivatives_solver.dart (Expr AST + Parser + Differentiator + Step gen)
 """
 from pathlib import Path
+import os
+import subprocess
 from sympy import (
     symbols, diff, simplify, latex, exp, sqrt, Abs, sin, cos, tan,
     log, parse_expr, Pow, Mul, Add, Symbol, Number, expand, factor
@@ -11,8 +13,11 @@ from sympy import (
 
 x = Symbol('x')
 PROJECT_ROOT = Path(__file__).parent.parent
-DART_DIR = PROJECT_ROOT / "lib" / "Finals" / "solvers" / "derivatives_solver"
+LIVE_TOPICS_ROOT = PROJECT_ROOT / "lib" / "topics" / "calculus"
+assert LIVE_TOPICS_ROOT.is_dir(), f"Live topics tree missing: {LIVE_TOPICS_ROOT}"
+DART_DIR = LIVE_TOPICS_ROOT / "finals" / "solvers" / "derivatives_solver"
 DART_DIR.mkdir(parents=True, exist_ok=True)
+assert DART_DIR.is_dir(), f"Generator target missing: {DART_DIR}"
 
 def verify():
     print("=" * 60)
@@ -94,7 +99,7 @@ class Num extends Expr {
   @override bool hasVar(String v) => false;
   @override bool get isConst => true;
   @override double? get constValue => value;
-  @override bool operator ==(Object o) => o is Num && value == o.value;
+  @override bool operator ==(Object other) => other is Num && value == other.value;
   @override int get hashCode => value.hashCode;
   @override String toString() => value == value.truncateToDouble()
       ? value.toInt().toString() : value.toString();
@@ -109,7 +114,7 @@ class Var extends Expr {
   @override bool hasVar(String v) => name == v;
   @override bool get isConst => false;
   @override double? get constValue => null;
-  @override bool operator ==(Object o) => o is Var && name == o.name;
+  @override bool operator ==(Object other) => other is Var && name == other.name;
   @override int get hashCode => name.hashCode;
   @override String toString() => name;
   @override String format({bool compact = false}) => name;
@@ -216,7 +221,7 @@ class BinOp extends Expr {
       default: return null;
     }
   }
-  @override bool operator ==(Object o) => o is BinOp && op == o.op && left == o.left && right == o.right;
+  @override bool operator ==(Object other) => other is BinOp && op == other.op && left == other.left && right == other.right;
   @override int get hashCode => Object.hash(op, left, right);
 
   @override String toString() {
@@ -251,7 +256,7 @@ class Neg extends Expr {
   @override bool hasVar(String v) => expr.hasVar(v);
   @override bool get isConst => expr.isConst;
   @override double? get constValue { final v = expr.constValue; return v != null ? -v : null; }
-  @override bool operator ==(Object o) => o is Neg && expr == o.expr;
+  @override bool operator ==(Object other) => other is Neg && expr == other.expr;
   @override int get hashCode => expr.hashCode;
   @override String toString() => '-$expr';
   @override String format({bool compact = false}) => '-${expr.format(compact: compact)}';
@@ -305,7 +310,7 @@ class Func extends Expr {
   @override bool hasVar(String v) => arg.hasVar(v);
   @override bool get isConst => arg.isConst;
   @override double? get constValue => null;
-  @override bool operator ==(Object o) => o is Func && name == o.name && arg == o.arg;
+  @override bool operator ==(Object other) => other is Func && name == other.name && arg == other.arg;
   @override int get hashCode => Object.hash(name, arg);
   @override String toString() => '$name($arg)';
   @override String format({bool compact = false}) => '$name(${arg.format(compact: compact)})';
@@ -324,7 +329,7 @@ class Sqrt extends Expr {
   @override bool hasVar(String v) => arg.hasVar(v);
   @override bool get isConst => arg.isConst;
   @override double? get constValue => null;
-  @override bool operator ==(Object o) => o is Sqrt && arg == o.arg;
+  @override bool operator ==(Object other) => other is Sqrt && arg == other.arg;
   @override int get hashCode => arg.hashCode;
   @override String toString() => '√($arg)';
   @override String format({bool compact = false}) => '√(${arg.format(compact: compact)})';
@@ -338,7 +343,7 @@ class Abs extends Expr {
   @override bool hasVar(String v) => arg.hasVar(v);
   @override bool get isConst => arg.isConst;
   @override double? get constValue => null;
-  @override bool operator ==(Object o) => o is Abs && arg == o.arg;
+  @override bool operator ==(Object other) => other is Abs && arg == other.arg;
   @override int get hashCode => arg.hashCode;
   @override String toString() => '|$arg|';
   @override String format({bool compact = false}) => '|${arg.format(compact: compact)}|';
@@ -631,8 +636,15 @@ class DerivativeSolver {
 
 def main():
     verify()
-    path = DART_DIR / "deriviatives_solver.dart"
+    path = DART_DIR / "derivatives_solver.dart"
     path.write_text(DART_CODE, encoding='utf-8')
+    # Keep regen output format-clean so the `dart format` CI gate stays green.
+    # (shell=True on Windows because dart ships as dart.BAT there.)
+    try:
+        subprocess.run(["dart", "format", str(path)], check=True,
+                       shell=(os.name == "nt"))
+    except (OSError, subprocess.CalledProcessError) as e:
+        print(f"  (warning: dart format skipped: {e})")
     lines = DART_CODE.count('\n')
     print(f"\nGenerated {path} [{lines} lines]")
 

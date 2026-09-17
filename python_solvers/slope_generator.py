@@ -12,8 +12,11 @@ from sympy import (
 
 x, y, t = symbols('x y t')
 PROJECT_ROOT = Path(__file__).parent.parent
-DART_DIR = PROJECT_ROOT / "lib" / "Finals" / "solvers" / "slope_using_derivatives_solver"
+LIVE_TOPICS_ROOT = PROJECT_ROOT / "lib" / "topics" / "calculus"
+assert LIVE_TOPICS_ROOT.is_dir(), f"Live topics tree missing: {LIVE_TOPICS_ROOT}"
+DART_DIR = LIVE_TOPICS_ROOT / "finals" / "solvers" / "slope_using_derivatives_solver"
 DART_DIR.mkdir(parents=True, exist_ok=True)
+assert DART_DIR.is_dir(), f"Generator target missing: {DART_DIR}"
 
 
 def verify():

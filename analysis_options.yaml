@@ -24,10 +24,11 @@ linter:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
-    # ── Cycle 1 Batch C Item 11 (PROPOSAL ONLY — do not enable yet) ──────────
-    # Contingent on frontend Item 7 cleanup landing with `flutter analyze`
-    # at zero warnings. Enabling any of these today would flood the CI
-    # analyzer-diff gate, so they stay commented until the baseline is clean.
+    # ── Cycle 3 (PROPOSAL ONLY — do not enable yet) ─────────────────────────
+    # The release analyzer-diff gate compares ERROR and WARNING diagnostics
+    # only (see .github/workflows/release.yml); info-level lints do not
+    # affect the gate either way. These stay commented until the baseline is
+    # clean at WARNING level AND the LCD_DEBUG logging cleanup lands.
     # Candidate tightening, in rollout order:
     #   1. `avoid_print` — route diagnostics through debugPrint / a logger.
     #   2. `prefer_single_quotes` — match the existing single-quote style.

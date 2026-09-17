@@ -268,21 +268,6 @@ class LimitEngine {
       solution = StepGenerator.unknownForm(equation, variable, approachValue);
     }
 
-    // DEBUG: Log solution details for development
-    assert(() {
-      // ignore: avoid_print
-      print(
-          'LCD_DEBUG methodUsed: ${solution.methodUsed}, steps.length: ${solution.steps.length}');
-      for (int i = 0; i < solution.steps.length; i++) {
-        final stepPreview = solution.steps[i].length > 100
-            ? solution.steps[i].substring(0, 100)
-            : solution.steps[i];
-        // ignore: avoid_print
-        print('LCD_DEBUG step $i: $stepPreview...');
-      }
-      return true;
-    }());
-
     return solution;
   }
 

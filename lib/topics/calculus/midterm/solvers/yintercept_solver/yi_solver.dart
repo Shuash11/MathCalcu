@@ -366,19 +366,21 @@ class YInterceptSolver {
     for (final t in _tokenise(lhs)) {
       if (t.variable == 'x') {
         lA += t.coeff;
-      } else if (t.variable == 'y')
+      } else if (t.variable == 'y') {
         lB += t.coeff;
-      else
+      } else {
         lC += t.coeff;
+      }
     }
     YIFraction rA = zeroFrac, rB = zeroFrac, rC = zeroFrac;
     for (final t in _tokenise(rhs)) {
       if (t.variable == 'x') {
         rA += t.coeff;
-      } else if (t.variable == 'y')
+      } else if (t.variable == 'y') {
         rB += t.coeff;
-      else
+      } else {
         rC += t.coeff;
+      }
     }
 
     final A = lA - rA, B = lB - rB, C = rC - lC;
@@ -605,9 +607,9 @@ class ParallelPerpendicularSolver {
         final body = tok.substring(1);
         if (body.contains('x')) {
           A += sign * tokSign * _coeff(body.replaceAll('x', ''));
-        } else if (body.contains('y'))
+        } else if (body.contains('y')) {
           B += sign * tokSign * _coeff(body.replaceAll('y', ''));
-        else {
+        } else {
           final v = int.tryParse(body);
           if (v == null) return;
           C += sign * tokSign * v;

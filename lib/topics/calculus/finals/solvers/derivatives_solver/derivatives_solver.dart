@@ -41,7 +41,7 @@ class Num extends Expr {
   @override
   double? get constValue => value;
   @override
-  bool operator ==(Object o) => o is Num && value == o.value;
+  bool operator ==(Object other) => other is Num && value == other.value;
   @override
   int get hashCode => value.hashCode;
   @override
@@ -66,7 +66,7 @@ class Var extends Expr {
   @override
   double? get constValue => null;
   @override
-  bool operator ==(Object o) => o is Var && name == o.name;
+  bool operator ==(Object other) => other is Var && name == other.name;
   @override
   int get hashCode => name.hashCode;
   @override
@@ -147,10 +147,9 @@ class BinOp extends Expr {
         if (_isZero(l) || _isZero(r)) return const Num(0);
         if (_isOne(l)) return r;
         if (_isOne(r)) return l;
-        if (l is Num && r is BinOp && r.op == '*' && r.left is Num) {
+        if (l is Num && r is BinOp && r.op == '*' && r.left is Num)
           return BinOp('*', Num(l.value * (r.left as Num).value), r.right)
               .simplify();
-        }
       case '/':
         if (_isZero(l)) return const Num(0);
         if (_isOne(r)) return l;
@@ -158,9 +157,8 @@ class BinOp extends Expr {
         if (l is BinOp && l.op == '*' && l.left is Num && r is Num) {
           final nl = (l.left as Num).value, nr = r.value;
           if (nl == nr) return l.right.simplify();
-          if (nr != 0 && (nl / nr).round() == nl / nr) {
+          if (nr != 0 && (nl / nr).round() == nl / nr)
             return BinOp('*', Num(nl / nr), l.right).simplify();
-          }
         }
       case '^':
         if (_isZero(r)) return const Num(1);
@@ -199,8 +197,11 @@ class BinOp extends Expr {
   }
 
   @override
-  bool operator ==(Object o) =>
-      o is BinOp && op == o.op && left == o.left && right == o.right;
+  bool operator ==(Object other) =>
+      other is BinOp &&
+      op == other.op &&
+      left == other.left &&
+      right == other.right;
   @override
   int get hashCode => Object.hash(op, left, right);
 
@@ -217,9 +218,8 @@ class BinOp extends Expr {
     if (e is BinOp) {
       final ep = _prec(e.op);
       if (ep < p ||
-          (ep == p && rightSide && (op == '-' || op == '/' || op == '^'))) {
+          (ep == p && rightSide && (op == '-' || op == '/' || op == '^')))
         return '($e)';
-      }
     }
     if (e is Neg) return '($e)';
     return e.toString();
@@ -265,7 +265,7 @@ class Neg extends Expr {
   }
 
   @override
-  bool operator ==(Object o) => o is Neg && expr == o.expr;
+  bool operator ==(Object other) => other is Neg && expr == other.expr;
   @override
   int get hashCode => expr.hashCode;
   @override
@@ -310,7 +310,7 @@ class Func extends Expr {
         break;
       case 'log':
         outer = BinOp(
-            '/', const Num(1), BinOp('*', arg, const Func('ln', Num(10))));
+            '/', const Num(1), BinOp('*', arg, Func('ln', const Num(10))));
         break;
       case 'sqrt':
         outer = BinOp('/', const Num(1), BinOp('*', const Num(2), Sqrt(arg)));
@@ -350,12 +350,8 @@ class Func extends Expr {
         return this;
       }
     }
-    if (name == 'sqrt' &&
-        s is BinOp &&
-        s.op == '^' &&
-        s.right == const Num(2)) {
+    if (name == 'sqrt' && s is BinOp && s.op == '^' && s.right == const Num(2))
       return Abs(s.left);
-    }
     return Func(name, s);
   }
 
@@ -366,7 +362,8 @@ class Func extends Expr {
   @override
   double? get constValue => null;
   @override
-  bool operator ==(Object o) => o is Func && name == o.name && arg == o.arg;
+  bool operator ==(Object other) =>
+      other is Func && name == other.name && arg == other.arg;
   @override
   int get hashCode => Object.hash(name, arg);
   @override
@@ -389,9 +386,8 @@ class Sqrt extends Expr {
       final v = s.constValue!;
       if (v >= 0) return Num(math.sqrt(v));
     }
-    if (s is BinOp && s.op == '^' && s.right == const Num(2)) {
+    if (s is BinOp && s.op == '^' && s.right == const Num(2))
       return Abs(s.left);
-    }
     return Sqrt(s);
   }
 
@@ -402,7 +398,7 @@ class Sqrt extends Expr {
   @override
   double? get constValue => null;
   @override
-  bool operator ==(Object o) => o is Sqrt && arg == o.arg;
+  bool operator ==(Object other) => other is Sqrt && arg == other.arg;
   @override
   int get hashCode => arg.hashCode;
   @override
@@ -430,7 +426,7 @@ class Abs extends Expr {
   @override
   double? get constValue => null;
   @override
-  bool operator ==(Object o) => o is Abs && arg == o.arg;
+  bool operator ==(Object other) => other is Abs && arg == other.arg;
   @override
   int get hashCode => arg.hashCode;
   @override
@@ -480,7 +476,7 @@ class Tokenizer {
         tokens.add(_readNumber(start));
       } else if (_isLetter(char) || char == '√') {
         tokens.add(_readIdent(start));
-      } else if ('+-*/^<>≤≥'.contains(char)) {
+      } else if ('+-*/^'.contains(char)) {
         tokens.add(Token(TokenType.operator, char, start));
         _pos++;
       } else if (char == '(') {
@@ -498,9 +494,7 @@ class Tokenizer {
   }
 
   void _skipWs() {
-    while (_pos < input.length && input[_pos] == ' ') {
-      _pos++;
-    }
+    while (_pos < input.length && input[_pos] == ' ') _pos++;
   }
 
   bool _isDigit(String c) => c.codeUnitAt(0) >= 48 && c.codeUnitAt(0) <= 57;
@@ -563,9 +557,8 @@ class Parser {
 
   Expr parse() {
     final e = _expr();
-    if (_i < tokens.length && tokens[_i].type != TokenType.eof) {
+    if (_i < tokens.length && tokens[_i].type != TokenType.eof)
       throw ParseException('Unexpected: ${tokens[_i]}', tokens[_i].pos);
-    }
     return e;
   }
 
@@ -599,22 +592,19 @@ class Parser {
   bool _isImplicitMul() {
     if (_i >= tokens.length) return false;
     final n = tokens[_i], p = tokens[_i - 1];
-    if (p.type == TokenType.rParen) {
+    if (p.type == TokenType.rParen)
       return n.type == TokenType.lParen ||
           n.type == TokenType.number ||
           n.type == TokenType.variable ||
           n.type == TokenType.function;
-    }
-    if (p.type == TokenType.number) {
+    if (p.type == TokenType.number)
       return n.type == TokenType.variable ||
           n.type == TokenType.function ||
           n.type == TokenType.lParen;
-    }
-    if (p.type == TokenType.variable) {
+    if (p.type == TokenType.variable)
       return n.type == TokenType.variable ||
           n.type == TokenType.function ||
           n.type == TokenType.lParen;
-    }
     return false;
   }
 
@@ -678,9 +668,8 @@ class Parser {
   }
 
   void _expect(TokenType type) {
-    if (_peek().type != type) {
+    if (_peek().type != type)
       throw ParseException('Expected $type, got ${_peek().type}', _peek().pos);
-    }
     _advance();
   }
 }
@@ -734,7 +723,7 @@ class DerivativeSolver {
     final sup = {
       '⁰': '^0',
       '¹': '^1',
-      '?': '^2',
+      '²': '^2',
       '³': '^3',
       '⁴': '^4',
       '⁵': '^5',
@@ -746,7 +735,7 @@ class DerivativeSolver {
     sup.forEach((k, v) {
       r = r.replaceAll(k, v);
     });
-    r = r.replaceAll('??', '-').replaceAll('??', '*').replaceAll('?', '/');
+    r = r.replaceAll('−', '-').replaceAll('×', '*').replaceAll('÷', '/');
     // Implicit multiplication parens
     r = r.replaceAllMapped(RegExp(r'(\))\s*(\()'), (m) => '${m[1]}*${m[2]}');
     r = r.replaceAllMapped(RegExp(r'(\d)\('), (m) => '${m[1]}*(');
@@ -824,9 +813,8 @@ class DerivativeSolver {
 
   static String _determineRule(Expr e) {
     if (e is BinOp && e.op == '^' && e.right.isConst) return 'Power Rule';
-    if (e is BinOp && e.op == '^' && e.left.isConst && !e.right.isConst) {
+    if (e is BinOp && e.op == '^' && e.left.isConst && !e.right.isConst)
       return 'Exponential Rule';
-    }
     if (e is BinOp) {
       switch (e.op) {
         case '/':

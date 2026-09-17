@@ -6,6 +6,13 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 //
 // Different visualization from the main AboutSheet.
 // Uses same developer data but with Finals gold/amber theme.
+//
+// PII NOTE (F10 conscious-accept): developer names, school emails,
+// Facebook display names, and contact numbers below are intentional
+// student-project credits, shown only in this informational sheet.
+// No passwords, tokens, or auth secrets are stored here. Redaction
+// was considered; keeping the credits with this comment is the
+// accepted decision for a classroom credit roll.
 // -------------------------------------------------------------
 
 class _Developer {
@@ -16,7 +23,7 @@ class _Developer {
   final String contribution;
   final String phone;
   final String groups;
-  final String Facebook;
+  final String facebook;
 
   const _Developer({
     required this.name,
@@ -26,7 +33,7 @@ class _Developer {
     this.contribution = '',
     required this.phone,
     this.groups = '',
-    this.Facebook = '',
+    this.facebook = '',
   });
 }
 
@@ -36,7 +43,7 @@ const _developers = [
     program: 'BS Computer Science',
     role: 'Lead Developer',
     email: 'joashuabarimbao10@gmail.com',
-    Facebook: 'Joashua Marl Barimbao',
+    facebook: 'Joashua Marl Barimbao',
     contribution: 'From UI To solvers',
     phone: '09639201328',
     groups:
@@ -46,7 +53,7 @@ const _developers = [
     name: 'Michaela Denise Ong',
     program: 'BS Computer Science',
     role: 'Developer 2 / Docs',
-    Facebook: 'Michaela Denise Ong',
+    facebook: 'Michaela Denise Ong',
     email: 'michaeladenis11@gmail.com',
     contribution: 'Documentation',
     phone: '09452238406',
@@ -58,7 +65,7 @@ const _developers = [
     program: 'BS Computer Science',
     role: 'Developer 3',
     email: 'quirosnash2@gmail.com',
-    Facebook: 'Nash Bruce Quiros',
+    facebook: 'Nash Bruce Quiros',
     contribution: 'Testing',
     phone: '09953941510',
     groups:
@@ -69,7 +76,7 @@ const _developers = [
     program: 'BS Computer Science',
     role: 'Developer 4',
     email: 'johncarlolegaste@gmail.com',
-    Facebook: 'John Carlo legaste',
+    facebook: 'John Carlo legaste',
     contribution: 'Testing and UI polish',
     phone: '09639201328',
     groups: '',
@@ -80,7 +87,7 @@ const _developers = [
     role: 'Developer 5',
     email: 'clifford.probetso@gmail.com',
     contribution: 'Contrinuted/UI Polish',
-    Facebook: 'Clifford Probetso',
+    facebook: 'Clifford Probetso',
     phone: '09510069125',
     groups:
         'Angelie Jerusalem\nIvan Rabanzo\nLausa Dave\nJanwell Nacario\nRoynuj Plaza',
@@ -89,7 +96,7 @@ const _developers = [
     name: 'Johnlin Redido',
     program: 'BS Computer Science',
     role: 'Developer 6',
-    Facebook: 'Johnlin Redido',
+    facebook: 'Johnlin Redido',
     email: 'linzy21x@gmail.com',
     contribution: 'UI TESTING',
     phone: '09700455407',
@@ -591,8 +598,8 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                         _DetailItem(
                           icon: Icons.facebook_rounded,
                           label: 'Facebook',
-                          value: dev.Facebook.isNotEmpty
-                              ? dev.Facebook
+                          value: dev.facebook.isNotEmpty
+                              ? dev.facebook
                               : 'Not provided',
                           color: color,
                           scale: s,

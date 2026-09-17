@@ -3,7 +3,7 @@
 // Provides detailed, educational explanations
 // =====================================================
 
-import 'deriviatives_solver.dart';
+import 'derivatives_solver.dart';
 
 /// Classroom-style step formatter for derivative solutions
 class ClassroomStepFormatter {

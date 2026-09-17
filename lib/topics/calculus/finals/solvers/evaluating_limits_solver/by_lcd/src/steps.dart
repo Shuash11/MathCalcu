@@ -190,17 +190,7 @@ class StepGenerator {
       final ans = _calculateNumericalLimit(ast, varName, val);
       if (hasSqrt) {
         final formatted = _formatResult(ans);
-        assert(() {
-          // ignore: avoid_print
-          print('LCD_DEBUG: hasSqrt=$hasSqrt, ans=$ans, formatted=$formatted');
-          return true;
-        }());
         final fractionGuess = _findFractionGuess(ans);
-        assert(() {
-          // ignore: avoid_print
-          print('LCD_DEBUG: fractionGuess=$fractionGuess');
-          return true;
-        }());
         if (fractionGuess != null) {
           ansTex = "$fractionGuess \\approx $formatted";
         } else {
