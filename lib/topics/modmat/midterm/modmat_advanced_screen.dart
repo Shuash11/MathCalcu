@@ -84,6 +84,10 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
 
   Widget _buildHeader(ThemeProvider theme) {
     final accent = theme.modmatAccent;
+    // Cycle 9: truthful wired count from the registry allowlist.
+    final solverBacked = _modules
+        .where((m) => ModmatModuleRegistry.isRouteAvailable(m.route))
+        .length;
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(28, 48, 28, 0),
@@ -147,8 +151,8 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
               child: Row(
                 children: [
                   Text(
-                    // P0-2: truthful catalogue count from the registry.
-                    '${_modules.length} topics · catalogue',
+                    // P0-2: truthful counts from the registry.
+                    '${_modules.length} topics · $solverBacked with solvers',
                     style: TextStyle(
                       fontSize: 15,
                       color: theme.textSecondary,
@@ -160,9 +164,9 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
               ),
             ),
             const SizedBox(height: 12),
-            const CatalogueDisclosure(
-              solverBacked: 0,
-              catalogueOnly: 6,
+            CatalogueDisclosure(
+              solverBacked: solverBacked,
+              catalogueOnly: _modules.length - solverBacked,
               catalogueName: 'Advanced',
             ),
             const SizedBox(height: 20),
@@ -265,8 +269,8 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
                   position: _slideAnims[index],
                   child: _AdvancedModuleCard(
                     module: module,
-                    // Cycle 8: leaf routes are unwired until their
-                    // screens land — gate instead of dead-pushing.
+                    // Cycle 9: unwired leaves stay gated — gate
+                    // instead of dead-pushing.
                     onTap: () {
                       if (!ModmatModuleRegistry.isRouteAvailable(
                         module.route,

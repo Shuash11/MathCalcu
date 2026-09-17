@@ -3,6 +3,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/shared/widgets/accessible_back_button.dart';
 import 'package:calculus_system/shared/widgets/catalogue_disclosure.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
+import 'package:calculus_system/shared/widgets/subject_filter_chips.dart';
 import 'package:calculus_system/topics/modmat/modmat_module_registry.dart';
 import 'package:calculus_system/topics/modmat/modmat_theme.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
   String _query = '';
+  String _subject = 'All';
 
   @override
   void initState() {
@@ -82,6 +84,16 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
             _buildHeader(theme),
             _buildBanner(theme),
             _buildSearch(theme),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: SubjectFilterChips(
+                  subjects: const ['Foundations', 'Advanced'],
+                  selected: _subject,
+                  onSelected: (s) => setState(() => _subject = s),
+                ),
+              ),
+            ),
             _buildList(theme),
             const SliverToBoxAdapter(child: SizedBox(height: 40)),
           ],
@@ -312,8 +324,15 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
   }
 
   Widget _buildSearchResults(ThemeProvider theme) {
-    final hits = ModmatModuleRegistry.search(_query);
-    final curriculumHits = CurriculumRegistry.search(_query);
+    // E-1 topic-first: subject chip ANDs with the text query.
+    final hits = ModmatModuleRegistry.search(_query)
+        .where((h) => _subject == 'All' || h.section == _subject)
+        .toList();
+    // Curriculum hits carry no ModMat section, so they only compose
+    // with the unfiltered ('All') chip selection.
+    final curriculumHits = _subject == 'All'
+        ? CurriculumRegistry.search(_query)
+        : <CurriculumSearchHit>[];
     if (hits.isEmpty && curriculumHits.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
@@ -390,8 +409,8 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _ModmatSearchResultCard(
                     hit: hit,
-                    // Cycle 8: leaf routes are unwired until their
-                    // screens land — gate instead of dead-pushing.
+                    // Cycle 9: unwired leaves stay gated — gate
+                    // instead of dead-pushing.
                     onTap: () {
                       if (!ModmatModuleRegistry.isRouteAvailable(
                         hit.module.route,
@@ -443,7 +462,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
             '$advancedCount topics · Algebra, Analysis, Topology, Geometry',
         color: accent,
       ),
-    ];
+    ].where((s) => _subject == 'All' || s.label == _subject).toList();
 
     return SliverMainAxisGroup(
       slivers: [
@@ -481,8 +500,11 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
             child: CatalogueDisclosure(
-              solverBacked: 0,
-              catalogueOnly: foundationsCount + advancedCount,
+              // Cycle 9: truthful wired count from the allowlist.
+              solverBacked: ModmatModuleRegistry.wiredLeafRoutes.length,
+              catalogueOnly: foundationsCount +
+                  advancedCount -
+                  ModmatModuleRegistry.wiredLeafRoutes.length,
               catalogueName: 'Modern Math',
             ),
           ),

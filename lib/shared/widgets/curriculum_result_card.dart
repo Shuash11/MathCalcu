@@ -6,11 +6,11 @@
 // behaves the same everywhere. Styling via ThemeProvider only.
 //
 // Stub rule: tapping a topic whose solver is not available yet
-// (solverAvailable == false, e.g. G7–G10 placeholders) shows
+// (solverAvailable == false, e.g. G7–G8 placeholders) shows
 // a "Coming in Phase 1" SnackBar instead of navigating — never a
-// dead-end, never a GoRouter error. Solver-backed topics (11 G6 +
-// 10 SHS entries, all with GoRouter destinations) push their
-// registry route.
+// dead-end, never a GoRouter error. Solver-backed topics (G6 seed,
+// SHS, G9–G10 quadratics, G11-limits, G12-derivatives — all with
+// GoRouter destinations) push their registry route.
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/core/curriculum_registry.dart';
@@ -42,11 +42,12 @@ void showComingInPhase1(BuildContext context, CurriculumTopic topic) {
   showTopicComingSoon(context, topic.label);
 }
 
-/// Cycle 8 never-dead-end guard: true only when [route] resolves
+/// Cycle 9 never-dead-end guard: true only when [route] resolves
 /// to a registered GoRouter destination. Curriculum routes defer
 /// to their topic's solverAvailable flag (the registry invariant);
-/// ModMat leaf routes are unwired until their screens land; every
-/// other legacy route is wired.
+/// ModMat leaf routes are wired once their screens land (see
+/// ModmatModuleRegistry.wiredLeafRoutes); every other legacy
+/// route is wired.
 bool isRouteAvailable(String route) {
   final topic = CurriculumRegistry.getByRoute(route);
   if (topic != null) return topic.solverAvailable;
@@ -55,13 +56,15 @@ bool isRouteAvailable(String route) {
 
 /// Tap handler shared by every curriculum result card.
 ///
-/// Topics with a wired solver (solverAvailable == true — 11 G6 +
-/// 10 SHS entries, each with a GoRouter destination) push their
-/// registry route. Stubs without a solver yet show the "Coming in
-/// Phase 1" SnackBar — never a dead-end, never a GoRouter error.
+/// Topics with a wired solver (solverAvailable == true — G6 seed,
+/// SHS, G9–G10 quadratics, G11-limits, G12-derivatives, each with
+/// a GoRouter destination) push their registry route. Stubs
+/// without a solver yet show the "Coming in Phase 1" SnackBar —
+/// never a dead-end, never a GoRouter error.
 ///
-/// Cycle 8: SHS topics are wired (engines + screens + /shs/*
-/// GoRoutes all landed); remaining G7–College stubs stay gated.
+/// Cycle 9: SHS + quadratics + G11-limits + G12-derivatives topics
+/// are wired (engines + screens + GoRoutes all landed); remaining
+/// G7–G8 / G10-circle+combinatorics / College stubs stay gated.
 void handleCurriculumTap(BuildContext context, CurriculumTopic topic) {
   if (!topic.solverAvailable) {
     showComingInPhase1(context, topic);
@@ -284,9 +287,10 @@ class CurriculumResultCard extends StatelessWidget {
 /// Unified-hit row for the global /search screen (solver hits push,
 /// curriculum stubs show the Phase-1 SnackBar).
 ///
-/// Cycle 8: non-curriculum hits on unwired routes (ModMat leaves,
-/// future /grade* /college* /shs* paths) are gated the same way —
-/// no push can land on a missing GoRouter destination.
+/// Cycle 9: non-curriculum hits on unwired routes (ModMat leaves
+/// without landed screens, future /grade* /college* /shs* paths)
+/// are gated the same way — no push can land on a missing GoRouter
+/// destination.
 class UnifiedResultCard extends StatelessWidget {
   final UnifiedHit hit;
 

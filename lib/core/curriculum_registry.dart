@@ -15,13 +15,16 @@
 // Styling: accent defaults to AppDesign.app.accent (no hardcoded
 // hex in this file).
 //
-// ROUTING INVARIANT (Cycle 8 middle-end): solverAvailable == true
+// ROUTING INVARIANT (Cycle 9 middle-end): solverAvailable == true
 // IFF a GoRouter destination exists for [CurriculumTopic.route].
 // Taps on solverAvailable == false topics show the "Coming in
 // Phase 1" SnackBar (see handleCurriculumTap) — never a push to a
-// missing route. The 10 /shs/* entries are solver-backed AND
-// screen-backed (topics/shs/screens + /shs/* GoRoutes); G7-G10 /
-// G11-limits / G12-derivatives / College-matrix+stats entries stay
+// missing route. Wired families: /grade6/* (11 G6 screens),
+// /shs/* (10 SHS screens), /grade9/* + /grade10/* (5 quadratics
+// thin screens, Cycle 9 F1), and /topics/calculus/finals/*
+// (limits picker + derivatives screen reused by the G11-limits and
+// G12-derivatives topics, Cycle 9 F3). Remaining G7-G8 /
+// G10-circle+combinatorics / College-matrix+stats entries stay
 // gated until their screens land. To gate: set solverAvailable to
 // false (taps become inert SnackBars, no router change needed).
 // ─────────────────────────────────────────────────────────────
@@ -352,6 +355,8 @@ class CurriculumRegistry {
       solverAvailable: false,
     ),
     // G9
+    // Cycle 9 F1: engine (QuadraticsSolverRegistry) + thin screen +
+    // /grade9/* GoRoute all landed — solver-backed, no longer gated.
     const CurriculumTopic(
       id: 'g9-quadratic-formula',
       gradeLevel: 'G9',
@@ -363,7 +368,18 @@ class CurriculumRegistry {
       tags: ['quadratic', 'formula', 'roots', 'discriminant', 'G9'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
+    ),
+    const CurriculumTopic(
+      id: 'g9-radical-equations',
+      gradeLevel: 'G9',
+      subject: 'Radicals',
+      label: 'Radical Equations',
+      subtitle: 'e.g. sqrt(x + 5) = 3 — reject extraneous roots',
+      route: '/grade9/radical-equations',
+      icon: Icons.functions_rounded,
+      tags: ['radical', 'sqrt', 'extraneous', 'equation', 'G9'],
+      difficulty: 'standard',
+      depedCode: '',
     ),
     const CurriculumTopic(
       id: 'g9-trig-ratios',
@@ -388,9 +404,9 @@ class CurriculumRegistry {
       tags: ['variation', 'direct', 'inverse', 'constant', 'G9'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
     ),
     // G10
+    // Cycle 9 F1: engine + thin screen + /grade10/* GoRoute landed.
     const CurriculumTopic(
       id: 'g10-sequences',
       gradeLevel: 'G10',
@@ -402,7 +418,18 @@ class CurriculumRegistry {
       tags: ['sequence', 'arithmetic', 'series', 'pattern', 'G10'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
+    ),
+    const CurriculumTopic(
+      id: 'g10-polynomial-division',
+      gradeLevel: 'G10',
+      subject: 'Polynomials',
+      label: 'Polynomial Division',
+      subtitle: 'e.g. (x² + 5x + 6) / (x + 2) — quotient + remainder',
+      route: '/grade10/polynomial-division',
+      icon: Icons.call_split_rounded,
+      tags: ['polynomial', 'division', 'synthetic', 'remainder', 'G10'],
+      difficulty: 'standard',
+      depedCode: '',
     ),
     const CurriculumTopic(
       id: 'g10-circle-equation',
@@ -519,32 +546,34 @@ class CurriculumRegistry {
       difficulty: 'standard',
       depedCode: '',
     ),
+    // Cycle 9 F3: repoints to the existing calculus finals
+    // EvaluatingLimitsPicker (covers by-substitution / factoring /
+    // conjugate / LCD + limits_infinity screens) — solver-backed.
     const CurriculumTopic(
       id: 'g11-limits-intro',
       gradeLevel: 'G11',
       subject: 'Limits',
       label: 'Limits Intro',
       subtitle: 'e.g. lim x→2 (x²−4)/(x−2) — hole in curve',
-      route: '/grade11/limits-intro',
+      route: '/topics/calculus/finals/limits',
       icon: Icons.compress_rounded,
       tags: ['limit', 'continuity', 'hole', 'G11', 'precalc'],
       difficulty: 'challenge',
       depedCode: '',
-      solverAvailable: false,
     ),
     // G12 (Basic Calculus)
+    // Cycle 9 F3: repoints to the existing derivatives screen.
     const CurriculumTopic(
       id: 'g12-derivatives',
       gradeLevel: 'G12',
       subject: 'Derivatives',
       label: 'Derivatives (Power/Chain)',
       subtitle: 'e.g. d/dx x³ — tangent line',
-      route: '/grade12/derivatives',
+      route: '/topics/calculus/finals/derivatives',
       icon: Icons.show_chart_rounded,
       tags: ['derivative', 'chain', 'power', 'tangent', 'G12'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
     ),
     const CurriculumTopic(
       id: 'g12-definite-integral',

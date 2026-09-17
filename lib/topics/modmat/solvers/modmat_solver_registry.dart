@@ -26,7 +26,7 @@ class ModmatSolverSpec {
   });
 }
 
-/// M1–M6 wave 1 (foundations + number theory + linear algebra slice).
+/// M1–M14 (Cycle 8 wave 1 + Cycle 9 F2 wave 2).
 class ModmatSolverRegistry {
   ModmatSolverRegistry._();
 
@@ -78,6 +78,70 @@ class ModmatSolverRegistry {
       hint: 'e.g. 17 mod 5',
       helper: 'Residues, powers, inverses — extends G6 GCF/LCM.',
       create: (input) => M6ModularEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-predicate',
+      section: 'foundations',
+      subject: 'Predicate Logic',
+      hint: 'e.g. forall x in {1,2,3}: x > 0',
+      helper: '∀/∃ over finite domains — witnesses + counterexamples.',
+      create: (input) => M7PredicateEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-relations',
+      section: 'foundations',
+      subject: 'Relations & Functions',
+      hint: 'e.g. R={(1,1),(2,2)} on {1,2}',
+      helper: 'Reflexive / symmetric / transitive → equivalence vs order.',
+      create: (input) => M8RelationsEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-real-analysis',
+      section: 'advanced',
+      subject: 'Real Analysis',
+      hint: 'e.g. lim (2n+1)/(n+3)',
+      helper: 'Sequence limits at ∞ via degree comparison.',
+      create: (input) => M9RealAnalysisEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-algebraic-structures',
+      section: 'advanced',
+      subject: 'Algebraic Structures',
+      hint: 'e.g. Z5 + group',
+      helper: 'Group / ring / field checks over Z_n.',
+      create: (input) => M10AlgebraicStructuresEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-graph-basics',
+      section: 'foundations',
+      subject: 'Graph Theory Basics',
+      hint: 'e.g. V=4 E={(0,1),(1,2),(2,3)}',
+      helper: 'Degrees, connectivity, tree + Euler read-off.',
+      create: (input) => M11GraphBasicsEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-proof',
+      section: 'foundations',
+      subject: 'Proof Techniques',
+      hint: 'e.g. induction sum k n=5',
+      helper: 'Induction outlines for Σk, Σk², Σk³, Σ2^k.',
+      create: (input) => M12ProofEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-topology',
+      section: 'advanced',
+      subject: 'Topology Basics',
+      hint: 'e.g. (0,1)',
+      helper: 'Open / closed / compact / connected in R.',
+      create: (input) => M13TopologyEquation(input),
+    ),
+    ModmatSolverSpec(
+      id: 'modmat-advanced-graph',
+      section: 'advanced',
+      subject: 'Advanced Graph Theory',
+      hint: 'e.g. V=4 E={(0,1),(1,2)} bipartite',
+      helper: 'Bipartite, greedy coloring, planarity bound, shortest path.',
+      create: (input) => M14AdvancedGraphEquation(input),
     ),
   ];
 

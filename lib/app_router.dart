@@ -1,6 +1,25 @@
-﻿import 'package:calculus_system/topics/modmat/modmat_picker_screen.dart';
+import 'package:calculus_system/topics/modmat/modmat_picker_screen.dart';
 import 'package:calculus_system/topics/modmat/midterm/modmat_foundations_screen.dart';
 import 'package:calculus_system/topics/modmat/midterm/modmat_advanced_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_propositional_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_sets_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_combinatorics_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_bases_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_matrices_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_modular_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_predicate_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_relations_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_proof_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_graph_basics_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_advanced_graph_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_algebraic_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_real_analysis_screen.dart';
+import 'package:calculus_system/topics/modmat/screens/modmat_topology_screen.dart';
+import 'package:calculus_system/topics/quadratics/screens/quadratics_quadratic_screen.dart';
+import 'package:calculus_system/topics/quadratics/screens/quadratics_radical_screen.dart';
+import 'package:calculus_system/topics/quadratics/screens/quadratics_variation_screen.dart';
+import 'package:calculus_system/topics/quadratics/screens/quadratics_sequences_screen.dart';
+import 'package:calculus_system/topics/quadratics/screens/quadratics_poly_division_screen.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart';
@@ -479,6 +498,108 @@ class AppRouter {
             builder: (context, state) => const ShsLHopitalScreen(),
           ),
         ],
+      ),
+
+      // ── ModMat leaves (Cycle 9 F1: paths match ModmatModuleRegistry
+      // wiredLeafRoutes; picker + section screens mirror /topics/modmat
+      // the way /shs mirrors /topics/shs) ──────────────────────────
+      GoRoute(
+        path: '/modmat',
+        name: 'modmat',
+        builder: (context, state) => const ModmatPickerScreen(),
+        routes: [
+          GoRoute(
+            path: 'foundations',
+            builder: (context, state) => const ModmatFoundationsScreen(),
+            routes: [
+              GoRoute(
+                path: 'propositional_logic',
+                builder: (context, state) => const ModmatPropositionalScreen(),
+              ),
+              GoRoute(
+                path: 'set_theory',
+                builder: (context, state) => const ModmatSetsScreen(),
+              ),
+              GoRoute(
+                path: 'number_systems',
+                builder: (context, state) => const ModmatBasesScreen(),
+              ),
+              GoRoute(
+                path: 'combinatorics_basics',
+                builder: (context, state) => const ModmatCombinatoricsScreen(),
+              ),
+              GoRoute(
+                path: 'predicate_logic',
+                builder: (context, state) => const ModmatPredicateScreen(),
+              ),
+              GoRoute(
+                path: 'relations_functions',
+                builder: (context, state) => const ModmatRelationsScreen(),
+              ),
+              GoRoute(
+                path: 'proof_techniques',
+                builder: (context, state) => const ModmatProofScreen(),
+              ),
+              GoRoute(
+                path: 'graph_theory_basics',
+                builder: (context, state) => const ModmatGraphBasicsScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'advanced',
+            builder: (context, state) => const ModmatAdvancedScreen(),
+            routes: [
+              GoRoute(
+                path: 'linear_algebra',
+                builder: (context, state) => const ModmatMatricesScreen(),
+              ),
+              GoRoute(
+                path: 'number_theory',
+                builder: (context, state) => const ModmatModularScreen(),
+              ),
+              GoRoute(
+                path: 'advanced_graph_theory',
+                builder: (context, state) => const ModmatAdvancedGraphScreen(),
+              ),
+              GoRoute(
+                path: 'algebraic_structures',
+                builder: (context, state) => const ModmatAlgebraicScreen(),
+              ),
+              GoRoute(
+                path: 'real_analysis',
+                builder: (context, state) => const ModmatRealAnalysisScreen(),
+              ),
+              GoRoute(
+                path: 'topology_basics',
+                builder: (context, state) => const ModmatTopologyScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+
+      // ── Quadratics (Cycle 9 F1: paths match CurriculumRegistry
+      // /grade9/* + /grade10/* wired topics) ───────────────────────
+      GoRoute(
+        path: '/grade9/quadratic-formula',
+        builder: (context, state) => const QuadraticsQuadraticScreen(),
+      ),
+      GoRoute(
+        path: '/grade9/radical-equations',
+        builder: (context, state) => const QuadraticsRadicalScreen(),
+      ),
+      GoRoute(
+        path: '/grade9/variation',
+        builder: (context, state) => const QuadraticsVariationScreen(),
+      ),
+      GoRoute(
+        path: '/grade10/sequences',
+        builder: (context, state) => const QuadraticsSequencesScreen(),
+      ),
+      GoRoute(
+        path: '/grade10/polynomial-division',
+        builder: (context, state) => const QuadraticsPolyDivisionScreen(),
       ),
     ],
   );

@@ -57,10 +57,10 @@ class UnifiedHit {
   /// solverAvailable == false. Non-curriculum hits fall back to
   /// the route guard for unwired future paths.
   ///
-  /// Cycle 8: ModMat leaf routes (/modmat/foundations/*,
-  /// /modmat/advanced/*) have no GoRouter destination yet — only
-  /// the picker + section screens are wired — so they are stubs
-  /// too, as is any /shs/* hit without a curriculum topic.
+  /// Cycle 9: ModMat leaf routes with landed screens (see
+  /// ModmatModuleRegistry.wiredLeafRoutes) are solver-backed; only
+  /// unwired leaves — as is any /shs/* hit without a curriculum
+  /// topic — are stubs too.
   bool get isStub {
     final topic = curriculumTopic;
     if (topic != null) return !topic.solverAvailable;
@@ -70,7 +70,9 @@ class UnifiedHit {
         route.startsWith('/shs')) {
       return true;
     }
-    if (ModmatModuleRegistry.isLeafRoute(route)) return true;
+    if (ModmatModuleRegistry.isLeafRoute(route)) {
+      return !ModmatModuleRegistry.isRouteAvailable(route);
+    }
     return false;
   }
 }

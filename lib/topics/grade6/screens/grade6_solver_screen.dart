@@ -159,139 +159,160 @@ class _Grade6SolverScreenState extends State<Grade6SolverScreen> {
 
     return Scaffold(
       backgroundColor: theme.surface,
+      // F5 MED shared responsive shell: LayoutBuilder breakpoints +
+      // centered max-width cap. All thin inheriting screens (~20)
+      // reflow at 320px and stop stretching on tablet/desktop.
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
-          children: [
-            _Header(config: widget.config),
-            const SizedBox(height: 28),
-            Text(
-              'Enter your problem',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: theme.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 10),
-            MathInputField(
-              controller: _ctrl,
-              accentColor: accent,
-              hint: widget.config.hint,
-              helperText: widget.config.helper,
-              errorText: hasError ? result.errorMessage : null,
-              onSolve: _solve,
-              onChanged: (_) {
-                if (_solved && hasError) {
-                  setState(() {
-                    _result = null;
-                    _solved = false;
-                  });
-                }
-              },
-            ),
-            if (widget.config.chips.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final chip in widget.config.chips)
-                    ActionChip(
-                      label: Text(
-                        chip.trim(),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: accent,
-                        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxWidth = constraints.maxWidth;
+            final double horizontal;
+            if (maxWidth >= 900) {
+              horizontal = 32;
+            } else if (maxWidth >= 600) {
+              horizontal = 24;
+            } else {
+              horizontal = 16;
+            }
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: ListView(
+                  padding: EdgeInsets.fromLTRB(horizontal, 20, horizontal, 40),
+                  children: [
+                    _Header(config: widget.config),
+                    const SizedBox(height: 28),
+                    Text(
+                      'Enter your problem',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: theme.textSecondary,
                       ),
-                      backgroundColor: accent.withValues(alpha: 0.08),
-                      side: BorderSide(
-                        color: accent.withValues(alpha: 0.3),
-                      ),
-                      onPressed: () {
-                        _ctrl.text = chip;
-                        _ctrl.selection = TextSelection.collapsed(
-                          offset: _ctrl.text.length,
-                        );
+                    ),
+                    const SizedBox(height: 10),
+                    MathInputField(
+                      controller: _ctrl,
+                      accentColor: accent,
+                      hint: widget.config.hint,
+                      helperText: widget.config.helper,
+                      errorText: hasError ? result.errorMessage : null,
+                      onSolve: _solve,
+                      onChanged: (_) {
+                        if (_solved && hasError) {
+                          setState(() {
+                            _result = null;
+                            _solved = false;
+                          });
+                        }
                       },
                     ),
-                ],
-              ),
-            ],
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _solve,
-                icon: const Icon(Icons.calculate_rounded, size: 18),
-                label: const ResponsiveText(
-                  'Solve',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: accent,
-                  foregroundColor: theme.surface,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 0,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            if (_solved && result != null) ...[
-              if (hasError)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.card,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: accent.withValues(alpha: 0.35),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.error_outline_rounded,
-                          color: accent, size: 18),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ResponsiveText(
-                          result.errorMessage ?? 'Unknown error',
-                          style: TextStyle(
-                            color: theme.textPrimary,
-                            fontSize: 14,
-                            height: 1.4,
-                          ),
-                        ),
+                    if (widget.config.chips.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          for (final chip in widget.config.chips)
+                            ActionChip(
+                              label: Text(
+                                chip.trim(),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: accent,
+                                ),
+                              ),
+                              backgroundColor: accent.withValues(alpha: 0.08),
+                              side: BorderSide(
+                                color: accent.withValues(alpha: 0.3),
+                              ),
+                              onPressed: () {
+                                _ctrl.text = chip;
+                                _ctrl.selection = TextSelection.collapsed(
+                                  offset: _ctrl.text.length,
+                                );
+                              },
+                            ),
+                        ],
                       ),
                     ],
-                  ),
-                )
-              else ...[
-                if (widget.config.graphKind != Grade6GraphKind.none)
-                  _graphFor(result, theme)
-                else
-                  const NoGraphPlaceholder(
-                    reason:
-                        'Numeric answer only — no diagram needed for this input.',
-                  ),
-                const SizedBox(height: 16),
-                AnswerCard(
-                  result: result,
-                  accentColor: accent,
-                  onTap: _showSteps,
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _solve,
+                        icon: const Icon(Icons.calculate_rounded, size: 18),
+                        label: const ResponsiveText(
+                          'Solve',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: accent,
+                          foregroundColor: theme.surface,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    if (_solved && result != null) ...[
+                      if (hasError)
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: theme.card,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: accent.withValues(alpha: 0.35),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline_rounded,
+                                  color: accent, size: 18),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: ResponsiveText(
+                                  result.errorMessage ?? 'Unknown error',
+                                  style: TextStyle(
+                                    color: theme.textPrimary,
+                                    fontSize: 14,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else ...[
+                        if (widget.config.graphKind != Grade6GraphKind.none)
+                          _graphFor(result, theme)
+                        else
+                          const NoGraphPlaceholder(
+                            reason:
+                                'Numeric answer only — no diagram needed for this input.',
+                          ),
+                        const SizedBox(height: 16),
+                        AnswerCard(
+                          result: result,
+                          accentColor: accent,
+                          onTap: _showSteps,
+                        ),
+                      ],
+                    ],
+                  ],
                 ),
-              ],
-            ],
-          ],
+              ),
+            );
+          },
         ),
       ),
     );
