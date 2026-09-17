@@ -66,3 +66,22 @@ build_output.txt
 /install.sh
 /upload-keystore.jks
 /key.properties
+
+# Cycle 5 F3c/F5/F7 hygiene: tutorial generated outputs + media are
+# local-only and must stay untracked. Source scripts (tutorial/*.py and
+# tutorial docs) stay tracked. History is not rewritten; this only guards
+# the worktree going forward.
+.opencode/acm-options-debug.json
+/tutorial/narration/
+/tutorial/narration_promo/
+/tutorial/music/
+/tutorial/promo_frames_v7/
+/tutorial/screenshots/
+/tutorial/slides/
+/tutorial/overlays/
+/tutorial/edit/
+/tutorial/__pycache__/
+tutorial/*.mp3
+tutorial/*.wav
+tutorial/*.mp4
+tutorial/*.png

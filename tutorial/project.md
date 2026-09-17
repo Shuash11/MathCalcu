@@ -14,9 +14,16 @@ A promotional/tutorial video for MathCalcu Flutter app with 9 segments following
 - **Official script:** `C:\Users\joashua\Downloads\MathCalcu_VideoPromo_Script.md`
 
 ### ElevenLabs API
-- Key in: `C:\Users\joashua\video-use\.env`
-- Key: `sk_d3bee5ebdb0fc6d937c799d43e62efafff8d1ecfb308d1c0`
+- Key source: `ELEVENLABS_API_KEY` (or `API_KEY`) env var, fallback to
+  local-only `~/video-use/.env` via `tutorial/elevenlabs_key.py`.
+  Never paste the key into the repo.
 - Voice ID: `hpp4J3VqNfWAUOO0d1Us`
+
+> Cycle 5 F1: a previous revision of this file and several promo scripts
+> contained a hardcoded ElevenLabs key (committed in v1.4.0 public
+> history). The worktree copy is now env-only. History cannot be purged
+> from here — the key owner must rotate the key in the ElevenLabs
+> dashboard outside the code.
 
 ### What Worked
 1. ElevenLabs API for narration (direct calls, not Voicebox)

@@ -3,7 +3,12 @@ import os
 import json
 import requests
 
-API_KEY = "sk_d3bee5ebdb0fc6d937c799d43e62efafff8d1ecfb308d1c0"
+try:
+    from elevenlabs_key import load_api_key
+except ImportError:  # `python -m tutorial.generate_narration` package mode
+    from tutorial.elevenlabs_key import load_api_key
+
+API_KEY = load_api_key()
 BASE_URL = "https://api.elevenlabs.io/v1"
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "narration")
 os.makedirs(OUTPUT_DIR, exist_ok=True)

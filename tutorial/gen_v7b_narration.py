@@ -4,7 +4,12 @@ import os, requests
 NARR_DIR = os.path.join(os.path.dirname(__file__), "narration_promo")
 os.makedirs(NARR_DIR, exist_ok=True)
 
-API_KEY = "sk_d3bee5ebdb0fc6d937c799d43e62efafff8d1ecfb308d1c0"
+try:
+    from elevenlabs_key import load_api_key
+except ImportError:  # `python -m tutorial.gen_v7b_narration` package mode
+    from tutorial.elevenlabs_key import load_api_key
+
+API_KEY = load_api_key()
 VOICE_ID = "pNInz6obpgDQGcFmaJgB"
 BASE_URL = "https://api.elevenlabs.io/v1/text-to-speech"
 

@@ -5,6 +5,7 @@ import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'distance_format.dart';
+import 'distance_mode_button.dart';
 import 'distancesteps.dart';
 import 'package:flutter/material.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -258,38 +259,7 @@ class _DistancescreenState extends State<Distancescreen>
   }
 
   Widget _buildModeButton(String label, bool active, VoidCallback onTap) {
-    final theme = context.watch<ThemeProvider>();
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          decoration: BoxDecoration(
-            color: active
-                ? context.watch<ThemeProvider>().accentColor
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: ResponsiveText(
-            label,
-            textAlign: TextAlign.center,
-            style: active
-                ? TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: theme.surface)
-                : TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: context
-                        .watch<ThemeProvider>()
-                        .textPrimary
-                        .withValues(alpha: 0.35)),
-          ),
-        ),
-      ),
-    );
+    return DistanceModeButton(label: label, active: active, onTap: onTap);
   }
 
   @override

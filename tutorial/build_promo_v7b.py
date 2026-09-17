@@ -7,7 +7,12 @@ NARR_DIR = os.path.join(BASE, "narration_promo")
 FRAMES_DIR = os.path.join(BASE, "promo_frames_v7")
 os.makedirs(NARR_DIR, exist_ok=True)
 
-API_KEY = "sk_d3bee5ebdb0fc6d937c799d43e62efafff8d1ecfb308d1c0"
+try:
+    from elevenlabs_key import load_api_key
+except ImportError:  # `python -m tutorial.build_promo_v7b` package mode
+    from tutorial.elevenlabs_key import load_api_key
+
+API_KEY = load_api_key()
 VOICE_ID = "pNInz6obpgDQGcFmaJgB"
 BASE_URL = "https://api.elevenlabs.io/v1/text-to-speech"
 LOGO_PATH = os.path.join(BASE, "..", "assets", "images", "app_icon.png")
