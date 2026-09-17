@@ -4,6 +4,9 @@ SymPy-verified Dart code generator for distance module.
 Generates: distancesolver.dart (DistanceResult + DistanceSolver)
 """
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from gen_shared import write_dart_formatted
 from sympy import symbols, sqrt, Abs, simplify, latex
 
 # ── Globals ────────────────────────────────────────────────────────────
@@ -217,8 +220,7 @@ class _ParseResult {
 
 def main():
     verify()
-    path = DART_DIR / "distancesolver.dart"
-    path.write_text(DART_CODE, encoding='utf-8')
+    path = write_dart_formatted(DART_DIR / "distancesolver.dart", DART_CODE)
     lines = DART_CODE.count('\n')
     print(f"Generated {path} [{lines} lines]")
 

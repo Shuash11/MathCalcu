@@ -311,10 +311,11 @@ class Tokenizer {
         default:
           if (_isDigit(ch) || ch == '.') {
             tokens.add(_readNumber());
-          } else if (_isAlpha(ch))
+          } else if (_isAlpha(ch)) {
             tokens.add(_readIdent());
-          else
+          } else {
             throw FormatException('Unexpected "$ch" at $pos');
+          }
       }
     }
     tokens.add(const Token(TokenType.eof, ''));
@@ -331,8 +332,9 @@ class Tokenizer {
       } else if (c == '.' && !dot) {
         dot = true;
         pos++;
-      } else
+      } else {
         break;
+      }
     }
     return Token(TokenType.number, input.substring(start, pos));
   }

@@ -63,14 +63,16 @@ class StepGenerator {
       originalEquation: eq,
       methodUsed: "Direct Substitution",
       steps: [
-        "**Substitute $varName = $valStr:**\n" r"$$" r"\lim_{" +
-            varName +
-            r" \to " +
-            valStr +
-            r"} " +
-            eqTex +
-            r" = " +
-            resStr +
+        "**Substitute $varName = $valStr:**\n"
+            r"$$"
+            r"\lim_{"
+            '$varName'
+            r" \to "
+            '$valStr'
+            r"} "
+            '$eqTex'
+            r" = "
+            '$resStr'
             r"$$",
       ],
       finalAnswer: result,
@@ -107,60 +109,64 @@ class StepGenerator {
         _buildCombinedNumeratorTex(n1Tex, d2Tex, numerator.op, n2Tex, d1Tex);
 
     // Step 1: Write the given limit
-    final step1 = "Write the given limit.\n" r"$$" r"\lim_{" +
-        varName +
-        r" \to " +
-        valStr +
-        r"} \frac{\frac{" +
-        n1Tex +
-        r"}{" +
-        d1Tex +
-        r"} - \frac{" +
-        n2Tex +
-        r"}{" +
-        d2Tex +
-        r"}}{" +
-        denTex +
+    final step1 = "Write the given limit.\n"
+        r"$$"
+        r"\lim_{"
+        '$varName'
+        r" \to "
+        '$valStr'
+        r"} \frac{\frac{"
+        '$n1Tex'
+        r"}{"
+        '$d1Tex'
+        r"} - \frac{"
+        '$n2Tex'
+        r"}{"
+        '$d2Tex'
+        r"}}{"
+        '$denTex'
         r"}$$";
 
     // Step 2: Find the LCD of the fractions in the numerator
     final step2 = "Find the LCD of the fractions in the numerator.\n"
-            r"$$"
-            r"\text{LCD} = " +
-        lcdTex +
+        r"$$"
+        r"\text{LCD} = "
+        '$lcdTex'
         r"$$";
 
     // Step 3: Rewrite the numerator as a single fraction
-    final step3 =
-        "Rewrite the numerator as a single fraction.\n" r"$$" r"\frac{" +
-            n1Tex +
-            r"}{" +
-            d1Tex +
-            r"} - \frac{" +
-            n2Tex +
-            r"}{" +
-            d2Tex +
-            r"} = \frac{" +
-            combinedNumTex +
-            r"}{" +
-            lcdTex +
-            r"}$$";
+    final step3 = "Rewrite the numerator as a single fraction.\n"
+        r"$$"
+        r"\frac{"
+        '$n1Tex'
+        r"}{"
+        '$d1Tex'
+        r"} - \frac{"
+        '$n2Tex'
+        r"}{"
+        '$d2Tex'
+        r"} = \frac{"
+        '$combinedNumTex'
+        r"}{"
+        '$lcdTex'
+        r"}$$";
 
     // Step 4: Rewrite the entire complex fraction
-    final step4 =
-        "Rewrite the entire complex fraction.\n" r"$$" r"\frac{\frac{" +
-            combinedNumTex +
-            r"}{" +
-            lcdTex +
-            r"}}{" +
-            denTex +
-            r"} = \frac{" +
-            combinedNumTex +
-            r"}{(" +
-            lcdTex +
-            ")(" +
-            denTex +
-            r")}$$";
+    final step4 = "Rewrite the entire complex fraction.\n"
+        r"$$"
+        r"\frac{\frac{"
+        '$combinedNumTex'
+        r"}{"
+        '$lcdTex'
+        r"}}{"
+        '$denTex'
+        r"} = \frac{"
+        '$combinedNumTex'
+        r"}{("
+        '$lcdTex'
+        r")("
+        '$denTex'
+        r")}$$";
 
     // Check if this is a sqrt case that needs rationalization
     final isSqrtRationalization = _isSqrtRationalizationCase(
@@ -204,11 +210,12 @@ class StepGenerator {
     }
     final substitutionExpr = factorization.simplifiedExpr.isNotEmpty
         ? factorization.simplifiedExpr
-        : r"\frac{" + combinedNumTex + r"}{(" + lcdTex + r")(" + denTex + r")}";
+        : r"\frac{" '$combinedNumTex' r"}{(" '$lcdTex' r")(" '$denTex' r")}";
 
     // Step 5: Simplify and cancel common factors
-    final step5 = "Simplify and cancel common factors.\n" r"$$" +
-        substitutionExpr +
+    final step5 = "Simplify and cancel common factors.\n"
+        r"$$"
+        '$substitutionExpr'
         r"$$";
 
     // Step 6: Substitute the approach value
@@ -237,15 +244,19 @@ class StepGenerator {
     }
 
     // Step 7: State the exact answer
-    final step7 = "State the exact answer.\n" r"$$" r"\text{Exact answer: }" +
-        exactAnswerTex +
+    final step7 = "State the exact answer.\n"
+        r"$$"
+        r"\text{Exact answer: }"
+        '$exactAnswerTex'
         r"$$";
 
     // Step 8: State the approximation (only for irrational)
     final String step8;
     if (hasSqrt && approxAnswerTex.isNotEmpty) {
-      step8 = "State the approximation.\n" r"$$" r"\text{Approximation: }" +
-          approxAnswerTex +
+      step8 = "State the approximation.\n"
+          r"$$"
+          r"\text{Approximation: }"
+          '$approxAnswerTex'
           r"$$";
     } else {
       step8 = "";
@@ -846,72 +857,78 @@ class StepGenerator {
         r")}";
 
     // ignore: prefer_const_declarations
-    final step1 = "Identify the complex fraction.\n" r"$$" r"\lim_{" +
-        varName +
-        r" \to " +
-        valStr +
-        r"} \frac{\frac{" +
-        n1Tex +
-        r"}{" +
-        data.d1Tex +
-        r"} - \frac{" +
-        n2Tex +
-        r"}{" +
-        data.d2Tex +
-        r"}}{" +
-        denTex +
+    final step1 = "Identify the complex fraction.\n"
+        r"$$"
+        r"\lim_{"
+        '$varName'
+        r" \to "
+        '$valStr'
+        r"} \frac{\frac{"
+        '$n1Tex'
+        r"}{"
+        '${data.d1Tex}'
+        r"} - \frac{"
+        '$n2Tex'
+        r"}{"
+        '${data.d2Tex}'
+        r"}}{"
+        '$denTex'
         r"}$$";
 
     // ignore: prefer_const_declarations
-    final step2 =
-        "Find the LCD of the numerator terms.\n" r"$$" r"\text{LCD} = " +
-            data.d1Tex +
-            r" \cdot " +
-            data.d2Tex +
-            r" = " +
-            lcdTex +
-            r"$$";
+    final step2 = "Find the LCD of the numerator terms.\n"
+        r"$$"
+        r"\text{LCD} = "
+        '${data.d1Tex}'
+        r" \cdot "
+        '${data.d2Tex}'
+        r" = "
+        '$lcdTex'
+        r"$$";
 
-    final step3 = "Rewrite with common denominator.\n" r"$$" r"\frac{" +
-        aStr +
-        r" - " +
-        sqrtTerm +
-        r"}{" +
-        lcdTex +
-        r"} \cdot \frac{1}{" +
-        denTex +
-        r"} = \frac{" +
-        aStr +
-        r" - " +
-        sqrtTerm +
-        r"}{" +
-        lcdTex +
-        r" \cdot (" +
-        denTex +
+    final step3 = "Rewrite with common denominator.\n"
+        r"$$"
+        r"\frac{"
+        '$aStr'
+        r" - "
+        '$sqrtTerm'
+        r"}{"
+        '$lcdTex'
+        r"} \cdot \frac{1}{"
+        '$denTex'
+        r"} = \frac{"
+        '$aStr'
+        r" - "
+        '$sqrtTerm'
+        r"}{"
+        '$lcdTex'
+        r" \cdot ("
+        '$denTex'
         r")}$$";
 
-    final step4 =
-        "Rationalize by multiplying by the conjugate.\n" r"$$" r"\frac{" +
-            aStr +
-            r" - " +
-            sqrtTerm +
-            r"}{" +
-            lcdTex +
-            r" \cdot (" +
-            denTex +
-            r")} \cdot \frac{" +
-            conjugate +
-            r"}{" +
-            conjugate +
-            r"} = \frac{" +
-            rationalizedNum +
-            r"}{" +
-            lcdTex +
-            r" \cdot (" +
-            denTex +
-            r")(" +
-            conjugate +
-            r")}$$";
+    final step4 = "Rationalize by multiplying by the conjugate.\n"
+        r"$$"
+        r"\frac{"
+        '$aStr'
+        r" - "
+        '$sqrtTerm'
+        r"}{"
+        '$lcdTex'
+        r" \cdot ("
+        '$denTex'
+        r")} \cdot \frac{"
+        '$conjugate'
+        r"}{"
+        '$conjugate'
+        r"} = \frac{"
+        '$rationalizedNum'
+        r"}{"
+        '$lcdTex'
+        r" \cdot ("
+        '$denTex'
+        r")("
+        '$conjugate'
+        r")}$$";
 
     final step5 =
         "Apply difference of squares: $denTex \\cdot $conjugate = ${numeratorIsNegative ? "-" : ""}($denTex)\$\$\nThen simplify the numerator.";

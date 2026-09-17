@@ -144,10 +144,11 @@ class Tokenizer {
         default:
           if (_isDigit(ch) || ch == '.') {
             tokens.add(_readNumber());
-          } else if (_isAlpha(ch) || ch == '_')
+          } else if (_isAlpha(ch) || ch == '_') {
             tokens.add(_readIdent());
-          else
+          } else {
             throw FormatException('Unexpected "$ch" at $pos');
+          }
       }
     }
     tokens.add(const Token(TokenType.eof, ''));
@@ -164,8 +165,9 @@ class Tokenizer {
       } else if (c == '.' && !dot) {
         dot = true;
         pos++;
-      } else
+      } else {
         break;
+      }
     }
     return Token(TokenType.number, input.substring(start, pos));
   }
@@ -785,9 +787,11 @@ class SlopeSolver {
     for (int i = 0; i < s.length; i++) {
       if (s[i] == '(') {
         d++;
-      } else if (s[i] == ')')
+      } else if (s[i] == ')') {
         d--;
-      else if (s[i] == ',' && d == 0) return true;
+      } else if (s[i] == ',' && d == 0) {
+        return true;
+      }
     }
     return false;
   }
@@ -814,9 +818,9 @@ class SlopeSolver {
     for (int i = 0; i < s.length; i++) {
       if (s[i] == '(') {
         d++;
-      } else if (s[i] == ')')
+      } else if (s[i] == ')') {
         d--;
-      else if (s[i] == ',' && d == 0) {
+      } else if (s[i] == ',' && d == 0) {
         p.add(s.substring(st, i).trim());
         st = i + 1;
       }
@@ -846,7 +850,9 @@ class SlopeSolver {
           ns = -1.0 / ts;
           final ny = yv - ns * xv;
           ne = _lineEq(ns, ny, xv, yv);
-        } else if (ts == 0) ne = 'x = ${_fmt(xv)} (vertical)';
+        } else if (ts == 0) {
+          ne = 'x = ${_fmt(xv)} (vertical)';
+        }
       } catch (_) {}
     }
     return SlopeResult(
@@ -889,7 +895,9 @@ class SlopeSolver {
           ns = -1.0 / ts;
           final ny = yv - ns * xv;
           ne = _lineEq(ns, ny, xv, yv);
-        } else if (ts == 0) ne = 'x = ${_fmt(xv)} (vertical)';
+        } else if (ts == 0) {
+          ne = 'x = ${_fmt(xv)} (vertical)';
+        }
       } catch (_) {}
     }
     return SlopeResult(
@@ -925,11 +933,14 @@ class SlopeSolver {
       if (l is Var && l.name == 'x') {
         xE = r;
         final vs = ExprUtils.collectVars(r);
-        if (vs.isNotEmpty) pv2 = vs.first;
+        if (vs.isNotEmpty) {
+          pv2 = vs.first;
+        }
       } else if (l is Var && l.name == 'y') {
         yE = r;
-      } else
+      } else {
         throw FormatException('Expected x=... y=..., got "${part.trim()}"');
+      }
     }
     if (xE == null || yE == null) {
       throw const FormatException('Both x(t) and y(t) required');
@@ -937,7 +948,9 @@ class SlopeSolver {
     final aV = ExprUtils.collectVars(xE)
         .union(ExprUtils.collectVars(yE))
         .difference({'x', 'y'});
-    if (aV.isNotEmpty) pv2 = aV.first;
+    if (aV.isNotEmpty) {
+      pv2 = aV.first;
+    }
     final dx = Simplifier.simplify(Differentiator.differentiate(xE, pv2));
     final dy = Simplifier.simplify(Differentiator.differentiate(yE, pv2));
     final ps = Simplifier.simplify(BinOp(dy, '/', dx));
@@ -964,8 +977,9 @@ class SlopeSolver {
             ns = -1.0 / ts;
             final ny = yv - ns * xv;
             ne = '${_lineEq(ns, ny, xv, yv)}  [at $pv2=${_fmt(tv)}]';
-          } else if (ts == 0)
+          } else if (ts == 0) {
             ne = 'x = ${_fmt(xv)} (vertical at $pv2=${_fmt(tv)})';
+          }
         }
       } catch (_) {}
     }

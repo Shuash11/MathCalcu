@@ -4,8 +4,9 @@ SymPy-verified Dart code generator for Derivatives module.
 Generates: derivatives_solver.dart (Expr AST + Parser + Differentiator + Step gen)
 """
 from pathlib import Path
-import os
-import subprocess
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from gen_shared import write_dart_formatted
 from sympy import (
     symbols, diff, simplify, latex, exp, sqrt, Abs, sin, cos, tan,
     log, parse_expr, Pow, Mul, Add, Symbol, Number, expand, factor
@@ -636,15 +637,7 @@ class DerivativeSolver {
 
 def main():
     verify()
-    path = DART_DIR / "derivatives_solver.dart"
-    path.write_text(DART_CODE, encoding='utf-8')
-    # Keep regen output format-clean so the `dart format` CI gate stays green.
-    # (shell=True on Windows because dart ships as dart.BAT there.)
-    try:
-        subprocess.run(["dart", "format", str(path)], check=True,
-                       shell=(os.name == "nt"))
-    except (OSError, subprocess.CalledProcessError) as e:
-        print(f"  (warning: dart format skipped: {e})")
+    path = write_dart_formatted(DART_DIR / "derivatives_solver.dart", DART_CODE)
     lines = DART_CODE.count('\n')
     print(f"\nGenerated {path} [{lines} lines]")
 

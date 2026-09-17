@@ -7,6 +7,9 @@ Generates:
   - center_radius_solver.dart (conversion between center-radius & general forms)
 """
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from gen_shared import write_dart_formatted
 from sympy import symbols, simplify, latex, sqrt, Rational
 
 # ── Globals ────────────────────────────────────────────────────────────
@@ -635,9 +638,9 @@ class CircleEquationSolver {
 def main():
     verify()
 
-    (DART_DIR / "center_solver.dart").write_text(CENTER_SOLVER, encoding='utf-8')
-    (DART_DIR / "radius_solver.dart").write_text(RADIUS_SOLVER, encoding='utf-8')
-    (DART_DIR / "center_radius_solver.dart").write_text(CENTER_RADIUS_SOLVER, encoding='utf-8')
+    write_dart_formatted(DART_DIR / "center_solver.dart", CENTER_SOLVER)
+    write_dart_formatted(DART_DIR / "radius_solver.dart", RADIUS_SOLVER)
+    write_dart_formatted(DART_DIR / "center_radius_solver.dart", CENTER_RADIUS_SOLVER)
 
     total = CENTER_SOLVER.count('\n') + RADIUS_SOLVER.count('\n') + CENTER_RADIUS_SOLVER.count('\n')
     print(f"Generated 3 files ({total} total lines) in {DART_DIR}/")

@@ -4,6 +4,9 @@ SymPy-verified Dart code generator for point-slope module.
 Generates: pointslopesolver.dart (Fraction + SolveStep + PointSlopeSolver)
 """
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from gen_shared import write_dart_formatted
 from sympy import symbols, simplify, latex, pi, atan, Rational, Integer
 
 # ── Globals ────────────────────────────────────────────────────────────
@@ -363,8 +366,7 @@ class PointSlopeSolver {
 
 def main():
     verify()
-    path = DART_DIR / "pointslopesolver.dart"
-    path.write_text(DART_CODE, encoding='utf-8')
+    path = write_dart_formatted(DART_DIR / "pointslopesolver.dart", DART_CODE)
     lines = DART_CODE.count('\n')
     print(f"Generated {path} [{lines} lines]")
 

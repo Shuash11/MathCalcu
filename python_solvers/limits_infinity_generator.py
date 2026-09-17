@@ -5,6 +5,9 @@ Generates: limits_infinity_solver.dart
 Uses SymPy limit() for verification of rational/polynomial limits.
 """
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from gen_shared import write_dart_formatted
 from sympy import (
     symbols, limit, oo, simplify, latex, parse_expr, Symbol, Rational,
     degree as sp_degree, Poly, LC, expand, fraction
@@ -675,8 +678,7 @@ class LimitSolver {
 
 def main():
     verify()
-    path = DART_DIR / "limits_infinity_solver.dart"
-    path.write_text(DART_CODE, encoding='utf-8')
+    path = write_dart_formatted(DART_DIR / "limits_infinity_solver.dart", DART_CODE)
     lines = DART_CODE.count('\n')
     print(f"\nGenerated {path} [{lines} lines]")
 

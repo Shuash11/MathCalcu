@@ -147,9 +147,10 @@ class BinOp extends Expr {
         if (_isZero(l) || _isZero(r)) return const Num(0);
         if (_isOne(l)) return r;
         if (_isOne(r)) return l;
-        if (l is Num && r is BinOp && r.op == '*' && r.left is Num)
+        if (l is Num && r is BinOp && r.op == '*' && r.left is Num) {
           return BinOp('*', Num(l.value * (r.left as Num).value), r.right)
               .simplify();
+        }
       case '/':
         if (_isZero(l)) return const Num(0);
         if (_isOne(r)) return l;
@@ -157,8 +158,9 @@ class BinOp extends Expr {
         if (l is BinOp && l.op == '*' && l.left is Num && r is Num) {
           final nl = (l.left as Num).value, nr = r.value;
           if (nl == nr) return l.right.simplify();
-          if (nr != 0 && (nl / nr).round() == nl / nr)
+          if (nr != 0 && (nl / nr).round() == nl / nr) {
             return BinOp('*', Num(nl / nr), l.right).simplify();
+          }
         }
       case '^':
         if (_isZero(r)) return const Num(1);
@@ -218,8 +220,9 @@ class BinOp extends Expr {
     if (e is BinOp) {
       final ep = _prec(e.op);
       if (ep < p ||
-          (ep == p && rightSide && (op == '-' || op == '/' || op == '^')))
+          (ep == p && rightSide && (op == '-' || op == '/' || op == '^'))) {
         return '($e)';
+      }
     }
     if (e is Neg) return '($e)';
     return e.toString();
@@ -310,7 +313,7 @@ class Func extends Expr {
         break;
       case 'log':
         outer = BinOp(
-            '/', const Num(1), BinOp('*', arg, Func('ln', const Num(10))));
+            '/', const Num(1), BinOp('*', arg, const Func('ln', Num(10))));
         break;
       case 'sqrt':
         outer = BinOp('/', const Num(1), BinOp('*', const Num(2), Sqrt(arg)));
@@ -350,8 +353,12 @@ class Func extends Expr {
         return this;
       }
     }
-    if (name == 'sqrt' && s is BinOp && s.op == '^' && s.right == const Num(2))
+    if (name == 'sqrt' &&
+        s is BinOp &&
+        s.op == '^' &&
+        s.right == const Num(2)) {
       return Abs(s.left);
+    }
     return Func(name, s);
   }
 
@@ -386,8 +393,9 @@ class Sqrt extends Expr {
       final v = s.constValue!;
       if (v >= 0) return Num(math.sqrt(v));
     }
-    if (s is BinOp && s.op == '^' && s.right == const Num(2))
+    if (s is BinOp && s.op == '^' && s.right == const Num(2)) {
       return Abs(s.left);
+    }
     return Sqrt(s);
   }
 
@@ -494,7 +502,9 @@ class Tokenizer {
   }
 
   void _skipWs() {
-    while (_pos < input.length && input[_pos] == ' ') _pos++;
+    while (_pos < input.length && input[_pos] == ' ') {
+      _pos++;
+    }
   }
 
   bool _isDigit(String c) => c.codeUnitAt(0) >= 48 && c.codeUnitAt(0) <= 57;
@@ -515,8 +525,9 @@ class Tokenizer {
         b.write(c);
         dot = true;
         _pos++;
-      } else
+      } else {
         break;
+      }
     }
     return Token(TokenType.number, b.toString(), start);
   }
@@ -557,8 +568,9 @@ class Parser {
 
   Expr parse() {
     final e = _expr();
-    if (_i < tokens.length && tokens[_i].type != TokenType.eof)
+    if (_i < tokens.length && tokens[_i].type != TokenType.eof) {
       throw ParseException('Unexpected: ${tokens[_i]}', tokens[_i].pos);
+    }
     return e;
   }
 
@@ -583,8 +595,9 @@ class Parser {
       } else if (_isImplicitMul()) {
         final r = _unary();
         l = BinOp('*', l, r);
-      } else
+      } else {
         break;
+      }
     }
     return l;
   }
@@ -592,19 +605,22 @@ class Parser {
   bool _isImplicitMul() {
     if (_i >= tokens.length) return false;
     final n = tokens[_i], p = tokens[_i - 1];
-    if (p.type == TokenType.rParen)
+    if (p.type == TokenType.rParen) {
       return n.type == TokenType.lParen ||
           n.type == TokenType.number ||
           n.type == TokenType.variable ||
           n.type == TokenType.function;
-    if (p.type == TokenType.number)
+    }
+    if (p.type == TokenType.number) {
       return n.type == TokenType.variable ||
           n.type == TokenType.function ||
           n.type == TokenType.lParen;
-    if (p.type == TokenType.variable)
+    }
+    if (p.type == TokenType.variable) {
       return n.type == TokenType.variable ||
           n.type == TokenType.function ||
           n.type == TokenType.lParen;
+    }
     return false;
   }
 
@@ -668,8 +684,9 @@ class Parser {
   }
 
   void _expect(TokenType type) {
-    if (_peek().type != type)
+    if (_peek().type != type) {
       throw ParseException('Expected $type, got ${_peek().type}', _peek().pos);
+    }
     _advance();
   }
 }
@@ -813,8 +830,9 @@ class DerivativeSolver {
 
   static String _determineRule(Expr e) {
     if (e is BinOp && e.op == '^' && e.right.isConst) return 'Power Rule';
-    if (e is BinOp && e.op == '^' && e.left.isConst && !e.right.isConst)
+    if (e is BinOp && e.op == '^' && e.left.isConst && !e.right.isConst) {
       return 'Exponential Rule';
+    }
     if (e is BinOp) {
       switch (e.op) {
         case '/':

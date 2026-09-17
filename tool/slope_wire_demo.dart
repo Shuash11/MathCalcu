@@ -1,7 +1,8 @@
-﻿// main.dart
-// Entry point only: CLI argument parsing and the demo suite.
+// tool/slope_wire_demo.dart
+// CLI demo harness only (not part of the app): argument parsing + demo suite.
 // Wires together: SlopeSolver (compute) → PrettyPrinter (display).
 // No mathematics or formatting logic lives here.
+// Run: dart run tool/slope_wire_demo.dart "<equation>" [var=value ...]
 
 import 'dart:io';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/display_answer.dart';
@@ -66,11 +67,15 @@ void main(List<String> args) {
   if (args.isNotEmpty) {
     final (eq, vals) = _parseArgs(args);
     if (eq.isEmpty) {
-      stderr.writeln('Usage: dart main.dart "<equation>" [var=value ...]');
+      stderr.writeln(
+          'Usage: dart run tool/slope_wire_demo.dart "<equation>" [var=value ...]');
       stderr.writeln('Examples:');
-      stderr.writeln('  dart main.dart "y = x^3 - 2x + 1" x=2');
-      stderr.writeln('  dart main.dart "x^2 + y^2 = 25" x=3 y=4');
-      stderr.writeln('  dart main.dart "x=cos(t), y=sin(t)" t=1.5708');
+      stderr.writeln(
+          '  dart run tool/slope_wire_demo.dart "y = x^3 - 2x + 1" x=2');
+      stderr.writeln(
+          '  dart run tool/slope_wire_demo.dart "x^2 + y^2 = 25" x=3 y=4');
+      stderr.writeln(
+          '  dart run tool/slope_wire_demo.dart "x=cos(t), y=sin(t)" t=1.5708');
       exit(1);
     }
     try {

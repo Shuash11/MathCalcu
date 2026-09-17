@@ -4,6 +4,9 @@ SymPy-verified Dart code generator for y-intercept/linear equations module.
 Generates 3 files: fraction.dart, yi_solver.dart, yi_steps.dart.
 """
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from gen_shared import write_dart_formatted
 from sympy import symbols, expand, solve, Eq, latex, Rational, simplify, gcd
 
 # ── Globals ────────────────────────────────────────────────────────────
@@ -81,7 +84,7 @@ def verify():
 def write_dart(filename, content):
     assert DART_DIR.is_dir(), f"Generator target missing: {DART_DIR}"
     path = DART_DIR / filename
-    path.write_text(content, encoding='utf-8')
+    write_dart_formatted(path, content)
     lines = content.count('\n')
     print(f"  + {filename} ({lines} lines)")
 
