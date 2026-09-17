@@ -71,6 +71,10 @@ build_output.txt
 # local-only and must stay untracked. Source scripts (tutorial/*.py and
 # tutorial docs) stay tracked. History is not rewritten; this only guards
 # the worktree going forward.
+# Cycle 6 P1 hygiene: agent working files (.opencode/plans, tasks, debug,
+# loop-criteria, agents, skills, opencode.json, orchestrator-subagents) are
+# local-only and must stay untracked. History is not rewritten.
+.opencode/
 .opencode/acm-options-debug.json
 /tutorial/narration/
 /tutorial/narration_promo/
