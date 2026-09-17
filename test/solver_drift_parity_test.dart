@@ -96,8 +96,7 @@ void main() {
       expect(r.points[1], closeTo(2, 1e-9));
     });
 
-    test('Slope generator power-rule vectors (slope_generator.py verify)',
-        () {
+    test('Slope generator power-rule vectors (slope_generator.py verify)', () {
       // d/dx x^2 = 2x  ->  slope 6 at x=3.
       expect(
         SlopeSolver.solve('y = x^2', pointValues: {'x': 3.0}).slopeValue,

@@ -9,7 +9,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 String _allLatex(String input) {
   final steps = InequalitySolverRouter.getSteps(input);
-  return steps.map((s) => '${s.latex} ${(s.details ?? []).join(' ')}').join('\n');
+  return steps
+      .map((s) => '${s.latex} ${(s.details ?? []).join(' ')}')
+      .join('\n');
 }
 
 void main() {

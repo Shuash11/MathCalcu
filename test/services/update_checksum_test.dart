@@ -48,8 +48,7 @@ void main() {
     });
 
     test('parses BSD format and skips comments', () {
-      const manifest =
-          '# MathCalcu checksums\n'
+      const manifest = '# MathCalcu checksums\n'
           'SHA256 (MathCalcu.apk) = ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n';
       expect(
         UpdateChecksum.parseChecksumFile(manifest, 'MathCalcu.apk'),
@@ -84,7 +83,7 @@ void main() {
       expect(
         UpdateChecksum.extractFromReleaseBody(
           'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad and '
-          'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb',
+              'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb',
           'MathCalcu.apk',
         ),
         isNull,
@@ -107,7 +106,8 @@ void main() {
         },
         'MathCalcu.apk',
       );
-      expect(resolved.sha256Hex, 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+      expect(resolved.sha256Hex,
+          'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
     });
 
     test('falls back to a manifest URL', () {
@@ -124,6 +124,31 @@ void main() {
       );
       expect(resolved.sha256Hex, isNull);
       expect(resolved.checksumFileUrl, 'https://example.com/checksums.txt');
+    });
+
+    test('recognizes the published extensionless SHA256SUMS asset', () {
+      final resolved = UpdateChecksum.resolveFromReleaseJson(
+        {
+          'assets': [
+            {
+              'name': 'MathCalcu.apk',
+              'browser_download_url': 'https://example.com/a.apk',
+            },
+            {
+              'name': 'SHA256SUMS',
+              'browser_download_url': 'https://example.com/SHA256SUMS',
+            },
+            {
+              'name': 'release-manifest.json',
+              'browser_download_url':
+                  'https://example.com/release-manifest.json',
+            },
+          ],
+        },
+        'MathCalcu.apk',
+      );
+      expect(resolved.sha256Hex, isNull);
+      expect(resolved.checksumFileUrl, 'https://example.com/SHA256SUMS');
     });
   });
 
@@ -158,7 +183,8 @@ void main() {
       );
 
       expect(info.status, UpdateStatus.updateAvailable);
-      expect(info.apkSha256, 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+      expect(info.apkSha256,
+          'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
       expect(info.sha256ForBinary('MathCalcu.apk'), info.apkSha256);
       expect(info.sha256ForBinary('other.bin'), isNull);
     });

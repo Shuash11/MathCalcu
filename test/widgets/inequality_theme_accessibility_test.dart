@@ -173,10 +173,10 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          GraphWidget(
+          const GraphWidget(
             result: result,
             accentColor: Colors.blue,
-            graphBody: const SizedBox(),
+            graphBody: SizedBox(),
           ),
         ),
       );
@@ -248,7 +248,7 @@ void main() {
 
       await tester.pumpWidget(
         buildFullApp(
-          FullScreenGraphScreen(
+          const FullScreenGraphScreen(
             title: 'Test Graph',
             graph: InequalityGraph(
               result: result,
@@ -391,12 +391,12 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          SizedBox(
+          const SizedBox(
             width: 300,
             height: 200,
             child: InequalityGraph(
               result: result,
-              accentColor: const Color(0xFF334155),
+              accentColor: Color(0xFF334155),
             ),
           ),
         ),
@@ -415,12 +415,12 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          SizedBox(
+          const SizedBox(
             width: 300,
             height: 200,
             child: InequalityGraph(
               result: result,
-              accentColor: const Color(0xFF334155),
+              accentColor: Color(0xFF334155),
             ),
           ),
         ),
@@ -438,12 +438,12 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          SizedBox(
+          const SizedBox(
             width: 300,
             height: 200,
             child: InequalityGraph(
               result: result,
-              accentColor: const Color(0xFF334155),
+              accentColor: Color(0xFF334155),
             ),
           ),
         ),
@@ -461,12 +461,12 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          SizedBox(
+          const SizedBox(
             width: 300,
             height: 200,
             child: InequalityGraph(
               result: result,
-              accentColor: const Color(0xFF334155),
+              accentColor: Color(0xFF334155),
             ),
           ),
         ),
@@ -485,12 +485,12 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          SizedBox(
+          const SizedBox(
             width: 300,
             height: 200,
             child: InequalityGraph(
               result: result,
-              accentColor: const Color(0xFF334155),
+              accentColor: Color(0xFF334155),
             ),
           ),
         ),
@@ -511,12 +511,12 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          SizedBox(
+          const SizedBox(
             width: 300,
             height: 200,
             child: InequalityGraph(
               result: result,
-              accentColor: const Color(0xFFE9ECEF), // dark mode accent
+              accentColor: Color(0xFFE9ECEF), // dark mode accent
             ),
           ),
           theme: darkTheme,
