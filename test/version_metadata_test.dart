@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('package metadata declares exactly 1.13.0+12', () {
+  test('package metadata declares exactly 1.14.0+13', () {
     final pubspec = File('pubspec.yaml').readAsLinesSync();
     final versionLines = pubspec
         .where((line) => line.trimLeft().startsWith('version:'))
         .toList();
 
-    expect(versionLines, equals(['version: 1.13.0+12']));
+    expect(versionLines, equals(['version: 1.14.0+13']));
   });
 
   test('stale version sources are absent', () {
