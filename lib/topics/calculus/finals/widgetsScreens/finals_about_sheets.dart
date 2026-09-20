@@ -204,7 +204,7 @@ class _FinalsAboutSheet extends StatelessWidget {
                               ),
                               SizedBox(height: 4 * s),
                               Text(
-                                '${_developers.length} developers ? Finals Period',
+                                '${_developers.length} developers • Finals Period',
                                 style: TextStyle(
                                   fontSize: 14 * s,
                                   color: FinalsTheme.textSecondary(context),

@@ -294,13 +294,10 @@ class Parser {
         if (name == 'pi' || name == '\u03c0') return const Const('pi', math.pi);
       }
       if (current.type == TokenType.lparen) {
-        advance();
-        while (
-            current.type != TokenType.rparen && current.type != TokenType.eof) {
-          advance();
-        }
-        if (current.type == TokenType.rparen) advance();
-        return const Var('y');
+        throw FormatException(
+            'Unknown function "$name": call notation like $name(...) is not '
+            'supported. Use known functions (sin, cos, tan, ln, exp, sqrt, '
+            '...) or write the expression explicitly.');
       }
       return Var(name);
     }

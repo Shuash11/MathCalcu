@@ -1,8 +1,8 @@
 // ═════════════════════════════════════════════════════════════
 // CENTER-RADIUS FORM SOLVER  (generated via SymPy)
 // ─────────────────────────────────────────────────────────────
-// Converts between center-radius form (x-h)?+(y-k)?=r? and
-// general form x?+y?+Dx+Ey+F=0 via completing the square.
+// Converts between center-radius form (x-h)²+(y-k)²=r² and
+// general form x²+y²+Dx+Ey+F=0 via completing the square.
 //
 // Also parses general form equation strings.
 // ═════════════════════════════════════════════════════════════
@@ -156,10 +156,10 @@ class GeneralFormParser {
     }
 
     if (x2coeff.abs() < eps || y2coeff.abs() < eps) {
-      throw ArgumentError('Invalid: missing x? or y? term');
+      throw ArgumentError('Invalid: missing x² or y² term');
     }
     if ((x2coeff - y2coeff).abs() > eps) {
-      throw ArgumentError('Not a circle: x?=$x2coeff ≠? y?=$y2coeff');
+      throw ArgumentError('Not a circle: x²=$x2coeff ≠ y²=$y2coeff');
     }
     if ((x2coeff - 1.0).abs() > eps) {
       D /= x2coeff;
@@ -174,8 +174,8 @@ class GeneralFormParser {
 // ── Converter ──────────────────────────────────────────────────────────
 
 class CircleEquationSolver {
-  /// Standard -> General: (x-h)?+(y-k)?=r? -> x?+y?+Dx+Ey+F=0
-  ///   D = -2h, E = -2k, F = h?+k?-r?
+  /// Standard -> General: (x-h)²+(y-k)²=r² -> x²+y²+Dx+Ey+F=0
+  ///   D = -2h, E = -2k, F = h²+k²-r²
   static List<SolverStep> standardToGeneral({
     required double h,
     required double k,
@@ -193,30 +193,30 @@ class CircleEquationSolver {
           label: 'Center-Radius Form',
           arrow: true,
           equation:
-              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(r)}?',
+              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(r)}²',
           color: SolverColors.teal),
       SolverStep(
-          label: 'Substitute r? = ${_fmt(rSq)}',
+          label: 'Substitute r² = ${_fmt(rSq)}',
           equation:
-              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(rSq)}'),
+              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(rSq)}'),
       SolverStep(
           label: 'Expand binomial squares',
           equation:
-              'x? ${_signed(-2 * h)}x + ${_fmt(hSq)} + y? ${_signed(-2 * k)}y + ${_fmt(kSq)} = ${_fmt(rSq)}'),
+              'x² ${_signed(-2 * h)}x + ${_fmt(hSq)} + y² ${_signed(-2 * k)}y + ${_fmt(kSq)} = ${_fmt(rSq)}'),
       SolverStep(
           label: 'Move ${_fmt(rSq)} to left',
           equation:
-              'x? + y? ${_signed(-2 * h)}x ${_signed(-2 * k)}y + ${_fmt(hSq + kSq - rSq)} = 0'),
+              'x² + y² ${_signed(-2 * h)}x ${_signed(-2 * k)}y + ${_fmt(hSq + kSq - rSq)} = 0'),
       SolverStep(
           label: 'General Form',
           isFinal: true,
-          equation: 'x? + y? ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
+          equation: 'x² + y² ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
           color: SolverColors.cyan),
     ];
   }
 
-  /// General -> Standard: x?+y?+Dx+Ey+F=0 -> (x-h)?+(y-k)?=r?
-  ///   h = -D/2, k = -E/2, r? = h?+k?-F
+  /// General -> Standard: x²+y²+Dx+Ey+F=0 -> (x-h)²+(y-k)²=r²
+  ///   h = -D/2, k = -E/2, r² = h²+k²-F
   static List<SolverStep> generalToStandard({
     required double D,
     required double E,
@@ -231,7 +231,7 @@ class CircleEquationSolver {
     final rSq = halfDSq + halfESq - F;
 
     if (rSq <= 0) {
-      throw ArgumentError('Invalid: r? = $_fmt(rSq) ≠? 0 (imaginary circle)');
+      throw ArgumentError('Invalid: r² = ${_fmt(rSq)} ≠ 0 (imaginary circle)');
     }
 
     final r = sqrt(rSq);
@@ -241,26 +241,26 @@ class CircleEquationSolver {
       SolverStep(
           label: 'General Form',
           arrow: true,
-          equation: 'x? + y? ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
+          equation: 'x² + y² ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
           color: SolverColors.teal),
       SolverStep(
           label: 'Group terms; move constant to right',
           equation:
-              '(x? ${_signed(D)}x) + (y? ${_signed(E)}y) = ${_signed(-F, leading: true)}'),
+              '(x² ${_signed(D)}x) + (y² ${_signed(E)}y) = ${_signed(-F, leading: true)}'),
       SolverStep(
           label:
-              'Complete the square:\n  x: add (${_fmt(halfD)})? = ${_fmt(halfDSq)}\n  y: add (${_fmt(halfE)})? = ${_fmt(halfESq)}',
+              'Complete the square:\n  x: add (${_fmt(halfD)})² = ${_fmt(halfDSq)}\n  y: add (${_fmt(halfE)})² = ${_fmt(halfESq)}',
           equation:
-              '(x? ${_signed(D)}x ${_signed(halfDSq)}) + (y? ${_signed(E)}y ${_signed(halfESq)}) = ${_fmt(rightSide)}'),
+              '(x² ${_signed(D)}x ${_signed(halfDSq)}) + (y² ${_signed(E)}y ${_signed(halfESq)}) = ${_fmt(rightSide)}'),
       SolverStep(
           label: 'Factor as perfect squares',
           equation:
-              '(x ${_signed(halfD)})? + (y ${_signed(halfE)})? = ${_fmt(rSq)}'),
+              '(x ${_signed(halfD)})² + (y ${_signed(halfE)})² = ${_fmt(rSq)}'),
       SolverStep(
           label: 'Center-Radius Form',
           isFinal: true,
           equation:
-              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})? + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})? = ${_fmt(r)}?',
+              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(r)}²',
           subLines: [
             'Center: (${_fmt(h)}, ${_fmt(k)})',
             'Radius: r = ${_fmt(r)}'

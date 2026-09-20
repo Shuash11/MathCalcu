@@ -3,12 +3,19 @@ import 'dart:math' as math;
 class CalculatorEngine {
   static double evaluate(String expression) {
     try {
-      String expr = _preprocess(expression);
-      final result = _parseExpression(expr, 0);
-      return result.$1;
+      return _evaluatePreprocessed(_preprocess(expression));
     } catch (e) {
       throw FormatException('Invalid expression: $e');
     }
+  }
+
+  static double _evaluatePreprocessed(String expr) {
+    final (double value, int end) = _parseExpression(expr, 0);
+    final int consumed = _skipSpaces(expr, end);
+    if (consumed != expr.length) {
+      throw FormatException('Unexpected character at $consumed');
+    }
+    return value;
   }
 
   static String _preprocess(String expr) {
@@ -18,7 +25,7 @@ class CalculatorEngine {
     expr = expr.replaceAll('\u03C0', 'pi');
     expr = expr.replaceAll('\u221A', 'sqrt');
     expr = expr.replaceAll('\u221B', 'cbrt');
-    expr = expr.replaceAll('^', '^');
+    expr = expr.replaceAll('**', '^');
     expr = expr.replaceAll('%', '/100');
     return expr;
   }
@@ -83,6 +90,9 @@ class CalculatorEngine {
 
   static (double, int) _parseUnary(String expr, int pos) {
     pos = _skipSpaces(expr, pos);
+    if (pos < expr.length && expr[pos] == '+') {
+      return _parseUnary(expr, pos + 1);
+    }
     if (pos < expr.length && expr[pos] == '-') {
       final (val, newPos) = _parsePower(expr, pos + 1);
       return (-val, newPos);
@@ -147,6 +157,9 @@ class CalculatorEngine {
     if (expr.substring(pos).startsWith('pi')) {
       return (math.pi, pos + 2);
     }
+    if (expr.substring(pos).startsWith('e')) {
+      return (math.e, pos + 1);
+    }
 
     int start = pos;
     while (pos < expr.length && expr[pos].contains(RegExp(r'[0-9.]'))) {
@@ -155,7 +168,22 @@ class CalculatorEngine {
     if (start == pos) {
       throw FormatException('Unexpected character at $pos');
     }
-    return (double.parse(expr.substring(start, pos)), pos);
+    final value = double.parse(expr.substring(start, pos));
+
+    // Factorial: n! for small non-negative integers (170! is the last
+    // factorial that fits in a double; beyond that the result overflows).
+    final bang = _skipSpaces(expr, pos);
+    final isWholeNumber =
+        value >= 0 && value <= 170 && value == value.roundToDouble();
+    if (bang < expr.length && expr[bang] == '!' && isWholeNumber) {
+      double factorial = 1;
+      for (int i = 2; i <= value.round(); i++) {
+        factorial *= i;
+      }
+      return (factorial, bang + 1);
+    }
+
+    return (value, pos);
   }
 
   static String formatResult(double value) {

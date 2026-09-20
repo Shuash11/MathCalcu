@@ -575,6 +575,9 @@ class ExprUtils {
       }
       return getLeadingCoeff(e.left) * getLeadingCoeff(e.right);
     }
+    if (e is BinOp && e.op == '/') {
+      return getLeadingCoeff(e.left) / getLeadingCoeff(e.right);
+    }
     return 1;
   }
 
@@ -595,8 +598,47 @@ class ExprUtils {
 // ═══════════════════════════════════════════════════════════════════
 
 class LimitSolver {
+  static String _preprocess(String input) {
+    var r = input;
+    const sup = {
+      '⁰': '^0',
+      '¹': '^1',
+      '²': '^2',
+      '³': '^3',
+      '⁴': '^4',
+      '⁵': '^5',
+      '⁶': '^6',
+      '⁷': '^7',
+      '⁸': '^8',
+      '⁹': '^9'
+    };
+    sup.forEach((k, v) {
+      r = r.replaceAll(k, v);
+    });
+    r = r.replaceAll('−', '-').replaceAll('×', '*').replaceAll('÷', '/');
+    return r.replaceAll('**', '^');
+  }
+
+  static List<String> _splitTop(String s) {
+    final p = <String>[];
+    int d = 0, st = 0;
+    for (int i = 0; i < s.length; i++) {
+      if (s[i] == '(') {
+        d++;
+      } else if (s[i] == ')') {
+        d--;
+      } else if (s[i] == '/' && d == 0) {
+        p.add(s.substring(st, i).trim());
+        st = i + 1;
+      }
+    }
+    p.add(s.substring(st).trim());
+    return p;
+  }
+
   static LimitSolution solve(String expression, double approachValue) {
-    final toks = Tokenizer(expression).tokenize();
+    final pre = _preprocess(expression);
+    final toks = Tokenizer(pre).tokenize();
     final expr = Parser(toks).parse();
     final isInfinity = approachValue.isInfinite;
     final isNegInf = approachValue == double.negativeInfinity;
@@ -614,31 +656,29 @@ class LimitSolver {
           'We need to find what value f(x) approaches as x approaches $approachStr.',
     ));
 
-    if (expression.contains('/')) {
-      return _solveRational(expr, expression, approachValue, isInfinity,
-          isNegInf, approachStr, steps);
+    if (expr is BinOp && expr.op == '/') {
+      return _solveRational(
+          expr, pre, approachValue, isInfinity, isNegInf, approachStr, steps);
     }
 
-    return _solvePolynomial(expr, expression, approachValue, isInfinity,
-        isNegInf, approachStr, steps);
+    return _solvePolynomial(
+        expr, pre, approachValue, isInfinity, isNegInf, approachStr, steps);
   }
 
   static LimitSolution _solveRational(
-      Expr expr,
+      BinOp expr,
       String rawExpr,
       double approachValue,
       bool isInfinity,
       bool isNegInf,
       String approachStr,
       List<SolutionStep> steps) {
-    final parentSplit = rawExpr.indexOf('/');
-    final numeratorStr = rawExpr.substring(0, parentSplit).trim();
-    final denominatorStr = rawExpr.substring(parentSplit + 1).trim();
+    final parts = _splitTop(rawExpr);
+    final numeratorStr = parts.sublist(0, parts.length - 1).join('/');
+    final denominatorStr = parts.last;
 
-    final numToks = Tokenizer(numeratorStr).tokenize();
-    final denToks = Tokenizer(denominatorStr).tokenize();
-    final numExpr = Parser(numToks).parse();
-    final denExpr = Parser(denToks).parse();
+    final numExpr = expr.left;
+    final denExpr = expr.right;
 
     steps.add(SolutionStep(
       description: 'Identify as a rational function',
@@ -818,6 +858,30 @@ class LimitSolver {
         resultString: _fmt(lc),
         finalValue: lc,
         methodUsed: 'Constant',
+        steps: steps,
+      );
+    }
+
+    if (degree < 0) {
+      steps.add(SolutionStep(
+        description: 'Rational terms dominate',
+        type: StepType.transformation,
+        formula: '\\lim_{x \\to $approachStr} $rawExpr = 0',
+        explanation:
+            'The terms with x in the denominator decay to 0 as x grows, so the limit is 0.',
+        expression: '= 0',
+      ));
+      steps.add(SolutionStep(
+        description: 'Final result',
+        type: StepType.conclusion,
+        formula: '\\lim_{x \\to $approachStr} $rawExpr = 0',
+        expression: '= 0',
+      ));
+      return LimitSolution(
+        problemNotation: 'lim(x → $approachStr) $rawExpr',
+        resultString: '0',
+        finalValue: 0,
+        methodUsed: 'Degree Comparison',
         steps: steps,
       );
     }

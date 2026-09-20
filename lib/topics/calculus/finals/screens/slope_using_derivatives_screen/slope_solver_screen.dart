@@ -7,6 +7,7 @@ import 'package:calculus_system/topics/calculus/finals/widgets/finals_solver_con
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/point_values.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/slope_using_derivatives_solver.dart';
 
 class SlopeSolverScreen extends StatefulWidget {
@@ -59,14 +60,7 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
     });
 
     try {
-      final vars = <String, double>{};
-      final varParts = _varsController.text.split(RegExp(r'\s+'));
-      for (final part in varParts) {
-        final kv = RegExp(r'^([a-zA-Z_])=([-\d.]+)$').firstMatch(part);
-        if (kv != null) {
-          vars[kv.group(1)!] = double.parse(kv.group(2)!);
-        }
-      }
+      final vars = PointValues.parse(_varsController.text);
 
       final result =
           SlopeSolver.solve(_eqController.text.trim(), pointValues: vars);

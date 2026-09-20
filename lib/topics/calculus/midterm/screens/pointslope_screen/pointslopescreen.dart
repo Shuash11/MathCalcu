@@ -30,6 +30,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
   final _resultNotifier = ValueNotifier<_ResultData?>(null);
   final _badgesNotifier = ValueNotifier<Map<String, String>?>(null);
   final _graphStringsNotifier = ValueNotifier<_GraphStrings?>(null);
+  final _errorNotifier = ValueNotifier<String?>(null);
 
   late final AnimationController _pulseCtrl;
   late final Animation<double> _pulseAnim;
@@ -64,6 +65,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     _resultNotifier.dispose();
     _badgesNotifier.dispose();
     _graphStringsNotifier.dispose();
+    _errorNotifier.dispose();
 
     super.dispose();
   }
@@ -77,6 +79,7 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
       _resultNotifier.value = null;
       _badgesNotifier.value = null;
       _graphStringsNotifier.value = null;
+      _errorNotifier.value = 'Please fill in all three fields';
       return;
     }
 
@@ -87,11 +90,15 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
     );
 
     if (solver == null) {
+      _errorNotifier.value =
+          'Invalid input — use numbers or fractions like 3/4';
       _resultNotifier.value = null;
       _badgesNotifier.value = null;
       _graphStringsNotifier.value = null;
       return;
     }
+
+    _errorNotifier.value = null;
 
     final m = solver.m.toDouble();
     final x1 = solver.x1.toDouble();
@@ -179,6 +186,23 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                             ),
                           ),
                           SizedBox(height: 12 * s),
+                          // Error message
+                          ValueListenableBuilder<String?>(
+                            valueListenable: _errorNotifier,
+                            builder: (_, err, __) => err == null
+                                ? const SizedBox.shrink()
+                                : Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text(
+                                      err,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFFFF6B6B),
+                                        height: 1.3,
+                                      ),
+                                    ),
+                                  ),
+                          ),
                           GestureDetector(
                             onTap: _computeResult,
                             child: Container(

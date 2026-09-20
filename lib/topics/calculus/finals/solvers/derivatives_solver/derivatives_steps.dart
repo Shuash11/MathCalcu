@@ -81,6 +81,7 @@ class ClassroomStepFormatter {
         .where((s) => s.type == StepType.identifyRule)
         .map((s) => s.rule)
         .whereType<String>()
+        .toSet()
         .toList();
 
     if (rules.isEmpty) {
@@ -157,7 +158,7 @@ class ClassroomStepFormatter {
   }
 
   static List<String> _getCommonMistakes(DerivativeSteps steps) {
-    final mistakes = <String>[];
+    final mistakes = <String>{};
     final rules = steps.steps
         .where((s) => s.type == StepType.identifyRule)
         .map((s) => s.rule)
@@ -205,7 +206,7 @@ class ClassroomStepFormatter {
 
     return mistakes.isEmpty
         ? ['Always double-check your algebra when simplifying']
-        : mistakes;
+        : mistakes.toList();
   }
 
   static List<String> _getRelatedConcepts(DerivativeSteps steps) {

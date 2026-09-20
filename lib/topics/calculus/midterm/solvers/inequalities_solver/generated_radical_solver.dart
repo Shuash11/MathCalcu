@@ -24,6 +24,21 @@ class GeneratedRadicalSolver {
             answer: 'No solution', points: [], intervalNotation: '∅');
       }
 
+      // k == 0: sqrt(bx + c) is never negative. It is zero only when the
+      // radicand is zero, so strict '<' has no solution and the rest is a
+      // single point (x = -c/b), not an interval.
+      if (p.k == 0) {
+        if (p.op == '<') {
+          return const SolveResult(
+              answer: 'No solution', points: [], intervalNotation: '∅');
+        }
+        final zeroBoundary = -p.c / p.b;
+        return SolveResult(
+            answer: 'x = ${_fmt(zeroBoundary)}',
+            points: [zeroBoundary],
+            intervalNotation: '[${_fmt(zeroBoundary)}, ${_fmt(zeroBoundary)}]');
+      }
+
       // Domain: bx + c >= 0  =>  x >= -c/b (if b > 0) or x <= -c/b (if b < 0)
       final domainBoundary = -p.c / p.b;
       final domainReversed = p.b < 0;

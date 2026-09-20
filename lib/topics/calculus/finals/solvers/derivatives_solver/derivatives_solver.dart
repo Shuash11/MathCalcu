@@ -315,6 +315,21 @@ class Func extends Expr {
         outer = BinOp(
             '/', const Num(1), BinOp('*', arg, const Func('ln', Num(10))));
         break;
+      case 'asin':
+      case 'arcsin':
+        outer = BinOp('/', const Num(1),
+            Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2)))));
+        break;
+      case 'acos':
+      case 'arccos':
+        outer = Neg(BinOp('/', const Num(1),
+            Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2))))));
+        break;
+      case 'atan':
+      case 'arctan':
+        outer = BinOp('/', const Num(1),
+            BinOp('+', const Num(1), BinOp('^', arg, const Num(2))));
+        break;
       case 'sqrt':
         outer = BinOp('/', const Num(1), BinOp('*', const Num(2), Sqrt(arg)));
         break;
@@ -554,7 +569,13 @@ class Tokenizer {
       'csc',
       'cot',
       'ln',
-      'log'
+      'log',
+      'asin',
+      'acos',
+      'atan',
+      'arcsin',
+      'arccos',
+      'arctan'
     };
     return Token(
         funcs.contains(v) ? TokenType.function : TokenType.variable, v, start);
@@ -753,6 +774,7 @@ class DerivativeSolver {
       r = r.replaceAll(k, v);
     });
     r = r.replaceAll('−', '-').replaceAll('×', '*').replaceAll('÷', '/');
+    r = r.replaceAll('**', '^');
     // Implicit multiplication parens
     r = r.replaceAllMapped(RegExp(r'(\))\s*(\()'), (m) => '${m[1]}*${m[2]}');
     r = r.replaceAllMapped(RegExp(r'(\d)\('), (m) => '${m[1]}*(');
@@ -765,6 +787,28 @@ class DerivativeSolver {
     r = r.replaceAllMapped(RegExp(r'√([a-zA-Z])'), (m) => 'sqrt(${m[1]})');
     r = r.replaceAllMapped(RegExp(r'√(\d)'), (m) => 'sqrt(${m[1]})');
     r = r.replaceAll('√(', 'sqrt(');
+    // Function shorthand (mirrors the sqrt shorthand): sin x → sin(x)
+    const funcNames = [
+      'arcsin',
+      'arccos',
+      'arctan',
+      'asin',
+      'acos',
+      'atan',
+      'sin',
+      'cos',
+      'tan',
+      'sec',
+      'csc',
+      'cot',
+      'exp',
+      'ln',
+      'log',
+      'abs'
+    ];
+    for (final f in funcNames) {
+      r = r.replaceAllMapped(RegExp('$f\\s*([a-zA-Z])'), (m) => '$f(${m[1]})');
+    }
     return r.replaceAll(RegExp(r'\s+'), '');
   }
 
@@ -794,13 +838,15 @@ class DerivativeSolver {
       expression: parsed,
     ));
 
-    final rule = _determineRule(parsed);
+    final rule = _determineRule(parsed, v);
     steps.add(DerivativeStep(
       type: StepType.identifyRule,
       description: 'Apply: $rule',
       expression: parsed,
       rule: rule,
     ));
+
+    _collectSubSteps(parsed, v, steps, 0);
 
     final raw = differentiate(parsed, v);
     steps.add(DerivativeStep(
@@ -828,7 +874,7 @@ class DerivativeSolver {
         original: parsed, variable: v, derivative: simp, steps: steps);
   }
 
-  static String _determineRule(Expr e) {
+  static String _determineRule(Expr e, String v) {
     if (e is BinOp && e.op == '^' && e.right.isConst) return 'Power Rule';
     if (e is BinOp && e.op == '^' && e.left.isConst && !e.right.isConst) {
       return 'Exponential Rule';
@@ -846,7 +892,7 @@ class DerivativeSolver {
       }
     }
     if (e is Func) {
-      if (e.arg.hasVar('x')) return 'Chain Rule';
+      if (e.arg.hasVar(v)) return 'Chain Rule';
       switch (e.name) {
         case 'sin':
           return 'Sine Derivative';
@@ -868,10 +914,105 @@ class DerivativeSolver {
           return 'Square Root Derivative';
         case 'abs':
           return 'Absolute Value Derivative';
+        case 'asin':
+        case 'arcsin':
+          return 'Arcsine Derivative';
+        case 'acos':
+        case 'arccos':
+          return 'Arccosine Derivative';
+        case 'atan':
+        case 'arctan':
+          return 'Arctangent Derivative';
         default:
           return 'Function Derivative';
       }
     }
     return 'Basic Derivative';
   }
+
+  static const int _maxSubSteps = 16;
+  static const int _maxSubStepDepth = 6;
+
+  /// Walks the AST emitting a rule label per chain-bearing subexpression,
+  /// with an outer/inner decomposition line for each chain (mirrors the
+  /// sibling slope solver's per-rule narration). Guarded by depth and
+  /// sub-step caps so deeply nested input cannot flood the step list.
+  static void _collectSubSteps(
+      Expr e, String v, List<DerivativeStep> out, int depth) {
+    if (depth >= _maxSubStepDepth || out.length >= _maxSubSteps) return;
+    if (e is Func) {
+      if (e.arg.hasVar(v) && !_isTrivialInner(e.arg)) {
+        final chain = 'Chain Rule: outer = ${e.name}(u), inner: u = ${e.arg}';
+        out.add(DerivativeStep(
+          type: StepType.identifyRule,
+          description: chain,
+          expression: e,
+          rule: chain,
+        ));
+        _addInnerRuleLabel(e.arg, v, out);
+        _collectSubSteps(e.arg, v, out, depth + 1);
+      }
+      return;
+    }
+    if (e is BinOp) {
+      if (e.op == '^' &&
+          e.right.isConst &&
+          e.left.hasVar(v) &&
+          !_isTrivialInner(e.left)) {
+        final chain = 'Power Rule (with Chain Rule): '
+            'outer = (${e.left})^${e.right}, inner: u = ${e.left}';
+        out.add(DerivativeStep(
+          type: StepType.identifyRule,
+          description: chain,
+          expression: e,
+          rule: chain,
+        ));
+        _addInnerRuleLabel(e.left, v, out);
+        _collectSubSteps(e.left, v, out, depth + 1);
+        return;
+      }
+      _collectSubSteps(e.left, v, out, depth + 1);
+      _collectSubSteps(e.right, v, out, depth + 1);
+    } else if (e is Neg) {
+      _collectSubSteps(e.expr, v, out, depth + 1);
+    }
+  }
+
+  static void _addInnerRuleLabel(
+      Expr inner, String v, List<DerivativeStep> out) {
+    final rule = _nestedRuleLabel(inner, v);
+    if (rule == null) return;
+    out.add(DerivativeStep(
+      type: StepType.identifyRule,
+      description: '$rule (on $inner)',
+      expression: inner,
+      rule: '$rule (on $inner)',
+    ));
+  }
+
+  static String? _nestedRuleLabel(Expr e, String v) {
+    if (e is Func) {
+      if (e.arg.hasVar(v)) return 'Chain Rule';
+      return null;
+    }
+    if (e is BinOp) {
+      switch (e.op) {
+        case '^':
+          if (e.right.isConst) return 'Power Rule';
+          return null;
+        case '/':
+          return 'Quotient Rule';
+        case '*':
+          return e.left.isConst || e.right.isConst
+              ? 'Constant Multiple'
+              : 'Product Rule';
+        case '+':
+        case '-':
+          return 'Sum/Difference Rule';
+      }
+    }
+    return null;
+  }
+
+  static bool _isTrivialInner(Expr e) => e is Var || e is Num;
 }

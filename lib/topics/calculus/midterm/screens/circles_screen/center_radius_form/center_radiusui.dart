@@ -182,7 +182,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
   }
 
   Widget _buildTabBar() {
-    final labels = ['Standard ? General', 'General ? Standard'];
+    final labels = ['Standard → General', 'General → Standard'];
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(4),

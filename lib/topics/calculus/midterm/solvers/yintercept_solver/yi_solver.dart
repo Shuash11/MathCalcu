@@ -925,7 +925,7 @@ class ParallelPerpendicularSolver {
         PPStepBlock(
             type: PPBlockType.working,
             latex:
-                '\\text{Parallel? } $m1T \\neq $m2T \\;\\times \\\\[4pt] \\text{Perp? } $m1T \\times $m2T = $pT \\neq -1 \\;\\times'),
+                '\\text{Parallel: } $m1T \\neq $m2T \\\\[4pt] \\text{Perp: } $m1T \\times $m2T = $pT \\neq -1'),
         const PPStepBlock(
             type: PPBlockType.result,
             latex: r'\text{Lines are } \textbf{NEITHER}'),

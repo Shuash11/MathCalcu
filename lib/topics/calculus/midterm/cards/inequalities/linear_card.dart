@@ -8,7 +8,7 @@ class LinearCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return const AnimatedInequalityCard(
       title: 'Linear Inequality',
-      subtitle: 'Supports <, >, =, =, and continued inequalities.',
+      subtitle: 'Supports <, >, ≤, ≥, and continued inequalities.',
       route: '/inequalities/simple',
       icon: Icons.functions_rounded,
     );

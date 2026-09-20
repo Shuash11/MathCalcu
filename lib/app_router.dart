@@ -58,6 +58,7 @@ import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_conjugate/conjugate_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_factoring/factoring_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/integration_techniques_screen/integration_techniques_screen.dart';
 import 'package:calculus_system/topics/calculus/calculus_picker_screen.dart';
 import 'package:calculus_system/search/global_search_screen.dart';
 import 'package:calculus_system/topics/grade6/grade6_picker_screen.dart';
@@ -188,6 +189,11 @@ class AppRouter {
                                     const LCDLimitScreen(),
                               ),
                             ],
+                          ),
+                          GoRoute(
+                            path: 'integration',
+                            builder: (context, state) =>
+                                const IntegrationTechniquesScreen(),
                           ),
                         ],
                       ),

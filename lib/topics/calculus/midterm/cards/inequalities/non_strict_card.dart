@@ -8,7 +8,7 @@ class NonStrictCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return const AnimatedInequalityCard(
       title: 'Non-strict Inequality',
-      subtitle: 'Uses = or =. The boundary IS included.',
+      subtitle: 'Uses ≤ or ≥. The boundary IS included.',
       route: '/inequalities/non_strict',
       icon: Icons.drag_handle_rounded,
     );

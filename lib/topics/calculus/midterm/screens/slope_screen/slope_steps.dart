@@ -55,7 +55,7 @@ class SlopeSteps extends StatelessWidget {
       SolutionStepCard(
         design: AppDesign.app,
         stepNumber: 2,
-        title: 'Check ?x',
+        title: 'Check Δx',
         description: 'Step 2',
         mathContent: _mathLatex(
           context,
@@ -95,7 +95,7 @@ class SlopeSteps extends StatelessWidget {
       SolutionStepCard(
         design: AppDesign.app,
         stepNumber: 2,
-        title: 'Check ?y',
+        title: 'Check Δy',
         description: 'Step 2',
         mathContent: _mathLatex(
           context,
@@ -128,7 +128,7 @@ class SlopeSteps extends StatelessWidget {
         title: 'Identify points',
         description: 'Step 1',
         mathContent: _mathText(context,
-            'A = ($x1s, $y1s)  ?  (x1, y1)\nB = ($x2s, $y2s)  ?  (x2, y2)'),
+            'A = ($x1s, $y1s)  →  (x1, y1)\nB = ($x2s, $y2s)  →  (x2, y2)'),
       ),
       SolutionStepCard(
         design: AppDesign.app,
