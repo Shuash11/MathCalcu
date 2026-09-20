@@ -34,9 +34,16 @@ class FinalsModuleRegistry {
     ),
     const FinalsModuleEntry(
       label: 'Integration Techniques',
-      subtitle: 'u-substitution • Definite integrals • FTC',
+      subtitle: 'u-substitution • By-parts • Definite integrals • FTC',
       route: '/topics/calculus/finals/integration',
       icon: Icons.area_chart_rounded,
+      accent: Color(0xFF334155),
+    ),
+    const FinalsModuleEntry(
+      label: 'Partial Derivatives',
+      subtitle: 'd/dx • d/dy • multivariable functions',
+      route: '/topics/calculus/finals/partials',
+      icon: Icons.terrain_rounded,
       accent: Color(0xFF334155),
     ),
     const FinalsModuleEntry(
@@ -44,6 +51,13 @@ class FinalsModuleRegistry {
       subtitle: 'Tangent line slope • Evaluate at point • Instantaneous rate',
       route: '/topics/calculus/finals/slope-derivative',
       icon: Icons.show_chart_rounded,
+      accent: Color(0xFF334155),
+    ),
+    const FinalsModuleEntry(
+      label: 'Taylor & Maclaurin Series',
+      subtitle: 'taylor series • Maclaurin • successive derivatives',
+      route: '/topics/calculus/finals/taylor',
+      icon: Icons.stacked_line_chart_rounded,
       accent: Color(0xFF334155),
     ),
     //

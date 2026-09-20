@@ -59,6 +59,8 @@ import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_factoring/factoring_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/integration_techniques_screen/integration_techniques_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/taylor_series_screen/taylor_series_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/partial_derivatives_screen/partial_derivatives_screen.dart';
 import 'package:calculus_system/topics/calculus/calculus_picker_screen.dart';
 import 'package:calculus_system/search/global_search_screen.dart';
 import 'package:calculus_system/topics/grade6/grade6_picker_screen.dart';
@@ -194,6 +196,16 @@ class AppRouter {
                             path: 'integration',
                             builder: (context, state) =>
                                 const IntegrationTechniquesScreen(),
+                          ),
+                          GoRoute(
+                            path: 'partials',
+                            builder: (context, state) =>
+                                const PartialDerivativesScreen(),
+                          ),
+                          GoRoute(
+                            path: 'taylor',
+                            builder: (context, state) =>
+                                const TaylorSeriesScreen(),
                           ),
                         ],
                       ),

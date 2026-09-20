@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_module_registry.dart';
 import 'package:calculus_system/core/curriculum_registry.dart';
@@ -39,6 +41,12 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
   late final List<Animation<double>> _fadeAnims;
   late final List<Animation<Offset>> _slideAnims;
 
+  /// Staggered card-entry timers. Kept as cancelable Timers (not
+  /// Future.delayed) so they are canceled in dispose — a timer that
+  /// outlives the screen mid-stagger is a leak and trips the widget
+  /// test framework's pending-timer invariant.
+  late final List<Timer> _staggerTimers;
+
   final List<FinalsModuleEntry> _modules = FinalsModuleRegistry.modules;
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
@@ -70,15 +78,18 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
         )
         .toList();
 
-    for (int i = 0; i < _controllers.length; i++) {
-      Future.delayed(Duration(milliseconds: 120 + i * 100), () {
+    _staggerTimers = List.generate(_controllers.length, (i) {
+      return Timer(Duration(milliseconds: 120 + i * 100), () {
         if (mounted) _controllers[i].forward();
       });
-    }
+    });
   }
 
   @override
   void dispose() {
+    for (final t in _staggerTimers) {
+      t.cancel();
+    }
     for (final c in _controllers) {
       c.dispose();
     }

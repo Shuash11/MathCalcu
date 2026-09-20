@@ -170,22 +170,10 @@ class YInterceptTab extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 8),
                               child: Text(
                                 err,
-                                style: TextStyle(
-                                        fontSize: 13,
-                                        color: context
-                                                .watch<ThemeProvider>()
-                                                .isLight
-                                            ? context
-                                                .watch<ThemeProvider>()
-                                                .accentColor
-                                                .withValues(alpha: 0.8)
-                                            : context
-                                                .watch<ThemeProvider>()
-                                                .accentColor
-                                                .withValues(alpha: 0.7),
-                                        height: 1.3)
-                                    .copyWith(
-                                  color: const Color(0xFFFF6B6B),
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFFFF6B6B),
+                                  height: 1.3,
                                 ),
                               ),
                             ),
@@ -629,10 +617,10 @@ class YInterceptTab extends StatelessWidget {
                           ),
                         ),
                         const TextSpan(text: 'y = '),
-                        const TextSpan(
+                        TextSpan(
                           text: 'C',
                           style: TextStyle(
-                            color: Color(0xFF334155),
+                            color: context.watch<ThemeProvider>().accentColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -746,7 +734,7 @@ class YInterceptTab extends StatelessWidget {
 
   Widget _buildAnswerCard(BuildContext context, YIResult? result) {
     final emerald = context.watch<ThemeProvider>().accentColor;
-    final amber = context.watch<ThemeProvider>().accentColor;
+    final amber = emerald; // both derive from the theme accent color
     final has = result != null;
 
     return AnimatedContainer(
@@ -1123,7 +1111,7 @@ class YInterceptTab extends StatelessWidget {
 
   // ---------------------------------------------------------
   // BADGES
-  // -------------------------------??-------------------------
+  // ---------------------------------------------------------
 
   Widget _buildBadges(BuildContext context, YIResult result) {
     final badges = <String, String>{
@@ -1181,7 +1169,7 @@ class YInterceptTab extends StatelessWidget {
     );
   }
 
-  // ------------------------------------------------------???--
+  // ---------------------------------------------------------
   // UTILITIES
   // ---------------------------------------------------------
 

@@ -11,7 +11,7 @@ class IntegrationTechniquesScreen extends StatelessWidget {
     return Grade6SolverScreen(
       config: Grade6SolverConfig(
         title: 'Integration Techniques',
-        subtitle: 'u-substitution • definite area & FTC',
+        subtitle: 'u-substitution • by-parts • definite area & FTC',
         hint: 'e.g. ∫ 2x·(x²+1)³ dx',
         helper: 'Formats: integral a^b f(x) dx',
         depedCode: 'FINALS-Integration',
