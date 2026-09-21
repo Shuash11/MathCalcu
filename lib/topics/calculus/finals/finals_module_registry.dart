@@ -60,6 +60,20 @@ class FinalsModuleRegistry {
       icon: Icons.stacked_line_chart_rounded,
       accent: Color(0xFF334155),
     ),
+    const FinalsModuleEntry(
+      label: 'Differential Equations',
+      subtitle: 'separable equations',
+      route: '/topics/calculus/finals/diffeq',
+      icon: Icons.auto_graph_rounded,
+      accent: Color(0xFF334155),
+    ),
+    const FinalsModuleEntry(
+      label: 'Volumes of Revolution',
+      subtitle: 'disk • washer • shell methods',
+      route: '/topics/calculus/finals/volumes',
+      icon: Icons.donut_large_rounded,
+      accent: Color(0xFF334155),
+    ),
     //
     // ─────────────────────────────────────────────────────
   ];

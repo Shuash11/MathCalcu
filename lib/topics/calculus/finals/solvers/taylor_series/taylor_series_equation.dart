@@ -33,7 +33,31 @@ class _Series {
   final double a;
   final int n;
   final List<_Term> terms;
-  const _Series(this.f, this.varName, this.a, this.n, this.terms);
+  final _Convergence convergence;
+  const _Series(
+      this.f, this.varName, this.a, this.n, this.terms, this.convergence);
+
+  /// '∞' or the estimated radius rounded to 2 decimals, e.g. '1.09'.
+  String get radiusText =>
+      convergence.radius == null ? '∞' : _fmt2(convergence.radius!);
+
+  /// Convergence interval: '(-∞, ∞)' or '(-0.09, 2.09)'-style text.
+  String get intervalText {
+    final r = convergence.radius;
+    if (r == null) return '(-∞, ∞)';
+    return '(${_fmt2(a - r)}, ${_fmt2(a + r)})';
+  }
+
+  /// Formats a number rounded to 2 decimals, trimming trailing zeros.
+  /// (Not TaylorSeriesFormat.frac — that prefers exact fractions,
+  /// which would render 1.09 as 109/100.)
+  static String _fmt2(double v) {
+    var s = v.toStringAsFixed(2);
+    if (s.contains('.')) {
+      s = s.replaceAll(RegExp(r'0+$'), '').replaceAll(RegExp(r'\.$'), '');
+    }
+    return s;
+  }
 
   /// Display string of one term, e.g. '(1/2)x^2' or '-(x - 1)'.
   String termText(_Term t) {
@@ -68,6 +92,42 @@ class _Series {
       }
     }
     return buf.toString();
+  }
+}
+
+/// Ratio-test convergence analysis over the built coefficient tail
+/// (private to this module). The ratio test gives R = 1/L where
+/// L = lim |c_k+1/c_k|; with a finite tail the limit is estimated
+/// from the last pair of consecutive nonzero coefficients,
+/// gap-normalized so a missing zero term (sin/cos) does not skew it.
+class _Convergence {
+  /// Tail ratio at or below which coefficients read as decaying
+  /// geometrically toward 0, i.e. L → 0 and R = ∞. Above it,
+  /// R = 1/rho.
+  static const double _fastDecayCutoff = 0.5;
+
+  /// Last gap-normalized ratio estimate |c_next/c_prev|^(1/gap).
+  final double rho;
+
+  /// Estimated radius of convergence; null means R = ∞.
+  final double? radius;
+  const _Convergence(this.rho, this.radius);
+
+  bool get isInfinite => radius == null;
+
+  /// Estimates the radius from the coefficient tail (any depth).
+  /// Fewer than 2 nonzero coefficients (constant / polynomial-only)
+  /// converge everywhere.
+  static _Convergence fromTerms(List<_Term> terms) {
+    final nz = terms.where((t) => t.coefficient != 0).toList();
+    if (nz.length < 2) return const _Convergence(0, null);
+    final prev = nz[nz.length - 2];
+    final next = nz.last;
+    final gap = next.k - prev.k;
+    final ratio = (next.coefficient / prev.coefficient).abs();
+    final rho = gap > 1 ? math.pow(ratio, 1 / gap).toDouble() : ratio;
+    if (rho < _fastDecayCutoff) return _Convergence(rho, null);
+    return _Convergence(rho, 1 / rho);
   }
 }
 
@@ -127,6 +187,13 @@ class TaylorSeriesEquation extends BaseEquation {
 
   /// Cap on requested terms so runaway derivatives cannot stall the UI.
   static const int _maxTerms = 12;
+
+  /// Absolute cap for the convergence tail (well below _maxTerms).
+  /// The CAS's quotient rule grows rational expressions exponentially
+  /// (no like-term collection in simplify), so differentiating far
+  /// past the displayed degree can blow up the tree; k ≤ 8 keeps the
+  /// tail cheap while still giving the ratio test a long tail.
+  static const int _tailCap = 8;
 
   TaylorSeriesEquation(this.rawInput);
 
@@ -206,6 +273,8 @@ class TaylorSeriesEquation extends BaseEquation {
             'n': series.n,
             'polynomial': series.polynomial,
             'terms': series.termStrings,
+            'radius': series.radiusText,
+            'interval': series.intervalText,
           }
         ],
       );
@@ -256,6 +325,23 @@ class TaylorSeriesEquation extends BaseEquation {
 
     steps.add(StepModel(
       stepNumber: n++,
+      title: 'Radius of convergence (ratio test)',
+      explanation: series.convergence.isInfinite
+          ? 'Ratio test on consecutive coefficients: the tail ratio '
+              '|c_k+1/c_k| ≈ ${TaylorSeriesFormat.frac(series.convergence.rho)} '
+              'keeps shrinking (the coefficients decay toward 0), so '
+              'R = ∞ — the series converges for every real x.'
+          : 'Ratio test on consecutive coefficients: the tail ratio '
+              '|c_k+1/c_k| → ρ ≈ '
+              '${TaylorSeriesFormat.frac(series.convergence.rho)}, so '
+              'R = 1/ρ ≈ ${series.radiusText} and the series converges '
+              'on (a − R, a + R) ≈ ${series.intervalText}; check the '
+              'endpoints separately.',
+      hint: 'R = ${series.radiusText}, interval ${series.intervalText}',
+    ));
+
+    steps.add(StepModel(
+      stepNumber: n++,
       title: 'Final answer',
       explanation: 'P${series.n}($v) = ${series.polynomial}',
     ));
@@ -288,7 +374,47 @@ class TaylorSeriesEquation extends BaseEquation {
       if (vk == null || vk.isNaN) return null;
       built.add(_Term(k, simp, vk, vk / _factorial(k)));
     }
-    return _Series(f, v, a, n, built);
+    // Convergence tail: keep differentiating to the proven-safe cap
+    // so the ratio test sees a long coefficient tail regardless of
+    // the displayed degree. Any failure here (an undefined higher
+    // derivative) just stops the tail — it must never error.
+    var isPolynomial = false;
+    final tail = List<_Term>.of(built);
+    for (int k = n + 1; k <= _tailCap; k++) {
+      try {
+        // Differentiate the simplified form each step so the tree
+        // stays as small as the CAS allows (see _tailCap above).
+        d = DerivativeSolver.simplify(DerivativeSolver.differentiate(d, v));
+        // A derivative that is identically zero means f is a
+        // polynomial: every higher coefficient is 0, so the series
+        // converges everywhere — the tail ratio alone would wrongly
+        // read the last nonzero pair as a geometric sequence.
+        if (_isIdenticallyZero(d, v, a)) {
+          isPolynomial = true;
+          break;
+        }
+        final vk = evaluateAt(d, v, a);
+        if (vk == null || vk.isNaN) break;
+        tail.add(_Term(k, d, vk, vk / _factorial(k)));
+      } catch (_) {
+        break;
+      }
+    }
+    final convergence = isPolynomial
+        ? const _Convergence(0, null)
+        : _Convergence.fromTerms(tail);
+    return _Series(f, v, a, n, built, convergence);
+  }
+
+  /// True when [e] evaluates to exactly 0 at three probe points
+  /// around [a] — for this CAS's expressions that means the
+  /// expression is identically zero.
+  static bool _isIdenticallyZero(Expr e, String v, double a) {
+    for (final x in [a, a + 1, a - 1]) {
+      final val = evaluateAt(e, v, x);
+      if (val == null || val.isNaN || val != 0) return false;
+    }
+    return true;
   }
 
   /// Evaluates a derivatives-engine [Expr] at the point [x] for

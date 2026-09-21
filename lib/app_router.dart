@@ -58,8 +58,11 @@ import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_conjugate/conjugate_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_factoring/factoring_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lcd/lcd_limit_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lhopital/lhopital_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/integration_techniques_screen/integration_techniques_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/taylor_series_screen/taylor_series_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/diffeq_screen/diffeq_screen.dart';
+import 'package:calculus_system/topics/calculus/finals/screens/volumes_of_revolution_screen/volumes_of_revolution_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/partial_derivatives_screen/partial_derivatives_screen.dart';
 import 'package:calculus_system/topics/calculus/calculus_picker_screen.dart';
 import 'package:calculus_system/search/global_search_screen.dart';
@@ -190,6 +193,11 @@ class AppRouter {
                                 builder: (context, state) =>
                                     const LCDLimitScreen(),
                               ),
+                              GoRoute(
+                                path: 'lhopital',
+                                builder: (context, state) =>
+                                    const LhopitalLimitScreen(),
+                              ),
                             ],
                           ),
                           GoRoute(
@@ -206,6 +214,15 @@ class AppRouter {
                             path: 'taylor',
                             builder: (context, state) =>
                                 const TaylorSeriesScreen(),
+                          ),
+                          GoRoute(
+                            path: 'diffeq',
+                            builder: (context, state) => const DiffeqScreen(),
+                          ),
+                          GoRoute(
+                            path: 'volumes',
+                            builder: (context, state) =>
+                                const VolumesOfRevolutionScreen(),
                           ),
                         ],
                       ),

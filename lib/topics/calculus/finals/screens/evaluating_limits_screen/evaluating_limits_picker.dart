@@ -2,6 +2,7 @@
 import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/conjugate_card.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/factoring_card.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/lcd_card.dart';
+import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/lhopital_card.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
     const ConjugateCard(),
     const FactoringCard(),
     const LcdCard(),
+    const LhopitalCard(),
   ];
 
   @override
