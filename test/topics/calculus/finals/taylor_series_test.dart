@@ -89,4 +89,64 @@ void main() {
       expect((approx! - math.sin(0.3)).abs(), lessThan(1e-4));
     });
   });
+
+  group('Taylor radius of convergence (ratio test)', () {
+    Map dataOf(String input) {
+      final eq = TaylorSeriesEquation(input);
+      final r = eq.solve();
+      expect(r.hasError, isFalse, reason: input);
+      return r.customData!.first as Map;
+    }
+
+    test('taylor exp(x) at 0 has infinite radius', () {
+      final data = dataOf('taylor exp(x) at 0');
+      expect(data['radius'], '∞');
+      expect(data['interval'], '(-∞, ∞)');
+      final ratioStep = TaylorSeriesEquation('taylor exp(x) at 0')
+          .getSteps()
+          .firstWhere((s) => s.title.toLowerCase().contains('ratio'));
+      expect(ratioStep.explanation, contains('∞'));
+    });
+
+    test('taylor sin(x) at 0 has infinite radius', () {
+      final data = dataOf('taylor sin(x) at 0');
+      expect(data['radius'], '∞');
+      expect(data['interval'], '(-∞, ∞)');
+    });
+
+    test('taylor ln(x) at 1 has radius ≈ 1 (singularity at x = 0)', () {
+      final data = dataOf('taylor ln(x) at 1');
+      // Finite-tail estimate: 8/7 ≈ 1.14 — within ±0.15 of the
+      // true radius 1 (the ln singularity at x = 0). Endpoints are
+      // flagged separately in the step narration.
+      expect(double.parse(data['radius'] as String), closeTo(1, 0.15));
+      final interval = data['interval'] as String;
+      expect(interval, isNotEmpty);
+      expect(interval, '(-0.14, 2.14)');
+    });
+
+    test('ratio-test step narrates R and the interval', () {
+      final steps = TaylorSeriesEquation('taylor ln(x) at 1').getSteps();
+      final ratioStep =
+          steps.firstWhere((s) => s.title.toLowerCase().contains('ratio'));
+      expect(ratioStep.explanation, contains('R'));
+      expect(ratioStep.explanation, contains('1/'));
+    });
+
+    test('constant function converges everywhere, garbage never throws', () {
+      final data = dataOf('taylor 5 at 0');
+      expect(data['radius'], '∞');
+      for (final garbage in ['taylor zzz at 0', 'taylor 1/(x) at 0']) {
+        final eq = TaylorSeriesEquation(garbage);
+        expect(() => eq.solve(), returnsNormally);
+        expect(eq.solve().hasError, isTrue, reason: garbage);
+      }
+    });
+
+    test('maclaurin 1/(1-x) has the geometric radius 1', () {
+      final data = dataOf('maclaurin 1/(1-x)');
+      expect(data['radius'], '1');
+      expect(data['interval'], '(-1, 1)');
+    });
+  });
 }
