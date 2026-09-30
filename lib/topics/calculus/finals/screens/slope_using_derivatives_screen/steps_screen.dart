@@ -20,18 +20,25 @@ class StepsScreen extends StatelessWidget {
                   top: 50, bottom: 20, left: 20, right: 20),
               child: Row(
                 children: [
-                  GestureDetector(
+                  Semantics(
+                    label: 'Back to slope solution',
+                    button: true,
                     onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: FinalsTheme.danger.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: FinalsTheme.danger.withValues(alpha: 0.3)),
+                    excludeSemantics: true,
+                    child: GestureDetector(
+                      excludeFromSemantics: true,
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: FinalsTheme.danger.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: FinalsTheme.danger.withValues(alpha: 0.3)),
+                        ),
+                        child: const Icon(Icons.arrow_back_ios_new_rounded,
+                            size: 16, color: FinalsTheme.danger),
                       ),
-                      child: const Icon(Icons.arrow_back_ios_new_rounded,
-                          size: 16, color: FinalsTheme.danger),
                     ),
                   ),
                   const SizedBox(width: 16),

@@ -104,6 +104,7 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                 leading: AccentGlow.iconHalo(
                   context,
                   child: IconButton(
+                    tooltip: 'Back',
                     icon: Icon(Icons.arrow_back_ios_new,
                         color: FinalsTheme.textPrimary(context)),
                     onPressed: () => context.pop(),

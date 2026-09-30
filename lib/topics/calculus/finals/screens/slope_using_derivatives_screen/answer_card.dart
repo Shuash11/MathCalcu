@@ -37,151 +37,155 @@ class _AnswerCardState extends State<AnswerCard> {
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: () {
-          showSolutionStepsModal(
-            context: context,
-            title: widget.solution.problemTitle,
-            design: AppDesign.app,
-            child: _SlopeDerivativesSteps(solution: widget.solution),
-          );
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutCubic,
-          decoration: BoxDecoration(
-            color: FinalsTheme.card(context),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color:
-                  FinalsTheme.danger.withValues(alpha: _hovered ? 0.6 : 0.25),
-              width: _hovered ? 2 : 1,
-            ),
-            boxShadow: [
-              BoxShadow(
+      child: Semantics(
+        label: 'View slope solution steps',
+        button: true,
+        child: GestureDetector(
+          onTap: () {
+            showSolutionStepsModal(
+              context: context,
+              title: widget.solution.problemTitle,
+              design: AppDesign.app,
+              child: _SlopeDerivativesSteps(solution: widget.solution),
+            );
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+            decoration: BoxDecoration(
+              color: FinalsTheme.card(context),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(
                 color:
-                    FinalsTheme.danger.withValues(alpha: _hovered ? 0.3 : 0.1),
-                blurRadius: _hovered ? 28 : 16,
-                offset: const Offset(0, 8),
+                    FinalsTheme.danger.withValues(alpha: _hovered ? 0.6 : 0.25),
+                width: _hovered ? 2 : 1,
               ),
-              BoxShadow(
-                color: theme.shadowColor,
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-                spreadRadius: -4,
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(22),
-            child: Stack(
-              children: [
-                // Background glow effect
-                Positioned(
-                  bottom: -30,
-                  right: -30,
-                  child: Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [
-                          FinalsTheme.secondary
-                              .withValues(alpha: _hovered ? 0.25 : 0.12),
-                          Colors.transparent,
-                        ],
+              boxShadow: [
+                BoxShadow(
+                  color: FinalsTheme.danger
+                      .withValues(alpha: _hovered ? 0.3 : 0.1),
+                  blurRadius: _hovered ? 28 : 16,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: theme.shadowColor,
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                  spreadRadius: -4,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: Stack(
+                children: [
+                  // Background glow effect
+                  Positioned(
+                    bottom: -30,
+                    right: -30,
+                    child: Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            FinalsTheme.secondary
+                                .withValues(alpha: _hovered ? 0.25 : 0.12),
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                // Main Content Column
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // TOP ROW: Label & Navigation Arrow
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.check_circle_outline,
-                                  color: FinalsTheme.danger
-                                      .withValues(alpha: _hovered ? 1.0 : 0.8),
-                                  size: 20),
-                              const SizedBox(width: 8),
-                              Text("Slope (m)",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: FinalsTheme.textPrimary(context)
-                                        .withValues(alpha: 0.6),
-                                    letterSpacing: 0.5,
-                                  )),
-                            ],
-                          ),
-                          Container(
-                            width: 34,
-                            height: 34,
-                            decoration: BoxDecoration(
-                              color: _hovered
-                                  ? FinalsTheme.danger.withValues(alpha: 0.15)
-                                  : Colors.transparent,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: FinalsTheme.danger
-                                      .withValues(alpha: _hovered ? 0.5 : 0.25),
-                                  width: 1.5),
+                  // Main Content Column
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // TOP ROW: Label & Navigation Arrow
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle_outline,
+                                    color: FinalsTheme.danger.withValues(
+                                        alpha: _hovered ? 1.0 : 0.8),
+                                    size: 20),
+                                const SizedBox(width: 8),
+                                Text("Slope (m)",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: FinalsTheme.textPrimary(context)
+                                          .withValues(alpha: 0.6),
+                                      letterSpacing: 0.5,
+                                    )),
+                              ],
                             ),
-                            child: Icon(Icons.arrow_forward_ios_rounded,
-                                size: 14,
-                                color: FinalsTheme.danger
-                                    .withValues(alpha: _hovered ? 1.0 : 0.5)),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // HERO ELEMENT: The Answer Itself
-                      AnimatedDefaultTextStyle(
-                        duration: const Duration(milliseconds: 300),
-                        style: TextStyle(
-                          fontSize: 56,
-                          fontWeight: FontWeight.w900,
-                          color: _hovered
-                              ? FinalsTheme.danger
-                              : FinalsTheme.textPrimary(context),
-                          letterSpacing: -2,
-                          height: 1.1,
+                            Container(
+                              width: 34,
+                              height: 34,
+                              decoration: BoxDecoration(
+                                color: _hovered
+                                    ? FinalsTheme.danger.withValues(alpha: 0.15)
+                                    : Colors.transparent,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: FinalsTheme.danger.withValues(
+                                        alpha: _hovered ? 0.5 : 0.25),
+                                    width: 1.5),
+                              ),
+                              child: Icon(Icons.arrow_forward_ios_rounded,
+                                  size: 14,
+                                  color: FinalsTheme.danger
+                                      .withValues(alpha: _hovered ? 1.0 : 0.5)),
+                            ),
+                          ],
                         ),
-                        child: Text(_formatSlope(r.slopeValue)),
-                      ),
 
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 16),
 
-                      // BOTTOM ROW: Action Badges
-                      Wrap(
-                        alignment: WrapAlignment.start,
-                        spacing: 8,
-                        children: [
-                          _pillBadge("View Steps", FinalsTheme.danger,
-                              Icons.double_arrow_rounded),
-                          if (r.tangentLineEquation != null)
-                            _pillBadge(
-                                "Tangent",
-                                FinalsTheme.secondaryFor(context),
-                                Icons.linear_scale_rounded),
-                        ],
-                      )
-                    ],
+                        // HERO ELEMENT: The Answer Itself
+                        AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 300),
+                          style: TextStyle(
+                            fontSize: 56,
+                            fontWeight: FontWeight.w900,
+                            color: _hovered
+                                ? FinalsTheme.danger
+                                : FinalsTheme.textPrimary(context),
+                            letterSpacing: -2,
+                            height: 1.1,
+                          ),
+                          child: Text(_formatSlope(r.slopeValue)),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // BOTTOM ROW: Action Badges
+                        Wrap(
+                          alignment: WrapAlignment.start,
+                          spacing: 8,
+                          children: [
+                            _pillBadge("View Steps", FinalsTheme.danger,
+                                Icons.double_arrow_rounded),
+                            if (r.tangentLineEquation != null)
+                              _pillBadge(
+                                  "Tangent",
+                                  FinalsTheme.secondaryFor(context),
+                                  Icons.linear_scale_rounded),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

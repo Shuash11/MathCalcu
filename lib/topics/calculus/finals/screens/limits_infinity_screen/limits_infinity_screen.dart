@@ -233,6 +233,7 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                   leading: AccentGlow.iconHalo(
                     context,
                     child: IconButton(
+                      tooltip: 'Back',
                       icon: Icon(Icons.arrow_back_ios_new_rounded,
                           color: FinalsTheme.primaryFor(context)),
                       onPressed: () => Navigator.of(context).pop(),

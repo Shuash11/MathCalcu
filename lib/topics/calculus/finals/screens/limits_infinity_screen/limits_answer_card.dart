@@ -20,113 +20,117 @@ class LimitsAnswerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: hasError ? null : onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-        decoration: BoxDecoration(
-          gradient: hasError
-              ? LinearGradient(
-                  colors: [
-                    FinalsTheme.danger.withValues(alpha: 0.1),
-                    FinalsTheme.danger.withValues(alpha: 0.05)
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : FinalsTheme.cardGlow(hovered: true),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: hasError
-                ? FinalsTheme.danger.withValues(alpha: 0.3)
-                : FinalsTheme.primaryFor(context).withValues(alpha: 0.3),
-          ),
-          boxShadow: [
-            BoxShadow(
+    return Semantics(
+      label: 'View limit solution steps',
+      button: true,
+      child: GestureDetector(
+        onTap: hasError ? null : onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          decoration: BoxDecoration(
+            gradient: hasError
+                ? LinearGradient(
+                    colors: [
+                      FinalsTheme.danger.withValues(alpha: 0.1),
+                      FinalsTheme.danger.withValues(alpha: 0.05)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : FinalsTheme.cardGlow(hovered: true),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
               color: hasError
-                  ? FinalsTheme.danger.withValues(alpha: 0.1)
-                  : FinalsTheme.primaryFor(context).withValues(alpha: 0.15),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
+                  ? FinalsTheme.danger.withValues(alpha: 0.3)
+                  : FinalsTheme.primaryFor(context).withValues(alpha: 0.3),
             ),
-          ],
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+            boxShadow: [
+              BoxShadow(
+                color: hasError
+                    ? FinalsTheme.danger.withValues(alpha: 0.1)
+                    : FinalsTheme.primaryFor(context).withValues(alpha: 0.15),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    hasError ? 'Error Occurred' : 'Limit Result',
+                    style: FinalsTheme.labelStyle(context).copyWith(
+                      color: hasError ? FinalsTheme.danger : null,
+                      fontSize: 11,
+                    ),
+                  ),
+                  if (!hasError)
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: FinalsTheme.primaryFor(context)
+                            .withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: FinalsTheme.primaryFor(context),
+                        size: 18,
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (hasError)
                 Text(
-                  hasError ? 'Error Occurred' : 'Limit Result',
-                  style: FinalsTheme.labelStyle(context).copyWith(
-                    color: hasError ? FinalsTheme.danger : null,
-                    fontSize: 11,
+                  errorMessage ?? 'Invalid input or evaluation error.',
+                  style: FinalsTheme.subtitleStyle(context)
+                      .copyWith(color: FinalsTheme.danger),
+                )
+              else ...[
+                Text(
+                  problemNotation,
+                  style: FinalsTheme.subtitleStyle(context).copyWith(
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
-                if (!hasError)
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: FinalsTheme.primaryFor(context)
-                          .withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.keyboard_arrow_down_rounded,
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: FinalsTheme.surface(context).withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    "= $resultString",
+                    style: FinalsTheme.titleStyle(context).copyWith(
+                      fontSize: 22,
                       color: FinalsTheme.primaryFor(context),
-                      size: 18,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            if (hasError)
-              Text(
-                errorMessage ?? 'Invalid input or evaluation error.',
-                style: FinalsTheme.subtitleStyle(context)
-                    .copyWith(color: FinalsTheme.danger),
-              )
-            else ...[
-              Text(
-                problemNotation,
-                style: FinalsTheme.subtitleStyle(context).copyWith(
-                  fontStyle: FontStyle.italic,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: FinalsTheme.surface(context).withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  "= $resultString",
-                  style: FinalsTheme.titleStyle(context).copyWith(
-                    fontSize: 22,
-                    color: FinalsTheme.primaryFor(context),
-                    fontWeight: FontWeight.w800,
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ResponsiveText(
+                    '',
+                    style: FinalsTheme.labelStyle(context).copyWith(
+                      fontSize: 9,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ResponsiveText(
-                  '',
-                  style: FinalsTheme.labelStyle(context).copyWith(
-                    fontSize: 9,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-            ]
-          ],
+              ]
+            ],
+          ),
         ),
       ),
     );

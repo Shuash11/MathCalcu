@@ -23,148 +23,153 @@ class DerivativeAnswerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: hasError ? null : onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-        decoration: BoxDecoration(
-          gradient: hasError
-              ? LinearGradient(
-                  colors: [
-                    FinalsTheme.danger.withValues(alpha: 0.1),
-                    FinalsTheme.danger.withValues(alpha: 0.05)
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : FinalsTheme.cardGlow(hovered: true),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: hasError
-                ? FinalsTheme.danger.withValues(alpha: 0.3)
-                : FinalsTheme.primary.withValues(alpha: 0.3),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: hasError
-                  ? FinalsTheme.danger.withValues(alpha: 0.1)
-                  : FinalsTheme.primary.withValues(alpha: 0.15),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  hasError ? 'Parsing Error' : 'Derivative Result',
-                  style: FinalsTheme.labelStyle(context).copyWith(
-                    color: hasError ? FinalsTheme.danger : null,
-                    fontSize: 11,
-                  ),
-                ),
-                if (!hasError)
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.copy_rounded, size: 18),
-                        color: FinalsTheme.primaryFor(context),
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: answerExpr));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Answer copied to clipboard'),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        },
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: FinalsTheme.primaryFor(context)
-                              .withValues(alpha: 0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: FinalsTheme.primaryFor(context),
-                          size: 18,
-                        ),
-                      ),
+    return Semantics(
+      label: 'View derivative solution steps',
+      button: true,
+      child: GestureDetector(
+        onTap: hasError ? null : onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          decoration: BoxDecoration(
+            gradient: hasError
+                ? LinearGradient(
+                    colors: [
+                      FinalsTheme.danger.withValues(alpha: 0.1),
+                      FinalsTheme.danger.withValues(alpha: 0.05)
                     ],
-                  ),
-              ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : FinalsTheme.cardGlow(hovered: true),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: hasError
+                  ? FinalsTheme.danger.withValues(alpha: 0.3)
+                  : FinalsTheme.primary.withValues(alpha: 0.3),
             ),
-            const SizedBox(height: 12),
-            if (hasError)
-              Text(
-                errorMessage ?? 'Invalid expression syntax.',
-                style: FinalsTheme.subtitleStyle(context)
-                    .copyWith(color: FinalsTheme.danger),
-              )
-            else ...[
+            boxShadow: [
+              BoxShadow(
+                color: hasError
+                    ? FinalsTheme.danger.withValues(alpha: 0.1)
+                    : FinalsTheme.primary.withValues(alpha: 0.15),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ResponsiveText(
-                    '',
-                    style: FinalsTheme.subtitleStyle(context),
-                  ),
-                  Flexible(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: _buildLatex(_toLatex(originalExpr), context),
+                  Text(
+                    hasError ? 'Parsing Error' : 'Derivative Result',
+                    style: FinalsTheme.labelStyle(context).copyWith(
+                      color: hasError ? FinalsTheme.danger : null,
+                      fontSize: 11,
                     ),
                   ),
+                  if (!hasError)
+                    Row(
+                      children: [
+                        IconButton(
+                          tooltip: 'Copy answer',
+                          icon: const Icon(Icons.copy_rounded, size: 18),
+                          color: FinalsTheme.primaryFor(context),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: answerExpr));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Answer copied to clipboard'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: FinalsTheme.primaryFor(context)
+                                .withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: FinalsTheme.primaryFor(context),
+                            size: 18,
+                          ),
+                        ),
+                      ],
+                    ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: FinalsTheme.surface(context).withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
+              const SizedBox(height: 12),
+              if (hasError)
+                Text(
+                  errorMessage ?? 'Invalid expression syntax.',
+                  style: FinalsTheme.subtitleStyle(context)
+                      .copyWith(color: FinalsTheme.danger),
+                )
+              else ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      "f'(x) = ",
-                      style: FinalsTheme.titleStyle(context).copyWith(
-                        fontSize: 20,
-                        color: FinalsTheme.primaryFor(context),
-                        fontWeight: FontWeight.w800,
-                      ),
+                    ResponsiveText(
+                      '',
+                      style: FinalsTheme.subtitleStyle(context),
                     ),
                     Flexible(
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: _buildLatex(_toLatex(answerExpr), context),
+                        child: _buildLatex(_toLatex(originalExpr), context),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ResponsiveText(
-                  '',
-                  style: FinalsTheme.labelStyle(context).copyWith(
-                    fontSize: 9,
-                    letterSpacing: 0.5,
+                const SizedBox(height: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: FinalsTheme.surface(context).withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        "f'(x) = ",
+                        style: FinalsTheme.titleStyle(context).copyWith(
+                          fontSize: 20,
+                          color: FinalsTheme.primaryFor(context),
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: _buildLatex(_toLatex(answerExpr), context),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ]
-          ],
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ResponsiveText(
+                    '',
+                    style: FinalsTheme.labelStyle(context).copyWith(
+                      fontSize: 9,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ]
+            ],
+          ),
         ),
       ),
     );
