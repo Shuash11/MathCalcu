@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
@@ -38,6 +39,14 @@ void main() async {
       child: const CalculusApp(),
     ),
   );
+
+  // Web screen-reader support is off by default; Flutter's official
+  // web-accessibility guidance enables it explicitly. Mobile and desktop
+  // enable semantics automatically when assistive tech is detected, so
+  // this stays web-gated to avoid overhead there.
+  if (kIsWeb) {
+    SemanticsBinding.instance.ensureSemantics();
+  }
 }
 
 class CalculusApp extends StatefulWidget {

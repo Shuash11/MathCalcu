@@ -4,6 +4,7 @@ import 'package:calculus_system/screens/inequality.dart';
 import 'package:calculus_system/shared/widgets/accessible_back_button.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/shared/widgets/empty_state.dart';
+import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -277,14 +278,19 @@ class _CategoryHeader extends StatelessWidget {
                 height: 42,
               ),
               const SizedBox(width: 10),
-              Text(
-                'MathCalc',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.w700,
-                  color: theme.textPrimary,
-                  height: 1.1,
-                  letterSpacing: -1.5,
+              // Expanded: the FittedBox only scales down under bounded
+              // width — a non-flex Row child gets unbounded main-axis
+              // width and the 42px title overflows on narrow phones.
+              Expanded(
+                child: ResponsiveText(
+                  'MathCalc',
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontWeight: FontWeight.w700,
+                    color: theme.textPrimary,
+                    height: 1.1,
+                    letterSpacing: -1.5,
+                  ),
                 ),
               ),
             ],
