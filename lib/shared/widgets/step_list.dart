@@ -22,6 +22,7 @@
 // ─────────────────────────────────────────────────────────────
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'dart:ui' show SemanticsRole;
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
@@ -80,35 +81,49 @@ class _StepListState extends State<StepList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (var i = 0; i < widget.steps.length; i++) ...[
-          _StepRow(
-            step: widget.steps[i],
-            isExpanded: _expanded.contains(i),
-            onToggle: () => setState(() {
-              if (_expanded.contains(i)) {
-                _expanded.remove(i);
-              } else {
-                _expanded.add(i);
-              }
-            }),
-          ),
-          if (i < widget.steps.length - 1) const SizedBox(height: 18),
+    return Semantics(
+      // Screen-reader structure: the walkthrough announces itself as a
+      // list ("Solution steps" header, one listItem per step) so
+      // TalkBack/VoiceOver users can jump between steps instead of
+      // hearing one long merged reading. Header semantics live on the
+      // heading row; item roles on each _StepRow. Visuals unchanged.
+      container: true,
+      role: SemanticsRole.list,
+      label: 'Solution steps',
+      child: Column(
+        children: [
+          for (var i = 0; i < widget.steps.length; i++) ...[
+            _StepRow(
+              key: ValueKey('step-${widget.steps[i].stepNumber}-$i'),
+              step: widget.steps[i],
+              isExpanded: _expanded.contains(i),
+              onToggle: () => setState(() {
+                if (_expanded.contains(i)) {
+                  _expanded.remove(i);
+                } else {
+                  _expanded.add(i);
+                }
+              }),
+            ),
+            if (i < widget.steps.length - 1) const SizedBox(height: 18),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
 
 /// One step: number badge (visual parity with the G6 shell badge),
 /// primary math or plain title/explanation, then secondary lines.
+/// Announces as a listItem under the list container with the step
+/// title/explanation as its reading-order anchor.
 class _StepRow extends StatelessWidget {
   final StepModel step;
   final bool isExpanded;
   final VoidCallback onToggle;
 
   const _StepRow({
+    super.key,
     required this.step,
     required this.isExpanded,
     required this.onToggle,
@@ -128,106 +143,120 @@ class _StepRow extends StatelessWidget {
       ),
     );
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 26,
-          height: 26,
-          decoration: BoxDecoration(
-            color: accent.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              '${step.stepNumber}',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                color: accent,
+    // Step anchor for reading order: the first meaningful text (title,
+    // else explanation) labels the listItem node; stepNumber is the
+    // spoken value. Purely additive semantics — no layout change.
+    final stepLabel = [
+      if (step.title.isNotEmpty) step.title,
+      if (step.explanation.isNotEmpty) step.explanation,
+    ].join(' — ');
+
+    return Semantics(
+      container: true,
+      role: SemanticsRole.listItem,
+      label: stepLabel.isEmpty ? null : stepLabel,
+      value: 'Step ${step.stepNumber}',
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '${step.stepNumber}',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  color: accent,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (step.title.isNotEmpty)
-                Text(
-                  step.title,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: theme.textPrimary,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (step.title.isNotEmpty)
+                  Text(
+                    step.title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: theme.textPrimary,
+                    ),
                   ),
-                ),
-              if (hasLatex) ...[
-                if (step.title.isNotEmpty) const SizedBox(height: 6),
-                _StepMath(
-                  step.latex!,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: theme.textPrimary,
-                    height: 1.5,
-                  ),
-                  fallback: fallback,
-                ),
-              ] else if (step.explanation.isNotEmpty) ...[
-                if (step.title.isNotEmpty) const SizedBox(height: 4),
-                Text(
-                  step.explanation,
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.45,
-                    color: theme.textSecondary,
-                  ),
-                ),
-              ],
-              if (step.subLatex != null && step.subLatex!.isNotEmpty)
-                for (final line in step.subLatex!) ...[
-                  const SizedBox(height: 8),
+                if (hasLatex) ...[
+                  if (step.title.isNotEmpty) const SizedBox(height: 6),
                   _StepMath(
-                    line,
+                    step.latex!,
                     style: TextStyle(
                       fontSize: 16,
                       color: theme.textPrimary,
                       height: 1.5,
                     ),
-                    fallback: Text(
-                      StepList.stripLatex(line),
-                      style: TextStyle(
-                        fontSize: 13,
-                        height: 1.45,
-                        color: theme.textSecondary,
-                      ),
+                    fallback: fallback,
+                  ),
+                ] else if (step.explanation.isNotEmpty) ...[
+                  if (step.title.isNotEmpty) const SizedBox(height: 4),
+                  Text(
+                    step.explanation,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.45,
+                      color: theme.textSecondary,
                     ),
                   ),
                 ],
-              if (step.hint != null && step.hint!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    step.hint!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: theme.textSecondary,
-                      fontStyle: FontStyle.italic,
-                      height: 1.3,
+                if (step.subLatex != null && step.subLatex!.isNotEmpty)
+                  for (final line in step.subLatex!) ...[
+                    const SizedBox(height: 8),
+                    _StepMath(
+                      line,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: theme.textPrimary,
+                        height: 1.5,
+                      ),
+                      fallback: Text(
+                        StepList.stripLatex(line),
+                        style: TextStyle(
+                          fontSize: 13,
+                          height: 1.45,
+                          color: theme.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                if (step.hint != null && step.hint!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      step.hint!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.textSecondary,
+                        fontStyle: FontStyle.italic,
+                        height: 1.3,
+                      ),
                     ),
                   ),
-                ),
-              if (step.details != null && step.details!.isNotEmpty)
-                _StepDetails(
-                  details: step.details!,
-                  isExpanded: isExpanded,
-                  onToggle: onToggle,
-                ),
-            ],
+                if (step.details != null && step.details!.isNotEmpty)
+                  _StepDetails(
+                    details: step.details!,
+                    isExpanded: isExpanded,
+                    onToggle: onToggle,
+                  ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

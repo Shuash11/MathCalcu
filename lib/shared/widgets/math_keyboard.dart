@@ -177,26 +177,34 @@ class _MathKeyboardState extends State<MathKeyboard> {
               child: SizedBox(
                 height: 44,
                 child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _visible
-                            ? Icons.keyboard_arrow_down
-                            : Icons.keyboard_arrow_up,
-                        size: 18,
-                        color: theme.textSecondary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        _visible ? 'Hide math keyboard' : 'Show math keyboard',
-                        style: TextStyle(
-                          fontSize: 11,
+                  // FittedBox keeps the label + chevron row inside the
+                  // 44dp toggle strip at large text scales instead of
+                  // overflowing the Center's width constraint.
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _visible
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_up,
+                          size: 18,
                           color: theme.textSecondary,
-                          fontWeight: FontWeight.w500,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 6),
+                        Text(
+                          _visible
+                              ? 'Hide math keyboard'
+                              : 'Show math keyboard',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: theme.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -65,15 +65,20 @@ class DerivativeAnswerCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    hasError ? 'Parsing Error' : 'Derivative Result',
-                    style: FinalsTheme.labelStyle(context).copyWith(
-                      color: hasError ? FinalsTheme.danger : null,
-                      fontSize: 11,
+                  Flexible(
+                    child: Text(
+                      hasError ? 'Parsing Error' : 'Derivative Result',
+                      style: FinalsTheme.labelStyle(context).copyWith(
+                        color: hasError ? FinalsTheme.danger : null,
+                        fontSize: 11,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   if (!hasError)
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           tooltip: 'Copy answer',
@@ -138,13 +143,18 @@ class DerivativeAnswerCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        "f'(x) = ",
-                        style: FinalsTheme.titleStyle(context).copyWith(
-                          fontSize: 20,
-                          color: FinalsTheme.primaryFor(context),
-                          fontWeight: FontWeight.w800,
+                      Flexible(
+                        child: Text(
+                          "f'(x) = ",
+                          style: FinalsTheme.titleStyle(context).copyWith(
+                            fontSize: 20,
+                            color: FinalsTheme.primaryFor(context),
+                            fontWeight: FontWeight.w800,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Flexible(

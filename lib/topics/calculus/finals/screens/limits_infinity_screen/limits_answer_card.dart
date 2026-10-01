@@ -62,11 +62,15 @@ class LimitsAnswerCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    hasError ? 'Error Occurred' : 'Limit Result',
-                    style: FinalsTheme.labelStyle(context).copyWith(
-                      color: hasError ? FinalsTheme.danger : null,
-                      fontSize: 11,
+                  Flexible(
+                    child: Text(
+                      hasError ? 'Error Occurred' : 'Limit Result',
+                      style: FinalsTheme.labelStyle(context).copyWith(
+                        color: hasError ? FinalsTheme.danger : null,
+                        fontSize: 11,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   if (!hasError)

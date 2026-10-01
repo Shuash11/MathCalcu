@@ -110,22 +110,27 @@ class _AnswerCardState extends State<AnswerCard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Icon(Icons.check_circle_outline,
-                                    color: FinalsTheme.danger.withValues(
-                                        alpha: _hovered ? 1.0 : 0.8),
-                                    size: 20),
-                                const SizedBox(width: 8),
-                                Text("Slope (m)",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      color: FinalsTheme.textPrimary(context)
-                                          .withValues(alpha: 0.6),
-                                      letterSpacing: 0.5,
-                                    )),
-                              ],
+                            Flexible(
+                              child: Row(
+                                children: [
+                                  Icon(Icons.check_circle_outline,
+                                      color: FinalsTheme.danger.withValues(
+                                          alpha: _hovered ? 1.0 : 0.8),
+                                      size: 20),
+                                  const SizedBox(width: 8),
+                                  Flexible(
+                                    child: Text("Slope (m)",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color:
+                                              FinalsTheme.textPrimary(context)
+                                                  .withValues(alpha: 0.6),
+                                          letterSpacing: 0.5,
+                                        )),
+                                  ),
+                                ],
+                              ),
                             ),
                             Container(
                               width: 34,
