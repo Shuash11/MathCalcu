@@ -32,7 +32,7 @@ class StepItemWidget extends StatelessWidget {
 
   /// Safely renders LaTeX on mobile.
   /// Wraps in a horizontal scroll view to prevent overflow errors on long equations.
-  Widget _buildMathLine(String line, TextStyle style) {
+  Widget _buildMathLine(String line, TextStyle style, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: SingleChildScrollView(
@@ -46,7 +46,7 @@ class StepItemWidget extends StatelessWidget {
           onErrorFallback: (err) => Text(
             line,
             style: TextStyle(
-              color: FinalsTheme.danger,
+              color: FinalsTheme.dangerFor(context),
               fontSize: style.fontSize! - 2,
               fontStyle: FontStyle.italic,
             ),
@@ -95,7 +95,7 @@ class StepItemWidget extends StatelessWidget {
         icon = Icons.lightbulb_outline_rounded;
         break;
       case StepKind.algebra:
-        accentColor = FinalsTheme.danger;
+        accentColor = FinalsTheme.dangerFor(context);
         icon = Icons.calculate_rounded;
         break;
       case StepKind.substitution:
@@ -170,6 +170,7 @@ class StepItemWidget extends StatelessWidget {
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),
+                    context,
                   );
                 } else {
                   return Padding(
@@ -263,8 +264,8 @@ class StepItemWidget extends StatelessWidget {
                       mathStyle: MathStyle.text,
                       onErrorFallback: (err) => Text(
                         line,
-                        style: const TextStyle(
-                          color: FinalsTheme.danger,
+                        style: TextStyle(
+                          color: FinalsTheme.dangerFor(context),
                           fontSize: 13,
                           fontStyle: FontStyle.italic,
                         ),
@@ -342,6 +343,7 @@ class StepItemWidget extends StatelessWidget {
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
                   ),
+                  context,
                 )),
           ],
         ),

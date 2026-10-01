@@ -23,34 +23,36 @@ Future<void> showSlopeStepsModal({
         const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SlopeGraphScreen(
-                    result1: result,
+          child: Builder(
+            builder: (modalContext) => ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SlopeGraphScreen(
+                      result1: result,
+                    ),
                   ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: FinalsTheme.primaryFor(modalContext),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: FinalsTheme.primary,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                elevation: 0,
               ),
-              elevation: 0,
-            ),
-            icon: const Icon(Icons.show_chart_rounded,
-                size: 18, color: Colors.white),
-            label: const Text(
-              'View Graph',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                color: Colors.white,
+              icon: Icon(Icons.show_chart_rounded,
+                  size: 18, color: FinalsTheme.onPrimaryFor(modalContext)),
+              label: Text(
+                'View Graph',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: FinalsTheme.onPrimaryFor(modalContext),
+                ),
               ),
             ),
           ),

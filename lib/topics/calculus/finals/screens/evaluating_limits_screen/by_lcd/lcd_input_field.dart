@@ -30,8 +30,8 @@ class LCDInputField extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isCompact = screenWidth < 380;
     final isTablet = screenWidth > 600;
-    // We use the 'danger' color (rose red) as the primary accent for LCD
-    const accentColor = FinalsTheme.danger;
+    // Theme error color doubles as the LCD accent (WCAG-AA on both surfaces)
+    final accentColor = FinalsTheme.dangerFor(context);
 
     final expressionFontSize = isCompact ? 16.0 : (isTablet ? 20.0 : 18.0);
     final limitTextSize = isCompact ? 16.0 : (isTablet ? 24.0 : 18.0);
@@ -121,8 +121,8 @@ class LCDInputField extends StatelessWidget {
                   onTap: () => _showVariablePicker(context),
                 ),
 
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: Icon(
                     Icons.arrow_forward_rounded,
                     size: 12,
@@ -234,7 +234,7 @@ class LCDInputField extends StatelessWidget {
                           style: FinalsTheme.titleStyle(ctx).copyWith(
                             fontFamily: 'serif',
                             fontSize: 18,
-                            color: isSelected ? FinalsTheme.danger : null,
+                            color: isSelected ? FinalsTheme.dangerFor(ctx) : null,
                           ),
                         ),
                         onTap: () {
@@ -244,8 +244,8 @@ class LCDInputField extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16)),
                         trailing: isSelected
-                            ? const Icon(Icons.check_circle_rounded,
-                                color: FinalsTheme.danger)
+                            ? Icon(Icons.check_circle_rounded,
+                                color: FinalsTheme.dangerFor(ctx))
                             : null,
                       ),
                     ),

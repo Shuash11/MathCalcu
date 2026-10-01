@@ -69,7 +69,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                     child: Text(
                       hasError ? 'Parsing Error' : 'Derivative Result',
                       style: FinalsTheme.labelStyle(context).copyWith(
-                        color: hasError ? FinalsTheme.danger : null,
+                        color: hasError ? FinalsTheme.dangerFor(context) : null,
                         fontSize: 11,
                       ),
                       maxLines: 1,
@@ -116,7 +116,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                 Text(
                   errorMessage ?? 'Invalid expression syntax.',
                   style: FinalsTheme.subtitleStyle(context)
-                      .copyWith(color: FinalsTheme.danger),
+                      .copyWith(color: FinalsTheme.dangerFor(context)),
                 )
               else ...[
                 Row(

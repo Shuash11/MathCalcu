@@ -98,17 +98,17 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: _openStepsModal,
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.receipt_long_rounded,
                       size: 14,
-                      color: FinalsTheme.primary,
+                      color: FinalsTheme.primaryFor(context),
                     ),
-                    label: const Text(
+                    label: Text(
                       'Show Steps',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: FinalsTheme.primary,
+                        color: FinalsTheme.primaryFor(context),
                       ),
                     ),
                     style: OutlinedButton.styleFrom(

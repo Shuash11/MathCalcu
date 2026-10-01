@@ -66,7 +66,7 @@ class LimitsAnswerCard extends StatelessWidget {
                     child: Text(
                       hasError ? 'Error Occurred' : 'Limit Result',
                       style: FinalsTheme.labelStyle(context).copyWith(
-                        color: hasError ? FinalsTheme.danger : null,
+                        color: hasError ? FinalsTheme.dangerFor(context) : null,
                         fontSize: 11,
                       ),
                       maxLines: 1,
@@ -94,7 +94,7 @@ class LimitsAnswerCard extends StatelessWidget {
                 Text(
                   errorMessage ?? 'Invalid input or evaluation error.',
                   style: FinalsTheme.subtitleStyle(context)
-                      .copyWith(color: FinalsTheme.danger),
+                      .copyWith(color: FinalsTheme.dangerFor(context)),
                 )
               else ...[
                 Text(

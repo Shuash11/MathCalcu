@@ -36,8 +36,8 @@ class StepsScreen extends StatelessWidget {
                           border: Border.all(
                               color: FinalsTheme.danger.withValues(alpha: 0.3)),
                         ),
-                        child: const Icon(Icons.arrow_back_ios_new_rounded,
-                            size: 16, color: FinalsTheme.danger),
+                        child: Icon(Icons.arrow_back_ios_new_rounded,
+                            size: 16, color: FinalsTheme.dangerFor(context)),
                       ),
                     ),
                   ),

@@ -162,7 +162,7 @@ class _AnswerCardState extends State<AnswerCard> {
                             fontSize: 56,
                             fontWeight: FontWeight.w900,
                             color: _hovered
-                                ? FinalsTheme.danger
+                                ? FinalsTheme.dangerFor(context)
                                 : FinalsTheme.textPrimary(context),
                             letterSpacing: -2,
                             height: 1.1,
@@ -177,7 +177,7 @@ class _AnswerCardState extends State<AnswerCard> {
                           alignment: WrapAlignment.start,
                           spacing: 8,
                           children: [
-                            _pillBadge("View Steps", FinalsTheme.danger,
+                            _pillBadge("View Steps", FinalsTheme.dangerFor(context),
                                 Icons.double_arrow_rounded),
                             if (r.tangentLineEquation != null)
                               _pillBadge(
@@ -314,8 +314,8 @@ class _SlopeDerivativesSteps extends StatelessWidget {
               mathStyle: MathStyle.text,
               onErrorFallback: (err) => Text(
                 line,
-                style: const TextStyle(
-                  color: FinalsTheme.danger,
+                style: TextStyle(
+                  color: FinalsTheme.dangerFor(context),
                   fontSize: 13,
                   fontStyle: FontStyle.italic,
                 ),

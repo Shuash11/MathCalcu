@@ -23,7 +23,7 @@ class LCDAnswerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isCompact = screenWidth < 380;
-    const accentColor = FinalsTheme.danger;
+    final accentColor = FinalsTheme.dangerFor(context);
 
     return GestureDetector(
       onTap: onTap,

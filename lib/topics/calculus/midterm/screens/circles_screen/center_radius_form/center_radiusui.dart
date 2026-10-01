@@ -76,17 +76,17 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                         width: double.infinity,
                         child: OutlinedButton.icon(
                           onPressed: _openStepsModal,
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.receipt_long_rounded,
                             size: 14,
-                            color: FinalsTheme.primary,
+                            color: FinalsTheme.primaryFor(context),
                           ),
-                          label: const ResponsiveText(
+                          label: ResponsiveText(
                             'Show Steps',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: FinalsTheme.primary,
+                              color: FinalsTheme.primaryFor(context),
                             ),
                           ),
                           style: OutlinedButton.styleFrom(

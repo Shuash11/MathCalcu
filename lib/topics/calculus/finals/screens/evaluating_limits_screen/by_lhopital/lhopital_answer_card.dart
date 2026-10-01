@@ -175,7 +175,7 @@ class _LhopitalAnswerCardContent extends StatelessWidget {
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontSize: resultFontSize,
                       fontWeight: FontWeight.w800,
-                      color: hasError ? FinalsTheme.danger : accentColor,
+                      color: hasError ? FinalsTheme.dangerFor(context) : accentColor,
                     ),
                   ),
                 ),

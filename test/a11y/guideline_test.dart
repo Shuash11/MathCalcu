@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:calculus_system/main.dart';
 import 'package:calculus_system/screens/category_picker_screen.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -94,5 +97,57 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
     });
+  });
+
+  testWidgets('finals token pairs meet 4.5:1 contrast (both themes)',
+      (tester) async {
+    double ratio(Color fg, Color bg) {
+      double lum(Color c) {
+        double channel(double v) => (v <= 0.03928)
+            ? v / 12.92
+            : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
+        return 0.2126 * channel(c.r) +
+            0.7152 * channel(c.g) +
+            0.0722 * channel(c.b);
+      }
+
+      final l1 = lum(fg);
+      final l2 = lum(bg);
+      final lighter = math.max(l1, l2);
+      final darker = math.min(l1, l2);
+      return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    for (final isDark in [false, true]) {
+      final theme = ThemeProvider();
+      if (isDark) theme.toggleTheme();
+
+      Color? card;
+      Color? primary;
+      Color? danger;
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: theme,
+          child: Builder(
+            builder: (context) {
+              // Capture inside build so watch() is valid.
+              card = FinalsTheme.card(context);
+              primary = FinalsTheme.primaryFor(context);
+              danger = FinalsTheme.dangerFor(context);
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final mode = isDark ? 'dark' : 'light';
+
+      expect(ratio(primary!, card!), greaterThanOrEqualTo(4.5),
+          reason: 'primaryFor on card fails in $mode');
+      expect(ratio(danger!, card!), greaterThanOrEqualTo(4.5),
+          reason: 'dangerFor on card fails in $mode');
+    }
   });
 }

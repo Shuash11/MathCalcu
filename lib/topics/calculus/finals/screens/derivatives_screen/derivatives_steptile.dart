@@ -239,9 +239,9 @@ class DerivativeStepTile extends StatelessWidget {
         mathStyle: MathStyle.text,
         onErrorFallback: (err) => Text(
           tex,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: FinalsTheme.danger,
+            color: FinalsTheme.dangerFor(ctx),
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -519,9 +519,9 @@ class DerivativeStepTile extends StatelessWidget {
           mathStyle: MathStyle.text,
           onErrorFallback: (err) => Text(
             tex,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: FinalsTheme.danger,
+              color: FinalsTheme.dangerFor(ctx),
               fontStyle: FontStyle.italic,
             ),
           ),

@@ -46,6 +46,11 @@ class FinalsTheme {
   static Color onPrimaryFor(BuildContext context) =>
       context.watch<ThemeProvider>().surface;
 
+  /// Context-aware semantic danger accent. Static #FF6B6B fails light mode
+  /// (2.78:1 vs light card). errorColor is WCAG-AA on [card] in both modes.
+  static Color dangerFor(BuildContext context) =>
+      context.watch<ThemeProvider>().errorColor;
+
   static Color shadowColor(BuildContext context) =>
       context.watch<ThemeProvider>().shadowColor;
 

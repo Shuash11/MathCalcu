@@ -229,7 +229,7 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
             ),
             MathKeyboard(
               controller: _activeController ?? _expressionController,
-              accentColor: FinalsTheme.danger,
+              accentColor: FinalsTheme.dangerFor(context),
               hideSignal: _hideKeyboardSignal,
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -284,14 +284,15 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
               border:
                   Border.all(color: FinalsTheme.danger.withValues(alpha: 0.2)),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.layers_rounded, size: 14, color: FinalsTheme.danger),
-                SizedBox(width: 6),
+                Icon(Icons.layers_rounded,
+                    size: 14, color: FinalsTheme.dangerFor(context)),
+                const SizedBox(width: 6),
                 ResponsiveText(
                   'By LCD',
                   style: TextStyle(
-                    color: FinalsTheme.danger,
+                    color: FinalsTheme.dangerFor(context),
                     fontWeight: FontWeight.w800,
                     fontSize: 10,
                   ),

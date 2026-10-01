@@ -149,8 +149,8 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                             color: FinalsTheme.danger.withValues(alpha: 0.3)),
                       ),
                       child: Text(_error!,
-                          style: const TextStyle(
-                              color: FinalsTheme.danger,
+                          style: TextStyle(
+                              color: FinalsTheme.dangerFor(context),
                               fontSize: 13,
                               fontWeight: FontWeight.w600)),
                     ),
