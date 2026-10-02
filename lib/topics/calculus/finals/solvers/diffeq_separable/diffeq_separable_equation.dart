@@ -128,8 +128,11 @@ class DiffeqSeparableEquation extends BaseEquation {
       final s = _parsed!;
       final fx = _fxAntiderivative(s.f.k, s.f.n);
       final gy = _gyAntiderivative(s.g.k, s.g.n);
+      final fxLatex = _fxLatex(s.f.k, s.f.n);
+      final gyLatex = _gyLatex(s.g.k, s.g.n);
       return SolveResult(
         answer: '$gy = $fx + C',
+        latex: '$gyLatex = $fxLatex + C',
         points: const [],
         customData: [
           {
@@ -158,6 +161,8 @@ class DiffeqSeparableEquation extends BaseEquation {
     final s = _parsed!;
     final fx = _fxAntiderivative(s.f.k, s.f.n);
     final gy = _gyAntiderivative(s.g.k, s.g.n);
+    final fxLatex = _fxLatex(s.f.k, s.f.n);
+    final gyLatex = _gyLatex(s.g.k, s.g.n);
     return [
       StepModel(
         stepNumber: 1,
@@ -165,6 +170,8 @@ class DiffeqSeparableEquation extends BaseEquation {
         explanation: 'dy/dx = f(x)·g(y) → divide both sides by g(y) so every '
             'y sits with dy and every x with dx.',
         hint: 'dy/${s.gRaw} = ${s.fRaw} dx',
+        latex: '\\frac{dy}{${_monoLatex(s.g.k, 'y', s.g.n)}} = '
+            '${_monoLatex(s.f.k, 'x', s.f.n)} dx',
       ),
       StepModel(
         stepNumber: 2,
@@ -172,14 +179,81 @@ class DiffeqSeparableEquation extends BaseEquation {
         explanation: 'Left: ∫ dy/g(y) = $gy. Right: ∫ f(x) dx = $fx. '
             'Power rule: ∫ y^n dy = y^(n+1)/(n+1); ∫ dy/y = ln|y|.',
         hint: '$gy and $fx',
+        latex: '\\int \\frac{dy}{${_monoLatex(s.g.k, 'y', s.g.n)}} = $gyLatex',
+        subLatex: [
+          '\\int ${_monoLatex(s.f.k, 'x', s.f.n)} dx = $fxLatex',
+        ],
       ),
       StepModel(
         stepNumber: 3,
         title: 'General solution',
         explanation: '$gy = $fx + C — one constant C covers both '
             'antiderivatives.',
+        latex: '$gyLatex = $fxLatex + C',
       ),
     ];
+  }
+
+  // ── latex emission (KaTeX subset for flutter_math_fork) ────
+
+  /// k·var^n monomial in LaTeX (n = 0 → the bare coefficient).
+  String _monoLatex(double k, String varName, double n) {
+    if (n == 0) return G6Format.num(k);
+    final prefix = k == 1
+        ? ''
+        : k == -1
+            ? '-'
+            : G6Format.num(k);
+    if (n == 1) return '$prefix$varName';
+    return '$prefix$varName^{${G6Format.num(n)}}';
+  }
+
+  /// LaTeX antiderivative of f(x) = k·x^n — mirrors _fxAntiderivative.
+  String _fxLatex(double k, double n) {
+    if (n == -1) {
+      if (k == 1) return r'\ln\left|x\right|';
+      if (k == -1) return r'-\ln\left|x\right|';
+      return '${G6Format.num(k)}\\ln\\left|x\\right|';
+    }
+    final e = n + 1;
+    if (k == 1) {
+      return e == 1
+          ? 'x'
+          : '\\frac{x^{${G6Format.num(e)}}}{${G6Format.num(e)}}';
+    }
+    final c = k / e;
+    if (c == c.roundToDouble()) {
+      final ci = c.round();
+      final coef = ci == 1
+          ? ''
+          : ci == -1
+              ? '-'
+              : '$ci';
+      return e == 1 ? '${coef}x' : '${coef}x^{${G6Format.num(e)}}';
+    }
+    final kf = G6Format.num(k);
+    return e == 1
+        ? '${kf}x'
+        : '\\frac{${kf}x^{${G6Format.num(e)}}}{${G6Format.num(e)}}';
+  }
+
+  /// LaTeX antiderivative of 1/g(y) dy — mirrors _gyAntiderivative.
+  String _gyLatex(double k, double m) {
+    if (m == 1) {
+      return k == 1
+          ? r'\ln\left|y\right|'
+          : '\\frac{\\ln\\left|y\\right|}{${G6Format.num(k)}}';
+    }
+    final p = 1 - m; // new exponent on y
+    if (p < 0) {
+      final d = (k * p).abs();
+      final pw = p.abs() == 1 ? 'y' : 'y^{${G6Format.num(p.abs())}}';
+      return d == 1 ? '-\\frac{1}{$pw}' : '-\\frac{1}{${G6Format.num(d)}$pw}';
+    }
+    final d = k * p;
+    if (p == 1) return d == 1 ? 'y' : '\\frac{y}{${G6Format.num(d)}}';
+    if (d < 0) return '-\\frac{y^{${G6Format.num(p)}}}{${G6Format.num(-d)}}';
+    return '\\frac{y^{${G6Format.num(p)}}}{${G6Format.num(d)}}';
   }
 
   // ── internals ──────────────────────────────────────────────

@@ -6,14 +6,17 @@
 // (G12/College also uses it).
 // ─────────────────────────────────────────────────────────────
 
+import 'package:calculus_system/topics/calculus/finals/solvers/finals_latex.dart';
 import 'package:calculus_system/topics/grade6/solvers/g6_support.dart';
 
-/// A matched by-parts result: the antiderivative string and the rule label.
+/// A matched by-parts result: the antiderivative string, the rule
+/// label, and the optional LaTeX antiderivative (same terms).
 class ByPartsResult {
   final String antiderivative;
   final String rule;
+  final String? latex;
 
-  const ByPartsResult(this.antiderivative, this.rule);
+  const ByPartsResult(this.antiderivative, this.rule, [this.latex]);
 }
 
 /// One signed term: coefficient [c] on monomial [mono] (e.g. 'x^2 ln(x)').
@@ -79,8 +82,25 @@ class ByPartsIntegration {
     return (g == null || g.isEmpty) ? 1.0 : double.parse(g);
   }
 
-  ByPartsResult _result(List<_Term> terms) =>
-      ByPartsResult(_join(terms), 'integration by parts (LIATE)');
+  ByPartsResult _result(List<_Term> terms) => ByPartsResult(
+      _join(terms), 'integration by parts (LIATE)', _joinLatex(terms));
+
+  /// Joins the LaTeX monomial terms into '\frac{a} - b + C'-style.
+  String _joinLatex(List<_Term> terms) {
+    final sb = StringBuffer();
+    for (var i = 0; i < terms.length; i++) {
+      final t = terms[i];
+      final neg = t.c < 0;
+      if (i == 0) {
+        if (neg) sb.write('-');
+      } else {
+        sb.write(neg ? ' - ' : ' + ');
+      }
+      sb.write(FinalsLatex.mono(t.mono, t.c.abs()));
+    }
+    sb.write(' + C');
+    return sb.toString();
+  }
 
   /// Joins signed terms into 'a - b + C' / 'a + b + C' style.
   String _join(List<_Term> terms) {

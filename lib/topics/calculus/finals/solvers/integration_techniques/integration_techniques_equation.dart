@@ -1,5 +1,6 @@
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/finals_latex.dart';
 import 'package:calculus_system/topics/grade6/solvers/g6_support.dart';
 import '../../../../shs/solvers/integral_sub_equation.dart';
 import 'integration_by_parts.dart';
@@ -31,6 +32,7 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
       if (bp != null) {
         return SolveResult(
           answer: '∫ $f dx = ${bp.antiderivative}',
+          latex: '\\int ${FinalsLatex.expr(f)} dx = ${bp.latex}',
           points: const [],
           customData: [
             {
@@ -45,7 +47,41 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
       final chain = _solveImplicitOneChain(f);
       if (chain != null) return chain;
     }
-    return super.solve();
+    return _withLatex(super.solve());
+  }
+
+  /// Adds final-answer LaTeX to the promoted SHS result without
+  /// touching the shared engine (G12/College also uses it).
+  SolveResult _withLatex(SolveResult r) {
+    if (r.hasError) return r;
+    final data = r.customData?.first;
+    final anti = data is Map ? data['antiderivative'] as String? : null;
+    final isDef = _norm().toLowerCase().startsWith('def');
+    if (isDef) {
+      final a = data is Map ? data['a'] as num? : null;
+      final b = data is Map ? data['b'] as num? : null;
+      final f = data is Map ? data['f'] as String? : null;
+      final area = data is Map ? data['area'] as num? : null;
+      if (a == null || b == null || f == null || area == null) return r;
+      return SolveResult(
+        answer: r.answer,
+        latex:
+            '\\int_{${G6Format.num(a.toDouble())}}^{${G6Format.num(b.toDouble())}} '
+            '${FinalsLatex.expr(f)} dx = ${G6Format.num(area.toDouble())}',
+        points: r.points,
+        intervalNotation: r.intervalNotation,
+        customData: r.customData,
+      );
+    }
+    if (anti == null) return r;
+    return SolveResult(
+      answer: r.answer,
+      latex: '\\int ${FinalsLatex.expr(r.customData!.first['f'] as String)} dx '
+          '= ${FinalsLatex.anti(anti)}',
+      points: r.points,
+      intervalNotation: r.intervalNotation,
+      customData: r.customData,
+    );
   }
 
   /// Coefficient-1 chain: 'int x(x^2+c)^n dx'. The promoted SHS chain
@@ -60,6 +96,9 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
     final anti = '${G6Format.num(c)}(x^2${m.group(1) ?? ''})^${pw + 1} + C';
     return SolveResult(
       answer: '∫ $f dx = $anti',
+      latex: '\\int ${FinalsLatex.expr(f)} dx = ${FinalsLatex.num(c)}'
+          '\\left(${FinalsLatex.expr('x^2${m.group(1) ?? ''}')}\\right)'
+          '^{${pw + 1}} + C',
       points: const [],
       customData: [
         {
@@ -82,20 +121,38 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
           const StepModel(
               stepNumber: 1,
               title: 'Choose u by LIATE',
+              latex: r'\int u\,dv = uv - \int v\,du',
               explanation:
                   'LIATE order: Log, Inverse trig, Algebraic, Trig, Exponential — pick the first function type that appears.'),
           const StepModel(
               stepNumber: 2,
               title: 'Apply ∫u dv = uv − ∫v du',
+              latex: r'\int v\,du',
               explanation:
                   'dv is the remaining factor; integrate v, then subtract ∫v du.'),
           StepModel(
               stepNumber: 3,
               title: 'Simplify + C',
+              latex: '\\int ${FinalsLatex.expr(f)} dx = ${bp.latex}',
               explanation: '∫ $f dx = ${bp.antiderivative}'),
         ];
       }
     }
-    return super.getSteps();
+    // Promoted SHS steps: attach the final-answer LaTeX to the
+    // back-substitute / antiderivative step (title strings and
+    // explanations stay byte-identical).
+    final r = solve();
+    final steps = super.getSteps();
+    return [
+      for (final s in steps)
+        StepModel(
+          stepNumber: s.stepNumber,
+          title: s.title,
+          explanation: s.explanation,
+          hint: s.hint,
+          latex:
+              (s.explanation == r.answer && r.latex != null) ? r.latex : null,
+        ),
+    ];
   }
 }

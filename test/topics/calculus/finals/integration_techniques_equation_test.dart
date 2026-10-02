@@ -112,4 +112,37 @@ void main() {
       expect(data['antiderivative'], isNull);
     });
   });
+
+  group('Integration techniques latex emission (Cycle 13 Item 2)', () {
+    test('by-parts steps and result carry \\frac latex', () {
+      final eq = IntegrationTechniquesEquation('int x*ln(x) dx');
+      final steps = eq.getSteps();
+      for (final s in steps) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex!, isNotEmpty, reason: s.title);
+        expect(s.latex!.contains('²'), isFalse, reason: s.title);
+      }
+      expect(steps[2].latex, contains(r'\frac{x^{2}}{2}'));
+      expect(steps[2].latex, contains(r'\frac{x^{2}}{4}'));
+      expect(steps[2].latex, contains(r'\ln\left(x\right)'));
+      final r = eq.solve();
+      expect(r.latex, isNotNull);
+      expect(r.latex, contains(r'\frac{x^{2}}{2}\ln\left(x\right)'));
+    });
+
+    test('u-sub and chain paths emit \\frac latex on the result', () {
+      final uSub = IntegrationTechniquesEquation('int 2x(x^2+1)^3 dx').solve();
+      expect(uSub.latex, isNotNull);
+      expect(uSub.latex, contains(r'\frac{1}{4}'));
+      expect(uSub.latex, contains(r'(x^{2}+1)^{4}'));
+      final chain = IntegrationTechniquesEquation('int x*(x^2+1)^3 dx').solve();
+      expect(chain.latex, isNotNull);
+      expect(chain.latex, contains(r'\frac{1}{8}'));
+      final def =
+          IntegrationTechniquesEquation('def a = 0, b = 2, f = x^2').solve();
+      expect(def.latex, isNotNull);
+      expect(def.latex, contains(r'\int_{0}^{2}'));
+      expect(def.latex, contains(r'x^{2}'));
+    });
+  });
 }

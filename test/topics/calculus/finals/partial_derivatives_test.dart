@@ -44,4 +44,33 @@ void main() {
       expect(eq.getSteps(), isEmpty);
     });
   });
+
+  group('Partial derivatives latex emission (Cycle 13 Item 2)', () {
+    test('every step has non-empty latex with \\partial markers', () {
+      final eq = PartialDerivativesEquation('d/dx x^2*y');
+      final steps = eq.getSteps();
+      for (final s in steps) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex!, isNotEmpty, reason: s.title);
+        expect(s.latex!.contains('²'), isFalse, reason: s.title);
+        expect(s.latex!.contains('∂'), isFalse, reason: s.title);
+      }
+      expect(steps.first.latex, contains(r'\partial f'));
+      expect(steps.first.latex, contains(r'\partial x'));
+      expect(steps.last.latex, contains(r'\cdot'));
+      final r = eq.solve();
+      expect(r.latex, isNotNull);
+      expect(r.latex, contains(r'\frac{\partial f}{\partial x}'));
+    });
+
+    test('function derivative emits \\sin/\\cos latex', () {
+      final eq = PartialDerivativesEquation('d/dx sin(x)*y');
+      final steps = eq.getSteps();
+      for (final s in steps) {
+        expect(s.latex, isNotNull, reason: s.title);
+      }
+      expect(steps.last.latex, contains(r'\cos\left(x\right)'));
+      expect(eq.solve().latex, contains(r'\cos\left(x\right)'));
+    });
+  });
 }

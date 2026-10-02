@@ -19,6 +19,7 @@ import 'package:calculus_system/shared/widgets/graph_widget.dart';
 import 'package:calculus_system/shared/widgets/math_input_field.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
+import 'package:calculus_system/shared/widgets/step_list.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/grade6/screens/grade6_graphs.dart';
@@ -106,7 +107,7 @@ class _Grade6SolverScreenState extends State<Grade6SolverScreen> {
       context: context,
       title: '${widget.config.title} — Steps',
       design: AppDesign.app,
-      child: _Grade6StepsList(steps: _steps),
+      child: StepList(steps: _steps),
     );
   }
 
@@ -411,79 +412,6 @@ class _Header extends StatelessWidget {
             ),
           ),
         ),
-      ],
-    );
-  }
-}
-
-/// Steps list rendered inside the SolutionStepsModal bottom sheet.
-/// G6 solvers fill title/explanation (not latex), so StepsDrawer
-/// would render blank — this view reads title + explanation.
-class _Grade6StepsList extends StatelessWidget {
-  final List<StepModel> steps;
-
-  const _Grade6StepsList({required this.steps});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.watch<ThemeProvider>();
-    final accent = theme.accentColor;
-    return Column(
-      children: [
-        for (var i = 0; i < steps.length; i++) ...[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${steps[i].stepNumber}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: accent,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (steps[i].title.isNotEmpty)
-                      Text(
-                        steps[i].title,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: theme.textPrimary,
-                        ),
-                      ),
-                    if (steps[i].explanation.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        steps[i].explanation,
-                        style: TextStyle(
-                          fontSize: 13,
-                          height: 1.45,
-                          color: theme.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (i < steps.length - 1) const SizedBox(height: 18),
-        ],
       ],
     );
   }

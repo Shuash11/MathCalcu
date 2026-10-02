@@ -149,4 +149,37 @@ void main() {
       expect(data['interval'], '(-1, 1)');
     });
   });
+
+  group('Taylor series latex emission (Cycle 13 Item 2)', () {
+    test('every step has non-empty latex with no unicode math chars', () {
+      final eq = TaylorSeriesEquation('taylor exp(x) at 0');
+      final steps = eq.getSteps();
+      for (final s in steps) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex!, isNotEmpty, reason: s.title);
+        expect(s.latex!.contains('²'), isFalse, reason: s.title);
+        expect(s.latex!.contains('π'), isFalse, reason: s.title);
+        expect(s.latex!.contains('∞'), isFalse, reason: s.title);
+      }
+      expect(steps.first.latex, contains('P_{n}(x)'));
+      expect(steps.first.latex, contains(r'\frac{f^{\prime\prime}(a)}{2!}'));
+      final r = eq.solve();
+      expect(r.latex, isNotNull);
+      expect(r.latex, contains(r'\frac{1}{24}'));
+      expect(r.latex, startsWith('P_{4}(x) = '));
+    });
+
+    test('term steps carry coefficient \\frac and interval subLatex', () {
+      final eq = TaylorSeriesEquation('taylor ln(x) at 1');
+      final steps = eq.getSteps();
+      final ratioStep =
+          steps.firstWhere((s) => s.title.toLowerCase().contains('ratio'));
+      expect(ratioStep.latex, contains(r'\frac{1}{\rho}'));
+      expect(ratioStep.subLatex, isNotNull);
+      expect(ratioStep.subLatex!.first, contains(r'\left('));
+      final finalStep = steps.last;
+      expect(finalStep.latex, contains(r'\left(x - 1\right)'));
+      expect(finalStep.latex, contains(r'\frac{1}{2}'));
+    });
+  });
 }

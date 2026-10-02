@@ -133,4 +133,43 @@ void main() {
       }
     });
   });
+
+  group('Separable DiffEq latex emission (Cycle 13 Item 2)', () {
+    test('every step has non-empty latex with no unicode math chars', () {
+      final eq = DiffeqSeparableEquation('dy/dx = x * y');
+      final steps = eq.getSteps();
+      for (final s in steps) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex!, isNotEmpty, reason: s.title);
+        expect(s.latex!.contains('²'), isFalse, reason: s.title);
+        expect(s.latex!.contains('π'), isFalse, reason: s.title);
+      }
+      expect(steps[2].latex, contains(r'\frac'));
+      expect(steps[2].latex, contains(r'\ln'));
+      final r = eq.solve();
+      expect(r.latex, isNotNull);
+      expect(r.latex, contains('+ C'));
+    });
+
+    test('key steps carry the expected markers (1/y and fraction cases)', () {
+      final eq = DiffeqSeparableEquation('dy/dx = x * 2y');
+      final steps = eq.getSteps();
+      // General solution: ln|y|/2 = x^2/2 + C.
+      expect(steps[2].latex, contains(r'\frac{\ln\left|y\right|}{2}'));
+      expect(steps[2].latex, contains(r'\frac{x^{2}}{2}'));
+      // Separate step uses the dy/g(y) fraction form.
+      expect(steps[0].latex, contains(r'\frac{dy}{2y}'));
+      final r2 = DiffeqSeparableEquation('dy/dx = x * 1/y');
+      // 1/y fold: -1/y general solution (dy/dx = x*y^2 case shape).
+      expect(r2.solve().latex, isNotNull);
+    });
+
+    test('negative-exponent antiderivative emits \\frac latex', () {
+      final eq = DiffeqSeparableEquation('dy/dx = x^2 * y^2');
+      final steps = eq.getSteps();
+      expect(steps[2].latex, contains(r'-\frac{1}{y}'));
+      expect(steps[2].latex, contains(r'\frac{x^{3}}{3}'));
+      expect(eq.solve().latex, contains(r'-\frac{1}{y}'));
+    });
+  });
 }

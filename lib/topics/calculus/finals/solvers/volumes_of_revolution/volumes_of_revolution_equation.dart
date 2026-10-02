@@ -23,6 +23,7 @@ import 'package:calculus_system/calculator/calculator_engine.dart';
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/finals_latex.dart';
 
 /// The supported method of revolution.
 enum _Method { disk, washer, shell }
@@ -45,6 +46,18 @@ class _Volume {
         return 'V = π ∫[a, b] (f(x)² − g(x)²) dx';
       case _Method.shell:
         return 'V = 2π ∫[a, b] y·f(y) dy';
+    }
+  }
+
+  /// Setup formula in LaTeX (KaTeX subset for flutter_math_fork).
+  String get latexFormula {
+    switch (method) {
+      case _Method.disk:
+        return r'V = \pi \int_{a}^{b} \left(f(x)\right)^{2} dx';
+      case _Method.washer:
+        return r'V = \pi \int_{a}^{b} \left(f(x)^{2} - g(x)^{2}\right) dx';
+      case _Method.shell:
+        return r'V = 2\pi \int_{a}^{b} y \cdot f(y) dy';
     }
   }
 }
@@ -187,6 +200,7 @@ class VolumesOfRevolutionEquation extends BaseEquation {
       }
       return SolveResult(
         answer: _answerText(volume),
+        latex: _answerLatex(volume),
         points: const [],
         customData: [
           {
@@ -218,6 +232,16 @@ class VolumesOfRevolutionEquation extends BaseEquation {
     final volume = _volume(v);
     final limits = '[${_fmt(v.a)}, ${_fmt(v.b)}]';
     final piFactor = v.method == _Method.shell ? '2π' : 'π';
+    final piFactorLatex = v.method == _Method.shell ? r'2\pi' : r'\pi';
+    final lLimits = '\\int_{${_fmt(v.a)}}^{${_fmt(v.b)}}';
+    final fLatex = FinalsLatex.expr(v.f);
+    final gLatex = v.g == null ? null : FinalsLatex.expr(v.g!);
+    final substituted = switch (v.method) {
+      _Method.disk => 'V = \\pi $lLimits \\left($fLatex\\right)^{2} dx',
+      _Method.washer => 'V = \\pi $lLimits \\left(\\left($fLatex\\right)^{2} - '
+          '\\left($gLatex\\right)^{2}\\right) dx',
+      _Method.shell => 'V = 2\\pi $lLimits y \\cdot $fLatex dy',
+    };
 
     final steps = <StepModel>[
       StepModel(
@@ -236,6 +260,7 @@ class VolumesOfRevolutionEquation extends BaseEquation {
         hint: v.method == _Method.washer
             ? 'Outer ${v.f} − inner ${v.g}'
             : 'Limits $limits',
+        latex: v.latexFormula,
       ),
       StepModel(
         stepNumber: 2,
@@ -249,6 +274,7 @@ class VolumesOfRevolutionEquation extends BaseEquation {
                 : 'With f(x) = ${v.f} over $limits: '
                     'V = π ∫$limits (${v.f})² dx.',
         hint: 'Integrand over $limits',
+        latex: substituted,
       ),
     ];
 
@@ -270,11 +296,13 @@ class VolumesOfRevolutionEquation extends BaseEquation {
           '≈ ${_fmt(integral)}; multiplying by $piFactor gives the '
           'volume.',
       hint: '∫ ≈ ${_fmt(integral)}',
+      latex: '$piFactorLatex \\cdot ${_fmt(integral)}',
     ));
     steps.add(StepModel(
       stepNumber: 4,
       title: 'Final answer',
       explanation: 'V = ${_answerText(volume)}',
+      latex: _answerLatex(volume),
     ));
     return steps;
   }
@@ -393,6 +421,24 @@ class VolumesOfRevolutionEquation extends BaseEquation {
       return p == 1 ? 'V = π  ($approx)' : 'V = $pπ  ($approx)';
     }
     return p == 1 ? 'V = π/$den  ($approx)' : 'V = $pπ/$den  ($approx)';
+  }
+
+  /// Answer in LaTeX, mirroring _answerText: e.g.
+  /// 'V = \frac{\pi}{3}' for exact π-multiples, else
+  /// 'V \approx 0.7854\pi' for a decimal π-multiple.
+  String _answerLatex(double volume) {
+    final q = volume / math.pi;
+    final r = _rational(q);
+    if (r == null) return 'V \\approx ${_fmt(q)}\\pi';
+    final (p, den) = r;
+    final sign = p < 0 ? '-' : '';
+    final ap = p.abs();
+    if (den == 1) {
+      return ap == 1 ? 'V = $sign\\pi' : 'V = $sign$ap\\pi';
+    }
+    return ap == 1
+        ? 'V = $sign\\frac{\\pi}{$den}'
+        : 'V = $sign\\frac{$ap\\pi}{$den}';
   }
 
   /// Exact rational p/q for v (denominator ≤ 200), else null —

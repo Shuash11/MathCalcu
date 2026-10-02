@@ -155,6 +155,40 @@ void main() {
     });
   });
 
+  group('Volumes of Revolution — latex emission (Cycle 13 Item 2)', () {
+    test('every step has non-empty latex with no unicode math chars', () {
+      final steps = eq('volume x^2 about x-axis from 0 to 1').getSteps();
+      for (final s in steps) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex!, isNotEmpty, reason: s.title);
+        expect(s.latex!.contains('²'), isFalse, reason: s.title);
+        expect(s.latex!.contains('π'), isFalse, reason: s.title);
+      }
+      expect(steps[0].latex, contains(r'\int_{a}^{b}'));
+      expect(steps[1].latex, contains(r'\int_{0}^{1}'));
+      expect(steps[1].latex, contains(r'x^{2}'));
+      expect(steps[3].latex, contains(r'\frac{\pi}{5}'));
+      final r = eq('volume x^2 about x-axis from 0 to 1').solve();
+      expect(r.latex, isNotNull);
+      expect(r.latex, contains(r'V = \frac{\pi}{5}'));
+    });
+
+    test('washer and shell steps carry \\int and 2\\pi markers', () {
+      final washer = eq('volume washer x x^2 about x-axis from 0 to 1');
+      for (final s in washer.getSteps()) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex, contains(r'\pi'), reason: s.title);
+      }
+      final shell = eq('volume shell y about y-axis from 0 to 1');
+      for (final s in shell.getSteps()) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex, contains(r'2\pi'), reason: s.title);
+      }
+      expect(washer.solve().latex, isNotNull);
+      expect(shell.solve().latex, contains(r'\frac{2\pi}{3}'));
+    });
+  });
+
   group('Volumes of Revolution — wiring', () {
     testWidgets('registry route renders its screen', (tester) async {
       final entry = FinalsModuleRegistry.modules

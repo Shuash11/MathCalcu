@@ -2,6 +2,7 @@ import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_solver.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/finals_latex.dart';
 
 // ─────────────────────────────────────────────────────────────
 // PARTIAL DERIVATIVES EQUATION — finals period.
@@ -52,8 +53,10 @@ class PartialDerivativesEquation extends BaseEquation {
       final v = variable!;
       final f = expression!;
       final result = DerivativeSolver.solve(f, v);
+      final resultLatex = FinalsLatex.expr(result.toString());
       return SolveResult(
         answer: '∂f/∂$v = $result',
+        latex: '\\frac{\\partial f}{\\partial $v} = $resultLatex',
         points: const [],
         customData: [
           {
@@ -84,18 +87,23 @@ class PartialDerivativesEquation extends BaseEquation {
         title: 'Identify the partial derivative',
         explanation: '∂f/∂$v: f = ${raw.original} — treat all other '
             'variables as constants.',
+        latex: '\\frac{\\partial f}{\\partial $v}',
       ),
     ];
 
     var n = 2;
     for (final s in raw.steps.skip(1)) {
       final isFinal = s.type == StepType.finalResult;
+      final exprLatex = FinalsLatex.expr(s.expression.toString());
       steps.add(StepModel(
         stepNumber: n++,
         title: isFinal ? 'Final answer' : s.description,
         explanation:
             isFinal ? '∂f/∂$v = ${s.expression}' : s.expression.toString(),
         hint: s.rule,
+        latex: isFinal
+            ? '\\frac{\\partial f}{\\partial $v} = $exprLatex'
+            : exprLatex,
       ));
     }
     return steps;

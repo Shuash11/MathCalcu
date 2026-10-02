@@ -4,6 +4,7 @@ import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_solver.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/finals_latex.dart';
 
 // ─────────────────────────────────────────────────────────────
 // TAYLOR / MACLAURIN SERIES EQUATION — finals period.
@@ -92,6 +93,61 @@ class _Series {
       }
     }
     return buf.toString();
+  }
+
+  /// Display string of one term in LaTeX, e.g. '\frac{1}{2}x^{2}'
+  /// or '-\left(x - 1\right)' — mirrors termText.
+  String termLatex(_Term t) {
+    final base = t.k == 0
+        ? ''
+        : a == 0
+            ? 'x'
+            : '\\left(x - ${TaylorSeriesFormat.frac(a)}\\right)';
+    final power = t.k >= 2 ? '^{${t.k}}' : '';
+    final rational = TaylorSeriesFormat.rational(t.coefficient);
+    if (rational == null) {
+      final c = t.coefficient.toStringAsFixed(4);
+      final abs = c.startsWith('-') ? c.substring(1) : c;
+      if (t.k == 0) return c;
+      return '${t.coefficient < 0 ? '-' : ''}$abs$base$power';
+    }
+    final (p, q) = rational;
+    final sign = p < 0 ? '-' : '';
+    final ap = p.abs();
+    if (q == 1) {
+      if (t.k == 0) return '$sign$ap';
+      return ap == 1 ? '$sign$base$power' : '$sign$ap$base$power';
+    }
+    final coef = '\\frac{$ap}{$q}';
+    if (t.k == 0) return '$sign$coef';
+    return '$sign$coef$base$power';
+  }
+
+  /// The full polynomial in LaTeX joined with proper +/- handling.
+  String get polynomialLatex {
+    final parts =
+        terms.where((t) => t.coefficient != 0).map(termLatex).toList();
+    if (parts.isEmpty) return '0';
+    final buf = StringBuffer(parts.first);
+    for (final p in parts.skip(1)) {
+      if (p.startsWith('-')) {
+        buf.write(' - ${p.substring(1)}');
+      } else {
+        buf.write(' + $p');
+      }
+    }
+    return buf.toString();
+  }
+
+  /// The final answer in LaTeX: 'P_{n}(x) = ...'.
+  String get finalLatex => 'P_{$n}($varName) = $polynomialLatex';
+
+  /// Convergence interval in LaTeX: '(-\infty, \infty)' or
+  /// '\left(-0.09, 2.09\right)'-style.
+  String get intervalLatex {
+    final r = convergence.radius;
+    if (r == null) return r'(-\infty, \infty)';
+    return '\\left(${_fmt2(a - r)}, ${_fmt2(a + r)}\\right)';
   }
 }
 
@@ -264,6 +320,7 @@ class TaylorSeriesEquation extends BaseEquation {
       }
       return SolveResult(
         answer: 'P${series.n}(${series.varName}) = ${series.polynomial}',
+        latex: series.finalLatex,
         points: const [],
         customData: [
           {
@@ -303,6 +360,8 @@ class TaylorSeriesEquation extends BaseEquation {
             "f(a) + f'(a)(x-a) + f''(a)/2!(x-a)^2 + ... — each "
             'coefficient is the k-th derivative at a, divided by k!.'
             '${series.a == 0 ? ' Here a = 0, so this is a Maclaurin series.' : ''}',
+        latex: r'P_{n}(x) = f(a) + f^{\prime}(a)(x-a) + '
+            r'\frac{f^{\prime\prime}(a)}{2!}(x-a)^{2} + \cdots',
       ),
     ];
 
@@ -320,6 +379,8 @@ class TaylorSeriesEquation extends BaseEquation {
                 'coefficient = ${TaylorSeriesFormat.frac(t.value)}/${t.k}! = '
                 '${TaylorSeriesFormat.frac(t.coefficient)}',
         hint: 'Term: ${series.termText(t)}',
+        latex: series.termLatex(t),
+        subLatex: t.k == 0 ? null : [FinalsLatex.expr(t.derivative.toString())],
       ));
     }
 
@@ -338,12 +399,17 @@ class TaylorSeriesEquation extends BaseEquation {
               'on (a − R, a + R) ≈ ${series.intervalText}; check the '
               'endpoints separately.',
       hint: 'R = ${series.radiusText}, interval ${series.intervalText}',
+      latex: series.convergence.isInfinite
+          ? r'R = \infty'
+          : r'R = \frac{1}{\rho} \approx ${series.radiusText}',
+      subLatex: [series.intervalLatex],
     ));
 
     steps.add(StepModel(
       stepNumber: n++,
       title: 'Final answer',
       explanation: 'P${series.n}($v) = ${series.polynomial}',
+      latex: series.polynomialLatex,
     ));
     return steps;
   }
