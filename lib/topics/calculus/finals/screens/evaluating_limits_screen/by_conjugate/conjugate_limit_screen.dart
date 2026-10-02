@@ -269,6 +269,7 @@ class _ConjugateLimitScreenContentState
       child: Row(
         children: [
           IconButton(
+            tooltip: 'Back to limits',
             onPressed: () => Navigator.of(context).maybePop(),
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             style: IconButton.styleFrom(

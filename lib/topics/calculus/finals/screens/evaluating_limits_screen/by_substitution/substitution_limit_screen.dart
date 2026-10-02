@@ -220,6 +220,7 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
         children: [
           // Back Button
           IconButton(
+            tooltip: 'Back to limits',
             onPressed: () => Navigator.of(context).maybePop(),
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             style: IconButton.styleFrom(

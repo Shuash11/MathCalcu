@@ -399,249 +399,257 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
 
     return Padding(
       padding: EdgeInsets.only(bottom: 14 * s),
-      child: GestureDetector(
+      child: Semantics(
+        button: true,
+        label: _expanded ? 'Collapse developer info' : 'Expand developer info',
         onTap: () => setState(() => _expanded = !_expanded),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeOutCubic,
-          decoration: BoxDecoration(
-            color: FinalsTheme.card(context),
-            borderRadius: BorderRadius.circular(24 * s),
-            border: Border.all(
-              color: _expanded
-                  ? color.withValues(alpha: 0.6)
-                  : color.withValues(alpha: 0.15),
-              width: _expanded ? 2.5 : 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: _expanded ? 0.25 : 0.08),
-                blurRadius: _expanded ? 24 * s : 16 * s,
-                offset: Offset(0, 8 * s),
+        excludeSemantics: true,
+        child: GestureDetector(
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.easeOutCubic,
+            decoration: BoxDecoration(
+              color: FinalsTheme.card(context),
+              borderRadius: BorderRadius.circular(24 * s),
+              border: Border.all(
+                color: _expanded
+                    ? color.withValues(alpha: 0.6)
+                    : color.withValues(alpha: 0.15),
+                width: _expanded ? 2.5 : 1.5,
               ),
-              BoxShadow(
-                color: FinalsTheme.shadowColor(context),
-                blurRadius: 12 * s,
-                offset: Offset(0, 4 * s),
-                spreadRadius: -4 * s,
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24 * s),
-            child: Column(
-              children: [
-                // -- Top accent bar --------------------------
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: _expanded ? 4 * s : 3 * s,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        color,
-                        color.withValues(alpha: 0.6),
-                      ],
-                    ),
-                  ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: _expanded ? 0.25 : 0.08),
+                  blurRadius: _expanded ? 24 * s : 16 * s,
+                  offset: Offset(0, 8 * s),
                 ),
-
-                // -- Main content ----------------------------
-                Padding(
-                  padding: EdgeInsets.all(20 * s),
-                  child: Row(
-                    children: [
-                      // Avatar with ring
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        width: 56 * s,
-                        height: 56 * s,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: _expanded
-                              ? LinearGradient(
-                                  colors: [
-                                    color,
-                                    Color.lerp(color, Colors.white, 0.08)!,
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                )
-                              : LinearGradient(
-                                  colors: [
-                                    color.withValues(alpha: 0.15),
-                                    color.withValues(alpha: 0.05),
-                                  ],
-                                ),
-                          border: Border.all(
-                            color: _expanded
-                                ? color.withValues(alpha: 0.8)
-                                : color.withValues(alpha: 0.3),
-                            width: _expanded ? 3 : 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            initials,
-                            style: TextStyle(
-                              fontSize: 18 * s,
-                              fontWeight: FontWeight.w800,
-                              color: _expanded ? _avatarInk : color,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(width: 16 * s),
-
-                      // Info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              dev.name,
-                              style: TextStyle(
-                                fontSize: 16 * s,
-                                fontWeight: FontWeight.w700,
-                                color: FinalsTheme.textPrimary(context),
-                                letterSpacing: -0.3 * s,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(height: 4 * s),
-                            Text(
-                              dev.program,
-                              style: TextStyle(
-                                fontSize: 13 * s,
-                                color: FinalsTheme.textSecondary(context),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(height: 8 * s),
-                            // Role pill
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12 * s,
-                                vertical: 5 * s,
-                              ),
-                              decoration: BoxDecoration(
-                                color: color.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(12 * s),
-                                border: Border.all(
-                                  color: color.withValues(alpha: 0.4),
-                                ),
-                              ),
-                              child: Text(
-                                dev.role,
-                                style: TextStyle(
-                                  fontSize: 11 * s,
-                                  fontWeight: FontWeight.w700,
-                                  color: color,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Expand icon
-                      AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 300),
-                        child: Container(
-                          width: 36 * s,
-                          height: 36 * s,
-                          decoration: BoxDecoration(
-                            color: _expanded
-                                ? color.withValues(alpha: 0.15)
-                                : FinalsTheme.cardSecondary(context),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 20 * s,
-                            color: _expanded
-                                ? color
-                                : FinalsTheme.textSecondary(context),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // -- Expanded details ------------------------
-                AnimatedCrossFade(
-                  firstChild: const SizedBox.shrink(),
-                  secondChild: Padding(
-                    padding: EdgeInsets.fromLTRB(20 * s, 0, 20 * s, 20 * s),
-                    child: Column(
-                      children: [
-                        Divider(
-                          color: color.withValues(alpha: 0.2),
-                          height: 1,
-                        ),
-                        SizedBox(height: 16 * s),
-
-                        // Details grid
-                        _DetailItem(
-                          icon: Icons.email_outlined,
-                          label: 'Email',
-                          value:
-                              dev.email.isNotEmpty ? dev.email : 'Not provided',
-                          color: color,
-                          scale: s,
-                        ),
-                        SizedBox(height: 12 * s),
-                        _DetailItem(
-                          icon: Icons.facebook_rounded,
-                          label: 'Facebook',
-                          value: dev.facebook.isNotEmpty
-                              ? dev.facebook
-                              : 'Not provided',
-                          color: color,
-                          scale: s,
-                        ),
-                        SizedBox(height: 12 * s),
-                        _DetailItem(
-                          icon: Icons.code_rounded,
-                          label: 'Contribution',
-                          value: dev.contribution.isEmpty
-                              ? 'Not specified'
-                              : dev.contribution,
-                          color: color,
-                          scale: s,
-                          isMultiline: true,
-                        ),
-                        SizedBox(height: 12 * s),
-                        _DetailItem(
-                          icon: Icons.phone_android_rounded,
-                          label: 'Contact',
-                          value: dev.phone,
-                          color: color,
-                          scale: s,
-                        ),
-                        SizedBox(height: 12 * s),
-                        _DetailItem(
-                          icon: Icons.groups_rounded,
-                          label: 'Team Members',
-                          value:
-                              dev.groups.isEmpty ? 'Not specified' : dev.groups,
-                          color: color,
-                          scale: s,
-                          isMultiline: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                  crossFadeState: _expanded
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 300),
+                BoxShadow(
+                  color: FinalsTheme.shadowColor(context),
+                  blurRadius: 12 * s,
+                  offset: Offset(0, 4 * s),
+                  spreadRadius: -4 * s,
                 ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24 * s),
+              child: Column(
+                children: [
+                  // -- Top accent bar --------------------------
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    height: _expanded ? 4 * s : 3 * s,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          color,
+                          color.withValues(alpha: 0.6),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // -- Main content ----------------------------
+                  Padding(
+                    padding: EdgeInsets.all(20 * s),
+                    child: Row(
+                      children: [
+                        // Avatar with ring
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: 56 * s,
+                          height: 56 * s,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: _expanded
+                                ? LinearGradient(
+                                    colors: [
+                                      color,
+                                      Color.lerp(color, Colors.white, 0.08)!,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  )
+                                : LinearGradient(
+                                    colors: [
+                                      color.withValues(alpha: 0.15),
+                                      color.withValues(alpha: 0.05),
+                                    ],
+                                  ),
+                            border: Border.all(
+                              color: _expanded
+                                  ? color.withValues(alpha: 0.8)
+                                  : color.withValues(alpha: 0.3),
+                              width: _expanded ? 3 : 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              initials,
+                              style: TextStyle(
+                                fontSize: 18 * s,
+                                fontWeight: FontWeight.w800,
+                                color: _expanded ? _avatarInk : color,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(width: 16 * s),
+
+                        // Info
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                dev.name,
+                                style: TextStyle(
+                                  fontSize: 16 * s,
+                                  fontWeight: FontWeight.w700,
+                                  color: FinalsTheme.textPrimary(context),
+                                  letterSpacing: -0.3 * s,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: 4 * s),
+                              Text(
+                                dev.program,
+                                style: TextStyle(
+                                  fontSize: 13 * s,
+                                  color: FinalsTheme.textSecondary(context),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: 8 * s),
+                              // Role pill
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12 * s,
+                                  vertical: 5 * s,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: color.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(12 * s),
+                                  border: Border.all(
+                                    color: color.withValues(alpha: 0.4),
+                                  ),
+                                ),
+                                child: Text(
+                                  dev.role,
+                                  style: TextStyle(
+                                    fontSize: 11 * s,
+                                    fontWeight: FontWeight.w700,
+                                    color: color,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Expand icon
+                        AnimatedRotation(
+                          turns: _expanded ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 300),
+                          child: Container(
+                            width: 36 * s,
+                            height: 36 * s,
+                            decoration: BoxDecoration(
+                              color: _expanded
+                                  ? color.withValues(alpha: 0.15)
+                                  : FinalsTheme.cardSecondary(context),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 20 * s,
+                              color: _expanded
+                                  ? color
+                                  : FinalsTheme.textSecondary(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // -- Expanded details ------------------------
+                  AnimatedCrossFade(
+                    firstChild: const SizedBox.shrink(),
+                    secondChild: Padding(
+                      padding: EdgeInsets.fromLTRB(20 * s, 0, 20 * s, 20 * s),
+                      child: Column(
+                        children: [
+                          Divider(
+                            color: color.withValues(alpha: 0.2),
+                            height: 1,
+                          ),
+                          SizedBox(height: 16 * s),
+
+                          // Details grid
+                          _DetailItem(
+                            icon: Icons.email_outlined,
+                            label: 'Email',
+                            value: dev.email.isNotEmpty
+                                ? dev.email
+                                : 'Not provided',
+                            color: color,
+                            scale: s,
+                          ),
+                          SizedBox(height: 12 * s),
+                          _DetailItem(
+                            icon: Icons.facebook_rounded,
+                            label: 'Facebook',
+                            value: dev.facebook.isNotEmpty
+                                ? dev.facebook
+                                : 'Not provided',
+                            color: color,
+                            scale: s,
+                          ),
+                          SizedBox(height: 12 * s),
+                          _DetailItem(
+                            icon: Icons.code_rounded,
+                            label: 'Contribution',
+                            value: dev.contribution.isEmpty
+                                ? 'Not specified'
+                                : dev.contribution,
+                            color: color,
+                            scale: s,
+                            isMultiline: true,
+                          ),
+                          SizedBox(height: 12 * s),
+                          _DetailItem(
+                            icon: Icons.phone_android_rounded,
+                            label: 'Contact',
+                            value: dev.phone,
+                            color: color,
+                            scale: s,
+                          ),
+                          SizedBox(height: 12 * s),
+                          _DetailItem(
+                            icon: Icons.groups_rounded,
+                            label: 'Team Members',
+                            value: dev.groups.isEmpty
+                                ? 'Not specified'
+                                : dev.groups,
+                            color: color,
+                            scale: s,
+                            isMultiline: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                    crossFadeState: _expanded
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 300),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -74,115 +74,123 @@ class _FactoringAnswerCardContent extends StatelessWidget {
     final valuePaddingH = isCompact ? 12.0 : (isMedium ? 14.0 : 16.0);
     final valuePaddingV = isCompact ? 8.0 : (isMedium ? 9.0 : 10.0);
 
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: 'View limit solution steps',
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-        margin: EdgeInsets.only(top: isCompact ? 16.0 : 24.0),
-        padding: EdgeInsets.all(cardPadding),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              accentColor.withValues(alpha: 0.1),
-              accentColor.withValues(alpha: 0.05),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: accentColor.withValues(alpha: isShowingSteps ? 0.6 : 0.2),
-            width: isShowingSteps ? 2 : 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color:
-                  accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
-              blurRadius: isShowingSteps ? 30 : 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                _StatusIcon(
-                  isShowingSteps: isShowingSteps,
-                  accentColor: accentColor,
-                  size: statusIconSize,
-                  childSize: statusIconChildSize,
-                ),
-                SizedBox(width: isCompact ? 12.0 : 16.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ResponsiveText(
-                        '',
-                        style: FinalsTheme.labelStyle(context).copyWith(
-                          color: accentColor,
-                          fontSize: labelFontSize,
-                        ),
-                      ),
-                      SizedBox(height: isCompact ? 2.0 : 4.0),
-                      Text(
-                        method,
-                        style: FinalsTheme.subtitleStyle(context).copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: methodFontSize,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                _ValueDisplay(
-                  answer: answer,
-                  error: error,
-                  accentColor: accentColor,
-                  fontSize: valueDisplayFontSize,
-                  paddingH: valuePaddingH,
-                  paddingV: valuePaddingV,
-                ),
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          margin: EdgeInsets.only(top: isCompact ? 16.0 : 24.0),
+          padding: EdgeInsets.all(cardPadding),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                accentColor.withValues(alpha: 0.1),
+                accentColor.withValues(alpha: 0.05),
               ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            AnimatedSize(
-              duration: const Duration(milliseconds: 200),
-              child: !isShowingSteps
-                  ? Padding(
-                      padding: EdgeInsets.only(top: isCompact ? 12.0 : 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.expand_more_rounded,
-                              size: expandIconSize,
-                              color: accentColor.withValues(alpha: 0.5)),
-                          SizedBox(width: isCompact ? 6.0 : 8.0),
-                          ResponsiveText(
-                            '',
-                            style: TextStyle(
-                              fontSize: tapHintFontSize,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1.2,
-                              color: accentColor.withValues(alpha: 0.6),
-                            ),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: accentColor.withValues(alpha: isShowingSteps ? 0.6 : 0.2),
+              width: isShowingSteps ? 2 : 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color:
+                    accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
+                blurRadius: isShowingSteps ? 30 : 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  _StatusIcon(
+                    isShowingSteps: isShowingSteps,
+                    accentColor: accentColor,
+                    size: statusIconSize,
+                    childSize: statusIconChildSize,
+                  ),
+                  SizedBox(width: isCompact ? 12.0 : 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ResponsiveText(
+                          '',
+                          style: FinalsTheme.labelStyle(context).copyWith(
+                            color: accentColor,
+                            fontSize: labelFontSize,
                           ),
-                          SizedBox(width: isCompact ? 6.0 : 8.0),
-                          Icon(Icons.expand_more_rounded,
-                              size: expandIconSize,
-                              color: accentColor.withValues(alpha: 0.5)),
-                        ],
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ],
+                        ),
+                        SizedBox(height: isCompact ? 2.0 : 4.0),
+                        Text(
+                          method,
+                          style: FinalsTheme.subtitleStyle(context).copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: methodFontSize,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _ValueDisplay(
+                    answer: answer,
+                    error: error,
+                    accentColor: accentColor,
+                    fontSize: valueDisplayFontSize,
+                    paddingH: valuePaddingH,
+                    paddingV: valuePaddingV,
+                  ),
+                ],
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                child: !isShowingSteps
+                    ? Padding(
+                        padding: EdgeInsets.only(top: isCompact ? 12.0 : 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.expand_more_rounded,
+                                size: expandIconSize,
+                                color: accentColor.withValues(alpha: 0.5)),
+                            SizedBox(width: isCompact ? 6.0 : 8.0),
+                            ResponsiveText(
+                              '',
+                              style: TextStyle(
+                                fontSize: tapHintFontSize,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.2,
+                                color: accentColor.withValues(alpha: 0.6),
+                              ),
+                            ),
+                            SizedBox(width: isCompact ? 6.0 : 8.0),
+                            Icon(Icons.expand_more_rounded,
+                                size: expandIconSize,
+                                color: accentColor.withValues(alpha: 0.5)),
+                          ],
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+// end of _FactoringAnswerCardContent
 
 class _StatusIcon extends StatelessWidget {
   final bool isShowingSteps;
