@@ -235,6 +235,8 @@ void main() {
       );
       // Staggered card fade-ins: 100ms offsets over 600ms controllers.
       await tester.pump(const Duration(milliseconds: 1100));
+      // Advance the 600ms fade controllers to completion so cards settle.
+      await tester.pumpAndSettle();
 
       expect(find.text('Back to Finals'), findsOneWidget);
       expect(tester.takeException(), isNull);

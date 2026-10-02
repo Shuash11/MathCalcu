@@ -5,7 +5,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 // ─────────────────────────────────────────────────────────────
 // FINALS THEME
 //
-// Dark slate aesthetic matching the app-wide dark mode.
+// Mode-aware finals theme: statics delegate to mode-aware ThemeProvider tokens; renders in light AND dark.
 // ─────────────────────────────────────────────────────────────
 
 class FinalsTheme {
@@ -50,6 +50,17 @@ class FinalsTheme {
   /// (2.78:1 vs light card). errorColor is WCAG-AA on [card] in both modes.
   static Color dangerFor(BuildContext context) =>
       context.watch<ThemeProvider>().errorColor;
+
+  static Color tertiaryFor(BuildContext context) =>
+      context.watch<ThemeProvider>().tertiaryColor;
+
+  /// Event-time variants (callback contexts): read without subscribing —
+  /// safe outside build. Build-time code should use dangerFor/onErrorFor.
+  static Color dangerNow(BuildContext context) =>
+      Provider.of<ThemeProvider>(context, listen: false).errorColor;
+
+  static Color onErrorNow(BuildContext context) =>
+      Provider.of<ThemeProvider>(context, listen: false).onErrorColor;
 
   static Color shadowColor(BuildContext context) =>
       context.watch<ThemeProvider>().shadowColor;

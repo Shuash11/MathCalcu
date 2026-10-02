@@ -125,16 +125,23 @@ void main() {
       Color? card;
       Color? primary;
       Color? danger;
+      Color? tertiary;
+      Color? dangerNowBg;
+      Color? onErrorNowFg;
 
       await tester.pumpWidget(
         ChangeNotifierProvider.value(
           value: theme,
           child: Builder(
             builder: (context) {
-              // Capture inside build so watch() is valid.
+              // Capture inside build so watch() is valid. The *Now helpers
+              // are event-time (listen: false) — valid anywhere.
               card = FinalsTheme.card(context);
               primary = FinalsTheme.primaryFor(context);
               danger = FinalsTheme.dangerFor(context);
+              tertiary = FinalsTheme.tertiaryFor(context);
+              dangerNowBg = FinalsTheme.dangerNow(context);
+              onErrorNowFg = FinalsTheme.onErrorNow(context);
               return const SizedBox.shrink();
             },
           ),
@@ -148,6 +155,12 @@ void main() {
           reason: 'primaryFor on card fails in $mode');
       expect(ratio(danger!, card!), greaterThanOrEqualTo(4.5),
           reason: 'dangerFor on card fails in $mode');
+      expect(ratio(tertiary!, card!), greaterThanOrEqualTo(4.5),
+          reason: 'tertiaryFor on card fails in $mode');
+      // SnackBar content Text uses onErrorNow via contentTextStyle, so this
+      // pairing is the meaningful check for the 13 migrated SnackBars.
+      expect(ratio(onErrorNowFg!, dangerNowBg!), greaterThanOrEqualTo(4.5),
+          reason: 'onErrorNow on dangerNow background fails in $mode');
     }
   });
 }

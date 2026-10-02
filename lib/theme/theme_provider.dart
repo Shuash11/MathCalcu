@@ -42,6 +42,17 @@ class ThemeProvider extends ChangeNotifier {
   Color get errorColor =>
       _isDark ? const Color(0xFFFFB4AB) : const Color(0xFFB3261E);
 
+  /// Semantic tertiary/success accent with WCAG-AA contrast on [card] in
+  /// both modes. Keeps the brand green hue; green-600 failed light mode
+  /// (3.30:1 vs light card), green-700 passes.
+  Color get tertiaryColor =>
+      _isDark ? const Color(0xFF16A34A) : const Color(0xFF15803D);
+
+  /// Color of content shown on [errorColor] (M3 error/onError pairing:
+  /// white on dark-red in light mode, dark-red on light-salmon in dark).
+  Color get onErrorColor =>
+      _isDark ? const Color(0xFF601410) : const Color(0xFFFFFFFF);
+
   // Persistence
   Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();

@@ -88,9 +88,11 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
         _approachController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text(
-              'Please enter both an expression and an approach value.'),
-          backgroundColor: FinalsTheme.danger,
+          content: Text(
+              'Please enter both an expression and an approach value.',
+              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+          ),
+          backgroundColor: FinalsTheme.dangerNow(context),
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -137,8 +139,10 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: FinalsTheme.danger,
+            content: Text('Error: ${e.toString()}',
+                style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+            ),
+            backgroundColor: FinalsTheme.dangerNow(context),
           ),
         );
       }

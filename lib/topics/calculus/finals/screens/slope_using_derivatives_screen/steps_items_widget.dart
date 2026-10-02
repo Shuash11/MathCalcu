@@ -91,7 +91,7 @@ class StepItemWidget extends StatelessWidget {
 
     switch (step.kind) {
       case StepKind.ruleStatement:
-        accentColor = FinalsTheme.tertiary;
+        accentColor = FinalsTheme.tertiaryFor(context);
         icon = Icons.lightbulb_outline_rounded;
         break;
       case StepKind.algebra:
