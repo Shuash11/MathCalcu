@@ -89,3 +89,8 @@ tutorial/*.mp3
 tutorial/*.wav
 tutorial/*.mp4
 tutorial/*.png
+
+# Cycle 3 P1 hygiene: Hermes agent working files (.hermes/) are local-only
+# and must stay untracked. History is not rewritten; this only guards the
+# worktree going forward.
+.hermes/
