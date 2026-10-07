@@ -3,8 +3,9 @@
 //
 // Covers: bySubject/subjects APIs (Topics hub subject cards, G6
 // chips), AND-token search, SHS gating (solverAvailable == false
-// until SHS screens land), ModMat leaf gating, and UnifiedHit
-// stub classification. Pure-Dart (no widgets) so it runs fast.
+// until SHS screens land), ModMat leaf gating, UnifiedHit
+// stub classification, and the Phase 1 repoints (5 gated topics
+// flipped to existing solver screens, routes registered).
 import 'package:calculus_system/app_router.dart';
 import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/search/unified_search.dart';
@@ -146,12 +147,18 @@ void main() {
           // Cycle 9: wired families are /grade6/*, /shs/*,
           // /grade9/* + /grade10/* (quadratics thin screens) and
           // /topics/calculus/finals/* (G11-limits + G12-derivatives
-          // reuse the existing finals screens).
+          // reuse the existing finals screens). Phase 1 adds the
+          // /modmat/*, /circle, /inequalities/* and
+          // /slope-intercept-form repoint families.
           final wired = topic.route.startsWith('/grade6/') ||
               topic.route.startsWith('/shs/') ||
               topic.route.startsWith('/grade9/') ||
               topic.route.startsWith('/grade10/') ||
-              topic.route.startsWith('/topics/calculus/');
+              topic.route.startsWith('/topics/calculus/') ||
+              topic.route.startsWith('/modmat/') ||
+              topic.route.startsWith('/circle') ||
+              topic.route.startsWith('/inequalities/') ||
+              topic.route.startsWith('/slope-intercept-form');
           expect(wired, isTrue, reason: '${topic.id} -> ${topic.route}');
         }
       }
@@ -365,6 +372,74 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Topic coming soon'), findsNothing);
       expect(tester.takeException(), isNull);
+    });
+
+    // Phase 1: one explicit test per repointed topic — solver flag
+    // on, route string set, and the route registered in the real
+    // GoRouter configuration (findMatch, not a string check).
+    testWidgets('Phase 1: college-matrices is solver-backed and routed',
+        (tester) async {
+      await pumpRouter(tester);
+      final topic = CurriculumRegistry.allTopics()
+          .firstWhere((t) => t.id == 'college-matrices');
+      expect(topic.solverAvailable, isTrue);
+      expect(topic.route, '/modmat/advanced/linear_algebra');
+      expect(
+        AppRouter.router.configuration.findMatch(topic.route).isError,
+        isFalse,
+      );
+    });
+
+    testWidgets('Phase 1: g10-combinatorics is solver-backed and routed',
+        (tester) async {
+      await pumpRouter(tester);
+      final topic = CurriculumRegistry.allTopics()
+          .firstWhere((t) => t.id == 'g10-combinatorics');
+      expect(topic.solverAvailable, isTrue);
+      expect(topic.route, '/modmat/foundations/combinatorics_basics');
+      expect(
+        AppRouter.router.configuration.findMatch(topic.route).isError,
+        isFalse,
+      );
+    });
+
+    testWidgets('Phase 1: g10-circle-equation is solver-backed and routed',
+        (tester) async {
+      await pumpRouter(tester);
+      final topic = CurriculumRegistry.allTopics()
+          .firstWhere((t) => t.id == 'g10-circle-equation');
+      expect(topic.solverAvailable, isTrue);
+      expect(topic.route, '/circle');
+      expect(
+        AppRouter.router.configuration.findMatch(topic.route).isError,
+        isFalse,
+      );
+    });
+
+    testWidgets('Phase 1: g7-inequalities is solver-backed and routed',
+        (tester) async {
+      await pumpRouter(tester);
+      final topic = CurriculumRegistry.allTopics()
+          .firstWhere((t) => t.id == 'g7-inequalities');
+      expect(topic.solverAvailable, isTrue);
+      expect(topic.route, '/inequalities/simple');
+      expect(
+        AppRouter.router.configuration.findMatch(topic.route).isError,
+        isFalse,
+      );
+    });
+
+    testWidgets('Phase 1: g8-slope-intercept is solver-backed and routed',
+        (tester) async {
+      await pumpRouter(tester);
+      final topic = CurriculumRegistry.allTopics()
+          .firstWhere((t) => t.id == 'g8-slope-intercept');
+      expect(topic.solverAvailable, isTrue);
+      expect(topic.route, '/slope-intercept-form');
+      expect(
+        AppRouter.router.configuration.findMatch(topic.route).isError,
+        isFalse,
+      );
     });
 
     testWidgets('/topics/shs and /topics/hub pickers resolve', (tester) async {

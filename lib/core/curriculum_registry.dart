@@ -21,12 +21,18 @@
 // Phase 1" SnackBar (see handleCurriculumTap) — never a push to a
 // missing route. Wired families: /grade6/* (11 G6 screens),
 // /shs/* (10 SHS screens), /grade9/* + /grade10/* (5 quadratics
-// thin screens, Cycle 9 F1), and /topics/calculus/finals/*
-// (limits picker + derivatives screen reused by the G11-limits and
-// G12-derivatives topics, Cycle 9 F3). Remaining G7-G8 /
-// G10-circle+combinatorics / College-matrix+stats entries stay
-// gated until their screens land. To gate: set solverAvailable to
-// false (taps become inert SnackBars, no router change needed).
+// thin screens, Cycle 9 F1), /topics/calculus/finals/* (limits
+// picker + derivatives screen reused by the G11-limits and
+// G12-derivatives topics, Cycle 9 F3), and the Phase 1 repoints:
+// /modmat/* (college-matrices and g10-combinatorics reuse the
+// linear_algebra / combinatorics_basics thin screens), /circle
+// (g10-circle-equation reuses the circle solver picker),
+// /inequalities/simple (g7-inequalities reuses the linear
+// inequality solver), and /slope-intercept-form (g8-slope-intercept
+// reuses the YInterceptScreen solver). Remaining G7-signed+linear,
+// G8-factoring+systems, and College-stats entries stay gated until
+// their screens land. To gate: set solverAvailable to false (taps
+// become inert SnackBars, no router change needed).
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/core/module_registry.dart';
@@ -269,10 +275,11 @@ class CurriculumRegistry {
     ),
   ];
 
-  // ── Stubs: G7 → College (no solvers yet) ───────────────────
+  // ── G7 → College: Phase 1 repoints + remaining stubs ───────
   // Representative placeholders so pickers/search can grow
-  // without dead-link surprises. Full solver specs are deferred
-  // to the Phase 2 plan (§D).
+  // without dead-link surprises. Repointed G7/G8/G10/College
+  // entries are solver-backed; remaining stubs' full solver specs
+  // are deferred to the Phase 2 plan (§D).
   static final List<CurriculumTopic> futureTopics = [
     // G7
     const CurriculumTopic(
@@ -307,12 +314,13 @@ class CurriculumRegistry {
       subject: 'Inequalities',
       label: 'Inequalities Intro',
       subtitle: 'e.g. 3x < 12 — shaded number line',
-      route: '/grade7/inequalities',
+      // Phase 1: repoints to the existing /inequalities/simple
+      // linear solver screen — solver-backed.
+      route: '/inequalities/simple',
       icon: Icons.compare_arrows_rounded,
       tags: ['inequality', 'less than', 'shading', 'G7'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
     ),
     // G8
     const CurriculumTopic(
@@ -347,12 +355,13 @@ class CurriculumRegistry {
       subject: 'Linear Graphs',
       label: 'Slope & Intercept',
       subtitle: 'e.g. m = 2, b = −1 — line graph',
-      route: '/grade8/slope-intercept',
+      // Phase 1: repoints to the existing /slope-intercept-form
+      // (YInterceptScreen) y = mx + b solver — solver-backed.
+      route: '/slope-intercept-form',
       icon: Icons.show_chart_rounded,
       tags: ['slope', 'intercept', 'line', 'graph', 'G8'],
       difficulty: 'intro',
       depedCode: '',
-      solverAvailable: false,
     ),
     // G9
     // Cycle 9 F1: engine (QuadraticsSolverRegistry) + thin screen +
@@ -437,12 +446,13 @@ class CurriculumRegistry {
       subject: 'Circles',
       label: 'Circle Equation',
       subtitle: 'e.g. (x−1)² + (y+2)² = 9 — center + radius',
-      route: '/grade10/circle-equation',
+      // Phase 1: repoints to the existing /circle solver picker —
+      // solver-backed.
+      route: '/circle',
       icon: Icons.radio_button_unchecked_rounded,
       tags: ['circle', 'center', 'radius', 'G10'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
     ),
     const CurriculumTopic(
       id: 'g10-combinatorics',
@@ -450,12 +460,13 @@ class CurriculumRegistry {
       subject: 'Counting',
       label: 'Permutations & Combinations',
       subtitle: 'e.g. C(5,2) — counting',
-      route: '/grade10/combinatorics',
+      // Phase 1: repoints to the existing /modmat/foundations/
+      // combinatorics_basics thin solver — solver-backed.
+      route: '/modmat/foundations/combinatorics_basics',
       icon: Icons.calculate_rounded,
       tags: ['permutation', 'combination', 'counting', 'G10'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
     ),
     // G11 (SHS GenMath / PreCalc)
     const CurriculumTopic(
@@ -625,12 +636,13 @@ class CurriculumRegistry {
       subject: 'Matrices',
       label: 'Matrices & Determinants',
       subtitle: 'e.g. 2×2 det & inverse',
-      route: '/college/matrices',
+      // Phase 1: repoints to the existing /modmat/advanced/
+      // linear_algebra thin solver — solver-backed.
+      route: '/modmat/advanced/linear_algebra',
       icon: Icons.grid_view_rounded,
       tags: ['matrix', 'determinant', 'inverse', 'college'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
     ),
     const CurriculumTopic(
       id: 'college-stats',
