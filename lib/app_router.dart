@@ -78,6 +78,10 @@ import 'package:calculus_system/topics/grade6/screens/geometry_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/volume_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/pie_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/probability_screen.dart';
+import 'package:calculus_system/topics/algebra/screens/signed_numbers_screen.dart';
+import 'package:calculus_system/topics/algebra/screens/linear_equations_screen.dart';
+import 'package:calculus_system/topics/algebra/screens/factoring_screen.dart';
+import 'package:calculus_system/topics/algebra/screens/systems_screen.dart';
 import 'package:calculus_system/topics/shs/shs_picker_screen.dart';
 import 'package:calculus_system/topics/shs/screens/logarithms_screen.dart';
 import 'package:calculus_system/topics/shs/screens/interest_screen.dart';
@@ -635,6 +639,25 @@ class AppRouter {
       GoRoute(
         path: '/grade10/polynomial-division',
         builder: (context, state) => const QuadraticsPolyDivisionScreen(),
+      ),
+
+      // ── G7/G8 algebra leaves (Phase 2: thin solver screens, paths
+      // match CurriculumRegistry /grade7/* + /grade8/* topics) ──
+      GoRoute(
+        path: '/grade7/signed-numbers',
+        builder: (context, state) => const G7SignedNumbersScreen(),
+      ),
+      GoRoute(
+        path: '/grade7/linear-equations',
+        builder: (context, state) => const G7LinearEquationsScreen(),
+      ),
+      GoRoute(
+        path: '/grade8/factoring',
+        builder: (context, state) => const G8FactoringScreen(),
+      ),
+      GoRoute(
+        path: '/grade8/systems',
+        builder: (context, state) => const G8SystemsScreen(),
       ),
     ],
   );

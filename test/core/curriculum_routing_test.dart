@@ -149,9 +149,13 @@ void main() {
           // /topics/calculus/finals/* (G11-limits + G12-derivatives
           // reuse the existing finals screens). Phase 1 adds the
           // /modmat/*, /circle, /inequalities/* and
-          // /slope-intercept-form repoint families.
+          // /slope-intercept-form repoint families. Phase 2 adds the
+          // /grade7/* + /grade8/* algebra leaves (signed-numbers,
+          // linear-equations, factoring, systems).
           final wired = topic.route.startsWith('/grade6/') ||
               topic.route.startsWith('/shs/') ||
+              topic.route.startsWith('/grade7/') ||
+              topic.route.startsWith('/grade8/') ||
               topic.route.startsWith('/grade9/') ||
               topic.route.startsWith('/grade10/') ||
               topic.route.startsWith('/topics/calculus/') ||

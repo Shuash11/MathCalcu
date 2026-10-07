@@ -29,10 +29,12 @@
 // (g10-circle-equation reuses the circle solver picker),
 // /inequalities/simple (g7-inequalities reuses the linear
 // inequality solver), and /slope-intercept-form (g8-slope-intercept
-// reuses the YInterceptScreen solver). Remaining G7-signed+linear,
-// G8-factoring+systems, and College-stats entries stay gated until
-// their screens land. To gate: set solverAvailable to false (taps
-// become inert SnackBars, no router change needed).
+// reuses the YInterceptScreen solver). Phase 2 adds the /grade7/*
+// + /grade8/* algebra leaves (signed-numbers, linear-equations,
+// factoring, systems — thin screens on the 4 algebra engines).
+// Only College-stats remains gated until its screen lands. To gate:
+// set solverAvailable to false (taps become inert SnackBars, no
+// router change needed).
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/core/module_registry.dart';
@@ -288,12 +290,13 @@ class CurriculumRegistry {
       subject: 'Integers',
       label: 'Signed Numbers',
       subtitle: 'e.g. −8 − (−3) — number line',
+      // Phase 2: thin screen landed — solver-backed, no longer gated.
       route: '/grade7/signed-numbers',
       icon: Icons.remove_circle_outline_rounded,
       tags: ['signed', 'integer', 'negative', 'G7'],
       difficulty: 'intro',
       depedCode: '',
-      solverAvailable: false,
+      solverAvailable: true,
     ),
     const CurriculumTopic(
       id: 'g7-linear-equations',
@@ -301,12 +304,13 @@ class CurriculumRegistry {
       subject: 'Algebra',
       label: 'Linear Equations',
       subtitle: 'e.g. 2x − 5 = 9 — two steps',
+      // Phase 2: thin screen landed — solver-backed, no longer gated.
       route: '/grade7/linear-equations',
       icon: Icons.linear_scale_rounded,
       tags: ['linear', 'equation', 'two-step', 'G7'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
+      solverAvailable: true,
     ),
     const CurriculumTopic(
       id: 'g7-inequalities',
@@ -329,12 +333,13 @@ class CurriculumRegistry {
       subject: 'Factoring',
       label: 'Factoring Quadratics',
       subtitle: 'e.g. x² + 5x + 6 — parabola',
+      // Phase 2: thin screen landed — solver-backed, no longer gated.
       route: '/grade8/factoring',
       icon: Icons.extension_rounded,
       tags: ['factoring', 'quadratic', 'parabola', 'G8'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
+      solverAvailable: true,
     ),
     const CurriculumTopic(
       id: 'g8-systems',
@@ -342,12 +347,13 @@ class CurriculumRegistry {
       subject: 'Systems',
       label: 'Linear Systems',
       subtitle: 'e.g. x + y = 5, x − y = 1 — intersection',
+      // Phase 2: thin screen landed — solver-backed, no longer gated.
       route: '/grade8/systems',
       icon: Icons.grid_on_rounded,
       tags: ['system', 'simultaneous', 'intersection', 'G8'],
       difficulty: 'standard',
       depedCode: '',
-      solverAvailable: false,
+      solverAvailable: true,
     ),
     const CurriculumTopic(
       id: 'g8-slope-intercept',
