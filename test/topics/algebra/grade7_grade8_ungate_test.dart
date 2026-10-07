@@ -124,10 +124,12 @@ void main() {
           reason: route,
         );
       }
-      // Still-gated control: college-stats has no route.
+      // Phase 3: college-stats is no longer a control — its
+      // /college/statistics route landed (see
+      // test/topics/college/college_stats_ungate_test.dart).
       expect(
         AppRouter.router.configuration.findMatch('/college/statistics').isError,
-        isTrue,
+        isFalse,
       );
     });
 

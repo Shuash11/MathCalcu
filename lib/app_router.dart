@@ -66,6 +66,7 @@ import 'package:calculus_system/topics/calculus/finals/screens/volumes_of_revolu
 import 'package:calculus_system/topics/calculus/finals/screens/partial_derivatives_screen/partial_derivatives_screen.dart';
 import 'package:calculus_system/topics/calculus/calculus_picker_screen.dart';
 import 'package:calculus_system/search/global_search_screen.dart';
+import 'package:calculus_system/topics/college/screens/college_stats_screen.dart';
 import 'package:calculus_system/topics/grade6/grade6_picker_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/fractions_screen.dart';
 import 'package:calculus_system/topics/grade6/screens/decimals_screen.dart';
@@ -658,6 +659,13 @@ class AppRouter {
       GoRoute(
         path: '/grade8/systems',
         builder: (context, state) => const G8SystemsScreen(),
+      ),
+
+      // ── College stats leaf (Phase 3: thin solver screen, path
+      // matches CurriculumRegistry /college/* topic) ──
+      GoRoute(
+        path: '/college/statistics',
+        builder: (context, state) => const CollegeStatsScreen(),
       ),
     ],
   );

@@ -32,9 +32,10 @@
 // reuses the YInterceptScreen solver). Phase 2 adds the /grade7/*
 // + /grade8/* algebra leaves (signed-numbers, linear-equations,
 // factoring, systems — thin screens on the 4 algebra engines).
-// Only College-stats remains gated until its screen lands. To gate:
-// set solverAvailable to false (taps become inert SnackBars, no
-// router change needed).
+// Phase 3 adds the /college/* leaf (college-stats thin screen on
+// the CollegeStatsEquation engine). Every registered topic is now
+// solver-backed. To gate: set solverAvailable to false (taps
+// become inert SnackBars, no router change needed).
 // ─────────────────────────────────────────────────────────────
 
 import 'package:calculus_system/core/module_registry.dart';
@@ -656,12 +657,13 @@ class CurriculumRegistry {
       subject: 'Statistics',
       label: 'Hypothesis Testing & Regression',
       subtitle: 'e.g. z-test, y = mx + b — scatter + line',
+      // Phase 3: thin screen landed — solver-backed, no longer gated.
       route: '/college/statistics',
       icon: Icons.scatter_plot_outlined,
       tags: ['statistics', 'hypothesis', 'regression', 'z-test', 'college'],
       difficulty: 'challenge',
       depedCode: '',
-      solverAvailable: false,
+      solverAvailable: true,
     ),
   ];
 

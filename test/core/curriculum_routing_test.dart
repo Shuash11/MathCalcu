@@ -151,7 +151,8 @@ void main() {
           // /modmat/*, /circle, /inequalities/* and
           // /slope-intercept-form repoint families. Phase 2 adds the
           // /grade7/* + /grade8/* algebra leaves (signed-numbers,
-          // linear-equations, factoring, systems).
+          // linear-equations, factoring, systems). Phase 3 adds the
+          // /college/* leaf (college-stats thin screen).
           final wired = topic.route.startsWith('/grade6/') ||
               topic.route.startsWith('/shs/') ||
               topic.route.startsWith('/grade7/') ||
@@ -162,7 +163,8 @@ void main() {
               topic.route.startsWith('/modmat/') ||
               topic.route.startsWith('/circle') ||
               topic.route.startsWith('/inequalities/') ||
-              topic.route.startsWith('/slope-intercept-form');
+              topic.route.startsWith('/slope-intercept-form') ||
+              topic.route.startsWith('/college/');
           expect(wired, isTrue, reason: '${topic.id} -> ${topic.route}');
         }
       }
@@ -268,13 +270,32 @@ void main() {
           .where((h) => h.route.startsWith('/modmat/foundations/'))) {
         expect(hit.isStub, isFalse, reason: hit.route);
       }
-      // Gated SHS curriculum hits are stubs too.
-      final gated = CurriculumRegistry.allTopics().firstWhere(
-          (t) => !t.solverAvailable,
-          orElse: () => throw StateError('expected a gated stub'));
-      final gatedHit = UnifiedSearch.search(gated.label.split(' ').first)
-          .firstWhere((h) => h.curriculumTopic?.id == gated.id);
-      expect(gatedHit.isStub, isTrue, reason: gated.id);
+      // Gated curriculum hits are stubs too. Phase 3 ungated the
+      // last registry stub (college-stats), so exercise the
+      // curriculum stub branch with a direct hit carrying a gated
+      // topic — the branch fires on solverAvailable == false alone.
+      const gatedTopic = CurriculumTopic(
+        id: 'probe-gated-stub',
+        gradeLevel: 'G7',
+        subject: 'Probe',
+        label: 'Probe Gated Stub',
+        subtitle: 'probe gated stub subtitle',
+        route: '/probe-gated-stub-route',
+        icon: Icons.help_outline_rounded,
+        tags: ['probe'],
+        difficulty: 'intro',
+        depedCode: '',
+        solverAvailable: false,
+      );
+      const gatedHit = UnifiedHit(
+        label: 'Probe Gated Stub',
+        subtitle: 'probe gated stub subtitle',
+        route: '/probe-gated-stub-route',
+        icon: Icons.help_outline_rounded,
+        source: 'G7',
+        curriculumTopic: gatedTopic,
+      );
+      expect(gatedHit.isStub, isTrue, reason: gatedTopic.id);
       // Wired SHS hits are not stubs.
       final shs = UnifiedSearch.search('logarithm');
       expect(

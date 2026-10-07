@@ -28,7 +28,7 @@ class CollegeSolverSpec {
   });
 }
 
-/// College wave 1: stats (kills the college-stats stub).
+/// College wave 1: stats (college-stats thin screen landed — Phase 3).
 class CollegeSolverRegistry {
   CollegeSolverRegistry._();
 
