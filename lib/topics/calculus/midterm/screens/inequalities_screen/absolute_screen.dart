@@ -1,5 +1,5 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_solver/generated_absolute_solver.dart';
-import 'package:flutter/material.dart';
+import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_solver/generated_absolute_solver.dart';
+import 'package:material_ui/material_ui.dart';
 import 'base_inequality_screen.dart';
 
 class AbsoluteScreen extends StatelessWidget {

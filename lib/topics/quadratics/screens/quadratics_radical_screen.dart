@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/quadratics/solvers/radical_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Quadratics thin solver: Radical Equations. Route: /grade9/radical-equations.
 class QuadraticsRadicalScreen extends StatelessWidget {

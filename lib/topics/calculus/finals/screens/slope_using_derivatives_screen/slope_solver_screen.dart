@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
 import 'answer_card.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/topics/calculus/finals/widgets/finals_solver_controls.dart';

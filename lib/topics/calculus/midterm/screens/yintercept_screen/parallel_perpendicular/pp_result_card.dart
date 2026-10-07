@@ -3,7 +3,7 @@
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 /// Result card for the Parallel & Perpendicular screen: verdict,

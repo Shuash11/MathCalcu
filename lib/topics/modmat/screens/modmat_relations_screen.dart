@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/modmat/solvers/m8_relations_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ModMat thin solver: Relations & Functions. Route: /modmat/foundations/relations_functions.
 class ModmatRelationsScreen extends StatelessWidget {

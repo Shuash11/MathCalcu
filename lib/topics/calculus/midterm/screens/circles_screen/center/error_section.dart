@@ -1,5 +1,5 @@
-﻿// lib/Screens/SubScreens/error_section.dart
-import 'package:flutter/material.dart';
+// lib/Screens/SubScreens/error_section.dart
+import 'package:material_ui/material_ui.dart';
 
 class CenterErrorSection extends StatelessWidget {
   final String? errorMsg;

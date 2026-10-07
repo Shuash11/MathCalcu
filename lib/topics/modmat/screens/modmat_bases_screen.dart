@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/modmat/solvers/m4_base_conversion_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ModMat thin solver: Number Systems. Route: /modmat/foundations/number_systems.
 class ModmatBasesScreen extends StatelessWidget {

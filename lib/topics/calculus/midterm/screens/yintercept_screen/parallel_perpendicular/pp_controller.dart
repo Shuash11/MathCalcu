@@ -1,7 +1,7 @@
 // lib/topics/calculus/midterm/screens/yintercept_screen/parallel_perpendicular/pp_controller.dart
 
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Manages all mutable state and user-input controllers for the
 /// Parallel & Perpendicular screen. Kept separate from the UI so the

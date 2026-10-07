@@ -17,7 +17,7 @@ import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_lhopital/lhopital_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/evaluating_limits_screen/by_substitution/substitution_limit_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/widgetsScreens/finals_about_sheets.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -110,8 +110,15 @@ void main() {
 
       // onTap pushes /topics/calculus/finals/limits through the router
       // above the screen (pumped via MaterialApp.router here) which has
-      // no matching route, so the picker remains mounted.
-      expect(find.byType(FinalsPickerScreen), findsOneWidget);
+      // no matching route, so go_router pushes its error page on top of
+      // the picker. Assert the navigation intent directly via the
+      // router location: how long the picker stays mounted depends on
+      // the error page's entrance transition, which changed when the
+      // Material import moved to package:material_ui.
+      expect(
+        router.routeInformationProvider.value.uri,
+        Uri.parse('/topics/calculus/finals/limits'),
+      );
 
       router.dispose();
       handle.dispose();

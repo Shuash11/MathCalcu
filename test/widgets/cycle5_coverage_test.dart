@@ -7,7 +7,7 @@ import 'package:calculus_system/search/unified_search.dart';
 import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/widgets/developer_tile.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

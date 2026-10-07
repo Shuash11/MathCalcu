@@ -6,7 +6,7 @@
 // -------------------------------------------------------------
 
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 /// "No topics / no search results" card with a Clear action.

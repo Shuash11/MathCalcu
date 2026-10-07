@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/modmat/solvers/m14_advanced_graph_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ModMat thin solver: Advanced Graph Theory. Route: /modmat/advanced/advanced_graph_theory.
 class ModmatAdvancedGraphScreen extends StatelessWidget {

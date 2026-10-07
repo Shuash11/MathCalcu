@@ -1,5 +1,5 @@
 import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_radius_solver.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'step_tile.dart';
 
 class SolutionSteps extends StatelessWidget {

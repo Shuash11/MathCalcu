@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:calculus_system/main.dart';
 import 'package:calculus_system/services/update_service.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';

@@ -4,7 +4,7 @@ import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 /// Input card for the Parallel & Perpendicular screen: two equation

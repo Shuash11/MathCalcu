@@ -1,6 +1,6 @@
 import '../../solvers/diffeq_separable/diffeq_separable_equation.dart';
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Finals thin solver: Differential Equations (separable).
 class DiffeqScreen extends StatelessWidget {

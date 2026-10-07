@@ -10,7 +10,7 @@ import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/steps_drawer.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';

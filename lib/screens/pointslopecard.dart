@@ -1,5 +1,5 @@
 import 'package:calculus_system/core/module_registry.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/shared/widgets/module_card.dart';
 import 'package:go_router/go_router.dart';
 

@@ -4,7 +4,7 @@ import 'package:calculus_system/main.dart';
 import 'package:calculus_system/screens/category_picker_screen.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';

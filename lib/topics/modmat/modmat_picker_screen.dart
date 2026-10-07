@@ -6,7 +6,7 @@ import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/shared/widgets/subject_filter_chips.dart';
 import 'package:calculus_system/topics/modmat/modmat_module_registry.dart';
 import 'package:calculus_system/topics/modmat/modmat_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

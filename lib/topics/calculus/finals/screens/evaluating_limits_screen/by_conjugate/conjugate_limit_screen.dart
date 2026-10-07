@@ -7,7 +7,7 @@ import 'conjugate_input_field.dart';
 import 'conjugate_steps_view.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class ConjugateLimitScreen extends StatelessWidget {

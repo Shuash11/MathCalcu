@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ModmatTheme {
   static const Color primary = Color(0xFF0D9488);

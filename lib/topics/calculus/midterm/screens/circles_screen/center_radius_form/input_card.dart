@@ -1,7 +1,7 @@
 import 'models/field_def.dart';
 import 'widgets_inputcard/compute_button.dart';
 import 'widgets_inputcard/quick_key_field.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
 class InputCard extends StatelessWidget {

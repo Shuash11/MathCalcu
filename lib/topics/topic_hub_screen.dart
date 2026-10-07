@@ -17,7 +17,7 @@ import 'package:calculus_system/shared/widgets/curriculum_result_card.dart';
 import 'package:calculus_system/shared/widgets/empty_state.dart';
 import 'package:calculus_system/shared/widgets/subject_filter_chips.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TopicHubScreen extends StatefulWidget {

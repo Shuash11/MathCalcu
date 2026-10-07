@@ -1,6 +1,6 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'buttons.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Standalone quick keys for equation input (x², y², etc.)
 /// Manages visibility independently without rebuilding the TextField.

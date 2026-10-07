@@ -7,7 +7,7 @@ import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LCDLimitScreen extends StatefulWidget {
   const LCDLimitScreen({super.key});

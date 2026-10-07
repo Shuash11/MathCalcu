@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../cards/inequalities/absolute_card.dart';
 import '../../cards/inequalities/continued_card.dart';
 import '../../cards/inequalities/linear_card.dart';

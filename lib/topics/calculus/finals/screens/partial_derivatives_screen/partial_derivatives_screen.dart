@@ -1,6 +1,6 @@
 import '../../solvers/partial_derivatives/partial_derivatives_equation.dart';
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Finals thin solver: Partial Derivatives.
 class PartialDerivativesScreen extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/modmat/solvers/m5_matrix_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ModMat thin solver: Linear Algebra. Route: /modmat/advanced/linear_algebra.
 class ModmatMatricesScreen extends StatelessWidget {

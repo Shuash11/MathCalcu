@@ -26,7 +26,7 @@ import 'package:calculus_system/topics/calculus/finals/screens/slope_using_deriv
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/point_values.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/slope_using_derivatives_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

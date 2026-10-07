@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/shs/solvers/trig_equation_solver.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// SHS thin solver: Trig Equations. Route: /shs/trig-equations.
 class ShsTrigEquationsScreen extends StatelessWidget {

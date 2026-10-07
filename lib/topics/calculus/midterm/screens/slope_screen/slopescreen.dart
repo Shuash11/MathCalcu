@@ -1,7 +1,7 @@
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'slope_comparison.dart';
 import 'slope_input_field.dart';
 import 'slope_result.dart';

@@ -1,7 +1,7 @@
-﻿// lib/Controller/center_controller.dart
+// lib/Controller/center_controller.dart
 
 import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_solver.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CenterController extends ChangeNotifier {
   final x1Ctrl = TextEditingController();

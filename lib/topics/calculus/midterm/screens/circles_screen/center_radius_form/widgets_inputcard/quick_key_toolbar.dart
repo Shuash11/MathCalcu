@@ -1,6 +1,6 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'buttons.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Standalone toolbar that manages its own visibility state.
 /// Does NOT rebuild parent widget, preventing DOM element replacement.

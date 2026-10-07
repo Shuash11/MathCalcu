@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/quadratics/solvers/quadratic_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Quadratics thin solver: Quadratic Formula. Route: /grade9/quadratic-formula.
 class QuadraticsQuadraticScreen extends StatelessWidget {

@@ -23,7 +23,7 @@ import 'package:calculus_system/shared/widgets/step_list.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/grade6/screens/grade6_graphs.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

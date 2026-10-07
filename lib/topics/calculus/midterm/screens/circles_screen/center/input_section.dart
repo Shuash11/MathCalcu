@@ -1,6 +1,6 @@
 // lib/Screens/SubScreens/input_section.dart
 import 'centercontroller.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CenterInputSection extends StatelessWidget {
   final CenterController controller;

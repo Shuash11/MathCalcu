@@ -3,7 +3,7 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
 // -------------------------------------------------------------

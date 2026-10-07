@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/shs/solvers/integral_sub_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// SHS thin solver: Definite Integrals & FTC. Route: /shs/definite-integral.
 class ShsDefiniteIntegralScreen extends StatelessWidget {

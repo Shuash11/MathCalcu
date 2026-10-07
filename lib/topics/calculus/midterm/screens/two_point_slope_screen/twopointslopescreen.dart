@@ -3,7 +3,7 @@ import 'package:calculus_system/topics/calculus/midterm/graph/two_point_slope_gr
 import 'two_point_slope_steps.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';

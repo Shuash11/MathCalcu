@@ -1,5 +1,5 @@
-﻿import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_solver/two_point_slope_solver.dart';
-import 'package:flutter/material.dart';
+import 'package:calculus_system/topics/calculus/midterm/solvers/two_point_slope_solver/two_point_slope_solver.dart';
+import 'package:material_ui/material_ui.dart';
 
 // ─────────────────────────────────────────────────────────────
 // CONTROLLER

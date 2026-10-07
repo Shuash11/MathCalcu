@@ -1,10 +1,10 @@
-﻿// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 // BASE GRAPH — abstract contract for all graph renderers
 // Each module's graph/ folder extends this with fl_chart or
 // a CustomPainter specific to their type.
 // ─────────────────────────────────────────────────────────────
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'solve_result.dart';
 
 abstract class BaseGraph extends StatelessWidget {

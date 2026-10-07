@@ -1,7 +1,7 @@
 // lib/modules/yintercept/screens/parallel_perpendicular_graph.dart
 import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solver/yi_solver.dart';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 

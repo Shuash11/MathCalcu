@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/topics/calculus/finals/widgets/finals_solver_controls.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class ConjugateInputField extends StatelessWidget {

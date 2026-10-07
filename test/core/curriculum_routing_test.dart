@@ -10,7 +10,7 @@ import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/search/unified_search.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/modmat/modmat_module_registry.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

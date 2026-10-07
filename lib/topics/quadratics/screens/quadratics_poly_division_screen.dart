@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/quadratics/solvers/polynomial_division_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Quadratics thin solver: Polynomial Division. Route: /grade10/polynomial-division.
 class QuadraticsPolyDivisionScreen extends StatelessWidget {

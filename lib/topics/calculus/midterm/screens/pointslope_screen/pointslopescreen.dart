@@ -4,7 +4,7 @@ import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'pointslopesteps.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'pointslopesubwidget.dart';
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:provider/provider.dart';

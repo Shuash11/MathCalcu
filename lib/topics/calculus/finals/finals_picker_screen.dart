@@ -10,7 +10,7 @@ import 'package:calculus_system/topics/calculus/finals/cards/evaluating_limits/e
 import 'package:calculus_system/topics/calculus/finals/cards/slope_using_derivatives/finding_slope_derevatives_card.dart';
 import 'package:calculus_system/topics/calculus/finals/cards/limits_infinity/limits_and_infinity_card.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';

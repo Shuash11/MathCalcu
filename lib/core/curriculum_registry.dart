@@ -31,7 +31,7 @@
 
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/app_design.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One curriculum topic (solver-backed or future stub).
 ///

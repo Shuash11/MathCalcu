@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/shs/solvers/trig_identity_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// SHS thin solver: Trig Identities. Route: /shs/trig-identities.
 class ShsTrigIdentitiesScreen extends StatelessWidget {

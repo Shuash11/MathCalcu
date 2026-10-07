@@ -7,7 +7,7 @@ import 'models/field_def.dart';
 import 'input_card.dart';
 import 'solution_steps.dart';
 import 'widgets_inputcard/equation_input_card.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FindingCenterRadiusScreen extends StatefulWidget {
   const FindingCenterRadiusScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 /// A reusable step card matching the unified solution steps style:

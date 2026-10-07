@@ -1,6 +1,6 @@
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/topics/modmat/modmat_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ModmatSearchHit {
   final String section;

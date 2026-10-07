@@ -4,8 +4,8 @@ publish_to: 'none'
 version: 1.16.0+15
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: '>=3.10.0'
+  sdk: '>=3.13.0 <4.0.0'
+  flutter: '>=3.47.0'
 
 dependencies:
   flutter:
@@ -50,6 +50,7 @@ dependencies:
   url_launcher: ^6.2.0
   package_info_plus: ^8.0.0
   path_provider: ^2.1.0
+  material_ui: ^1.2.0
 
 dev_dependencies:
   flutter_test:

@@ -18,7 +18,7 @@ import 'package:calculus_system/search/unified_search.dart';
 import 'package:calculus_system/services/history_service.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/topics/modmat/modmat_module_registry.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

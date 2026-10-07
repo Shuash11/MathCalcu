@@ -1,6 +1,6 @@
 import '../../solvers/integration_techniques/integration_techniques_equation.dart';
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Finals thin solver: Integration Techniques (u-substitution).
 class IntegrationTechniquesScreen extends StatelessWidget {

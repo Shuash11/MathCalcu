@@ -3,7 +3,7 @@ import 'package:calculus_system/topics/calculus/midterm/graph/slope_graph/slopeg
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'slope_steps.dart';
 
 /// Opens the slope-comparison steps modal (parallel / perpendicular / neither).

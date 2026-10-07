@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/modmat/solvers/m11_graph_basics_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ModMat thin solver: Graph Theory Basics. Route: /modmat/foundations/graph_theory_basics.
 class ModmatGraphBasicsScreen extends StatelessWidget {

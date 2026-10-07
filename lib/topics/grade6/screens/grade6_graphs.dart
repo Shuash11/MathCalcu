@@ -16,7 +16,7 @@ import 'dart:math' as math;
 
 import 'package:calculus_system/core/base_graph.dart';
 import 'package:calculus_system/core/solve_result.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Reads customData[0] as a map, or returns an empty map.
 Map<String, dynamic> _dataOf(SolveResult result) {

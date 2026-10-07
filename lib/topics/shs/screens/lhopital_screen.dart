@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/shs/solvers/lhopital_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// SHS thin solver: L'Hôpital's Rule. Route: /shs/lhopital.
 class ShsLHopitalScreen extends StatelessWidget {

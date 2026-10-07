@@ -14,7 +14,7 @@ import 'package:calculus_system/core/curriculum_registry.dart';
 import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_module_registry.dart';
 import 'package:calculus_system/topics/modmat/modmat_module_registry.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One tappable row in the global search list.
 class UnifiedHit {

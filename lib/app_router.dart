@@ -26,7 +26,7 @@ import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart
 import 'topics/calculus/midterm/screens/circles_screen/radius/radiusui.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/parallel_perpendicular_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/distance_screen/distancescreen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:calculus_system/widgets/app_shell.dart';

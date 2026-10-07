@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/modmat/solvers/m9_real_analysis_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ModMat thin solver: Real Analysis. Route: /modmat/advanced/real_analysis.
 class ModmatRealAnalysisScreen extends StatelessWidget {

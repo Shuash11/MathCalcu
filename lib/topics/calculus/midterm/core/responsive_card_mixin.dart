@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 mixin ResponsiveCardMixin<T extends StatefulWidget> on State<T> {
   static const double _baseDesignWidth = 400.0;

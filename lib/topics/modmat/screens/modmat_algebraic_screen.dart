@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/modmat/solvers/m10_algebraic_structures_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ModMat thin solver: Algebraic Structures. Route: /modmat/advanced/algebraic_structures.
 class ModmatAlgebraicScreen extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:calculus_system/topics/grade6/screens/grade6_solver_screen.dart';
 import 'package:calculus_system/topics/shs/solvers/trig_ratio_equation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// SHS thin solver: Trig Ratios (SOH-CAH-TOA). Route: /shs/trig-ratios.
 class ShsTrigRatiosScreen extends StatelessWidget {
