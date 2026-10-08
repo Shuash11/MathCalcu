@@ -84,6 +84,7 @@ class UnifiedSearch {
 
   /// Search everything. Empty/blank query returns [] (callers show
   /// their default sections instead).
+  /// One result per destination: hits sharing a route collapse into a single row.
   static List<UnifiedHit> search(String query) {
     final q = query.trim().toLowerCase();
     if (q.isEmpty) return [];
@@ -94,7 +95,23 @@ class UnifiedSearch {
       ..._searchModmat(q),
       ..._searchCurriculum(q),
     ];
-    return hits;
+    return _dedupeByRoute(hits);
+  }
+
+  /// Collapse hits pointing at the same route into one row.
+  /// A curriculum hit (curriculumTopic != null) wins over a plain
+  /// registry hit - it carries the grade badge + subject; otherwise
+  /// the first-seen hit stays (insertion order preserved).
+  static List<UnifiedHit> _dedupeByRoute(List<UnifiedHit> hits) {
+    final byRoute = <String, UnifiedHit>{};
+    for (final hit in hits) {
+      final kept = byRoute[hit.route];
+      if (kept == null ||
+          (kept.curriculumTopic == null && hit.curriculumTopic != null)) {
+        byRoute[hit.route] = hit;
+      }
+    }
+    return byRoute.values.toList(growable: false);
   }
 
   static List<UnifiedHit> _searchModules(String q) => [
