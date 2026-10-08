@@ -117,9 +117,9 @@ class IntegralSubEquation extends BaseEquation {
     final t = _n();
     final lo = t.toLowerCase();
     if (lo.startsWith('def')) {
-      final am = RegExp(r'a\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
-      final bm = RegExp(r'b\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
-      final fm = RegExp(r'f\s*=\s*(.+)$').firstMatch(t);
+      final am = RegExp(r'\b(?:def)?a\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
+      final bm = RegExp(r'\b(?:def)?b\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
+      final fm = RegExp(r'\b(?:def)?f\s*=\s*(.+)$').firstMatch(t);
       if (am == null || bm == null || fm == null) {
         return SolveResult.error(_error ??
             'Definite needs a, b, f — e.g. def a = 0, b = 2, f = x^2.');

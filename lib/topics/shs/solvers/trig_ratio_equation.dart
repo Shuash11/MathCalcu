@@ -48,7 +48,7 @@ class TrigRatioEquation extends BaseEquation {
     final t =
         rawInput.toLowerCase().replaceAll('°', '').replaceAll('deg', '').trim();
     // Case 1: ratio of an angle: 'sin 30'.
-    final rm = RegExp(r'(sin|cos|tan)\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
+    final rm = RegExp(r'\b(sin|cos|tan)\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
     if (rm != null && !_hasSides()) {
       final fn = rm.group(1)!;
       final deg = double.parse(rm.group(2)!);
@@ -85,7 +85,7 @@ class TrigRatioEquation extends BaseEquation {
     if (known < 2) {
       // Angle from ratio? e.g. 'sin x = 0.5' handled by trig-equation solver; here:
       // 'sin=0.5 find angle'.
-      final vm = RegExp(r'(sin|cos|tan)\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
+      final vm = RegExp(r'\b(sin|cos|tan)\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
       if (vm != null) {
         final fn = vm.group(1)!;
         final v = double.parse(vm.group(2)!);

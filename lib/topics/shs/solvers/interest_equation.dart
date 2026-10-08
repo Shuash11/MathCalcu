@@ -33,7 +33,7 @@ class InterestEquation extends BaseEquation {
   double? _param(List<String> names) {
     final t = rawInput.toLowerCase().replaceAll('−', '-');
     for (final n in names) {
-      final m = RegExp('$n\\s*=\\s*(-?\\d+(?:\\.\\d+)?)').firstMatch(t);
+      final m = RegExp('\\b$n\\s*=\\s*(-?\\d+(?:\\.\\d+)?)').firstMatch(t);
       if (m != null) return double.parse(m.group(1)!);
     }
     return null;

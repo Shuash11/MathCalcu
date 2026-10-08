@@ -19,7 +19,7 @@ class VariationEquation extends BaseEquation {
   Map<String, double>? _nums() {
     final out = <String, double>{};
     for (final m
-        in RegExp(r'([xyz])\s*=\s*(-?\d+(?:\.\d+)?)').allMatches(rawInput)) {
+        in RegExp(r'\b([xyz])\s*=\s*(-?\d+(?:\.\d+)?)').allMatches(rawInput)) {
       out[m.group(1)!.toLowerCase()] = double.parse(m.group(2)!);
     }
     return out.isEmpty ? null : out;
@@ -70,11 +70,11 @@ class VariationEquation extends BaseEquation {
           _error ?? 'Use direct/inverse/joint with x, y values.');
     }
     // Convention: first x,y pair defines k; a second x (or y) asks prediction.
-    final xs = RegExp(r'x\s*=\s*(-?\d+(?:\.\d+)?)')
+    final xs = RegExp(r'\bx\s*=\s*(-?\d+(?:\.\d+)?)')
         .allMatches(rawInput)
         .map((m) => double.parse(m.group(1)!))
         .toList();
-    final ys = RegExp(r'y\s*=\s*(-?\d+(?:\.\d+)?)')
+    final ys = RegExp(r'\by\s*=\s*(-?\d+(?:\.\d+)?)')
         .allMatches(rawInput)
         .map((m) => double.parse(m.group(1)!))
         .toList();
@@ -137,7 +137,7 @@ class VariationEquation extends BaseEquation {
       );
     }
     // Joint: z = kxy.
-    final zs = RegExp(r'z\s*=\s*(-?\d+(?:\.\d+)?)')
+    final zs = RegExp(r'\bz\s*=\s*(-?\d+(?:\.\d+)?)')
         .allMatches(rawInput)
         .map((m) => double.parse(m.group(1)!))
         .toList();

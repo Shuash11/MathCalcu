@@ -52,7 +52,7 @@ class LHopitalEquation extends BaseEquation {
       if (body.isEmpty) return null;
     } else {
       // 'f, g, a=' or 'f/g, a=' form.
-      final am = RegExp(r'a\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
+      final am = RegExp(r'\ba\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
       if (am == null) return null;
       a = double.parse(am.group(1)!);
       body = t
