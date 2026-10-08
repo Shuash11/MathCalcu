@@ -142,6 +142,26 @@ void main() {
       expect(CollegeSolverRegistry.specs, hasLength(1));
       expect(spec.create('4,7,9 stats'), isA<CollegeStatsEquation>());
     });
+
+    test('key aliases + token orderings resolve with bounded keys', () {
+      for (final s in [
+        'ztest xbar=72 mu=70 sd=10 n=25',
+        'ztest mean=72 mu=70 sigma=10 n=25',
+        'ztest n=25 mean=72 mu=70 sd=10',
+      ]) {
+        final eq = CollegeStatsEquation(s);
+        expect(eq.validate(), isTrue, reason: s);
+        expect((eq.solve().customData!.single as Map)['n'], 25.0,
+            reason: s);
+      }
+      // Hardening: a key inside a longer word must NOT be captured. In
+      // 'max=5' there is no whitespace/start before the 'x', so the
+      // bounded numOf('x') no longer matches; with no mean/xbar present
+      // the mean alias stays unresolved and the input is rejected
+      // (previously 'x=5' inside 'max=5' was silently used as mean=5).
+      final bad = CollegeStatsEquation('ztest mu=70 sd=10 n=25 max=5');
+      expect(bad.validate(), isFalse, reason: 'max=5 must not yield x=5');
+    });
   });
 
   group('College-stats routing (Phase 3 ungate)', () {
