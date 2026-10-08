@@ -2,11 +2,7 @@
 // Classroom Solution Steps — Slope Solver
 // ════════════════════════════════════════
 // Depends on: slope_solver.dart (share the same directory)
-// Usage:
-//   dart solution_steps.dart
-//   dart solution_steps.dart "y = x^3 - 2x + 1" x=2
-//   dart solution_steps.dart "x^2 + y^2 = 25" x=3 y=4
-//   dart solution_steps.dart "x=cos(t), y=sin(t)" t=1.5708
+// Library only — consumed by the slope screens; no CLI entrypoint.
 
 // ignore_for_file: constant_identifier_names, prefer_const_constructors
 
