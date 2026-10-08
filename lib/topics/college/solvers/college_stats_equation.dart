@@ -30,11 +30,11 @@ class CollegeStatsEquation extends BaseEquation {
         tl.startsWith('z-test') ||
         tl.startsWith('z ')) {
       RegExpMatch? numOf(String k) =>
-          RegExp('(?:^|\\s)$k\\s*=\\s*(-?\\d+(?:\\.\\d+)?)').firstMatch(tl);
-      final mean = numOf('mean') ?? numOf('xbar') ?? numOf('x');
+          RegExp('(?:^|[\\s,])$k\\s*=\\s*(-?\\d+(?:\\.\\d+)?)').firstMatch(tl);
+      final mean = numOf('mean') ?? numOf('xbar') ?? numOf('x\u0304') ?? numOf('x');
       final mu = numOf('mu') ?? numOf('μ') ?? numOf('null');
-      final sd = numOf('sd') ?? numOf('sigma') ?? numOf('s');
-      final nM = RegExp(r'(?:^|\s)n\s*=\s*(\d+)').firstMatch(tl);
+      final sd = numOf('sd') ?? numOf('sigma') ?? numOf('σ') ?? numOf('s');
+      final nM = RegExp(r'(?:^|[\s,])n\s*=\s*(\d+)').firstMatch(tl);
       if (mean == null || mu == null || sd == null || nM == null) return null;
       final sdV = double.parse(sd.group(1)!);
       final n = int.parse(nM.group(1)!);

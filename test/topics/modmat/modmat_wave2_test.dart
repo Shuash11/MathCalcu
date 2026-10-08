@@ -228,7 +228,7 @@ void main() {
     test('z-test rejects far mean', () {
       final r = CollegeStatsEquation('ztest mean=72 mu=70 sd=10 n=25').solve();
       expect(r.hasError, isFalse);
-      expect(r.answer, contains('z = 1'));
+      expect(r.answer, contains('z = 1 (SE = 2)'));
     });
 
     test('garbage never throws', () {
