@@ -29,10 +29,6 @@ dependencies:
       url: https://github.com/simpleclub/flutter_math
       ref: 2f270aee06d3ca02ca6d108420921472fd10e5cb
 
-  # ── Math computation (per README) ─────────────────────────────
-  equations: ^6.0.0             # Equation solving
-  math_expressions: ^2.6.0      # Expression parsing and differentiation
-
   # ── State management ─────────────────────────────────────────
   provider: ^6.1.0
 
