@@ -44,7 +44,7 @@ class RelatedRatesEquation extends BaseEquation {
   }
 
   double? _num(String name) {
-    final m = RegExp('$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)', caseSensitive: false)
+    final m = RegExp('\\b$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)', caseSensitive: false)
         .firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
@@ -52,7 +52,7 @@ class RelatedRatesEquation extends BaseEquation {
   double? _sumXY() {
     // 'x+y=20' (spaces optional).
     final m =
-        RegExp(r'x\s*\+\s*y\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
+        RegExp(r'\bx\s*\+\s*y\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
             .firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
@@ -107,7 +107,7 @@ class RelatedRatesEquation extends BaseEquation {
       // Accept 'dr=0.5' or 'dr/dt=0.5'.
       double? rate;
       final m =
-          RegExp(r'dr(?:/dt)?\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
+          RegExp(r'\bdr(?:/dt)?\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
               .firstMatch(rawInput);
       if (m != null) rate = double.parse(m.group(1)!);
       if (r == null || rate == null || r <= 0) {

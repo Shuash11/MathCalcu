@@ -90,6 +90,32 @@ void main() {
       expect(r.answer, contains('100'));
     });
 
+    test('word-embedded "p" is not read as the perimeter', () {
+      // Pre-fix: `p\s*=` had no left word boundary, so the "p=40" inside
+      // "step=40" was read as P=40 and this solved to a bogus
+      // Square 10 x 10, max area = 100. Post-fix: no bounded 'p' -> error.
+      final r = RelatedRatesEquation('rect step=40 max area').solve();
+      expect(r.hasError, isTrue);
+      expect(r.customData, isNull);
+    });
+
+    test('Adviser example "rect shape=40" never reads p = 40', () {
+      // Guard: in "shape" the p is followed by 'e', not '=', so this
+      // input actually errored pre-fix too; kept to lock in that no 40
+      // is ever read from the word.
+      final r = RelatedRatesEquation('rect shape=40 max area').solve();
+      expect(r.hasError, isTrue);
+      expect(r.customData, isNull);
+    });
+
+    test('genuine rect P = 40 still solves', () {
+      final r = RelatedRatesEquation('rect P = 40 max area').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('100'));
+    });
+
+
+
     test('unsupported never throws', () {
       final eq = RelatedRatesEquation('hello');
       expect(eq.validate(), isFalse);

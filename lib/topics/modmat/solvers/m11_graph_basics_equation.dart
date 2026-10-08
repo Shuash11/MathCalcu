@@ -21,7 +21,7 @@ class M11GraphBasicsEquation extends BaseEquation {
   List<dynamic>? _parse() {
     final t = rawInput.replaceAll('−', '-');
     final nMatch =
-        RegExp(r'v\s*(?:=|is|:)?\s*(\d+)', caseSensitive: false).firstMatch(t);
+        RegExp(r'\bv\s*(?:=|is|:)?\s*(\d+)', caseSensitive: false).firstMatch(t);
     final pairRe = RegExp(r'\(\s*(\d+)\s*,\s*(\d+)\s*\)');
     final edges = pairRe
         .allMatches(t)

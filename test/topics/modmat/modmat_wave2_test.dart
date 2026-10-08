@@ -134,6 +134,26 @@ void main() {
       expect(r.answer, contains('circuit'));
     });
 
+    test('word-embedded "v" is not read as the vertex count', () {
+      // Pre-fix: `v\s*=` had no left word boundary, so the "v=1" inside
+      // "conv=1" was read as n=1; the n <= maxV(3) guard then made this
+      // VALID edge list error instead of defaulting to n = maxV + 1 = 4.
+      // Post-fix: no bounded 'v' -> n defaults to 4 and it solves.
+      final eq = M11GraphBasicsEquation('conv=1 E={(0,1),(1,2),(2,3)}');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('n=4'));
+    });
+
+    test('legitimate bounded v=5 still parses', () {
+      final r = M11GraphBasicsEquation('v=5 E={(0,1),(1,2),(2,3)}').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('n=5'));
+    });
+
+
+
     test('garbage never throws', () {
       final eq = M11GraphBasicsEquation('xyz');
       expect(eq.validate(), isFalse);
@@ -192,6 +212,26 @@ void main() {
       expect(eq.solve().answer, contains('yes'));
       expect(eq.getSteps(), hasLength(3));
     });
+
+    test('word-embedded "v" is not read as the vertex count', () {
+      // Pre-fix: `v\s*=` matched the "v=1" inside "conv=1" as n=1;
+      // n <= maxV(3) then returned null so this VALID edge list errored.
+      // Post-fix: no bounded 'v' -> n defaults to maxV + 1 = 4.
+      final eq = M14AdvancedGraphEquation('conv=1 E={(0,1),(1,2),(2,3)}');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('n=4'));
+    });
+
+    test('legitimate bounded V=5 still parses', () {
+      final r = M14AdvancedGraphEquation(
+          'V=5 E={(0,1),(1,2),(2,3)} bipartite').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('yes'));
+    });
+
+
 
     test('shortest path BFS', () {
       final r =
