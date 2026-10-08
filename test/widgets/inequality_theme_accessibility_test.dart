@@ -50,6 +50,25 @@ double _contrastRatio(Color foreground, Color background) {
   return (light + 0.05) / (dark + 0.05);
 }
 
+/// Pumps the real event loop so `compute()` isolate round-trips can finish,
+/// then stops as soon as [finder] matches - no fixed wall-clock delay.
+Future<void> pumpUntilFound(
+  WidgetTester tester,
+  Finder finder, {
+  Duration timeout = const Duration(seconds: 10),
+}) async {
+  final deadline = DateTime.now().add(timeout);
+  while (finder.evaluate().isEmpty) {
+    if (DateTime.now().isAfter(deadline)) {
+      fail('Timed out waiting for $finder');
+    }
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 20)),
+    );
+    await tester.pump();
+  }
+}
+
 void main() {
   group('MathKeyboard toggle label', () {
     testWidgets('shows "Show math keyboard" when hidden',
@@ -289,19 +308,12 @@ void main() {
 
       await tester.enterText(find.byType(TextField), 'x >= 0');
       await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)),
-      );
-      await tester.pump();
+      await pumpUntilFound(tester, find.text('Answer'));
       expect(find.text('Answer'), findsOneWidget);
       await tester.drag(find.byType(ListView), const Offset(0, -300));
       await tester.pump();
       await tester.tap(find.text('Answer'));
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)),
-      );
-      await tester.pump();
-
+      await pumpUntilFound(tester, find.text('1 steps'));
       expect(find.text('Basic Inequality'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
