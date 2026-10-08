@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
     
+  # ── Material UI ─────────────────────────────────
+  material_ui: ^1.6.0
+
   # ── Routing ──────────────────────────────────────────────────
   go_router: ^13.0.0
 
@@ -42,7 +45,6 @@ dependencies:
   url_launcher: ^6.2.0
   package_info_plus: ^8.0.0
   path_provider: ^2.1.0
-  material_ui: '>=1.5.0 <1.6.0'
 
 dev_dependencies:
   flutter_test:
