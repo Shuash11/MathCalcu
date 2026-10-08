@@ -9,10 +9,9 @@
 //                       SD(pop) 2.0548, SD(sample) 2.5166, range 5
 //   regress x:1,2 y:2,4 → ŷ = 0 + 2x, r = 1, R² = 1
 //   ztest mean=72 mu=70 sd=10 n=25
-//                     → z = 1.6971, SE = 1.1785, p = 0.0897,
-//                       fail to reject (engine n-quirk: the n regex
-//                       matches the 'n' inside mean= first, so
-//                       SE uses n=72 here; assert actual output)
+//                     → z = 1, SE = 2, p = 0.3173,
+//                       fail to reject (n=25 → SE = 10/√25 = 2,
+//                       z = (72-70)/2 = 1)
 // Routing: /college/statistics registered in the real GoRouter
 // configuration (findMatch, not a string check) and
 // CurriculumRegistry flips solverAvailable for college-stats.
@@ -71,33 +70,31 @@ void main() {
       expect(data['r2'], 1.0);
     });
 
-    test('ztest mean=72 mu=70 sd=10 n=25 → z = 1.6971, p = 0.0897 '
-        '(engine n-quirk: SE uses n=72)', () {
+    test('ztest mean=72 mu=70 sd=10 n=25 → z = 1, SE = 2, p = 0.3173',
+        () {
       final eq = CollegeSolverRegistry.byId('college-stats')!
           .create('ztest mean=72 mu=70 sd=10 n=25');
       expect(eq.validate(), isTrue);
       final r = eq.solve();
       expect(r.hasError, isFalse);
-      // Derivation (actual engine output, verified by dart run):
-      // the n regex (n\s*=\s*(\d+)) matches the 'n' inside 'mean='
-      // first, so n=72 → SE = 10/√72 ≈ 1.1785,
-      // z = (72-70)/1.1785 ≈ 1.6971,
-      // p = 2(1-Φ(1.6971)) ≈ 0.0897 → fail to reject at α=0.05.
-      // (With 'ztest xbar=72 mu=70 sd=10 n=25' the alias parses n=25
-      // correctly: z = 1, SE = 2, p = 0.3173.)
-      expect(r.answer, contains('z = 1.6971'));
-      expect(r.answer, contains('SE = 1.1785'));
-      expect(r.answer, contains('two-sided p = 0.0897'));
+      // Derivation: the n regex now requires start-of-string or
+      // whitespace before 'n', so it no longer matches the 'n' inside
+      // 'mean='. n=25 → SE = 10/√25 = 2, z = (72-70)/2 = 1,
+      // p = 2(1-Φ(1)) ≈ 0.3173 → fail to reject at α=0.05.
+      // (Same values as the 'ztest xbar=72 ...' alias below.)
+      expect(r.answer, contains('z = 1 ('));
+      expect(r.answer, contains('SE = 2)'));
+      expect(r.answer, contains('two-sided p = 0.3173'));
       expect(r.answer, contains('fail to reject H₀ at α=0.05'));
       final data = r.customData!.single as Map;
       expect(data['kind'], 'stats-ztest');
       expect(data['mean'], 72.0);
       expect(data['mu'], 70.0);
       expect(data['sd'], 10.0);
-      expect(data['n'], 72.0);
+      expect(data['n'], 25.0);
       expect(data['reject'], false);
-      expect(data['z'], closeTo(1.6971, 0.0001));
-      expect(data['p'], closeTo(0.0897, 0.0001));
+      expect(data['z'], closeTo(1.0, 0.0001));
+      expect(data['p'], closeTo(0.3173, 0.0001));
     });
 
     test('ztest xbar=72 mu=70 sd=10 n=25 alias → z = 1, SE = 2, p = 0.3173',
@@ -116,6 +113,12 @@ void main() {
       expect(data['n'], 25.0);
       expect(data['z'], closeTo(1.0, 0.0001));
       expect(data['p'], closeTo(0.3173, 0.0001));
+    });
+
+    test('regression: mean= keyword no longer hijacks n (n=25)', () {
+      final eq = CollegeStatsEquation('ztest mean=72 mu=70 sd=10 n=25');
+      final d = eq.solve().customData!.single as Map;
+      expect(d['n'], 25.0);
     });
 
     test('garbage never throws and reports the usage hint', () {
