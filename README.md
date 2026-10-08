@@ -205,7 +205,7 @@ The app uses `flutter_math_fork` for all math rendering. Expressions from solver
 ```yaml
 dependencies:
   go_router: ^13.0.0               # Routing
-  fl_chart: ^0.68.0                # Graphing
+  fl_chart: ^1.2.0                 # Graphing
   flutter_math_fork:               # LaTeX rendering (pinned to reviewed commit 2f270ae, see pubspec.yaml)
     git:
       url: https://github.com/simpleclub/flutter_math
