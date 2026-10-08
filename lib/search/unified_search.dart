@@ -95,14 +95,18 @@ class UnifiedSearch {
       ..._searchModmat(q),
       ..._searchCurriculum(q),
     ];
-    return _dedupeByRoute(hits);
+    return dedupeByRoute(hits);
   }
 
   /// Collapse hits pointing at the same route into one row.
   /// A curriculum hit (curriculumTopic != null) wins over a plain
   /// registry hit - it carries the grade badge + subject; otherwise
   /// the first-seen hit stays (insertion order preserved).
-  static List<UnifiedHit> _dedupeByRoute(List<UnifiedHit> hits) {
+  ///
+  /// Public only so tests can drive it directly; production callers
+  /// use [search].
+  @visibleForTesting
+  static List<UnifiedHit> dedupeByRoute(List<UnifiedHit> hits) {
     final byRoute = <String, UnifiedHit>{};
     for (final hit in hits) {
       final kept = byRoute[hit.route];
