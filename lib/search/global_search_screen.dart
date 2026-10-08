@@ -3,7 +3,7 @@
 //
 // One query fans out to every registry via UnifiedSearch:
 // ModuleRegistry (midterm) + FinalsModuleRegistry + ModMat +
-// CurriculumRegistry (G6 seed + G7–College stubs).
+// CurriculumRegistry (G6 seed + G7–College entries).
 //
 // Offline-first (in-memory filter), Material3, ThemeProvider +
 // AppDesign styling. Zero hits reuses NoTopicsEmptyState with a

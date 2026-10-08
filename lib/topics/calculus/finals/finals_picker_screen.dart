@@ -108,7 +108,7 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
         .toList();
   }
 
-  /// Curriculum hits (G6 seed + G7–College stubs) for the same query.
+  /// Curriculum hits (G6 seed + G7–College entries) for the same query.
   List<CurriculumSearchHit> get _curriculumHits {
     if (_query.trim().isEmpty) return const [];
     return CurriculumRegistry.search(_query);

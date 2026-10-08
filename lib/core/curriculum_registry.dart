@@ -4,10 +4,10 @@
 // Offline-first, in-memory. No network, no DB.
 // Merges the existing hardcoded registries (Module / Finals /
 // ModMat) with the new DepEd-aligned Grade 6 (G6-1..G6-10) seed
-// plus stub entries for G7–College for future solvers.
+// plus G7–College entries, all solver-backed (ungated).
 //
-// Task 2 scope only: data model + search. Routes are NOT wired
-// here (Task 3 / Phase 1 will add GoRouter `/grade6` entries).
+// Data model + search. Routes ARE wired here as of the ungate
+// cycle (Task 3 / Phase 1+ added the GoRouter families below).
 //
 // Search reuses the ModMat pattern:
 //   modmat_module_registry.dart — lowercase contains filter, all
@@ -42,7 +42,7 @@ import 'package:calculus_system/core/module_registry.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// One curriculum topic (solver-backed or future stub).
+/// One curriculum topic (all entries are solver-backed).
 ///
 /// Field names follow Section E.1 of
 /// `docs/plans/ph-grade6-college-enhancement-plan.md`.
@@ -278,11 +278,10 @@ class CurriculumRegistry {
     ),
   ];
 
-  // ── G7 → College: Phase 1 repoints + remaining stubs ───────
-  // Representative placeholders so pickers/search can grow
-  // without dead-link surprises. Repointed G7/G8/G10/College
-  // entries are solver-backed; remaining stubs' full solver specs
-  // are deferred to the Phase 2 plan (§D).
+  // ── G7 → College: repoints + thin screens (solver-backed) ──
+  // Ungated across the ungate cycle: pickers/search can grow
+  // without dead-link surprises. Every entry here is now
+  // solver-backed and routes to a real screen — no stubs remain.
   static final List<CurriculumTopic> futureTopics = [
     // G7
     const CurriculumTopic(
@@ -667,7 +666,7 @@ class CurriculumRegistry {
     ),
   ];
 
-  /// Every topic: G6 seed + G7–College stubs.
+  /// Every topic: G6 seed + G7–College entries.
   static List<CurriculumTopic> allTopics() =>
       [...grade6Topics, ...futureTopics];
 
@@ -781,7 +780,7 @@ class CurriculumRegistry {
 /// Grade-6-only view for the future `Grade6PickerScreen`.
 ///
 /// Thin delegate over [CurriculumRegistry] so Phase 1 screens do
-/// not need to know about G7–College stubs.
+/// not need to know about G7–College entries.
 class Grade6ModuleRegistry {
   static List<CurriculumTopic> get modules => CurriculumRegistry.grade6Topics;
 

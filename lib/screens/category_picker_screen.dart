@@ -61,7 +61,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
         .toList();
   }
 
-  /// Curriculum hits (G6 seed + G7–College stubs) for the same query.
+  /// Curriculum hits (G6 seed + G7–College entries) for the same query.
   /// Empty when the search box is blank so the default list shows.
   List<CurriculumSearchHit> get _curriculumHits {
     if (_query.trim().isEmpty) return const [];
