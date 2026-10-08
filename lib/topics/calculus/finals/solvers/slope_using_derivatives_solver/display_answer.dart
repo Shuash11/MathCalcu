@@ -3,9 +3,14 @@
 // Nothing here does any mathematics — it only formats and prints.
 //   StepExplainer  — builds a list of step-by-step explanation strings
 //   PrettyPrinter  — renders a SlopeResult to the terminal with ANSI colour
-import 'dart:io';
 import 'slope_using_derivatives_solver.dart';
 // ==================== STEP EXPLAINER ====================
+
+/// Writes one line to the console. Kept free of platform I/O imports so
+/// this library stays web-safe: `dart:core`'s `print` goes to stdout on
+/// the VM and to the browser console on the web.
+// ignore: avoid_print
+void _outLine(String s) => print(s);
 
 class StepExplainer {
   /// Returns a list of lines that walk through the solution step by step.
@@ -228,7 +233,7 @@ class PrettyPrinter {
     _writeln('$_bold$_green└${'─' * w}┘$_reset');
   }
 
-  static void _writeln(String s) => stdout.writeln(s);
+  static void _writeln(String s) => _outLine(s);
 
   static String _center(String s, int width) {
     final pad = (width - s.length) ~/ 2;
