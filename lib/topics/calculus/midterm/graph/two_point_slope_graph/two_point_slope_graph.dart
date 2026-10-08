@@ -8,8 +8,7 @@ import 'package:provider/provider.dart';
 // -------------------------------------------------------------
 // GRAPH WIDGET
 // Renders the coordinate plane and the line using fl_chart.
-// Add fl_chart to pubspec.yaml:
-//   fl_chart: ^0.68.0
+// Requires fl_chart (declared in pubspec.yaml).
 // -------------------------------------------------------------
 
 String _fmt(double v) {
