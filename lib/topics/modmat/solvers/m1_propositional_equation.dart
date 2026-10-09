@@ -143,12 +143,17 @@ class M1PropositionalEquation extends BaseEquation {
           stepNumber: 1,
           title: 'List the variables',
           explanation: 'Variables: ${vars.join(', ')} '
-              '(${rows.length} rows).'),
+              '(${rows.length} rows).',
+          latex: vars.join(', ')),
       const StepModel(
           stepNumber: 2,
           title: 'Evaluate each row',
           explanation: '~ binds tightest, then AND, OR, ->, <->.'),
-      StepModel(stepNumber: 3, title: 'Read the column', explanation: r.answer),
+      StepModel(
+          stepNumber: 3,
+          title: 'Read the column',
+          explanation: r.answer,
+          latex: '\\text{${r.answer}}'),
       const StepModel(
           stepNumber: 4,
           title: 'Classify',

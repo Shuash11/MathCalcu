@@ -107,6 +107,14 @@ class M5MatrixEquation extends BaseEquation {
     return '[${m.map(row).join(', ')}]';
   }
 
+  /// LaTeX pmatrix: `\begin{pmatrix} a & b \\ c & d \end{pmatrix}`.
+  static String _texMatrix(List<List<double>> m) {
+    final rows = m
+        .map((row) => row.map((v) => G6Format.num(v)).join(' & '))
+        .join(r' \\ ');
+    return '\\begin{pmatrix} $rows \\end{pmatrix}';
+  }
+
   @override
   bool validate() {
     final empty =
@@ -180,27 +188,38 @@ class M5MatrixEquation extends BaseEquation {
       ];
     }
     final r = solve();
-    final n = (p[1] as List).length;
+    final mat = p[1] as List<List<double>>;
+    final n = mat.length;
     final isDet = p[0] == 'det';
+    final det = determinant(mat);
+    final inv = isDet ? null : inverse(mat);
     final steps = [
       StepModel(
           stepNumber: 1,
           title: n == 2 ? 'Write ad − bc' : 'Write the Sarrus/cofactor sum',
           explanation: n == 2
               ? 'det = a·d − b·c for [[a,b],[c,d]].'
-              : 'det = a(ei−fh) − b(di−fg) + c(dh−eg).'),
+              : 'det = a(ei−fh) − b(di−fg) + c(dh−eg).',
+          latex: _texMatrix(mat),
+          subLatex: [
+            n == 2
+                ? '\\det = a \\cdot d - b \\cdot c'
+                : '\\det = a(ei - fh) - b(di - fg) + c(dh - eg)',
+          ]),
       StepModel(
           stepNumber: 2,
           title: isDet ? 'Evaluate the determinant' : 'Check det ≠ 0',
           explanation: isDet
               ? (r.hasError ? (r.errorMessage ?? '') : r.answer)
-              : 'det = ${G6Format.num(determinant(p[1] as List<List<double>>))}; '
-                  'zero means singular (no inverse).'),
+              : 'det = ${G6Format.num(det)}; '
+                  'zero means singular (no inverse).',
+          latex: '\\det = ${G6Format.num(det)}'),
       if (!isDet)
         StepModel(
             stepNumber: 3,
             title: 'Adjugate ÷ det',
-            explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+            explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+            latex: inv == null ? null : 'A^{-1} = ${_texMatrix(inv)}'),
       StepModel(
           stepNumber: isDet ? 3 : 4,
           title: 'Verify',

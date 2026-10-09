@@ -166,12 +166,21 @@ class M4BaseConversionEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    final data = (r.customData == null || r.customData!.isEmpty)
+        ? null
+        : r.customData!.first;
+    final digits = (p[0] as String).toUpperCase();
+    final from = p[1] as int;
+    final to = p[2] as int;
+    final dec = data?['decimal'];
+    final out = data?['result'];
     return [
       StepModel(
           stepNumber: 1,
           title: 'Expand in the source base',
           explanation:
-              '${(p[0] as String).toUpperCase()} base ${p[1]} → decimal by place value.'),
+              '${(p[0] as String).toUpperCase()} base ${p[1]} → decimal by place value.',
+          latex: dec == null ? null : '${digits}_{$from} = ${dec}_{10}'),
       StepModel(
           stepNumber: 2,
           title: 'Divide into the target base',
@@ -179,7 +188,8 @@ class M4BaseConversionEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Read the result',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: out == null ? null : '${digits}_{$from} = ${out}_{$to}'),
     ];
   }
 }

@@ -163,6 +163,21 @@ class M3CombinatoricsEquation extends BaseEquation {
       'nPr' => 'nPr = n!/(n−r)! — order matters.',
       _ => 'nCr = n!/(r!(n−r)!) — order does not matter.',
     };
+    final formLatex = switch (mode) {
+      'fact' => 'n! = 1 \\times 2 \\times \\cdots \\times n',
+      'nPr' => 'P(n, r) = \\frac{n!}{(n - r)!}',
+      _ => '\\binom{n}{r} = \\frac{n!}{r!\\,(n - r)!}',
+    };
+    String? computeLatex;
+    if (!r.hasError) {
+      final n = p[1] as int;
+      final v = r.customData?.first['value'];
+      computeLatex = switch (mode) {
+        'fact' => '$n! = $v',
+        'nPr' => 'P($n, ${p[2]}) = $v',
+        _ => '\\binom{$n}{${p[2]}} = $v',
+      };
+    }
     return [
       StepModel(
           stepNumber: 1,
@@ -171,7 +186,8 @@ class M3CombinatoricsEquation extends BaseEquation {
               : mode == 'nPr'
                   ? 'Permutation form'
                   : 'Combination form',
-          explanation: formula),
+          explanation: formula,
+          latex: formLatex),
       const StepModel(
           stepNumber: 2,
           title: 'Check 0 ≤ r ≤ n',
@@ -179,7 +195,8 @@ class M3CombinatoricsEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Compute',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: computeLatex),
     ];
   }
 }

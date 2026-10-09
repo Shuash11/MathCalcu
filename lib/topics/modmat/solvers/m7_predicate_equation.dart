@@ -137,6 +137,26 @@ class M7PredicateEquation extends BaseEquation {
     }
     final r = solve();
     final isForall = p[0] as bool;
+    String? statementLatex;
+    List<String>? statementSub;
+    if (!r.hasError) {
+      final v = p[1] as String;
+      final domain = (p[2] as List<int>).join(', ');
+      final op = p[3] as String;
+      final rhs = p[4] as int;
+      final truth = r.customData?.first['value'] == true;
+      final texOp = switch (op) {
+        '>' => '>',
+        '<' => '<',
+        '>=' => '\\geq',
+        '<=' => '\\leq',
+        '==' => '=',
+        _ => '\\neq',
+      };
+      final q = isForall ? '\\forall' : '\\exists';
+      statementLatex = '$q $v \\in \\{$domain\\}: $v $texOp $rhs';
+      statementSub = ['\\text{is ${truth ? 'True' : 'False'}}'];
+    }
     return [
       StepModel(
           stepNumber: 1,
@@ -151,7 +171,9 @@ class M7PredicateEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Read the truth value',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: statementLatex,
+          subLatex: statementSub),
     ];
   }
 }

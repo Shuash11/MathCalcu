@@ -178,6 +178,38 @@ class M2SetsEquation extends BaseEquation {
     );
   }
 
+  /// LaTeX brace-set: `\{1, 2, 3\}` (or `\emptyset` when empty).
+  static String _texSet(List<String> elements) => elements.isEmpty
+      ? r'\emptyset'
+      : r'\{' + elements.join(', ') + r'\}';
+
+  /// LaTeX for the result line, rebuilt from the real computed data
+  /// (never from the unicode answer string). Null when the solve errored.
+  String? _resultLatex(SolveResult r, String op) {
+    if (r.hasError) return null;
+    final data = (r.customData == null || r.customData!.isEmpty)
+        ? null
+        : r.customData!.first;
+    final els = (data?['elements'] as List?)?.cast<String>();
+    switch (op) {
+      case 'union':
+        return 'A \\cup B = ${_texSet(els ?? const [])}';
+      case 'intersect':
+        return 'A \\cap B = ${_texSet(els ?? const [])}';
+      case 'diff':
+        return 'A \\setminus B = ${_texSet(els ?? const [])}';
+      case 'symdiff':
+        return 'A \\triangle B = ${_texSet(els ?? const [])}';
+      case 'subset':
+        return 'A \\subseteq B';
+      case 'card':
+        return '|A| = ${data?['value']}';
+      case 'power':
+        return '|\\mathcal{P}(A)| = 2^{${data?['n']}} = ${data?['value']}';
+    }
+    return null;
+  }
+
   @override
   List<StepModel> getSteps() {
     final sets = _sets();
@@ -205,13 +237,21 @@ class M2SetsEquation extends BaseEquation {
           stepNumber: 1,
           title: 'List the elements',
           explanation: 'A = {${elementsOf(sets[0]).join(', ')}}'
-              '${sets.length > 1 ? ', B = {${elementsOf(sets[1]).join(', ')}}' : ''}.'),
+              '${sets.length > 1 ? ', B = {${elementsOf(sets[1]).join(', ')}}' : ''}.',
+          latex: 'A = ${_texSet(elementsOf(sets[0]))}'
+              '${sets.length > 1 ? ', \\quad B = ${_texSet(elementsOf(sets[1]))}' : ''}'),
       StepModel(
           stepNumber: 2, title: 'Apply the operation', explanation: label),
       StepModel(
           stepNumber: 3,
           title: 'Read the result',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: _resultLatex(r, op),
+          subLatex: op == 'subset' && !r.hasError
+              ? [
+                  '\\text{is ${r.customData!.first['value'] == true ? 'True' : 'False'}}'
+                ]
+              : null),
     ];
   }
 }

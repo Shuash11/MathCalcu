@@ -223,6 +223,21 @@ class M6ModularEquation extends BaseEquation {
       'pow' => 'Square-and-multiply: reduce mod m at every step.',
       _ => 'Reduce each operand mod m first, then operate.',
     };
+    String? residueLatex;
+    if (!r.hasError) {
+      final a = p[1] as int;
+      final b = p[2] as int;
+      final m = p[3] as int;
+      final v = r.customData?.first['value'];
+      residueLatex = switch (mode) {
+        'norm' => '$a \\equiv $v \\pmod{$m}',
+        'add' => '($a + $b) \\bmod $m = $v',
+        'sub' => '($a - $b) \\bmod $m = $v',
+        'mul' => '($a \\times $b) \\bmod $m = $v',
+        'pow' => '$a^{$b} \\bmod $m = $v',
+        _ => '$a^{-1} \\equiv $v \\pmod{$m}',
+      };
+    }
     return [
       StepModel(
           stepNumber: 1,
@@ -232,7 +247,8 @@ class M6ModularEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Read the residue',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: residueLatex),
     ];
   }
 }
