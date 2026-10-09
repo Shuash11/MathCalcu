@@ -137,20 +137,42 @@ class System2x2Equation extends BaseEquation {
       ];
     }
     final r = solve();
+    final a1 = rows[0][0], b1 = rows[0][1], c1 = rows[0][2];
+    final a2 = rows[1][0], b2 = rows[1][1], c2 = rows[1][2];
     return [
-      const StepModel(
+      StepModel(
           stepNumber: 1,
           title: 'Write in ax + by = c form',
-          explanation: 'Align x, y, and constant columns.'),
+          explanation: 'Align x, y, and constant columns.',
+          latex: '\\begin{pmatrix} ${G6Format.num(a1)} & ${G6Format.num(b1)} '
+              '\\\\ ${G6Format.num(a2)} & ${G6Format.num(b2)} \\end{pmatrix}',
+          subLatex: [
+            '\\begin{pmatrix} ${G6Format.num(c1)} \\\\ '
+            '${G6Format.num(c2)} \\end{pmatrix}',
+          ]),
       const StepModel(
           stepNumber: 2,
           title: 'Eliminate one variable',
           explanation: 'Scale and add the equations so one variable cancels.'),
-      StepModel(stepNumber: 3, title: 'Solve the point', explanation: r.answer),
+      StepModel(
+          stepNumber: 3,
+          title: 'Solve the point',
+          explanation: r.answer,
+          latex: _pointTex(r)),
       const StepModel(
           stepNumber: 4,
           title: 'Check by substitution',
           explanation: 'Both equations must balance at the point.'),
     ];
+  }
+
+  /// TeX for the intersection point, or null when there is no single point.
+  String? _pointTex(SolveResult r) {
+    final cd = r.customData;
+    if (cd == null || cd.isEmpty) return null;
+    final d = cd.first as Map;
+    if (d['type'] != 'point') return null;
+    return '(x, y) = (${G6Format.num((d['x'] as num).toDouble())}, '
+        '${G6Format.num((d['y'] as num).toDouble())})';
   }
 }

@@ -260,16 +260,58 @@ class CollegeStatsEquation extends BaseEquation {
         'Slope b = Sxy/Sxx, intercept a = ȳ − b·x̄, r from covariance.',
       _ => 'Mean = Σx/n; median = middle of sorted data; SD from deviations.',
     };
+    final texLines = _texLines(r);
     return [
       const StepModel(
           stepNumber: 1,
           title: 'Summarize the data',
           explanation: 'Count n, sum, sort for center + spread.'),
-      StepModel(stepNumber: 2, title: 'Apply the formula', explanation: mid),
+      StepModel(
+          stepNumber: 2,
+          title: 'Apply the formula',
+          explanation: mid,
+          latex: _formulaTex(mode)),
       StepModel(
           stepNumber: 3,
           title: 'Read the result',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: texLines.isEmpty ? null : texLines.first,
+          subLatex: texLines.length > 1 ? texLines.sublist(1) : null),
     ];
+  }
+
+  /// The method formula for the active stats sub-solver, as ASCII TeX.
+  String _formulaTex(String mode) {
+    switch (mode) {
+      case 'ztest':
+        return 'z = \\frac{\\bar{x} - \\mu_{0}}{\\sigma / \\sqrt{n}}';
+      case 'regress':
+        return 'b = \\frac{S_{xy}}{S_{xx}},\\quad a = \\bar{y} - b\\bar{x}';
+      default:
+        return '\\bar{x} = \\frac{\\sum x}{n},\\quad '
+            '\\sigma = \\sqrt{\\frac{\\sum (x - \\bar{x})^{2}}{n}}';
+    }
+  }
+
+  /// LaTeX lines for the result step (empty when the solver errored).
+  List<String> _texLines(SolveResult r) {
+    final cd = r.customData;
+    if (r.hasError || cd == null || cd.isEmpty) return const [];
+    final d = cd.first as Map;
+    String fmtVal(String k) => _fmt((d[k] as num).toDouble());
+    switch (d['kind'] as String) {
+      case 'stats-ztest':
+        return ['z = ${fmtVal('z')}', 'p = ${fmtVal('p')}'];
+      case 'stats-regression':
+        return [
+          '\\hat{y} = ${fmtVal('intercept')} + ${fmtVal('slope')}x',
+          'r = ${fmtVal('r')},\\quad R^{2} = ${fmtVal('r2')}',
+        ];
+      default:
+        return [
+          '\\bar{x} = ${fmtVal('mean')}',
+          '\\sigma = ${fmtVal('popSd')},\\quad s = ${fmtVal('sampleSd')}',
+        ];
+    }
   }
 }

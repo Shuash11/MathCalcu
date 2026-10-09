@@ -160,16 +160,53 @@ class SequenceEquation extends BaseEquation {
     }
     final r = solve();
     final isArith = _mode() == 'arith';
+    final cd = r.customData;
+    final data = (cd != null && cd.isNotEmpty) ? cd.first as Map : null;
     return [
       StepModel(
           stepNumber: 1,
           title: isArith ? 'Arithmetic form' : 'Geometric form',
           explanation: isArith
               ? 'a(n) = a1 + (n−1)d, S(n) = n/2·(2a1 + (n−1)d).'
-              : 'a(n) = a1·r^(n−1), S(n) = a1(r^n − 1)/(r − 1).'),
+              : 'a(n) = a1·r^(n−1), S(n) = a1(r^n − 1)/(r − 1).',
+          latex: isArith
+              ? 'a_{n} = a_{1} + (n - 1)d'
+              : 'a_{n} = a_{1} r^{n-1}',
+          subLatex: [
+            isArith
+                ? 'S_{n} = \\frac{n}{2}(2a_{1} + (n - 1)d)'
+                : 'S_{n} = \\frac{a_{1}(r^{n} - 1)}{r - 1}',
+          ]),
       StepModel(
-          stepNumber: 2, title: 'Substitute', explanation: rawInput.trim()),
-      StepModel(stepNumber: 3, title: 'nth term + sum', explanation: r.answer),
+          stepNumber: 2,
+          title: 'Substitute',
+          explanation: rawInput.trim(),
+          latex: data == null ? null : _subTex(data, isArith)),
+      StepModel(
+          stepNumber: 3,
+          title: 'nth term + sum',
+          explanation: r.answer,
+          latex: data == null
+              ? null
+              : 'a_{${data['n']}} = ${G6Format.num((data['an'] as num).toDouble())}',
+          subLatex: data == null
+              ? null
+              : [
+                  'S_{${data['n']}} = '
+                  '${G6Format.num((data['sum'] as num).toDouble())}'
+                ]),
     ];
+  }
+
+  /// TeX for the substitute step, from the parsed a1/d (or a1/r) and n.
+  String _subTex(Map data, bool isArith) {
+    final n = data['n'] as int;
+    final a1 = G6Format.num((data['a1'] as num).toDouble());
+    if (isArith) {
+      final d = G6Format.num((data['d'] as num).toDouble());
+      return 'a_{$n} = $a1 + ($n - 1)($d)';
+    }
+    final r = G6Format.num((data['r'] as num).toDouble());
+    return 'a_{$n} = $a1 \\cdot $r^{${n - 1}}';
   }
 }

@@ -147,11 +147,14 @@ class LinearOneVarEquation extends BaseEquation {
           stepNumber: 2,
           title: 'Combine',
           explanation:
-              '${G6Format.num(a)}x = ${G6Format.num(b)} — like terms collected.'),
+              '${G6Format.num(a)}x = ${G6Format.num(b)} — like terms collected.',
+          latex: '${G6Format.num(a)}x = ${G6Format.num(b)}'),
       StepModel(
           stepNumber: 3,
           title: 'Divide',
-          explanation: 'x = ${G6Format.num(b)} ÷ ${G6Format.num(a)}.'),
+          explanation: 'x = ${G6Format.num(b)} ÷ ${G6Format.num(a)}.',
+          latex: 'x = \\frac{${G6Format.num(b)}}{${G6Format.num(a)}} = '
+              '${G6Format.num(b / a)}'),
       StepModel(
           stepNumber: 4,
           title: 'Check',

@@ -213,7 +213,9 @@ class RationalEquation extends BaseEquation {
           stepNumber: 1,
           title: 'Excluded values',
           explanation:
-              'Denominators ≠ 0, so x ≠ ${ex.map(G6Format.num).join(', ')}.'),
+              'Denominators ≠ 0, so x ≠ ${ex.map(G6Format.num).join(', ')}.',
+          latex:
+              ex.map((e) => 'x \\neq ${G6Format.num(e)}').join(',\\quad ')),
       StepModel(
           stepNumber: 2,
           title: 'Clear denominators',
@@ -221,7 +223,8 @@ class RationalEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Solve the linear equation',
-          explanation: r.answer),
+          explanation: r.answer,
+          latex: r.hasError ? null : 'x = ${G6Format.num(r.points.first)}'),
       const StepModel(
           stepNumber: 4,
           title: 'Check for extraneous roots',

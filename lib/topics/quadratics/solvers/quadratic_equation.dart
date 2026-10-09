@@ -172,17 +172,41 @@ class QuadraticEquation extends BaseEquation {
           stepNumber: 1,
           title: 'Identify a, b, c',
           explanation:
-              'a=${G6Format.num(cf[0])}, b=${G6Format.num(cf[1])}, c=${G6Format.num(cf[2])}.'),
+              'a=${G6Format.num(cf[0])}, b=${G6Format.num(cf[1])}, c=${G6Format.num(cf[2])}.',
+          latex: 'a = ${G6Format.num(cf[0])},\\quad '
+              'b = ${G6Format.num(cf[1])},\\quad c = ${G6Format.num(cf[2])}'),
       StepModel(
           stepNumber: 2,
           title: 'Discriminant',
-          explanation: 'D = b² − 4ac = ${G6Format.num(disc)}.'),
+          explanation: 'D = b² − 4ac = ${G6Format.num(disc)}.',
+          latex: '\\Delta = b^{2} - 4ac = ${G6Format.num(disc)}'),
       const StepModel(
           stepNumber: 3,
           title: 'Quadratic formula',
-          explanation: 'x = (−b ± √D) / 2a.'),
+          explanation: 'x = (−b ± √D) / 2a.',
+          latex: 'x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}'),
       StepModel(
-          stepNumber: 4, title: 'Roots + parabola', explanation: r.answer),
+          stepNumber: 4,
+          title: 'Roots + parabola',
+          explanation: r.answer,
+          latex: _rootsTex(r)),
     ];
+  }
+
+  /// TeX for the roots step, from the solver's real discriminant and roots.
+  String _rootsTex(SolveResult r) {
+    final cd = r.customData;
+    if (cd == null || cd.isEmpty) return 'x = ?';
+    final d = cd.first as Map;
+    final roots = (d['roots'] as List).cast<num>();
+    final disc = (d['discriminant'] as num).toDouble();
+    if (roots.isEmpty) {
+      return '\\Delta = ${G6Format.num(disc)} < 0 \\implies \\text{no real roots}';
+    }
+    if (roots.length == 1) {
+      return 'x = ${G6Format.num(roots[0].toDouble())}';
+    }
+    return 'x_{1} = ${G6Format.num(roots[0].toDouble())},\\quad '
+        'x_{2} = ${G6Format.num(roots[1].toDouble())}';
   }
 }

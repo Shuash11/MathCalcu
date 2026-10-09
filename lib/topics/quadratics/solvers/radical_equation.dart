@@ -222,12 +222,16 @@ class RadicalEquation extends BaseEquation {
           stepNumber: 1,
           title: 'Domain',
           explanation:
-              'Need ${p[4]} ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.'),
+              'Need ${p[4]} ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.',
+          latex: '${p[4]} \\ge 0 \\implies '
+              'x ${m > 0 ? '\\ge' : '\\le'} ${G6Format.num(-k / m)}'),
       StepModel(
           stepNumber: 2,
           title: 'Isolate the root',
           explanation:
-              'sqrt(${p[4]}) = ${G6Format.num(rhs)} − ${G6Format.num(b)} = ${G6Format.num(rhs - b)}.'),
+              'sqrt(${p[4]}) = ${G6Format.num(rhs)} − ${G6Format.num(b)} = ${G6Format.num(rhs - b)}.',
+          latex: '\\sqrt{${p[4]}} = ${G6Format.num(rhs)} - '
+              '${G6Format.num(b)} = ${G6Format.num(rhs - b)}'),
       const StepModel(
           stepNumber: 3,
           title: 'Square both sides',
@@ -235,7 +239,8 @@ class RadicalEquation extends BaseEquation {
       StepModel(
           stepNumber: 4,
           title: 'Verify (extraneous check)',
-          explanation: r.answer),
+          explanation: r.answer,
+          latex: r.hasError ? null : _rootsTex(r)),
     ];
   }
 
@@ -254,21 +259,70 @@ class RadicalEquation extends BaseEquation {
           stepNumber: 1,
           title: 'Domain',
           explanation:
-              'Need $inside ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.'),
+              'Need $inside ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.',
+          latex: '$inside \\ge 0 \\implies '
+              'x ${m > 0 ? '\\ge' : '\\le'} ${G6Format.num(-k / m)}'),
       StepModel(
           stepNumber: 2,
           title: 'Isolate the root',
-          explanation: _isolateExpl(inside, r, s, b)),
+          explanation: _isolateExpl(inside, r, s, b),
+          latex: _isolateTex(inside, r, s, b)),
       StepModel(
           stepNumber: 3,
           title: 'Square both sides',
           explanation:
-              '${_quadStr(a, b2, c2)} Squaring is not reversible — verify at the end.'),
+              '${_quadStr(a, b2, c2)} Squaring is not reversible — verify at the end.',
+          latex: _quadTex(a, b2, c2)),
       StepModel(
           stepNumber: 4,
           title: 'Verify (extraneous check)',
-          explanation: res.answer),
+          explanation: res.answer,
+          latex: res.hasError ? null : _rootsTex(res)),
     ];
+  }
+
+  /// TeX for one verified root per line: 'x = 0,\quad x = 1'.
+  String _rootsTex(SolveResult res) =>
+      res.points.map((x) => 'x = ${G6Format.num(x)}').join(',\\quad ');
+
+  /// 'sqrt(x+5) = 2x - 1' style isolate step as TeX.
+  String _isolateTex(String inside, double r, double s, double b) {
+    final t = s - b;
+    String coef(double v) => v == 1
+        ? 'x'
+        : v == -1
+            ? '-x'
+            : '${G6Format.num(v)}x';
+    String tail(double v) => v == 0
+        ? ''
+        : v > 0
+            ? ' + ${G6Format.num(v)}'
+            : ' - ${G6Format.num(-v)}';
+    final isolated = '${coef(r)}${tail(t)}';
+    final root = '\\sqrt{$inside}';
+    if (b == 0) return '$root = $isolated';
+    return '$root${tail(b)} = ${coef(r)}${tail(s)} \\implies '
+        '$root = $isolated';
+  }
+
+  /// 'x^2 - x - 5 = 0' style squared equation as TeX.
+  String _quadTex(double a, double bC, double c) {
+    String term(double v, String sym) {
+      if (v.abs() < 1e-12) return '';
+      final mag = G6Format.num(v.abs());
+      final coef = sym.isNotEmpty && mag == '1' ? '' : '$mag ';
+      return '${v > 0 ? '+' : '-'} $coef$sym';
+    }
+
+    final parts = [
+      term(a, 'x^{2}'),
+      term(bC, 'x'),
+      term(c, ''),
+    ].where((t) => t.isNotEmpty).toList();
+    if (parts.isEmpty) return '0 = 0';
+    var body = parts.join(' ').trim();
+    if (body.startsWith('+ ')) body = body.substring(2);
+    return '$body = 0';
   }
 
   /// 'sqrt(x+5) = 2x - 1' style isolate explanation.

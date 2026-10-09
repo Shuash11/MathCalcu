@@ -174,14 +174,45 @@ class VariationEquation extends BaseEquation {
         : kind == 'inverse'
             ? 'xy = k'
             : 'z = kxy';
+    final cd = r.customData;
+    final data = (cd != null && cd.isNotEmpty) ? cd.first as Map : null;
     return [
       StepModel(
-          stepNumber: 1, title: 'Variation form', explanation: 'Use $form.'),
-      StepModel(stepNumber: 2, title: 'Find k', explanation: r.answer),
+          stepNumber: 1,
+          title: 'Variation form',
+          explanation: 'Use $form.',
+          latex: form),
+      StepModel(
+          stepNumber: 2,
+          title: 'Find k',
+          explanation: r.answer,
+          latex: data == null ? null : _kTex(data),
+          subLatex: data == null ? null : _kSub(data)),
       const StepModel(
           stepNumber: 3,
           title: 'Predict new values',
           explanation: 'Substitute the new x (or y) into the form with k.'),
     ];
+  }
+
+  /// TeX for the 'Find k' step, from the solver's real computed k.
+  String _kTex(Map data) {
+    final k = G6Format.num((data['k'] as num).toDouble());
+    switch (data['mode'] as String) {
+      case 'inverse':
+        return 'k = xy = $k';
+      case 'joint':
+        return 'k = \\frac{z}{xy} = $k';
+      default:
+        return 'k = \\frac{y}{x} = $k';
+    }
+  }
+
+  /// Follow-on line for the prediction value, when a second x was given.
+  List<String>? _kSub(Map data) {
+    if (data['x'] == null) return null;
+    final y = G6Format.num((data['y'] as num).toDouble());
+    final x = G6Format.num((data['x'] as num).toDouble());
+    return ['y = $y\\ \\text{when}\\ x = $x'];
   }
 }

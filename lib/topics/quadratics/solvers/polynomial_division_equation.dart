@@ -167,6 +167,16 @@ class PolyDivisionEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    final cd = r.customData;
+    final data = (cd != null && cd.isNotEmpty) ? cd.first as Map : null;
+    String? qTex;
+    String? remTex;
+    if (data != null) {
+      final q = (data['quotient'] as List).cast<double>();
+      final deg = data['degree'] as int;
+      qTex = _polyTex(q, deg);
+      remTex = G6Format.num((data['remainder'] as num).toDouble());
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -177,12 +187,41 @@ class PolyDivisionEquation extends BaseEquation {
           title: 'Bring down, multiply, add',
           explanation: 'Repeat across the row — multiply by a, add to next.'),
       StepModel(
-          stepNumber: 3, title: 'Quotient + remainder', explanation: r.answer),
+          stepNumber: 3,
+          title: 'Quotient + remainder',
+          explanation: r.answer,
+          latex: qTex,
+          subLatex: remTex == null ? null : ['R = $remTex']),
       const StepModel(
           stepNumber: 4,
           title: 'Remainder theorem',
           explanation:
               'Remainder equals P(a) — zero means (x − a) is a factor.'),
     ];
+  }
+
+  /// TeX for a quotient polynomial from its coefficient list (highest
+  /// power first) and its degree — mirrors the solver's string build.
+  String _polyTex(List<double> q, int deg) {
+    final buffer = StringBuffer();
+    for (var i = 0; i < q.length; i++) {
+      final power = deg - 1 - i;
+      final c = q[i];
+      if (c.abs() < 1e-12) continue;
+      final mag = G6Format.num(c.abs());
+      final sym = power == 0
+          ? ''
+          : power == 1
+              ? 'x'
+              : 'x^{$power}';
+      final coef = (sym.isNotEmpty && mag == '1') ? '' : mag;
+      final body = '$coef$sym';
+      if (buffer.isEmpty) {
+        buffer.write('${c < 0 ? '-' : ''}$body');
+      } else {
+        buffer.write('${c < 0 ? ' - ' : ' + '}$body');
+      }
+    }
+    return buffer.isEmpty ? '0' : buffer.toString();
   }
 }

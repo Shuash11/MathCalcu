@@ -262,9 +262,13 @@ class FactoringEquation extends BaseEquation {
           title: m == 'dots' ? 'Difference of squares' : 'Find two numbers',
           explanation: m == 'dots'
               ? 'a² − b² = (a+b)(a−b).'
-              : 'Two numbers that multiply to c and add to b.'),
+              : 'Two numbers that multiply to c and add to b.',
+          latex: m == 'dots' ? 'a^{2} - b^{2} = (a + b)(a - b)' : null),
       StepModel(
-          stepNumber: 3, title: 'Write the factors', explanation: r.answer),
+          stepNumber: 3,
+          title: 'Write the factors',
+          explanation: r.answer,
+          latex: r.answer),
       const StepModel(
           stepNumber: 4,
           title: 'Check (FOIL)',
