@@ -238,3 +238,6 @@ Supports Android, iOS, Web, and Desktop. All math computations run **offline** â
 Branch naming: `feature/YourName_feature_name`
 
 All solver logic lives in the `solvers/` subfolder of each module. UI is separated from logic.
+
+<!-- no-op probe: CI flutter-pin experiment (phase 0) -->
+
