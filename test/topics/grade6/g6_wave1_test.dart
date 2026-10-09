@@ -1,6 +1,32 @@
 // G6 Wave 1 tests: fractions, decimals, GEMDAS, GCF/LCM, integers.
+import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/topics/grade6/solvers/grade6_equations.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+
+/// Render [tex] with an explicit recording `onErrorFallback` and assert it was
+/// NOT invoked, i.e. the TeX parses (Phase B technique for the LaTeX waves).
+/// A count/presence-only check cannot catch a parse failure.
+Future<void> _expectTexParses(WidgetTester tester, String tex) async {
+  var fellBack = false;
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: Math.tex(
+          tex,
+          textStyle: const TextStyle(fontSize: 14),
+          onErrorFallback: (e) {
+            fellBack = true;
+            return const SizedBox();
+          },
+        ),
+      ),
+    ),
+  );
+  await tester.pump();
+  expect(fellBack, isFalse, reason: 'TeX failed to parse: $tex');
+}
 
 void main() {
   group('G6-1 fractions (M6NS-Ia-86)', () {
@@ -144,6 +170,110 @@ void main() {
 
     test('divide by zero errors', () {
       expect(G6IntegerEquation('5 ÷ 0').solve().hasError, isTrue);
+    });
+  });
+
+  group('G6 wave1 LaTeX emission (Batch 1)', () {
+    test('fractions: math steps carry TeX, the ×/÷ LCD step stays prose', () {
+      final add = G6FractionEquation('1/2 + 3/4').getSteps();
+      expect(add, hasLength(4));
+      for (final s in add) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex!, isNotEmpty, reason: s.title);
+      }
+      expect(add[1].latex, contains(r'\frac'));
+      final mul = G6FractionEquation('3/4 × 1/2').getSteps();
+      expect(mul, hasLength(4));
+      expect(mul[1].latex, isNull); // "No LCD needed…" prose guidance
+      for (final i in [0, 2, 3]) {
+        expect(mul[i].latex, isNotNull, reason: mul[i].title);
+        expect(mul[i].latex!, isNotEmpty, reason: mul[i].title);
+      }
+    });
+
+    test('decimals: math steps carry TeX, "compute" prose step stays prose', () {
+      final steps = G6DecimalEquation('3.25 × 1.2').getSteps();
+      expect(steps, hasLength(4));
+      expect(steps[1].latex, isNull); // "Then handle the decimal places…"
+      for (final i in [0, 2, 3]) {
+        expect(steps[i].latex, isNotNull, reason: steps[i].title);
+        expect(steps[i].latex!, isNotEmpty, reason: steps[i].title);
+      }
+      expect(steps[3].latex, contains(r'\frac'));
+    });
+
+    test('gemdas: only stages with work carry TeX', () {
+      final simple = G6GemdasEquation('8 + 2 × 5').getSteps();
+      expect(simple, hasLength(4));
+      expect(simple[0].latex, isNull); // no grouping symbols
+      expect(simple[1].latex, isNull); // no exponents
+      expect(simple[2].latex, isNotNull);
+      expect(simple[3].latex, isNotNull);
+      final grouped = G6GemdasEquation('(10 - 2)^2 ÷ 4').getSteps();
+      expect(grouped[0].latex, isNotNull); // (10-2) = 8
+      // The engine's exponent scan needs a digit before '^' — "(10-2)^2"
+      // does not match, so the exponent stage is genuinely empty (prose).
+      expect(grouped[1].latex, isNull);
+      expect(grouped[2].latex, isNotNull); // 2 \div 4
+      expect(grouped[3].latex, isNotNull);
+    });
+
+    test('every emitted wave1 TeX line is ASCII (no unicode math)', () {
+      for (final eq in <BaseEquation>[
+        G6FractionEquation('1/2 + 3/4'),
+        G6FractionEquation('2 1/3 - 1 5/6'),
+        G6FractionEquation('3/4 × 1/2'),
+        G6FractionEquation('5/6 ÷ 2/3'),
+        G6DecimalEquation('3.25 × 1.2'),
+        G6DecimalEquation('7.5 ÷ 0.25'),
+        G6DecimalEquation('1.0 ÷ 3.0'),
+        G6GemdasEquation('8 + 2 × 5'),
+        G6GemdasEquation('(10 - 2)^2 ÷ 4'),
+      ]) {
+        for (final s in eq.getSteps()) {
+          final tex = s.latex;
+          if (tex != null) {
+            expect(tex.contains('²'), isFalse, reason: s.title);
+            expect(tex.contains('π'), isFalse, reason: s.title);
+          }
+          for (final line in s.subLatex ?? const <String>[]) {
+            expect(line.contains('²'), isFalse, reason: s.title);
+            expect(line.contains('π'), isFalse, reason: s.title);
+          }
+        }
+      }
+    });
+
+    testWidgets('every emitted wave1 TeX line parses (recording fallback)',
+        (tester) async {
+      final cases = <BaseEquation>[
+        G6FractionEquation('1/2 + 3/4'),
+        G6FractionEquation('2 1/3 - 1 5/6'),
+        G6FractionEquation('3/4 × 1/2'),
+        G6FractionEquation('5/6 ÷ 2/3'),
+        G6DecimalEquation('3.25 × 1.2'),
+        G6DecimalEquation('7.5 ÷ 0.25'),
+        G6DecimalEquation('1.0 ÷ 3.0'),
+        G6DecimalEquation('0.5 + 0.25'),
+        G6GemdasEquation('8 + 2 × 5'),
+        G6GemdasEquation('(10 - 2)^2 ÷ 4'),
+      ];
+      var checked = 0;
+      for (final eq in cases) {
+        for (final s in eq.getSteps()) {
+          if (s.latex != null && s.latex!.isNotEmpty) {
+            await _expectTexParses(tester, s.latex!);
+            checked++;
+          }
+          for (final line in s.subLatex ?? const <String>[]) {
+            if (line.trim().isNotEmpty) {
+              await _expectTexParses(tester, line);
+              checked++;
+            }
+          }
+        }
+      }
+      expect(checked, greaterThan(0));
     });
   });
 }

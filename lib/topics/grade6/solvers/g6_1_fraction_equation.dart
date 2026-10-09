@@ -108,6 +108,34 @@ class G6FractionEquation extends BaseEquation {
     );
   }
 
+  /// TeX for a DepEd fraction display (`2 1/3` → `2\frac{1}{3}`,
+  /// `7/3` → `\frac{7}{3}`, `5` → `5`). ASCII, KaTeX-safe.
+  static String _texFraction(String displayText) {
+    final String t = displayText.trim();
+    final int space = t.indexOf(' ');
+    if (space > 0) {
+      final String whole = t.substring(0, space);
+      final List<String> frac = t.substring(space + 1).split('/');
+      return '$whole\\frac{${frac[0]}}{${frac[1]}}';
+    }
+    if (t.contains('/')) {
+      final List<String> frac = t.split('/');
+      return '\\frac{${frac[0]}}{${frac[1]}}';
+    }
+    return t;
+  }
+
+  /// TeX operator for the normalized symbol (`*` → `\times`, `/` → `\div`).
+  static String _texOp(String op) {
+    if (op == '*') {
+      return '\\times';
+    }
+    if (op == '/') {
+      return '\\div';
+    }
+    return op;
+  }
+
   /// Exact → DepEd display (`7/4` → `1 3/4`, `4/2` → `2`).
   static String display(YIFraction f) {
     final YIFraction s = f.simplified();
@@ -256,23 +284,40 @@ class G6FractionEquation extends BaseEquation {
               '${left.value.denominator}; '
               '${right.mixedSource ?? right.improperText} → '
               '${right.value.numerator}/${right.value.denominator}.',
+          latex:
+              '${_texFraction(left.mixedSource ?? left.improperText)} = '
+              '\\frac{${left.value.numerator}}{${left.value.denominator}}, '
+              '\\quad '
+              '${_texFraction(right.mixedSource ?? right.improperText)} = '
+              '\\frac{${right.value.numerator}}{${right.value.denominator}}',
         ),
         StepModel(
           stepNumber: 2,
           title: 'Find the LCD',
           explanation: step2,
+          // The ×/÷ path is prose guidance ("no LCD needed") — no TeX.
+          latex: isAddSub
+              ? '\\frac{${left.value.numerator * (lcd ~/ left.value.denominator)}}'
+                  '{$lcd} $op '
+                  '\\frac{${right.value.numerator * (lcd ~/ right.value.denominator)}}'
+                  '{$lcd}'
+              : null,
         ),
         StepModel(
           stepNumber: 3,
           title: '$opWord the fractions',
           explanation: '${display(left.value)} $op ${display(right.value)} = '
               '${result.numerator}/${result.denominator} before simplifying.',
+          latex: '${_texFraction(display(left.value))} ${_texOp(op)} '
+              '${_texFraction(display(right.value))} = '
+              '\\frac{${result.numerator}}{${result.denominator}}',
         ),
         StepModel(
           stepNumber: 4,
           title: 'Simplify and convert back',
           explanation: 'Simplified: ${display(result)} '
               '(≈ ${CalculatorEngine.formatResult(result.toDouble())}).',
+          latex: _texFraction(display(result)),
         ),
       ];
     } on FormatException catch (e) {

@@ -170,6 +170,42 @@ class G6AlgebraEquation extends BaseEquation {
     return 'multiply';
   }
 
+  /// TeX for the parsed one-step equation as written
+  /// (`x + 7 = 15`, `3n = 21`, `x/4 = 5`). ASCII, KaTeX-safe.
+  static String _equationTex(_AlgebraParsed p) {
+    final String v = p.variable;
+    final String o = G6Format.num(p.operand);
+    final String t = G6Format.num(p.target);
+    String varSide;
+    if (p.op == '*') {
+      varSide = p.operand == 1.0 ? v : '$o$v';
+    } else if (p.op == '/') {
+      varSide = p.varFirst ? '\\frac{$v}{$o}' : '\\frac{$o}{$v}';
+    } else if (p.op == '-') {
+      varSide = p.varFirst ? '$v - $o' : '$o - $v';
+    } else {
+      varSide = '$v + $o';
+    }
+    return p.varOnRight ? '$t = $varSide' : '$varSide = $t';
+  }
+
+  /// TeX for the inverse-operation line that isolates the variable.
+  static String _inverseTex(_AlgebraParsed p) {
+    final String v = p.variable;
+    final String o = G6Format.num(p.operand);
+    final String t = G6Format.num(p.target);
+    if (p.op == '+') {
+      return '$v = $t - $o';
+    }
+    if (p.op == '-') {
+      return p.varFirst ? '$v = $t + $o' : '$v = $o - $t';
+    }
+    if (p.op == '*') {
+      return '$v = \\frac{$t}{$o}';
+    }
+    return p.varFirst ? '$v = $t \\times $o' : '$v = \\frac{$o}{$t}';
+  }
+
   @override
   bool validate() {
     final String? empty = FieldValidators.notEmpty(
@@ -275,18 +311,21 @@ class G6AlgebraEquation extends BaseEquation {
         explanation:
             '${p.variable} is combined with ${G6Format.num(p.operand)} '
             'using ${p.op == '*' ? '×' : p.op}.',
+        latex: _equationTex(p),
       ),
       StepModel(
         stepNumber: 2,
         title: 'Use the inverse operation',
         explanation:
             '${_inverseName(p.op, p.varFirst)} both sides to isolate ${p.variable}.',
+        latex: _inverseTex(p),
       ),
       StepModel(
         stepNumber: 3,
         title: 'Check by substitution',
         explanation:
             '${p.variable} = ${G6Format.num(value)} — substitute back to verify.',
+        latex: '${p.variable} = ${G6Format.num(value)}',
       ),
     ];
   }

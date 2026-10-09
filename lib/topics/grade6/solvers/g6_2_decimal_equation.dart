@@ -118,6 +118,17 @@ class G6DecimalEquation extends BaseEquation {
     return t.split('.')[1].length;
   }
 
+  /// TeX operator for the normalized symbol (`*` → `\times`, `/` → `\div`).
+  static String _texOp(String op) {
+    if (op == '*') {
+      return '\\times';
+    }
+    if (op == '/') {
+      return '\\div';
+    }
+    return op;
+  }
+
   @override
   bool validate() {
     final String? empty = FieldValidators.notEmpty(
@@ -211,7 +222,10 @@ class G6DecimalEquation extends BaseEquation {
           explanation:
               '$opWord as whole numbers first: ${a.replaceAll('.', '')} '
               '$op ${b.replaceAll('.', '')}.',
+          latex: '${a.replaceAll('.', '')} ${_texOp(op)} '
+              '${b.replaceAll('.', '')}',
         ),
+        // Step 2 is prose guidance ("then handle the decimal places") — no TeX.
         StepModel(
           stepNumber: 2,
           title: 'Compute with whole numbers',
@@ -223,6 +237,7 @@ class G6DecimalEquation extends BaseEquation {
           explanation:
               '$a has ${_places(a)} place(s), $b has ${_places(b)} place(s). '
               'Result: ${G6Format.num(value)}.',
+          latex: '$a ${_texOp(op)} $b = ${G6Format.num(value)}',
         ),
         StepModel(
           stepNumber: 4,
@@ -230,6 +245,7 @@ class G6DecimalEquation extends BaseEquation {
           explanation: repeating
               ? 'Exact form ${exact[0]}/${exact[1]} never ends — mark it repeating.'
               : 'Exact form ${exact[0]}/${exact[1]} ends — terminating.',
+          latex: '\\frac{${exact[0]}}{${exact[1]}}',
         ),
       ];
     } on FormatException catch (e) {

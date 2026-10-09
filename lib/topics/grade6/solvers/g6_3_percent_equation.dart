@@ -260,16 +260,21 @@ class G6PercentEquation extends BaseEquation {
             stepNumber: 1,
             title: 'Rate to decimal',
             explanation: '${G6Format.num(p.rate)}% = ${p.rate}/100.',
+            latex:
+                '${G6Format.num(p.rate)}\\% = \\frac{${p.rate}}{100}',
           ),
           StepModel(
             stepNumber: 2,
             title: 'Multiply: P = R × B',
             explanation: 'P = ${p.rate}/100 × ${G6Format.num(p.base)}.',
+            latex: 'P = \\frac{${p.rate}}{100} \\times ${G6Format.num(p.base)}',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Label the answer',
             explanation: 'P = ${G6Format.num(v)}.$warn',
+            // $warn is prose ("rate exceeds 100%") — kept out of the TeX.
+            latex: 'P = ${G6Format.num(v)}',
           ),
         ];
       case _PercentMode.findRate:
@@ -280,17 +285,22 @@ class G6PercentEquation extends BaseEquation {
             title: 'Write the triad',
             explanation:
                 'P = ${G6Format.num(p.part)}, B = ${G6Format.num(p.base)}.',
+            latex: 'P = ${G6Format.num(p.part)}, \\quad '
+                'B = ${G6Format.num(p.base)}',
           ),
           StepModel(
             stepNumber: 2,
             title: 'R = P ÷ B × 100%',
             explanation:
                 'R = ${G6Format.num(p.part)} ÷ ${G6Format.num(p.base)} × 100%.',
+            latex: 'R = ${G6Format.num(p.part)} \\div ${G6Format.num(p.base)} '
+                '\\times 100\\%',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Label the answer',
             explanation: 'R = ${G6Format.num(r)}%.$warn',
+            latex: 'R = ${G6Format.num(r)}\\%',
           ),
         ];
       case _PercentMode.findBase:
@@ -301,16 +311,21 @@ class G6PercentEquation extends BaseEquation {
             title: 'Write the triad',
             explanation:
                 'P = ${G6Format.num(p.part)}, R = ${G6Format.num(p.rate)}%.',
+            latex: 'P = ${G6Format.num(p.part)}, \\quad '
+                'R = ${G6Format.num(p.rate)}\\%',
           ),
           StepModel(
             stepNumber: 2,
             title: 'B = P ÷ R',
             explanation: 'B = ${G6Format.num(p.part)} ÷ ${p.rate}/100.',
+            latex: 'B = ${G6Format.num(p.part)} \\div '
+                '\\frac{${p.rate}}{100}',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Label the answer',
             explanation: 'B = ${G6Format.num(b)}.$warn',
+            latex: 'B = ${G6Format.num(b)}',
           ),
         ];
       case _PercentMode.discount:
@@ -320,17 +335,23 @@ class G6PercentEquation extends BaseEquation {
             stepNumber: 1,
             title: 'Discount to decimal',
             explanation: '${G6Format.num(p.rate)}% = ${p.rate}/100.',
+            latex:
+                '${G6Format.num(p.rate)}\\% = \\frac{${p.rate}}{100}',
           ),
           StepModel(
             stepNumber: 2,
             title: 'Discount amount',
             explanation: '${G6Format.money(p.base)} × ${p.rate}/100 = '
                 '${G6Format.money(p.base * p.rate / 100)}.',
+            // Money fields shown as bare numerals — TeX must stay ASCII.
+            latex: '${G6Format.num(p.base)} \\times \\frac{${p.rate}}{100} = '
+                '${G6Format.num(p.base * p.rate / 100)}',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Subtract from price',
             explanation: 'Sale = ${G6Format.money(sale)}.',
+            latex: '\\text{Sale} = ${G6Format.num(sale)}',
           ),
         ];
       case _PercentMode.tax:
@@ -340,17 +361,23 @@ class G6PercentEquation extends BaseEquation {
             stepNumber: 1,
             title: 'Tax to decimal',
             explanation: '${G6Format.num(p.rate)}% = ${p.rate}/100.',
+            latex:
+                '${G6Format.num(p.rate)}\\% = \\frac{${p.rate}}{100}',
           ),
           StepModel(
             stepNumber: 2,
             title: 'Tax amount',
             explanation: '${G6Format.money(p.base)} × ${p.rate}/100 = '
                 '${G6Format.money(p.base * p.rate / 100)}.',
+            // Money fields shown as bare numerals — TeX must stay ASCII.
+            latex: '${G6Format.num(p.base)} \\times \\frac{${p.rate}}{100} = '
+                '${G6Format.num(p.base * p.rate / 100)}',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Add to price',
             explanation: 'Total = ${G6Format.money(total)}.',
+            latex: '\\text{Total} = ${G6Format.num(total)}',
           ),
         ];
       case _PercentMode.interest:
@@ -362,17 +389,25 @@ class G6PercentEquation extends BaseEquation {
             explanation:
                 'P = ${G6Format.money(p.base)}, R = ${G6Format.num(p.rate)}%, '
                 'T = ${G6Format.num(p.part)}.',
+            // Money field shown as a bare numeral — TeX must stay ASCII.
+            latex: 'P = ${G6Format.num(p.base)}, \\quad '
+                'R = ${G6Format.num(p.rate)}\\%,\\quad '
+                'T = ${G6Format.num(p.part)}',
           ),
           StepModel(
             stepNumber: 2,
             title: 'Rate to decimal',
             explanation: '${G6Format.num(p.rate)}% = ${p.rate}/100.',
+            latex:
+                '${G6Format.num(p.rate)}\\% = \\frac{${p.rate}}{100}',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Multiply and add',
             explanation: 'Interest = ${G6Format.money(interest)}. '
                 'Amount = ${G6Format.money(p.base + interest)}.',
+            latex: '\\text{Interest} = ${G6Format.num(interest)}, \\quad '
+                '\\text{Amount} = ${G6Format.num(p.base + interest)}',
           ),
         ];
     }

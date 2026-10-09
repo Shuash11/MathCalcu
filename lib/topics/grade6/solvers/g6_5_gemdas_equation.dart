@@ -103,6 +103,18 @@ class G6GemdasEquation extends BaseEquation {
     );
   }
 
+  /// TeX for a compact ASCII arithmetic fragment (`2*3 = 6` →
+  /// `2 \cdot 3 = 6`, `2^2 = 4` → `2^{2} = 4`). ASCII, KaTeX-safe.
+  static String _texExpr(String s) {
+    var t = s.replaceAllMapped(
+      RegExp(r'\^(-?\d+(?:\.\d+)?)'),
+      (m) => '^{${m[1]}}',
+    );
+    t = t.replaceAll('*', r' \cdot ');
+    t = t.replaceAll('/', r' \div ');
+    return t;
+  }
+
   @override
   bool validate() {
     final String? empty = FieldValidators.notEmpty(
@@ -178,21 +190,31 @@ class G6GemdasEquation extends BaseEquation {
           stepNumber: 1,
           title: 'G — Grouping first',
           explanation: groups,
+          latex: t.groups.isEmpty
+              ? null
+              : t.groups.map(_texExpr).join(r' \quad '),
         ),
         StepModel(
           stepNumber: 2,
           title: 'E — Exponents next',
           explanation: exponents,
+          latex: t.exponents.isEmpty
+              ? null
+              : t.exponents.map(_texExpr).join(r' \quad '),
         ),
         StepModel(
           stepNumber: 3,
           title: 'M/D — Multiply and divide left to right',
           explanation: mulDiv,
+          latex: t.mulDiv.isEmpty
+              ? null
+              : t.mulDiv.take(3).map(_texExpr).join(r' \quad '),
         ),
         StepModel(
           stepNumber: 4,
           title: 'A/S — Add and subtract left to right',
           explanation: '= ${G6Format.num(t.value)}.',
+          latex: '= ${G6Format.num(t.value)}',
         ),
       ];
     } on FormatException {

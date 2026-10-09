@@ -1,6 +1,32 @@
 // G6 Wave 2 tests: percent, ratio/proportion, rate (speed/best-buy/meter).
+import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/topics/grade6/solvers/grade6_equations.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+
+/// Render [tex] with an explicit recording `onErrorFallback` and assert it was
+/// NOT invoked, i.e. the TeX parses (Phase B technique for the LaTeX waves).
+/// A count/presence-only check cannot catch a parse failure.
+Future<void> _expectTexParses(WidgetTester tester, String tex) async {
+  var fellBack = false;
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: Math.tex(
+          tex,
+          textStyle: const TextStyle(fontSize: 14),
+          onErrorFallback: (e) {
+            fellBack = true;
+            return const SizedBox();
+          },
+        ),
+      ),
+    ),
+  );
+  await tester.pump();
+  expect(fellBack, isFalse, reason: 'TeX failed to parse: $tex');
+}
 
 void main() {
   group('G6-3 percent (M6NS-Ic-131)', () {
@@ -142,6 +168,139 @@ void main() {
     test('reversed meter errors', () {
       expect(G6RateEquation('prev=1380 pres=1250 rate=12').solve().hasError,
           isTrue);
+    });
+  });
+
+  group('G6 wave2 LaTeX emission (Batch 1)', () {
+    test('percent: every step across all six modes carries TeX', () {
+      for (final input in const [
+        '25% of 200',
+        'R=? P=50 B=200',
+        'B=? P=50 R=25%',
+        '500 less 20%',
+        '500 + 12% tax',
+        'P=1000 R=5% T=2',
+      ]) {
+        final steps = G6PercentEquation(input).getSteps();
+        expect(steps, hasLength(3), reason: input);
+        for (final s in steps) {
+          expect(s.latex, isNotNull, reason: '$input — ${s.title}');
+          expect(s.latex!, isNotEmpty, reason: '$input — ${s.title}');
+        }
+      }
+      final of = G6PercentEquation('25% of 200').getSteps();
+      expect(of[1].latex, contains(r'\frac'));
+      expect(of[2].latex, contains('50'));
+    });
+
+    test('ratio: math steps carry TeX, guidance steps stay prose', () {
+      final simplify = G6RatioEquation('12:18').getSteps();
+      expect(simplify, hasLength(4));
+      expect(simplify[3].latex, isNull); // bar-strip guidance
+      for (final i in [0, 1, 2]) {
+        expect(simplify[i].latex, isNotNull, reason: simplify[i].title);
+      }
+      final proportion = G6RatioEquation('3/4 = x/20').getSteps();
+      expect(proportion, hasLength(4));
+      for (final i in [0, 1, 2]) {
+        expect(proportion[i].latex, isNull); // generic prose guidance
+      }
+      expect(proportion[3].latex, isNotNull);
+      final direct = G6RatioEquation('direct x=4 y=12').getSteps();
+      expect(direct[0].latex, contains('y = kx'));
+      expect(direct[1].latex, isNotNull);
+      expect(direct[2].latex, isNull); // "Substitute x to predict y."
+      final inverse = G6RatioEquation('inverse x=4 y=6').getSteps();
+      for (final s in inverse) {
+        expect(s.latex, isNotNull, reason: s.title);
+      }
+      final partitive = G6RatioEquation('divide 120 in 2:3').getSteps();
+      expect(partitive, hasLength(4));
+      expect(partitive[1].latex, isNull);
+      expect(partitive[2].latex, isNotNull);
+      expect(partitive[3].latex, isNull); // "Check the sum" guidance
+    });
+
+    test('algebra: every step carries the equation / inverse / check TeX', () {
+      final cases = {
+        'x + 7 = 15': ['x + 7 = 15', r'x = 15 - 7', 'x = 8'],
+        '3n = 21': ['3n = 21', r'n = \frac{21}{3}', 'n = 7'],
+        'x/4 = 5': [r'\frac{x}{4} = 5', r'x = 5 \times 4', 'x = 20'],
+      };
+      cases.forEach((input, expected) {
+        final steps = G6AlgebraEquation(input).getSteps();
+        expect(steps, hasLength(3), reason: input);
+        for (var i = 0; i < 3; i++) {
+          expect(steps[i].latex, expected[i], reason: '$input step ${i + 1}');
+        }
+      });
+    });
+
+    test('every emitted wave2 TeX line is ASCII (no unicode math)', () {
+      for (final eq in <BaseEquation>[
+        G6PercentEquation('25% of 200'),
+        G6PercentEquation('R=? P=50 B=200'),
+        G6PercentEquation('B=? P=50 R=25%'),
+        G6PercentEquation('500 less 20%'),
+        G6PercentEquation('500 + 12% tax'),
+        G6PercentEquation('P=1000 R=5% T=2'),
+        G6RatioEquation('12:18'),
+        G6RatioEquation('3/4 = x/20'),
+        G6RatioEquation('direct x=4 y=12'),
+        G6RatioEquation('inverse x=4 y=6'),
+        G6RatioEquation('divide 120 in 2:3'),
+        G6AlgebraEquation('x + 7 = 15'),
+        G6AlgebraEquation('3n = 21'),
+        G6AlgebraEquation('x/4 = 5'),
+      ]) {
+        for (final s in eq.getSteps()) {
+          final tex = s.latex;
+          if (tex != null) {
+            expect(tex.contains('²'), isFalse, reason: s.title);
+            expect(tex.contains('π'), isFalse, reason: s.title);
+          }
+          for (final line in s.subLatex ?? const <String>[]) {
+            expect(line.contains('²'), isFalse, reason: s.title);
+            expect(line.contains('π'), isFalse, reason: s.title);
+          }
+        }
+      }
+    });
+
+    testWidgets('every emitted wave2 TeX line parses (recording fallback)',
+        (tester) async {
+      final cases = <BaseEquation>[
+        G6PercentEquation('25% of 200'),
+        G6PercentEquation('R=? P=50 B=200'),
+        G6PercentEquation('B=? P=50 R=25%'),
+        G6PercentEquation('500 less 20%'),
+        G6PercentEquation('500 + 12% tax'),
+        G6PercentEquation('P=1000 R=5% T=2'),
+        G6RatioEquation('12:18'),
+        G6RatioEquation('3/4 = x/20'),
+        G6RatioEquation('direct x=4 y=12'),
+        G6RatioEquation('inverse x=4 y=6'),
+        G6RatioEquation('divide 120 in 2:3'),
+        G6AlgebraEquation('x + 7 = 15'),
+        G6AlgebraEquation('3n = 21'),
+        G6AlgebraEquation('x/4 = 5'),
+      ];
+      var checked = 0;
+      for (final eq in cases) {
+        for (final s in eq.getSteps()) {
+          if (s.latex != null && s.latex!.isNotEmpty) {
+            await _expectTexParses(tester, s.latex!);
+            checked++;
+          }
+          for (final line in s.subLatex ?? const <String>[]) {
+            if (line.trim().isNotEmpty) {
+              await _expectTexParses(tester, line);
+              checked++;
+            }
+          }
+        }
+      }
+      expect(checked, greaterThan(0));
     });
   });
 }

@@ -378,17 +378,27 @@ class G6RatioEquation extends BaseEquation {
             explanation:
                 '${G6Format.num(p.values[0])}:${G6Format.num(p.values[1])} = '
                 '${p.values[0].truncate()}/${p.values[1].truncate()}.',
+            latex: '${G6Format.num(p.values[0])}:${G6Format.num(p.values[1])} '
+                '= \\frac{${p.values[0].truncate()}}'
+                '{${p.values[1].truncate()}}',
           ),
           StepModel(
             stepNumber: 2,
             title: 'Find the GCD',
             explanation: 'GCD is ${s[2]}.',
+            latex: '\\gcd(${p.values[0].truncate()}, '
+                '${p.values[1].truncate()}) = ${s[2]}',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Divide both terms',
             explanation: '${s[0]}:${s[1]}.',
+            latex: '\\frac{${p.values[0].truncate()}}'
+                '{${p.values[1].truncate()}} = '
+                '\\frac{${s[0]}}{${s[1]}}',
           ),
+          // Step 4 is bar-strip visual guidance ("keep the same
+          // proportion") — prose, no TeX.
           StepModel(
             stepNumber: 4,
             title: 'Verify with bar strips',
@@ -418,19 +428,28 @@ class G6RatioEquation extends BaseEquation {
             stepNumber: 4,
             title: 'Verify',
             explanation: '${r.answer}; cross-products match.',
+            latex: r.answer,
           ),
         ];
       case _RatioKind.direct:
+        final double xv = p.values[0];
+        final double yv = p.values[1];
+        final double kv = xv == 0 ? double.nan : yv / xv;
         return [
           const StepModel(
             stepNumber: 1,
             title: 'Direct form y = kx',
             explanation: 'Direct variation passes through the origin.',
+            latex: 'y = kx',
           ),
           StepModel(
             stepNumber: 2,
             title: 'k = y ÷ x',
             explanation: '${solve().answer}.',
+            latex: kv.isFinite
+                ? 'k = \\frac{${G6Format.num(yv)}}{${G6Format.num(xv)}} '
+                    '= ${G6Format.num(kv)}'
+                : null,
           ),
           const StepModel(
             stepNumber: 3,
@@ -439,21 +458,27 @@ class G6RatioEquation extends BaseEquation {
           ),
         ];
       case _RatioKind.inverse:
+        final double xv = p.values[0];
+        final double yv = p.values[1];
         return [
           const StepModel(
             stepNumber: 1,
             title: 'Inverse form xy = k',
             explanation: 'As x grows, y shrinks.',
+            latex: 'xy = k',
           ),
           StepModel(
             stepNumber: 2,
             title: 'k = x × y',
             explanation: '${solve().answer}.',
+            latex: 'k = ${G6Format.num(xv)} \\times ${G6Format.num(yv)} '
+                '= ${G6Format.num(xv * yv)}',
           ),
           const StepModel(
             stepNumber: 3,
             title: 'Use k for new values',
             explanation: 'y = k ÷ x for any new x.',
+            latex: 'y = \\frac{k}{x}',
           ),
         ];
       case _RatioKind.partitive:
@@ -473,6 +498,7 @@ class G6RatioEquation extends BaseEquation {
             stepNumber: 3,
             title: 'Multiply per part',
             explanation: '${r.answer}.',
+            latex: r.answer,
           ),
           const StepModel(
             stepNumber: 4,
