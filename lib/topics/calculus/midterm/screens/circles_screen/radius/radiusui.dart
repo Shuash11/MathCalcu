@@ -40,7 +40,10 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
       context: context,
       title: 'Radius \u2014 Step by Step',
       design: AppDesign.app,
-      child: RadiusStepsCard(steps: _ctrl.result!.steps),
+      child: RadiusStepsCard(
+        steps: _ctrl.result!.steps,
+        stepsLatex: _ctrl.result!.stepsLatex,
+      ),
     );
   }
 

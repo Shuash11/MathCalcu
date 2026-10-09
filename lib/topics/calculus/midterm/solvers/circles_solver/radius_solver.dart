@@ -119,6 +119,30 @@ class RadiusResult {
     }
     return buf.toString();
   }
+
+  /// Per-line LaTeX rendering of [steps] (KaTeX subset) — the SAME numbers in
+  /// the SAME line order. Rendered by the radius step card via
+  /// `SelectableMath.tex`. Avoids unicode superscripts/radicals.
+  List<String> get stepsLatex {
+    final lines = <String>[
+      r'r = \sqrt{(x - h)^{2} + (y - k)^{2}}',
+      'r = \\sqrt{(${_fmt(x, rawX)} - ${_fmt(h, rawH)})^{2} + (${_fmt(y, rawY)} - ${_fmt(k, rawK)})^{2}}',
+      'r = \\sqrt{(${_f(dx)})^{2} + (${_f(dy)})^{2}}',
+      'r = \\sqrt{${_f(dx2)} + ${_f(dy2)}}',
+      'r = \\sqrt{${_f(sum)}}',
+    ];
+    final sumInt = sum.round();
+    final isInteger = (sum - sumInt).abs() < 1e-9;
+    if (isInteger && !_isPerfectSquare(sum)) {
+      final (coeff, radicand) = _simplifyRadical(sum);
+      final exactTex =
+          coeff == 1 ? '\\sqrt{$radicand}' : '$coeff\\sqrt{$radicand}';
+      lines.add('r = $exactTex \\approx ${_f(radius)}');
+    } else {
+      lines.add('r = ${_f(radius)}');
+    }
+    return lines;
+  }
 }
 
 class RadiusSolver {

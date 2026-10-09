@@ -51,7 +51,10 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
       context: context,
       title: 'Center \u2014 Step by Step',
       design: AppDesign.app,
-      child: CenterStepsSection(steps: _controller.result!.steps),
+      child: CenterStepsSection(
+        steps: _controller.result!.steps,
+        stepsLatex: _controller.result!.stepsLatex,
+      ),
     );
   }
 

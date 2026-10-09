@@ -96,8 +96,21 @@ class CenterFraction {
 class CenterResult {
   final CenterFraction h;
   final CenterFraction k;
+
+  /// Pre-formatted multiline solution string (kept for existing consumers).
   final String steps;
-  const CenterResult({required this.h, required this.k, required this.steps});
+
+  /// Per-line LaTeX rendering of [steps] (KaTeX subset), aligned line-for-line
+  /// with [steps] — a blank entry mirrors a blank separator line. Rendered by
+  /// the step section through `SelectableMath.tex`.
+  final List<String> stepsLatex;
+
+  const CenterResult({
+    required this.h,
+    required this.k,
+    required this.steps,
+    required this.stepsLatex,
+  });
 
   String get hExact => h.toString();
   String get kExact => k.toString();
@@ -150,8 +163,36 @@ class CenterSolver {
         'k = $sumY / 2\n'
         'k = ${k.toString()}${_showApprox(k)}';
 
-    return CenterResult(h: h, k: k, steps: steps);
+    // Per-line LaTeX view of the SAME work — same numbers, same line order.
+    // Blank entries mirror the blank separator lines above.
+    final stepsLatex = <String>[
+      r'\text{Midpoint Formula: } C(h,\,k) = \left(\frac{x_{1} + x_{2}}{2},\; \frac{y_{1} + y_{2}}{2}\right)',
+      '',
+      r'h = \frac{x_{1} + x_{2}}{2}',
+      'h = \\frac{${_texFrac(fx1)} + ${_texFrac(fx2)}}{2}',
+      'h = \\frac{${_texFrac(sumX)}}{2}',
+      'h = ${_texFrac(h)}${_approxTex(h)}',
+      '',
+      r'k = \frac{y_{1} + y_{2}}{2}',
+      'k = \\frac{${_texFrac(fy1)} + ${_texFrac(fy2)}}{2}',
+      'k = \\frac{${_texFrac(sumY)}}{2}',
+      'k = ${_texFrac(k)}${_approxTex(k)}',
+    ];
+
+    return CenterResult(h: h, k: k, steps: steps, stepsLatex: stepsLatex);
   }
+
+  /// TeX for a [CenterFraction]: integers as-is (`-3`), proper fractions as
+  /// `\frac{n}{d}` (`\frac{-3}{4}`). Never emits unicode sub/superscripts.
+  static String _texFrac(CenterFraction f) {
+    final sign = f.isNegative ? '-' : '';
+    if (f.isWhole) return '$sign${f.numerator}';
+    return '\\frac{$sign${f.numerator}}{${f.denominator}}';
+  }
+
+  /// ` \approx <decimal>` when [f] is not whole, else an empty string.
+  static String _approxTex(CenterFraction f) =>
+      f.isWhole ? '' : ' \\approx ${CenterResult._decimalApprox(f)}';
 
   static String _showApprox(CenterFraction f) {
     if (f.isWhole) return '';
