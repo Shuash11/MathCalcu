@@ -175,6 +175,53 @@ class M13TopologyEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    String? topLatex;
+    List<String>? topSub;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final data = r.customData!.first;
+      final kind = p[0] as String;
+      final extra = p[4] as String;
+      String setTex;
+      if (kind == 'named') {
+        setTex = switch (extra) {
+          'R' => '\\mathbb{R}',
+          'Q' => '\\mathbb{Q}',
+          'Z' => '\\mathbb{Z}',
+          '∅' => '\\emptyset',
+          _ => '\\text{finite set}',
+        };
+      } else {
+        final lc = p[1] as bool;
+        final rc = p[2] as bool;
+        final ends = extra.split(',');
+        String fmt(String s) {
+          final d = double.tryParse(s);
+          if (d == null) return s;
+          if (d.isInfinite) return d > 0 ? '+\\infty' : '-\\infty';
+          return d == d.roundToDouble() ? d.toInt().toString() : '$d';
+        }
+
+        setTex = '${lc ? '[' : '('}${fmt(ends[0])}, ${fmt(ends[1])}'
+            '${rc ? ']' : ')'}';
+      }
+      final open = data['open'] == true;
+      final closed = data['closed'] == true;
+      final compact = data['compact'] == true;
+      final connected = data['connected'] == true;
+      final tag = (open && closed)
+          ? 'clopen'
+          : open
+              ? 'open'
+              : closed
+                  ? 'closed'
+                  : 'neither open nor closed';
+      topLatex = setTex;
+      topSub = [
+        '\\text{$tag}',
+        '\\text{${compact ? 'compact' : 'not compact'}, '
+            '${connected ? 'connected' : 'disconnected'}}',
+      ];
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -187,7 +234,9 @@ class M13TopologyEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Read the classification',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: topLatex,
+          subLatex: topSub),
     ];
   }
 }

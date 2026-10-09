@@ -142,6 +142,34 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    String? decLatex;
+    List<String>? decSub;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final data = r.customData!.first;
+      final n = data['n'] as int;
+      final op = data['op'] as String;
+      final query = data['query'] as String;
+      final holds = data['holds'] == true;
+      final prime = data['prime'] == true;
+      final units = data['units'];
+      decLatex = (query == 'ring' || query == 'field')
+          ? '(\\mathbb{Z}_{$n}, +, \\times)'
+          : '(\\mathbb{Z}_{$n}, ${op == '+' ? '+' : '\\times'})';
+      final desc = <String>[];
+      if (query == 'ring') {
+        desc.add('\\text{commutative ring}');
+        if (prime) desc.add('\\text{field (n prime)}');
+      } else if (query == 'field') {
+        desc.add(holds ? '\\text{field}' : '\\text{not a field}');
+      } else if (query == 'units') {
+        desc.add('\\text{units } \\varphi($n) = $units');
+      } else {
+        desc.add(op == '+'
+            ? '\\text{abelian group of order } $n'
+            : (holds ? '\\text{trivial group}' : '\\text{monoid, not a group}'));
+      }
+      decSub = desc;
+    }
     return [
       StepModel(
           stepNumber: 1,
@@ -157,7 +185,9 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Decide',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: decLatex,
+          subLatex: decSub),
     ];
   }
 }

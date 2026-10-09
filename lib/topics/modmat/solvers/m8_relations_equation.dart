@@ -143,6 +143,30 @@ class M8RelationsEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    String? relLatex;
+    List<String>? relSub;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final data = r.customData!.first;
+      final u = (data['universe'] as List).cast<String>();
+      final pairs = (data['pairs'] as List)
+          .map((e) => (e as List).cast<String>())
+          .toList();
+      final props = (data['properties'] as Map).cast<String, bool>();
+      final kind = data['classification'] as String;
+      final setTex = '\\{${u.join(', ')}\\}';
+      final pairsTex = pairs.isEmpty
+          ? '\\emptyset'
+          : '\\{${pairs.map((p) => '(${p[0]}, ${p[1]})').join(', ')}\\}';
+      final propTex = props.entries
+          .map((e) => '${e.key}: ${e.value ? 'yes' : 'no'}')
+          .join(', ');
+      relLatex = 'R \\subseteq $setTex \\times $setTex';
+      relSub = [
+        'R = $pairsTex',
+        '\\text{$propTex}',
+        '\\text{$kind}',
+      ];
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -157,7 +181,9 @@ class M8RelationsEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Classify',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: relLatex,
+          subLatex: relSub),
     ];
   }
 }

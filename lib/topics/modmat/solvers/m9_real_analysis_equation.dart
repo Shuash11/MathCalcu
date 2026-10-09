@@ -204,6 +204,30 @@ class M9RealAnalysisEquation extends BaseEquation {
     );
   }
 
+  /// TeX for a polynomial map {degree: coeff} → e.g. `2n + 1`, `n^{2} - 3`.
+  static String _texPoly(Map<int, double> p) {
+    final degs = p.keys.toList()..sort((a, b) => b.compareTo(a));
+    final parts = <String>[];
+    for (final d in degs) {
+      final c = p[d]!;
+      if (c == 0) continue;
+      final a = c.abs();
+      final lit =
+          (a == a.roundToDouble() && a < 1e12) ? a.toInt().toString() : '$a';
+      String term;
+      if (d == 0) {
+        term = lit;
+      } else {
+        final nn = d == 1 ? 'n' : 'n^{$d}';
+        term = lit == '1' ? nn : '$lit$nn';
+      }
+      parts.add(parts.isEmpty
+          ? (c < 0 ? '-$term' : term)
+          : (c < 0 ? ' - $term' : ' + $term'));
+    }
+    return parts.isEmpty ? '0' : parts.join();
+  }
+
   static String _fmt(double v) {
     if (v == v.roundToDouble() && v.abs() < 1e12) return v.toInt().toString();
     return v
@@ -224,6 +248,28 @@ class M9RealAnalysisEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    final num = p[0] as Map<int, double>;
+    final den = p[1] as Map<int, double>?;
+    final bodyTex = den == null
+        ? _texPoly(num)
+        : '\\frac{${_texPoly(num)}}{${_texPoly(den)}}';
+    String? valTex;
+    if (den == null) {
+      final d = _deg(num);
+      valTex =
+          d == 0 ? _fmt(num[0]!) : (num[d]! > 0 ? '+\\infty' : '-\\infty');
+    } else {
+      final dn = _deg(num);
+      final dd = _deg(den);
+      if (dn < dd) {
+        valTex = '0';
+      } else if (dn > dd) {
+        valTex = (num[dn]! / den[dd]!) > 0 ? '+\\infty' : '-\\infty';
+      } else {
+        valTex = _fmt(num[dn]! / den[dd]!);
+      }
+    }
+    final limitLatex = '\\lim_{n \\to \\infty} $bodyTex = $valTex';
     return [
       const StepModel(
           stepNumber: 1,
@@ -237,7 +283,8 @@ class M9RealAnalysisEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Read the limit',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: r.hasError ? null : limitLatex),
     ];
   }
 }

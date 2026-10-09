@@ -81,6 +81,39 @@ class M12ProofEquation extends BaseEquation {
         _ => 'Σk (k=1..n)',
       };
 
+  // ── Static TeX helpers (additive; parsing is untouched) ──────────────
+  /// Generic series identity, e.g. `\sum_{k=1}^{n} k`.
+  static String _seriesTex(String id) => switch (id) {
+        'k2' => '\\sum_{k=1}^{n} k^{2}',
+        'k3' => '\\sum_{k=1}^{n} k^{3}',
+        'pow2' => '\\sum_{k=1}^{n} 2^{k}',
+        _ => '\\sum_{k=1}^{n} k',
+      };
+
+  /// Closed form in n, e.g. `\frac{n(n + 1)}{2}`.
+  static String _formulaTex(String id) => switch (id) {
+        'k2' => '\\frac{n(n + 1)(2n + 1)}{6}',
+        'k3' => '[\\frac{n(n + 1)}{2}]^{2}',
+        'pow2' => '2^{n + 1} - 2',
+        _ => '\\frac{n(n + 1)}{2}',
+      };
+
+  /// Series with an explicit upper limit (a literal or `n`).
+  static String _sumTex(String id, String upper) => switch (id) {
+        'k2' => '\\sum_{k=1}^{$upper} k^{2}',
+        'k3' => '\\sum_{k=1}^{$upper} k^{3}',
+        'pow2' => '\\sum_{k=1}^{$upper} 2^{k}',
+        _ => '\\sum_{k=1}^{$upper} k',
+      };
+
+  /// Closed form with n substituted, e.g. `\frac{5(5 + 1)}{2}`.
+  static String _instFormulaTex(String id, int n) => switch (id) {
+        'k2' => '\\frac{$n($n + 1)(2 \\cdot $n + 1)}{6}',
+        'k3' => '[\\frac{$n($n + 1)}{2}]^{2}',
+        'pow2' => '2^{$n + 1} - 2',
+        _ => '\\frac{$n($n + 1)}{2}',
+      };
+
   @override
   bool validate() {
     final empty =
@@ -146,21 +179,32 @@ class M12ProofEquation extends BaseEquation {
     }
     final r = solve();
     final id = p[0] as String;
+    final n = p[1] as int;
+    final v = _values(id, n);
+    final baseTex = '${_sumTex(id, '1')} = ${_instFormulaTex(id, 1)} = '
+        '${_direct(id, 1)}';
+    final instTex = '${_sumTex(id, '$n')} = ${_instFormulaTex(id, n)} = ${v[0]}';
     return [
       StepModel(
           stepNumber: 1,
           title: 'Base case n = 1',
           explanation:
-              'LHS = 1 (or 2 for 2^k); RHS ${_formula(id)} at n=1 matches.'),
-      const StepModel(
+              'LHS = 1 (or 2 for 2^k); RHS ${_formula(id)} at n=1 matches.',
+          latex: r.hasError ? null : baseTex,
+          subLatex: r.hasError
+              ? null
+              : ['${_seriesTex(id)} = ${_formulaTex(id)}']),
+      StepModel(
           stepNumber: 2,
           title: 'Inductive step',
           explanation: 'Assume P(k), add the (k+1)-th term, '
-              'factor to the formula at k+1.'),
+              'factor to the formula at k+1.',
+          latex: r.hasError ? null : 'P(k) \\implies P(k + 1)'),
       StepModel(
           stepNumber: 3,
           title: 'Numeric instance',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: r.hasError ? null : instTex),
     ];
   }
 }

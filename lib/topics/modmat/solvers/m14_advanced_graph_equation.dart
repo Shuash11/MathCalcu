@@ -288,6 +288,48 @@ class M14AdvancedGraphEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    String? advLatex;
+    List<String>? advSub;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final data = r.customData!.first;
+      final q = data['query'] as String;
+      if (q == 'bipartite') {
+        final bip = data['bipartite'] == true;
+        advLatex = '\\chi(G) \\leq 2';
+        advSub = ['\\text{${bip ? 'bipartite' : 'not bipartite'}}'];
+      } else if (q == 'color') {
+        final chi = data['colors'];
+        advLatex = '\\chi(G) \\leq $chi';
+        advSub = [
+          '\\text{colors } [${(data['assignment'] as List).join(', ')}]'
+        ];
+      } else if (q == 'planar') {
+        final m = data['m'];
+        final nn = data['n'] as int;
+        final ok = data['passesBound'] == true;
+        advLatex = '|E| = $m ${ok ? '\\leq' : '>'} 3|V| - 6 = ${3 * nn - 6}';
+        advSub = ['\\text{${ok ? 'passes' : 'violates'} planarity bound}'];
+      } else if (q == 'shortest') {
+        final path = (data['path'] as List?)?.cast<int>();
+        final src = data['src'];
+        final dst = data['dst'];
+        if (path == null) {
+          advLatex = 'd($src, $dst) = \\infty';
+          advSub = ['\\text{no path}'];
+        } else {
+          advLatex = 'd($src, $dst) = ${path.length - 1}';
+          advSub = [path.join(' \\to ')];
+        }
+      } else {
+        final chi = data['colors'];
+        final bip = data['bipartite'] == true;
+        advLatex = '\\chi(G) \\leq $chi';
+        advSub = [
+          '|V| = ${data['n']}, |E| = ${data['m']}',
+          '\\text{${bip ? 'bipartite' : 'not bipartite'}}',
+        ];
+      }
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -302,7 +344,9 @@ class M14AdvancedGraphEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Read the answer',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: advLatex,
+          subLatex: advSub),
     ];
   }
 }

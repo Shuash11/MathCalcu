@@ -152,6 +152,21 @@ class M11GraphBasicsEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    String? gbLatex;
+    List<String>? gbSub;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final data = r.customData!.first;
+      final n = data['n'];
+      final m = data['m'];
+      final degs = (data['degrees'] as List).cast<int>();
+      final sumDeg = degs.fold<int>(0, (a, b) => a + b);
+      gbLatex = '\\sum_{v} \\deg(v) = $sumDeg = 2|E|';
+      gbSub = [
+        '\\deg(v) = [${degs.join(', ')}]',
+        '|V| = $n, |E| = $m',
+        '\\text{${data['euler']}}',
+      ];
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -166,7 +181,9 @@ class M11GraphBasicsEquation extends BaseEquation {
       StepModel(
           stepNumber: 3,
           title: 'Tree + Euler read-off',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: gbLatex,
+          subLatex: gbSub),
     ];
   }
 }
