@@ -2,6 +2,7 @@ import 'derivatives_answer_card.dart';
 import 'derivatives_input_field.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_solver.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/expr_to_latex.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
@@ -9,6 +10,7 @@ import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 
 class DerivativeScreen extends StatefulWidget {
@@ -131,13 +133,38 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                 title: step.title,
                 description: step.explanation.split('\n').firstOrNull ?? '',
                 design: AppDesign.app,
-                mathContent: Text(
-                  step.expression.toString(),
-                  style: TextStyle(color: FinalsTheme.primaryFor(context)),
+                mathContent: Builder(
+                  builder: (ctx) => _buildStepMath(ctx, step.expression),
                 ),
               );
             }),
         ],
+      ),
+    );
+  }
+
+  /// Render a step's expression as LaTeX, following the family pattern
+  /// (Expr -> TeX via the shared converter, horizontal scroll safety, and
+  /// a readable onErrorFallback that never shows a red error box).
+  Widget _buildStepMath(BuildContext context, String expr) {
+    final tex = exprToLatex(expr);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Math.tex(
+        tex,
+        textStyle: TextStyle(
+          fontSize: 14,
+          color: FinalsTheme.primaryFor(context),
+        ),
+        mathStyle: MathStyle.text,
+        onErrorFallback: (err) => Text(
+          expr,
+          style: TextStyle(
+            fontSize: 14,
+            color: FinalsTheme.primaryFor(context),
+            fontStyle: FontStyle.italic,
+          ),
+        ),
       ),
     );
   }

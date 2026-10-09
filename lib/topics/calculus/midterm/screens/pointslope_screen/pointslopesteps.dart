@@ -76,22 +76,6 @@ class PointSlopeSteps extends StatelessWidget {
         ),
       );
 
-  Widget _mathText(BuildContext context, String text) {
-    final color = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white.withValues(alpha: 0.85)
-        : Colors.black87;
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 13,
-        height: 1.6,
-        color: color,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'monospace',
-      ),
-    );
-  }
-
   Widget _buildDualPanel({
     required String leftLabel,
     required String leftLatex,
@@ -225,7 +209,16 @@ class PointSlopeSteps extends StatelessWidget {
           stepNumber: 1,
           title: 'Identify given values',
           description: 'Step 1',
-          mathContent: _mathText(context, 'Point:  ($x1, $y1)\nSlope:  m = $m'),
+          mathContent: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _mathLatex(context,
+                  r'\text{Point: } (x_1,\;y_1) = (' '$x1' r',\;' '$y1' r')'),
+              const SizedBox(height: 4),
+              _mathLatex(context, r'm = ' '$m'),
+            ],
+          ),
         ),
         SolutionStepCard(
           design: AppDesign.app,

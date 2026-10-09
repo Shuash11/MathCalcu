@@ -50,7 +50,15 @@ class SlopeSteps extends StatelessWidget {
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
-        mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
+        mathContent: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _mathLatex(context, r'A = (x_1,\;y_1) = (' '$x1s' r',\;' '$y1s' r')'),
+            const SizedBox(height: 4),
+            _mathLatex(context, r'B = (x_2,\;y_2) = (' '$x2s' r',\;' '$y2s' r')'),
+          ],
+        ),
       ),
       SolutionStepCard(
         design: AppDesign.app,
@@ -90,7 +98,15 @@ class SlopeSteps extends StatelessWidget {
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
-        mathContent: _mathText(context, 'A = ($x1s, $y1s)\nB = ($x2s, $y2s)'),
+        mathContent: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _mathLatex(context, r'A = (x_1,\;y_1) = (' '$x1s' r',\;' '$y1s' r')'),
+            const SizedBox(height: 4),
+            _mathLatex(context, r'B = (x_2,\;y_2) = (' '$x2s' r',\;' '$y2s' r')'),
+          ],
+        ),
       ),
       SolutionStepCard(
         design: AppDesign.app,
@@ -127,8 +143,15 @@ class SlopeSteps extends StatelessWidget {
         stepNumber: 1,
         title: 'Identify points',
         description: 'Step 1',
-        mathContent: _mathText(context,
-            'A = ($x1s, $y1s)  →  (x1, y1)\nB = ($x2s, $y2s)  →  (x2, y2)'),
+        mathContent: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _mathLatex(context, r'A = (x_1,\;y_1) = (' '$x1s' r',\;' '$y1s' r')'),
+            const SizedBox(height: 4),
+            _mathLatex(context, r'B = (x_2,\;y_2) = (' '$x2s' r',\;' '$y2s' r')'),
+          ],
+        ),
       ),
       SolutionStepCard(
         design: AppDesign.app,
@@ -220,22 +243,6 @@ class SlopeSteps extends StatelessWidget {
           ),
         ),
       );
-
-  Widget _mathText(BuildContext context, String text) {
-    final color = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white.withValues(alpha: 0.85)
-        : Colors.black87;
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 13,
-        height: 1.6,
-        color: color,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'monospace',
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

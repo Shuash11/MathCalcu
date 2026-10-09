@@ -18,6 +18,7 @@ import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_deriv
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/slope_using_derivatives_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
@@ -255,6 +256,33 @@ void main() {
       }
 
       handle.dispose();
+    });
+  });
+
+  group('Converted step bodies render math widgets', () {
+    testWidgets(
+        'derivatives step bodies render Math widgets in the steps modal',
+        (tester) async {
+      await _pump(tester, const MaterialApp(home: DerivativeScreen()));
+
+      await tester.enterText(find.byType(TextField), 'x^2 + 3*x');
+      // _solve shows the answer card after its 400ms UI-feel delay.
+      await tester.tap(find.text('Solver'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump();
+
+      // Open the steps modal, then assert each step expression is rendered
+      // through the LaTeX path (a Math widget) instead of a plain Text.
+      await tester.tap(find.text('Show Steps'));
+      await tester.pumpAndSettle();
+
+      final modalMath = find.descendant(
+        of: find.byType(DraggableScrollableSheet),
+        matching: find.byType(Math),
+      );
+      expect(modalMath, findsWidgets);
+      expect(tester.takeException(), isNull);
     });
   });
 }

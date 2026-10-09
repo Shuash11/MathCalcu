@@ -15,7 +15,6 @@ class StepSection {
   final String guide;
   final StepKind kind;
   final String? latexContent;
-  final String? plainContent;
   final String? leftLabel;
   final String? rightLabel;
   final String? leftLatex;
@@ -24,17 +23,12 @@ class StepSection {
   const StepSection.single({
     required this.stepLabel,
     required this.guide,
-    this.latexContent,
-    this.plainContent,
+    required this.latexContent,
   })  : kind = StepKind.single,
         leftLabel = null,
         rightLabel = null,
         leftLatex = null,
-        rightLatex = null,
-        assert(
-          latexContent != null || plainContent != null,
-          'Single step needs latexContent or plainContent.',
-        );
+        rightLatex = null;
 
   const StepSection.dual({
     required this.stepLabel,
@@ -44,8 +38,7 @@ class StepSection {
     required String this.leftLatex,
     required String this.rightLatex,
   })  : kind = StepKind.dual,
-        latexContent = null,
-        plainContent = null;
+        latexContent = null;
 }
 
 class _StepBuilder {
@@ -82,8 +75,10 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify endpoints',
-        plainContent: 'A = ($x1s,  $y1s)   ?   (x1, y1)\n'
-            'B = ($x2s,  $y2s)   ?   (x2, y2)',
+        latexContent: r'\begin{aligned}'
+            'A &= (' '$x1s' r',\;' '$y1s' r') \to (x_1,\;y_1) \\'
+            'B &= (' '$x2s' r',\;' '$y2s' r') \to (x_2,\;y_2)'
+            r'\end{aligned}',
       ),
 
       // -- Step 2 ----------------------------------------------------------
@@ -202,9 +197,11 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify given values',
-        plainContent: 'M = ($xms,  $yms)   ?   midpoint\n'
-            'A = ($x1s,  $y1s)   ?   known endpoint\n'
-            'B = (x2, y2)      ?   find this',
+        latexContent: r'\begin{aligned}'
+            'M &= (' '$xms' r',\;' '$yms' r') \quad \text{(midpoint)} \\'
+            'A &= (' '$x1s' r',\;' '$y1s' r') \quad \text{(known endpoint)} \\'
+            r'B &= (x_2,\;y_2) \quad \text{(find this)}'
+            r'\end{aligned}',
       ),
 
       // -- Step 2 ----------------------------------------------------------
@@ -672,30 +669,16 @@ class _SingleMathBox extends StatelessWidget {
           color: const Color(0xFF334155).withValues(alpha: 0.2),
         ),
       ),
-      child: step.latexContent != null
-          ? SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SelectableMath.tex(
-                step.latexContent!,
-                textStyle: TextStyle(
-                  fontSize: fontSize,
-                  color: context.watch<ThemeProvider>().textPrimary,
-                ),
-              ),
-            )
-          : Text(
-              step.plainContent!,
-              style: TextStyle(
-                fontSize: isSmall ? 12 : 13,
-                height: 1.75,
-                color: context
-                    .watch<ThemeProvider>()
-                    .textPrimary
-                    .withValues(alpha: 0.5),
-                fontWeight: FontWeight.w500,
-                fontFamily: 'monospace',
-              ),
-            ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SelectableMath.tex(
+          step.latexContent!,
+          textStyle: TextStyle(
+            fontSize: fontSize,
+            color: context.watch<ThemeProvider>().textPrimary,
+          ),
+        ),
+      ),
     );
   }
 }
