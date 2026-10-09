@@ -4,8 +4,17 @@
 // plain monospace Text; they now render through each screen's LaTeX path
 // (SelectableMath.tex). No other test renders these step widgets directly,
 // so this file pumps them and asserts (a) the converted bodies produce math
-// widgets and (b) the former monospace Text is gone.
+// widgets, (b) the former monospace Text is gone, and (c) the emitted TeX
+// actually PARSES.
+//
+// (c) matters because SelectableMath is a StatelessWidget whose build returns
+// the `onErrorFallback` widget on a parse error, so a body that fails to parse
+// still counts as a SelectableMath: the count/gone assertions alone cannot
+// catch a parse-failure regression. The parse assertions below drive an
+// explicit `onErrorFallback` that records invocation (asserting it was NOT
+// invoked) and, for the live widgets, check `SelectableMath.parseException`.
 import 'package:calculus_system/theme/theme_provider.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/expr_to_latex.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/midpoint_screen/midpointsteps.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/pointslope_screen/pointslopesteps.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/slope_screen/slope_steps.dart';
@@ -26,6 +35,44 @@ Future<void> _pump(WidgetTester tester, Widget child) async {
     ),
   );
   await tester.pump();
+}
+
+/// Assert every [SelectableMath] currently in the tree parsed successfully.
+/// A parse failure is only visible via `parseException` (the widget then
+/// builds its fallback), so this is the direct guard against a body that
+/// silently fails to parse. Must be called before any re-pump.
+void _expectAllRenderedMathParsed(WidgetTester tester) {
+  final math = tester.widgetList<SelectableMath>(find.byType(SelectableMath));
+  expect(math, isNotEmpty);
+  for (final m in math) {
+    expect(
+      m.parseException,
+      isNull,
+      reason: 'a rendered SelectableMath failed to parse: ${m.parseException}',
+    );
+  }
+}
+
+/// Render [tex] with an explicit `onErrorFallback` and assert it was NOT
+/// invoked, i.e. the TeX parses. Replaces the current widget tree.
+Future<void> _expectTexParses(WidgetTester tester, String tex) async {
+  var fellBack = false;
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: Math.tex(
+          tex,
+          textStyle: const TextStyle(fontSize: 14),
+          onErrorFallback: (e) {
+            fellBack = true;
+            return const SizedBox();
+          },
+        ),
+      ),
+    ),
+  );
+  await tester.pump();
+  expect(fellBack, isFalse, reason: 'TeX failed to parse: $tex');
 }
 
 void main() {
@@ -57,6 +104,13 @@ void main() {
       // The former plain-text body is gone.
       expect(find.text('A = (1, 2)\nB = (3, 4)'), findsNothing);
       expect(tester.takeException(), isNull);
+      // Every rendered body must actually parse (not fall back).
+      _expectAllRenderedMathParsed(tester);
+
+      // The step-1 point lines, rendered directly through a recording
+      // onErrorFallback, must parse.
+      await _expectTexParses(tester, r'A = (x_1,\;y_1) = (1,\;2)');
+      await _expectTexParses(tester, r'B = (x_2,\;y_2) = (3,\;4)');
     });
   });
 
@@ -81,6 +135,12 @@ void main() {
       // The former plain-text body is gone.
       expect(find.text('Point:  (1, 3)\nSlope:  m = 2'), findsNothing);
       expect(tester.takeException(), isNull);
+      _expectAllRenderedMathParsed(tester);
+
+      // The step-1 point/slope lines must parse.
+      await _expectTexParses(
+          tester, r'\text{Point: } (x_1,\;y_1) = (1,\;3)');
+      await _expectTexParses(tester, r'm = 2');
     });
   });
 
@@ -106,6 +166,38 @@ void main() {
       // The former plain-text body is gone.
       expect(find.textContaining('(x1, y1)'), findsNothing);
       expect(tester.takeException(), isNull);
+      _expectAllRenderedMathParsed(tester);
+
+      // The step-1 \begin{aligned} block must parse (a broken `\\` or an
+      // unterminated environment still renders as a SelectableMath and would
+      // otherwise slip past the count assertion).
+      await _expectTexParses(
+        tester,
+        r'\begin{aligned}'
+        r'A &= (1,\;2) \to (x_1,\;y_1) \\'
+        r'B &= (3,\;4) \to (x_2,\;y_2)'
+        r'\end{aligned}',
+      );
+    });
+  });
+
+  group('exprToLatex function/radical transforms parse (Phase B2)', () {
+    testWidgets('ln/sqrt/sin and the app hint input emit parseable TeX',
+        (tester) async {
+      const exprs = [
+        'ln(x)',
+        'sqrt(x)',
+        'sin(x)',
+        'x^2 + 3x + ln(x)', // the derivatives screen's own hint example
+        'cos(x)',
+        'tan(x)',
+        'exp(x)',
+        'sqrt(x + 1)',
+        'sqrt(x) + sin(x)',
+      ];
+      for (final expr in exprs) {
+        await _expectTexParses(tester, exprToLatex(expr));
+      }
     });
   });
 }

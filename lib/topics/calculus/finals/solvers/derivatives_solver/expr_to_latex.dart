@@ -69,17 +69,58 @@ String exprToLatex(String expr) {
       RegExp(r'(?<![\^])([a-zA-Z0-9\)])-([a-zA-Z0-9\(])'),
       (m) => '${m[1]} - ${m[2]}');
 
+  // Radicals: `sqrt(...)` needs a *matched* brace pair, so rewrite it with
+  // the paren-matching helpers. (The former `sqrt(` -> `\sqrt{` replaceAll
+  // kept the closing ')' and produced an unterminated brace that failed to
+  // parse: `sqrt(x)` -> `\sqrt{x)`.)
+  result = _convertSqrt(result);
+
+  // `sqrt` shorthand without parentheses (e.g. `sqrtx`, `sqrt2`).
   result = result
-      .replaceAll('sqrt(', r'\sqrt{')
       .replaceAllMapped(RegExp(r'sqrt([a-zA-Z])'), (m) => '\\sqrt{${m[1]}}')
-      .replaceAllMapped(RegExp(r'sqrt(\d+)'), (m) => '\\sqrt{${m[1]}}')
-      .replaceAll('sin(', r'\sin{')
-      .replaceAll('cos(', r'\cos{')
-      .replaceAll('tan(', r'\tan{')
-      .replaceAll('ln(', r'\ln{')
-      .replaceAll('exp(', r'\exp{');
+      .replaceAllMapped(RegExp(r'sqrt(\d+)'), (m) => '\\sqrt{${m[1]}}');
+
+  // Named functions: KaTeX's valid shape KEEPS the paren (`\sin(x)`). The
+  // former `\sin{` form left the closing paren behind and failed to parse:
+  // `sin(x)` -> `\sin{x)`.
+  result = result
+      .replaceAll('sin(', r'\sin(')
+      .replaceAll('cos(', r'\cos(')
+      .replaceAll('tan(', r'\tan(')
+      .replaceAll('ln(', r'\ln(')
+      .replaceAll('exp(', r'\exp(');
 
   return result;
+}
+
+/// Rewrite `sqrt(<balanced>)` as `\sqrt{<balanced>}` using [_findMatchingClose]
+/// so the emitted radical has a matched brace pair. A nested `sqrt(` inside
+/// the radicand is handled recursively.
+///
+/// If a `sqrt(` has no matching close paren it is left verbatim: `sqrt(x`
+/// renders as the literal letters `sqrt` followed by `(`, which still parses
+/// in the KaTeX subset, whereas an unterminated `\sqrt{` would not.
+String _convertSqrt(String expr) {
+  const marker = 'sqrt(';
+  final buffer = StringBuffer();
+  int i = 0;
+  while (i < expr.length) {
+    if (expr.startsWith(marker, i)) {
+      final openPos = i + marker.length - 1; // index of the '('
+      final closePos = _findMatchingClose(expr, openPos);
+      if (closePos != -1) {
+        final inner = expr.substring(i + marker.length, closePos);
+        buffer.write(r'\sqrt{');
+        buffer.write(_convertSqrt(inner));
+        buffer.write('}');
+        i = closePos + 1;
+        continue;
+      }
+    }
+    buffer.write(expr[i]);
+    i++;
+  }
+  return buffer.toString();
 }
 
 String _convertMultiplication(String expr) {

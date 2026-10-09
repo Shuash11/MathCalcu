@@ -191,24 +191,28 @@ class DerivativeAnswerCard extends StatelessWidget {
 
   Widget _buildLatex(String tex, BuildContext ctx) {
     if (tex.isEmpty) return const SizedBox.shrink();
-    try {
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SelectableMath.tex(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SelectableMath.tex(
+        tex,
+        textStyle: TextStyle(
+          fontSize: 18,
+          color: FinalsTheme.primaryFor(ctx),
+          fontWeight: FontWeight.w800,
+        ),
+        // flutter_math_fork catches parse errors internally and routes them
+        // through `onErrorFallback`, so an explicit fallback is the only way
+        // to show readable text instead of the default red error box (a
+        // try/catch around SelectableMath.tex can never fire).
+        onErrorFallback: (err) => Text(
           tex,
-          textStyle: TextStyle(
+          style: TextStyle(
             fontSize: 18,
             color: FinalsTheme.primaryFor(ctx),
             fontWeight: FontWeight.w800,
           ),
         ),
-      );
-    } catch (e) {
-      return Text(tex,
-          style: TextStyle(
-              fontSize: 18,
-              color: FinalsTheme.primaryFor(ctx),
-              fontWeight: FontWeight.w800));
-    }
+      ),
+    );
   }
 }

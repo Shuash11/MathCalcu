@@ -11,6 +11,7 @@
 import 'dart:math' as math;
 
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_solver.dart';
+import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/expr_to_latex.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 double evalAt(Expr e, String v, double x) {
@@ -178,6 +179,48 @@ void main() {
     test('d/dx 2**x is 2^x ln(2)', () {
       final d = DerivativeSolver.solve('2**x', 'x');
       expect(evalAt(d, 'x', 1), closeTo(2 * math.log(2), 1e-6));
+    });
+  });
+
+  // Phase B2: exact-output pins for the exprToLatex function/radical
+  // transforms. Previously `ln(x)` -> `\ln{x)` and `sqrt(x)` -> `\sqrt{x)`
+  // (unterminated braces -> parse failure). These assertions fail loudly if a
+  // future edit reintroduces a brace-opening transform that drops the paren.
+  group('exprToLatex function/radical transforms (Phase B2)', () {
+    test('ln(x) keeps the paren (valid KaTeX shape)', () {
+      expect(exprToLatex('ln(x)'), r'\ln(x)');
+    });
+
+    test('sqrt(x) uses a matched brace pair', () {
+      expect(exprToLatex('sqrt(x)'), r'\sqrt{x}');
+    });
+
+    test('sin(x) keeps the paren', () {
+      expect(exprToLatex('sin(x)'), r'\sin(x)');
+    });
+
+    test('sibling transforms cos/tan/exp keep the paren', () {
+      expect(exprToLatex('cos(x)'), r'\cos(x)');
+      expect(exprToLatex('tan(x)'), r'\tan(x)');
+      expect(exprToLatex('exp(x)'), r'\exp(x)');
+    });
+
+    test('radicand with operators is braced as a whole', () {
+      expect(exprToLatex('sqrt(x + 1)'), r'\sqrt{x  +  1}');
+    });
+
+    test('mixed drain: the app hint input x^2 + 3x + ln(x)', () {
+      expect(exprToLatex('x^2 + 3x + ln(x)'), r'x^{2}  +  3x  +  \ln(x)');
+    });
+
+    test('previously-working transforms are unchanged', () {
+      expect(exprToLatex('x^2 + 3*x'), r'x^{2}  +  3x');
+      expect(exprToLatex('d/dx x^2'), r'\frac{d}{dx}  x^{2}');
+      expect(exprToLatex("f'(x)"), "f'(x)");
+      expect(exprToLatex('[x+1]'), r'\left[ x + 1 \right]');
+      expect(exprToLatex('a*b/c'), r'a\cdot \frac{b}{c}');
+      expect(exprToLatex('(x+1)/(x-2)'), r'\frac{x + 1}{x - 2}');
+      expect(exprToLatex('x^(-1)'), r'x^{-1}');
     });
   });
 }
