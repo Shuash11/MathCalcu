@@ -39,6 +39,7 @@ dependencies:
   crypto: ^3.0.6
   http: ^1.2.0
   url_launcher: ^6.2.0
+  # held at ^8.0.0: 9.x+ requires AGP>=8.12.1 / Gradle>=8.13 / Kotlin>=2.2.0 (repo has 8.9.1 / 8.11.1 / 2.1.0); see docs/plans/ph-grade6-college-enhancement-plan.md
   package_info_plus: ^8.0.0
   path_provider: ^2.1.0
 

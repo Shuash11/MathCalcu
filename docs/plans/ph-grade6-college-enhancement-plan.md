@@ -316,6 +316,11 @@ Parallelism: 1+2 can start together; 3 after 2; 4+5 overlap by topic; 6 after 5 
 
 **Next step:** Start with Tasks 1–3 (placeholders, registry skeleton, search) — unlocks Waves 1–2 without blocking solver work. Then Wave 1 (G6-1..G6-3).
 
+**Deferred dependency upgrades:**
+- `package_info_plus` 9.x/10.x HELD at `^8.0.0` — blocked by the Android build-toolchain floor: 9.x+ needs AGP>=8.12.1 / Gradle>=8.13 / Kotlin>=2.2.0, repo has 8.9.1 / 8.11.1 / 2.1.0.
+- Zero functional gain (app uses only `PackageInfo.version`); Dart side verified clean (10.2.2 resolves, no source change needed) but the release-path Android APK build is unverifiable locally.
+- REVISIT TRIGGER: refresh `android/settings.gradle` + `gradle-wrapper.properties` + Kotlin in lockstep with the pinned Flutter SDK (Flutter 3.47.6's own template already defaults to AGP 9.1.0 / Gradle 9.3.1 / KGP 2.4.0, which clears the floor without an ad-hoc bump).
+
 ---
 
 *Generated for build agents. Keep file paths `lib/`-relative. Update status to `In Progress` when Tasks 1–3 start.*
