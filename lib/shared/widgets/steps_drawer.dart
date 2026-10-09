@@ -1,4 +1,5 @@
 import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/shared/utils/latex_text.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:material_ui/material_ui.dart';
@@ -43,36 +44,49 @@ class StepsDrawer extends StatefulWidget {
 class _StepsDrawerState extends State<StepsDrawer> {
   final Set<int> _expanded = {};
 
-  String _buildCopyText() {
-    final buf = StringBuffer();
-    for (final s in widget.steps) {
-      if (s.latex != null && s.latex!.isNotEmpty) {
-        buf.writeln(_stripLatex(s.latex!));
-      }
-    }
-    return buf.toString();
+  String _buildCopyText() => buildCopyText(widget.steps);
+
+  /// Plain-text fallback for a math line whose TeX is malformed:
+  /// the stripped TeX when that yields anything readable, else the
+  /// step's title/explanation (so a broken formula is never blank
+  /// and is never a red error box).
+  String _latexFallbackText(StepModel s, String tex) {
+    final stripped = stripLatex(tex);
+    if (stripped.isNotEmpty) return stripped;
+    return [
+      if (s.title.isNotEmpty) s.title,
+      if (s.explanation.isNotEmpty) s.explanation,
+    ].join(' — ');
   }
 
-  String _stripLatex(String s) {
-    s = s.replaceAllMapped(
-        RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}'), (m) => '${m[1]}/${m[2]}');
-    s = s
-        .replaceAll(r'\lvert ', '|')
-        .replaceAll(r'\lvert', '|')
-        .replaceAll(r'\rvert ', '|')
-        .replaceAll(r'\rvert', '|')
-        .replaceAll(r'\infty', '\u221e')
-        .replaceAll(r'\cup', '\u222a')
-        .replaceAll(r'\neq', '\u2260')
-        .replaceAll(r'\geq', '\u2265')
-        .replaceAll(r'\leq', '\u2264')
-        .replaceAll(r'\emptyset', '\u2205')
-        .replaceAll(r'\Downarrow', '')
-        .replaceAll(r'\downarrow', '');
-    s = s.replaceAllMapped(RegExp(r'\\text\{([^}]*)\}'), (m) => m[1] ?? '');
-    s = s.replaceAll(RegExp(r'[\{\}]'), '');
-    return s.trim();
-  }
+  /// Non-blank render for a step whose content is prose (no latex):
+  /// the step's title (math-weight, same 16px/1.5 rhythm as the math),
+  /// then its explanation when present — so a latex-less step is never
+  /// an empty box.
+  List<Widget> _plainStepFacts(StepModel s, ThemeProvider theme) => [
+        if (s.title.isNotEmpty)
+          Text(
+            s.title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: theme.textPrimary,
+              height: 1.5,
+            ),
+          ),
+        if (s.explanation.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.only(top: s.title.isNotEmpty ? 4 : 0),
+            child: Text(
+              s.explanation,
+              style: TextStyle(
+                fontSize: 13,
+                color: theme.textSecondary,
+                height: 1.45,
+              ),
+            ),
+          ),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +219,8 @@ class _StepsDrawerState extends State<StepsDrawer> {
                         final hasDetails =
                             s.details != null && s.details!.isNotEmpty;
                         final isExpanded = _expanded.contains(i);
+                        final hasLatex =
+                            s.latex != null && s.latex!.trim().isNotEmpty;
 
                         return Padding(
                           padding: EdgeInsets.only(bottom: last ? 0 : 16),
@@ -247,27 +263,43 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      SelectableMath.tex(
-                                        s.latex ?? '',
-                                        mathStyle: MathStyle.text,
-                                        textStyle: TextStyle(
-                                          fontSize: 16,
-                                          color: theme.textPrimary,
-                                          height: 1.5,
-                                        ),
-                                      ),
+                                      if (hasLatex)
+                                        _DrawerMath(
+                                          s.latex!,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: theme.textPrimary,
+                                            height: 1.5,
+                                          ),
+                                          fallback: Text(
+                                            _latexFallbackText(s, s.latex!),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: theme.textPrimary,
+                                              height: 1.5,
+                                            ),
+                                          ),
+                                        )
+                                      else ..._plainStepFacts(s, theme),
                                       if (s.subLatex != null &&
                                           s.subLatex!.isNotEmpty)
                                         ...s.subLatex!.map((l) => Padding(
                                               padding:
                                                   const EdgeInsets.only(top: 8),
-                                              child: SelectableMath.tex(
+                                              child: _DrawerMath(
                                                 l,
-                                                mathStyle: MathStyle.text,
-                                                textStyle: TextStyle(
+                                                style: TextStyle(
                                                   fontSize: 16,
                                                   color: theme.textPrimary,
                                                   height: 1.5,
+                                                ),
+                                                fallback: Text(
+                                                  _latexFallbackText(s, l),
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: theme.textPrimary,
+                                                    height: 1.5,
+                                                  ),
                                                 ),
                                               ),
                                             )),
@@ -370,21 +402,20 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                                                   const SizedBox(
                                                                       width: 6),
                                                                   Expanded(
-                                                                    child:
-                                                                        SelectableMath
-                                                                            .tex(
+                                                                    child: _DrawerMath(
                                                                       d,
-                                                                      mathStyle:
-                                                                          MathStyle
-                                                                              .text,
-                                                                      textStyle:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            13,
-                                                                        color: theme
-                                                                            .textSecondary,
-                                                                        height:
-                                                                            1.6,
+                                                                      style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        color: theme.textSecondary,
+                                                                        height: 1.6,
+                                                                      ),
+                                                                      fallback: Text(
+                                                                        _latexFallbackText(s, d),
+                                                                        style: TextStyle(
+                                                                          fontSize: 13,
+                                                                          color: theme.textSecondary,
+                                                                          height: 1.6,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
@@ -413,6 +444,32 @@ class _StepsDrawerState extends State<StepsDrawer> {
           ),
         );
       },
+    );
+  }
+}
+
+/// KaTeX math wrapped in a [FittedBox] so long TeX scales down instead
+/// of overflowing the drawer, with a plain-text [fallback] so malformed
+/// TeX renders readable text instead of a red error box.
+/// (Same proven pattern as StepList's private `_StepMath`.)
+class _DrawerMath extends StatelessWidget {
+  final String tex;
+  final TextStyle style;
+  final Widget fallback;
+
+  const _DrawerMath(this.tex, {required this.style, required this.fallback});
+
+  @override
+  Widget build(BuildContext context) {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: SelectableMath.tex(
+        tex,
+        mathStyle: MathStyle.text,
+        textStyle: style,
+        onErrorFallback: (_) => fallback,
+      ),
     );
   }
 }

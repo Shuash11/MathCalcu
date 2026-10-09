@@ -21,6 +21,7 @@
 // Styling via ThemeProvider only. Offline (pure-Dart solvers).
 // ─────────────────────────────────────────────────────────────
 import 'package:calculus_system/core/step_model.dart';
+import 'package:calculus_system/shared/utils/latex_text.dart' as latex_text;
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'dart:ui' show SemanticsRole;
 import 'package:material_ui/material_ui.dart';
@@ -35,42 +36,13 @@ class StepList extends StatefulWidget {
   /// Plain-text copy of the walkthrough for clipboard affordances:
   /// latex steps copy stripped math (never raw TeX commands), plain
   /// steps copy their title + explanation.
-  static String buildCopyText(List<StepModel> steps) {
-    final buf = StringBuffer();
-    for (final s in steps) {
-      final line = s.latex != null && s.latex!.isNotEmpty
-          ? stripLatex(s.latex!)
-          : [
-              if (s.title.isNotEmpty) s.title,
-              if (s.explanation.isNotEmpty) s.explanation,
-            ].join(' — ');
-      if (line.isNotEmpty) buf.writeln(line);
-    }
-    return buf.toString();
-  }
+  static String buildCopyText(List<StepModel> steps) =>
+      latex_text.buildCopyText(steps);
 
   /// Strips TeX commands from [s], leaving readable plain-text math.
-  /// Ported from StepsDrawer's `_stripLatex` strip list.
-  static String stripLatex(String s) {
-    s = s.replaceAllMapped(
-        RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}'), (m) => '${m[1]}/${m[2]}');
-    s = s
-        .replaceAll(r'\lvert ', '|')
-        .replaceAll(r'\lvert', '|')
-        .replaceAll(r'\rvert ', '|')
-        .replaceAll(r'\rvert', '|')
-        .replaceAll(r'\infty', '\u221e')
-        .replaceAll(r'\cup', '\u222a')
-        .replaceAll(r'\neq', '\u2260')
-        .replaceAll(r'\geq', '\u2265')
-        .replaceAll(r'\leq', '\u2264')
-        .replaceAll(r'\emptyset', '\u2205')
-        .replaceAll(r'\Downarrow', '')
-        .replaceAll(r'\downarrow', '');
-    s = s.replaceAllMapped(RegExp(r'\\text\{([^}]*)\}'), (m) => m[1] ?? '');
-    s = s.replaceAll(RegExp(r'[\{\}]'), '');
-    return s.trim();
-  }
+  /// Delegates to the shared implementation in latex_text.dart (kept as
+  /// a public entry point so existing callers/tests are unaffected).
+  static String stripLatex(String s) => latex_text.stripLatex(s);
 
   @override
   State<StepList> createState() => _StepListState();

@@ -2,6 +2,7 @@ import 'package:calculus_system/calculator/calculator_screen.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/home/widgets/home_card.dart';
 import 'package:calculus_system/screens/about_sheets.dart';
+import 'package:calculus_system/shared/utils/latex_text.dart';
 import 'package:calculus_system/shared/widgets/module_card.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/shared/widgets/steps_drawer.dart';
@@ -468,6 +469,72 @@ void main() {
       expect(find.text('Number copied!'), findsOneWidget);
       expect(tester.takeException(), isNull);
       Navigator.of(tester.element(find.byType(Scaffold))).pop();
+      await tester.pumpAndSettle();
+    }
+  });
+
+  testWidgets(
+      'steps drawer renders a latex-less step as prose, never a blank box',
+      (WidgetTester tester) async {
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      await tester.pumpWidget(_app(const SizedBox(), theme));
+      showStepsDrawer(
+        context: tester.element(find.byType(Scaffold)),
+        steps: const [
+          StepModel(
+            stepNumber: 1,
+            title: 'Add 5 to both sides',
+            explanation: 'Isolate the x term before dividing by 2.',
+          ),
+        ],
+        accentColor: theme.accentColor,
+        title: 'Steps',
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('1 steps'), findsOneWidget);
+      // The regression: a latex-less step used to render an empty box.
+      expect(find.text('Add 5 to both sides'), findsOneWidget);
+      expect(find.text('Isolate the x term before dividing by 2.'),
+          findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.bySemanticsLabel('Close solution steps'));
+      await tester.pumpAndSettle();
+    }
+  });
+
+  testWidgets(
+      'steps drawer shows readable plain text for malformed TeX, never a red box',
+      (WidgetTester tester) async {
+    const malformed = r'\frac{1}{';
+    final expected = stripLatex(malformed);
+    expect(expected, isNotEmpty); // the fallback must not itself be blank;
+
+    for (final isDark in [false, true]) {
+      final theme = _theme(isDark);
+      await tester.pumpWidget(_app(const SizedBox(), theme));
+      showStepsDrawer(
+        context: tester.element(find.byType(Scaffold)),
+        steps: const [
+          StepModel(
+            stepNumber: 1,
+            title: 'Malformed step',
+            latex: malformed,
+          ),
+        ],
+        accentColor: theme.accentColor,
+        title: 'Steps',
+      );
+      await tester.pumpAndSettle();
+
+      // The broken formula renders its stripped plain text via
+      // onErrorFallback — not a red error box, and no thrown exception.
+      expect(find.text(expected), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.bySemanticsLabel('Close solution steps'));
       await tester.pumpAndSettle();
     }
   });
