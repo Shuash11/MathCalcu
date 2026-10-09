@@ -150,6 +150,22 @@ class RelatedRatesEquation extends BaseEquation {
             explanation: r.errorMessage ?? '')
       ];
     }
+    String? optTex;
+    if (r.customData != null && r.customData!.isNotEmpty) {
+      final d = r.customData!.first;
+      final mode = d['mode'] as String;
+      if (mode == 'sum-constraint') {
+        optTex =
+            'x = ${G6Format.num((d['x'] as num).toDouble())},\\quad y = ${G6Format.num((d['y'] as num).toDouble())},\\quad xy = ${G6Format.num((d['max'] as num).toDouble())}';
+      } else if (mode == 'rectangle') {
+        final side = (d['side'] as num).toDouble();
+        optTex =
+            '\\text{Square } ${G6Format.num(side)} \\times ${G6Format.num(side)},\\quad A = ${G6Format.num((d['area'] as num).toDouble())}';
+      } else if (mode == 'sphere') {
+        optTex =
+            '\\frac{dV}{dt} = ${G6Format.num((d['dv'] as num).toDouble())},\\quad \\frac{dA}{dt} = ${G6Format.num((d['da'] as num).toDouble())}';
+      }
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -160,7 +176,11 @@ class RelatedRatesEquation extends BaseEquation {
           stepNumber: 2,
           title: 'Derivative = 0',
           explanation: 'Critical point where the rate vanishes (vertex).'),
-      StepModel(stepNumber: 3, title: 'Optimum', explanation: r.answer),
+      StepModel(
+          stepNumber: 3,
+          title: 'Optimum',
+          explanation: r.answer,
+          latex: optTex),
       const StepModel(
           stepNumber: 4,
           title: 'Second-derivative check',

@@ -152,6 +152,38 @@ class InverseFunctionEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    String? invTex;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final d = r.customData!.first;
+      final type = d['type'] as String;
+      if (type == 'linear') {
+        final a = (d['a'] as num).toDouble();
+        final b = (d['b'] as num).toDouble();
+        invTex = b.abs() < 1e-12
+            ? 'f^{-1}(x) = \\frac{x}{${G6Format.num(a)}}'
+            : 'f^{-1}(x) = \\frac{x ${b > 0 ? '-' : '+'} ${G6Format.num(b.abs())}}{${G6Format.num(a)}}';
+      } else {
+        final a = (d['a'] as num).toDouble();
+        final b = (d['b'] as num).toDouble();
+        final c = (d['c'] as num).toDouble();
+        final dd = (d['d'] as num).toDouble();
+        String texLin(double coef, String v, {bool first = false}) {
+          if (coef.abs() < 1e-12) return '';
+          final mag = G6Format.num(coef.abs());
+          final body = mag == '1' ? v : '$mag$v';
+          if (first) return coef < 0 ? '-$body' : body;
+          return coef < 0 ? ' - $body' : ' + $body';
+        }
+
+        final numTex =
+            '${texLin(dd, 'x', first: true)}${b.abs() < 1e-12 ? '' : (b > 0 ? ' - ${G6Format.num(b)}' : ' + ${G6Format.num(b.abs())}')}'
+                .trim();
+        final denTex =
+            '${texLin(c, 'x', first: true)}${a.abs() < 1e-12 ? '' : (a > 0 ? ' - ${G6Format.num(a)}' : ' + ${G6Format.num(a.abs())}')}'
+                .trim();
+        invTex = 'f^{-1}(x) = \\frac{$numTex}{$denTex}';
+      }
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -165,7 +197,11 @@ class InverseFunctionEquation extends BaseEquation {
           stepNumber: 3,
           title: 'Solve for y',
           explanation: 'Isolate y with inverse operations.'),
-      StepModel(stepNumber: 4, title: 'Inverse + check', explanation: r.answer),
+      StepModel(
+          stepNumber: 4,
+          title: 'Inverse + check',
+          explanation: r.answer,
+          latex: invTex),
     ];
   }
 }

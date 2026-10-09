@@ -197,6 +197,27 @@ class TrigRatioEquation extends BaseEquation {
             explanation: r.errorMessage ?? (_error ?? 'Use sin 30°.'))
       ];
     }
+    String? ratioTex;
+    if (r.customData != null && r.customData!.isNotEmpty) {
+      final d = r.customData!.first;
+      final mode = d['mode'] as String;
+      if (mode == 'ratio') {
+        final fn = d['fn'] as String;
+        final cmd = fn == 'sin'
+            ? '\\sin'
+            : fn == 'cos'
+                ? '\\cos'
+                : '\\tan';
+        ratioTex =
+            '$cmd(${G6Format.num((d['deg'] as num).toDouble())}^{\\circ}) = ${G6Format.num((d['value'] as num).toDouble())}';
+      } else if (mode == 'angle') {
+        ratioTex =
+            '\\theta = ${G6Format.num((d['deg'] as num).toDouble())}^{\\circ}';
+      } else {
+        ratioTex =
+            '\\theta = ${G6Format.num((d['theta'] as num).toDouble())}^{\\circ}';
+      }
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -206,7 +227,11 @@ class TrigRatioEquation extends BaseEquation {
           stepNumber: 2,
           title: 'Pick the ratio with two knowns',
           explanation: 'The hypotenuse is always the longest side.'),
-      StepModel(stepNumber: 3, title: 'Solve', explanation: r.answer),
+      StepModel(
+          stepNumber: 3,
+          title: 'Solve',
+          explanation: r.answer,
+          latex: ratioTex),
     ];
   }
 }

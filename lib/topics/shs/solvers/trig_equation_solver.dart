@@ -145,6 +145,36 @@ class TrigEquationSolver extends BaseEquation {
       ];
     }
     final r = solve();
+    String? solTex;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final sols = (r.customData!.first['radians'] as List)
+          .map((e) => (e as num).toDouble())
+          .toList();
+      String texPi(double rad) {
+        const denoms = [6, 4, 3, 2, 1];
+        for (final d in denoms) {
+          final n = (rad * d / math.pi).round();
+          if ((rad - n * math.pi / d).abs() < 1e-9 && n.abs() <= 4 * d) {
+            if (n == 0) return '0';
+            if (d == 1) {
+              return n == 1
+                  ? '\\pi'
+                  : n == -1
+                      ? '-\\pi'
+                      : '$n\\pi';
+            }
+            final g = _gcd(n.abs(), d);
+            final nn = n ~/ g, dd = d ~/ g;
+            if (nn == 1 && dd == 1) return '\\pi';
+            if (dd == 1) return '$nn\\pi';
+            return nn == 1 ? '\\frac{\\pi}{$dd}' : '\\frac{$nn\\pi}{$dd}';
+          }
+        }
+        return G6Format.num(rad);
+      }
+
+      solTex = 'x = ${sols.map(texPi).join(', ')}';
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -155,7 +185,10 @@ class TrigEquationSolver extends BaseEquation {
           title: 'Quadrants by sign',
           explanation: 'sin + in I/II, cos + in I/IV, tan + in I/III.'),
       StepModel(
-          stepNumber: 3, title: 'Solutions on [0, 2π)', explanation: r.answer),
+          stepNumber: 3,
+          title: 'Solutions on [0, 2π)',
+          explanation: r.answer,
+          latex: solTex),
     ];
   }
 }

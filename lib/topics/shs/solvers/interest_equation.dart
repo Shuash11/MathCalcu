@@ -201,12 +201,48 @@ class InterestEquation extends BaseEquation {
             : mode == 'annuity'
                 ? 'FV = R[((1+i)^n − 1)/i], PV = R[(1 − (1+i)^−n)/i]'
                 : 'PMT = Li/(1 − (1+i)^−n)';
+    final formulaTex = mode == 'simple'
+        ? r'I = Prt,\quad F = P + I'
+        : mode == 'compound'
+            ? r'F = P(1 + \frac{r}{m})^{mt}'
+            : mode == 'annuity'
+                ? r'FV = R\,\frac{(1+i)^{n} - 1}{i},\quad PV = R\,\frac{1 - (1+i)^{-n}}{i}'
+                : r'PMT = \frac{Li}{1 - (1+i)^{-n}}';
+    String? computeTex;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final d = r.customData!.first;
+      switch (mode) {
+        case 'simple':
+          computeTex =
+              'I = ${G6Format.num((d['interest'] as num).toDouble())},\\quad F = ${G6Format.num((d['total'] as num).toDouble())}';
+          break;
+        case 'compound':
+          computeTex = 'F = ${G6Format.num((d['fv'] as num).toDouble())}';
+          break;
+        case 'annuity':
+          final pv = d['pv'];
+          computeTex = pv == null
+              ? 'FV = ${G6Format.num((d['fv'] as num).toDouble())}'
+              : 'FV = ${G6Format.num((d['fv'] as num).toDouble())},\\quad PV = ${G6Format.num((pv as num).toDouble())}';
+          break;
+        default: // loan
+          computeTex =
+              'PMT = ${G6Format.num((d['payment'] as num).toDouble())}';
+      }
+    }
     return [
-      StepModel(stepNumber: 1, title: 'Formula', explanation: formula),
+      StepModel(
+          stepNumber: 1,
+          title: 'Formula',
+          explanation: formula,
+          latex: formulaTex),
       const StepModel(
           stepNumber: 2, title: 'Rate as decimal', explanation: '5% → 0.05.'),
       StepModel(
-          stepNumber: 3, title: 'Substitute + compute', explanation: r.answer),
+          stepNumber: 3,
+          title: 'Substitute + compute',
+          explanation: r.answer,
+          latex: computeTex),
     ];
   }
 }

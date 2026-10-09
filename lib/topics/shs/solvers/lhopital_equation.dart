@@ -177,6 +177,10 @@ class LHopitalEquation extends BaseEquation {
       ];
     }
     final d = r.customData!.first as Map;
+    final fp = (d['fPrime'] as num).toDouble();
+    final gp = (d['gPrime'] as num).toDouble();
+    final a = (d['a'] as num).toDouble();
+    final lim = (d['limit'] as num).toDouble();
     return [
       const StepModel(
           stepNumber: 1,
@@ -185,9 +189,15 @@ class LHopitalEquation extends BaseEquation {
       StepModel(
           stepNumber: 2,
           title: "Differentiate top and bottom",
-          explanation:
-              'f′ ≈ ${G6Format.num((d['fPrime'] as num).toDouble())}, g′ ≈ ${G6Format.num((d['gPrime'] as num).toDouble())}.'),
-      StepModel(stepNumber: 3, title: 'Limit of f′/g′', explanation: r.answer),
+          explanation: 'f′ ≈ ${G6Format.num(fp)}, g′ ≈ ${G6Format.num(gp)}.',
+          latex:
+              "f'(a) \\approx ${G6Format.num(fp)},\\quad g'(a) \\approx ${G6Format.num(gp)}"),
+      StepModel(
+          stepNumber: 3,
+          title: 'Limit of f′/g′',
+          explanation: r.answer,
+          latex:
+              '\\lim_{x \\to ${G6Format.num(a)}} \\frac{f(x)}{g(x)} = ${G6Format.num(lim)}'),
       const StepModel(
           stepNumber: 4,
           title: 'Sanity check',

@@ -209,6 +209,13 @@ class RationalInequalityEquation extends BaseEquation {
       ];
     }
     final r = solve();
+    String? secTex;
+    if (!r.hasError) {
+      final notn = r.intervalNotation ?? '';
+      secTex = notn == '∅'
+          ? '\\emptyset'
+          : notn.replaceAll('∞', '\\infty').replaceAll('∪', '\\cup ');
+    }
     return [
       const StepModel(
           stepNumber: 1,
@@ -224,7 +231,10 @@ class RationalInequalityEquation extends BaseEquation {
           title: 'Sign chart',
           explanation: 'Test each interval between critical points.'),
       StepModel(
-          stepNumber: 4, title: 'Solution intervals', explanation: r.answer),
+          stepNumber: 4,
+          title: 'Solution intervals',
+          explanation: r.answer,
+          latex: secTex),
     ];
   }
 }

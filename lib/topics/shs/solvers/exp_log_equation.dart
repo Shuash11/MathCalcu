@@ -228,6 +228,18 @@ class ExpLogEquation extends BaseEquation {
     }
     final r = solve();
     final isExp = p[0] == 'exp';
+    String? solveTex;
+    if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
+      final d = r.customData!.first;
+      final mode = d['mode'] as String;
+      if (mode == 'log-sum') {
+        final roots =
+            (d['roots'] as List).map((e) => (e as num).toDouble()).toList();
+        solveTex = 'x = ${roots.map(G6Format.num).join(', ')}';
+      } else {
+        solveTex = 'x = ${G6Format.num((d['root'] as num).toDouble())}';
+      }
+    }
     return [
       StepModel(
           stepNumber: 1,
@@ -240,11 +252,15 @@ class ExpLogEquation extends BaseEquation {
           title: isExp ? 'Take logs' : 'Condense the logs',
           explanation: isExp
               ? 'x = (log_b(RHS) − k)/m.'
-              : 'log_b A + log_b B = log_b(AB), then exponentiate.'),
+              : 'log_b A + log_b B = log_b(AB), then exponentiate.',
+          latex: isExp
+              ? r'x = \frac{\log_{b}(\text{RHS}) - k}{m}'
+              : r'\log_{b} A + \log_{b} B = \log_{b}(AB)'),
       StepModel(
           stepNumber: 3,
           title: 'Solve the resulting equation',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer),
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: solveTex),
       const StepModel(
           stepNumber: 4,
           title: 'Verify domain',

@@ -49,6 +49,40 @@ class TrigIdentityEquation extends BaseEquation {
     ],
   };
 
+  /// LaTeX for the math-bearing outline steps (null = deliberate prose step).
+  static const _texByTemplate = <String, List<String?>>{
+    'pythagorean': [
+      r'x = \cos\theta,\quad y = \sin\theta',
+      r'x^{2} + y^{2} = 1',
+      r'\sin^{2}\theta + \cos^{2}\theta = 1',
+    ],
+    'tangent': [
+      r'\tan\theta = \frac{\sin\theta}{\cos\theta}',
+      r'\sin^{2}\theta + \cos^{2}\theta = 1',
+      r'\tan^{2}\theta + 1 = \sec^{2}\theta',
+    ],
+    'double-angle-sin': [
+      r'\sin(\alpha + \beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta',
+      r'\alpha = \beta = \theta',
+      r'\sin 2\theta = 2\sin\theta\cos\theta',
+    ],
+    'double-angle-cos': [
+      r'\cos(\alpha + \beta) = \cos\alpha\cos\beta - \sin\alpha\sin\beta',
+      r'\cos 2\theta = \cos^{2}\theta - \sin^{2}\theta',
+      r'\cos 2\theta = 2\cos^{2}\theta - 1 = 1 - 2\sin^{2}\theta',
+    ],
+    'reciprocal': [
+      r'\sec\theta = \frac{1}{\cos\theta},\quad \csc\theta = \frac{1}{\sin\theta},\quad \cot\theta = \frac{1}{\tan\theta}',
+      null,
+      null,
+    ],
+    'quotient': [
+      r'\tan\theta = \frac{\sin\theta}{\cos\theta},\quad \cot\theta = \frac{\cos\theta}{\sin\theta}',
+      null,
+      null,
+    ],
+  };
+
   String _norm() => rawInput
       .toLowerCase()
       .replaceAll(' ', '')
@@ -245,12 +279,16 @@ class TrigIdentityEquation extends BaseEquation {
     final data = r.customData!.first as Map;
     final steps = (data['steps'] as List?)?.cast<String>() ??
         ['Both sides agree at sample angles.'];
+    final texSteps = _texByTemplate[data['template'] as String?];
     return [
       for (var i = 0; i < steps.length; i++)
         StepModel(
             stepNumber: i + 1,
             title: i == steps.length - 1 ? 'Conclusion' : 'Step ${i + 1}',
-            explanation: steps[i]),
+            explanation: steps[i],
+            latex: (texSteps != null && i < texSteps.length)
+                ? texSteps[i]
+                : null),
     ];
   }
 }

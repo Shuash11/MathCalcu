@@ -190,6 +190,18 @@ class IntegralSubEquation extends BaseEquation {
             explanation: r.errorMessage ?? '')
       ];
     }
+    String? antiTex;
+    if (r.customData != null && r.customData!.isNotEmpty) {
+      final d = r.customData!.first;
+      if (isDef) {
+        antiTex =
+            '\\text{Area} = ${G6Format.num((d['area'] as num).toDouble())}';
+      } else {
+        final f = d['f'] as String;
+        final anti = d['antiderivative'] as String;
+        antiTex = '\\int $f\\,dx = $anti';
+      }
+    }
     if (isDef) {
       return [
         const StepModel(
@@ -197,7 +209,10 @@ class IntegralSubEquation extends BaseEquation {
             title: 'FTC setup',
             explanation: 'Area = F(b) − F(a); shade above the x-axis.'),
         StepModel(
-            stepNumber: 2, title: 'Antiderivative', explanation: r.answer),
+            stepNumber: 2,
+            title: 'Antiderivative',
+            explanation: r.answer,
+            latex: antiTex),
         const StepModel(
             stepNumber: 3,
             title: 'Evaluate + numeric check',
@@ -212,9 +227,13 @@ class IntegralSubEquation extends BaseEquation {
       const StepModel(
           stepNumber: 2,
           title: 'Rewrite in u',
-          explanation: 'Integrate the power: ∫u^n du = u^(n+1)/(n+1).'),
+          explanation: 'Integrate the power: ∫u^n du = u^(n+1)/(n+1).',
+          latex: r'\int u^{n}\,du = \frac{u^{n+1}}{n+1}'),
       StepModel(
-          stepNumber: 3, title: 'Back-substitute + C', explanation: r.answer),
+          stepNumber: 3,
+          title: 'Back-substitute + C',
+          explanation: r.answer,
+          latex: antiTex),
     ];
   }
 }
