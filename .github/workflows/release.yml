@@ -28,7 +28,7 @@ env:
   EXPECTED_VERSION: ${{ inputs.expected_version }}
   EXPECTED_BUILD: ${{ inputs.expected_build }}
   EXPECTED_TAG: v${{ inputs.expected_version }}
-  FLUTTER_VERSION: 3.41.6
+  FLUTTER_VERSION: 3.47.6
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:

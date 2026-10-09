@@ -48,7 +48,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.41.6'
+          flutter-version: '3.47.6'
 
       - name: Assert exact checkout provenance
         shell: bash
@@ -207,7 +207,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.41.6'
+          flutter-version: '3.47.6'
 
       - name: Assert exact checkout provenance
         shell: bash
@@ -280,7 +280,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.41.6'
+          flutter-version: '3.47.6'
 
       - name: Assert exact checkout provenance
         shell: bash
