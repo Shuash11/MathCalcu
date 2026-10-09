@@ -96,6 +96,43 @@ class G6IntegerEquation extends BaseEquation {
     };
   }
 
+  /// TeX operator for a normalized arithmetic symbol (ASCII, KaTeX-safe).
+  static String _opTex(String op) {
+    if (op == '*') {
+      return '\\times';
+    }
+    if (op == '/') {
+      return '\\div';
+    }
+    return op;
+  }
+
+  /// TeX relation for a normalized compare operator.
+  static String _relTex(String op) {
+    if (op == '<=') {
+      return '\\le';
+    }
+    if (op == '>=') {
+      return '\\ge';
+    }
+    return op;
+  }
+
+  /// TeX for the arithmetic line the solver computes (`-5 + 8 = 3`).
+  static String _lineTex(_IntParsed p) {
+    late final double value;
+    if (p.op == '+') {
+      value = (p.a + p.b).toDouble();
+    } else if (p.op == '-') {
+      value = (p.a - p.b).toDouble();
+    } else if (p.op == '*') {
+      value = (p.a * p.b).toDouble();
+    } else {
+      value = p.a / p.b;
+    }
+    return '${p.a} ${_opTex(p.op)} ${p.b} = ${G6Format.num(value)}';
+  }
+
   @override
   bool validate() {
     final String? empty = FieldValidators.notEmpty(
@@ -207,6 +244,7 @@ class G6IntegerEquation extends BaseEquation {
           stepNumber: 1,
           title: 'Locate on the number line',
           explanation: 'Mark ${p.a} and ${p.b} on the line.',
+          latex: '${p.a}, ${p.b}',
         ),
         const StepModel(
           stepNumber: 2,
@@ -217,11 +255,13 @@ class G6IntegerEquation extends BaseEquation {
           stepNumber: 3,
           title: 'Count the steps',
           explanation: 'Distance between them is ${(p.a - p.b).abs()} steps.',
+          latex: '\\left|${p.a} - ${p.b}\\right| = ${(p.a - p.b).abs()}',
         ),
         StepModel(
           stepNumber: 4,
           title: 'Apply the sign rule',
           explanation: '${r.answer}.',
+          latex: '${p.a} ${_relTex(p.op)} ${p.b}',
         ),
       ];
     }
@@ -232,6 +272,7 @@ class G6IntegerEquation extends BaseEquation {
         stepNumber: 1,
         title: 'Locate ${p.a} on the line',
         explanation: 'Start at ${p.a}.',
+        latex: '${p.a}',
       ),
       StepModel(
         stepNumber: 2,
@@ -247,6 +288,7 @@ class G6IntegerEquation extends BaseEquation {
         stepNumber: 4,
         title: 'Apply the sign rule',
         explanation: '${r.answer}.',
+        latex: _lineTex(p),
       ),
     ];
   }

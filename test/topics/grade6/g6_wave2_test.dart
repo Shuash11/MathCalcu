@@ -303,4 +303,84 @@ void main() {
       expect(checked, greaterThan(0));
     });
   });
+
+  group('G6 wave2 LaTeX emission (Batch 2)', () {
+    test('rate: math steps carry TeX, unit-conversion/price prose stays', () {
+      final speed = G6RateEquation('R=? D=120 T=2').getSteps();
+      expect(speed, hasLength(3));
+      expect(speed[0].latex, r'R = \frac{D}{T}');
+      expect(speed[1].latex, r'R = \frac{120}{2}');
+      expect(speed[2].latex, contains('60'));
+      final dist = G6RateEquation('D=? R=60 T=2').getSteps();
+      expect(dist, hasLength(3));
+      expect(dist[0].latex, r'D = R \times T');
+      expect(dist[1].latex, r'D = 60 \times 2');
+      expect(dist[2].latex, 'D = 120');
+      final time = G6RateEquation('T=? D=120 R=40').getSteps();
+      expect(time, hasLength(3));
+      expect(time[1].latex, r'T = \frac{120}{40}');
+      expect(time[2].latex, contains('3'));
+    });
+
+    test('rate best-buy + meter carry TeX (peso sign stays prose-only)', () {
+      final buy = G6RateEquation('compare 500g 120 vs 1kg 220').getSteps();
+      expect(buy, hasLength(3));
+      expect(buy[0].latex, isNotNull);
+      expect(buy[1].latex, r'\frac{\text{price}}{\text{quantity}}');
+      expect(buy[2].latex, isNotNull);
+      expect(buy[2].latex!.contains('₱'), isFalse);
+      final meter = G6RateEquation('prev=1250 pres=1380 rate=12').getSteps();
+      expect(meter, hasLength(3));
+      expect(meter[0].latex, '1380 - 1250');
+      expect(meter[1].latex, r'130 \times 12');
+      expect(meter[2].latex, contains('1560'));
+    });
+
+    test('every emitted wave2-batch2 TeX line is ASCII (no unicode/control)', () {
+      for (final eq in <BaseEquation>[
+        G6RateEquation('R=? D=120 T=2'),
+        G6RateEquation('D=? R=60 T=2'),
+        G6RateEquation('T=? D=120 R=40'),
+        G6RateEquation('compare 500g 120 vs 1kg 220'),
+        G6RateEquation('prev=1250 pres=1380 rate=12'),
+      ]) {
+        for (final s in eq.getSteps()) {
+          for (final tex in <String?>[s.latex, ...?s.subLatex]) {
+            if (tex == null) {
+              continue;
+            }
+            expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
+                reason: '$tex (${s.title})');
+          }
+        }
+      }
+    });
+
+    testWidgets('every emitted wave2-batch2 TeX line parses (recording fallback)',
+        (tester) async {
+      final cases = <BaseEquation>[
+        G6RateEquation('R=? D=120 T=2'),
+        G6RateEquation('D=? R=60 T=2'),
+        G6RateEquation('T=? D=120 R=40'),
+        G6RateEquation('compare 500g 120 vs 1kg 220'),
+        G6RateEquation('prev=1250 pres=1380 rate=12'),
+      ];
+      var checked = 0;
+      for (final eq in cases) {
+        for (final s in eq.getSteps()) {
+          if (s.latex != null && s.latex!.isNotEmpty) {
+            await _expectTexParses(tester, s.latex!);
+            checked++;
+          }
+          for (final line in s.subLatex ?? const <String>[]) {
+            if (line.trim().isNotEmpty) {
+              await _expectTexParses(tester, line);
+              checked++;
+            }
+          }
+        }
+      }
+      expect(checked, greaterThan(0));
+    });
+  });
 }

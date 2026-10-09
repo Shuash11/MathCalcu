@@ -121,6 +121,69 @@ class G6VolumeEquation extends BaseEquation {
     }
   }
 
+  /// ASCII TeX for the solid's volume formula (symbolic form).
+  static String _formulaTex(_Solid s) {
+    switch (s) {
+      case _Solid.cube:
+        return 'V = s^{3}';
+      case _Solid.prism:
+        return 'V = l \\cdot w \\cdot h';
+      case _Solid.cylinder:
+        return 'V = \\pi r^{2} h';
+      case _Solid.cone:
+        return 'V = \\frac{1}{3} \\pi r^{2} h';
+      case _Solid.pyramid:
+        return 'V = \\frac{1}{3} l \\cdot w \\cdot h';
+      case _Solid.sphere:
+        return 'V = \\frac{4}{3} \\pi r^{3}';
+    }
+  }
+
+  /// The formula with the parsed dimensions substituted (TeX, ASCII).
+  static String _substTex(_VolParsed p) {
+    final List<double> d = p.dims;
+    switch (p.solid) {
+      case _Solid.cube:
+        return 'V = ${G6Format.num(d[0])}^{3}';
+      case _Solid.prism:
+        return 'V = ${G6Format.num(d[0])} \\cdot ${G6Format.num(d[1])} '
+            '\\cdot ${G6Format.num(d[2])}';
+      case _Solid.cylinder:
+        return 'V = \\pi \\cdot ${G6Format.num(d[0])}^{2} \\cdot '
+            '${G6Format.num(d[1])}';
+      case _Solid.cone:
+        return 'V = \\frac{1}{3} \\pi \\cdot ${G6Format.num(d[0])}^{2} '
+            '\\cdot ${G6Format.num(d[1])}';
+      case _Solid.pyramid:
+        return 'V = \\frac{1}{3} \\cdot ${G6Format.num(d[0])} \\cdot '
+            '${G6Format.num(d[1])} \\cdot ${G6Format.num(d[2])}';
+      case _Solid.sphere:
+        return 'V = \\frac{4}{3} \\pi \\cdot ${G6Format.num(d[0])}^{3}';
+    }
+  }
+
+  /// The volume solve() computes (mirrors its arithmetic exactly).
+  static double _volume(_VolParsed p) {
+    switch (p.solid) {
+      case _Solid.cube:
+        return p.dims[0] * p.dims[0] * p.dims[0];
+      case _Solid.prism:
+        return p.dims[0] * p.dims[1] * p.dims[2];
+      case _Solid.cylinder:
+        return math.pi * p.dims[0] * p.dims[0] * p.dims[1];
+      case _Solid.cone:
+        return math.pi * p.dims[0] * p.dims[0] * p.dims[1] / 3;
+      case _Solid.pyramid:
+        return p.dims[0] * p.dims[1] * p.dims[2] / 3;
+      case _Solid.sphere:
+        return 4 / 3 * math.pi * p.dims[0] * p.dims[0] * p.dims[0];
+    }
+  }
+
+  /// The computed volume with units (TeX, ASCII).
+  static String _resultTex(_VolParsed p) =>
+      'V = ${G6Format.num(_volume(p))} \\text{ unit}^{3}';
+
   @override
   bool validate() {
     final String? empty = FieldValidators.notEmpty(
@@ -205,12 +268,18 @@ class G6VolumeEquation extends BaseEquation {
       StepModel(
           stepNumber: 1,
           title: 'Write the formula',
-          explanation: _formula(p.solid)),
+          explanation: _formula(p.solid),
+          latex: _formulaTex(p.solid)),
       StepModel(
           stepNumber: 2,
           title: 'Substitute',
-          explanation: 'Given: ${p.dims.map(G6Format.num).join(', ')}.'),
-      StepModel(stepNumber: 3, title: 'Multiply', explanation: r.answer),
+          explanation: 'Given: ${p.dims.map(G6Format.num).join(', ')}.',
+          latex: _substTex(p)),
+      StepModel(
+          stepNumber: 3,
+          title: 'Multiply',
+          explanation: r.answer,
+          latex: _resultTex(p)),
       const StepModel(
           stepNumber: 4,
           title: 'Attach cubic units',

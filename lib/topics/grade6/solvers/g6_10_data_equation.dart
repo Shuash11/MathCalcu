@@ -148,15 +148,18 @@ class G6PieEquation extends BaseEquation {
       StepModel(
           stepNumber: 1,
           title: 'Find the total',
-          explanation: 'Total = ${G6Format.num(total)}.'),
+          explanation: 'Total = ${G6Format.num(total)}.',
+          latex: '\\text{Total} = ${G6Format.num(total)}'),
       const StepModel(
           stepNumber: 2,
           title: 'Percent each slice',
-          explanation: 'value ÷ total × 100%.'),
+          explanation: 'value ÷ total × 100%.',
+          latex: '\\frac{\\text{value}}{\\text{total}} \\times 100\\%'),
       const StepModel(
           stepNumber: 3,
           title: 'Percent to degrees',
-          explanation: 'degrees = % × 3.6° (360° ÷ 100).'),
+          explanation: 'degrees = % × 3.6° (360° ÷ 100).',
+          latex: '\\text{degrees} = \\% \\times \\frac{360}{100}'),
       StepModel(
           stepNumber: 4,
           title: 'Draw the slices',
@@ -164,7 +167,12 @@ class G6PieEquation extends BaseEquation {
       StepModel(
           stepNumber: 5,
           title: 'Label each slice',
-          explanation: solve().answer),
+          explanation: solve().answer,
+          latex: slices
+              .map((s) => '\\text{${s.label}} = '
+                  '${G6Format.num(s.percent)}\\% '
+                  '(${G6Format.num(s.degrees)}^{\\circ})')
+              .join(', \\quad ')),
     ];
   }
 }
@@ -282,15 +290,21 @@ class G6ProbabilityEquation extends BaseEquation {
       StepModel(
           stepNumber: 1,
           title: 'Count all outcomes',
-          explanation: 'Total = ${p[1]}.'),
+          explanation: 'Total = ${p[1]}.',
+          latex: '\\text{Total} = ${p[1]}'),
       StepModel(
           stepNumber: 2,
           title: 'Count favorable',
-          explanation: 'Favorable = ${p[0]}.'),
+          explanation: 'Favorable = ${p[0]}.',
+          latex: '\\text{Favorable} = ${p[0]}'),
       StepModel(
           stepNumber: 3,
           title: 'Write favorable/total and simplify',
-          explanation: r.answer),
+          explanation: r.answer,
+          latex: 'P = \\frac{${p[0] ~/ G6Math.gcd(p[0], p[1])}}'
+              '{${p[1] ~/ G6Math.gcd(p[0], p[1])}} = '
+              '${G6Format.num(p[0] / p[1])} = '
+              '${G6Format.num(p[0] / p[1] * 100)}\\%'),
     ];
   }
 }

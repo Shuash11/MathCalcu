@@ -52,6 +52,31 @@ class G6GcfLcmEquation extends BaseEquation {
     return out;
   }
 
+  /// ASCII TeX prime factorisation of [n] (`12` -> `2^{2} \cdot 3`).
+  static String _primeFactorTex(int n) {
+    if (n <= 1) {
+      return '$n';
+    }
+    final List<String> parts = [];
+    var m = n;
+    for (var p = 2; p * p <= m; p++) {
+      var e = 0;
+      while (m % p == 0) {
+        m ~/= p;
+        e++;
+      }
+      if (e == 1) {
+        parts.add('$p');
+      } else if (e > 1) {
+        parts.add('$p^{$e}');
+      }
+    }
+    if (m > 1) {
+      parts.add('$m');
+    }
+    return parts.join(' \\cdot ');
+  }
+
   @override
   bool validate() {
     final String? empty = FieldValidators.notEmpty(
@@ -118,11 +143,18 @@ class G6GcfLcmEquation extends BaseEquation {
         stepNumber: 1,
         title: 'List the numbers',
         explanation: 'Numbers: ${numbers.join(', ')}.',
+        latex: '\\{${numbers.join(', ')}\\}',
       ),
       StepModel(
         stepNumber: 2,
         title: 'List the factors',
         explanation: listed,
+        latex: numbers
+            .map((n) => '$n: ${factors(n).join(', ')}')
+            .join(' \\quad '),
+        subLatex: [
+          for (final n in numbers) '$n = ${_primeFactorTex(n)}',
+        ],
       ),
       StepModel(
         stepNumber: 3,
@@ -132,11 +164,19 @@ class G6GcfLcmEquation extends BaseEquation {
         explanation: _isLcm
             ? 'Smallest number in all lists: $value.'
             : 'Largest number in all lists: $value.',
+        latex: _isLcm
+            ? '\\text{LCM}(${numbers.join(', ')}) = $value'
+            : '\\gcd(${numbers.join(', ')}) = $value',
       ),
       StepModel(
         stepNumber: 4,
         title: 'Check with division',
         explanation: '${_isLcm ? 'LCM' : 'GCF'} = $value; verify by division.',
+        latex: numbers
+            .map((n) => _isLcm
+                ? '$value \\div $n = ${value ~/ n}'
+                : '$n \\div $value = ${n ~/ value}')
+            .join(', \\quad '),
       ),
     ];
   }

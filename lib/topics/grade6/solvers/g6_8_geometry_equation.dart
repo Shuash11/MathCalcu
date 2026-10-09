@@ -172,6 +172,111 @@ class G6GeometryEquation extends BaseEquation {
     return null;
   }
 
+  static String _u(String unit) => '\\text{$unit}';
+  static String _u2(String unit) => '\\text{$unit}^{2}';
+
+  /// Symbolic formula for the parsed shape (TeX, ASCII).
+  static String _formulaTex(_GeoParsed p) {
+    switch (p.shape) {
+      case _Shape.square:
+        return 'P = 4s, \\quad A = s^{2}';
+      case _Shape.rectangle:
+        return 'P = 2(l + w), \\quad A = l \\cdot w';
+      case _Shape.triangleArea:
+        return 'A = \\frac{1}{2} b h';
+      case _Shape.triangleSides:
+        return 'P = a + b + c';
+      case _Shape.parallelogram:
+        return p.dims.length == 3
+            ? 'A = b h, \\quad P = 2(b + s)'
+            : 'A = b h';
+      case _Shape.trapezoid:
+        return 'A = \\frac{a + b}{2} h';
+      case _Shape.circle:
+        return 'C = 2 \\pi r, \\quad A = \\pi r^{2}';
+      case _Shape.composite:
+        final int n = p.dims.length ~/ 2;
+        return 'A = ${[
+          for (var i = 1; i <= n; i++) "l_{$i} w_{$i}",
+        ].join(' + ')}';
+    }
+  }
+
+  /// The formula with the parsed dimensions substituted (TeX, ASCII).
+  static String _substTex(_GeoParsed p) {
+    final List<double> d = p.dims;
+    switch (p.shape) {
+      case _Shape.square:
+        return 'P = 4(${G6Format.num(d[0])}), \\quad '
+            'A = ${G6Format.num(d[0])}^{2}';
+      case _Shape.rectangle:
+        return 'P = 2(${G6Format.num(d[0])} + ${G6Format.num(d[1])}), '
+            '\\quad A = ${G6Format.num(d[0])} \\cdot ${G6Format.num(d[1])}';
+      case _Shape.triangleArea:
+        return 'A = \\frac{1}{2} \\cdot ${G6Format.num(d[0])} \\cdot '
+            '${G6Format.num(d[1])}';
+      case _Shape.triangleSides:
+        final List<double> s = List<double>.from(d)..sort();
+        return 'P = ${G6Format.num(s[0])} + ${G6Format.num(s[1])} + '
+            '${G6Format.num(s[2])}';
+      case _Shape.parallelogram:
+        final String base =
+            'A = ${G6Format.num(d[0])} \\cdot ${G6Format.num(d[1])}';
+        return d.length == 3
+            ? '$base, \\quad P = 2(${G6Format.num(d[0])} + '
+                '${G6Format.num(d[2])})'
+            : base;
+      case _Shape.trapezoid:
+        return 'A = \\frac{${G6Format.num(d[0])} + ${G6Format.num(d[1])}}{2} '
+            '\\cdot ${G6Format.num(d[2])}';
+      case _Shape.circle:
+        final double r = p.diameter ? d[0] / 2 : d[0];
+        return 'C = 2 \\pi (${G6Format.num(r)}), \\quad '
+            'A = \\pi (${G6Format.num(r)})^{2}';
+      case _Shape.composite:
+        return 'A = ${[
+          for (var i = 0; i + 1 < d.length; i += 2)
+            "${G6Format.num(d[i])} \\cdot ${G6Format.num(d[i + 1])}",
+        ].join(' + ')}';
+    }
+  }
+
+  /// The computed result with units (TeX, ASCII).
+  static String _resultTex(_GeoParsed p) {
+    final String u = p.unit;
+    final List<double> d = p.dims;
+    switch (p.shape) {
+      case _Shape.square:
+        return 'P = ${G6Format.num(4 * d[0])} ${_u(u)}, \\quad '
+            'A = ${G6Format.num(d[0] * d[0])} ${_u2(u)}';
+      case _Shape.rectangle:
+        return 'P = ${G6Format.num(2 * (d[0] + d[1]))} ${_u(u)}, \\quad '
+            'A = ${G6Format.num(d[0] * d[1])} ${_u2(u)}';
+      case _Shape.triangleArea:
+        return 'A = ${G6Format.num(d[0] * d[1] / 2)} ${_u2(u)}';
+      case _Shape.triangleSides:
+        final List<double> s = List<double>.from(d)..sort();
+        return 'P = ${G6Format.num(s[0] + s[1] + s[2])} ${_u(u)}';
+      case _Shape.parallelogram:
+        final String base = 'A = ${G6Format.num(d[0] * d[1])} ${_u2(u)}';
+        return d.length == 3
+            ? '$base, \\quad P = ${G6Format.num(2 * (d[0] + d[2]))} ${_u(u)}'
+            : base;
+      case _Shape.trapezoid:
+        return 'A = ${G6Format.num((d[0] + d[1]) / 2 * d[2])} ${_u2(u)}';
+      case _Shape.circle:
+        final double r = p.diameter ? d[0] / 2 : d[0];
+        return 'C = ${G6Format.num(2 * math.pi * r)} ${_u(u)}, \\quad '
+            'A = ${G6Format.num(math.pi * r * r)} ${_u2(u)}';
+      case _Shape.composite:
+        var area = 0.0;
+        for (var i = 0; i + 1 < d.length; i += 2) {
+          area += d[i] * d[i + 1];
+        }
+        return 'A = ${G6Format.num(area)} ${_u2(u)}';
+    }
+  }
+
   @override
   bool validate() {
     final String? empty = FieldValidators.notEmpty(
@@ -325,16 +430,22 @@ class G6GeometryEquation extends BaseEquation {
           stepNumber: 1,
           title: 'Identify the shape',
           explanation: 'Shape diagram: ${r.customData?.first['shape']}.'),
-      const StepModel(
+      StepModel(
           stepNumber: 2,
           title: 'Write the formula',
-          explanation: 'P/A formula for this shape.'),
+          explanation: 'P/A formula for this shape.',
+          latex: _formulaTex(p)),
       StepModel(
           stepNumber: 3,
           title: 'Substitute dimensions',
           explanation:
-              'Given: ${p.dims.map(G6Format.num).join(', ')} ${p.unit}.'),
-      StepModel(stepNumber: 4, title: 'Compute', explanation: r.answer),
+              'Given: ${p.dims.map(G6Format.num).join(', ')} ${p.unit}.',
+          latex: _substTex(p)),
+      StepModel(
+          stepNumber: 4,
+          title: 'Compute',
+          explanation: r.answer,
+          latex: _resultTex(p)),
       StepModel(
           stepNumber: 5,
           title: 'Attach units',

@@ -276,4 +276,95 @@ void main() {
       expect(checked, greaterThan(0));
     });
   });
+
+  group('G6 wave1 LaTeX emission (Batch 2)', () {
+    test('integers: math steps carry TeX, direction/count steps stay prose', () {
+      final arith = G6IntegerEquation('-5 + 8').getSteps();
+      expect(arith, hasLength(4));
+      expect(arith[0].latex, isNotNull); // start position
+      expect(arith[1].latex, isNull); // face-direction guidance
+      expect(arith[2].latex, isNull); // counting guidance
+      expect(arith[3].latex, '-5 + 8 = 3');
+      final cmp = G6IntegerEquation('-3 < 2').getSteps();
+      expect(cmp, hasLength(4));
+      expect(cmp[0].latex, isNotNull);
+      expect(cmp[1].latex, isNull);
+      expect(cmp[2].latex, contains(r'\left|'));
+      expect(cmp[3].latex, '-3 < 2');
+      final mul = G6IntegerEquation('-3 × -4').getSteps();
+      expect(mul[3].latex, r'-3 \times -4 = 12');
+    });
+
+    test('gcf/lcm: math steps carry TeX + prime-factor sub-lines', () {
+      final gcf = G6GcfLcmEquation('GCF(12, 18)').getSteps();
+      expect(gcf, hasLength(4));
+      for (final s in gcf) {
+        expect(s.latex, isNotNull, reason: s.title);
+        expect(s.latex!, isNotEmpty, reason: s.title);
+      }
+      expect(gcf[0].latex, r'\{12, 18\}');
+      expect(gcf[2].latex, contains(r'\gcd'));
+      expect(gcf[2].latex, contains('6'));
+      expect(gcf[1].subLatex, isNotNull);
+      expect(gcf[1].subLatex!, contains(r'12 = 2^{2} \cdot 3'));
+      final lcm = G6GcfLcmEquation('lcm 4 6').getSteps();
+      expect(lcm[2].latex, contains('LCM'));
+      expect(lcm[2].latex, contains('12'));
+    });
+
+    test('every emitted wave1-batch2 TeX line is ASCII (no unicode/control)', () {
+      for (final eq in <BaseEquation>[
+        G6IntegerEquation('-5 + 8'),
+        G6IntegerEquation('7 - 12'),
+        G6IntegerEquation('-3 × -4'),
+        G6IntegerEquation('5 ÷ 2'),
+        G6IntegerEquation('-3 < 2'),
+        G6IntegerEquation('Compare -8 < -3'),
+        G6GcfLcmEquation('GCF(12, 18)'),
+        G6GcfLcmEquation('lcm 4 6'),
+        G6GcfLcmEquation('gcd 20, 30'),
+      ]) {
+        for (final s in eq.getSteps()) {
+          for (final tex in <String?>[s.latex, ...?s.subLatex]) {
+            if (tex == null) {
+              continue;
+            }
+            expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
+                reason: '$tex (${s.title})');
+          }
+        }
+      }
+    });
+
+    testWidgets('every emitted wave1-batch2 TeX line parses (recording fallback)',
+        (tester) async {
+      final cases = <BaseEquation>[
+        G6IntegerEquation('-5 + 8'),
+        G6IntegerEquation('7 - 12'),
+        G6IntegerEquation('-3 × -4'),
+        G6IntegerEquation('5 ÷ 2'),
+        G6IntegerEquation('-3 < 2'),
+        G6IntegerEquation('Compare -8 < -3'),
+        G6GcfLcmEquation('GCF(12, 18)'),
+        G6GcfLcmEquation('lcm 4 6'),
+        G6GcfLcmEquation('gcd 20, 30'),
+      ];
+      var checked = 0;
+      for (final eq in cases) {
+        for (final s in eq.getSteps()) {
+          if (s.latex != null && s.latex!.isNotEmpty) {
+            await _expectTexParses(tester, s.latex!);
+            checked++;
+          }
+          for (final line in s.subLatex ?? const <String>[]) {
+            if (line.trim().isNotEmpty) {
+              await _expectTexParses(tester, line);
+              checked++;
+            }
+          }
+        }
+      }
+      expect(checked, greaterThan(0));
+    });
+  });
 }
