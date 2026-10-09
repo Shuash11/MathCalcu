@@ -30,6 +30,63 @@ Future<bool> _parses(WidgetTester tester, String tex) async {
   return !fellBack;
 }
 
+/// Evaluate a factored answer like '-(x+3)(x-3)' or '-2(x+2)(x-2)' at [x].
+double _evalFactored(String s, double x) {
+  final idx = s.indexOf('(');
+  final leadStr = s.substring(0, idx);
+  final lead =
+      leadStr == '-' ? -1.0 : (leadStr.isEmpty ? 1.0 : double.parse(leadStr));
+  var prod = lead;
+  for (final m in RegExp(r'\(([^)]*)\)').allMatches(s)) {
+    prod *= _evalLinear(m.group(1)!, x);
+  }
+  return prod;
+}
+
+/// Evaluate a linear factor body like 'x+3' or '2x-3' at [x].
+double _evalLinear(String s, double x) {
+  s = s.replaceAll(' ', '');
+  var coef = 0.0, k = 0.0;
+  for (final m in RegExp(r'([+-]?)(\d*)(x?)').allMatches(s)) {
+    if (m.group(2)!.isEmpty && m.group(3)!.isEmpty) continue;
+    final sign = m.group(1) == '-' ? -1.0 : 1.0;
+    final dg = m.group(2)!;
+    if (m.group(3) == 'x') {
+      coef += sign * (dg.isEmpty ? 1 : double.parse(dg));
+    } else {
+      k += sign * double.parse(dg);
+    }
+  }
+  return coef * x + k;
+}
+
+/// Evaluate the input polynomial 'ax^2+bx+c' (with signed terms) at [x].
+double _evalPoly(String input, double x) {
+  final e = input
+      .replaceAll('×', '*')
+      .replaceAll('−', '-')
+      .replaceAll(' ', '')
+      .replaceAll('X', 'x')
+      .replaceAll('*', '');
+  double a = 0, b = 0, c = 0;
+  final s = e.startsWith('-') ? e : '+$e';
+  for (final m in RegExp(r'[+-][^+-]+').allMatches(s)) {
+    final t = m.group(0)!;
+    final sign = t.startsWith('-') ? -1.0 : 1.0;
+    final body = t.substring(1);
+    if (body.contains('x^2')) {
+      final co = body.replaceAll('x^2', '');
+      a += sign * (co.isEmpty ? 1 : double.parse(co));
+    } else if (body.contains('x')) {
+      final co = body.replaceAll('x', '');
+      b += sign * (co.isEmpty ? 1 : double.parse(co));
+    } else {
+      c += sign * double.parse(body);
+    }
+  }
+  return a * x * x + b * x + c;
+}
+
 void main() {
   group('AlgebraSolverRegistry wiring', () {
     test('4 specs, unique ids, byId round-trip', () {
@@ -95,6 +152,80 @@ void main() {
         expect(() => bad.solve(), returnsNormally);
         expect(() => bad.getSteps(), returnsNormally);
         expect(spec.create('   ').validate(), isFalse);
+      }
+    });
+  });
+
+  group('Factoring sign fix (BUG B: dropped leading minus / negative GCF)', () {
+    // Locks down BUG B: with a reduced leading coefficient a<0 the solver
+    // dropped the leading minus (the DOTS branch emitted (x+p)(x-p) regardless
+    // of sign) and mis-divided the negative GCF, so '-x^2 + 9' came out as
+    // (x+3)(x-3) (which expands to x^2-9) and '-2x^2 + 8' errored out as
+    // "Not factorable over integers" instead of giving -2(x+2)(x-2).
+    test('-x^2 + 9 factors to -(x+3)(x-3)', () {
+      final r = FactoringEquation('-x^2 + 9').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, '-(x+3)(x-3)');
+    });
+
+    test('9 - x^2 factors to -(x+3)(x-3)', () {
+      final r = FactoringEquation('9 - x^2').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, '-(x+3)(x-3)');
+    });
+
+    test('-2x^2 + 8 factors to -2(x+2)(x-2)', () {
+      final r = FactoringEquation('-2x^2 + 8').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, '-2(x+2)(x-2)');
+    });
+
+    test('expansion guard: answer re-evaluates to the input polynomial', () {
+      // Numeric guard independent of the exact string form.
+      const cases = <String, String>{
+        '-x^2 + 9': '-(x+3)(x-3)',
+        '9 - x^2': '-(x+3)(x-3)',
+        '-2x^2 + 8': '-2(x+2)(x-2)',
+        'x^2 - 9': '(x+3)(x-3)',
+        '2x^2 - 8': '2(x+2)(x-2)',
+        'x^2 + 5x + 6': '(x+2)(x+3)',
+      };
+      for (final e in cases.entries) {
+        final r = FactoringEquation(e.key).solve();
+        expect(r.hasError, isFalse, reason: e.key);
+        expect(r.answer, e.value, reason: e.key);
+        for (final x in <double>[-2.0, 0.0, 1.5, 3.0]) {
+          expect(_evalFactored(r.answer, x), closeTo(_evalPoly(e.key, x), 1e-9),
+              reason: '${e.key} @ x=$x (answer ${r.answer})');
+        }
+      }
+    });
+
+    test('regressions: monic, positive-GCF, trinomial and a GCF case', () {
+      expect(FactoringEquation('x^2 - 9').solve().answer, '(x+3)(x-3)');
+      expect(FactoringEquation('2x^2 - 8').solve().answer, '2(x+2)(x-2)');
+      expect(FactoringEquation('x^2 + 5x + 6').solve().answer, '(x+2)(x+3)');
+      final gcf = FactoringEquation('2x^2 + 4x').solve();
+      expect(gcf.hasError, isFalse);
+      expect(gcf.answer, startsWith('2('));
+    });
+
+    testWidgets('step-3 factor TeX equals the answer; parses; ASCII',
+        (tester) async {
+      for (final input in <String>[
+        '-x^2 + 9',
+        '9 - x^2',
+        '-2x^2 + 8',
+        '2x^2 - 8',
+        'x^2 + 5x + 6',
+      ]) {
+        final r = FactoringEquation(input).solve();
+        final steps = FactoringEquation(input).getSteps();
+        expect(steps[2].latex, r.answer, reason: input);
+        final tex = steps[2].latex!;
+        expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
+            reason: 'non-ASCII TeX: $tex');
+        expect(await _parses(tester, tex), isTrue, reason: input);
       }
     });
   });

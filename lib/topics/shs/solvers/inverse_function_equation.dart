@@ -110,7 +110,9 @@ class InverseFunctionEquation extends BaseEquation {
     if ((a * d - b * c).abs() < 1e-12) {
       return SolveResult.error('Not one-to-one — no inverse (ad − bc = 0).');
     }
-    // y=(ax+b)/(cx+d) -> inverse: y=(dx-b)/(a-cx) i.e. (-dx+b... let me: x=(ay+b)/(cy+d) -> x(cy+d)=ay+b -> y(cx-a)=b-xd -> y=(dx-b)/(cx-a).
+    // y=(ax+b)/(cx+d) -> inverse: x=(ay+b)/(cy+d) -> x(cy+d)=ay+b ->
+    // y(cx-a) = b-xd -> y = (b - d*x)/(c*x - a). The paired numerator must be
+    // (b - d*x); the OLD code emitted (d*x - b), i.e. the exact negation.
     String term(double coef, String v, {bool first = false}) {
       if (coef.abs() < 1e-12) return '';
       final mag = G6Format.num(coef.abs());
@@ -120,7 +122,7 @@ class InverseFunctionEquation extends BaseEquation {
     }
 
     final numS =
-        '${term(d, 'x', first: true)}${b.abs() < 1e-12 ? '' : (b > 0 ? ' - ${G6Format.num(b)}' : ' + ${G6Format.num(b.abs())}')}'
+        '${term(-d, 'x', first: true)}${b.abs() < 1e-12 ? '' : (b > 0 ? ' + ${G6Format.num(b)}' : ' - ${G6Format.num(b.abs())}')}'
             .trim();
     final denS =
         '${term(c, 'x', first: true)}${a.abs() < 1e-12 ? '' : (a > 0 ? ' - ${G6Format.num(a)}' : ' + ${G6Format.num(a.abs())}')}'
@@ -176,7 +178,7 @@ class InverseFunctionEquation extends BaseEquation {
         }
 
         final numTex =
-            '${texLin(dd, 'x', first: true)}${b.abs() < 1e-12 ? '' : (b > 0 ? ' - ${G6Format.num(b)}' : ' + ${G6Format.num(b.abs())}')}'
+            '${texLin(-dd, 'x', first: true)}${b.abs() < 1e-12 ? '' : (b > 0 ? ' + ${G6Format.num(b)}' : ' - ${G6Format.num(b.abs())}')}'
                 .trim();
         final denTex =
             '${texLin(c, 'x', first: true)}${a.abs() < 1e-12 ? '' : (a > 0 ? ' - ${G6Format.num(a)}' : ' + ${G6Format.num(a.abs())}')}'

@@ -103,12 +103,18 @@ class FactoringEquation extends BaseEquation {
       return SolveResult.error(
           'Integer coefficients only — e.g. x^2 + 5x + 6.');
     }
-    // GCF across non-zero terms.
+    // GCF across non-zero terms. When the leading coefficient is negative we
+    // factor out the SIGN too (signedG = -g) so the reduced polynomial has a
+    // positive leading coefficient and the sign is re-attached below as the
+    // leading factor. The OLD code always divided by +g, which flipped the
+    // reduced polynomial's sign and dropped the leading minus entirely
+    // ('-x^2 + 9' -> (x+3)(x-3); '-2x^2 + 8' -> 'not factorable').
     final nz = [ai, bi, ci].where((v) => v != 0).toList();
     final g = nz.map((v) => v.abs()).reduce((p, e) => G6Math.gcd(p, e));
-    final a = ai ~/ (ai < 0 && g > 1 ? -g : g);
-    final b = bi ~/ g;
-    final c = ci ~/ g;
+    final signedG = ai < 0 ? -g : g;
+    final a = ai ~/ signedG;
+    final b = bi ~/ signedG;
+    final c = ci ~/ signedG;
 
     String? factored;
     String kind = 'trinomial';
@@ -131,7 +137,11 @@ class FactoringEquation extends BaseEquation {
           'Not factorable over integers — try the quadratic formula.');
     }
     final disc = b * b - 4 * a * c;
-    final answer = g > 1 ? '$g$factored' : factored;
+    // Re-attach the factored-out GCF including its sign: '' for +1, '-' for
+    // -1, otherwise the signed value (e.g. '-2'). This is the leading factor
+    // the DOTS/trinomial branches no longer have to worry about.
+    final leading = signedG == 1 ? '' : (signedG == -1 ? '-' : '$signedG');
+    final answer = '$leading$factored';
     return SolveResult(
       answer: answer,
       points: _roots(a, b, c),

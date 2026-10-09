@@ -29,6 +29,44 @@ Future<void> _expectTexParses(WidgetTester tester, String tex) async {
   expect(fellBack, isFalse, reason: 'TeX failed to parse: $tex');
 }
 
+/// Parse a linear expression like '3x + 1', 'x - 2', '-3x - 1' into
+/// (coefficient-of-x, constant). Used to evaluate the EMITTED answer string.
+(double, double) _linear(String s) {
+  s = s.replaceAll(' ', '');
+  var coef = 0.0, k = 0.0;
+  for (final m in RegExp(r'([+-]?)(\d*)(x?)').allMatches(s)) {
+    if (m.group(2)!.isEmpty && m.group(3)!.isEmpty) continue;
+    final sign = m.group(1) == '-' ? -1.0 : 1.0;
+    final dg = m.group(2)!;
+    if (m.group(3) == 'x') {
+      coef += sign * (dg.isEmpty ? 1 : double.parse(dg));
+    } else {
+      k += sign * double.parse(dg);
+    }
+  }
+  return (coef, k);
+}
+
+/// Split an answer like 'f⁻¹(x) = (3x + 1)/(x - 2)' into the four linear
+/// coefficients (numX, numK, denX, denK) of the emitted fraction.
+(double, double, double, double) _fracLin(String answer) {
+  final body =
+      answer.split(' = ').last.replaceAll('(', '').replaceAll(')', '');
+  final parts = body.split('/');
+  final n = _linear(parts[0]);
+  final d = _linear(parts[1]);
+  return (n.$1, n.$2, d.$1, d.$2);
+}
+
+/// Printable body of the answer fraction, e.g. '(3x + 1)/(x - 2)'.
+String _ansBody(String answer) => answer.split(' = ').last;
+
+/// Render a \frac{a}{b} TeX into the same '(a)/(b)' body shape.
+String _texBody(String tex) {
+  final m = RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}').firstMatch(tex);
+  return m == null ? '' : '(${m.group(1)})/(${m.group(2)})';
+}
+
 void main() {
   group('ExpLog (g11-logarithms)', () {
     test('2^x = 32 gives x = 5', () {
@@ -149,6 +187,60 @@ void main() {
       expect(s[1].latex, isNull);
       expect(s[2].latex, isNull);
       expect(s[3].latex, r'f^{-1}(x) = \frac{x - 3}{2}');
+    });
+  });
+
+  group('Inverse function sign fix (BUG A: fractional inverse negation)', () {
+    // Locks down BUG A: the fractional inverse f(x)=(ax+b)/(cx+d) was emitted
+    // as the exact NEGATION of the correct formula. The wrong numerator
+    // (dx-b instead of b-dx) was built in TWO places — numS in solve() and
+    // numTex in getSteps() — so both are fixed in lockstep here.
+    test('inverse of (2x+1)/(x-3) is (3x+1)/(x-2) exactly', () {
+      final eq = InverseFunctionEquation('f(x) = (2x + 1)/(x - 3)');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, 'f⁻¹(x) = (3x + 1)/(x - 2)');
+    });
+
+    test('round-trip: f(f^-1(y)) == y and f^-1(f(t)) == t for several values',
+        () {
+      // The strongest guard: it catches ANY sign error, not just this string.
+      final r = InverseFunctionEquation('f(x) = (2x + 1)/(x - 3)').solve();
+      expect(r.hasError, isFalse);
+      final (nc, nk, dc, dk) = _fracLin(r.answer);
+      double inv(double y) => (nc * y + nk) / (dc * y + dk);
+      double f(double x) => (2 * x + 1) / (x - 3);
+      // NB: y = 2 is the pole of f^-1 (denominator x-2), so it is excluded.
+      for (final y in <double>[-1.5, 0.0, 5.0, -4.0, 3.0]) {
+        expect(f(inv(y)), closeTo(y, 1e-9), reason: 'f(f^-1($y)) != $y');
+      }
+      for (final t in <double>[-2.0, 0.0, 1.0, 4.0]) {
+        expect(inv(f(t)), closeTo(t, 1e-9), reason: 'f^-1(f($t)) != $t');
+      }
+    });
+
+    test('step-4 TeX equals the answer fraction (lockstep guard)', () {
+      // Guards against fixing solve() but not getSteps(): the steps must not
+      // show the negated formula while the answer shows the corrected one.
+      final eq = InverseFunctionEquation('f(x) = (2x + 1)/(x - 3)');
+      final r = eq.solve();
+      final s = eq.getSteps();
+      expect(s, hasLength(4));
+      expect(s[3].latex, r'f^{-1}(x) = \frac{3x + 1}{x - 2}');
+      expect(_texBody(s[3].latex!), _ansBody(r.answer));
+    });
+
+    testWidgets('step-4 inverse TeX parses (recording fallback) + ASCII',
+        (tester) async {
+      final s = InverseFunctionEquation('f(x) = (2x + 1)/(x - 3)').getSteps();
+      final tex = s[3].latex!;
+      var checked = 0;
+      expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
+          reason: 'non-ASCII TeX: $tex');
+      checked++;
+      await _expectTexParses(tester, tex);
+      expect(checked, greaterThan(0));
     });
   });
 
