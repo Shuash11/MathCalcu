@@ -138,6 +138,36 @@ void main() {
     test('two equals signs rejected', () {
       expect(G6AlgebraEquation('x = 2 = 3').validate(), isFalse);
     });
+
+    // BUG A: 'constant - variable' shape lands the constant in the coefficient
+    // slot, so the operand reads 0 and the answer is wrong (was 'x = -8').
+    test('BUG A: 20 - x = 8 gives x=12, no phantom 0 - x', () {
+      final eq = G6AlgebraEquation('20 - x = 8');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, 'x = 12');
+      final steps = eq.getSteps();
+      expect(steps, hasLength(3));
+      for (final s in steps) {
+        // '0 - x' as a leading operand (boundary-aware, so '20 - x' passes).
+        expect(RegExp(r'(^|[^0-9])0 - x').hasMatch(s.latex ?? ''), isFalse,
+            reason: s.title);
+        expect(s.explanation, isNot(contains('with 0 ')), reason: s.title);
+      }
+      // prose and TeX both carry the real equation.
+      expect(steps[0].latex, '20 - x = 8');
+      expect(steps[1].latex, 'x = 20 - 8');
+      expect(steps[0].explanation, contains('20'));
+    });
+
+    // BUG A regression: the four documented shapes stay byte-identical.
+    test('BUG A regression: documented shapes unchanged', () {
+      expect(G6AlgebraEquation('x + 7 = 15').solve().answer, 'x = 8');
+      expect(G6AlgebraEquation('3n = 21').solve().answer, 'n = 7');
+      expect(G6AlgebraEquation('x/4 = 5').solve().answer, 'x = 20');
+      expect(G6AlgebraEquation('15 = x + 7').solve().answer, 'x = 8');
+    });
   });
 
   group('G6 rate: speed, best-buy, meter', () {
@@ -252,6 +282,7 @@ void main() {
         G6AlgebraEquation('x + 7 = 15'),
         G6AlgebraEquation('3n = 21'),
         G6AlgebraEquation('x/4 = 5'),
+        G6AlgebraEquation('20 - x = 8'),
       ]) {
         for (final s in eq.getSteps()) {
           final tex = s.latex;
@@ -284,6 +315,7 @@ void main() {
         G6AlgebraEquation('x + 7 = 15'),
         G6AlgebraEquation('3n = 21'),
         G6AlgebraEquation('x/4 = 5'),
+        G6AlgebraEquation('20 - x = 8'),
       ];
       var checked = 0;
       for (final eq in cases) {

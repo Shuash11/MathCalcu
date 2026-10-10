@@ -1,4 +1,6 @@
 // G6 Wave 3 tests: geometry, volume, pie + probability.
+import 'dart:math' as math;
+
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/topics/grade6/solvers/grade6_equations.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -79,6 +81,30 @@ void main() {
     test('negative length rejected', () {
       expect(G6GeometryEquation('rect -6x4').solve().hasError, isTrue);
     });
+
+    // BUG C: a unit suffix attached to a number ('6m', '4m') is not detected,
+    // so 'rect 6m x 4m' silently defaults to cm (a wrong unit in the answer).
+    test('BUG C: rect 6m x 4m detects the metre suffix', () {
+      final r = G6GeometryEquation('rect 6m x 4m').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('20 m'));
+      expect(r.answer, contains('24 m'));
+      expect(r.answer, isNot(contains('cm')));
+      final steps = G6GeometryEquation('rect 6m x 4m').getSteps();
+      expect(steps[4].explanation, contains(' m'));
+    });
+
+    // BUG C regression: cm stays cm, mm stays mm, bare numbers stay cm.
+    test('BUG C regression: cm/mm/bare units unchanged', () {
+      final cm = G6GeometryEquation('rect 6cm x 4cm').solve();
+      expect(cm.answer, contains('20 cm'));
+      final mm = G6GeometryEquation('rect 6mm x 4mm').solve();
+      expect(mm.answer, contains('20 mm'));
+      final bare = G6GeometryEquation('rect 6x4').solve();
+      expect(bare.answer, contains('20 cm'));
+      final standalone = G6GeometryEquation('rect 6 m x 4 m').solve();
+      expect(standalone.answer, contains('20 m'));
+    });
   });
 
   group('G6-9 volume (M6ME-IVa-95)', () {
@@ -125,6 +151,57 @@ void main() {
 
     test('zero dimension rejected', () {
       expect(G6VolumeEquation('cube s=0').validate(), isFalse);
+    });
+
+    // BUG B: dimensions are read positionally and the r=/h=/l=/w=/s= labels are
+    // ignored, so 'cyl h=7 r=3' computes r=7, h=3 (a numerically WRONG volume).
+    test('BUG B: cyl h=7 r=3 equals cyl r=3 h=7 (labels honoured)', () {
+      final a = G6VolumeEquation('cyl h=7 r=3').solve();
+      final b = G6VolumeEquation('cyl r=3 h=7').solve();
+      expect(a.hasError, isFalse);
+      expect(a.points.single, closeTo(math.pi * 3 * 3 * 7, 1e-9));
+      expect(a.points.single, closeTo(b.points.single, 1e-12));
+      expect(a.customData?.first['dims'], [3.0, 7.0]);
+    });
+
+    // BUG B: labelled inputs are read by label for every supported solid, and
+    // the value itself is right (computed independently with math.pi).
+    test('BUG B: labels honoured for every supported solid', () {
+      expect(G6VolumeEquation('cyl h=7 r=3').solve().points.single,
+          closeTo(G6VolumeEquation('cyl r=3 h=7').solve().points.single, 1e-12));
+      expect(G6VolumeEquation('cone r=3 h=6').solve().points.single,
+          closeTo(math.pi * 3 * 3 * 6 / 3, 1e-9));
+      expect(G6VolumeEquation('cone h=6 r=3').solve().points.single,
+          closeTo(math.pi * 3 * 3 * 6 / 3, 1e-9));
+      expect(G6VolumeEquation('prism h=2 w=3 l=5').solve().points.single,
+          closeTo(30, 1e-9));
+      expect(
+          G6VolumeEquation('prism h=2 w=3 l=5').solve().points.single,
+          closeTo(
+              G6VolumeEquation('prism l=5 w=3 h=2').solve().points.single,
+              1e-12));
+      expect(G6VolumeEquation('pyramid h=6 s=4').solve().points.single,
+          closeTo(32, 1e-9));
+      expect(
+          G6VolumeEquation('pyramid h=6 s=4').solve().points.single,
+          closeTo(G6VolumeEquation('pyramid s=4 h=6').solve().points.single,
+              1e-12));
+      expect(G6VolumeEquation('cube s=4').solve().points.single,
+          closeTo(64, 1e-9));
+      expect(G6VolumeEquation('sphere r=3').solve().points.single,
+          closeTo(4 / 3 * math.pi * 27, 1e-9));
+    });
+
+    // BUG B regression: positional inputs keep working.
+    test('BUG B regression: positional inputs unchanged', () {
+      expect(G6VolumeEquation('prism 5x3x2').solve().points.single,
+          closeTo(30, 1e-9));
+      expect(G6VolumeEquation('cyl 3 7').solve().points.single,
+          closeTo(math.pi * 9 * 7, 1e-9));
+      expect(G6VolumeEquation('pyramid 4x4 h=6').solve().points.single,
+          closeTo(32, 1e-9));
+      expect(G6VolumeEquation('cube s=4').solve().points.single,
+          closeTo(64, 1e-9));
     });
   });
 
@@ -230,11 +307,15 @@ void main() {
         G6GeometryEquation('circle r=7'),
         G6GeometryEquation('circle d=14'),
         G6GeometryEquation('composite 6x4 + 3x2'),
+        G6GeometryEquation('rect 6m x 4m'),
         G6VolumeEquation('cube s=4'),
         G6VolumeEquation('prism 5x3x2'),
         G6VolumeEquation('cyl r=3 h=7'),
+        G6VolumeEquation('cyl h=7 r=3'),
         G6VolumeEquation('cone r=3 h=6'),
+        G6VolumeEquation('cone h=6 r=3'),
         G6VolumeEquation('pyramid 4x4 h=6'),
+        G6VolumeEquation('pyramid s=4 h=6'),
         G6VolumeEquation('sphere r=3'),
         G6PieEquation('Math 40, Science 30, English 30'),
         G6PieEquation('40, 30, 30'),
@@ -266,11 +347,15 @@ void main() {
         G6GeometryEquation('circle r=7'),
         G6GeometryEquation('circle d=14'),
         G6GeometryEquation('composite 6x4 + 3x2'),
+        G6GeometryEquation('rect 6m x 4m'),
         G6VolumeEquation('cube s=4'),
         G6VolumeEquation('prism 5x3x2'),
         G6VolumeEquation('cyl r=3 h=7'),
+        G6VolumeEquation('cyl h=7 r=3'),
         G6VolumeEquation('cone r=3 h=6'),
+        G6VolumeEquation('cone h=6 r=3'),
         G6VolumeEquation('pyramid 4x4 h=6'),
+        G6VolumeEquation('pyramid s=4 h=6'),
         G6VolumeEquation('sphere r=3'),
         G6PieEquation('Math 40, Science 30, English 30'),
         G6PieEquation('40, 30, 30'),

@@ -37,9 +37,25 @@ class G6VolumeEquation extends BaseEquation {
   static List<double> _all(String s) =>
       _n.allMatches(s).map((m) => double.parse(m.group(0)!)).toList();
 
+  /// `label=value` pairs (r=3, h=7, l=5, w=3, s=4). Dimensions used to be read
+  /// positionally, so the labels were ignored and `cyl h=7 r=3` computed r=7,
+  /// h=3 — a numerically WRONG volume (BUG B).
+  static Map<String, double> _labels(String t) {
+    final Map<String, double> m = <String, double>{};
+    for (final Match match
+        in RegExp(r'([a-z]+)\s*=\s*(-?\d+(?:\.\d+)?)').allMatches(t)) {
+      m[match.group(1)!] = double.parse(match.group(2)!);
+    }
+    return m;
+  }
+
   _VolParsed? _parse() {
     final String t = rawInput.toLowerCase().replaceAll('−', '-');
     if (t.startsWith('cube')) {
+      final Map<String, double> lb = _labels(t);
+      if (lb.containsKey('s')) {
+        return _VolParsed(solid: _Solid.cube, dims: [lb['s']!]);
+      }
       final List<double> d = _all(t);
       if (d.length == 1) {
         return _VolParsed(solid: _Solid.cube, dims: d);
@@ -47,6 +63,11 @@ class G6VolumeEquation extends BaseEquation {
       return null;
     }
     if (t.startsWith('prism') || t.startsWith('box') || t.startsWith('rect')) {
+      final Map<String, double> lb = _labels(t);
+      if (lb.containsKey('l') && lb.containsKey('w') && lb.containsKey('h')) {
+        return _VolParsed(
+            solid: _Solid.prism, dims: [lb['l']!, lb['w']!, lb['h']!]);
+      }
       final List<double> d = _all(t);
       if (d.length == 3) {
         return _VolParsed(solid: _Solid.prism, dims: d);
@@ -54,6 +75,10 @@ class G6VolumeEquation extends BaseEquation {
       return null;
     }
     if (t.startsWith('cyl')) {
+      final Map<String, double> lb = _labels(t);
+      if (lb.containsKey('r') && lb.containsKey('h')) {
+        return _VolParsed(solid: _Solid.cylinder, dims: [lb['r']!, lb['h']!]);
+      }
       final List<double> d = _all(t);
       if (d.length == 2) {
         return _VolParsed(solid: _Solid.cylinder, dims: d);
@@ -61,6 +86,10 @@ class G6VolumeEquation extends BaseEquation {
       return null;
     }
     if (t.startsWith('cone')) {
+      final Map<String, double> lb = _labels(t);
+      if (lb.containsKey('r') && lb.containsKey('h')) {
+        return _VolParsed(solid: _Solid.cone, dims: [lb['r']!, lb['h']!]);
+      }
       final List<double> d = _all(t);
       if (d.length == 2) {
         return _VolParsed(solid: _Solid.cone, dims: d);
@@ -68,6 +97,15 @@ class G6VolumeEquation extends BaseEquation {
       return null;
     }
     if (t.startsWith('pyr')) {
+      final Map<String, double> lb = _labels(t);
+      if (lb.containsKey('s') && lb.containsKey('h')) {
+        final double s = lb['s']!;
+        return _VolParsed(solid: _Solid.pyramid, dims: [s, s, lb['h']!]);
+      }
+      if (lb.containsKey('l') && lb.containsKey('w') && lb.containsKey('h')) {
+        return _VolParsed(
+            solid: _Solid.pyramid, dims: [lb['l']!, lb['w']!, lb['h']!]);
+      }
       final List<double> d = _all(t);
       if (d.length == 2) {
         return _VolParsed(solid: _Solid.pyramid, dims: [d[0], d[0], d[1]]);
@@ -78,6 +116,10 @@ class G6VolumeEquation extends BaseEquation {
       return null;
     }
     if (t.startsWith('sph')) {
+      final Map<String, double> lb = _labels(t);
+      if (lb.containsKey('r')) {
+        return _VolParsed(solid: _Solid.sphere, dims: [lb['r']!]);
+      }
       final List<double> d = _all(t);
       if (d.length == 1) {
         return _VolParsed(solid: _Solid.sphere, dims: d);

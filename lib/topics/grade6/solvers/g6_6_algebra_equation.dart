@@ -138,22 +138,28 @@ class G6AlgebraEquation extends BaseEquation {
       );
     }
     if (leftVar) {
+      // For a var-first binary (`x + 7`) the operand is the trailing constant
+      // (slot 3); for a var-second binary (`12 - x`) it is the leading constant
+      // (slot 2). Blindly reading slot 3 put 0 in the operand slot, so
+      // `20 - x = 8` solved as `0 - x = 8` (BUG A).
+      final bool varFirst = left[5] as bool;
       return _AlgebraParsed(
         variable: left[1] as String,
         op: left[4] as String,
-        operand: (left[3] as double),
+        operand: varFirst ? (left[3] as double) : (left[2] as double),
         target: right[3] as double,
         varOnRight: false,
-        varFirst: left[5] as bool,
+        varFirst: varFirst,
       );
     }
+    final bool varFirst = right[5] as bool;
     return _AlgebraParsed(
       variable: right[1] as String,
       op: right[4] as String,
-      operand: (right[3] as double),
+      operand: varFirst ? (right[3] as double) : (right[2] as double),
       target: left[3] as double,
       varOnRight: true,
-      varFirst: right[5] as bool,
+      varFirst: varFirst,
     );
   }
 

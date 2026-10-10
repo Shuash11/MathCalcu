@@ -59,6 +59,11 @@ class G6GeometryEquation extends BaseEquation {
     if (t.contains('mm')) {
       return 'mm';
     }
+    // A unit suffix attached to a number ('6m', '4m') — the standalone-m
+    // regex below misses it, so 'rect 6m x 4m' used to default to cm (BUG C).
+    if (RegExp(r'\d\s*m(?![a-z])').hasMatch(t)) {
+      return 'm';
+    }
     if (RegExp(r'(^|[\s,=])m([\s,]|$)').hasMatch(t)) {
       return 'm';
     }
