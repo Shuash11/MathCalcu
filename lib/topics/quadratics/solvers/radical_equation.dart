@@ -32,6 +32,18 @@ class RadicalEquation extends BaseEquation {
     }
   }
 
+  /// Evaluates [expr] with every `x` replaced by [v], probing a
+  /// linear radicand/right side. CalculatorEngine has no
+  /// implicit-multiplication rule, so `2x`, `2(x)` and `(x+1)(x-2)`
+  /// must first be normalised to explicit `*` — otherwise the
+  /// coefficient form cannot be probed and valid input is rejected.
+  double? _probeX(String expr, int v) {
+    final s = expr
+        .replaceAll('x', '($v)')
+        .replaceAllMapped(RegExp(r'(\d|\))\s*\('), (m) => '${m.group(1)}*(');
+    return _eval(s);
+  }
+
   /// Parses the left side into (m, k, b, inside): sqrt(m*x + k) + b.
   /// Null when the left side is unsupported.
   List<dynamic>? _parseLeft(String left) {
@@ -39,12 +51,16 @@ class RadicalEquation extends BaseEquation {
     if (sm == null) return null;
     if ('sqrt'.allMatches(left).length != 1) return null;
     final inside = sm.group(1)!;
-    // Inside must be linear: m*x+k.
-    final f0 = _eval(inside.replaceAll('x', '(0)'));
-    final f1 = _eval(inside.replaceAll('x', '(1)'));
-    if (f0 == null || f1 == null) return null;
+    // Inside must be linear: m*x+k. Probe 0,1,2 and require the third
+    // point to lie on the line (symmetry with the right-side check) —
+    // otherwise a quadratic radicand like 'x^2' is mis-read as linear.
+    final f0 = _probeX(inside, 0);
+    final f1 = _probeX(inside, 1);
+    final f2 = _probeX(inside, 2);
+    if (f0 == null || f1 == null || f2 == null) return null;
     final m = f1 - f0, k = f0;
     if (m.abs() < 1e-12) return null;
+    if ((f2 - (2 * m + k)).abs() > 1e-9) return null; // not linear
     final rest = left.replaceFirst(sm.group(0)!, '');
     double b = 0;
     if (rest.isNotEmpty) {
@@ -72,9 +88,9 @@ class RadicalEquation extends BaseEquation {
     if (rhsNum != null) return [m, k, b, rhsNum, inside];
     // Right side has x: must be linear in x (probe 0, 1, 2).
     if (!rhsRaw.contains('x')) return null;
-    final g0 = _eval(rhsRaw.replaceAll('x', '(0)'));
-    final g1 = _eval(rhsRaw.replaceAll('x', '(1)'));
-    final g2 = _eval(rhsRaw.replaceAll('x', '(2)'));
+    final g0 = _probeX(rhsRaw, 0);
+    final g1 = _probeX(rhsRaw, 1);
+    final g2 = _probeX(rhsRaw, 2);
     if (g0 == null || g1 == null || g2 == null) return null;
     final r = g1 - g0, s = g0;
     if ((g2 - (2 * r + s)).abs() > 1e-9) return null; // not linear

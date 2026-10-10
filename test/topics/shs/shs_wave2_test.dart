@@ -205,6 +205,60 @@ void main() {
       final sph = RelatedRatesEquation('sphere r = 3, dr/dt = 0.5').getSteps();
       expect(sph[2].latex, contains(r'\frac{dV}{dt}'));
     });
+
+    test('validate() agrees with solve() — the sphere defect input', () {
+      final eq = RelatedRatesEquation('sphere r = 3, dr/dt = 0.5');
+      expect(eq.validate(), isTrue); // pre-fix: false (no max/min/rate keyword)
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('56.548668')); // dV/dt = 4*pi*r^2*dr
+      expect(r.answer, contains('37.699112')); // dA/dt = 8*pi*r*dr
+    });
+
+    test(
+      'validate() is TRUE exactly when solve() is non-error (both directions)',
+      () {
+        const expected = {
+          // solvable -> validate TRUE
+          'max xy, x + y = 20': true,
+          'min xy, x+y=20': true,
+          'rect P = 40 max area': true,
+          'rect P = 40': true, // solvable without a max/rate keyword
+          'sphere r = 3, dr/dt = 0.5': true,
+          'sphere r=3, dr=0.5': true,
+          'balloon r = 2, dr/dt = 1': true,
+          'sphere r = 3, dr/dt=0.5 max': true,
+          // not solvable -> validate FALSE
+          'hello': false,
+          '   ': false,
+          'p=40': false,
+          'x+y=20': false,
+          'rate x+y=20': false, // keyword present but solve() cannot do it
+          'max x+y=abc': false, // no numeric S
+          'rect P = -5 max area': false, // P must be > 0
+          'rect step=40 max area': false, // no bounded p=
+          'rect shape=40 max area': false, // no bounded p=
+          'ladder rate': false, // ladder not implemented -> solve errors
+          'ladder L=10 rate': false,
+          'ladder L = 10, x = 6, dx/dt = 2': false,
+          'sphere r = 0, dr/dt = 1': false, // r must be > 0
+          'sphere r = 3, dr/dt = x': false, // no numeric dr
+          'sphere r = 3': false, // missing dr
+        };
+        for (final entry in expected.entries) {
+          final eq = RelatedRatesEquation(entry.key);
+          final valid = eq.validate();
+          final err = eq.solve().hasError;
+          expect(valid, entry.value, reason: entry.key);
+          expect(
+            valid,
+            !err,
+            reason:
+                'validate() must equal !solve().hasError for ${entry.key}',
+          );
+        }
+      },
+    );
   });
 
   group("L'Hopital (college-lhopital)", () {

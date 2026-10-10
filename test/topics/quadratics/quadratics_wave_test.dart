@@ -1,4 +1,6 @@
 // Quadratics wave tests (Cycle 8 P1-2): registry wiring + solve smoke.
+import 'dart:math' as math;
+
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/topics/quadratics/solvers/polynomial_division_equation.dart';
 import 'package:calculus_system/topics/quadratics/solvers/quadratic_equation.dart';
@@ -166,6 +168,13 @@ void main() {
         RadicalEquation('sqrt(x + 5) - 1 = 2'),
         RadicalEquation('sqrt(x+5)=x'),
         RadicalEquation('sqrt(x+6)=x'),
+        RadicalEquation('sqrt(2x + 1) - 1 = 2'),
+        RadicalEquation('sqrt(3x+2)=5'),
+        RadicalEquation('sqrt(-2x+9)=3'),
+        RadicalEquation('sqrt(0.5x+1)=2'),
+        RadicalEquation('sqrt(2x+1)=x'),
+        RadicalEquation('sqrt(2x+1)=2x+1'),
+        RadicalEquation('sqrt(x+5)=2x+1'),
         QuadraticEquation('x^2 - 5x + 6 = 0'),
         QuadraticEquation('x^2 + 1 = 0'),
         QuadraticEquation('x^2 - 2x + 1 = 0'),
@@ -200,6 +209,13 @@ void main() {
         RadicalEquation('sqrt(x + 5) - 1 = 2'),
         RadicalEquation('sqrt(x+5)=x'),
         RadicalEquation('sqrt(x+6)=x'),
+        RadicalEquation('sqrt(2x + 1) - 1 = 2'),
+        RadicalEquation('sqrt(3x+2)=5'),
+        RadicalEquation('sqrt(-2x+9)=3'),
+        RadicalEquation('sqrt(0.5x+1)=2'),
+        RadicalEquation('sqrt(2x+1)=x'),
+        RadicalEquation('sqrt(2x+1)=2x+1'),
+        RadicalEquation('sqrt(x+5)=2x+1'),
         QuadraticEquation('x^2 - 5x + 6 = 0'),
         QuadraticEquation('x^2 + 1 = 0'),
         QuadraticEquation('x^2 - 2x + 1 = 0'),
@@ -216,6 +232,97 @@ void main() {
       expect(checked, greaterThan(0));
       // Guard: a deliberately-malformed string MUST fire the fallback.
       expect(await _parses(tester, '\\frac{1}{'), isFalse);
+    });
+  });
+
+  group('RadicalEquation — coefficient family (Tier C1 self-example fix)', () {
+    // A numeric coefficient written as an implicit product ('2x') made the
+    // 0/1 probe string '2(0)+1' unparseable by CalculatorEngine (no implicit
+    // ×), so the solver rejected its OWN advertised example.
+    void expectRoot(String input, double root) {
+      final eq = RadicalEquation(input);
+      expect(eq.validate(), isTrue, reason: input);
+      final r = eq.solve();
+      expect(r.hasError, isFalse, reason: input);
+      expect(r.points, hasLength(1), reason: input);
+      expect(r.points.single, closeTo(root, 1e-6), reason: input);
+    }
+
+    test('the solver accepts its own advertised example', () {
+      final eq = RadicalEquation('sqrt(2x + 1) - 1 = 2');
+      expect(eq.validate(), isTrue); // pre-fix: false
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, 'x = 4');
+      expect(r.points, [4]);
+      expect(eq.getSteps(), hasLength(4));
+      expect(eq.getSteps().first.title, 'Domain'); // not 'Invalid input'
+    });
+
+    test('numeric coefficient family solves with correct answers', () {
+      expectRoot('sqrt(2x+1)=2', 1.5); // (4-1)/2
+      expectRoot('sqrt(2 x + 1) - 1 = 2', 4); // coefficient with a space
+      expectRoot('sqrt( 2 x + 1 ) = 3', 4); // spaces inside the root
+      expectRoot('sqrt(3x+2)=5', 23 / 3); // (25-2)/3
+      expectRoot('sqrt(1x+5)=3', 4); // explicit coefficient 1
+      expectRoot('sqrt(0.5x+1)=2', 6); // decimal coefficient
+      expectRoot('sqrt(-2x+9)=3', 0); // negative coefficient
+      expectRoot('sqrt(3x+2)+1=4', 7 / 3); // b != 0
+      expectRoot('sqrt(2x+1)=x', 1 + math.sqrt(2)); // x-term right side
+      expectRoot('sqrt(x+5)=2x+1', (math.sqrt(73) - 3) / 8);
+    });
+
+    test('nested-paren radicand is outside the shared radicand regex', () {
+      // The radicand regex sqrt\(([^)]+)\) stops at the first ')', so
+      // sqrt(2(x)+1) was never accepted (pre-existing boundary, unrelated to
+      // the coefficient fix). No-paren implicit products like 2x DO now work.
+      expect(RadicalEquation('sqrt(2(x)+1)=3').validate(), isFalse);
+      expectRoot('sqrt(2x+1)=3', 4); // equivalent no-paren form solves
+    });
+
+    test('two-root coefficient case: both candidates verify', () {
+      final eq = RadicalEquation('sqrt(2x+1)-1=2x');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.points, hasLength(2));
+      expect(r.points[0], closeTo(-0.5, 1e-9));
+      expect(r.points[1], closeTo(0, 1e-9));
+    });
+
+    test('genuinely malformed / out-of-scope input is still rejected', () {
+      const bad = [
+        'hello world', // no radical
+        'sqrt(x+5)', // no equals sign
+        '2x+1=5', // no square root
+        'sqrt(x+1)+sqrt(x+2)=3', // two roots
+        'sqrt(x+5)=x^2', // nonlinear right side
+        'sqrt(x+5)=2x^2+1', // nonlinear right side
+        'sqrt(2x^2+1)=3', // nonlinear radicand
+        'sqrt(x^2)=3', // nonlinear radicand
+        'SQRT(2x+1)-1=2', // uppercase fn not recognised
+      ];
+      for (final s in bad) {
+        final eq = RadicalEquation(s);
+        expect(eq.validate(), isFalse, reason: s);
+        expect(eq.solve().hasError, isTrue, reason: s);
+        expect(eq.getSteps().first.title, 'Invalid input', reason: s);
+      }
+    });
+
+    test('previously-working shapes are unchanged', () {
+      final a = RadicalEquation('sqrt(x + 5) = 3');
+      expect(a.validate(), isTrue);
+      expect(a.solve().points, [4]);
+      final b = RadicalEquation('sqrt(x + 5) - 1 = 2');
+      expect(b.validate(), isTrue);
+      expect(b.solve().answer, 'x = 4');
+      final c = RadicalEquation('sqrt(x) = x');
+      expect(c.validate(), isTrue);
+      expect(c.solve().points, hasLength(2));
+      final d = RadicalEquation('sqrt(x + 5) = x');
+      expect(d.validate(), isTrue);
+      expect(d.solve().points.single, closeTo(2.791288, 1e-5));
     });
   });
 }

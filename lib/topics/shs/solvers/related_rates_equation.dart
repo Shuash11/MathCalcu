@@ -29,22 +29,16 @@ class RelatedRatesEquation extends BaseEquation {
       _error = empty;
       return false;
     }
-    final t = rawInput.toLowerCase();
-    final ok =
-        (t.contains('max') || t.contains('min') || t.contains('rate')) &&
-        (t.contains('x+y') ||
-            t.contains('x + y') ||
-            t.contains('rect') ||
-            t.contains('p=') ||
-            t.contains('sphere') ||
-            t.contains('balloon') ||
-            t.contains('ladder'));
-    if (!ok) {
-      _error = 'Supported: max xy with x+y=S, rect P=…, sphere r=… dr/dt=….';
-      return false;
-    }
+    // Validation mirrors solve()'s real acceptance exactly: true iff solve()
+    // can produce a non-error result. The keyword gate this replaces was
+    // both too strict (rejected solvable 'sphere r=3, dr/dt=0.5' and
+    // 'rect P=40') and too loose (accepted 'rate x+y=20' and
+    // 'ladder rate', which solve() cannot do). _error is cleared first so
+    // the probe reads a deterministic (null) state.
     _error = null;
-    return true;
+    if (!solve().hasError) return true;
+    _error = 'Supported: max xy with x+y=S, rect P=…, sphere r=… dr/dt=….';
+    return false;
   }
 
   double? _num(String name) {
