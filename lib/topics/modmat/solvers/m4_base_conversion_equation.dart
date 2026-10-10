@@ -80,16 +80,39 @@ class M4BaseConversionEquation extends BaseEquation {
 
   static const _digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+  /// Largest magnitude this calculator converts exactly (int64-safe bound).
+  static const int _maxValue = 1 << 62;
+
   static int? toDecimal(String digits, int base) {
     var value = 0;
     for (final ch in digits.toUpperCase().split('')) {
       final d = _digits.indexOf(ch);
       if (d < 0 || d >= base) return null;
+      // BUG B fix: reject BEFORE the multiply-add can wrap. The old guard
+      // ('value > 1<<62', checked after the add) is false once the accumulator
+      // has wrapped negative, so huge inputs slipped through; and a single
+      // multiply-add could even wrap back to a small POSITIVE value. Checking
+      // the bound up front makes overflow impossible and is symmetric.
+      if (value > (_maxValue - d) ~/ base) return null;
       value = value * base + d;
-      if (value > 1 << 62) return null;
     }
     return value;
   }
+
+  /// True when every character of [digits] is a legal digit for [base].
+  static bool _digitsLegalForBase(String digits, int base) {
+    for (final ch in digits.toUpperCase().split('')) {
+      final d = _digits.indexOf(ch);
+      if (d < 0 || d >= base) return false;
+    }
+    return true;
+  }
+
+  /// Message for a rejected conversion, distinguishing a bad DIGIT from an
+  /// out-of-range MAGNITUDE (Bug B: a size problem used to be mislabelled as a
+  /// digits problem and, worse, sometimes produced an empty answer).
+  static const String _magnitudeMessage =
+      'That value exceeds the largest integer this calculator converts exactly.';
 
   static String fromDecimal(int value, int base) {
     if (value == 0) return '0';
@@ -115,8 +138,14 @@ class M4BaseConversionEquation extends BaseEquation {
       _error = 'Use 1011 base2 to base10, FF hex to dec, or 0xFF to bin.';
       return false;
     }
-    if (toDecimal(p[0] as String, p[1] as int) == null) {
-      _error = 'Digits do not fit the source base — e.g. binary is 0/1 only.';
+    final digits = p[0] as String;
+    final from = p[1] as int;
+    if (toDecimal(digits, from) == null) {
+      // Distinguish a bad digit from an out-of-range magnitude so the user is
+      // never told "digits do not fit" when the real problem is size (Bug B).
+      _error = _digitsLegalForBase(digits, from)
+          ? _magnitudeMessage
+          : 'Digits do not fit the source base — e.g. binary is 0/1 only.';
       return false;
     }
     _error = null;
@@ -134,8 +163,9 @@ class M4BaseConversionEquation extends BaseEquation {
     final to = p[2] as int;
     final dec = toDecimal(digits, from);
     if (dec == null) {
-      return SolveResult.error(
-          'Digits do not fit base $from — check each digit < $from.');
+      return SolveResult.error(_digitsLegalForBase(digits, from)
+          ? _magnitudeMessage
+          : 'Digits do not fit base $from — check each digit < $from.');
     }
     final out = fromDecimal(dec, to);
     return SolveResult(

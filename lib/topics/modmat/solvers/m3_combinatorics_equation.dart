@@ -69,6 +69,9 @@ class M3CombinatoricsEquation extends BaseEquation {
   }
 
   /// nCr via the multiplicative recurrence (exact division each step).
+  /// NOTE: exact only while every 64-bit intermediate stays in range — the
+  /// product `out * (n - r + i)` overflows for larger inputs (e.g. C(66,33))
+  /// even when the final value fits. solve() therefore uses [_combBig].
   static int comb(int n, int r) {
     if (r > n - r) r = n - r;
     var out = 1;
@@ -76,6 +79,40 @@ class M3CombinatoricsEquation extends BaseEquation {
       out = out * (n - r + i) ~/ i;
     }
     return out;
+  }
+
+  // ── Exact (BigInt) engine ────────────────────────────────────
+  // BUG A fix: nCr/nPr are accumulated in BigInt so a 64-bit intermediate can
+  // never silently wrap. solve() narrows to int only when the exact value fits
+  // int64 (so every previously-correct small case is byte-identical), and
+  // otherwise returns an explicit error instead of a wrong (often negative
+  // wrapped) number.
+
+  /// Largest value this 64-bit calculator represents exactly (int64 max).
+  static final BigInt _maxExact = BigInt.from(9223372036854775807);
+
+  /// nPr = n·(n−1)·…·(n−r+1) with no 64-bit limit.
+  static BigInt _permBig(int n, int r) {
+    var out = BigInt.one;
+    for (var i = 0; i < r; i++) {
+      out *= BigInt.from(n - i);
+    }
+    return out;
+  }
+
+  /// nCr via the multiplicative recurrence, exact in BigInt at every step.
+  static BigInt _combBig(int n, int r) {
+    if (r > n - r) r = n - r;
+    var out = BigInt.one;
+    for (var i = 1; i <= r; i++) {
+      out = out * BigInt.from(n - r + i) ~/ BigInt.from(i);
+    }
+    return out;
+  }
+
+  static String _overflowMessage(String mode, int n, int r) {
+    final sym = mode == 'nPr' ? 'P($n,$r)' : 'C($n,$r)';
+    return '$sym exceeds the largest integer this calculator computes exactly.';
   }
 
   @override
@@ -134,7 +171,14 @@ class M3CombinatoricsEquation extends BaseEquation {
     if (r == null || r < 0 || r > n) {
       return SolveResult.error('Need 0 ≤ r ≤ n.');
     }
-    final v = mode == 'nPr' ? perm(n, r) : comb(n, r);
+    // BUG A fix: compute the exact value in BigInt, then narrow to int only
+    // when it fits int64. Anything larger is rejected with a precise message
+    // rather than returned as a wrapped (often negative) number.
+    final big = mode == 'nPr' ? _permBig(n, r) : _combBig(n, r);
+    if (big > _maxExact) {
+      return SolveResult.error(_overflowMessage(mode, n, r));
+    }
+    final v = big.toInt();
     final sym = mode == 'nPr' ? 'P($n,$r)' : 'C($n,$r)';
     return SolveResult(
       answer: '$sym = $v',

@@ -141,6 +141,45 @@ void main() {
       expect(() => eq.solve(), returnsNormally);
       expect(() => eq.getSteps(), returnsNormally);
     });
+
+    // ── BUG A (pre-existing, silent int64 overflow) ──────────────────────
+    // validate() had no magnitude guard, so nCr/nPr results were accumulated
+    // in 64-bit int and silently wrapped. These inputs are well-formed and
+    // inside the solver's stated domain (n <= 100, 0 <= r <= n), so validate()
+    // still returns true — but solve() must now return an EXPLICIT error for
+    // any value that cannot be represented exactly, never a wrapped number.
+    test('BUG A: overflowing C/P never return a wrapped (wrong) value', () {
+      for (final input in ['C(67,33)', 'C(100,50)', 'P(30,15)', 'P(100,50)']) {
+        final eq = M3CombinatoricsEquation(input);
+        expect(eq.validate(), isTrue,
+            reason: '$input is well-formed and within 0 <= r <= n <= 100');
+        final r = eq.solve();
+        expect(r.hasError, isTrue,
+            reason: '$input silently overflowed instead of erroring');
+        expect(r.errorMessage, isNotNull);
+        expect(r.errorMessage, contains('exceeds the largest integer'));
+        // An error result carries no answer — never the old wrapped value.
+        expect(r.answer.trim(), isEmpty);
+        expect(r.answer, isNot(contains('-')));
+        expect(() => eq.getSteps(), returnsNormally);
+      }
+    });
+
+    test('BUG A regression: values that fit int64 stay exact', () {
+      // Small cases must be byte-identical to before the fix.
+      expect(M3CombinatoricsEquation('C(5,2)').solve().answer, 'C(5,2) = 10');
+      expect(M3CombinatoricsEquation('P(5,2)').solve().answer, 'P(5,2) = 20');
+      expect(M3CombinatoricsEquation('C(20,10)').solve().answer,
+          'C(20,10) = 184756');
+      expect(M3CombinatoricsEquation('5!').solve().answer, contains('120'));
+      // Large-but-representable cases: the 64-bit multiplicative recurrence
+      // overflowed its intermediate product even though the final value fits,
+      // so these were silently wrong too and are now exact.
+      expect(M3CombinatoricsEquation('C(65,32)').solve().answer,
+          'C(65,32) = 3609714217008132870');
+      expect(M3CombinatoricsEquation('C(66,33)').solve().answer,
+          'C(66,33) = 7219428434016265740');
+    });
   });
 
   group('M4 base conversion', () {
@@ -174,6 +213,56 @@ void main() {
       final eq = M4BaseConversionEquation('hello');
       expect(eq.validate(), isFalse);
       expect(() => eq.solve(), returnsNormally);
+    });
+
+    // ── BUG B (pre-existing, guard bypass -> empty answer) ───────────────
+    // toDecimal's guard was one-sided ('value > 1<<62'), which is false once
+    // the int64 accumulator has WRAPPED NEGATIVE, so a huge hex literal slid
+    // through validate() and produced an EMPTY answer with hasError == false.
+    test('BUG B: out-of-range hex magnitude is rejected, never empty', () {
+      const hex = 'FFFFFFFFFFFFFFFFFF'; // 18 F's == 2^72 - 1
+      final eq = M4BaseConversionEquation('$hex hex to dec');
+      expect(eq.validate(), isFalse);
+      final r = eq.solve();
+      expect(r.hasError, isTrue);
+      expect(r.answer.trim(), isEmpty); // no bogus '... =  (base 10)' line
+      expect(r.errorMessage, contains('exceeds the largest integer'));
+      // A size problem must NOT be reported as a bad digit.
+      expect(r.errorMessage, isNot(contains('do not fit')));
+      expect(() => eq.getSteps(), returnsNormally);
+    });
+
+    test('BUG B sibling: value just over 1<<62 gets the magnitude message',
+        () {
+      // 16 hex F's (2^64 - 1) wrapped to -1 and slipped through entirely;
+      // 2^62 + 1 was caught but reported with the misleading 'digits' message.
+      for (final hex in ['FFFFFFFFFFFFFFFF', '4000000000000001']) {
+        final eq = M4BaseConversionEquation('$hex hex to dec');
+        expect(eq.validate(), isFalse);
+        final r = eq.solve();
+        expect(r.hasError, isTrue);
+        expect(r.errorMessage, contains('exceeds the largest integer'));
+        expect(r.errorMessage, isNot(contains('do not fit')));
+      }
+    });
+
+    test('BUG B regression: in-range conversions stay exact', () {
+      expect(M4BaseConversionEquation('1011 base2 to base10').solve().answer,
+          contains('11 (base 10)'));
+      expect(M4BaseConversionEquation('FF hex to dec').solve().answer,
+          contains('255 (base 10)'));
+      expect(M4BaseConversionEquation('255 dec to hex').solve().answer,
+          contains('FF (base 16)'));
+      // Exactly on the bound (2^62 = 4611686018427387904) still converts.
+      expect(
+          M4BaseConversionEquation('4000000000000000 hex to dec')
+              .solve()
+              .answer,
+          contains('4611686018427387904 (base 10)'));
+      // A genuine bad-digit input keeps the digits message (not the size one).
+      final bad = M4BaseConversionEquation('102 base2 to base10');
+      expect(bad.validate(), isFalse);
+      expect(bad.solve().errorMessage, contains('do not fit'));
     });
   });
 
