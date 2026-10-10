@@ -335,3 +335,89 @@ jobs:
             evidence/MathCalcu-debug-unsigned.apk
           if-no-files-found: error
           retention-days: 14
+
+  test-web-numerics:
+    name: Web-target modmat numerics on exact PR head
+    # Deliberately NOT gated with `needs: verify`. This is a correctness gate, and
+    # `needs: verify` would mark it "skipped" (i.e. green) whenever an unrelated
+    # verify failure (e.g. the dart-format or analyzer-baseline steps) occurs,
+    # silently hiding the very regression it exists to catch. It must always run.
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      # ubuntu-latest ships Google Chrome stable preinstalled at this path, and
+      # `flutter test --platform chrome` drives a real Chrome and needs
+      # CHROME_EXECUTABLE to locate it. Relying on the preinstalled browser keeps
+      # this workflow's action surface limited to the actions/* and subosito
+      # actions it already trusts (browser-actions/setup-chrome would add an
+      # extra unpinned third-party action for no gain here).
+      CHROME_EXECUTABLE: /usr/bin/google-chrome
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.6'
+
+      - name: Assert exact checkout provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_head_sha="$(git -C head rev-parse HEAD)"
+          test "$actual_head_sha" = "$EXPECTED_HEAD_SHA"
+          export actual_head_sha
+          mkdir -p evidence
+          python3 - <<'PY'
+          import json
+          import os
+
+          provenance = {
+              "artifactType": "web-target-numerics-logs",
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "pullRequest": os.environ["PR_NUMBER"],
+              "workflowRunId": os.environ["GITHUB_RUN_ID"],
+              "job": os.environ["GITHUB_JOB"],
+              "expectedHeadSha": os.environ["EXPECTED_HEAD_SHA"],
+              "actualHeadSha": os.environ["actual_head_sha"],
+          }
+          with open("evidence/provenance.json", "w", encoding="utf-8") as output:
+              json.dump(provenance, output, indent=2, sort_keys=True)
+              output.write("\n")
+          PY
+
+      - name: Run web-target modmat numerics on exact head
+        working-directory: head
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter pub get
+          # Web-TARGET regression gate. dart2js models `int` as a JS double, so a
+          # 32-bit `int <<` and any magnitude above 2^53 are wrong ONLY on the
+          # web target: the VM suite (`flutter test`) and the web BUILD
+          # (`flutter build web`) are both blind to this class. These assertions
+          # therefore only have teeth under real web semantics, so they run on
+          # Chrome rather than the VM.
+          #
+          # NOTE: `flutter test --platform chrome` HANGS on Windows hosts (it
+          # stalls forever at 'loading ...' because Chrome never attaches - a
+          # known transport bug); it runs correctly on Linux, which is why this
+          # job is pinned to runs-on: ubuntu-latest. Do NOT move this gate to a
+          # Windows runner.
+          flutter test --platform chrome test/topics/modmat/modmat_numerics_web_test.dart 2>&1 | tee ../evidence/web-target-numerics.txt
+
+      - name: Upload web-target numerics evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathcalcu-web-target-numerics-${{ github.event.pull_request.head.sha }}
+          path: evidence
+          if-no-files-found: error
+          retention-days: 14
