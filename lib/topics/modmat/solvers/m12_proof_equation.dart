@@ -40,7 +40,7 @@ class M12ProofEquation extends BaseEquation {
   }
 
   /// [closedForm, lhsAt] for n.
-  static List<int> _values(String id, int n) {
+  static List<dynamic> _values(String id, int n) {
     switch (id) {
       case 'k2':
         return [n * (n + 1) * (2 * n + 1) ~/ 6, _direct(id, n)];
@@ -48,19 +48,36 @@ class M12ProofEquation extends BaseEquation {
         final t = n * (n + 1) ~/ 2;
         return [t * t, _direct(id, n)];
       case 'pow2':
-        return [(1 << (n + 1)) - 2, _direct(id, n)];
+        return [_pow2Closed(n), _direct(id, n)];
       default:
         return [n * (n + 1) ~/ 2, _direct(id, n)];
     }
   }
 
-  static int _direct(String id, int n) {
+  /// Σ2^k closed form 2^(n+1) − 2, held in BigInt so it is EXACT ON BOTH
+  /// TARGETS. dart2js models `int <<` as a 32-bit JavaScript shift, so the old
+  /// `(1 << (n + 1)) - 2` silently became −2 for every n ≥ 31 on the web target
+  /// (the VM gives 2^(n+1) − 2); and for n ≥ 53 the result exceeds 2^53 and is
+  /// no longer exactly representable as a JS number, so it cannot round-trip
+  /// through `int` for display either. BigInt is arbitrary precision and is
+  /// identical on the VM and the web target.
+  static BigInt _pow2Closed(int n) => (BigInt.one << (n + 1)) - BigInt.two;
+
+  static dynamic _direct(String id, int n) {
+    if (id == 'pow2') {
+      // Same 2^k series, summed in BigInt (see [_pow2Closed]): `1 << k` is a
+      // 32-bit JS shift on the web target and this sum exceeds 2^53 for n ≥ 53.
+      var s = BigInt.zero;
+      for (var k = 1; k <= n; k++) {
+        s += BigInt.one << k;
+      }
+      return s;
+    }
     var s = 0;
     for (var k = 1; k <= n; k++) {
       s += switch (id) {
         'k2' => k * k,
         'k3' => k * k * k,
-        'pow2' => 1 << k,
         _ => k,
       };
     }

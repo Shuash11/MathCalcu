@@ -83,10 +83,11 @@ class M3CombinatoricsEquation extends BaseEquation {
 
   // ── Exact (BigInt) engine ────────────────────────────────────
   // BUG A fix: nCr/nPr are accumulated in BigInt so a 64-bit intermediate can
-  // never silently wrap. solve() narrows to int only when the exact value fits
-  // int64 (so every previously-correct small case is byte-identical), and
-  // otherwise returns an explicit error instead of a wrong (often negative
-  // wrapped) number.
+  // never silently wrap. solve() keeps the value in BigInt for DISPLAY
+  // (`.toString()`) — never round-tripping through `int`, which on the web
+  // target is a JS double that rounds above 2^53 — and returns an explicit
+  // error when the exact value does not fit int64 instead of a wrong (often
+  // negative wrapped) number.
 
   /// Largest value this 64-bit calculator represents exactly (int64 max,
   /// 2^63 − 1 = 9223372036854775807). Built via [BigInt.parse] rather than an
@@ -175,20 +176,22 @@ class M3CombinatoricsEquation extends BaseEquation {
     if (r == null || r < 0 || r > n) {
       return SolveResult.error('Need 0 ≤ r ≤ n.');
     }
-    // BUG A fix: compute the exact value in BigInt, then narrow to int only
-    // when it fits int64. Anything larger is rejected with a precise message
-    // rather than returned as a wrapped (often negative) number.
+    // BUG A fix + Phase 6: compute the exact value in BigInt and KEEP it in
+    // BigInt for display. Anything larger than int64 is rejected with a precise
+    // message rather than returned as a wrapped (often negative) number; and
+    // the answer text is produced from `BigInt.toString()`, so it never
+    // round-trips through `int` (a rounding JS double above 2^53 on the web
+    // target).
     final big = mode == 'nPr' ? _permBig(n, r) : _combBig(n, r);
     if (big > _maxExact) {
       return SolveResult.error(_overflowMessage(mode, n, r));
     }
-    final v = big.toInt();
     final sym = mode == 'nPr' ? 'P($n,$r)' : 'C($n,$r)';
     return SolveResult(
-      answer: '$sym = $v',
-      points: [v.toDouble()],
+      answer: '$sym = ${big.toString()}',
+      points: [big.toDouble()],
       customData: [
-        {'kind': 'combinatorics', 'mode': mode, 'n': n, 'r': r, 'value': v}
+        {'kind': 'combinatorics', 'mode': mode, 'n': n, 'r': r, 'value': big}
       ],
     );
   }

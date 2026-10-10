@@ -181,13 +181,16 @@ void main() {
           'C(66,33) = 7219428434016265740');
     });
 
-    // ── Phase 5 regression: the exactness bound is EXACTLY 2^63 − 1 ────────
+    // ── Phase 5/6 regression: the exactness bound is EXACTLY 2^63 − 1 ──────
     // _maxExact is held as `BigInt.parse('9223372036854775807')`, NOT the int
     // literal `9223372036854775807`: that literal is not representable as a JS
     // number, so dart2js hard-fails the compile and the WEB build breaks —
     // while `flutter analyze` and this VM suite (where the literal is a valid
-    // int64) stay green. That is why `flutter build web` is now a REQUIRED
-    // gate for any change touching numerics. These cases pin the OBSERVABLE
+    // int64) stay green. pr-ci.yml already runs `flutter build web --release`,
+    // so that COMPILE-time breakage is gated; but the build cannot see the
+    // silent SEMANTIC class these numerics suffer from (32-bit shifts, >2^53
+    // rounding), and no VM test can observe it either — that needs a web-TARGET
+    // test (see modmat_numerics_web_test.dart). These cases pin the OBSERVABLE
     // boundary so any drift in the constant (e.g. lowering it to a web-safe
     // 2^53) is caught here.
     test('boundary 2^63-1: largest fitting C(94,18) is accepted exactly', () {
@@ -212,6 +215,24 @@ void main() {
     test('boundary 2^63-1: C(65,32) stays exact at 3609714217008132870', () {
       expect(M3CombinatoricsEquation('C(65,32)').solve().answer,
           'C(65,32) = 3609714217008132870');
+    });
+
+    // ── Phase 6 regression: >2^53 nCr must never round through `int` ────────
+    // On the web target `int` is a JS double, so narrowing the BigInt to int
+    // for display rounded C(94,18) to ...626000 and C(65,32) to ...133000
+    // (exact values end ...625829 / ...132870). solve() now formats via
+    // BigInt.toString(). These assertions are VM-observable (the VM int64 is
+    // exact, so they pass before and after) — the defect itself is invisible
+    // to this VM suite; modmat_numerics_web_test.dart is what actually pins it
+    // on the web target.
+    test('Phase6: >2^53 nCr renders exact digits (BigInt, not int)', () {
+      final a = M3CombinatoricsEquation('C(94,18)').solve();
+      expect(a.hasError, isFalse);
+      expect(a.answer, 'C(94,18) = 9007607943130625829');
+      expect(a.answer, isNot(contains('626000')));
+      final b = M3CombinatoricsEquation('C(65,32)').solve();
+      expect(b.answer, 'C(65,32) = 3609714217008132870');
+      expect(b.answer, isNot(contains('133000')));
     });
   });
 
@@ -320,6 +341,42 @@ void main() {
       // A small conversion still resolves — the bound must not over-reject.
       expect(M4BaseConversionEquation('1011 base2 to base10').solve().answer,
           contains('11 (base 10)'));
+    });
+
+    // ── Phase 6 regression: the CONVERSION and guard are exact on both targets
+    // Phase 5 fixed only the CONSTANT `_maxValue` (the int literal was exact,
+    // but the accumulator, the `~/` guard test and the digit extraction still
+    // ran in `int`). Above 2^53 the web target therefore rounded: `2^53 + 1 hex`
+    // came back off-by-one and `2^62 + 1 hex` could NOT be rejected because the
+    // guard's `~/` was itself inexact. toDecimal/fromDecimal now run entirely
+    // in BigInt. These assertions pass on the VM before and after (VM int is
+    // exact) — the defect is invisible to this VM suite; the web target run in
+    // modmat_numerics_web_test.dart is what actually pins it.
+    test('Phase6: 2^53+1 hex converts exactly (no web rounding)', () {
+      final r = M4BaseConversionEquation('20000000000001 hex to dec').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('9007199254740993 (base 10)'));
+      expect(r.answer, isNot(contains('9007199254740992')));
+    });
+
+    test('Phase6: 2^62 exact; 2^62+1 rejected; 2^62-1 exact', () {
+      // Exactly on the bound still converts, with exact digits on both targets.
+      final on =
+          M4BaseConversionEquation('4000000000000000 hex to dec').solve();
+      expect(on.hasError, isFalse);
+      expect(on.answer, contains('4611686018427387904 (base 10)'));
+      // 2^62 + 1 must be rejected — the web guard's `~/` used to round, so this
+      // slipped through with a bogus value.
+      final over = M4BaseConversionEquation('4000000000000001 hex to dec');
+      expect(over.validate(), isFalse);
+      final r = over.solve();
+      expect(r.hasError, isTrue);
+      expect(r.errorMessage, contains('exceeds the largest integer'));
+      // 2^62 - 1 (0x3FFFFFFFFFFFFFFF) is in range and exact.
+      final under =
+          M4BaseConversionEquation('3FFFFFFFFFFFFFFF hex to dec').solve();
+      expect(under.hasError, isFalse);
+      expect(under.answer, contains('4611686018427387903 (base 10)'));
     });
   });
 

@@ -237,6 +237,32 @@ void main() {
           contains('14'));
     });
 
+    // ── Phase 6 regression: 2^k at n >= 31 and above 2^53 ──────────────────
+    // dart2js models `int <<` as a 32-bit JS shift, so the closed form
+    // `(1 << (n + 1)) - 2` collapsed to −2 on the web target for EVERY n >= 31
+    // (sum 2^k at n=31/60 printed 'both sides = -2 ✗'); and for n >= 53 the
+    // value exceeds 2^53 and cannot round-trip through `int` for display. Both
+    // the closed form and the direct sum are now BigInt, so the answer is exact
+    // and the two sides self-consistently agree. NOTE: these pass on the VM
+    // before and after the fix (the VM `<<` and int64 are exact) — the defect
+    // is invisible to this VM suite; modmat_numerics_web_test.dart is what
+    // actually pins it on the web target.
+    test('Phase6: 2^k at n=31 is 4294967294 and verifies', () {
+      final r = M12ProofEquation('induction sum 2^k n=31').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('4294967294'));
+      expect(r.answer, contains('✓'));
+      expect(r.answer, isNot(contains('✗')));
+    });
+
+    test('Phase6: 2^k at n=32 and n=60 (n=60 exceeds 2^53)', () {
+      expect(M12ProofEquation('induction sum 2^k n=32').solve().answer,
+          contains('8589934590'));
+      final r = M12ProofEquation('induction sum 2^k n=60').solve();
+      expect(r.answer, contains('2305843009213693950'));
+      expect(r.answer, contains('✓'));
+    });
+
     test('garbage never throws', () {
       final eq = M12ProofEquation('xyz');
       expect(eq.validate(), isFalse);
