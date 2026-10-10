@@ -338,7 +338,10 @@ jobs:
 
   test-web-numerics:
     name: Web-target modmat numerics on exact PR head
-    needs: verify
+    # Deliberately NOT gated with `needs: verify`. This is a correctness gate, and
+    # `needs: verify` would mark it "skipped" (i.e. green) whenever an unrelated
+    # verify failure (e.g. the dart-format or analyzer-baseline steps) occurs,
+    # silently hiding the very regression it exists to catch. It must always run.
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
