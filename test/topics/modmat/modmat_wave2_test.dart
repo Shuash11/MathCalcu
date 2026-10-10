@@ -59,6 +59,9 @@ List<BaseEquation> _wave2Cases() => <BaseEquation>[
   M13TopologyEquation('R'),
   M13TopologyEquation('empty'),
   M13TopologyEquation('{1,2}'),
+  M13TopologyEquation('{1}'),
+  M13TopologyEquation('[0,inf)'),
+  M13TopologyEquation('(-inf,0]'),
   M14AdvancedGraphEquation('V=4 E={(0,1),(1,2),(2,3)} bipartite'),
   M14AdvancedGraphEquation('V=5 E={(0,1),(1,2),(2,3),(3,0),(0,2)} color'),
   M14AdvancedGraphEquation('V=4 E={(0,1),(1,2),(2,3)} planar'),
@@ -699,6 +702,195 @@ void main() {
         M10AlgebraicStructuresEquation('Z10 units').solve().answer,
         contains('4 units'),
       );
+    });
+
+    // ── Phase 11 Tier B2 (false statements, root-level) ─────────────────────
+
+    test('M13: singleton sets ARE connected (a one-point space admits no '
+        'separation)', () {
+      // ROOT CAUSE: the finite/brace branch hardcoded `connected = false` for
+      // every brace-set, ignoring cardinality — the same root as the just-fixed
+      // ∅ bug. In the subspace topology of R a finite set is connected iff it
+      // has <= 1 point. RED on baseline: '{1}' printed
+      // 'finite set is closed, compact, disconnected, bounded (standard
+      // topology on R).' (a one-point set IS connected).
+      for (final input in <String>['{1}', '{0}', '{-1}', '{1,1}']) {
+        final eq = M13TopologyEquation(input);
+        expect(eq.validate(), isTrue, reason: input);
+        final r = eq.solve();
+        expect(r.hasError, isFalse, reason: input);
+        expect(
+          r.answer,
+          'finite set is closed, compact, connected, bounded '
+          '(standard topology on R).',
+          reason: input,
+        );
+        final d = r.customData!.first as Map;
+        expect(d['connected'], isTrue, reason: input);
+        // Other finite-set tags are unchanged and correct.
+        expect(d['open'], isFalse, reason: input);
+        expect(d['closed'], isTrue, reason: input);
+        expect(d['compact'], isTrue, reason: input);
+        expect(d['bounded'], isTrue, reason: input);
+        // TeX lockstep: the singleton sub-line now reads 'connected', not
+        // 'disconnected'. (RED on baseline: second line was
+        // r'\text{compact, disconnected}'.)
+        final st = eq.getSteps();
+        expect(st, hasLength(3), reason: input);
+        expect(st[2].latex, r'\text{finite set}', reason: input);
+        expect(st[2].subLatex, [
+          r'\text{closed}',
+          r'\text{compact, connected}',
+        ], reason: input);
+      }
+    });
+
+    test('M13: {1,1} collapses to a singleton (set semantics) and IS connected',
+        () {
+      // Duplicate entries denote one point: {1,1} = {1}. Cardinality-based
+      // connectedness must count DISTINCT elements, so this is connected.
+      // (RED on baseline: reported disconnected with the other brace-sets.)
+      final r = M13TopologyEquation('{1,1}').solve();
+      expect(r.answer, contains('closed, compact, connected, bounded'));
+      expect((r.customData!.first as Map)['connected'], isTrue);
+    });
+
+    test('M13: multi-element finite sets stay disconnected (each point is open '
+        'in the subspace, giving a separation)', () {
+      // {a,b} = {a} ⊔ {b} with both pieces open in the subspace topology, so
+      // every finite set with >= 2 points is disconnected. This must NOT change
+      // with the cardinality fix.
+      for (final input in <String>['{1,2}', '{1,2,3}', '{0,1}', '{1,1,2}']) {
+        final r = M13TopologyEquation(input).solve();
+        expect(
+          r.answer,
+          'finite set is closed, compact, disconnected, bounded '
+          '(standard topology on R).',
+          reason: input,
+        );
+        expect((r.customData!.first as Map)['connected'], isFalse, reason: input);
+        expect(M13TopologyEquation(input).getSteps()[2].subLatex, [
+          r'\text{closed}',
+          r'\text{compact, disconnected}',
+        ], reason: input);
+      }
+    });
+
+    test('M13: closed half-lines ARE closed (they contain their finite '
+        'endpoint)', () {
+      // [0,∞) = R \ (-∞,0) is closed; (-∞,0] = R \ (0,∞) is closed. The old
+      // code zeroed the effective bracket flags at an infinite end and then
+      // required BOTH flags for closedness, so it reported 'neither open nor
+      // closed'. RED on baseline: '[0,inf)' -> '[0.0,Infinity) is neither open
+      // nor closed, not compact, connected, unbounded ...'. An infinite end is
+      // not an endpoint of the set, so it neither opens nor uncloses it.
+      for (final input in <String>['[0,inf)', '[0,inf]', '(-inf,0]']) {
+        final eq = M13TopologyEquation(input);
+        expect(eq.validate(), isTrue, reason: input);
+        final r = eq.solve();
+        expect(r.answer, isNot(contains('neither open nor closed')), reason: input);
+        expect(r.answer, contains('is closed,'), reason: input);
+        final d = r.customData!.first as Map;
+        expect(d['open'], isFalse, reason: input);
+        expect(d['closed'], isTrue, reason: input);
+        expect(d['compact'], isFalse, reason: input); // unbounded
+        expect(d['connected'], isTrue, reason: input);
+        final st = eq.getSteps();
+        expect(st[2].subLatex!.first, r'\text{closed}', reason: input);
+        expect(st[2].subLatex!.last, r'\text{not compact, connected}',
+            reason: input);
+      }
+    });
+
+    test('M13: open half-lines stay open (no finite endpoint included)', () {
+      // Regression guard for the closedness fix: an excluded finite endpoint
+      // still makes the half-line open and not closed.
+      for (final input in <String>['(0,inf)', '(-inf,0)']) {
+        final r = M13TopologyEquation(input).solve();
+        expect(r.answer, contains('is open,'), reason: input);
+        expect(r.answer, isNot(contains('closed')), reason: input);
+        final d = r.customData!.first as Map;
+        expect(d['open'], isTrue, reason: input);
+        expect(d['closed'], isFalse, reason: input);
+      }
+      // (0,inf] and (-inf,0] are the SAME sets as (0,inf) and (-inf,0) up to
+      // the meaningless ']' at infinity; the finite (excluded) end keeps them
+      // open, not closed.
+      expect(M13TopologyEquation('(0,inf]').solve().answer, contains('is open,'));
+      expect(
+        (M13TopologyEquation('(0,inf]').solve().customData!.first as Map)['closed'],
+        isFalse,
+      );
+    });
+
+    test('M13: (-inf,inf] degenerates to R and is clopen', () {
+      // (-∞,∞] = (-∞,∞) = R: both ends infinite, so the whole set is R, which
+      // is both open and closed. RED on baseline: reported merely 'open'
+      // ('(-Infinity,Infinity) is open, not compact, connected, unbounded'),
+      // which under the clopen-tag scheme asserts "not closed" — false. Note
+      // the fully-open spelling '(-inf,inf)' already maps to the named R.
+      final r = M13TopologyEquation('(-inf,inf]').solve();
+      expect(r.answer, startsWith('(-Infinity,Infinity) is clopen'), reason: r.answer);
+      final d = r.customData!.first as Map;
+      expect(d['open'], isTrue);
+      expect(d['closed'], isTrue);
+      expect(d['connected'], isTrue);
+      expect(d['bounded'], isFalse);
+    });
+
+    test('M13 audit anchors: R/Q/Z/∅/interval classifications are correct', () {
+      // Anchors the rest of the m13 audit so a future refactor cannot silently
+      // flip a tag that was verified correct in Phase 11.
+      // R: clopen, unbounded, not compact, connected.
+      var d = M13TopologyEquation('R').solve().customData!.first as Map;
+      expect([d['open'], d['closed'], d['compact'], d['connected'], d['bounded']],
+          [true, true, false, true, false]);
+      // Q: neither open nor closed, not compact, TOTALLY DISCONNECTED, unbounded.
+      d = M13TopologyEquation('Q').solve().customData!.first as Map;
+      expect([d['open'], d['closed'], d['compact'], d['connected'], d['bounded']],
+          [false, false, false, false, false]);
+      // Z: closed, unbounded, not compact, TOTALLY DISCONNECTED.
+      d = M13TopologyEquation('Z').solve().customData!.first as Map;
+      expect([d['open'], d['closed'], d['compact'], d['connected'], d['bounded']],
+          [false, true, false, false, false]);
+      // ∅: clopen, compact, connected, bounded.
+      d = M13TopologyEquation('empty').solve().customData!.first as Map;
+      expect([d['open'], d['closed'], d['compact'], d['connected'], d['bounded']],
+          [true, true, true, true, true]);
+      // (0,1): open, not compact, connected, bounded.
+      d = M13TopologyEquation('(0,1)').solve().customData!.first as Map;
+      expect([d['open'], d['closed'], d['compact'], d['connected'], d['bounded']],
+          [true, false, false, true, true]);
+      // [0,1]: closed, compact, connected, bounded.
+      d = M13TopologyEquation('[0,1]').solve().customData!.first as Map;
+      expect([d['open'], d['closed'], d['compact'], d['connected'], d['bounded']],
+          [false, true, true, true, true]);
+      // (0,1]: neither open nor closed, not compact, connected, bounded.
+      d = M13TopologyEquation('(0,1]').solve().customData!.first as Map;
+      expect([d['open'], d['closed'], d['compact'], d['connected'], d['bounded']],
+          [false, false, false, true, true]);
+    });
+
+    test('M10: the multiplicative-monoid line agrees in number (1 unit vs '
+        'N units)', () {
+      // Cosmetic grammar bug: the line hardcoded the plural, so n=2 (φ = 1)
+      // printed '... its 1 units form an abelian group.' The claim is true; the
+      // noun was wrong. RED on baseline: contains '1 units'.
+      final two = M10AlgebraicStructuresEquation('Z2 * group').solve().answer;
+      expect(two, contains('its 1 unit form an abelian group'), reason: two);
+      expect(two, isNot(contains('1 units')), reason: two);
+      // Plural is preserved where φ(n) > 1.
+      final expectUnits = <int, int>{6: 2, 8: 4, 9: 6, 10: 4, 12: 4};
+      expectUnits.forEach((n, units) {
+        final a = M10AlgebraicStructuresEquation('Z$n * group').solve().answer;
+        expect(a, contains('its $units units form an abelian group'),
+            reason: 'n=$n');
+        expect(a, isNot(contains('$units unit ')), reason: 'n=$n');
+      });
+      // TeX lockstep: the decide sub-line is count-free and unchanged.
+      final st = M10AlgebraicStructuresEquation('Z2 * group').getSteps();
+      expect(st[2].subLatex, [r'\text{monoid, not a group}']);
+      expect(st[2].explanation, contains('its 1 unit form an abelian group'));
     });
   });
 }

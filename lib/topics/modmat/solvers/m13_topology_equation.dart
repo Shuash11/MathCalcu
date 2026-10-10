@@ -17,7 +17,14 @@ class M13TopologyEquation extends BaseEquation {
 
   M13TopologyEquation(this.rawInput);
 
-  /// Returns [kind, leftClosed, rightClosed, bounded, extra].
+  /// Returns [kind, leftClosed, rightClosed, bounded, extra], plus two extra
+  /// slots that depend on [kind]:
+  ///  * 'interval' appends the CORRECT `open` and `closed` flags. An infinite
+  ///    end is not an endpoint of the set, so it never excludes a point (does
+  ///    not make the set open) and never fails to include one (does not break
+  ///    closedness). The leading bracket flags are kept ONLY for rendering.
+  ///  * 'finite' (a brace-set) appends the number of DISTINCT points, which is
+  ///    what decides connectedness in the subspace topology of R.
   List<dynamic>? _parse() {
     final t = rawInput.replaceAll(' ', '').toLowerCase();
     if (t == 'r' || t == 'reals' || t == '(−inf,inf)' || t == '(-inf,inf)') {
@@ -31,7 +38,17 @@ class M13TopologyEquation extends BaseEquation {
     }
     if (t == 'z' || t == 'integers') return ['named', false, true, false, 'Z'];
     if (RegExp(r'^\{[^}]*\}$').hasMatch(t)) {
-      return ['named', false, true, true, 'finite'];
+      // Cardinality of the brace-set, counting DISTINCT non-empty entries
+      // ({1,1} = {1}). This drives connectedness: a finite set is connected iff
+      // it has <= 1 point.
+      final inner = t.substring(1, t.length - 1);
+      final count = inner
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toSet()
+          .length;
+      return ['named', false, true, true, 'finite', count];
     }
     final m = RegExp(
       r'^([(\[])\s*(-?(?:\d+(?:\.\d+)?|inf))\s*,\s*(-?(?:\d+(?:\.\d+)?|inf))\s*([)\]])$',
@@ -50,10 +67,17 @@ class M13TopologyEquation extends BaseEquation {
     final b = parseEnd(m.group(3)!);
     if (!(a < b)) return null;
     final bounded = a.isFinite && b.isFinite;
-    // Unbounded ends are never closed at infinity.
+    // Unbounded ends are never RENDERED as a closing bracket.
     final lEff = a.isFinite ? lc : false;
     final rEff = b.isFinite ? rc : false;
-    return ['interval', lEff, rEff, bounded, '$a,$b'];
+    // Correct open/closed. A finite end that is excluded makes the set not
+    // closed and (if no end is included) open; an infinite end is not an
+    // endpoint at all, so it is treated as absent from both tests. E.g.
+    // [0,inf) = R \ (-inf,0) is CLOSED; (-inf,0] = R \ (0,inf) is CLOSED;
+    // (-inf,inf] = (-inf,inf) = R is CLOPEN.
+    final isOpen = (!a.isFinite || !lc) && (!b.isFinite || !rc);
+    final isClosed = (a.isFinite ? lc : true) && (b.isFinite ? rc : true);
+    return ['interval', lEff, rEff, bounded, '$a,$b', isOpen, isClosed];
   }
 
   @override
@@ -119,15 +143,23 @@ class M13TopologyEquation extends BaseEquation {
           closed = true;
           bounded = true;
           compact = true;
-          connected = false;
+          // A finite set in the subspace topology of R is connected iff it has
+          // <= 1 point: ∅ and singletons are connected; {a,b} = {a} ⊔ {b} with
+          // both pieces open in the subspace is disconnected. The count is the
+          // number of distinct points parsed from the brace-set.
+          final count = p[5] as int;
+          connected = count <= 1;
           label = 'finite set';
       }
     } else {
       final lc = p[1] as bool;
       final rc = p[2] as bool;
       bounded = p[3] as bool;
-      open = !lc && !rc;
-      closed = lc && rc;
+      // [open]/[closed] come from _parse, which treats an infinite end as
+      // absent (so it neither opens the set nor breaks closedness). E.g.
+      // [0,inf) and (-inf,0] are closed; (-inf,inf] is clopen.
+      open = p[5] as bool;
+      closed = p[6] as bool;
       compact = closed && bounded;
       connected = true; // intervals are connected.
       label = '${lc ? '[' : '('}$extra${rc ? ']' : ')'}';

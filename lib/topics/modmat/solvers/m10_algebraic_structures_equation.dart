@@ -122,7 +122,8 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
             holds = false;
             answer =
                 '(Z$n, ×) is NOT a group (0 has no inverse); '
-                'it is a monoid, and its $units units form an abelian group.';
+                'it is a monoid, and its $units unit${units == 1 ? '' : 's'} '
+                'form an abelian group.';
           }
         }
     }
