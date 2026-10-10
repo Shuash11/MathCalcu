@@ -88,8 +88,12 @@ class M3CombinatoricsEquation extends BaseEquation {
   // otherwise returns an explicit error instead of a wrong (often negative
   // wrapped) number.
 
-  /// Largest value this 64-bit calculator represents exactly (int64 max).
-  static final BigInt _maxExact = BigInt.from(9223372036854775807);
+  /// Largest value this 64-bit calculator represents exactly (int64 max,
+  /// 2^63 − 1 = 9223372036854775807). Built via [BigInt.parse] rather than an
+  /// int literal because dart2js rejects integer literals beyond 2^53 (they
+  /// are not exactly representable as JS numbers); BigInt is arbitrary
+  /// precision and is identical on the VM and the web target.
+  static final BigInt _maxExact = BigInt.parse('9223372036854775807');
 
   /// nPr = n·(n−1)·…·(n−r+1) with no 64-bit limit.
   static BigInt _permBig(int n, int r) {

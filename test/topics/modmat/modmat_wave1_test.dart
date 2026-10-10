@@ -180,6 +180,39 @@ void main() {
       expect(M3CombinatoricsEquation('C(66,33)').solve().answer,
           'C(66,33) = 7219428434016265740');
     });
+
+    // ── Phase 5 regression: the exactness bound is EXACTLY 2^63 − 1 ────────
+    // _maxExact is held as `BigInt.parse('9223372036854775807')`, NOT the int
+    // literal `9223372036854775807`: that literal is not representable as a JS
+    // number, so dart2js hard-fails the compile and the WEB build breaks —
+    // while `flutter analyze` and this VM suite (where the literal is a valid
+    // int64) stay green. That is why `flutter build web` is now a REQUIRED
+    // gate for any change touching numerics. These cases pin the OBSERVABLE
+    // boundary so any drift in the constant (e.g. lowering it to a web-safe
+    // 2^53) is caught here.
+    test('boundary 2^63-1: largest fitting C(94,18) is accepted exactly', () {
+      // C(94,18) = 9007607943130625829 is the largest nCr with n <= 100 that
+      // fits; it must be accepted with its exact value.
+      final r = M3CombinatoricsEquation('C(94,18)').solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, 'C(94,18) = 9007607943130625829');
+    });
+
+    test('boundary 2^63-1: smallest overflow C(71,25) errors, never wraps', () {
+      // C(71,25) = 9964327949818248552 is the smallest nCr with n <= 100 to
+      // exceed 2^63 − 1; it must error, not return a wrapped/negative value.
+      final eq = M3CombinatoricsEquation('C(71,25)');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isTrue);
+      expect(r.errorMessage, contains('exceeds the largest integer'));
+      expect(r.answer, isNot(contains('-')));
+    });
+
+    test('boundary 2^63-1: C(65,32) stays exact at 3609714217008132870', () {
+      expect(M3CombinatoricsEquation('C(65,32)').solve().answer,
+          'C(65,32) = 3609714217008132870');
+    });
   });
 
   group('M4 base conversion', () {
@@ -263,6 +296,30 @@ void main() {
       final bad = M4BaseConversionEquation('102 base2 to base10');
       expect(bad.validate(), isFalse);
       expect(bad.solve().errorMessage, contains('do not fit'));
+    });
+
+    // ── Phase 5 regression: the 2^62 guard bound must be web-safe ──────────
+    // `_maxValue` was written as `1 << 62`. dart2js models int bitwise shifts
+    // as 32-bit, so on the WEB target `1 << 62` evaluates to 0 (not 2^62) —
+    // the guard `value > (_maxValue - d) ~/ base` then rejects every
+    // non-trivial conversion, silently breaking M4 on web while this VM suite
+    // (where `1 << 62` == 2^62) stayed green. The bound is now the explicit
+    // literal 0x4000000000000000 (== 2^62, exactly representable as a JS
+    // number). These cases pin the observable behaviour at the bound.
+    test('Phase5: 2^62 bound converts exactly; 2^62+1 rejects (web-safe)', () {
+      // 4000000000000000 hex == 2^62 == 4611686018427387904 (in range).
+      final on = M4BaseConversionEquation('4000000000000000 hex to dec').solve();
+      expect(on.hasError, isFalse);
+      expect(on.answer, contains('4611686018427387904 (base 10)'));
+      // 4000000000000001 hex == 2^62 + 1 must be rejected as out of range.
+      final over = M4BaseConversionEquation('4000000000000001 hex to dec');
+      expect(over.validate(), isFalse);
+      final r = over.solve();
+      expect(r.hasError, isTrue);
+      expect(r.errorMessage, contains('exceeds the largest integer'));
+      // A small conversion still resolves — the bound must not over-reject.
+      expect(M4BaseConversionEquation('1011 base2 to base10').solve().answer,
+          contains('11 (base 10)'));
     });
   });
 

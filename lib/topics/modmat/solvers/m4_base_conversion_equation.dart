@@ -81,7 +81,12 @@ class M4BaseConversionEquation extends BaseEquation {
   static const _digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   /// Largest magnitude this calculator converts exactly (int64-safe bound).
-  static const int _maxValue = 1 << 62;
+  /// Written as the explicit 2^62 literal `0x4000000000000000`, NOT `1 << 62`:
+  /// dart2js models int bitwise shifts as 32-bit, so `1 << 62` silently
+  /// evaluates to 0 on the web target (disabling the guard) while the VM yields
+  /// 2^62. The literal is a power of two and therefore exactly representable as
+  /// a JS number, so it is accepted by dart2js and identical on both targets.
+  static const int _maxValue = 0x4000000000000000;
 
   static int? toDecimal(String digits, int base) {
     var value = 0;
