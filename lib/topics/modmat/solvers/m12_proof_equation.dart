@@ -61,7 +61,7 @@ class M12ProofEquation extends BaseEquation {
   /// no longer exactly representable as a JS number, so it cannot round-trip
   /// through `int` for display either. BigInt is arbitrary precision and is
   /// identical on the VM and the web target.
-  static BigInt _pow2Closed(int n) => BigInt.from((1 << (n + 1)) - 2);
+  static BigInt _pow2Closed(int n) => (BigInt.one << (n + 1)) - BigInt.two;
 
   static dynamic _direct(String id, int n) {
     if (id == 'pow2') {
