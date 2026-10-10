@@ -490,7 +490,7 @@ void main() {
       expect(e[2].latex, r'\emptyset');
       expect(e[2].subLatex, [
         r'\text{clopen}',
-        r'\text{compact, disconnected}',
+        r'\text{compact, connected}',
       ]);
       expect(
         M13TopologyEquation('{1,2}').getSteps()[2].latex,
@@ -611,6 +611,94 @@ void main() {
         }
       }
       expect(checked, greaterThan(0));
+    });
+  });
+
+  // ── Phase 10 CORRECTNESS Tier B regressions (false statements) ─────────────
+  group('Phase10 Tier B correctness regressions', () {
+    test('M13: the empty set IS connected (∅ admits no separation)', () {
+      // Pre-fix: ∅ was reported 'disconnected'. That is FALSE — a separation
+      // needs two disjoint NON-EMPTY open sets, and ∅ has none, so ∅ (like
+      // every space with < 2 points and every indiscrete-looking case here) is
+      // connected. The fix is scoped to the connectedness classification; the
+      // clopen / compact / bounded readings were already correct.
+      final eq = M13TopologyEquation('empty');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('connected'));
+      expect(r.answer, isNot(contains('disconnected')));
+      expect(r.answer, startsWith('∅ is clopen, compact, connected, bounded'));
+      final data = r.customData!.first as Map;
+      expect(data['connected'], isTrue);
+      // Other ∅ properties are unchanged and correct.
+      expect(data['open'], isTrue);
+      expect(data['closed'], isTrue);
+      expect(data['compact'], isTrue);
+      expect(data['bounded'], isTrue);
+      // TeX lockstep: the ∅ classification sub-line now agrees with the prose.
+      final st = M13TopologyEquation('empty').getSteps();
+      expect(st, hasLength(3));
+      expect(st[2].latex, r'\emptyset');
+      expect(st[2].subLatex, [
+        r'\text{clopen}',
+        r'\text{compact, connected}',
+      ]);
+      // The two other ∅ spellings agree.
+      for (final alt in <String>['∅', '{}']) {
+        final a = M13TopologyEquation(alt).solve().answer;
+        expect(a, contains('connected'), reason: alt);
+        expect(a, isNot(contains('disconnected')), reason: alt);
+      }
+    });
+
+    test('M10: n=1 field verdict stays NOT a field, reason is the zero ring', () {
+      // Adjudicated: the VERDICT is correct (the zero ring has 1 = 0, so it is
+      // not a field) but the stated REASON was wrong — n=1 is neither prime nor
+      // composite and there are NO zero divisors in Z1. Fix the reason only.
+      final eq = M10AlgebraicStructuresEquation('Z1 field');
+      expect(eq.validate(), isTrue);
+      final r = eq.solve();
+      expect(r.hasError, isFalse);
+      expect(r.answer, contains('NOT a field')); // verdict unchanged
+      expect(r.answer, isNot(contains('composite'))); // wrong reason gone
+      expect(r.answer, contains('zero ring')); // real reason present
+      expect((r.customData!.first as Map)['holds'], isFalse);
+      // The decide step prose mirrors the answer; TeX still reads 'not a field'.
+      final st = eq.getSteps();
+      expect(st, hasLength(3));
+      expect(st[2].explanation, contains('zero ring'));
+      expect(st[2].explanation, isNot(contains('composite')));
+      expect(st[2].subLatex, [r'\text{not a field}']);
+    });
+
+    test('M10: prime n still reports a field', () {
+      for (final n in <int>[2, 3, 5, 7, 13]) {
+        final r = M10AlgebraicStructuresEquation('Z$n field').solve();
+        expect(r.answer, contains('is a field'), reason: 'n=$n');
+        expect(r.answer, isNot(contains('NOT a field')), reason: 'n=$n');
+        expect((r.customData!.first as Map)['holds'], isTrue, reason: 'n=$n');
+      }
+    });
+
+    test('M10: composite n>=4 still reports the zero-divisor reason', () {
+      for (final n in <int>[4, 6, 8, 9, 10, 12]) {
+        final r = M10AlgebraicStructuresEquation('Z$n field').solve();
+        expect(r.answer, contains('NOT a field'), reason: 'n=$n');
+        expect(r.answer, contains('composite'), reason: 'n=$n');
+        expect(r.answer, contains('zero divisors'), reason: 'n=$n');
+      }
+    });
+
+    test('M10: φ(1) = 1 takes the singular noun', () {
+      final r = M10AlgebraicStructuresEquation('Z1 units').solve();
+      expect(r.answer, contains('1 unit'));
+      expect(r.answer, isNot(contains('1 units')));
+      // Plural is preserved where it is genuinely plural.
+      expect(
+        M10AlgebraicStructuresEquation('Z10 units').solve().answer,
+        contains('4 units'),
+      );
     });
   });
 }

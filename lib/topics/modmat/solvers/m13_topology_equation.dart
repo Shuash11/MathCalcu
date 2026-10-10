@@ -95,7 +95,10 @@ class M13TopologyEquation extends BaseEquation {
           closed = true;
           bounded = true;
           compact = true;
-          connected = false;
+          // The empty set IS connected: a separation needs two disjoint
+          // NON-EMPTY open sets, and ∅ admits none. (Previously reported
+          // as 'disconnected', which is false.)
+          connected = true;
           label = '∅';
         case 'Q':
           open = false;

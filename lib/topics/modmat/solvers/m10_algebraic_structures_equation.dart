@@ -93,11 +93,20 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
             '(Z$n, +, ×) is a commutative ring${prime ? '; n prime so it is a field' : ''}.';
       case 'field':
         holds = prime;
-        answer = holds
-            ? '(Z$n, +, ×) is a field (n prime: every nonzero element has an inverse).'
-            : '(Z$n, +, ×) is NOT a field (n composite: zero divisors exist).';
+        if (holds) {
+          answer =
+              '(Z$n, +, ×) is a field (n prime: every nonzero element has an inverse).';
+        } else if (n == 1) {
+          // Not composite: Z1 = {0} is the zero ring, where 1 = 0 and there
+          // are no zero divisors. It is not a field because a field needs 1 ≠ 0.
+          answer =
+              '(Z$n, +, ×) is NOT a field (zero ring: 1 = 0, so it cannot be a field).';
+        } else {
+          answer =
+              '(Z$n, +, ×) is NOT a field (n composite: zero divisors exist).';
+        }
       case 'units':
-        answer = 'Z$n has $units units (φ($n) = $units).';
+        answer = 'Z$n has $units unit${units == 1 ? '' : 's'} (φ($n) = $units).';
         holds = true;
       default:
         if (op == '+') {
