@@ -1,7 +1,7 @@
 name: calculus_system
 description: A modern calculus solver for mobile and desktop.
 publish_to: 'none'
-version: 1.16.0+15
+version: 1.16.1+16
 
 environment:
   sdk: '>=3.13.0 <4.0.0'
