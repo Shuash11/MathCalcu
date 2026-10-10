@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -12,11 +13,7 @@ import 'update_checksum.dart';
 
 /// Shared update conclusion consumed by the app entry point, the Settings
 /// screen, and their widget tests.
-enum UpdateStatus {
-  updateAvailable,
-  upToDate,
-  unavailable,
-}
+enum UpdateStatus { updateAvailable, upToDate, unavailable }
 
 class UpdateInfo {
   final UpdateStatus status;
@@ -104,8 +101,10 @@ class UpdateService {
     try {
       final fetch =
           releaseFetcher ?? ((url, headers) => http.get(url, headers: headers));
-      final response = await fetch(Uri.parse(_apiUrl), _headers)
-          .timeout(const Duration(seconds: 10));
+      final response = await fetch(
+        Uri.parse(_apiUrl),
+        _headers,
+      ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode != 200) {
         return UpdateInfo(
@@ -121,8 +120,9 @@ class UpdateService {
           installedVersion: installedVersion,
         );
       }
-      final latestVersion =
-          _normalizeVersion(data['tag_name'] as String? ?? '');
+      final latestVersion = _normalizeVersion(
+        data['tag_name'] as String? ?? '',
+      );
       if (latestVersion == null) {
         return UpdateInfo(
           status: UpdateStatus.unavailable,
@@ -144,8 +144,9 @@ class UpdateService {
       );
 
       return UpdateInfo(
-        status:
-            hasUpdate ? UpdateStatus.updateAvailable : UpdateStatus.upToDate,
+        status: hasUpdate
+            ? UpdateStatus.updateAvailable
+            : UpdateStatus.upToDate,
         installedVersion: installedVersion,
         latestVersion: latestVersion,
         releaseUrl: releaseUrl,
@@ -163,8 +164,9 @@ class UpdateService {
   }
 
   static final RegExp _corePattern = RegExp(r'^\d+(\.\d+)*$');
-  static final RegExp _buildPattern =
-      RegExp(r'^[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*$');
+  static final RegExp _buildPattern = RegExp(
+    r'^[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*$',
+  );
 
   /// Normalize a raw version string to its numeric core (`1.12.8`).
   /// Returns null when the string is not a valid semver-ish version.
@@ -190,8 +192,9 @@ class UpdateService {
         int.tryParse(s.replaceAll(RegExp(r'[^0-9].*$'), '')) ?? 0;
     final aParts = a.split('.').map(clean).toList();
     final bParts = b.split('.').map(clean).toList();
-    final maxLen =
-        aParts.length > bParts.length ? aParts.length : bParts.length;
+    final maxLen = aParts.length > bParts.length
+        ? aParts.length
+        : bParts.length;
 
     for (int i = 0; i < maxLen; i++) {
       final aVal = i < aParts.length ? aParts[i] : 0;
@@ -201,8 +204,9 @@ class UpdateService {
     return 0;
   }
 
-  static const MethodChannel _installerChannel =
-      MethodChannel('com.mathcalcu/installer');
+  static const MethodChannel _installerChannel = MethodChannel(
+    'com.mathcalcu/installer',
+  );
 
   /// Check if the app has permission to install packages (Android 8+).
   /// Always returns true on other platforms.
@@ -242,7 +246,10 @@ class UpdateService {
   /// Shared sniffing: reject HTML error pages masquerading as binaries.
   /// Returns an error message, or null when the head looks binary.
   static String? _sniffHtmlError(
-      List<int> bytes, int totalBytes, String binaryName) {
+    List<int> bytes,
+    int totalBytes,
+    String binaryName,
+  ) {
     if (totalBytes < 1000) {
       return 'Downloaded file is too small ($totalBytes bytes). Please try again.';
     }
@@ -271,8 +278,10 @@ class UpdateService {
 
     // Could be an APK variant or the file is still downloading — allow it
     // but log a warning
-    debugPrint('UpdateService: APK header check: first bytes = '
-        '${bytes.take(4).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ')}');
+    debugPrint(
+      'UpdateService: APK header check: first bytes = '
+      '${bytes.take(4).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ')}',
+    );
     return null;
   }
 
@@ -287,8 +296,10 @@ class UpdateService {
       return null; // Valid EXE header
     }
 
-    debugPrint('UpdateService: EXE header check: first bytes = '
-        '${bytes.take(4).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ')}');
+    debugPrint(
+      'UpdateService: EXE header check: first bytes = '
+      '${bytes.take(4).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ')}',
+    );
     return null;
   }
 
@@ -303,8 +314,10 @@ class UpdateService {
     try {
       final fetch =
           releaseFetcher ?? ((url, headers) => http.get(url, headers: headers));
-      final response = await fetch(Uri.parse(_apiUrl), _headers)
-          .timeout(const Duration(seconds: 10));
+      final response = await fetch(
+        Uri.parse(_apiUrl),
+        _headers,
+      ).timeout(const Duration(seconds: 10));
       if (response.statusCode != 200) return null;
 
       final data = jsonDecode(response.body);
@@ -323,8 +336,8 @@ class UpdateService {
       }
 
       final manifestFetch = checksumFetcher ?? ((url) => http.get(url));
-      final manifest =
-          await manifestFetch(manifestUri).timeout(const Duration(seconds: 10));
+      final manifest = await manifestFetch(manifestUri)
+          .timeout(const Duration(seconds: 10));
       if (manifest.statusCode != 200) return null;
       return UpdateChecksum.parseChecksumFile(manifest.body, binaryName);
     } catch (_) {
@@ -351,8 +364,9 @@ class UpdateService {
       await cleanupTempFiles();
 
       final isWin = Platform.isWindows;
-      final binaryName =
-          isWin ? UpdateChecksum.windowsBinary : UpdateChecksum.androidBinary;
+      final binaryName = isWin
+          ? UpdateChecksum.windowsBinary
+          : UpdateChecksum.androidBinary;
       final url =
           'https://github.com/$_owner/$_repo/releases/latest/download/$binaryName';
 
@@ -380,13 +394,15 @@ class UpdateService {
       try {
         final request = http.Request('GET', Uri.parse(url));
         request.headers['Accept'] = 'application/octet-stream';
-        final response = await client.send(request).timeout(
-          const Duration(seconds: 30),
-          onTimeout: () {
-            client.close();
-            throw TimeoutException('Connection timed out');
-          },
-        );
+        final response = await client
+            .send(request)
+            .timeout(
+              const Duration(seconds: 30),
+              onTimeout: () {
+                client.close();
+                throw TimeoutException('Connection timed out');
+              },
+            );
 
         if (response.statusCode != 200) {
           return 'Server returned ${response.statusCode}';
@@ -404,100 +420,105 @@ class UpdateService {
         final bytes = <int>[];
         final completer = Completer<String?>();
 
-        response.stream.timeout(
-          const Duration(minutes: 5),
-          onTimeout: (sink) {
-            sink.addError(TimeoutException('Download timed out'));
-            sink.close();
-          },
-        ).listen(
-          (chunk) {
-            bytes.addAll(chunk);
-            if (onProgress != null) {
-              if (hasKnownSize) {
-                onProgress(bytes.length / contentLength);
-              }
-              // If contentLength is -1 (chunked), progress stays at 0
-              // — the UI shows indeterminate progress
-            }
-          },
-          onDone: () async {
-            try {
-              if (bytes.isEmpty) {
-                completer.complete('Download failed: file is empty');
-                client.close();
-                return;
-              }
-
-              // Validate binary content before writing
-              final validationError = isWin
-                  ? _validateExeBytes(bytes, bytes.length)
-                  : _validateApkBytes(bytes, bytes.length);
-              if (validationError != null) {
-                completer.complete(validationError);
-                client.close();
-                return;
-              }
-
-              // Integrity gate: never write or launch an unverified payload.
-              final actualSha256 = UpdateChecksum.sha256Hex(bytes);
-              if (!UpdateChecksum.hashesEqual(actualSha256, verifiedSha)) {
-                completer.complete(
-                  'Download verification failed: checksum mismatch for '
-                  '$binaryName. The file may be corrupted or tampered with. '
-                  'Please try again.',
-                );
-                client.close();
-                return;
-              }
-
-              final dir = await getTemporaryDirectory();
-              final file = File('${dir.path}/$binaryName');
-              await file.writeAsBytes(bytes);
-              final fileSize = await file.length();
-              if (fileSize == 0) {
-                completer.complete('Download failed: file is empty');
-                client.close();
-                return;
-              }
-
-              if (Platform.isAndroid) {
+        response.stream
+            .timeout(
+              const Duration(minutes: 5),
+              onTimeout: (sink) {
+                sink.addError(TimeoutException('Download timed out'));
+                sink.close();
+              },
+            )
+            .listen(
+              (chunk) {
+                bytes.addAll(chunk);
+                if (onProgress != null) {
+                  if (hasKnownSize) {
+                    onProgress(bytes.length / contentLength);
+                  }
+                  // If contentLength is -1 (chunked), progress stays at 0
+                  // — the UI shows indeterminate progress
+                }
+              },
+              onDone: () async {
                 try {
-                  await _installerChannel
-                      .invokeMethod('installApk', {'apkPath': file.path});
-                  completer.complete(null);
-                } on PlatformException catch (e) {
-                  if (e.message == 'NEED_PERMISSION') {
-                    completer.complete('NEED_PERMISSION');
-                  } else if (e.message == 'SIGNATURE_MISMATCH') {
+                  if (bytes.isEmpty) {
+                    completer.complete('Download failed: file is empty');
+                    client.close();
+                    return;
+                  }
+
+                  // Validate binary content before writing
+                  final validationError = isWin
+                      ? _validateExeBytes(bytes, bytes.length)
+                      : _validateApkBytes(bytes, bytes.length);
+                  if (validationError != null) {
+                    completer.complete(validationError);
+                    client.close();
+                    return;
+                  }
+
+                  // Integrity gate: never write or launch an unverified payload.
+                  final actualSha256 = UpdateChecksum.sha256Hex(bytes);
+                  if (!UpdateChecksum.hashesEqual(actualSha256, verifiedSha)) {
                     completer.complete(
-                      'Cannot update: app signature mismatch. '
-                      'Uninstall the current app first, then install the new version.',
+                      'Download verification failed: checksum mismatch for '
+                      '$binaryName. The file may be corrupted or tampered with. '
+                      'Please try again.',
                     );
+                    client.close();
+                    return;
+                  }
+
+                  final dir = await getTemporaryDirectory();
+                  final file = File('${dir.path}/$binaryName');
+                  await file.writeAsBytes(bytes);
+                  final fileSize = await file.length();
+                  if (fileSize == 0) {
+                    completer.complete('Download failed: file is empty');
+                    client.close();
+                    return;
+                  }
+
+                  if (Platform.isAndroid) {
+                    try {
+                      await _installerChannel.invokeMethod('installApk', {
+                        'apkPath': file.path,
+                      });
+                      completer.complete(null);
+                    } on PlatformException catch (e) {
+                      if (e.message == 'NEED_PERMISSION') {
+                        completer.complete('NEED_PERMISSION');
+                      } else if (e.message == 'SIGNATURE_MISMATCH') {
+                        completer.complete(
+                          'Cannot update: app signature mismatch. '
+                          'Uninstall the current app first, then install the new version.',
+                        );
+                      } else {
+                        completer.complete(e.message ?? e.toString());
+                      }
+                    } catch (e) {
+                      completer.complete(e.toString());
+                    }
+                  } else if (isWin) {
+                    await Process.start(file.path, ['/SILENT']);
+                    await Future.delayed(const Duration(seconds: 1));
+                    exit(0);
                   } else {
-                    completer.complete(e.message ?? e.toString());
+                    completer.complete(
+                      'Updates not supported on this platform',
+                    );
                   }
                 } catch (e) {
                   completer.complete(e.toString());
+                } finally {
+                  client.close();
                 }
-              } else if (isWin) {
-                await Process.start(file.path, ['/SILENT']);
-                await Future.delayed(const Duration(seconds: 1));
-                exit(0);
-              } else {
-                completer.complete('Updates not supported on this platform');
-              }
-            } catch (e) {
-              completer.complete(e.toString());
-            } finally {
-              client.close();
-            }
-          },
-          onError: (e) {
-            completer.complete('Download failed: ${e.toString()}');
-            client.close();
-          },
-        );
+              },
+              onError: (e) {
+                completer.complete('Download failed: ${e.toString()}');
+                client.close();
+              },
+            );
 
         return await completer.future;
       } catch (e) {

@@ -112,71 +112,85 @@ class SolutionStepsGenerator {
     const varName = 'x';
 
     // Step 1: Write the equation
-    steps.add(SolutionStep(
-      stepNumber: 1,
-      title: 'Write the equation',
-      explanation: 'We need to evaluate the limit:',
-      mathematicalExpression:
-          '\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 1,
+        title: 'Write the equation',
+        explanation: 'We need to evaluate the limit:',
+        mathematicalExpression:
+            '\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
+      ),
+    );
 
     // Step 2: Try Substitution
-    steps.add(SolutionStep(
-      stepNumber: 2,
-      title: 'Try Substitution',
-      explanation:
-          'Substituting $varName = $approachStr gives 0/0 (indeterminate form).',
-      mathematicalExpression:
-          '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}\\bigg|_{$varName=$approachStr} = \\frac{0}{0}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 2,
+        title: 'Try Substitution',
+        explanation:
+            'Substituting $varName = $approachStr gives 0/0 (indeterminate form).',
+        mathematicalExpression:
+            '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}}\\bigg|_{$varName=$approachStr} = \\frac{0}{0}',
+      ),
+    );
 
     // Step 3: Factor the numerator
-    steps.add(SolutionStep(
-      stepNumber: 3,
-      title: 'Factor the numerator',
-      explanation: 'Factor the numerator to reveal common factors.',
-      mathematicalExpression:
-          '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = \\frac{${result.factoredNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 3,
+        title: 'Factor the numerator',
+        explanation: 'Factor the numerator to reveal common factors.',
+        mathematicalExpression:
+            '\\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = \\frac{${result.factoredNumerator.toTex()}}{${result.originalDenominator.toTex()}}',
+      ),
+    );
 
     // Step 4: Rewrite the whole fraction
-    steps.add(SolutionStep(
-      stepNumber: 4,
-      title: 'Rewrite the whole fraction',
-      explanation: 'Express with all factors visible.',
-      mathematicalExpression:
-          '= \\frac{${result.factoredNumerator.toTex()}}{${result.factoredDenominator.toTex()}}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 4,
+        title: 'Rewrite the whole fraction',
+        explanation: 'Express with all factors visible.',
+        mathematicalExpression:
+            '= \\frac{${result.factoredNumerator.toTex()}}{${result.factoredDenominator.toTex()}}',
+      ),
+    );
 
     // Step 5: Cancel common factors
     final commonStr = result.commonFactors.map((f) => f.toTex()).join(' ?? ');
-    steps.add(SolutionStep(
-      stepNumber: 5,
-      title: 'Cancel common factors',
-      explanation: 'Cancel ($commonStr) from numerator and denominator.',
-      mathematicalExpression:
-          '= \\frac{${result.simplifiedNumerator.toTex()}}{${result.simplifiedDenominator.toTex()}}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 5,
+        title: 'Cancel common factors',
+        explanation: 'Cancel ($commonStr) from numerator and denominator.',
+        mathematicalExpression:
+            '= \\frac{${result.simplifiedNumerator.toTex()}}{${result.simplifiedDenominator.toTex()}}',
+      ),
+    );
 
     // Step 6: Substitute x = {value}
     final evalNum = result.simplifiedNumerator.evaluate(result.approachValue);
     final evalDen = result.simplifiedDenominator.evaluate(result.approachValue);
-    steps.add(SolutionStep(
-      stepNumber: 6,
-      title: 'Substitute x = $approachStr',
-      explanation: 'Now substitute the value into the simplified expression.',
-      mathematicalExpression:
-          '= \\frac{${_fmt(evalNum)}}{${_fmt(evalDen)}} = ${_fmt(result.finalValue)}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 6,
+        title: 'Substitute x = $approachStr',
+        explanation: 'Now substitute the value into the simplified expression.',
+        mathematicalExpression:
+            '= \\frac{${_fmt(evalNum)}}{${_fmt(evalDen)}} = ${_fmt(result.finalValue)}',
+      ),
+    );
 
     // Step 7: Write the limit properly (Final Answer)
-    steps.add(SolutionStep(
-      stepNumber: 7,
-      title: 'Write the limit properly',
-      explanation: 'The limit has been evaluated successfully.',
-      mathematicalExpression:
-          '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = ${_fmt(result.finalValue)}}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 7,
+        title: 'Write the limit properly',
+        explanation: 'The limit has been evaluated successfully.',
+        mathematicalExpression:
+            '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{${result.originalNumerator.toTex()}}{${result.originalDenominator.toTex()}} = ${_fmt(result.finalValue)}}',
+      ),
+    );
 
     return steps;
   }
@@ -211,8 +225,7 @@ class SolutionStepsGenerator {
       const SolutionStep(
         stepNumber: 4,
         title: 'Cannot Solve',
-        explanation:
-            'After factoring, we find no common factors to cancel. This limit cannot be resolved by factoring.',
+        explanation: 'After factoring, we find no common factors to cancel. This limit cannot be resolved by factoring.',
       ),
     ];
   }

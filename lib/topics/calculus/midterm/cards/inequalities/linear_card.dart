@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+
 import 'animated_inequality_card.dart';
 
 class LinearCard extends StatelessWidget {

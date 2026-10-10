@@ -9,11 +9,7 @@ class SlopeAnswerCard extends StatelessWidget {
   final SlopeSolverResult result;
   final VoidCallback onTap;
 
-  const SlopeAnswerCard({
-    super.key,
-    required this.result,
-    required this.onTap,
-  });
+  const SlopeAnswerCard({super.key, required this.result, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +33,7 @@ class SlopeAnswerCard extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: accent.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: accent.withValues(alpha: 0.3), width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,22 +49,22 @@ class SlopeAnswerCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             _SlopeDisplay(
-                slopeStr: slopeStr,
-                isVertical: isVertical,
-                isHorizontal: isHorizontal),
+              slopeStr: slopeStr,
+              isVertical: isVertical,
+              isHorizontal: isHorizontal,
+            ),
             const SizedBox(height: 4),
             Math.tex(
               isVertical
                   ? r'x = c'
                   : (isHorizontal
-                      ? r'm = 0'
-                      : r'm = ' + _toLatexSlope(slopeStr)),
+                        ? r'm = 0'
+                        : r'm = ' + _toLatexSlope(slopeStr)),
               textStyle: TextStyle(
                 fontSize: 11,
-                color: context
-                    .watch<ThemeProvider>()
-                    .textSecondary
-                    .withValues(alpha: 0.5),
+                color: context.watch<ThemeProvider>().textSecondary.withValues(
+                  alpha: 0.5,
+                ),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -217,8 +210,11 @@ class SlopeComparisonCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios_rounded,
-                    size: 16, color: color.withValues(alpha: 0.6)),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: color.withValues(alpha: 0.6),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -234,10 +230,9 @@ class SlopeComparisonCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: context
-                      .watch<ThemeProvider>()
-                      .textPrimary
-                      .withValues(alpha: 0.75),
+                  color: context.watch<ThemeProvider>().textPrimary.withValues(
+                    alpha: 0.75,
+                  ),
                   height: 1.5,
                 ),
               ),
@@ -289,9 +284,7 @@ class SlopeInfoChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: accent.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: accent.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

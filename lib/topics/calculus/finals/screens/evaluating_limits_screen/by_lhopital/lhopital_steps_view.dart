@@ -39,21 +39,13 @@ class LhopitalStepsView extends StatelessWidget {
         ),
         onErrorFallback: (err) => Text(
           latex,
-          style: TextStyle(
-            fontFamily: 'serif',
-            fontSize: 15,
-            color: color,
-          ),
+          style: TextStyle(fontFamily: 'serif', fontSize: 15, color: color),
         ),
       );
     } catch (e) {
       return Text(
         latex,
-        style: TextStyle(
-          fontFamily: 'serif',
-          fontSize: 15,
-          color: color,
-        ),
+        style: TextStyle(fontFamily: 'serif', fontSize: 15, color: color),
       );
     }
   }

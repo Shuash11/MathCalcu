@@ -102,8 +102,9 @@ class _FactoringAnswerCardContent extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color:
-                    accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
+                color: accentColor.withValues(
+                  alpha: isShowingSteps ? 0.15 : 0.05,
+                ),
                 blurRadius: isShowingSteps ? 30 : 20,
                 offset: const Offset(0, 10),
               ),
@@ -160,9 +161,11 @@ class _FactoringAnswerCardContent extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.expand_more_rounded,
-                                size: expandIconSize,
-                                color: accentColor.withValues(alpha: 0.5)),
+                            Icon(
+                              Icons.expand_more_rounded,
+                              size: expandIconSize,
+                              color: accentColor.withValues(alpha: 0.5),
+                            ),
                             SizedBox(width: isCompact ? 6.0 : 8.0),
                             ResponsiveText(
                               '',
@@ -174,9 +177,11 @@ class _FactoringAnswerCardContent extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: isCompact ? 6.0 : 8.0),
-                            Icon(Icons.expand_more_rounded,
-                                size: expandIconSize,
-                                color: accentColor.withValues(alpha: 0.5)),
+                            Icon(
+                              Icons.expand_more_rounded,
+                              size: expandIconSize,
+                              color: accentColor.withValues(alpha: 0.5),
+                            ),
                           ],
                         ),
                       )
@@ -212,13 +217,11 @@ class _StatusIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color:
-            isShowingSteps ? accentColor : accentColor.withValues(alpha: 0.1),
+        color: isShowingSteps
+            ? accentColor
+            : accentColor.withValues(alpha: 0.1),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: accentColor.withValues(alpha: 0.3),
-          width: 2,
-        ),
+        border: Border.all(color: accentColor.withValues(alpha: 0.3), width: 2),
       ),
       child: Icon(
         isShowingSteps ? Icons.auto_awesome_rounded : Icons.check_rounded,
@@ -265,7 +268,10 @@ class _ValueDisplay extends StatelessWidget {
   }
 
   Widget _buildTextDisplay(
-      String displayVal, Color accentColor, BuildContext context) {
+    String displayVal,
+    Color accentColor,
+    BuildContext context,
+  ) {
     final container = Container(
       padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
       decoration: BoxDecoration(

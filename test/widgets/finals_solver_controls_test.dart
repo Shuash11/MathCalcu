@@ -15,24 +15,22 @@ Widget buildTestApp(Widget child, {ThemeProvider? theme}) {
 
 void main() {
   group('FinalsSolverButton', () {
-    testWidgets('renders "Solver" text and icon when not loading',
-        (WidgetTester tester) async {
+    testWidgets('renders "Solver" text and icon when not loading', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
-        buildTestApp(
-          FinalsSolverButton(onPressed: () {}),
-        ),
+        buildTestApp(FinalsSolverButton(onPressed: () {})),
       );
 
       expect(find.text('Solver'), findsOneWidget);
       expect(find.byIcon(Icons.calculate_rounded), findsOneWidget);
     });
 
-    testWidgets('shows CircularProgressIndicator when isLoading is true',
-        (WidgetTester tester) async {
+    testWidgets('shows CircularProgressIndicator when isLoading is true', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
-        buildTestApp(
-          FinalsSolverButton(onPressed: () {}, isLoading: true),
-        ),
+        buildTestApp(FinalsSolverButton(onPressed: () {}, isLoading: true)),
       );
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -43,17 +41,16 @@ void main() {
       var tapped = false;
 
       await tester.pumpWidget(
-        buildTestApp(
-          FinalsSolverButton(onPressed: () => tapped = true),
-        ),
+        buildTestApp(FinalsSolverButton(onPressed: () => tapped = true)),
       );
 
       await tester.tap(find.byType(FinalsSolverButton));
       expect(tapped, isTrue);
     });
 
-    testWidgets('does not call onPressed when isLoading is true',
-        (WidgetTester tester) async {
+    testWidgets('does not call onPressed when isLoading is true', (
+      WidgetTester tester,
+    ) async {
       var tapped = false;
 
       await tester.pumpWidget(
@@ -70,9 +67,7 @@ void main() {
   group('FinalsVariableChip', () {
     testWidgets('renders the variable letter', (WidgetTester tester) async {
       await tester.pumpWidget(
-        buildTestApp(
-          FinalsVariableChip(variable: 'x', onTap: () {}),
-        ),
+        buildTestApp(FinalsVariableChip(variable: 'x', onTap: () {})),
       );
 
       expect(find.text('x'), findsOneWidget);
@@ -91,12 +86,11 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('renders different variable letters',
-        (WidgetTester tester) async {
+    testWidgets('renders different variable letters', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
-        buildTestApp(
-          FinalsVariableChip(variable: 'θ', onTap: () {}),
-        ),
+        buildTestApp(FinalsVariableChip(variable: 'θ', onTap: () {})),
       );
 
       expect(find.text('θ'), findsOneWidget);

@@ -1,4 +1,4 @@
-﻿class GeneralFormParser {
+class GeneralFormParser {
   static GeneralFormResult parse(String input) {
     String eq = input
         .replaceAll(' ', '')
@@ -46,8 +46,8 @@
       D = raw == '+'
           ? 1
           : raw == '-'
-              ? -1
-              : double.parse(raw);
+          ? -1
+          : double.parse(raw);
       eq = eq.replaceFirst(xMatch.group(0)!, '');
     }
 
@@ -59,8 +59,8 @@
       E = raw == '+'
           ? 1
           : raw == '-'
-              ? -1
-              : double.parse(raw);
+          ? -1
+          : double.parse(raw);
       eq = eq.replaceFirst(yMatch.group(0)!, '');
     }
 

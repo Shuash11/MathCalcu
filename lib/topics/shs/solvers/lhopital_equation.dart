@@ -25,7 +25,9 @@ class LHopitalEquation extends BaseEquation {
         .replaceAll(' ', '')
         .replaceAll('X', 'x');
     s = s.replaceAllMapped(
-        RegExp(r'(\d|\))([x])'), (m) => '${m.group(1)}*${m.group(2)}');
+      RegExp(r'(\d|\))([x])'),
+      (m) => '${m.group(1)}*${m.group(2)}',
+    );
     return s.replaceAll('x', '($x)');
   }
 
@@ -41,9 +43,10 @@ class LHopitalEquation extends BaseEquation {
   List<dynamic>? _parse() {
     final t = rawInput.replaceAll('−', '-');
     // 'lim x->0 expr' with optional 'f/g, a=' parts.
-    final lm = RegExp(r'lim\s*x\s*->\s*(-?\d+(?:\.\d+)?|0)\s*(.+)?',
-            caseSensitive: false)
-        .firstMatch(t);
+    final lm = RegExp(
+      r'lim\s*x\s*->\s*(-?\d+(?:\.\d+)?|0)\s*(.+)?',
+      caseSensitive: false,
+    ).firstMatch(t);
     String body;
     double a;
     if (lm != null) {
@@ -96,8 +99,10 @@ class LHopitalEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'lim x->0 sin(x)/x');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'lim x->0 sin(x)/x',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -123,13 +128,15 @@ class LHopitalEquation extends BaseEquation {
     final gv = _ev(g, a) ?? _ev(g, a + h);
     if (fv == null || gv == null) {
       return SolveResult.error(
-          'Could not evaluate f and g near x = ${G6Format.num(a)}.');
+        'Could not evaluate f and g near x = ${G6Format.num(a)}.',
+      );
     }
     final is00 = fv.abs() < 1e-4 && gv.abs() < 1e-4;
     final fp = _deriv(f, a), gp = _deriv(g, a);
     if (fp == null || gp == null) {
       return SolveResult.error(
-          'Could not differentiate numerically at x = ${G6Format.num(a)}.');
+        'Could not differentiate numerically at x = ${G6Format.num(a)}.',
+      );
     }
     if (gp.abs() < 1e-12) {
       return SolveResult.error("L'Hôpital does not apply — g′(a) = 0.");
@@ -151,7 +158,7 @@ class LHopitalEquation extends BaseEquation {
           'gPrime': gp,
           'limit': lim,
           'sampleCheck': check,
-        }
+        },
       ],
     );
   }
@@ -162,18 +169,20 @@ class LHopitalEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use lim x->0 sin(x)/x.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use lim x->0 sin(x)/x.',
+        ),
       ];
     }
     final r = solve();
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Cannot apply',
-            explanation: r.errorMessage ?? '')
+          stepNumber: 1,
+          title: 'Cannot apply',
+          explanation: r.errorMessage ?? '',
+        ),
       ];
     }
     final d = r.customData!.first as Map;
@@ -183,25 +192,29 @@ class LHopitalEquation extends BaseEquation {
     final lim = (d['limit'] as num).toDouble();
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Check the form',
-          explanation: 'Evaluate f(a) and g(a) — need 0/0 or ∞/∞.'),
+        stepNumber: 1,
+        title: 'Check the form',
+        explanation: 'Evaluate f(a) and g(a) — need 0/0 or ∞/∞.',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: "Differentiate top and bottom",
-          explanation: 'f′ ≈ ${G6Format.num(fp)}, g′ ≈ ${G6Format.num(gp)}.',
-          latex:
-              "f'(a) \\approx ${G6Format.num(fp)},\\quad g'(a) \\approx ${G6Format.num(gp)}"),
+        stepNumber: 2,
+        title: "Differentiate top and bottom",
+        explanation: 'f′ ≈ ${G6Format.num(fp)}, g′ ≈ ${G6Format.num(gp)}.',
+        latex:
+            "f'(a) \\approx ${G6Format.num(fp)},\\quad g'(a) \\approx ${G6Format.num(gp)}",
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Limit of f′/g′',
-          explanation: r.answer,
-          latex:
-              '\\lim_{x \\to ${G6Format.num(a)}} \\frac{f(x)}{g(x)} = ${G6Format.num(lim)}'),
+        stepNumber: 3,
+        title: 'Limit of f′/g′',
+        explanation: r.answer,
+        latex:
+            '\\lim_{x \\to ${G6Format.num(a)}} \\frac{f(x)}{g(x)} = ${G6Format.num(lim)}',
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Sanity check',
-          explanation: 'Sample both sides of a — values must agree.'),
+        stepNumber: 4,
+        title: 'Sanity check',
+        explanation: 'Sample both sides of a — values must agree.',
+      ),
     ];
   }
 }

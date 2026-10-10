@@ -167,41 +167,68 @@ void main() {
     // BUG B: labelled inputs are read by label for every supported solid, and
     // the value itself is right (computed independently with math.pi).
     test('BUG B: labels honoured for every supported solid', () {
-      expect(G6VolumeEquation('cyl h=7 r=3').solve().points.single,
-          closeTo(G6VolumeEquation('cyl r=3 h=7').solve().points.single, 1e-12));
-      expect(G6VolumeEquation('cone r=3 h=6').solve().points.single,
-          closeTo(math.pi * 3 * 3 * 6 / 3, 1e-9));
-      expect(G6VolumeEquation('cone h=6 r=3').solve().points.single,
-          closeTo(math.pi * 3 * 3 * 6 / 3, 1e-9));
-      expect(G6VolumeEquation('prism h=2 w=3 l=5').solve().points.single,
-          closeTo(30, 1e-9));
       expect(
-          G6VolumeEquation('prism h=2 w=3 l=5').solve().points.single,
-          closeTo(
-              G6VolumeEquation('prism l=5 w=3 h=2').solve().points.single,
-              1e-12));
-      expect(G6VolumeEquation('pyramid h=6 s=4').solve().points.single,
-          closeTo(32, 1e-9));
+        G6VolumeEquation('cyl h=7 r=3').solve().points.single,
+        closeTo(G6VolumeEquation('cyl r=3 h=7').solve().points.single, 1e-12),
+      );
       expect(
-          G6VolumeEquation('pyramid h=6 s=4').solve().points.single,
-          closeTo(G6VolumeEquation('pyramid s=4 h=6').solve().points.single,
-              1e-12));
-      expect(G6VolumeEquation('cube s=4').solve().points.single,
-          closeTo(64, 1e-9));
-      expect(G6VolumeEquation('sphere r=3').solve().points.single,
-          closeTo(4 / 3 * math.pi * 27, 1e-9));
+        G6VolumeEquation('cone r=3 h=6').solve().points.single,
+        closeTo(math.pi * 3 * 3 * 6 / 3, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('cone h=6 r=3').solve().points.single,
+        closeTo(math.pi * 3 * 3 * 6 / 3, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('prism h=2 w=3 l=5').solve().points.single,
+        closeTo(30, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('prism h=2 w=3 l=5').solve().points.single,
+        closeTo(
+          G6VolumeEquation('prism l=5 w=3 h=2').solve().points.single,
+          1e-12,
+        ),
+      );
+      expect(
+        G6VolumeEquation('pyramid h=6 s=4').solve().points.single,
+        closeTo(32, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('pyramid h=6 s=4').solve().points.single,
+        closeTo(
+          G6VolumeEquation('pyramid s=4 h=6').solve().points.single,
+          1e-12,
+        ),
+      );
+      expect(
+        G6VolumeEquation('cube s=4').solve().points.single,
+        closeTo(64, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('sphere r=3').solve().points.single,
+        closeTo(4 / 3 * math.pi * 27, 1e-9),
+      );
     });
 
     // BUG B regression: positional inputs keep working.
     test('BUG B regression: positional inputs unchanged', () {
-      expect(G6VolumeEquation('prism 5x3x2').solve().points.single,
-          closeTo(30, 1e-9));
-      expect(G6VolumeEquation('cyl 3 7').solve().points.single,
-          closeTo(math.pi * 9 * 7, 1e-9));
-      expect(G6VolumeEquation('pyramid 4x4 h=6').solve().points.single,
-          closeTo(32, 1e-9));
-      expect(G6VolumeEquation('cube s=4').solve().points.single,
-          closeTo(64, 1e-9));
+      expect(
+        G6VolumeEquation('prism 5x3x2').solve().points.single,
+        closeTo(30, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('cyl 3 7').solve().points.single,
+        closeTo(math.pi * 9 * 7, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('pyramid 4x4 h=6').solve().points.single,
+        closeTo(32, 1e-9),
+      );
+      expect(
+        G6VolumeEquation('cube s=4').solve().points.single,
+        closeTo(64, 1e-9),
+      );
     });
   });
 
@@ -248,21 +275,24 @@ void main() {
   });
 
   group('G6 wave3 LaTeX emission (Batch 2)', () {
-    test('geometry: formula/substitute/compute carry TeX, shape+units prose', () {
-      final rect = G6GeometryEquation('rect 6x4').getSteps();
-      expect(rect, hasLength(5));
-      expect(rect[0].latex, isNull); // identify-shape prose
-      expect(rect[1].latex, contains(r'\cdot'));
-      expect(rect[2].latex, contains('6'));
-      expect(rect[3].latex, contains('24'));
-      expect(rect[4].latex, isNull); // attach-units prose
-      final circ = G6GeometryEquation('circle r=7').getSteps();
-      expect(circ[1].latex, contains(r'\pi r^{2}'));
-      expect(circ[3].latex, contains('43.98'));
-      final tri = G6GeometryEquation('triangle b=8 h=5').getSteps();
-      expect(tri[1].latex, contains(r'\frac{1}{2}'));
-      expect(tri[3].latex, contains('20'));
-    });
+    test(
+      'geometry: formula/substitute/compute carry TeX, shape+units prose',
+      () {
+        final rect = G6GeometryEquation('rect 6x4').getSteps();
+        expect(rect, hasLength(5));
+        expect(rect[0].latex, isNull); // identify-shape prose
+        expect(rect[1].latex, contains(r'\cdot'));
+        expect(rect[2].latex, contains('6'));
+        expect(rect[3].latex, contains('24'));
+        expect(rect[4].latex, isNull); // attach-units prose
+        final circ = G6GeometryEquation('circle r=7').getSteps();
+        expect(circ[1].latex, contains(r'\pi r^{2}'));
+        expect(circ[3].latex, contains('43.98'));
+        final tri = G6GeometryEquation('triangle b=8 h=5').getSteps();
+        expect(tri[1].latex, contains(r'\frac{1}{2}'));
+        expect(tri[3].latex, contains('20'));
+      },
+    );
 
     test('volume: formula/substitute/result carry TeX, units step prose', () {
       final cube = G6VolumeEquation('cube s=4').getSteps();
@@ -295,89 +325,97 @@ void main() {
       expect(prob[2].latex, contains('60'));
     });
 
-    test('every emitted wave3-batch2 TeX line is ASCII (no unicode/control)', () {
-      for (final eq in <BaseEquation>[
-        G6GeometryEquation('rect 6x4'),
-        G6GeometryEquation('square 5'),
-        G6GeometryEquation('triangle b=8 h=5'),
-        G6GeometryEquation('triangle 3-4-5'),
-        G6GeometryEquation('parallelogram b=6 h=4'),
-        G6GeometryEquation('parallelogram b=6 h=4 s=3'),
-        G6GeometryEquation('trapezoid a=4 b=8 h=5'),
-        G6GeometryEquation('circle r=7'),
-        G6GeometryEquation('circle d=14'),
-        G6GeometryEquation('composite 6x4 + 3x2'),
-        G6GeometryEquation('rect 6m x 4m'),
-        G6VolumeEquation('cube s=4'),
-        G6VolumeEquation('prism 5x3x2'),
-        G6VolumeEquation('cyl r=3 h=7'),
-        G6VolumeEquation('cyl h=7 r=3'),
-        G6VolumeEquation('cone r=3 h=6'),
-        G6VolumeEquation('cone h=6 r=3'),
-        G6VolumeEquation('pyramid 4x4 h=6'),
-        G6VolumeEquation('pyramid s=4 h=6'),
-        G6VolumeEquation('sphere r=3'),
-        G6PieEquation('Math 40, Science 30, English 30'),
-        G6PieEquation('40, 30, 30'),
-        G6ProbabilityEquation('P(red) in 3R + 2B'),
-        G6ProbabilityEquation('3 out of 5'),
-      ]) {
-        for (final s in eq.getSteps()) {
-          for (final tex in <String?>[s.latex, ...?s.subLatex]) {
-            if (tex == null) {
-              continue;
+    test(
+      'every emitted wave3-batch2 TeX line is ASCII (no unicode/control)',
+      () {
+        for (final eq in <BaseEquation>[
+          G6GeometryEquation('rect 6x4'),
+          G6GeometryEquation('square 5'),
+          G6GeometryEquation('triangle b=8 h=5'),
+          G6GeometryEquation('triangle 3-4-5'),
+          G6GeometryEquation('parallelogram b=6 h=4'),
+          G6GeometryEquation('parallelogram b=6 h=4 s=3'),
+          G6GeometryEquation('trapezoid a=4 b=8 h=5'),
+          G6GeometryEquation('circle r=7'),
+          G6GeometryEquation('circle d=14'),
+          G6GeometryEquation('composite 6x4 + 3x2'),
+          G6GeometryEquation('rect 6m x 4m'),
+          G6VolumeEquation('cube s=4'),
+          G6VolumeEquation('prism 5x3x2'),
+          G6VolumeEquation('cyl r=3 h=7'),
+          G6VolumeEquation('cyl h=7 r=3'),
+          G6VolumeEquation('cone r=3 h=6'),
+          G6VolumeEquation('cone h=6 r=3'),
+          G6VolumeEquation('pyramid 4x4 h=6'),
+          G6VolumeEquation('pyramid s=4 h=6'),
+          G6VolumeEquation('sphere r=3'),
+          G6PieEquation('Math 40, Science 30, English 30'),
+          G6PieEquation('40, 30, 30'),
+          G6ProbabilityEquation('P(red) in 3R + 2B'),
+          G6ProbabilityEquation('3 out of 5'),
+        ]) {
+          for (final s in eq.getSteps()) {
+            for (final tex in <String?>[s.latex, ...?s.subLatex]) {
+              if (tex == null) {
+                continue;
+              }
+              expect(
+                tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+                isTrue,
+                reason: '$tex (${s.title})',
+              );
             }
-            expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-                reason: '$tex (${s.title})');
           }
         }
-      }
-    });
+      },
+    );
 
-    testWidgets('every emitted wave3-batch2 TeX line parses (recording fallback)',
-        (tester) async {
-      final cases = <BaseEquation>[
-        G6GeometryEquation('rect 6x4'),
-        G6GeometryEquation('square 5'),
-        G6GeometryEquation('triangle b=8 h=5'),
-        G6GeometryEquation('triangle 3-4-5'),
-        G6GeometryEquation('parallelogram b=6 h=4'),
-        G6GeometryEquation('parallelogram b=6 h=4 s=3'),
-        G6GeometryEquation('trapezoid a=4 b=8 h=5'),
-        G6GeometryEquation('circle r=7'),
-        G6GeometryEquation('circle d=14'),
-        G6GeometryEquation('composite 6x4 + 3x2'),
-        G6GeometryEquation('rect 6m x 4m'),
-        G6VolumeEquation('cube s=4'),
-        G6VolumeEquation('prism 5x3x2'),
-        G6VolumeEquation('cyl r=3 h=7'),
-        G6VolumeEquation('cyl h=7 r=3'),
-        G6VolumeEquation('cone r=3 h=6'),
-        G6VolumeEquation('cone h=6 r=3'),
-        G6VolumeEquation('pyramid 4x4 h=6'),
-        G6VolumeEquation('pyramid s=4 h=6'),
-        G6VolumeEquation('sphere r=3'),
-        G6PieEquation('Math 40, Science 30, English 30'),
-        G6PieEquation('40, 30, 30'),
-        G6ProbabilityEquation('P(red) in 3R + 2B'),
-        G6ProbabilityEquation('3 out of 5'),
-      ];
-      var checked = 0;
-      for (final eq in cases) {
-        for (final s in eq.getSteps()) {
-          if (s.latex != null && s.latex!.isNotEmpty) {
-            await _expectTexParses(tester, s.latex!);
-            checked++;
-          }
-          for (final line in s.subLatex ?? const <String>[]) {
-            if (line.trim().isNotEmpty) {
-              await _expectTexParses(tester, line);
+    testWidgets(
+      'every emitted wave3-batch2 TeX line parses (recording fallback)',
+      (tester) async {
+        final cases = <BaseEquation>[
+          G6GeometryEquation('rect 6x4'),
+          G6GeometryEquation('square 5'),
+          G6GeometryEquation('triangle b=8 h=5'),
+          G6GeometryEquation('triangle 3-4-5'),
+          G6GeometryEquation('parallelogram b=6 h=4'),
+          G6GeometryEquation('parallelogram b=6 h=4 s=3'),
+          G6GeometryEquation('trapezoid a=4 b=8 h=5'),
+          G6GeometryEquation('circle r=7'),
+          G6GeometryEquation('circle d=14'),
+          G6GeometryEquation('composite 6x4 + 3x2'),
+          G6GeometryEquation('rect 6m x 4m'),
+          G6VolumeEquation('cube s=4'),
+          G6VolumeEquation('prism 5x3x2'),
+          G6VolumeEquation('cyl r=3 h=7'),
+          G6VolumeEquation('cyl h=7 r=3'),
+          G6VolumeEquation('cone r=3 h=6'),
+          G6VolumeEquation('cone h=6 r=3'),
+          G6VolumeEquation('pyramid 4x4 h=6'),
+          G6VolumeEquation('pyramid s=4 h=6'),
+          G6VolumeEquation('sphere r=3'),
+          G6PieEquation('Math 40, Science 30, English 30'),
+          G6PieEquation('40, 30, 30'),
+          G6ProbabilityEquation('P(red) in 3R + 2B'),
+          G6ProbabilityEquation('3 out of 5'),
+        ];
+        var checked = 0;
+        for (final eq in cases) {
+          for (final s in eq.getSteps()) {
+            if (s.latex != null && s.latex!.isNotEmpty) {
+              await _expectTexParses(tester, s.latex!);
               checked++;
             }
+            for (final line in s.subLatex ?? const <String>[]) {
+              if (line.trim().isNotEmpty) {
+                await _expectTexParses(tester, line);
+                checked++;
+              }
+            }
           }
         }
-      }
-      expect(checked, greaterThan(0));
-    });
+        expect(checked, greaterThan(0));
+      },
+    );
   });
 }

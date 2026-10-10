@@ -30,21 +30,19 @@ class DistanceResult {
   factory DistanceResult.success({
     required double distance,
     required String formula,
-  }) =>
-      DistanceResult(distance: distance, formula: formula);
+  }) => DistanceResult(distance: distance, formula: formula);
 
   DistanceResult _copyWith({
     double? distance,
     String? formula,
     bool hasError = false,
     String? errorMessage,
-  }) =>
-      DistanceResult(
-        distance: distance ?? this.distance,
-        formula: formula ?? this.formula,
-        hasError: hasError,
-        errorMessage: errorMessage ?? this.errorMessage,
-      );
+  }) => DistanceResult(
+    distance: distance ?? this.distance,
+    formula: formula ?? this.formula,
+    hasError: hasError,
+    errorMessage: errorMessage ?? this.errorMessage,
+  );
 }
 
 /// Handles 1D (number line) and 2D (coordinate plane) distance calculations

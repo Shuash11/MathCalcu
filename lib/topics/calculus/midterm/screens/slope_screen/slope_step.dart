@@ -48,7 +48,9 @@ class SlopeStepItem extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 12),
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: context.watch<ThemeProvider>().card,
                       borderRadius: BorderRadius.circular(10),
@@ -181,7 +183,9 @@ class _FinalBox extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: const Color(0xFF334155).withValues(alpha: 0.4), width: 1.5),
+          color: const Color(0xFF334155).withValues(alpha: 0.4),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
@@ -191,7 +195,8 @@ class _FinalBox extends StatelessWidget {
               color: const Color(0xFF334155).withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                  color: const Color(0xFF334155).withValues(alpha: 0.35)),
+                color: const Color(0xFF334155).withValues(alpha: 0.35),
+              ),
             ),
             child: Text(
               step.label.toUpperCase(),

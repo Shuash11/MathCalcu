@@ -48,8 +48,9 @@ Future<void> _pump(
 
 void main() {
   group('StepList "Show work" toggle', () {
-    testWidgets('meets labeledTapTargetGuideline in both themes',
-        (tester) async {
+    testWidgets('meets labeledTapTargetGuideline in both themes', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
 
       for (final isDark in [false, true]) {
@@ -80,10 +81,7 @@ void main() {
 
         // The toggle announces itself as Show work / Hide work.
         expect(find.text('Show work'), findsOneWidget);
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       }
 
       handle.dispose();
@@ -118,35 +116,32 @@ void main() {
 
   group('Finals screens labeled tap targets', () {
     testWidgets(
-        'derivatives screen meets labeledTapTargetGuideline in both themes',
-        (tester) async {
-      final handle = tester.ensureSemantics();
+      'derivatives screen meets labeledTapTargetGuideline in both themes',
+      (tester) async {
+        final handle = tester.ensureSemantics();
 
-      for (final isDark in [false, true]) {
-        await _pump(
-          tester,
-          const MaterialApp(home: DerivativeScreen()),
-          isDark: isDark,
-        );
-        // _solve shows the answer card after its 400ms UI-feel delay.
-        await tester.enterText(find.byType(TextField), 'x^2 + 3*x');
-        await tester.tap(find.text('Solver'));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 400));
-        await tester.pump();
+        for (final isDark in [false, true]) {
+          await _pump(
+            tester,
+            const MaterialApp(home: DerivativeScreen()),
+            isDark: isDark,
+          );
+          // _solve shows the answer card after its 400ms UI-feel delay.
+          await tester.enterText(find.byType(TextField), 'x^2 + 3*x');
+          await tester.tap(find.text('Solver'));
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 400));
+          await tester.pump();
 
-        expect(find.text('Derivative Result'), findsOneWidget);
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
-      }
+          expect(find.text('Derivative Result'), findsOneWidget);
+          await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+        }
 
-      handle.dispose();
-    });
+        handle.dispose();
+      },
+    );
 
-    testWidgets(
-        'evaluating limits picker meets labeledTapTargetGuideline '
+    testWidgets('evaluating limits picker meets labeledTapTargetGuideline '
         'in both themes', (tester) async {
       final handle = tester.ensureSemantics();
 
@@ -163,17 +158,13 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Back to Finals'), findsOneWidget);
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       }
 
       handle.dispose();
     });
 
-    testWidgets(
-        'limits infinity screen meets labeledTapTargetGuideline '
+    testWidgets('limits infinity screen meets labeledTapTargetGuideline '
         'in both themes', (tester) async {
       final handle = tester.ensureSemantics();
 
@@ -192,97 +183,91 @@ void main() {
         await tester.pump();
 
         expect(find.text('Limit Result'), findsOneWidget);
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       }
 
       handle.dispose();
     });
 
     testWidgets(
-        'slope solver screen meets labeledTapTargetGuideline in both themes',
-        (tester) async {
-      final handle = tester.ensureSemantics();
+      'slope solver screen meets labeledTapTargetGuideline in both themes',
+      (tester) async {
+        final handle = tester.ensureSemantics();
 
-      for (final isDark in [false, true]) {
-        await _pump(
-          tester,
-          const MaterialApp(home: SlopeSolverScreen()),
-          isDark: isDark,
-        );
-        // Defaults y = x^3 - 2x + 1 at x = 2 solve instantly (no delay).
-        await tester.tap(find.text('Solver'));
-        await tester.pumpAndSettle();
+        for (final isDark in [false, true]) {
+          await _pump(
+            tester,
+            const MaterialApp(home: SlopeSolverScreen()),
+            isDark: isDark,
+          );
+          // Defaults y = x^3 - 2x + 1 at x = 2 solve instantly (no delay).
+          await tester.tap(find.text('Solver'));
+          await tester.pumpAndSettle();
 
-        expect(find.text('Slope (m)'), findsOneWidget);
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
-      }
+          expect(find.text('Slope (m)'), findsOneWidget);
+          await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+        }
 
-      handle.dispose();
-    });
+        handle.dispose();
+      },
+    );
 
     testWidgets(
-        'slope steps screen meets labeledTapTargetGuideline in both themes',
-        (tester) async {
-      final handle = tester.ensureSemantics();
+      'slope steps screen meets labeledTapTargetGuideline in both themes',
+      (tester) async {
+        final handle = tester.ensureSemantics();
 
-      final result = SlopeSolver.solve(
-        'y = x^3 - 2x + 1',
-        pointValues: PointValues.parse('x=2'),
-      );
-      final solution = SolutionBuilder.build(result);
-
-      for (final isDark in [false, true]) {
-        await _pump(
-          tester,
-          MaterialApp(home: StepsScreen(solution: solution)),
-          isDark: isDark,
+        final result = SlopeSolver.solve(
+          'y = x^3 - 2x + 1',
+          pointValues: PointValues.parse('x=2'),
         );
+        final solution = SolutionBuilder.build(result);
 
-        expect(find.text('Back to slope solution'), findsNothing);
-        expect(
-          find.bySemanticsLabel('Back to slope solution'),
-          findsOneWidget,
-        );
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
-      }
+        for (final isDark in [false, true]) {
+          await _pump(
+            tester,
+            MaterialApp(home: StepsScreen(solution: solution)),
+            isDark: isDark,
+          );
 
-      handle.dispose();
-    });
+          expect(find.text('Back to slope solution'), findsNothing);
+          expect(
+            find.bySemanticsLabel('Back to slope solution'),
+            findsOneWidget,
+          );
+          await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+        }
+
+        handle.dispose();
+      },
+    );
   });
 
   group('Converted step bodies render math widgets', () {
     testWidgets(
-        'derivatives step bodies render Math widgets in the steps modal',
-        (tester) async {
-      await _pump(tester, const MaterialApp(home: DerivativeScreen()));
+      'derivatives step bodies render Math widgets in the steps modal',
+      (tester) async {
+        await _pump(tester, const MaterialApp(home: DerivativeScreen()));
 
-      await tester.enterText(find.byType(TextField), 'x^2 + 3*x');
-      // _solve shows the answer card after its 400ms UI-feel delay.
-      await tester.tap(find.text('Solver'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      await tester.pump();
+        await tester.enterText(find.byType(TextField), 'x^2 + 3*x');
+        // _solve shows the answer card after its 400ms UI-feel delay.
+        await tester.tap(find.text('Solver'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester.pump();
 
-      // Open the steps modal, then assert each step expression is rendered
-      // through the LaTeX path (a Math widget) instead of a plain Text.
-      await tester.tap(find.text('Show Steps'));
-      await tester.pumpAndSettle();
+        // Open the steps modal, then assert each step expression is rendered
+        // through the LaTeX path (a Math widget) instead of a plain Text.
+        await tester.tap(find.text('Show Steps'));
+        await tester.pumpAndSettle();
 
-      final modalMath = find.descendant(
-        of: find.byType(DraggableScrollableSheet),
-        matching: find.byType(Math),
-      );
-      expect(modalMath, findsWidgets);
-      expect(tester.takeException(), isNull);
-    });
+        final modalMath = find.descendant(
+          of: find.byType(DraggableScrollableSheet),
+          matching: find.byType(Math),
+        );
+        expect(modalMath, findsWidgets);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

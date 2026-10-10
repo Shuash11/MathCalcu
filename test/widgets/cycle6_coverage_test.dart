@@ -150,24 +150,14 @@ void main() {
     });
 
     test('solveFromStrings keeps fraction raws and radius', () {
-      final r = RadiusSolver.solveFromStrings(
-        x: '1/2',
-        y: '0',
-        h: '0',
-        k: '0',
-      );
+      final r = RadiusSolver.solveFromStrings(x: '1/2', y: '0', h: '0', k: '0');
       expect(r.radius, closeTo(0.5, 1e-9));
       expect(r.steps, isNotEmpty);
     });
 
     test('invalid number throws ArgumentError', () {
       expect(
-        () => RadiusSolver.solveFromStrings(
-          x: 'abc',
-          y: '0',
-          h: '0',
-          k: '0',
-        ),
+        () => RadiusSolver.solveFromStrings(x: 'abc', y: '0', h: '0', k: '0'),
         throwsArgumentError,
       );
     });
@@ -245,10 +235,7 @@ void main() {
 
     test('degenerate 0=5 has no solution, 0=0 is all reals', () {
       expect(YInterceptSolver.tryParseAny('0=5')!.equation, 'No solution');
-      expect(
-        YInterceptSolver.tryParseAny('0=0')!.equation,
-        'All real numbers',
-      );
+      expect(YInterceptSolver.tryParseAny('0=0')!.equation, 'All real numbers');
     });
 
     test('vertical x=2 keeps x-intercept only', () {
@@ -282,20 +269,14 @@ void main() {
     test('expression accepts math, rejects stray symbols', () {
       expect(FieldValidators.expression('x^2+3*x'), isNull);
       expect(FieldValidators.expression(''), contains('Enter'));
-      expect(
-        FieldValidators.expression('x@2'),
-        contains('Could not parse'),
-      );
+      expect(FieldValidators.expression('x@2'), contains('Could not parse'));
     });
 
     test('numeric and point-pair patterns behave', () {
       expect(FieldValidators.numeric.hasMatch('3'), isTrue);
       expect(FieldValidators.numeric.hasMatch('-2.5'), isTrue);
       expect(FieldValidators.numeric.hasMatch('abc'), isFalse);
-      expect(
-        FieldValidators.pointPair.hasMatch('(0,0), (3,4)'),
-        isTrue,
-      );
+      expect(FieldValidators.pointPair.hasMatch('(0,0), (3,4)'), isTrue);
       expect(FieldValidators.pointPair.hasMatch('nope'), isFalse);
     });
 

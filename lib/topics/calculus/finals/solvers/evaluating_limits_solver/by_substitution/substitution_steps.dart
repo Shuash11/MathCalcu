@@ -60,44 +60,54 @@ class SubstitutionStepsGenerator {
   List<SolutionStep> _generateSuccessSteps(SubstitutionResult result) {
     final steps = <SolutionStep>[];
 
-    steps.add(SolutionStep(
-      stepNumber: 1,
-      title: 'Write the Limit',
-      explanation: 'Write the original limit problem.',
-      mathExpression: r'\lim_{x \to ' +
-          _fmt(result.approachValue) +
-          r'} \left( ' +
-          _toLatexOriginal(result.normalizedExpression) +
-          r'\right)',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 1,
+        title: 'Write the Limit',
+        explanation: 'Write the original limit problem.',
+        mathExpression:
+            r'\lim_{x \to ' +
+            _fmt(result.approachValue) +
+            r'} \left( ' +
+            _toLatexOriginal(result.normalizedExpression) +
+            r'\right)',
+      ),
+    );
 
-    steps.add(SolutionStep(
-      stepNumber: 2,
-      title: 'Substitute the Value Directly',
-      explanation:
-          'Replace x with ${_fmt(result.approachValue)} in the expression.',
-      mathExpression:
-          'f(${_fmt(result.approachValue)}) = ${_toLatexExpression(result.normalizedExpression, result.approachValue)}',
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 2,
+        title: 'Substitute the Value Directly',
+        explanation:
+            'Replace x with ${_fmt(result.approachValue)} in the expression.',
+        mathExpression:
+            'f(${_fmt(result.approachValue)}) = ${_toLatexExpression(result.normalizedExpression, result.approachValue)}',
+      ),
+    );
 
-    steps.add(SolutionStep(
-      stepNumber: 3,
-      title: 'Simplify',
-      explanation: 'Evaluate the expression by computing the arithmetic.',
-      mathExpression: result.fullEvaluation.description,
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 3,
+        title: 'Simplify',
+        explanation: 'Evaluate the expression by computing the arithmetic.',
+        mathExpression: result.fullEvaluation.description,
+      ),
+    );
 
-    steps.add(SolutionStep(
-      stepNumber: 4,
-      title: 'Final Answer',
-      explanation: 'The limit exists and equals the computed value.',
-      mathExpression: r'\lim_{x \to ' +
-          _fmt(result.approachValue) +
-          r'} \left( ' +
-          _toLatexOriginal(result.normalizedExpression) +
-          r'\right) = ' +
-          (result.finalValue?.toString() ?? 'undefined'),
-    ));
+    steps.add(
+      SolutionStep(
+        stepNumber: 4,
+        title: 'Final Answer',
+        explanation: 'The limit exists and equals the computed value.',
+        mathExpression:
+            r'\lim_{x \to ' +
+            _fmt(result.approachValue) +
+            r'} \left( ' +
+            _toLatexOriginal(result.normalizedExpression) +
+            r'\right) = ' +
+            (result.finalValue?.toString() ?? 'undefined'),
+      ),
+    );
 
     return steps;
   }
@@ -106,7 +116,9 @@ class SubstitutionStepsGenerator {
     String result = expr.replaceAll('*', '');
     result = result.replaceAll(RegExp(r'\s+'), ' ');
     result = result.replaceAllMapped(
-        RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
+      RegExp(r'(\w)\s*\^\s*(\d+)'),
+      (m) => '${m.group(1)}^{${m.group(2)}}',
+    );
     return result.trim();
   }
 
@@ -123,7 +135,9 @@ class SubstitutionStepsGenerator {
     result = result.replaceAll('*', '');
 
     result = result.replaceAllMapped(
-        RegExp(r'(\w)\s*\^\s*(\d+)'), (m) => '${m.group(1)}^{${m.group(2)}}');
+      RegExp(r'(\w)\s*\^\s*(\d+)'),
+      (m) => '${m.group(1)}^{${m.group(2)}}',
+    );
 
     return result;
   }
@@ -134,7 +148,8 @@ class SubstitutionStepsGenerator {
       SolutionStep(
         stepNumber: 1,
         title: 'Identify the Problem',
-        explanation: 'We need to evaluate:\n'
+        explanation:
+            'We need to evaluate:\n'
             'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
       ),
       SolutionStep(
@@ -150,7 +165,8 @@ class SubstitutionStepsGenerator {
       const SolutionStep(
         stepNumber: 3,
         title: 'Identify the Problem',
-        explanation: 'We obtained 0/0, which is an indeterminate form.\n\n'
+        explanation:
+            'We obtained 0/0, which is an indeterminate form.\n\n'
             'An indeterminate form means we cannot determine the limit from '
             'direct substitution alone. The expression might:\n'
             '• Approach a finite value\n'
@@ -185,7 +201,8 @@ class SubstitutionStepsGenerator {
       SolutionStep(
         stepNumber: 1,
         title: 'Identify the Problem',
-        explanation: 'We need to evaluate:\n'
+        explanation:
+            'We need to evaluate:\n'
             'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
       ),
       SolutionStep(
@@ -194,7 +211,7 @@ class SubstitutionStepsGenerator {
         explanation: 'Let\'s substitute x = ${_fmt(result.approachValue)}.',
         mathExpression: result.isFraction
             ? 'Numerator: ${result.numeratorResult?.description ?? "?"}\n'
-                'Denominator: ${result.denominatorResult?.description ?? "?"}'
+                  'Denominator: ${result.denominatorResult?.description ?? "?"}'
             : 'f(${_fmt(result.approachValue)}) = ${result.finalValueDescription}',
       ),
       SolutionStep(
@@ -202,10 +219,10 @@ class SubstitutionStepsGenerator {
         title: 'Analyze the Result',
         explanation: result.isFraction
             ? 'The numerator evaluates to a non-zero value, but the denominator is zero.\n\n'
-                'This means the function grows without bound as x approaches ${_fmt(result.approachValue)}.\n\n'
-                'To determine whether it\'s +∞ or -∞, we need to check the signs:\n'
-                '• Numerator sign: ${_getSign(result.numeratorResult?.value)}\n'
-                '• Denominator sign near ${_fmt(result.approachValue)}: ${_getSign(result.denominatorResult?.value)}'
+                  'This means the function grows without bound as x approaches ${_fmt(result.approachValue)}.\n\n'
+                  'To determine whether it\'s +∞ or -∞, we need to check the signs:\n'
+                  '• Numerator sign: ${_getSign(result.numeratorResult?.value)}\n'
+                  '• Denominator sign near ${_fmt(result.approachValue)}: ${_getSign(result.denominatorResult?.value)}'
             : 'The function evaluates to infinity, meaning it grows without bound.',
       ),
       SolutionStep(
@@ -227,7 +244,8 @@ class SubstitutionStepsGenerator {
       SolutionStep(
         stepNumber: 1,
         title: 'Identify the Problem',
-        explanation: 'We need to evaluate:\n'
+        explanation:
+            'We need to evaluate:\n'
             'lim(x → ${_fmt(result.approachValue)}) ${result.normalizedExpression}',
       ),
       SolutionStep(

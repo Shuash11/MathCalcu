@@ -9,7 +9,8 @@
 
 class PointValues {
   static final RegExp _pair = RegExp(
-      r'^([a-zA-Z_][a-zA-Z0-9_]*)=([-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)$');
+    r'^([a-zA-Z_][a-zA-Z0-9_]*)=([-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)$',
+  );
 
   static Map<String, double> parse(String text) {
     final vars = <String, double>{};

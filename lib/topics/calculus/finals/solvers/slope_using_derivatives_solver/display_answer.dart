@@ -4,6 +4,7 @@
 //   StepExplainer  — builds a list of step-by-step explanation strings
 //   PrettyPrinter  — renders a SlopeResult to the terminal with ANSI colour
 import 'slope_using_derivatives_solver.dart';
+
 // ==================== STEP EXPLAINER ====================
 
 /// Writes one line to the console. Kept free of platform I/O imports so
@@ -49,12 +50,13 @@ class StepExplainer {
       final xVal = r.point[indep]!;
       final stepNum =
           r.derivative.toMathString() != r.simplifiedDerivative.toMathString()
-              ? 4
-              : 3;
+          ? 4
+          : 3;
       steps.add('');
       steps.add('STEP $stepNum — Evaluate at $indep = ${_fmt(xVal)}');
       steps.add(
-          '  slope = ${r.simplifiedDerivative.toMathString()} | $indep=${_fmt(xVal)} = ${_fmt(r.slopeValue!)}');
+        '  slope = ${r.simplifiedDerivative.toMathString()} | $indep=${_fmt(xVal)} = ${_fmt(r.slopeValue!)}',
+      );
     }
 
     _appendLines(steps, r);
@@ -65,21 +67,25 @@ class StepExplainer {
     final steps = <String>[];
 
     steps.add(
-        'GIVEN (implicit):  ${r.leftSide?.toMathString() ?? ''} = ${r.rightSide?.toMathString() ?? ''}');
+      'GIVEN (implicit):  ${r.leftSide?.toMathString() ?? ''} = ${r.rightSide?.toMathString() ?? ''}',
+    );
     steps.add('');
     steps.add('STEP 1 — Differentiate both sides with respect to x');
     steps.add('  Treat y as a function of x: y = y(x)');
     steps.add(
-        '  Left  side: d/dx[${r.leftSide?.toMathString() ?? ''}] = ${r.leftDerivative?.toMathString() ?? ''}');
+      '  Left  side: d/dx[${r.leftSide?.toMathString() ?? ''}] = ${r.leftDerivative?.toMathString() ?? ''}',
+    );
     steps.add(
-        '  Right side: d/dx[${r.rightSide?.toMathString() ?? ''}] = ${r.rightDerivative?.toMathString() ?? ''}');
+      '  Right side: d/dx[${r.rightSide?.toMathString() ?? ''}] = ${r.rightDerivative?.toMathString() ?? ''}',
+    );
     steps.add('');
     steps.add('STEP 2 — Set derivatives equal and collect dy/dx terms');
     steps.add('  ${r.derivative.toMathString()} = 0');
     steps.add('');
     steps.add('STEP 3 — Solve for dy/dx');
     steps.add(
-        '  dy/dx = ${r.implicitSlopeExpr?.toMathString() ?? r.simplifiedDerivative.toMathString()}');
+      '  dy/dx = ${r.implicitSlopeExpr?.toMathString() ?? r.simplifiedDerivative.toMathString()}',
+    );
 
     if (r.point.containsKey('x') &&
         r.point.containsKey('y') &&
@@ -110,7 +116,8 @@ class StepExplainer {
     steps.add('STEP 2 — Apply the parametric slope formula');
     steps.add('  dy/dx = (dy/d$t) / (dx/d$t)');
     steps.add(
-        '        = (${r.dyDt?.toMathString() ?? ''}) / (${r.dxDt?.toMathString() ?? ''})');
+      '        = (${r.dyDt?.toMathString() ?? ''}) / (${r.dxDt?.toMathString() ?? ''})',
+    );
     steps.add('        = ${r.simplifiedDerivative.toMathString()}');
 
     if (r.secondDerivative != null) {
@@ -202,33 +209,42 @@ class PrettyPrinter {
     _writeln('');
     _writeln('$_bold$_green┌─── RESULT SUMMARY ${'─' * (w - 19)}┐$_reset');
     _writeln(
-        '$_bold$_green│$_reset  Derivative:  ${result.simplifiedDerivative.toMathString()}'
-        '${' ' * _pad(result.simplifiedDerivative.toMathString(), w - 15)}'
-        '$_bold$_green│$_reset');
+      '$_bold$_green│$_reset  Derivative:  ${result.simplifiedDerivative.toMathString()}'
+      '${' ' * _pad(result.simplifiedDerivative.toMathString(), w - 15)}'
+      '$_bold$_green│$_reset',
+    );
 
     if (result.secondDerivative != null) {
       final sd = result.secondDerivative!.toMathString();
-      _writeln('$_bold$_green│$_reset  2nd deriv:   $sd'
-          '${' ' * _pad(sd, w - 15)}'
-          '$_bold$_green│$_reset');
+      _writeln(
+        '$_bold$_green│$_reset  2nd deriv:   $sd'
+        '${' ' * _pad(sd, w - 15)}'
+        '$_bold$_green│$_reset',
+      );
     }
     if (result.slopeValue != null) {
       final sv = _fmtD(result.slopeValue!);
-      _writeln('$_bold$_green│$_reset  Slope value: $sv'
-          '${' ' * _pad(sv, w - 15)}'
-          '$_bold$_green│$_reset');
+      _writeln(
+        '$_bold$_green│$_reset  Slope value: $sv'
+        '${' ' * _pad(sv, w - 15)}'
+        '$_bold$_green│$_reset',
+      );
     }
     if (result.tangentLineEquation != null) {
       final tl = result.tangentLineEquation!;
-      _writeln('$_bold$_green│$_reset  Tangent:     $tl'
-          '${' ' * _pad(tl, w - 15)}'
-          '$_bold$_green│$_reset');
+      _writeln(
+        '$_bold$_green│$_reset  Tangent:     $tl'
+        '${' ' * _pad(tl, w - 15)}'
+        '$_bold$_green│$_reset',
+      );
     }
     if (result.normalLineEquation != null) {
       final nl = result.normalLineEquation!;
-      _writeln('$_bold$_green│$_reset  Normal:      $nl'
-          '${' ' * _pad(nl, w - 15)}'
-          '$_bold$_green│$_reset');
+      _writeln(
+        '$_bold$_green│$_reset  Normal:      $nl'
+        '${' ' * _pad(nl, w - 15)}'
+        '$_bold$_green│$_reset',
+      );
     }
     _writeln('$_bold$_green└${'─' * w}┘$_reset');
   }

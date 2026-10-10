@@ -21,8 +21,8 @@ void main() {
     });
 
     test('explicit x = 5 wins over the "x" in "max = 40"', () {
-      final r =
-          VariationEquation('direct, x = 2, y = 10, x = 5, max = 40').solve();
+      final r = VariationEquation('direct, x = 2, y = 10, x = 5, max = 40')
+          .solve();
       expect(r.hasError, isFalse);
       final cd = r.customData!.first as Map;
       expect((cd['x'] as num).toDouble(), 5.0);

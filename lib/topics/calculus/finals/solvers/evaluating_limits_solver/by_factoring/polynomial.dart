@@ -217,5 +217,6 @@ class Polynomial {
 
   @override
   int get hashCode => Object.hashAll(
-      _coeffs.entries.map((e) => Object.hash(e.key, e.value.round())));
+    _coeffs.entries.map((e) => Object.hash(e.key, e.value.round())),
+  );
 }

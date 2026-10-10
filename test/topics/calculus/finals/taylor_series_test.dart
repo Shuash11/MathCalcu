@@ -127,8 +127,9 @@ void main() {
 
     test('ratio-test step narrates R and the interval', () {
       final steps = TaylorSeriesEquation('taylor ln(x) at 1').getSteps();
-      final ratioStep =
-          steps.firstWhere((s) => s.title.toLowerCase().contains('ratio'));
+      final ratioStep = steps.firstWhere(
+        (s) => s.title.toLowerCase().contains('ratio'),
+      );
       expect(ratioStep.explanation, contains('R'));
       expect(ratioStep.explanation, contains('1/'));
     });
@@ -172,8 +173,9 @@ void main() {
     test('term steps carry coefficient \\frac and interval subLatex', () {
       final eq = TaylorSeriesEquation('taylor ln(x) at 1');
       final steps = eq.getSteps();
-      final ratioStep =
-          steps.firstWhere((s) => s.title.toLowerCase().contains('ratio'));
+      final ratioStep = steps.firstWhere(
+        (s) => s.title.toLowerCase().contains('ratio'),
+      );
       expect(ratioStep.latex, contains(r'\frac{1}{\rho}'));
       expect(ratioStep.subLatex, isNotNull);
       expect(ratioStep.subLatex!.first, contains(r'\left('));

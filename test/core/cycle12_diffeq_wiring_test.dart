@@ -9,10 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  testWidgets('Differential Equations registry route renders its screen',
-      (tester) async {
-    final entry = FinalsModuleRegistry.modules
-        .singleWhere((m) => m.label == 'Differential Equations');
+  testWidgets('Differential Equations registry route renders its screen', (
+    tester,
+  ) async {
+    final entry = FinalsModuleRegistry.modules.singleWhere(
+      (m) => m.label == 'Differential Equations',
+    );
     expect(entry.route, '/topics/calculus/finals/diffeq');
 
     await tester.pumpWidget(

@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'buttons.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 /// Standalone quick keys for equation input (x², y², etc.)
@@ -62,12 +64,14 @@ class _EquationQuickKeysState extends State<EquationQuickKeys> {
         spacing: 6,
         runSpacing: 6,
         children: _keys
-            .map((char) => QuickKeyButton(
-                  char: char,
-                  color: widget.color,
-                  onTapDown: _cancelHide,
-                  onTap: () => widget.onInsert(char),
-                ))
+            .map(
+              (char) => QuickKeyButton(
+                char: char,
+                color: widget.color,
+                onTapDown: _cancelHide,
+                onTap: () => widget.onInsert(char),
+              ),
+            )
             .toList(),
       ),
     );

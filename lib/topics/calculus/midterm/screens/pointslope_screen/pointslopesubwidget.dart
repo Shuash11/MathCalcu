@@ -16,31 +16,33 @@ class PSCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              context.watch<ThemeProvider>().card,
-              context.watch<ThemeProvider>().surface
-            ]),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            context.watch<ThemeProvider>().card,
+            context.watch<ThemeProvider>().surface,
+          ],
+        ),
         borderRadius: BorderRadius.circular(20 * s),
         border: Border.all(
-            color: context
-                .watch<ThemeProvider>()
-                .accentColor
-                .withValues(alpha: 0.15),
-            width: 1.5 * s),
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.15,
+          ),
+          width: 1.5 * s,
+        ),
         boxShadow: [
           BoxShadow(
-              color: context
-                  .watch<ThemeProvider>()
-                  .accentColor
-                  .withValues(alpha: 0.15),
-              blurRadius: 24,
-              offset: const Offset(0, 8)),
+            color: context.watch<ThemeProvider>().accentColor.withValues(
+              alpha: 0.15,
+            ),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
           BoxShadow(
-              color: context.watch<ThemeProvider>().shadowColor,
-              blurRadius: 16,
-              offset: const Offset(0, -4))
+            color: context.watch<ThemeProvider>().shadowColor,
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
         ],
       ),
       child: ClipRRect(
@@ -55,13 +57,14 @@ class PSCard extends StatelessWidget {
                 height: 260 * s,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: RadialGradient(colors: [
-                    context
-                        .watch<ThemeProvider>()
-                        .accentColor
-                        .withValues(alpha: 0.12),
-                    Colors.transparent,
-                  ]),
+                  gradient: RadialGradient(
+                    colors: [
+                      context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.12,
+                      ),
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -73,13 +76,14 @@ class PSCard extends StatelessWidget {
                 height: 200 * s,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: RadialGradient(colors: [
-                    context
-                        .watch<ThemeProvider>()
-                        .accentColor
-                        .withValues(alpha: 0.07),
-                    Colors.transparent,
-                  ]),
+                  gradient: RadialGradient(
+                    colors: [
+                      context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.07,
+                      ),
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -91,7 +95,8 @@ class PSCard extends StatelessWidget {
                 child: CustomPaint(
                   size: Size(110 * s, 110 * s),
                   painter: DiagonalLinesPainter(
-                      context.watch<ThemeProvider>().accentColor),
+                    context.watch<ThemeProvider>().accentColor,
+                  ),
                 ),
               ),
             ),
@@ -119,33 +124,32 @@ class PSHeader extends StatelessWidget {
           height: 52 * s,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.3),
-                  context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.1)
-                ]),
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.3,
+                ),
+                context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.1,
+                ),
+              ],
+            ),
             borderRadius: BorderRadius.circular(14 * s),
             border: Border.all(
-                color: context
-                    .watch<ThemeProvider>()
-                    .accentColor
-                    .withValues(alpha: 0.4),
-                width: 2 * s),
+              color: context.watch<ThemeProvider>().accentColor.withValues(
+                alpha: 0.4,
+              ),
+              width: 2 * s,
+            ),
             boxShadow: [
               BoxShadow(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.15),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4))
+                color: context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.15,
+                ),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
             ],
           ),
           child: Center(
@@ -163,12 +167,15 @@ class PSHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  ResponsiveText('Equation of a line',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: context.watch<ThemeProvider>().textPrimary,
-                          letterSpacing: -0.4)),
+                  ResponsiveText(
+                    'Equation of a line',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: context.watch<ThemeProvider>().textPrimary,
+                      letterSpacing: -0.4,
+                    ),
+                  ),
                   SizedBox(width: 10 * s),
                   AnimatedBuilder(
                     animation: pulseAnim,
@@ -197,16 +204,15 @@ class PSHeader extends StatelessWidget {
               ResponsiveText(
                 'Linear equation builder & visualiser',
                 style: TextStyle(
-                    fontSize: 13,
-                    color: context.watch<ThemeProvider>().isLight
-                        ? context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.7)
-                        : context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.5)),
+                  fontSize: 13,
+                  color: context.watch<ThemeProvider>().isLight
+                      ? context.watch<ThemeProvider>().accentColor.withValues(
+                          alpha: 0.7,
+                        )
+                      : context.watch<ThemeProvider>().accentColor.withValues(
+                          alpha: 0.5,
+                        ),
+                ),
               ),
             ],
           ),
@@ -225,89 +231,101 @@ class PSFormulaBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
       decoration: BoxDecoration(
-        color:
-            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.12),
+        color: context.watch<ThemeProvider>().accentColor.withValues(
+          alpha: 0.12,
+        ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-            color: context
-                .watch<ThemeProvider>()
-                .accentColor
-                .withValues(alpha: 0.3)),
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.3,
+          ),
+        ),
       ),
       child: Column(
         children: [
-          ResponsiveText('Point Slope Form',
-              style: TextStyle(
-                  fontSize: 11,
-                  letterSpacing: 1.5,
-                  color: context.watch<ThemeProvider>().isLight
-                      ? context
-                          .watch<ThemeProvider>()
-                          .accentColor
-                          .withValues(alpha: 0.6)
-                      : context
-                          .watch<ThemeProvider>()
-                          .accentColor
-                          .withValues(alpha: 0.5),
-                  fontFamily: 'monospace')),
+          ResponsiveText(
+            'Point Slope Form',
+            style: TextStyle(
+              fontSize: 11,
+              letterSpacing: 1.5,
+              color: context.watch<ThemeProvider>().isLight
+                  ? context.watch<ThemeProvider>().accentColor.withValues(
+                      alpha: 0.6,
+                    )
+                  : context.watch<ThemeProvider>().accentColor.withValues(
+                      alpha: 0.5,
+                    ),
+              fontFamily: 'monospace',
+            ),
+          ),
           const SizedBox(height: 6),
           RichText(
             text: TextSpan(
               style: TextStyle(
-                  fontSize: 22,
-                  color: context.watch<ThemeProvider>().isLight
-                      ? context.watch<ThemeProvider>().accentColor
-                      : context.watch<ThemeProvider>().accentColor,
-                  fontStyle: FontStyle.italic),
+                fontSize: 22,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor
+                    : context.watch<ThemeProvider>().accentColor,
+                fontStyle: FontStyle.italic,
+              ),
               children: [
                 const TextSpan(text: 'y - '),
                 TextSpan(
-                    text: 'y1',
-                    style: TextStyle(
-                        fontSize: 22,
-                        color: context.watch<ThemeProvider>().accentColor,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.normal,
-                        shadows: [
-                          Shadow(
-                              color: context
-                                  .watch<ThemeProvider>()
-                                  .accentColor
-                                  .withValues(alpha: 0.3),
-                              blurRadius: 3)
-                        ])),
+                  text: 'y1',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: context.watch<ThemeProvider>().accentColor,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                    shadows: [
+                      Shadow(
+                        color: context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.3),
+                        blurRadius: 3,
+                      ),
+                    ],
+                  ),
+                ),
                 const TextSpan(text: ' = '),
                 TextSpan(
-                    text: 'm',
-                    style: TextStyle(
-                        fontSize: 22,
-                        color: context.watch<ThemeProvider>().accentColor,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.normal,
-                        shadows: [
-                          Shadow(
-                              color: context
-                                  .watch<ThemeProvider>()
-                                  .accentColor
-                                  .withValues(alpha: 0.3),
-                              blurRadius: 3)
-                        ])),
+                  text: 'm',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: context.watch<ThemeProvider>().accentColor,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                    shadows: [
+                      Shadow(
+                        color: context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.3),
+                        blurRadius: 3,
+                      ),
+                    ],
+                  ),
+                ),
                 const TextSpan(text: '(x - '),
                 TextSpan(
-                    text: 'x1',
-                    style: TextStyle(
-                        fontSize: 22,
-                        color: context.watch<ThemeProvider>().accentColor,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.normal,
-                        shadows: [
-                          Shadow(
-                              color: context
-                                  .watch<ThemeProvider>()
-                                  .accentColor
-                                  .withValues(alpha: 0.3),
-                              blurRadius: 3)
-                        ])),
+                  text: 'x1',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: context.watch<ThemeProvider>().accentColor,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                    shadows: [
+                      Shadow(
+                        color: context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.3),
+                        blurRadius: 3,
+                      ),
+                    ],
+                  ),
+                ),
                 const TextSpan(text: ')'),
               ],
             ),
@@ -405,29 +423,35 @@ class PSInputField extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('$label  ',
-                style: TextStyle(
-                    fontSize: 11,
-                    letterSpacing: 1.2,
+            Text(
+              '$label  ',
+              style: TextStyle(
+                fontSize: 11,
+                letterSpacing: 1.2,
+                color: context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.7,
+                ),
+                fontFamily: 'monospace',
+              ),
+            ),
+            Text(
+              variable,
+              style: TextStyle(
+                fontSize: 14,
+                color: context.watch<ThemeProvider>().accentColor,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
                     color: context
                         .watch<ThemeProvider>()
                         .accentColor
-                        .withValues(alpha: 0.7),
-                    fontFamily: 'monospace')),
-            Text(variable,
-                style: TextStyle(
-                    fontSize: 14,
-                    color: context.watch<ThemeProvider>().accentColor,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                          color: context
-                              .watch<ThemeProvider>()
-                              .accentColor
-                              .withValues(alpha: 0.3),
-                          blurRadius: 6)
-                    ])),
+                        .withValues(alpha: 0.3),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
         SizedBox(height: 6 * s),
@@ -469,10 +493,9 @@ class PSTextField extends StatelessWidget {
             : Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(10 * s),
         border: Border.all(
-          color: context
-              .watch<ThemeProvider>()
-              .accentColor
-              .withValues(alpha: 0.15),
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.15,
+          ),
           width: 1.5 * s,
         ),
       ),
@@ -486,22 +509,25 @@ class PSTextField extends StatelessWidget {
           FilteringTextInputFormatter.allow(RegExp(r'[\d\s./-]')),
         ],
         style: TextStyle(
-            fontSize: 16, color: context.watch<ThemeProvider>().textPrimary),
+          fontSize: 16,
+          color: context.watch<ThemeProvider>().textPrimary,
+        ),
         decoration: InputDecoration(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 14 * s, vertical: 10 * s),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 14 * s,
+            vertical: 10 * s,
+          ),
           border: InputBorder.none,
           hintText: '3/4 or 1.5',
           hintStyle: TextStyle(
-              color: context.watch<ThemeProvider>().isLight
-                  ? context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.3)
-                  : context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.25)),
+            color: context.watch<ThemeProvider>().isLight
+                ? context.watch<ThemeProvider>().accentColor.withValues(
+                    alpha: 0.3,
+                  )
+                : context.watch<ThemeProvider>().accentColor.withValues(
+                    alpha: 0.25,
+                  ),
+          ),
         ),
       ),
     );
@@ -517,17 +543,16 @@ class PSDivider extends StatelessWidget {
     return Container(
       height: 1,
       decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-        Colors.transparent,
-        context.watch<ThemeProvider>().accentColor,
-        context.watch<ThemeProvider>().accentColor,
-        Colors.transparent
-      ], stops: const [
-        0,
-        0.3,
-        0.7,
-        1
-      ])),
+        gradient: LinearGradient(
+          colors: [
+            Colors.transparent,
+            context.watch<ThemeProvider>().accentColor,
+            context.watch<ThemeProvider>().accentColor,
+            Colors.transparent,
+          ],
+          stops: const [0, 0.3, 0.7, 1],
+        ),
+      ),
     );
   }
 }
@@ -557,33 +582,32 @@ class PSResultBanner extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(20 * s, 18 * s, 20 * s, 14 * s),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1),
-              context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.05)
-            ]),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1),
+            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.05),
+          ],
+        ),
         borderRadius: BorderRadius.circular(14 * s),
         border: Border.all(
           color: hasResult
-              ? context
-                  .watch<ThemeProvider>()
-                  .accentColor
-                  .withValues(alpha: 0.5)
-              : context
-                  .watch<ThemeProvider>()
-                  .accentColor
-                  .withValues(alpha: 0.3),
+              ? context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.5,
+                )
+              : context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.3,
+                ),
           width: 1.5 * s,
         ),
         boxShadow: hasResult
             ? [
                 BoxShadow(
-                    color: context
-                        .watch<ThemeProvider>()
-                        .accentColor
-                        .withValues(alpha: 0.1),
-                    blurRadius: 24)
+                  color: context.watch<ThemeProvider>().accentColor.withValues(
+                    alpha: 0.1,
+                  ),
+                  blurRadius: 24,
+                ),
               ]
             : [],
       ),
@@ -591,97 +615,94 @@ class PSResultBanner extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (hasResult) ...[
-            Text('POINT-SLOPE FORM',
-                style: TextStyle(
-                    fontSize: 11,
-                    letterSpacing: 1.5,
-                    color: context.watch<ThemeProvider>().isLight
-                        ? context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.6)
-                        : context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.5),
-                    fontFamily: 'monospace')),
+            Text(
+              'POINT-SLOPE FORM',
+              style: TextStyle(
+                fontSize: 11,
+                letterSpacing: 1.5,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.6,
+                      )
+                    : context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.5,
+                      ),
+                fontFamily: 'monospace',
+              ),
+            ),
             SizedBox(height: 4 * s),
             Text(
               pointSlopeEq!,
               style: TextStyle(
-                      fontSize: 20,
-                      color: context.watch<ThemeProvider>().isLight
-                          ? context.watch<ThemeProvider>().accentColor
-                          : context.watch<ThemeProvider>().accentColor,
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 0.5)
-                  .copyWith(
-                color: context.watch<ThemeProvider>().accentColor,
-              ),
+                fontSize: 20,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor
+                    : context.watch<ThemeProvider>().accentColor,
+                fontStyle: FontStyle.italic,
+                letterSpacing: 0.5,
+              ).copyWith(color: context.watch<ThemeProvider>().accentColor),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 12 * s),
             const Divider(),
             SizedBox(height: 12 * s),
-            Text('GENERAL FORM',
-                style: TextStyle(
-                    fontSize: 11,
-                    letterSpacing: 1.5,
-                    color: context.watch<ThemeProvider>().isLight
-                        ? context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.6)
-                        : context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.5),
-                    fontFamily: 'monospace')),
+            Text(
+              'GENERAL FORM',
+              style: TextStyle(
+                fontSize: 11,
+                letterSpacing: 1.5,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.6,
+                      )
+                    : context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.5,
+                      ),
+                fontFamily: 'monospace',
+              ),
+            ),
             SizedBox(height: 4 * s),
             Text(
               generalFormEq!,
               style: TextStyle(
-                      fontSize: 20,
-                      color: context.watch<ThemeProvider>().isLight
-                          ? context.watch<ThemeProvider>().accentColor
-                          : context.watch<ThemeProvider>().accentColor,
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 0.5)
-                  .copyWith(
-                color: context.watch<ThemeProvider>().accentColor,
-              ),
+                fontSize: 20,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor
+                    : context.watch<ThemeProvider>().accentColor,
+                fontStyle: FontStyle.italic,
+                letterSpacing: 0.5,
+              ).copyWith(color: context.watch<ThemeProvider>().accentColor),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 12 * s),
             const Divider(),
             SizedBox(height: 12 * s),
-            Text('STANDARD FORM',
-                style: TextStyle(
-                    fontSize: 11,
-                    letterSpacing: 1.5,
-                    color: context.watch<ThemeProvider>().isLight
-                        ? context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.6)
-                        : context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.5),
-                    fontFamily: 'monospace')),
+            Text(
+              'STANDARD FORM',
+              style: TextStyle(
+                fontSize: 11,
+                letterSpacing: 1.5,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.6,
+                      )
+                    : context.watch<ThemeProvider>().accentColor.withValues(
+                        alpha: 0.5,
+                      ),
+                fontFamily: 'monospace',
+              ),
+            ),
             SizedBox(height: 4 * s),
             Text(
               standardFormEq!,
               style: TextStyle(
-                      fontSize: 20,
-                      color: context.watch<ThemeProvider>().isLight
-                          ? context.watch<ThemeProvider>().accentColor
-                          : context.watch<ThemeProvider>().accentColor,
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 0.5)
-                  .copyWith(
-                color: context.watch<ThemeProvider>().accentColor,
-              ),
+                fontSize: 20,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor
+                    : context.watch<ThemeProvider>().accentColor,
+                fontStyle: FontStyle.italic,
+                letterSpacing: 0.5,
+              ).copyWith(color: context.watch<ThemeProvider>().accentColor),
               textAlign: TextAlign.center,
             ),
           ] else ...[
@@ -716,10 +737,10 @@ class PSGraph extends StatelessWidget {
         color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(14 * s),
         border: Border.all(
-            color: context
-                .watch<ThemeProvider>()
-                .accentColor
-                .withValues(alpha: 0.25)),
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.25,
+          ),
+        ),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14 * s),
@@ -921,41 +942,50 @@ class PSBadge extends StatelessWidget {
   final String key_, value;
   final double s;
 
-  const PSBadge(
-      {super.key, required this.key_, required this.value, required this.s});
+  const PSBadge({
+    super.key,
+    required this.key_,
+    required this.value,
+    required this.s,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5 * s, horizontal: 12 * s),
       decoration: BoxDecoration(
-        color:
-            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.15),
+        color: context.watch<ThemeProvider>().accentColor.withValues(
+          alpha: 0.15,
+        ),
         borderRadius: BorderRadius.circular(8 * s),
         border: Border.all(
-            color: context
-                .watch<ThemeProvider>()
-                .accentColor
-                .withValues(alpha: 0.3)),
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.3,
+          ),
+        ),
       ),
       child: RichText(
         text: TextSpan(
           children: [
             TextSpan(
-                text: '$key_: ',
-                style: TextStyle(
-                    fontSize: 12,
-                    color: context.watch<ThemeProvider>().accentColor,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'monospace')),
+              text: '$key_: ',
+              style: TextStyle(
+                fontSize: 12,
+                color: context.watch<ThemeProvider>().accentColor,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'monospace',
+              ),
+            ),
             TextSpan(
-                text: value,
-                style: TextStyle(
-                    fontSize: 12,
-                    color: context.watch<ThemeProvider>().isLight
-                        ? context.watch<ThemeProvider>().accentColor
-                        : context.watch<ThemeProvider>().accentColor,
-                    fontFamily: 'monospace')),
+              text: value,
+              style: TextStyle(
+                fontSize: 12,
+                color: context.watch<ThemeProvider>().isLight
+                    ? context.watch<ThemeProvider>().accentColor
+                    : context.watch<ThemeProvider>().accentColor,
+                fontFamily: 'monospace',
+              ),
+            ),
           ],
         ),
       ),
@@ -977,8 +1007,11 @@ class DiagonalLinesPainter extends CustomPainter {
 
     for (int i = -2; i < 6; i++) {
       final sx = i * 20.0 * (size.width / 110);
-      canvas.drawLine(Offset(sx, 0),
-          Offset(sx + 40 * (size.width / 110), size.height), paint);
+      canvas.drawLine(
+        Offset(sx, 0),
+        Offset(sx + 40 * (size.width / 110), size.height),
+        paint,
+      );
     }
   }
 

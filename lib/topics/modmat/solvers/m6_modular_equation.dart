@@ -27,15 +27,17 @@ class M6ModularEquation extends BaseEquation {
   /// Returns [mode, a, b-or-exp, m].
   List<dynamic>? _parse() {
     final t = _norm();
-    var m = RegExp(r'^inv(?:erse)?\s+(-?\d+)\s+mod\s+(-?\d+)\s*$',
-            caseSensitive: false)
-        .firstMatch(t);
+    var m = RegExp(
+      r'^inv(?:erse)?\s+(-?\d+)\s+mod\s+(-?\d+)\s*$',
+      caseSensitive: false,
+    ).firstMatch(t);
     if (m != null) {
       return ['inv', int.parse(m.group(1)!), 0, int.parse(m.group(2)!)];
     }
-    m = RegExp(r'^(-?\d+)\s*\^\s*(-?\d+)\s+mod\s+(-?\d+)\s*$',
-            caseSensitive: false)
-        .firstMatch(t);
+    m = RegExp(
+      r'^(-?\d+)\s*\^\s*(-?\d+)\s+mod\s+(-?\d+)\s*$',
+      caseSensitive: false,
+    ).firstMatch(t);
     if (m != null) {
       return [
         'pow',
@@ -44,23 +46,26 @@ class M6ModularEquation extends BaseEquation {
         int.parse(m.group(3)!),
       ];
     }
-    m = RegExp(r'^\(\s*(-?\d+)\s*([+\-*])\s*(-?\d+)\s*\)\s*mod\s+(-?\d+)\s*$',
-            caseSensitive: false)
-        .firstMatch(t);
+    m = RegExp(
+      r'^\(\s*(-?\d+)\s*([+\-*])\s*(-?\d+)\s*\)\s*mod\s+(-?\d+)\s*$',
+      caseSensitive: false,
+    ).firstMatch(t);
     if (m != null) {
       return [
         m.group(2) == '+'
             ? 'add'
             : m.group(2) == '-'
-                ? 'sub'
-                : 'mul',
+            ? 'sub'
+            : 'mul',
         int.parse(m.group(1)!),
         int.parse(m.group(3)!),
         int.parse(m.group(4)!),
       ];
     }
-    m = RegExp(r'^(-?\d+)\s+mod\s+(-?\d+)\s*$', caseSensitive: false)
-        .firstMatch(t);
+    m = RegExp(
+      r'^(-?\d+)\s+mod\s+(-?\d+)\s*$',
+      caseSensitive: false,
+    ).firstMatch(t);
     if (m != null) {
       return ['norm', int.parse(m.group(1)!), 0, int.parse(m.group(2)!)];
     }
@@ -138,7 +143,7 @@ class M6ModularEquation extends BaseEquation {
           answer: '$a ≡ $v (mod $m)',
           points: [v.toDouble()],
           customData: [
-            {'kind': 'modular', 'mode': 'norm', 'a': a, 'm': m, 'value': v}
+            {'kind': 'modular', 'mode': 'norm', 'a': a, 'm': m, 'value': v},
           ],
         );
       case 'add':
@@ -147,14 +152,14 @@ class M6ModularEquation extends BaseEquation {
         final raw = mode == 'add'
             ? a + b
             : mode == 'sub'
-                ? a - b
-                : a * b;
+            ? a - b
+            : a * b;
         final v = ((raw % m) + m) % m;
         final sym = mode == 'add'
             ? '+'
             : mode == 'sub'
-                ? '−'
-                : '×';
+            ? '−'
+            : '×';
         return SolveResult(
           answer: '($a $sym $b) mod $m = $v',
           points: [v.toDouble()],
@@ -165,8 +170,8 @@ class M6ModularEquation extends BaseEquation {
               'a': a,
               'b': b,
               'm': m,
-              'value': v
-            }
+              'value': v,
+            },
           ],
         );
       case 'pow':
@@ -184,8 +189,8 @@ class M6ModularEquation extends BaseEquation {
               'a': a,
               'exp': b,
               'm': m,
-              'value': v
-            }
+              'value': v,
+            },
           ],
         );
       case 'inv':
@@ -198,7 +203,7 @@ class M6ModularEquation extends BaseEquation {
           answer: '$a⁻¹ ≡ $v (mod $m)',
           points: [v.toDouble()],
           customData: [
-            {'kind': 'modular', 'mode': 'inv', 'a': a, 'm': m, 'value': v}
+            {'kind': 'modular', 'mode': 'inv', 'a': a, 'm': m, 'value': v},
           ],
         );
     }
@@ -211,9 +216,10 @@ class M6ModularEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use 17 mod 5.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use 17 mod 5.',
+        ),
       ];
     }
     final r = solve();
@@ -240,15 +246,17 @@ class M6ModularEquation extends BaseEquation {
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Reduce mod ${p[3]}',
-          explanation: 'Bring every number into 0…${(p[3] as int) - 1}.'),
+        stepNumber: 1,
+        title: 'Reduce mod ${p[3]}',
+        explanation: 'Bring every number into 0…${(p[3] as int) - 1}.',
+      ),
       StepModel(stepNumber: 2, title: 'Operate in the ring', explanation: hint),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the residue',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: residueLatex),
+        stepNumber: 3,
+        title: 'Read the residue',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: residueLatex,
+      ),
     ];
   }
 }

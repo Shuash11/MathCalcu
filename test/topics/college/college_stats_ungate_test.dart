@@ -70,8 +70,7 @@ void main() {
       expect(data['r2'], 1.0);
     });
 
-    test('ztest mean=72 mu=70 sd=10 n=25 → z = 1, SE = 2, p = 0.3173',
-        () {
+    test('ztest mean=72 mu=70 sd=10 n=25 → z = 1, SE = 2, p = 0.3173', () {
       final eq = CollegeSolverRegistry.byId('college-stats')!
           .create('ztest mean=72 mu=70 sd=10 n=25');
       expect(eq.validate(), isTrue);
@@ -97,23 +96,25 @@ void main() {
       expect(data['p'], closeTo(0.3173, 0.0001));
     });
 
-    test('ztest xbar=72 mu=70 sd=10 n=25 alias → z = 1, SE = 2, p = 0.3173',
-        () {
-      // The xbar alias frees the n regex to match n=25: SE = 10/√25 = 2,
-      // z = (72-70)/2 = 1, p = 2(1-Φ(1)) ≈ 0.3173 (Abramowitz–Stegun).
-      final eq = CollegeStatsEquation('ztest xbar=72 mu=70 sd=10 n=25');
-      expect(eq.validate(), isTrue);
-      final r = eq.solve();
-      expect(r.hasError, isFalse);
-      expect(r.answer, contains('z = 1 ('));
-      expect(r.answer, contains('SE = 2)'));
-      expect(r.answer, contains('two-sided p = 0.3173'));
-      expect(r.answer, contains('fail to reject H₀ at α=0.05'));
-      final data = r.customData!.single as Map;
-      expect(data['n'], 25.0);
-      expect(data['z'], closeTo(1.0, 0.0001));
-      expect(data['p'], closeTo(0.3173, 0.0001));
-    });
+    test(
+      'ztest xbar=72 mu=70 sd=10 n=25 alias → z = 1, SE = 2, p = 0.3173',
+      () {
+        // The xbar alias frees the n regex to match n=25: SE = 10/√25 = 2,
+        // z = (72-70)/2 = 1, p = 2(1-Φ(1)) ≈ 0.3173 (Abramowitz–Stegun).
+        final eq = CollegeStatsEquation('ztest xbar=72 mu=70 sd=10 n=25');
+        expect(eq.validate(), isTrue);
+        final r = eq.solve();
+        expect(r.hasError, isFalse);
+        expect(r.answer, contains('z = 1 ('));
+        expect(r.answer, contains('SE = 2)'));
+        expect(r.answer, contains('two-sided p = 0.3173'));
+        expect(r.answer, contains('fail to reject H₀ at α=0.05'));
+        final data = r.customData!.single as Map;
+        expect(data['n'], 25.0);
+        expect(data['z'], closeTo(1.0, 0.0001));
+        expect(data['p'], closeTo(0.3173, 0.0001));
+      },
+    );
 
     test('regression: mean= keyword no longer hijacks n (n=25)', () {
       final eq = CollegeStatsEquation('ztest mean=72 mu=70 sd=10 n=25');
@@ -134,8 +135,7 @@ void main() {
       );
     });
 
-    test('registry spec round-trips with the CollegeStatsEquation engine',
-        () {
+    test('registry spec round-trips with the CollegeStatsEquation engine', () {
       final spec = CollegeSolverRegistry.byId('college-stats');
       expect(spec, isNotNull);
       expect(spec!.section, 'statistics');
@@ -151,8 +151,7 @@ void main() {
       ]) {
         final eq = CollegeStatsEquation(s);
         expect(eq.validate(), isTrue, reason: s);
-        expect((eq.solve().customData!.single as Map)['n'], 25.0,
-            reason: s);
+        expect((eq.solve().customData!.single as Map)['n'], 25.0, reason: s);
       }
       // Hardening: a key inside a longer word must NOT be captured. In
       // 'max=5' there is no whitespace/start before the 'x', so the
@@ -166,16 +165,16 @@ void main() {
 
   group('College-stats routing (Phase 3 ungate)', () {
     test('college-stats is solver-backed with the new route', () {
-      final topic = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'college-stats');
+      final topic = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'college-stats',
+      );
       expect(topic.solverAvailable, isTrue);
       expect(topic.route, '/college/statistics');
     });
 
     test('/college/statistics is registered, findMatch isError false', () {
       expect(
-        AppRouter.router.configuration.findMatch('/college/statistics')
-            .isError,
+        AppRouter.router.configuration.findMatch('/college/statistics').isError,
         isFalse,
       );
     });
@@ -187,8 +186,9 @@ void main() {
       );
     });
 
-    testWidgets('each solverAvailable==true topic has a wired route',
-        (tester) async {
+    testWidgets('each solverAvailable==true topic has a wired route', (
+      tester,
+    ) async {
       for (final topic in CurriculumRegistry.allTopics()) {
         if (topic.solverAvailable) {
           expect(
@@ -232,15 +232,11 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('stats input solves end-to-end on the screen',
-        (tester) async {
+    testWidgets('stats input solves end-to-end on the screen', (tester) async {
       await pumpRouter(tester);
       AppRouter.router.go('/college/statistics');
       await tester.pumpAndSettle();
-      await tester.enterText(
-        find.byType(TextField).first,
-        '4,7,9 stats',
-      );
+      await tester.enterText(find.byType(TextField).first, '4,7,9 stats');
       await tester.pumpAndSettle();
       // Solve button (ElevatedButton.icon) triggers the engine.
       await tester.tap(find.byType(ElevatedButton).first);

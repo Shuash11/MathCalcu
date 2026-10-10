@@ -180,7 +180,8 @@ class Tokenizer {
       if (s[pos] == '.') dotCount++;
       if (dotCount > 1) {
         throw TokenizerException(
-            'Invalid number near "${s.substring(start, pos + 1)}"');
+          'Invalid number near "${s.substring(start, pos + 1)}"',
+        );
       }
       pos++;
     }

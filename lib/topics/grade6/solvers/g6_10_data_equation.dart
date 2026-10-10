@@ -47,9 +47,9 @@ class G6PieEquation extends BaseEquation {
     final List<Map<String, dynamic>> entries = [];
     for (var i = 0; i < parts.length; i++) {
       final String part = parts[i];
-      final RegExpMatch? labeled =
-          RegExp(r'^([a-zA-Z][a-zA-Z\s]*?)\s*[:=]?\s*(-?\d+(?:\.\d+)?)$')
-              .firstMatch(part);
+      final RegExpMatch? labeled = RegExp(
+        r'^([a-zA-Z][a-zA-Z\s]*?)\s*[:=]?\s*(-?\d+(?:\.\d+)?)$',
+      ).firstMatch(part);
       if (labeled != null && RegExp(r'[a-zA-Z]').hasMatch(part)) {
         entries.add({
           'label': labeled.group(1)!.trim(),
@@ -67,8 +67,10 @@ class G6PieEquation extends BaseEquation {
     if (entries.any((e) => (e['value'] as double) < 0)) {
       return null;
     }
-    final double total =
-        entries.fold(0.0, (sum, e) => sum + (e['value'] as double));
+    final double total = entries.fold(
+      0.0,
+      (sum, e) => sum + (e['value'] as double),
+    );
     if (total <= 0) {
       return null;
     }
@@ -105,9 +107,7 @@ class G6PieEquation extends BaseEquation {
   SolveResult solve() {
     final List<G6PieSlice>? slices = _slices();
     if (slices == null) {
-      return SolveResult.error(
-        _error ?? 'Values must be ≥ 0 with sum > 0.',
-      );
+      return SolveResult.error(_error ?? 'Values must be ≥ 0 with sum > 0.');
     }
     final double total = slices.fold(0.0, (s, e) => s + e.value);
     final String answer =
@@ -127,7 +127,7 @@ class G6PieEquation extends BaseEquation {
                 'degrees': s.degrees,
               },
           ],
-        }
+        },
       ],
     );
   }
@@ -138,41 +138,50 @@ class G6PieEquation extends BaseEquation {
     if (slices == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Values must be ≥ 0 with sum > 0.'),
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Values must be ≥ 0 with sum > 0.',
+        ),
       ];
     }
     final double total = slices.fold(0.0, (s, e) => s + e.value);
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Find the total',
-          explanation: 'Total = ${G6Format.num(total)}.',
-          latex: '\\text{Total} = ${G6Format.num(total)}'),
+        stepNumber: 1,
+        title: 'Find the total',
+        explanation: 'Total = ${G6Format.num(total)}.',
+        latex: '\\text{Total} = ${G6Format.num(total)}',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Percent each slice',
-          explanation: 'value ÷ total × 100%.',
-          latex: '\\frac{\\text{value}}{\\text{total}} \\times 100\\%'),
+        stepNumber: 2,
+        title: 'Percent each slice',
+        explanation: 'value ÷ total × 100%.',
+        latex: '\\frac{\\text{value}}{\\text{total}} \\times 100\\%',
+      ),
       const StepModel(
-          stepNumber: 3,
-          title: 'Percent to degrees',
-          explanation: 'degrees = % × 3.6° (360° ÷ 100).',
-          latex: '\\text{degrees} = \\% \\times \\frac{360}{100}'),
+        stepNumber: 3,
+        title: 'Percent to degrees',
+        explanation: 'degrees = % × 3.6° (360° ÷ 100).',
+        latex: '\\text{degrees} = \\% \\times \\frac{360}{100}',
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Draw the slices',
-          explanation: '${slices.length} slices in order of size.'),
+        stepNumber: 4,
+        title: 'Draw the slices',
+        explanation: '${slices.length} slices in order of size.',
+      ),
       StepModel(
-          stepNumber: 5,
-          title: 'Label each slice',
-          explanation: solve().answer,
-          latex: slices
-              .map((s) => '\\text{${s.label}} = '
+        stepNumber: 5,
+        title: 'Label each slice',
+        explanation: solve().answer,
+        latex: slices
+            .map(
+              (s) =>
+                  '\\text{${s.label}} = '
                   '${G6Format.num(s.percent)}\\% '
-                  '(${G6Format.num(s.degrees)}^{\\circ})')
-              .join(', \\quad ')),
+                  '(${G6Format.num(s.degrees)}^{\\circ})',
+            )
+            .join(', \\quad '),
+      ),
     ];
   }
 }
@@ -195,9 +204,8 @@ class G6ProbabilityEquation extends BaseEquation {
     if (named != null) {
       return [int.parse(named.group(1)!), int.parse(named.group(2)!)];
     }
-    final RegExpMatch? outOf = RegExp(
-      r'(\d+)\s*(?:out of|/|:)\s*(\d+)',
-    ).firstMatch(t);
+    final RegExpMatch? outOf = RegExp(r'(\d+)\s*(?:out of|/|:)\s*(\d+)')
+        .firstMatch(t);
     if (outOf != null && !t.contains('=')) {
       // For `3/5` style, first = favorable, second = total.
       // For `P(red) in 3R + 2B`, the plus-form below wins instead.
@@ -211,9 +219,8 @@ class G6ProbabilityEquation extends BaseEquation {
       final int rest = int.parse(plus.group(2)!);
       return [fav, fav + rest];
     }
-    final RegExpMatch? inForm = RegExp(
-      r'in\s*(\d+)\s*\w*\s*\+\s*(\d+)',
-    ).firstMatch(t);
+    final RegExpMatch? inForm = RegExp(r'in\s*(\d+)\s*\w*\s*\+\s*(\d+)')
+        .firstMatch(t);
     if (inForm != null) {
       final int fav = int.parse(inForm.group(1)!);
       final int rest = int.parse(inForm.group(2)!);
@@ -269,7 +276,7 @@ class G6ProbabilityEquation extends BaseEquation {
           'P = $sn/$sd = ${G6Format.num(dec)} = ${G6Format.num(dec * 100)}%',
       points: [dec],
       customData: [
-        {'favorable': p[0], 'total': p[1], 'decimal': dec}
+        {'favorable': p[0], 'total': p[1], 'decimal': dec},
       ],
     );
   }
@@ -280,31 +287,36 @@ class G6ProbabilityEquation extends BaseEquation {
     if (p == null || p[1] <= 0) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use 3 out of 5.'),
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use 3 out of 5.',
+        ),
       ];
     }
     final SolveResult r = solve();
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Count all outcomes',
-          explanation: 'Total = ${p[1]}.',
-          latex: '\\text{Total} = ${p[1]}'),
+        stepNumber: 1,
+        title: 'Count all outcomes',
+        explanation: 'Total = ${p[1]}.',
+        latex: '\\text{Total} = ${p[1]}',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Count favorable',
-          explanation: 'Favorable = ${p[0]}.',
-          latex: '\\text{Favorable} = ${p[0]}'),
+        stepNumber: 2,
+        title: 'Count favorable',
+        explanation: 'Favorable = ${p[0]}.',
+        latex: '\\text{Favorable} = ${p[0]}',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Write favorable/total and simplify',
-          explanation: r.answer,
-          latex: 'P = \\frac{${p[0] ~/ G6Math.gcd(p[0], p[1])}}'
-              '{${p[1] ~/ G6Math.gcd(p[0], p[1])}} = '
-              '${G6Format.num(p[0] / p[1])} = '
-              '${G6Format.num(p[0] / p[1] * 100)}\\%'),
+        stepNumber: 3,
+        title: 'Write favorable/total and simplify',
+        explanation: r.answer,
+        latex:
+            'P = \\frac{${p[0] ~/ G6Math.gcd(p[0], p[1])}}'
+            '{${p[1] ~/ G6Math.gcd(p[0], p[1])}} = '
+            '${G6Format.num(p[0] / p[1])} = '
+            '${G6Format.num(p[0] / p[1] * 100)}\\%',
+      ),
     ];
   }
 }

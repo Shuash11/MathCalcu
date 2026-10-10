@@ -27,10 +27,10 @@ class SolvedHistoryEntry {
   });
 
   Map<String, dynamic> toJson() => {
-        'label': label,
-        'route': route,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'label': label,
+    'route': route,
+    'timestamp': timestamp.toIso8601String(),
+  };
 
   static SolvedHistoryEntry? fromJson(Map<String, dynamic> json) {
     final label = json['label'];
@@ -41,11 +41,7 @@ class SolvedHistoryEntry {
     }
     final parsed = DateTime.tryParse(timestamp);
     if (parsed == null) return null;
-    return SolvedHistoryEntry(
-      label: label,
-      route: route,
-      timestamp: parsed,
-    );
+    return SolvedHistoryEntry(label: label, route: route, timestamp: parsed);
   }
 }
 
@@ -77,10 +73,7 @@ class HistoryService {
     );
     current.removeWhere((q) => q.toLowerCase() == trimmed.toLowerCase());
     current.insert(0, trimmed);
-    await prefs.setStringList(
-      searchesKey,
-      current.take(maxSearches).toList(),
-    );
+    await prefs.setStringList(searchesKey, current.take(maxSearches).toList());
   }
 
   Future<void> clearRecentSearches() async {

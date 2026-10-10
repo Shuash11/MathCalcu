@@ -104,20 +104,19 @@ class G6GcfLcmEquation extends BaseEquation {
   SolveResult solve() {
     final List<int>? numbers = _numbers();
     if (numbers == null || numbers.length < 2) {
-      return SolveResult.error(
-        _error ?? 'Use GCF or LCM with two numbers.',
-      );
+      return SolveResult.error(_error ?? 'Use GCF or LCM with two numbers.');
     }
     if (numbers.any((n) => n <= 0)) {
       return SolveResult.error('Use positive whole numbers.');
     }
-    final int value =
-        _isLcm ? G6Math.lcmList(numbers) : G6Math.gcdList(numbers);
+    final int value = _isLcm
+        ? G6Math.lcmList(numbers)
+        : G6Math.gcdList(numbers);
     return SolveResult(
       answer: '${_isLcm ? 'LCM' : 'GCF'} = $value',
       points: [value.toDouble()],
       customData: [
-        {'numbers': numbers, 'value': value, 'isLcm': _isLcm}
+        {'numbers': numbers, 'value': value, 'isLcm': _isLcm},
       ],
     );
   }
@@ -134,10 +133,12 @@ class G6GcfLcmEquation extends BaseEquation {
         ),
       ];
     }
-    final int value =
-        _isLcm ? G6Math.lcmList(numbers) : G6Math.gcdList(numbers);
-    final String listed =
-        numbers.map((n) => '$n: ${factors(n).join(', ')}').join(' | ');
+    final int value = _isLcm
+        ? G6Math.lcmList(numbers)
+        : G6Math.gcdList(numbers);
+    final String listed = numbers
+        .map((n) => '$n: ${factors(n).join(', ')}')
+        .join(' | ');
     return [
       StepModel(
         stepNumber: 1,
@@ -152,9 +153,7 @@ class G6GcfLcmEquation extends BaseEquation {
         latex: numbers
             .map((n) => '$n: ${factors(n).join(', ')}')
             .join(' \\quad '),
-        subLatex: [
-          for (final n in numbers) '$n = ${_primeFactorTex(n)}',
-        ],
+        subLatex: [for (final n in numbers) '$n = ${_primeFactorTex(n)}'],
       ),
       StepModel(
         stepNumber: 3,
@@ -173,9 +172,11 @@ class G6GcfLcmEquation extends BaseEquation {
         title: 'Check with division',
         explanation: '${_isLcm ? 'LCM' : 'GCF'} = $value; verify by division.',
         latex: numbers
-            .map((n) => _isLcm
-                ? '$value \\div $n = ${value ~/ n}'
-                : '$n \\div $value = ${n ~/ value}')
+            .map(
+              (n) => _isLcm
+                  ? '$value \\div $n = ${value ~/ n}'
+                  : '$n \\div $value = ${n ~/ value}',
+            )
             .join(', \\quad '),
       ),
     ];

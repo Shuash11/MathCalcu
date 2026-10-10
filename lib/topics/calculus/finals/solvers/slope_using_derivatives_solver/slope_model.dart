@@ -57,8 +57,8 @@ class Const extends Expr {
   String toLatexString() => name == 'pi' || name == '\u03c0'
       ? r'{\pi}'
       : name == 'e'
-          ? r'{e}'
-          : name;
+      ? r'{e}'
+      : name;
   @override
   Expr clone() => Const(name, numericValue);
 }

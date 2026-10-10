@@ -1,6 +1,7 @@
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
+
 import 'radius_controller.dart';
 import 'radius_action_buttons.dart';
 import 'radius_error_card.dart';
@@ -9,6 +10,7 @@ import 'radius_header.dart';
 import 'radius_input_card.dart';
 import 'radius_result.dart';
 import 'radius_steps.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 class FindingRadiusScreen extends StatefulWidget {
@@ -146,8 +148,9 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
                       side: BorderSide(
                         color: FinalsTheme.primary.withValues(alpha: 0.35),
                       ),
-                      backgroundColor:
-                          FinalsTheme.primary.withValues(alpha: 0.08),
+                      backgroundColor: FinalsTheme.primary.withValues(
+                        alpha: 0.08,
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -157,7 +160,8 @@ class _FindingRadiusScreenState extends State<FindingRadiusScreen> {
                 ),
                 const SizedBox(height: 16),
                 RadiusResultCard(
-                    formattedRadius: _ctrl.result!.formattedRadius),
+                  formattedRadius: _ctrl.result!.formattedRadius,
+                ),
               ],
             ],
           ),

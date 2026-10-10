@@ -2,10 +2,12 @@ import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slope_solver.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:material_ui/material_ui.dart';
+
 import 'slope_comparison.dart';
 import 'slope_input_field.dart';
 import 'slope_result.dart';
 import 'slope_step_dialog.dart';
+
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +61,7 @@ class _SlopeScreenState extends State<SlopeScreen> {
       _x3Focus,
       _y3Focus,
       _x4Focus,
-      _y4Focus
+      _y4Focus,
     ]) {
       f.dispose();
     }
@@ -263,8 +265,11 @@ class _SlopeScreenState extends State<SlopeScreen> {
       context,
       child: IconButton(
         onPressed: () => Navigator.pop(context),
-        icon: Icon(Icons.arrow_back_ios_rounded,
-            size: 16, color: theme.accentColor),
+        icon: Icon(
+          Icons.arrow_back_ios_rounded,
+          size: 16,
+          color: theme.accentColor,
+        ),
         style: IconButton.styleFrom(
           backgroundColor: theme.accentColor.withValues(alpha: 0.12),
           foregroundColor: theme.accentColor,
@@ -272,7 +277,9 @@ class _SlopeScreenState extends State<SlopeScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(
-                color: theme.accentColor.withValues(alpha: 0.15), width: 1.5),
+              color: theme.accentColor.withValues(alpha: 0.15),
+              width: 1.5,
+            ),
           ),
         ),
       ),
@@ -332,116 +339,113 @@ class _SlopeScreenState extends State<SlopeScreen> {
     VoidCallback? xOnEditingComplete,
     TextInputAction? yTextInputAction,
     VoidCallback? yOnEditingComplete,
-  }) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ResponsiveText(
-            sectionLabel,
-            style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: context
-                        .watch<ThemeProvider>()
-                        .textSecondary
-                        .withValues(alpha: 0.7),
-                    letterSpacing: 0.5)
-                .copyWith(
-              letterSpacing: 0,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ResponsiveText(
+        sectionLabel,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: context.watch<ThemeProvider>().textSecondary.withValues(
+            alpha: 0.7,
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              SlopeInputField(
-                label: xLabel,
-                controller: xCtrl,
-                focusNode: xFocus,
-                textInputAction: xTextInputAction,
-                onEditingComplete: xOnEditingComplete,
-              ),
-              const SizedBox(width: 12),
-              SlopeInputField(
-                label: yLabel,
-                controller: yCtrl,
-                focusNode: yFocus,
-                textInputAction: yTextInputAction,
-                onEditingComplete: yOnEditingComplete,
-              ),
-            ],
+          letterSpacing: 0.5,
+        ).copyWith(letterSpacing: 0, fontSize: 12, fontWeight: FontWeight.w500),
+      ),
+      const SizedBox(height: 12),
+      Row(
+        children: [
+          SlopeInputField(
+            label: xLabel,
+            controller: xCtrl,
+            focusNode: xFocus,
+            textInputAction: xTextInputAction,
+            onEditingComplete: xOnEditingComplete,
+          ),
+          const SizedBox(width: 12),
+          SlopeInputField(
+            label: yLabel,
+            controller: yCtrl,
+            focusNode: yFocus,
+            textInputAction: yTextInputAction,
+            onEditingComplete: yOnEditingComplete,
           ),
         ],
-      );
+      ),
+    ],
+  );
 
   Widget _compareToggle() => GestureDetector(
-        onTap: () => setState(() {
-          _showCompareSection = !_showCompareSection;
-          _result1 = null;
-          _result2 = null;
-          _comparisonResult = null;
-        }),
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: _showCompareSection
-                ? const Color(0xFF4ECDC4).withValues(alpha: 0.1)
-                : context.watch<ThemeProvider>().card,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
+    onTap: () => setState(() {
+      _showCompareSection = !_showCompareSection;
+      _result1 = null;
+      _result2 = null;
+      _comparisonResult = null;
+    }),
+    child: Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: _showCompareSection
+            ? const Color(0xFF4ECDC4).withValues(alpha: 0.1)
+            : context.watch<ThemeProvider>().card,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _showCompareSection
+              ? const Color(0xFF4ECDC4).withValues(alpha: 0.3)
+              : const Color(0xFF334155).withValues(alpha: 0.15),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
               color: _showCompareSection
-                  ? const Color(0xFF4ECDC4).withValues(alpha: 0.3)
-                  : const Color(0xFF334155).withValues(alpha: 0.15),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: _showCompareSection
-                      ? const Color(0xFF4ECDC4)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(
-                    color: _showCompareSection
-                        ? const Color(0xFF4ECDC4)
-                        : const Color(0xFF334155).withValues(alpha: 0.3),
-                    width: 2,
-                  ),
-                ),
-                child: _showCompareSection
-                    ? const Icon(Icons.check_rounded,
-                        size: 14, color: Color(0xFF1A1A2E))
-                    : null,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ResponsiveText(
-                  'Compare with another line',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: _showCompareSection
-                        ? const Color(0xFF4ECDC4)
-                        : context.watch<ThemeProvider>().textPrimary,
-                  ),
-                ),
-              ),
-              Icon(
-                _showCompareSection
-                    ? Icons.expand_less_rounded
-                    : Icons.expand_more_rounded,
+                  ? const Color(0xFF4ECDC4)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
                 color: _showCompareSection
                     ? const Color(0xFF4ECDC4)
-                    : const Color(0xFF334155).withValues(alpha: 0.5),
+                    : const Color(0xFF334155).withValues(alpha: 0.3),
+                width: 2,
               ),
-            ],
+            ),
+            child: _showCompareSection
+                ? const Icon(
+                    Icons.check_rounded,
+                    size: 14,
+                    color: Color(0xFF1A1A2E),
+                  )
+                : null,
           ),
-        ),
-      );
+          const SizedBox(width: 12),
+          Expanded(
+            child: ResponsiveText(
+              'Compare with another line',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: _showCompareSection
+                    ? const Color(0xFF4ECDC4)
+                    : context.watch<ThemeProvider>().textPrimary,
+              ),
+            ),
+          ),
+          Icon(
+            _showCompareSection
+                ? Icons.expand_less_rounded
+                : Icons.expand_more_rounded,
+            color: _showCompareSection
+                ? const Color(0xFF4ECDC4)
+                : const Color(0xFF334155).withValues(alpha: 0.5),
+          ),
+        ],
+      ),
+    ),
+  );
 
   Widget _calculateButton() {
     final theme = context.watch<ThemeProvider>();
@@ -457,8 +461,9 @@ class _SlopeScreenState extends State<SlopeScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.accentColor,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             elevation: 0,
             shadowColor: Colors.transparent,
           ),
@@ -477,33 +482,35 @@ class _SlopeScreenState extends State<SlopeScreen> {
   }
 
   Widget _errorBanner(String message) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFF6B6B).withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: const Color(0xFFFF6B6B).withValues(alpha: 0.25),
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: const Color(0xFFFF6B6B).withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: const Color(0xFFFF6B6B).withValues(alpha: 0.25),
+      ),
+    ),
+    child: Row(
+      children: [
+        Icon(
+          Icons.error_rounded,
+          color: const Color(0xFFFF6B6B).withValues(alpha: 0.8),
+          size: 20,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            message,
+            style: TextStyle(
+              color: const Color(0xFFFF6B6B).withValues(alpha: 0.9),
+              fontSize: 14,
+              height: 1.4,
+            ),
           ),
         ),
-        child: Row(
-          children: [
-            Icon(Icons.error_rounded,
-                color: const Color(0xFFFF6B6B).withValues(alpha: 0.8),
-                size: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(
-                  color: const Color(0xFFFF6B6B).withValues(alpha: 0.9),
-                  fontSize: 14,
-                  height: 1.4,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 
   Widget _results() {
     if (!_showCompareSection) {
@@ -521,13 +528,18 @@ class _SlopeScreenState extends State<SlopeScreen> {
           Row(
             children: [
               Expanded(
-                  child: SlopeAnswerCard(
-                      result: _result1!, onTap: _openStepsDialog)),
+                child: SlopeAnswerCard(
+                  result: _result1!,
+                  onTap: _openStepsDialog,
+                ),
+              ),
               const SizedBox(width: 12),
               Expanded(
-                  child: SlopeAnswerCard(
-                      result: _result2!,
-                      onTap: () => _openStepsDialog(showSecond: true))),
+                child: SlopeAnswerCard(
+                  result: _result2!,
+                  onTap: () => _openStepsDialog(showSecond: true),
+                ),
+              ),
             ],
           ),
         ],

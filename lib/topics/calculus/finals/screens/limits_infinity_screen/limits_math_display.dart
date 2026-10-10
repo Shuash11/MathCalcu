@@ -26,10 +26,7 @@ class LimitsMathDisplay extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       child: Math.tex(
         parsedLatex,
-        textStyle: TextStyle(
-          fontSize: fontSize,
-          color: color,
-        ),
+        textStyle: TextStyle(fontSize: fontSize, color: color),
         onErrorFallback: (error) {
           return Text(
             latex,
@@ -97,9 +94,7 @@ class LimitsSolutionStep extends StatelessWidget {
         children: [
           _buildStepIndicator(context),
           const SizedBox(width: 16),
-          Expanded(
-            child: _buildContent(context),
-          ),
+          Expanded(child: _buildContent(context)),
         ],
       ),
     );
@@ -167,10 +162,8 @@ class LimitsSolutionStep extends StatelessWidget {
       children: [
         Text(
           title,
-          style: FinalsTheme.titleStyle(context).copyWith(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
+          style: FinalsTheme.titleStyle(context)
+              .copyWith(fontSize: 15, fontWeight: FontWeight.w600),
         ),
         if (description != null) ...[
           const SizedBox(height: 4),
@@ -194,10 +187,7 @@ class LimitsSolutionStep extends StatelessWidget {
                 color: FinalsTheme.primary.withValues(alpha: 0.15),
               ),
             ),
-            child: LimitsMathDisplay(
-              latex: latexExpression!,
-              fontSize: 18,
-            ),
+            child: LimitsMathDisplay(latex: latexExpression!, fontSize: 18),
           ),
         ],
         if (explanation != null) ...[
@@ -214,10 +204,8 @@ class LimitsSolutionStep extends StatelessWidget {
             ),
             child: Text(
               _formatText(explanation!),
-              style: FinalsTheme.subtitleStyle(context).copyWith(
-                height: 1.6,
-                fontSize: 14,
-              ),
+              style: FinalsTheme.subtitleStyle(context)
+                  .copyWith(height: 1.6, fontSize: 14),
             ),
           ),
         ],
@@ -236,9 +224,4 @@ class LimitsSolutionStep extends StatelessWidget {
   }
 }
 
-enum SolutionStepType {
-  normal,
-  conclusion,
-  formula,
-  error,
-}
+enum SolutionStepType { normal, conclusion, formula, error }

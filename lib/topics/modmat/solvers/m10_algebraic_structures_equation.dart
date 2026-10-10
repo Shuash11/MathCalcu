@@ -79,8 +79,10 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
     final query = p[2] as String;
     if (n > 500) return SolveResult.error('Keep n ≤ 500.');
     final prime = _isPrime(n);
-    final units =
-        List<int>.generate(n, (i) => i).where((a) => _gcd(a, n) == 1).length;
+    final units = List<int>.generate(
+      n,
+      (i) => i,
+    ).where((a) => _gcd(a, n) == 1).length;
 
     String answer;
     bool holds;
@@ -100,7 +102,8 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
       default:
         if (op == '+') {
           holds = true;
-          answer = '(Z$n, +) is an abelian group of order $n '
+          answer =
+              '(Z$n, +) is an abelian group of order $n '
               '(identity 0, inverse of a is ${n == 1 ? '0' : 'n−a'}).';
         } else {
           if (n == 1) {
@@ -108,7 +111,8 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
             answer = '(Z1, ×) is the trivial group.';
           } else {
             holds = false;
-            answer = '(Z$n, ×) is NOT a group (0 has no inverse); '
+            answer =
+                '(Z$n, ×) is NOT a group (0 has no inverse); '
                 'it is a monoid, and its $units units form an abelian group.';
           }
         }
@@ -125,7 +129,7 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
           'holds': holds,
           'prime': prime,
           'units': units,
-        }
+        },
       ],
     );
   }
@@ -136,9 +140,10 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use Z5 + group.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use Z5 + group.',
+        ),
       ];
     }
     final r = solve();
@@ -164,30 +169,36 @@ class M10AlgebraicStructuresEquation extends BaseEquation {
       } else if (query == 'units') {
         desc.add('\\text{units } \\varphi($n) = $units');
       } else {
-        desc.add(op == '+'
-            ? '\\text{abelian group of order } $n'
-            : (holds ? '\\text{trivial group}' : '\\text{monoid, not a group}'));
+        desc.add(
+          op == '+'
+              ? '\\text{abelian group of order } $n'
+              : (holds
+                    ? '\\text{trivial group}'
+                    : '\\text{monoid, not a group}'),
+        );
       }
       decSub = desc;
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Closure + identity',
-          explanation: p[1] == '+'
-              ? 'a+b mod ${p[0]} stays in range; 0 is the identity.'
-              : 'a×b mod ${p[0]} stays in range; 1 is the identity.'),
+        stepNumber: 1,
+        title: 'Closure + identity',
+        explanation: p[1] == '+'
+            ? 'a+b mod ${p[0]} stays in range; 0 is the identity.'
+            : 'a×b mod ${p[0]} stays in range; 1 is the identity.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Inverses + commutativity',
-          explanation:
-              'Every a needs b with a⋆b = e; check commutativity too.'),
+        stepNumber: 2,
+        title: 'Inverses + commutativity',
+        explanation: 'Every a needs b with a⋆b = e; check commutativity too.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Decide',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: decLatex,
-          subLatex: decSub),
+        stepNumber: 3,
+        title: 'Decide',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: decLatex,
+        subLatex: decSub,
+      ),
     ];
   }
 }

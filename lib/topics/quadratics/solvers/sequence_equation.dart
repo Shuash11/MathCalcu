@@ -8,6 +8,7 @@ import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/shared/widgets/input_validation.dart';
 import 'package:calculus_system/topics/grade6/solvers/g6_support.dart';
+
 import 'dart:math' as math;
 
 class SequenceEquation extends BaseEquation {
@@ -32,8 +33,10 @@ class SequenceEquation extends BaseEquation {
 
   List<double> _listed() {
     // Numbers not attached to a param name.
-    final stripped =
-        rawInput.replaceAll(RegExp(r'[a-zA-Z]+\s*=\s*-?\d+(?:\.\d+)?'), ' ');
+    final stripped = rawInput.replaceAll(
+      RegExp(r'[a-zA-Z]+\s*=\s*-?\d+(?:\.\d+)?'),
+      ' ',
+    );
     return RegExp(r'-?\d+(?:\.\d+)?')
         .allMatches(stripped)
         .map((m) => double.parse(m.group(0)!))
@@ -42,8 +45,10 @@ class SequenceEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'arith a1 = 2, d = 3, n = 5');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'arith a1 = 2, d = 3, n = 5',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -68,7 +73,8 @@ class SequenceEquation extends BaseEquation {
         nRaw != nRaw.roundToDouble() ||
         nRaw > 10000) {
       return SolveResult.error(
-          'n must be a positive whole number — e.g. n = 5.');
+        'n must be a positive whole number — e.g. n = 5.',
+      );
     }
     final n = nRaw.toInt();
     if (mode == 'arith') {
@@ -81,12 +87,13 @@ class SequenceEquation extends BaseEquation {
       }
       if (a1 == null || d == null) {
         return SolveResult.error(
-            'Arithmetic needs a1 and d — e.g. arith a1 = 2, d = 3, n = 5.');
+          'Arithmetic needs a1 and d — e.g. arith a1 = 2, d = 3, n = 5.',
+        );
       }
       final an = a1 + (n - 1) * d;
       final sn = n / 2 * (2 * a1 + (n - 1) * d);
       final terms = [
-        for (var i = 1; i <= (n < 8 ? n : 8); i++) a1 + (i - 1) * d
+        for (var i = 1; i <= (n < 8 ? n : 8); i++) a1 + (i - 1) * d,
       ];
       return SolveResult(
         answer: 'a($n) = ${G6Format.num(an)}, S($n) = ${G6Format.num(sn)}',
@@ -100,8 +107,8 @@ class SequenceEquation extends BaseEquation {
             'n': n,
             'an': an,
             'sum': sn,
-            'terms': terms
-          }
+            'terms': terms,
+          },
         ],
       );
     }
@@ -114,7 +121,8 @@ class SequenceEquation extends BaseEquation {
     }
     if (a1 == null || r == null) {
       return SolveResult.error(
-          'Geometric needs a1 and r — e.g. geom a1 = 3, r = 2, n = 4.');
+        'Geometric needs a1 and r — e.g. geom a1 = 3, r = 2, n = 4.',
+      );
     }
     final an = a1 * math.pow(r, n - 1);
     double sn;
@@ -127,7 +135,7 @@ class SequenceEquation extends BaseEquation {
       return SolveResult.error('Terms overflow — use a smaller n or ratio.');
     }
     final terms = [
-      for (var i = 1; i <= (n < 8 ? n : 8); i++) a1 * math.pow(r, i - 1)
+      for (var i = 1; i <= (n < 8 ? n : 8); i++) a1 * math.pow(r, i - 1),
     ];
     return SolveResult(
       answer:
@@ -142,8 +150,8 @@ class SequenceEquation extends BaseEquation {
           'n': n,
           'an': an,
           'sum': sn,
-          'terms': terms
-        }
+          'terms': terms,
+        },
       ],
     );
   }
@@ -153,9 +161,10 @@ class SequenceEquation extends BaseEquation {
     if (_mode() == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Start with arith or geom.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Start with arith or geom.',
+        ),
       ];
     }
     final r = solve();
@@ -164,37 +173,38 @@ class SequenceEquation extends BaseEquation {
     final data = (cd != null && cd.isNotEmpty) ? cd.first as Map : null;
     return [
       StepModel(
-          stepNumber: 1,
-          title: isArith ? 'Arithmetic form' : 'Geometric form',
-          explanation: isArith
-              ? 'a(n) = a1 + (n−1)d, S(n) = n/2·(2a1 + (n−1)d).'
-              : 'a(n) = a1·r^(n−1), S(n) = a1(r^n − 1)/(r − 1).',
-          latex: isArith
-              ? 'a_{n} = a_{1} + (n - 1)d'
-              : 'a_{n} = a_{1} r^{n-1}',
-          subLatex: [
-            isArith
-                ? 'S_{n} = \\frac{n}{2}(2a_{1} + (n - 1)d)'
-                : 'S_{n} = \\frac{a_{1}(r^{n} - 1)}{r - 1}',
-          ]),
+        stepNumber: 1,
+        title: isArith ? 'Arithmetic form' : 'Geometric form',
+        explanation: isArith
+            ? 'a(n) = a1 + (n−1)d, S(n) = n/2·(2a1 + (n−1)d).'
+            : 'a(n) = a1·r^(n−1), S(n) = a1(r^n − 1)/(r − 1).',
+        latex: isArith ? 'a_{n} = a_{1} + (n - 1)d' : 'a_{n} = a_{1} r^{n-1}',
+        subLatex: [
+          isArith
+              ? 'S_{n} = \\frac{n}{2}(2a_{1} + (n - 1)d)'
+              : 'S_{n} = \\frac{a_{1}(r^{n} - 1)}{r - 1}',
+        ],
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Substitute',
-          explanation: rawInput.trim(),
-          latex: data == null ? null : _subTex(data, isArith)),
+        stepNumber: 2,
+        title: 'Substitute',
+        explanation: rawInput.trim(),
+        latex: data == null ? null : _subTex(data, isArith),
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'nth term + sum',
-          explanation: r.answer,
-          latex: data == null
-              ? null
-              : 'a_{${data['n']}} = ${G6Format.num((data['an'] as num).toDouble())}',
-          subLatex: data == null
-              ? null
-              : [
-                  'S_{${data['n']}} = '
-                  '${G6Format.num((data['sum'] as num).toDouble())}'
-                ]),
+        stepNumber: 3,
+        title: 'nth term + sum',
+        explanation: r.answer,
+        latex: data == null
+            ? null
+            : 'a_{${data['n']}} = ${G6Format.num((data['an'] as num).toDouble())}',
+        subLatex: data == null
+            ? null
+            : [
+                'S_{${data['n']}} = '
+                    '${G6Format.num((data['sum'] as num).toDouble())}',
+              ],
+      ),
     ];
   }
 

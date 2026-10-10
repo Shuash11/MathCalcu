@@ -21,10 +21,7 @@ class AppShell extends StatelessWidget {
         decoration: BoxDecoration(
           color: card,
           border: Border(
-            top: BorderSide(
-              color: accent.withValues(alpha: 0.08),
-              width: 1,
-            ),
+            top: BorderSide(color: accent.withValues(alpha: 0.08), width: 1),
           ),
           boxShadow: [
             BoxShadow(

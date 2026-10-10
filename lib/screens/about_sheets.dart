@@ -34,14 +34,17 @@ class _AboutSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            final double s =
-                (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
+            final double s = (constraints.maxWidth / _baseDesignWidth).clamp(
+              0.75,
+              1.1,
+            );
 
             return Container(
               decoration: BoxDecoration(
                 color: theme.surface,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(32 * s)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(32 * s),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: accent.withValues(alpha: 0.2),
@@ -68,7 +71,9 @@ class _AboutSheet extends StatelessWidget {
                   // Header with icon
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 28 * s, vertical: 16 * s),
+                      horizontal: 28 * s,
+                      vertical: 16 * s,
+                    ),
                     child: Row(
                       children: [
                         Container(
@@ -120,8 +125,12 @@ class _AboutSheet extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       controller: scrollController,
-                      padding:
-                          EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
+                      padding: EdgeInsets.fromLTRB(
+                        24 * s,
+                        8 * s,
+                        24 * s,
+                        40 * s,
+                      ),
                       children: [
                         // Description card
                         Container(
@@ -227,13 +236,13 @@ class _AboutSheet extends StatelessWidget {
 
                         // Developer cards
                         ...developers.asMap().entries.map(
-                              (e) => DeveloperTile(
-                                key: ValueKey(e.value.name),
-                                developer: e.value,
-                                index: e.key,
-                                accent: accent,
-                              ),
-                            ),
+                          (e) => DeveloperTile(
+                            key: ValueKey(e.value.name),
+                            developer: e.value,
+                            index: e.key,
+                            accent: accent,
+                          ),
+                        ),
                       ],
                     ),
                   ),

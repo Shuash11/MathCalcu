@@ -46,10 +46,7 @@ class _DonateSheet extends StatelessWidget {
               const SizedBox(height: 12),
               const Text(
                 'Tap anywhere to close',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 13,
-                ),
+                style: TextStyle(color: Colors.white70, fontSize: 13),
               ),
             ],
           ),
@@ -70,14 +67,17 @@ class _DonateSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            final double s =
-                (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
+            final double s = (constraints.maxWidth / _baseDesignWidth).clamp(
+              0.75,
+              1.1,
+            );
 
             return Container(
               decoration: BoxDecoration(
                 color: theme.surface,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(32 * s)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(32 * s),
+                ),
               ),
               child: ListView(
                 controller: scrollController,
@@ -214,9 +214,7 @@ class _DonateSheet extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: accent.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(16 * s),
-                      border: Border.all(
-                        color: accent.withValues(alpha: 0.15),
-                      ),
+                      border: Border.all(color: accent.withValues(alpha: 0.15)),
                     ),
                     child: Row(
                       children: [

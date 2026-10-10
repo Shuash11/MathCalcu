@@ -5,6 +5,7 @@
 // Run: dart run tool/slope_wire_demo.dart "<equation>" [var=value ...]
 
 import 'dart:io';
+
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/display_answer.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/slope_using_derivatives_solver.dart';
 
@@ -20,8 +21,8 @@ import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_deriv
   final vals = <String, double>{};
 
   for (final arg in args) {
-    final kv =
-        RegExp(r'^([a-zA-Z_][a-zA-Z0-9_]*)=([-\d.eE+]+)$').firstMatch(arg);
+    final kv = RegExp(r'^([a-zA-Z_][a-zA-Z0-9_]*)=([-\d.eE+]+)$')
+        .firstMatch(arg);
     if (kv != null) {
       vals[kv.group(1)!] = double.parse(kv.group(2)!);
     } else {
@@ -68,14 +69,18 @@ void main(List<String> args) {
     final (eq, vals) = _parseArgs(args);
     if (eq.isEmpty) {
       stderr.writeln(
-          'Usage: dart run tool/slope_wire_demo.dart "<equation>" [var=value ...]');
+        'Usage: dart run tool/slope_wire_demo.dart "<equation>" [var=value ...]',
+      );
       stderr.writeln('Examples:');
       stderr.writeln(
-          '  dart run tool/slope_wire_demo.dart "y = x^3 - 2x + 1" x=2');
+        '  dart run tool/slope_wire_demo.dart "y = x^3 - 2x + 1" x=2',
+      );
       stderr.writeln(
-          '  dart run tool/slope_wire_demo.dart "x^2 + y^2 = 25" x=3 y=4');
+        '  dart run tool/slope_wire_demo.dart "x^2 + y^2 = 25" x=3 y=4',
+      );
       stderr.writeln(
-          '  dart run tool/slope_wire_demo.dart "x=cos(t), y=sin(t)" t=1.5708');
+        '  dart run tool/slope_wire_demo.dart "x=cos(t), y=sin(t)" t=1.5708',
+      );
       exit(1);
     }
     try {
@@ -113,6 +118,7 @@ void main(List<String> args) {
 
   stdout.writeln('═' * 64);
   stdout.writeln(
-      '  RESULTS: $passed passed, $failed failed out of ${_demos.length} demos');
+    '  RESULTS: $passed passed, $failed failed out of ${_demos.length} demos',
+  );
   stdout.writeln('${'═' * 64}\n');
 }

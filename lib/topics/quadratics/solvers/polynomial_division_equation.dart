@@ -30,8 +30,9 @@ class PolyDivisionEquation extends BaseEquation {
     if (RegExp(r'x\^?([3-9]\d*)')
         .hasMatch(s.replaceAll('x^2', 'Q').replaceAll('x²', 'Q'))) {
       // Allow degree 1..6 only.
-      final degs =
-          RegExp(r'x\^(\d+)').allMatches(s).map((m) => int.parse(m.group(1)!));
+      final degs = RegExp(r'x\^(\d+)')
+          .allMatches(s)
+          .map((m) => int.parse(m.group(1)!));
       if (degs.any((d) => d > 6)) return null;
     }
     final terms = <String, double>{};
@@ -91,8 +92,10 @@ class PolyDivisionEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: '(x^3 + 2x^2 - 5x + 1)/(x - 1)');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: '(x^3 + 2x^2 - 5x + 1)/(x - 1)',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -129,8 +132,8 @@ class PolyDivisionEquation extends BaseEquation {
       final body = power == 0
           ? cs
           : power == 1
-              ? '${cs == '1' ? '' : cs}x'
-              : '${cs == '1' ? '' : cs}x^$power';
+          ? '${cs == '1' ? '' : cs}x'
+          : '${cs == '1' ? '' : cs}x^$power';
       if (terms.isEmpty) {
         terms.add('${c < 0 ? '-' : ''}$body');
       } else {
@@ -151,7 +154,7 @@ class PolyDivisionEquation extends BaseEquation {
           'remainder': rem,
           'a': a,
           'degree': deg,
-        }
+        },
       ],
     );
   }
@@ -161,9 +164,10 @@ class PolyDivisionEquation extends BaseEquation {
     if (_parse() == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use P(x)/(x - a).')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use P(x)/(x - a).',
+        ),
       ];
     }
     final r = solve();
@@ -179,24 +183,27 @@ class PolyDivisionEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Set up synthetic division',
-          explanation: 'Coefficients on top, zero a of (x − a) on the side.'),
+        stepNumber: 1,
+        title: 'Set up synthetic division',
+        explanation: 'Coefficients on top, zero a of (x − a) on the side.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Bring down, multiply, add',
-          explanation: 'Repeat across the row — multiply by a, add to next.'),
+        stepNumber: 2,
+        title: 'Bring down, multiply, add',
+        explanation: 'Repeat across the row — multiply by a, add to next.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Quotient + remainder',
-          explanation: r.answer,
-          latex: qTex,
-          subLatex: remTex == null ? null : ['R = $remTex']),
+        stepNumber: 3,
+        title: 'Quotient + remainder',
+        explanation: r.answer,
+        latex: qTex,
+        subLatex: remTex == null ? null : ['R = $remTex'],
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Remainder theorem',
-          explanation:
-              'Remainder equals P(a) — zero means (x − a) is a factor.'),
+        stepNumber: 4,
+        title: 'Remainder theorem',
+        explanation: 'Remainder equals P(a) — zero means (x − a) is a factor.',
+      ),
     ];
   }
 
@@ -212,8 +219,8 @@ class PolyDivisionEquation extends BaseEquation {
       final sym = power == 0
           ? ''
           : power == 1
-              ? 'x'
-              : 'x^{$power}';
+          ? 'x'
+          : 'x^{$power}';
       final coef = (sym.isNotEmpty && mag == '1') ? '' : mag;
       final body = '$coef$sym';
       if (buffer.isEmpty) {

@@ -38,16 +38,16 @@ class PPInputCard extends StatelessWidget {
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: context
-              .watch<ThemeProvider>()
-              .accentColor
-              .withValues(alpha: 0.15),
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.15,
+          ),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(
-                alpha: context.watch<ThemeProvider>().isLight ? 0.05 : 0.3),
+              alpha: context.watch<ThemeProvider>().isLight ? 0.05 : 0.3,
+            ),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -63,10 +63,9 @@ class PPInputCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: context
-                  .watch<ThemeProvider>()
-                  .textSecondary
-                  .withValues(alpha: 0.7),
+              color: context.watch<ThemeProvider>().textSecondary.withValues(
+                alpha: 0.7,
+              ),
               letterSpacing: 0.5,
             ),
           ),
@@ -186,23 +185,23 @@ class _PointLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 8),
-          ResponsiveText(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
-      );
+    children: [
+      Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      ),
+      const SizedBox(width: 8),
+      ResponsiveText(
+        label,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
+    ],
+  );
 }
 
 class _CoordField extends StatelessWidget {
@@ -244,32 +243,31 @@ class _CoordField extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
         hintStyle: TextStyle(
-          color: context
-              .watch<ThemeProvider>()
-              .textSecondary
-              .withValues(alpha: 0.6),
+          color: context.watch<ThemeProvider>().textSecondary.withValues(
+            alpha: 0.6,
+          ),
           fontSize: 14,
         ),
         filled: true,
         fillColor: context.watch<ThemeProvider>().surface,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 16,
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: context
-                .watch<ThemeProvider>()
-                .accentColor
-                .withValues(alpha: 0.15),
+            color: context.watch<ThemeProvider>().accentColor.withValues(
+              alpha: 0.15,
+            ),
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(
-            color: context
-                .watch<ThemeProvider>()
-                .accentColor
-                .withValues(alpha: 0.5),
+            color: context.watch<ThemeProvider>().accentColor.withValues(
+              alpha: 0.5,
+            ),
             width: 1.5,
           ),
         ),
@@ -300,49 +298,49 @@ class _SolveButtonState extends State<_SolveButton> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) {
-          setState(() => _pressed = false);
-          widget.onTap();
-        },
-        onTapCancel: () => setState(() => _pressed = false),
-        child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1.0,
-          duration: const Duration(milliseconds: 100),
-          child: Container(
-            height: 52,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  widget.accent,
-                  widget.accent,
-                ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+    onTapDown: (_) => setState(() => _pressed = true),
+    onTapUp: (_) {
+      setState(() => _pressed = false);
+      widget.onTap();
+    },
+    onTapCancel: () => setState(() => _pressed = false),
+    child: AnimatedScale(
+      scale: _pressed ? 0.97 : 1.0,
+      duration: const Duration(milliseconds: 100),
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [widget.accent, widget.accent],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [AccentGlow.halo(context)],
+        ),
+        child: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.calculate_rounded,
+                color: FinalsTheme.onPrimaryFor(context),
+                size: 18,
               ),
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [AccentGlow.halo(context)],
-            ),
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.calculate_rounded,
-                      color: FinalsTheme.onPrimaryFor(context), size: 18),
-                  const SizedBox(width: 8),
-                  ResponsiveText(
-                    'Solve',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: FinalsTheme.onPrimaryFor(context),
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ],
+              const SizedBox(width: 8),
+              ResponsiveText(
+                'Solve',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: FinalsTheme.onPrimaryFor(context),
+                  letterSpacing: 0.3,
+                ),
               ),
-            ),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

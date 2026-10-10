@@ -48,10 +48,8 @@ class _MathBox extends StatelessWidget {
           fontWeight: FontWeight.w600,
           color: primaryFor,
         ),
-        onErrorFallback: (err) => ResponsiveText(
-          latex,
-          style: TextStyle(color: primaryFor),
-        ),
+        onErrorFallback: (err) =>
+            ResponsiveText(latex, style: TextStyle(color: primaryFor)),
       ),
     );
   }

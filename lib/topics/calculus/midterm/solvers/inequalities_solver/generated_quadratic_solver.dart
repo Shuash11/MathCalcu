@@ -42,42 +42,54 @@ class GeneratedQuadraticSolver {
         if (opensUp) {
           if (p.op == '<') {
             return SolveResult(
-                answer: 'No solution', points: [], intervalNotation: '∅');
+              answer: 'No solution',
+              points: [],
+              intervalNotation: '∅',
+            );
           } else if (p.op == '≤') {
             return SolveResult(
-                answer: 'x = ${_fmt(root)}',
-                points: [root],
-                intervalNotation: '{${_fmt(root)}}');
+              answer: 'x = ${_fmt(root)}',
+              points: [root],
+              intervalNotation: '{${_fmt(root)}}',
+            );
           } else if (p.op == '>') {
             return SolveResult(
-                answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}',
-                points: [root],
-                intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)');
+              answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}',
+              points: [root],
+              intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)',
+            );
           } else {
             return SolveResult(
-                answer: 'All real numbers',
-                points: [],
-                intervalNotation: '(-∞, ∞)');
+              answer: 'All real numbers',
+              points: [],
+              intervalNotation: '(-∞, ∞)',
+            );
           }
         } else {
           if (p.op == '<') {
             return SolveResult(
-                answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}',
-                points: [root],
-                intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)');
+              answer: 'x < ${_fmt(root)} or x > ${_fmt(root)}',
+              points: [root],
+              intervalNotation: '(-∞, ${_fmt(root)}) ∪ (${_fmt(root)}, ∞)',
+            );
           } else if (p.op == '≤') {
             return SolveResult(
-                answer: 'All real numbers',
-                points: [],
-                intervalNotation: '(-∞, ∞)');
+              answer: 'All real numbers',
+              points: [],
+              intervalNotation: '(-∞, ∞)',
+            );
           } else if (p.op == '>') {
             return SolveResult(
-                answer: 'No solution', points: [], intervalNotation: '∅');
+              answer: 'No solution',
+              points: [],
+              intervalNotation: '∅',
+            );
           } else {
             return SolveResult(
-                answer: 'x = ${_fmt(root)}',
-                points: [root],
-                intervalNotation: '{${_fmt(root)}}');
+              answer: 'x = ${_fmt(root)}',
+              points: [root],
+              intervalNotation: '{${_fmt(root)}}',
+            );
           }
         }
       }
@@ -115,10 +127,7 @@ class GeneratedQuadraticSolver {
     int n = 1;
 
     // Step 1: Original inequality
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: input.trim(),
-    ));
+    steps.add(StepModel(stepNumber: n++, latex: input.trim()));
 
     final disc = p.b * p.b - 4 * p.a * p.c;
 
@@ -130,8 +139,9 @@ class GeneratedQuadraticSolver {
     final cCoef = p.c == 0
         ? ''
         : (p.c > 0 ? '+ ${_fmtLatex(p.c)}' : '- ${_fmtLatex(-p.c)}');
-    final stdForm =
-        '${aCoef}x^2 $bCoef $cCoef ${p.op} 0'.replaceAll('  ', ' ').trim();
+    final stdForm = '${aCoef}x^2 $bCoef $cCoef ${p.op} 0'
+        .replaceAll('  ', ' ')
+        .trim();
     final inputNorm = input.trim().replaceAll(' ', '');
     if (stdForm.replaceAll(' ', '') != inputNorm) {
       final dets = [input.trim()];
@@ -149,78 +159,89 @@ class GeneratedQuadraticSolver {
         }
       }
       if (dets.last != stdForm) dets.add(stdForm);
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'Move all terms to one side',
-        details: dets,
-        latex: stdForm,
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Move all terms to one side',
+          details: dets,
+          latex: stdForm,
+        ),
+      );
     }
 
     // Step 3: Discriminant
     final bSq = p.b * p.b;
     final ac4 = 4 * p.a * p.c;
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: disc < 0
-          ? 'Negative discriminant \\Delta = ${_fmt(disc)} — no real roots'
-          : disc == 0
-              ? 'Zero discriminant \\Delta = 0 — one repeated root'
-              : 'Positive discriminant \\Delta = ${_fmt(disc)} — two real roots',
-      details: [
-        r'\Delta = b^2 - 4ac',
-        r'\Delta = (' +
-            _fmtLatex(p.b) +
-            ')^2 - 4(' +
-            _fmtLatex(p.a) +
-            ')(' +
-            _fmtLatex(p.c) +
-            ')',
-        r'\Delta = ' + _fmtLatex(bSq) + ' - ' + _fmtLatex(ac4),
-        r'\Delta = ' + _fmtLatex(disc),
-      ],
-      latex: r'\Delta = ' + _fmtLatex(disc),
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        hint: disc < 0
+            ? 'Negative discriminant \\Delta = ${_fmt(disc)} — no real roots'
+            : disc == 0
+            ? 'Zero discriminant \\Delta = 0 — one repeated root'
+            : 'Positive discriminant \\Delta = ${_fmt(disc)} — two real roots',
+        details: [
+          r'\Delta = b^2 - 4ac',
+          r'\Delta = (' +
+              _fmtLatex(p.b) +
+              ')^2 - 4(' +
+              _fmtLatex(p.a) +
+              ')(' +
+              _fmtLatex(p.c) +
+              ')',
+          r'\Delta = ' + _fmtLatex(bSq) + ' - ' + _fmtLatex(ac4),
+          r'\Delta = ' + _fmtLatex(disc),
+        ],
+        latex: r'\Delta = ' + _fmtLatex(disc),
+      ),
+    );
 
     if (disc < 0) {
-      final allSat =
-          p.a > 0 ? (p.op == '>' || p.op == '≥') : (p.op == '<' || p.op == '≤');
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: allSat
-            ? 'Always true — parabola never crosses x-axis'
-            : 'Always false — parabola never crosses x-axis',
-        details: [
-          r'\Delta < 0 \implies \text{no real roots}',
-          p.a > 0
-              ? r'a > 0 \implies \text{parabola opens up, entirely above x-axis}'
-              : r'a < 0 \implies \text{parabola opens down, entirely below x-axis}',
-          allSat
-              ? r'\text{Inequality holds for all } x'
-              : r'\text{Inequality never holds}',
-        ],
-        latex: allSat ? r'(-\infty, \infty)' : r'\emptyset',
-      ));
+      final allSat = p.a > 0
+          ? (p.op == '>' || p.op == '≥')
+          : (p.op == '<' || p.op == '≤');
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: allSat
+              ? 'Always true — parabola never crosses x-axis'
+              : 'Always false — parabola never crosses x-axis',
+          details: [
+            r'\Delta < 0 \implies \text{no real roots}',
+            p.a > 0
+                ? r'a > 0 \implies \text{parabola opens up, entirely above x-axis}'
+                : r'a < 0 \implies \text{parabola opens down, entirely below x-axis}',
+            allSat
+                ? r'\text{Inequality holds for all } x'
+                : r'\text{Inequality never holds}',
+          ],
+          latex: allSat ? r'(-\infty, \infty)' : r'\emptyset',
+        ),
+      );
       return steps;
     }
 
     if (disc == 0) {
       final root = -p.b / (2 * p.a);
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'Repeated root at x = ${_fmt(root)}',
-        details: [
-          r'x = \frac{-b}{2a}',
-          r'x = \frac{' + _fmtLatex(-p.b) + '}{2(' + _fmtLatex(p.a) + ')}',
-          r'x = ' + _fmtLatex(root),
-        ],
-        latex: r'x = ' + _fmtLatex(root),
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Repeated root at x = ${_fmt(root)}',
+          details: [
+            r'x = \frac{-b}{2a}',
+            r'x = \frac{' + _fmtLatex(-p.b) + '}{2(' + _fmtLatex(p.a) + ')}',
+            r'x = ' + _fmtLatex(root),
+          ],
+          latex: r'x = ' + _fmtLatex(root),
+        ),
+      );
       final result = solve(input);
-      steps.add(StepModel(
-        stepNumber: n++,
-        latex: _toLatexInterval(result.intervalNotation ?? ''),
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          latex: _toLatexInterval(result.intervalNotation ?? ''),
+        ),
+      );
       return steps;
     }
 
@@ -242,37 +263,39 @@ class GeneratedQuadraticSolver {
     final sqrtDisc = _sqrtSimplify(disc.round());
     final root1 = _fmtSurd(p.a, p.b, disc.round(), false);
     final root2 = _fmtSurd(p.a, p.b, disc.round(), true);
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: 'Find the roots',
-      details: [
-        r'x = \frac{-b \pm \sqrt{\Delta}}{2a}',
-        r'x = \frac{' +
-            negB +
-            r' \pm \sqrt{' +
-            _fmtLatex(disc) +
-            '}}{' +
-            twoA +
-            '}',
-        r'x_1 = \frac{' +
-            negB +
-            r' - ' +
-            sqrtDisc +
-            '}{' +
-            twoA +
-            '} = ' +
-            root1,
-        r'x_2 = \frac{' +
-            negB +
-            r' + ' +
-            sqrtDisc +
-            '}{' +
-            twoA +
-            '} = ' +
-            root2,
-      ],
-      latex: r'x_1 = ' + root1 + r',\quad x_2 = ' + root2,
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        hint: 'Find the roots',
+        details: [
+          r'x = \frac{-b \pm \sqrt{\Delta}}{2a}',
+          r'x = \frac{' +
+              negB +
+              r' \pm \sqrt{' +
+              _fmtLatex(disc) +
+              '}}{' +
+              twoA +
+              '}',
+          r'x_1 = \frac{' +
+              negB +
+              r' - ' +
+              sqrtDisc +
+              '}{' +
+              twoA +
+              '} = ' +
+              root1,
+          r'x_2 = \frac{' +
+              negB +
+              r' + ' +
+              sqrtDisc +
+              '}{' +
+              twoA +
+              '} = ' +
+              root2,
+        ],
+        latex: r'x_1 = ' + root1 + r',\quad x_2 = ' + root2,
+      ),
+    );
 
     // Step 5: Sign and solution
     final opensUp = p.a > 0;
@@ -285,24 +308,28 @@ class GeneratedQuadraticSolver {
       solLatex = r'x < ' + loLatex + r' \quad\text{or}\quad x > ' + hiLatex;
     }
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: opensUp ? 'Parabola opens upward' : 'Parabola opens downward',
-      details: [
-        opensUp
-            ? r'\text{Positive outside, negative between}'
-            : r'\text{Negative outside, positive between}',
-        solLatex,
-      ],
-      latex: solLatex,
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        hint: opensUp ? 'Parabola opens upward' : 'Parabola opens downward',
+        details: [
+          opensUp
+              ? r'\text{Positive outside, negative between}'
+              : r'\text{Negative outside, positive between}',
+          solLatex,
+        ],
+        latex: solLatex,
+      ),
+    );
 
     final result = solve(input);
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: 'Solution in interval notation',
-      latex: _toLatexInterval(result.intervalNotation ?? ''),
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        hint: 'Solution in interval notation',
+        latex: _toLatexInterval(result.intervalNotation ?? ''),
+      ),
+    );
 
     return steps;
   }
@@ -389,15 +416,15 @@ class GeneratedQuadraticSolver {
         a += cs.isEmpty || cs == '+'
             ? 1
             : cs == '-'
-                ? -1
-                : (double.tryParse(cs) ?? 0);
+            ? -1
+            : (double.tryParse(cs) ?? 0);
       } else if (t.contains('x')) {
         final cs = t.substring(0, t.indexOf('x'));
         b += cs.isEmpty || cs == '+'
             ? 1
             : cs == '-'
-                ? -1
-                : (double.tryParse(cs) ?? 0);
+            ? -1
+            : (double.tryParse(cs) ?? 0);
       } else {
         final clean = t.startsWith('+') ? t.substring(1) : t;
         c += double.tryParse(clean) ?? 0;
@@ -582,6 +609,10 @@ class GeneratedQuadraticSolver {
 class _Parsed {
   final String op;
   final double a, b, c;
-  const _Parsed(
-      {required this.op, required this.a, required this.b, required this.c});
+  const _Parsed({
+    required this.op,
+    required this.a,
+    required this.b,
+    required this.c,
+  });
 }

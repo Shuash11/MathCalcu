@@ -104,7 +104,8 @@ class RadiusResult {
     final buf = StringBuffer();
     buf.writeln('r = √((x ?? h)? + (y ?? k)?)');
     buf.writeln(
-        'r = √((${_fmt(x, rawX)} ?? ${_fmt(h, rawH)})? + (${_fmt(y, rawY)} ?? ${_fmt(k, rawK)})?)');
+      'r = √((${_fmt(x, rawX)} ?? ${_fmt(h, rawH)})? + (${_fmt(y, rawY)} ?? ${_fmt(k, rawK)})?)',
+    );
     buf.writeln('r = √((${_f(dx)})? + (${_f(dy)})?)');
     buf.writeln('r = √(${_f(dx2)} + ${_f(dy2)})');
     buf.writeln('r = √${_f(sum)}');
@@ -135,8 +136,9 @@ class RadiusResult {
     final isInteger = (sum - sumInt).abs() < 1e-9;
     if (isInteger && !_isPerfectSquare(sum)) {
       final (coeff, radicand) = _simplifyRadical(sum);
-      final exactTex =
-          coeff == 1 ? '\\sqrt{$radicand}' : '$coeff\\sqrt{$radicand}';
+      final exactTex = coeff == 1
+          ? '\\sqrt{$radicand}'
+          : '$coeff\\sqrt{$radicand}';
       lines.add('r = $exactTex \\approx ${_f(radius)}');
     } else {
       lines.add('r = ${_f(radius)}');

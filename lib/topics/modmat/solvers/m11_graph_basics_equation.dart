@@ -20,8 +20,10 @@ class M11GraphBasicsEquation extends BaseEquation {
   /// Returns [n, edges].
   List<dynamic>? _parse() {
     final t = rawInput.replaceAll('−', '-');
-    final nMatch =
-        RegExp(r'\bv\s*(?:=|is|:)?\s*(\d+)', caseSensitive: false).firstMatch(t);
+    final nMatch = RegExp(
+      r'\bv\s*(?:=|is|:)?\s*(\d+)',
+      caseSensitive: false,
+    ).firstMatch(t);
     final pairRe = RegExp(r'\(\s*(\d+)\s*,\s*(\d+)\s*\)');
     final edges = pairRe
         .allMatches(t)
@@ -81,8 +83,10 @@ class M11GraphBasicsEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'V=4 E={(0,1),(1,2),(2,3)}');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'V=4 E={(0,1),(1,2),(2,3)}',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -113,13 +117,14 @@ class M11GraphBasicsEquation extends BaseEquation {
     final euler = !connected
         ? 'none (disconnected)'
         : odd == 0
-            ? 'circuit + trail'
-            : odd == 2
-                ? 'trail only'
-                : 'none';
+        ? 'circuit + trail'
+        : odd == 2
+        ? 'trail only'
+        : 'none';
     final sumDeg = degs.fold(0, (a, b) => a + b);
     return SolveResult(
-      answer: 'n=$n, m=$m, degrees=[${degs.join(', ')}] (Σ=$sumDeg=2m), '
+      answer:
+          'n=$n, m=$m, degrees=[${degs.join(', ')}] (Σ=$sumDeg=2m), '
           'components=$comps, ${connected ? 'connected' : 'disconnected'}, '
           '${isTree ? 'is a tree' : 'not a tree'}, Euler: $euler.',
       points: degs.map((d) => d.toDouble()).toList(),
@@ -135,7 +140,7 @@ class M11GraphBasicsEquation extends BaseEquation {
           'oddCount': odd,
           'euler': euler,
           'edges': edges,
-        }
+        },
       ],
     );
   }
@@ -146,9 +151,10 @@ class M11GraphBasicsEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use V=4 E={(0,1)}. ')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use V=4 E={(0,1)}. ',
+        ),
       ];
     }
     final r = solve();
@@ -169,21 +175,22 @@ class M11GraphBasicsEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Degree each vertex',
-          explanation:
-              'deg(v) counts incident edges; Σdeg = 2m (handshaking).'),
+        stepNumber: 1,
+        title: 'Degree each vertex',
+        explanation: 'deg(v) counts incident edges; Σdeg = 2m (handshaking).',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Walk the components',
-          explanation:
-              'BFS from each unvisited vertex; one sweep = connected.'),
+        stepNumber: 2,
+        title: 'Walk the components',
+        explanation: 'BFS from each unvisited vertex; one sweep = connected.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Tree + Euler read-off',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: gbLatex,
-          subLatex: gbSub),
+        stepNumber: 3,
+        title: 'Tree + Euler read-off',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: gbLatex,
+        subLatex: gbSub,
+      ),
     ];
   }
 }

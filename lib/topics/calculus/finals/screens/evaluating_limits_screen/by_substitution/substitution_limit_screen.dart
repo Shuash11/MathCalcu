@@ -1,6 +1,7 @@
 import 'substitution_answer_card.dart';
 import 'substitution_input_field.dart';
 import 'substitution_steps_view.dart';
+
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_engine.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_substitution/substitution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
@@ -43,13 +44,17 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim =
-        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.05),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-        parent: _contentController, curve: Curves.easeOutCubic));
+    _fadeAnim = CurvedAnimation(
+      parent: _contentController,
+      curve: Curves.easeOut,
+    );
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _contentController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _contentController.forward();
 
@@ -89,13 +94,14 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              'Please enter both an expression and an approach value.',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+            'Please enter both an expression and an approach value.',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
       return;
@@ -108,8 +114,9 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
     // parse approach value
     double approachVal = 0;
     try {
-      approachVal =
-          double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
+      approachVal = double.parse(
+        _approachController.text.replaceAll('inf', 'Infinity'),
+      );
     } catch (e) {
       approachVal = 0;
     }
@@ -120,10 +127,12 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
 
       try {
         final engine = SubstitutionEngine();
-        final result = engine.solve(LimitProblem(
-          expression: _expressionController.text,
-          approachValue: approachVal,
-        ));
+        final result = engine.solve(
+          LimitProblem(
+            expression: _expressionController.text,
+            approachValue: approachVal,
+          ),
+        );
 
         final stepsGen = SubstitutionStepsGenerator();
         final steps = stepsGen.generate(result);
@@ -139,8 +148,9 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}',
-                style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+            content: Text(
+              'Error: ${e.toString()}',
+              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
             ),
             backgroundColor: FinalsTheme.dangerNow(context),
           ),
@@ -232,10 +242,11 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
               foregroundColor: FinalsTheme.textPrimary(context),
               padding: const EdgeInsets.all(12),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                borderRadius: BorderRadius.circular(16),
+              ),
               side: BorderSide(
-                  color:
-                      FinalsTheme.primaryFor(context).withValues(alpha: 0.1)),
+                color: FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
+              ),
             ),
           ),
           const SizedBox(width: 20),
@@ -262,13 +273,16 @@ class _SubstitutionLimitScreenState extends State<SubstitutionLimitScreen>
               color: FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                  color:
-                      FinalsTheme.primaryFor(context).withValues(alpha: 0.2)),
+                color: FinalsTheme.primaryFor(context).withValues(alpha: 0.2),
+              ),
             ),
             child: Row(
               children: [
-                Icon(Icons.swap_horiz_rounded,
-                    size: 14, color: FinalsTheme.primaryFor(context)),
+                Icon(
+                  Icons.swap_horiz_rounded,
+                  size: 14,
+                  color: FinalsTheme.primaryFor(context),
+                ),
                 const SizedBox(width: 6),
                 ResponsiveText(
                   'BY SUBSTITUTION',

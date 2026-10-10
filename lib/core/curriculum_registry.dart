@@ -96,12 +96,12 @@ class CurriculumTopic {
 
   /// Bridge back to the existing picker model.
   ModuleEntry toModuleEntry() => ModuleEntry(
-        label: label,
-        subtitle: subtitle,
-        route: route,
-        icon: icon,
-        accent: AppDesign.app.accent,
-      );
+    label: label,
+    subtitle: subtitle,
+    route: route,
+    icon: icon,
+    accent: AppDesign.app.accent,
+  );
 }
 
 /// Search hit mirroring [ModmatSearchHit] shape.
@@ -136,7 +136,7 @@ class CurriculumRegistry {
         'add',
         'subtract',
         'M6NS',
-        'lcd'
+        'lcd',
       ],
       difficulty: 'intro',
       depedCode: 'M6NS-Ia-86',
@@ -179,7 +179,7 @@ class CurriculumRegistry {
         'proporsiyon',
         'missing term',
         'M6NS',
-        'bar'
+        'bar',
       ],
       difficulty: 'standard',
       depedCode: 'M6NS-Id-140',
@@ -235,7 +235,7 @@ class CurriculumRegistry {
         'area',
         'angle',
         'shape',
-        'M6GE'
+        'M6GE',
       ],
       difficulty: 'standard',
       depedCode: 'M6GE-IIIc-37',
@@ -667,8 +667,10 @@ class CurriculumRegistry {
   ];
 
   /// Every topic: G6 seed + G7–College entries.
-  static List<CurriculumTopic> allTopics() =>
-      [...grade6Topics, ...futureTopics];
+  static List<CurriculumTopic> allTopics() => [
+    ...grade6Topics,
+    ...futureTopics,
+  ];
 
   /// Topics for one grade ('G6' … 'G12', 'College').
   /// Case-insensitive; unknown grade returns [].
@@ -763,15 +765,15 @@ class CurriculumRegistry {
 
   /// Grade levels offered, in display order.
   static List<String> get grades => const [
-        'G6',
-        'G7',
-        'G8',
-        'G9',
-        'G10',
-        'G11',
-        'G12',
-        'College',
-      ];
+    'G6',
+    'G7',
+    'G8',
+    'G9',
+    'G10',
+    'G11',
+    'G12',
+    'College',
+  ];
 
   /// Shared accent for curriculum cards (single token source).
   static Color get accent => _accent;

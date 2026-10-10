@@ -41,8 +41,11 @@ class LimitsStepGuide extends StatelessWidget {
                 ),
                 child: Center(
                   child: isConclusion
-                      ? Icon(Icons.check,
-                          size: 16, color: FinalsTheme.onPrimaryFor(context))
+                      ? Icon(
+                          Icons.check,
+                          size: 16,
+                          color: FinalsTheme.onPrimaryFor(context),
+                        )
                       : Text(
                           '$stepNumber',
                           style: TextStyle(
@@ -60,8 +63,9 @@ class LimitsStepGuide extends StatelessWidget {
                   style: FinalsTheme.titleStyle(context).copyWith(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color:
-                        isConclusion ? FinalsTheme.primaryFor(context) : null,
+                    color: isConclusion
+                        ? FinalsTheme.primaryFor(context)
+                        : null,
                   ),
                 ),
               ),
@@ -138,20 +142,14 @@ class LimitsStepGuide extends StatelessWidget {
         onErrorFallback: (error) {
           return Text(
             expr,
-            style: const TextStyle(
-              fontSize: 14,
-              fontFamily: 'monospace',
-            ),
+            style: const TextStyle(fontSize: 14, fontFamily: 'monospace'),
           );
         },
       );
     } catch (e) {
       return Text(
         expr,
-        style: const TextStyle(
-          fontSize: 14,
-          fontFamily: 'monospace',
-        ),
+        style: const TextStyle(fontSize: 14, fontFamily: 'monospace'),
       );
     }
   }
@@ -160,14 +158,20 @@ class LimitsStepGuide extends StatelessWidget {
     return expr
         .replaceAll('*', ' \\cdot ')
         .replaceAllMapped(
-            RegExp(r'(\w+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
+          RegExp(r'(\w+)\s*\^\s*(\d+)'),
+          (m) => '${m[1]}^{${m[2]}}',
+        )
         .replaceAll('x ^ 2', 'x^{2}')
         .replaceAll('x ^ 3', 'x^{3}')
         .replaceAll('x ^ 4', 'x^{4}')
         .replaceAllMapped(
-            RegExp(r'(\d+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
-        .replaceAllMapped(RegExp(r'([^\s]+)\s*/\s*([^\s]+)'),
-            (m) => '\\frac{${m[1]}}{${m[2]}}');
+          RegExp(r'(\d+)\s*\^\s*(\d+)'),
+          (m) => '${m[1]}^{${m[2]}}',
+        )
+        .replaceAllMapped(
+          RegExp(r'([^\s]+)\s*/\s*([^\s]+)'),
+          (m) => '\\frac{${m[1]}}{${m[2]}}',
+        );
   }
 
   String _formatText(String text) {
@@ -180,7 +184,9 @@ class LimitsStepGuide extends StatelessWidget {
         .replaceAll('x^3', 'x³')
         .replaceAll('x^4', 'x4')
         .replaceAllMapped(
-            RegExp(r'(\d+)\^(\d+)'), (m) => '${m[1]}${_superscript(m[2]!)}');
+          RegExp(r'(\d+)\^(\d+)'),
+          (m) => '${m[1]}${_superscript(m[2]!)}',
+        );
   }
 
   String _superscript(String num) {
@@ -194,7 +200,7 @@ class LimitsStepGuide extends StatelessWidget {
       '6': '6',
       '7': '7',
       '8': '8',
-      '9': '?'
+      '9': '?',
     };
     return num.split('').map((c) => superscripts[c] ?? c).join('');
   }

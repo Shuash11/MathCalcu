@@ -28,9 +28,12 @@ class InverseFunctionEquation extends BaseEquation {
       // Insert explicit * for implicit forms like 2x (CalculatorEngine
       // needs 2*(x); same prep pattern as integral/lhopital solvers).
       final s = e.replaceAllMapped(
-          RegExp(r'(\d|\))([xX])'), (m) => '${m.group(1)}*${m.group(2)}');
+        RegExp(r'(\d|\))([xX])'),
+        (m) => '${m.group(1)}*${m.group(2)}',
+      );
       return CalculatorEngine.evaluate(
-          s.replaceAll('x', '($x)').replaceAll('X', '($x)'));
+        s.replaceAll('x', '($x)').replaceAll('X', '($x)'),
+      );
     } catch (_) {
       return null;
     }
@@ -87,7 +90,8 @@ class InverseFunctionEquation extends BaseEquation {
     final p = _parse();
     if (p == null) {
       return SolveResult.error(
-          _error ?? 'Enter f(x) = 2x + 3 or (2x+1)/(x-3).');
+        _error ?? 'Enter f(x) = 2x + 3 or (2x+1)/(x-3).',
+      );
     }
     if (p['type'] == 0) {
       final a = p['a']!, b = p['b']!;
@@ -102,7 +106,7 @@ class InverseFunctionEquation extends BaseEquation {
         answer: inv,
         points: const [],
         customData: [
-          {'kind': 'inverse', 'type': 'linear', 'a': a, 'b': b}
+          {'kind': 'inverse', 'type': 'linear', 'a': a, 'b': b},
         ],
       );
     }
@@ -137,8 +141,8 @@ class InverseFunctionEquation extends BaseEquation {
           'a': a,
           'b': b,
           'c': c,
-          'd': d
-        }
+          'd': d,
+        },
       ],
     );
   }
@@ -148,9 +152,10 @@ class InverseFunctionEquation extends BaseEquation {
     if (_parse() == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use f(x) = 2x + 3.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use f(x) = 2x + 3.',
+        ),
       ];
     }
     final r = solve();
@@ -188,22 +193,26 @@ class InverseFunctionEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Replace f(x) with y',
-          explanation: 'y = ... so x and y can swap.'),
+        stepNumber: 1,
+        title: 'Replace f(x) with y',
+        explanation: 'y = ... so x and y can swap.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Swap x and y',
-          explanation: 'One-to-one functions reverse inputs and outputs.'),
+        stepNumber: 2,
+        title: 'Swap x and y',
+        explanation: 'One-to-one functions reverse inputs and outputs.',
+      ),
       const StepModel(
-          stepNumber: 3,
-          title: 'Solve for y',
-          explanation: 'Isolate y with inverse operations.'),
+        stepNumber: 3,
+        title: 'Solve for y',
+        explanation: 'Isolate y with inverse operations.',
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Inverse + check',
-          explanation: r.answer,
-          latex: invTex),
+        stepNumber: 4,
+        title: 'Inverse + check',
+        explanation: r.answer,
+        latex: invTex,
+      ),
     ];
   }
 }

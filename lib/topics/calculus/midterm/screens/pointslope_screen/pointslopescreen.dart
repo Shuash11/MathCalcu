@@ -2,10 +2,14 @@
 import 'package:calculus_system/topics/calculus/midterm/solvers/pointslope_solver/pointslopesolver.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
+
 import 'pointslopesteps.dart';
+
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:material_ui/material_ui.dart';
+
 import 'pointslopesubwidget.dart';
+
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -46,9 +50,10 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
 
-    _pulseAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
-    );
+    _pulseAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -160,8 +165,10 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                   final double effectiveWidth = constraints.hasInfiniteWidth
                       ? _baseDesignWidth
                       : constraints.maxWidth;
-                  final double s =
-                      (effectiveWidth / _baseDesignWidth).clamp(0.7, 1.2);
+                  final double s = (effectiveWidth / _baseDesignWidth).clamp(
+                    0.7,
+                    1.2,
+                  );
 
                   return SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(20 * s, 0, 20 * s, 20 * s),
@@ -208,8 +215,9 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                             child: Container(
                               height: 52,
                               decoration: BoxDecoration(
-                                color:
-                                    context.watch<ThemeProvider>().accentColor,
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .accentColor,
                                 borderRadius: BorderRadius.circular(14),
                                 boxShadow: [AccentGlow.halo(context)],
                               ),
@@ -221,8 +229,8 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
                                     fontWeight: FontWeight.w700,
                                     color:
                                         context.watch<ThemeProvider>().isLight
-                                            ? Colors.white
-                                            : const Color(0xFF1E1E2E),
+                                        ? Colors.white
+                                        : const Color(0xFF1E1E2E),
                                     letterSpacing: 0.3,
                                   ),
                                 ),
@@ -398,8 +406,9 @@ class _PointSlopeScreenState extends State<PointSlopeScreen>
             'Back',
             style: TextStyle(
               fontSize: 13,
-              color: theme.accentColor
-                  .withValues(alpha: theme.isLight ? 0.7 : 0.5),
+              color: theme.accentColor.withValues(
+                alpha: theme.isLight ? 0.7 : 0.5,
+              ),
               shadows: [
                 Shadow(
                   color: theme.accentColor.withValues(alpha: 0.3),
@@ -461,10 +470,7 @@ class _PSResultSection extends StatelessWidget {
   final ValueNotifier<_ResultData?> resultNotifier;
   final double s;
 
-  const _PSResultSection({
-    required this.resultNotifier,
-    required this.s,
-  });
+  const _PSResultSection({required this.resultNotifier, required this.s});
 
   @override
   Widget build(BuildContext context) {

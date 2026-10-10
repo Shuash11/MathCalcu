@@ -66,8 +66,10 @@ class QuadraticEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'x^2 - 5x + 6 = 0');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'x^2 - 5x + 6 = 0',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -85,7 +87,8 @@ class QuadraticEquation extends BaseEquation {
     final cf = _coeffs();
     if (cf == null) {
       return SolveResult.error(
-          _error ?? 'Enter a quadratic — e.g. x^2 - 5x + 6 = 0.');
+        _error ?? 'Enter a quadratic — e.g. x^2 - 5x + 6 = 0.',
+      );
     }
     final a = cf[0], b = cf[1], c = cf[2];
     final disc = b * b - 4 * a * c;
@@ -100,8 +103,8 @@ class QuadraticEquation extends BaseEquation {
             'b': b,
             'c': c,
             'discriminant': disc,
-            'roots': []
-          }
+            'roots': [],
+          },
         ],
       );
     }
@@ -117,8 +120,8 @@ class QuadraticEquation extends BaseEquation {
             'b': b,
             'c': c,
             'discriminant': 0,
-            'roots': [x]
-          }
+            'roots': [x],
+          },
         ],
       );
     }
@@ -140,7 +143,7 @@ class QuadraticEquation extends BaseEquation {
           'discriminant': disc,
           'roots': [lo, hi],
           'vertex': {'x': -b / (2 * a), 'y': c - b * b / (4 * a)},
-        }
+        },
       ],
     );
   }
@@ -160,36 +163,42 @@ class QuadraticEquation extends BaseEquation {
     if (cf == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use x^2 - 5x + 6 = 0.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use x^2 - 5x + 6 = 0.',
+        ),
       ];
     }
     final disc = cf[1] * cf[1] - 4 * cf[0] * cf[2];
     final r = solve();
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Identify a, b, c',
-          explanation:
-              'a=${G6Format.num(cf[0])}, b=${G6Format.num(cf[1])}, c=${G6Format.num(cf[2])}.',
-          latex: 'a = ${G6Format.num(cf[0])},\\quad '
-              'b = ${G6Format.num(cf[1])},\\quad c = ${G6Format.num(cf[2])}'),
+        stepNumber: 1,
+        title: 'Identify a, b, c',
+        explanation:
+            'a=${G6Format.num(cf[0])}, b=${G6Format.num(cf[1])}, c=${G6Format.num(cf[2])}.',
+        latex:
+            'a = ${G6Format.num(cf[0])},\\quad '
+            'b = ${G6Format.num(cf[1])},\\quad c = ${G6Format.num(cf[2])}',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Discriminant',
-          explanation: 'D = b² − 4ac = ${G6Format.num(disc)}.',
-          latex: '\\Delta = b^{2} - 4ac = ${G6Format.num(disc)}'),
+        stepNumber: 2,
+        title: 'Discriminant',
+        explanation: 'D = b² − 4ac = ${G6Format.num(disc)}.',
+        latex: '\\Delta = b^{2} - 4ac = ${G6Format.num(disc)}',
+      ),
       const StepModel(
-          stepNumber: 3,
-          title: 'Quadratic formula',
-          explanation: 'x = (−b ± √D) / 2a.',
-          latex: 'x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}'),
+        stepNumber: 3,
+        title: 'Quadratic formula',
+        explanation: 'x = (−b ± √D) / 2a.',
+        latex: 'x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}',
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Roots + parabola',
-          explanation: r.answer,
-          latex: _rootsTex(r)),
+        stepNumber: 4,
+        title: 'Roots + parabola',
+        explanation: r.answer,
+        latex: _rootsTex(r),
+      ),
     ];
   }
 

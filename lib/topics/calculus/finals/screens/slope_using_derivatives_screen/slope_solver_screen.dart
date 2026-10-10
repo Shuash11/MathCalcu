@@ -1,5 +1,7 @@
 import 'package:calculus_system/topics/calculus/finals/solvers/slope_using_derivatives_solver/steps.dart';
+
 import 'answer_card.dart';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
@@ -18,10 +20,12 @@ class SlopeSolverScreen extends StatefulWidget {
 }
 
 class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
-  final TextEditingController _eqController =
-      TextEditingController(text: 'y = x^3 - 2x + 1');
-  final TextEditingController _varsController =
-      TextEditingController(text: 'x=2');
+  final TextEditingController _eqController = TextEditingController(
+    text: 'y = x^3 - 2x + 1',
+  );
+  final TextEditingController _varsController = TextEditingController(
+    text: 'x=2',
+  );
 
   final _eqFocus = FocusNode();
   final _varsFocus = FocusNode();
@@ -62,8 +66,10 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
     try {
       final vars = PointValues.parse(_varsController.text);
 
-      final result =
-          SlopeSolver.solve(_eqController.text.trim(), pointValues: vars);
+      final result = SlopeSolver.solve(
+        _eqController.text.trim(),
+        pointValues: vars,
+      );
       final solution = SolutionBuilder.build(result);
 
       setState(() {
@@ -97,22 +103,27 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
       child: Column(
         children: [
           SafeArea(
-              bottom: false,
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: AccentGlow.iconHalo(
-                  context,
-                  child: IconButton(
-                    tooltip: 'Back',
-                    icon: Icon(Icons.arrow_back_ios_new,
-                        color: FinalsTheme.textPrimary(context)),
-                    onPressed: () => context.pop(),
+            bottom: false,
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: AccentGlow.iconHalo(
+                context,
+                child: IconButton(
+                  tooltip: 'Back',
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: FinalsTheme.textPrimary(context),
                   ),
+                  onPressed: () => context.pop(),
                 ),
-                title: Text('Slope Solver',
-                    style: FinalsTheme.titleStyle(context)),
-              )),
+              ),
+              title: Text(
+                'Slope Solver',
+                style: FinalsTheme.titleStyle(context),
+              ),
+            ),
+          ),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
@@ -146,13 +157,17 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                         color: FinalsTheme.danger.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                            color: FinalsTheme.danger.withValues(alpha: 0.3)),
+                          color: FinalsTheme.danger.withValues(alpha: 0.3),
+                        ),
                       ),
-                      child: Text(_error!,
-                          style: TextStyle(
-                              color: FinalsTheme.dangerFor(context),
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600)),
+                      child: Text(
+                        _error!,
+                        style: TextStyle(
+                          color: FinalsTheme.dangerFor(context),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ],
                   if (_solution != null && !_isLoading) ...[
@@ -163,13 +178,14 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
                       child: ResponsiveText(
                         '',
                         style: TextStyle(
-                            color: FinalsTheme.textSecondary(context)
-                                .withValues(alpha: 0.5),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500),
+                          color: FinalsTheme.textSecondary(context)
+                              .withValues(alpha: 0.5),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ]
+                  ],
                 ],
               ),
             ),
@@ -203,8 +219,8 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
             color: FinalsTheme.card(context),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-                color:
-                    FinalsTheme.textSecondary(context).withValues(alpha: 0.15)),
+              color: FinalsTheme.textSecondary(context).withValues(alpha: 0.15),
+            ),
           ),
           child: TextField(
             controller: controller,
@@ -213,17 +229,21 @@ class _SlopeSolverScreenState extends State<SlopeSolverScreen> {
             textInputAction: textInputAction,
             onEditingComplete: onEditingComplete,
             style: TextStyle(
-                color: FinalsTheme.textPrimary(context),
-                fontWeight: FontWeight.w600),
+              color: FinalsTheme.textPrimary(context),
+              fontWeight: FontWeight.w600,
+            ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: TextStyle(
-                  color:
-                      FinalsTheme.textSecondary(context).withValues(alpha: 0.4),
-                  fontSize: 14),
+                color: FinalsTheme.textSecondary(context)
+                    .withValues(alpha: 0.4),
+                fontSize: 14,
+              ),
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
         ),

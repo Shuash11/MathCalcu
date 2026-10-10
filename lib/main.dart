@@ -1,15 +1,21 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'app_router.dart';
+
 import 'package:provider/provider.dart';
+
 import 'theme/theme_provider.dart';
 import 'services/update_service.dart';
+
 import 'package:url_launcher/url_launcher.dart';
+
 import 'widgets/update_dialog.dart';
 import 'widgets/web_update_dialog.dart';
 
@@ -25,8 +31,9 @@ void main() async {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness:
-            themeProvider.isDark ? Brightness.light : Brightness.dark,
+        statusBarIconBrightness: themeProvider.isDark
+            ? Brightness.light
+            : Brightness.dark,
       ),
     );
   } catch (_) {
@@ -131,8 +138,9 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
         final theme = dialogContext.watch<ThemeProvider>();
         return AlertDialog(
           backgroundColor: theme.surface,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -143,8 +151,11 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
                   color: theme.accentColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.system_update_rounded,
-                    size: 32, color: theme.accentColor),
+                child: Icon(
+                  Icons.system_update_rounded,
+                  size: 32,
+                  color: theme.accentColor,
+                ),
               ),
               const SizedBox(height: 16),
               Text(
@@ -180,7 +191,8 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
                         UpdateService.openInstallSettings();
                       },
                       style: FilledButton.styleFrom(
-                          backgroundColor: theme.accentColor),
+                        backgroundColor: theme.accentColor,
+                      ),
                       child: const Text('Open Settings'),
                     ),
                   ),
@@ -190,7 +202,8 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
                     child: TextButton(
                       onPressed: () => Navigator.of(ctx).pop(),
                       style: TextButton.styleFrom(
-                          foregroundColor: theme.textSecondary),
+                        foregroundColor: theme.textSecondary,
+                      ),
                       child: const Text('Not now'),
                     ),
                   ),
@@ -209,8 +222,9 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
     _hasCheckedForUpdates = true;
 
     try {
-      final info = await (widget.updateChecker?.call() ??
-          UpdateService.checkForUpdate());
+      final info =
+          await (widget.updateChecker?.call() ??
+              UpdateService.checkForUpdate());
       if (!mounted) {
         debugPrint('Update check: widget unmounted before result handled.');
         return;
@@ -240,8 +254,8 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
           final installedVersion = info.installedVersion;
           final versionSuffix =
               installedVersion == null || installedVersion.isEmpty
-                  ? ''
-                  : ' (v$installedVersion)';
+              ? ''
+              : ' (v$installedVersion)';
           ScaffoldMessenger.of(ctx).showSnackBar(
             SnackBar(
               content: Text('MathCalcu is up to date$versionSuffix'),
@@ -299,7 +313,9 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
     final isWeb = widget.isWeb ?? kIsWeb;
     if (isWeb) {
       (widget.showWebUpdate ?? showWebUpdateDialog)(
-          context, info.latestVersion);
+        context,
+        info.latestVersion,
+      );
       return;
     }
 
@@ -326,10 +342,7 @@ class _CalculusAppState extends State<CalculusApp> with WidgetsBindingObserver {
           label: 'Open',
           onPressed: () async {
             try {
-              await launchUrl(
-                releaseUri,
-                mode: LaunchMode.externalApplication,
-              );
+              await launchUrl(releaseUri, mode: LaunchMode.externalApplication);
             } catch (_) {}
           },
         ),

@@ -56,10 +56,8 @@ class DerivativeInputField extends StatelessWidget {
                   focusNode: focusNode,
                   keyboardType: TextInputType.none,
                   onSubmitted: (_) => onSolve(),
-                  style: FinalsTheme.titleStyle(context).copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
+                  style: FinalsTheme.titleStyle(context)
+                      .copyWith(fontWeight: FontWeight.w500, fontSize: 16),
                   decoration: InputDecoration(
                     hintText: 'e.g. x² + 3x + ln(x)',
                     hintStyle: FinalsTheme.subtitleStyle(context).copyWith(

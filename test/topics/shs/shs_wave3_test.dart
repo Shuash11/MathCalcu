@@ -110,13 +110,16 @@ void main() {
         final texes = <String>[
           for (final s in steps)
             for (final t in <String?>[s.latex, ...?s.subLatex])
-              if (t != null) t
+              if (t != null) t,
         ];
         expect(texes, isNotEmpty, reason: spec.id);
         withTex++;
         for (final t in texes) {
-          expect(t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-              reason: '${spec.id}: $t');
+          expect(
+            t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+            isTrue,
+            reason: '${spec.id}: $t',
+          );
           checked++;
         }
       }
@@ -124,8 +127,9 @@ void main() {
       expect(checked, greaterThan(0));
     });
 
-    testWidgets('all SHS hint-example TeX parses (recording fallback)',
-        (tester) async {
+    testWidgets('all SHS hint-example TeX parses (recording fallback)', (
+      tester,
+    ) async {
       final cases = <BaseEquation>[
         for (final spec in ShsSolverRegistry.specs)
           spec.create(inputs[spec.id]!),

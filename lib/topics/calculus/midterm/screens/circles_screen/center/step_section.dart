@@ -81,10 +81,8 @@ class CenterStepsSection extends StatelessWidget {
         child: SelectableMath.tex(
           line,
           textStyle: _bodyStyle,
-          onErrorFallback: (error) => Text(
-            line,
-            style: _bodyStyle.copyWith(fontFamily: 'monospace'),
-          ),
+          onErrorFallback: (error) =>
+              Text(line, style: _bodyStyle.copyWith(fontFamily: 'monospace')),
         ),
       ),
     );
@@ -92,10 +90,7 @@ class CenterStepsSection extends StatelessWidget {
 
   /// Legacy plain-text path: one monospace [Text] per line.
   Widget _plainLine(String line) => Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: Text(
-          line,
-          style: _bodyStyle.copyWith(fontFamily: 'monospace'),
-        ),
-      );
+    padding: const EdgeInsets.only(bottom: 6),
+    child: Text(line, style: _bodyStyle.copyWith(fontFamily: 'monospace')),
+  );
 }

@@ -21,8 +21,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets("Evaluating Limits picker shows the 5th L'Hopital entry",
-      (tester) async {
+  testWidgets("Evaluating Limits picker shows the 5th L'Hopital entry", (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ChangeNotifierProvider.value(
         value: ThemeProvider(),
@@ -33,8 +34,11 @@ void main() {
     await tester.pumpAndSettle();
 
     final entryCard = find.text("By L'Hopital's Rule");
-    await tester.scrollUntilVisible(entryCard, 200,
-        scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      entryCard,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(entryCard, findsOneWidget);
 
     await tester.tap(entryCard);

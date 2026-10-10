@@ -190,28 +190,33 @@ class CircleEquationSolver {
 
     return [
       SolverStep(
-          label: 'Center-Radius Form',
-          arrow: true,
-          equation:
-              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(r)}²',
-          color: SolverColors.teal),
+        label: 'Center-Radius Form',
+        arrow: true,
+        equation:
+            '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(r)}²',
+        color: SolverColors.teal,
+      ),
       SolverStep(
-          label: 'Substitute r² = ${_fmt(rSq)}',
-          equation:
-              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(rSq)}'),
+        label: 'Substitute r² = ${_fmt(rSq)}',
+        equation:
+            '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(rSq)}',
+      ),
       SolverStep(
-          label: 'Expand binomial squares',
-          equation:
-              'x² ${_signed(-2 * h)}x + ${_fmt(hSq)} + y² ${_signed(-2 * k)}y + ${_fmt(kSq)} = ${_fmt(rSq)}'),
+        label: 'Expand binomial squares',
+        equation:
+            'x² ${_signed(-2 * h)}x + ${_fmt(hSq)} + y² ${_signed(-2 * k)}y + ${_fmt(kSq)} = ${_fmt(rSq)}',
+      ),
       SolverStep(
-          label: 'Move ${_fmt(rSq)} to left',
-          equation:
-              'x² + y² ${_signed(-2 * h)}x ${_signed(-2 * k)}y + ${_fmt(hSq + kSq - rSq)} = 0'),
+        label: 'Move ${_fmt(rSq)} to left',
+        equation:
+            'x² + y² ${_signed(-2 * h)}x ${_signed(-2 * k)}y + ${_fmt(hSq + kSq - rSq)} = 0',
+      ),
       SolverStep(
-          label: 'General Form',
-          isFinal: true,
-          equation: 'x² + y² ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
-          color: SolverColors.cyan),
+        label: 'General Form',
+        isFinal: true,
+        equation: 'x² + y² ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
+        color: SolverColors.cyan,
+      ),
     ];
   }
 
@@ -239,33 +244,38 @@ class CircleEquationSolver {
 
     return [
       SolverStep(
-          label: 'General Form',
-          arrow: true,
-          equation: 'x² + y² ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
-          color: SolverColors.teal),
+        label: 'General Form',
+        arrow: true,
+        equation: 'x² + y² ${_signed(D)}x ${_signed(E)}y ${_signed(F)} = 0',
+        color: SolverColors.teal,
+      ),
       SolverStep(
-          label: 'Group terms; move constant to right',
-          equation:
-              '(x² ${_signed(D)}x) + (y² ${_signed(E)}y) = ${_signed(-F, leading: true)}'),
+        label: 'Group terms; move constant to right',
+        equation:
+            '(x² ${_signed(D)}x) + (y² ${_signed(E)}y) = ${_signed(-F, leading: true)}',
+      ),
       SolverStep(
-          label:
-              'Complete the square:\n  x: add (${_fmt(halfD)})² = ${_fmt(halfDSq)}\n  y: add (${_fmt(halfE)})² = ${_fmt(halfESq)}',
-          equation:
-              '(x² ${_signed(D)}x ${_signed(halfDSq)}) + (y² ${_signed(E)}y ${_signed(halfESq)}) = ${_fmt(rightSide)}'),
+        label:
+            'Complete the square:\n  x: add (${_fmt(halfD)})² = ${_fmt(halfDSq)}\n  y: add (${_fmt(halfE)})² = ${_fmt(halfESq)}',
+        equation:
+            '(x² ${_signed(D)}x ${_signed(halfDSq)}) + (y² ${_signed(E)}y ${_signed(halfESq)}) = ${_fmt(rightSide)}',
+      ),
       SolverStep(
-          label: 'Factor as perfect squares',
-          equation:
-              '(x ${_signed(halfD)})² + (y ${_signed(halfE)})² = ${_fmt(rSq)}'),
+        label: 'Factor as perfect squares',
+        equation:
+            '(x ${_signed(halfD)})² + (y ${_signed(halfE)})² = ${_fmt(rSq)}',
+      ),
       SolverStep(
-          label: 'Center-Radius Form',
-          isFinal: true,
-          equation:
-              '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(r)}²',
-          subLines: [
-            'Center: (${_fmt(h)}, ${_fmt(k)})',
-            'Radius: r = ${_fmt(r)}'
-          ],
-          color: SolverColors.cyan),
+        label: 'Center-Radius Form',
+        isFinal: true,
+        equation:
+            '(x ${h >= 0 ? '-' : '+'} ${_fmt(h.abs())})² + (y ${k >= 0 ? '-' : '+'} ${_fmt(k.abs())})² = ${_fmt(r)}²',
+        subLines: [
+          'Center: (${_fmt(h)}, ${_fmt(k)})',
+          'Radius: r = ${_fmt(r)}',
+        ],
+        color: SolverColors.cyan,
+      ),
     ];
   }
 

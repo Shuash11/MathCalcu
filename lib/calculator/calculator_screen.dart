@@ -4,6 +4,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
 import 'calculator_engine.dart';
 
 class CalculatorScreen extends StatefulWidget {
@@ -78,8 +79,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             final double buttonSpacing = constraints.maxHeight < 600
                 ? 2.0
                 : constraints.maxHeight < 700
-                    ? 3.0
-                    : 4.0;
+                ? 3.0
+                : 4.0;
 
             // Dynamic button height calculation
             const double verticalPadding = 16.0; // 8 top + 8 bottom
@@ -88,13 +89,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 constraints.maxHeight - verticalPadding - spacingTotal;
 
             // Display takes ~22%, clamped 50-160px (lower min for tiny test screens)
-            final double displayHeight =
-                (availableForContent * 0.22).clamp(50.0, 160.0);
+            final double displayHeight = (availableForContent * 0.22).clamp(
+              50.0,
+              160.0,
+            );
 
             // Button grid gets the rest
             final double buttonGridHeight = availableForContent - displayHeight;
-            final double buttonHeight =
-                ((buttonGridHeight - spacingTotal) / 8).clamp(44.0, 64.0);
+            final double buttonHeight = ((buttonGridHeight - spacingTotal) / 8)
+                .clamp(44.0, 64.0);
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -143,33 +146,39 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                               ResponsiveText(
                                 _history,
                                 style: TextStyle(
-                                  fontSize:
-                                      (displayHeight * 0.1).clamp(8.0, 12.0),
+                                  fontSize: (displayHeight * 0.1).clamp(
+                                    8.0,
+                                    12.0,
+                                  ),
                                   color: theme.textSecondary,
                                 ),
                               ),
                               SizedBox(
-                                  height:
-                                      (displayHeight * 0.03).clamp(1.0, 4.0)),
+                                height: (displayHeight * 0.03).clamp(1.0, 4.0),
+                              ),
                             ],
                             ResponsiveText(
                               _expression.isEmpty ? '0' : _expression,
                               style: TextStyle(
-                                fontSize:
-                                    (displayHeight * 0.22).clamp(14.0, 24.0),
+                                fontSize: (displayHeight * 0.22).clamp(
+                                  14.0,
+                                  24.0,
+                                ),
                                 fontWeight: FontWeight.w600,
                                 color: theme.textPrimary,
                               ),
                             ),
                             if (_showResult) ...[
                               SizedBox(
-                                  height:
-                                      (displayHeight * 0.03).clamp(1.0, 4.0)),
+                                height: (displayHeight * 0.03).clamp(1.0, 4.0),
+                              ),
                               ResponsiveText(
                                 '= $_result',
                                 style: TextStyle(
-                                  fontSize:
-                                      (displayHeight * 0.15).clamp(10.0, 16.0),
+                                  fontSize: (displayHeight * 0.15).clamp(
+                                    10.0,
+                                    16.0,
+                                  ),
                                   fontWeight: FontWeight.w400,
                                   color: _result == 'Error'
                                       ? theme.errorColor
@@ -188,29 +197,61 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     height: buttonGridHeight,
                     child: Column(
                       children: [
-                        _buildButtonRow(['C', '(', ')', '⌫'], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['C', '(', ')', '⌫'],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['7', '8', '9', '\u00D7'], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['7', '8', '9', '\u00D7'],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['4', '5', '6', '\u2212'], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['4', '5', '6', '\u2212'],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['1', '2', '3', '\u221B'], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['1', '2', '3', '\u221B'],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['0', '.', 'Ans', '+'], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['0', '.', 'Ans', '+'],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['sin', 'cos', 'tan', '^'], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['sin', 'cos', 'tan', '^'],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['log', 'ln', '\u221A', '='], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['log', 'ln', '\u221A', '='],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                         SizedBox(height: buttonSpacing),
-                        _buildButtonRow(['\u03C0', 'e', '%', '!'], theme,
-                            buttonSpacing, buttonHeight),
+                        _buildButtonRow(
+                          ['\u03C0', 'e', '%', '!'],
+                          theme,
+                          buttonSpacing,
+                          buttonHeight,
+                        ),
                       ],
                     ),
                   ),
@@ -224,8 +265,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget _buildButtonRow(List<String> buttons, ThemeProvider theme,
-      double spacing, double buttonHeight) {
+  Widget _buildButtonRow(
+    List<String> buttons,
+    ThemeProvider theme,
+    double spacing,
+    double buttonHeight,
+  ) {
     return SizedBox(
       height: buttonHeight,
       child: Row(
@@ -244,8 +289,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget _buildButton(String value, ThemeProvider theme) {
     final isOperator = ['+', '\u00D7', '\u2212', '\u221B', '='].contains(value);
     final isSpecial = ['C', '⌫', 'Ans'].contains(value);
-    final isFunction =
-        ['sin', 'cos', 'tan', 'log', 'ln', '\u221A'].contains(value);
+    final isFunction = [
+      'sin',
+      'cos',
+      'tan',
+      'log',
+      'ln',
+      '\u221A',
+    ].contains(value);
     final isConstant = ['\u03C0', 'e'].contains(value);
 
     Color bgColor;

@@ -103,8 +103,9 @@ void main() {
         'g8-systems': '/grade8/systems',
       };
       for (final entry in expected.entries) {
-        final topic = CurriculumRegistry.allTopics()
-            .firstWhere((t) => t.id == entry.key);
+        final topic = CurriculumRegistry.allTopics().firstWhere(
+          (t) => t.id == entry.key,
+        );
         expect(topic.solverAvailable, isTrue, reason: entry.key);
         expect(topic.route, entry.value, reason: entry.key);
       }
@@ -144,8 +145,11 @@ void main() {
       for (final entry in routesToTitles.entries) {
         AppRouter.router.go(entry.key);
         await tester.pumpAndSettle();
-        expect(find.textContaining(entry.value), findsWidgets,
-            reason: entry.key);
+        expect(
+          find.textContaining(entry.value),
+          findsWidgets,
+          reason: entry.key,
+        );
         expect(find.text('Topic coming soon'), findsNothing, reason: entry.key);
         expect(tester.takeException(), isNull);
       }

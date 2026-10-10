@@ -83,9 +83,7 @@ class RecentSearchesSection extends StatelessWidget {
                     ),
                   ),
                   backgroundColor: theme.card,
-                  side: BorderSide(
-                    color: accent.withValues(alpha: 0.3),
-                  ),
+                  side: BorderSide(color: accent.withValues(alpha: 0.3)),
                   onPressed: () => onPick(query),
                 ),
             ],
@@ -154,9 +152,7 @@ class RecentlySolvedSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: theme.card,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: accent.withValues(alpha: 0.18),
-                  ),
+                  border: Border.all(color: accent.withValues(alpha: 0.18)),
                 ),
                 child: Row(
                   children: [

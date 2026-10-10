@@ -66,8 +66,8 @@ List<String> _nonEmpty(List<String> lines) =>
     lines.where((l) => l.trim().isNotEmpty).toList();
 
 Finder get _monospaceText => find.byWidgetPredicate(
-      (w) => w is Text && w.style?.fontFamily == 'monospace',
-    );
+  (w) => w is Text && w.style?.fontFamily == 'monospace',
+);
 
 void main() {
   group('CenterResult stepsLatex (per-line TeX alongside steps)', () {
@@ -83,8 +83,9 @@ void main() {
       expect(lines.last, 'k = 3');
     });
 
-    testWidgets('every non-empty line parses (recording fallback)',
-        (tester) async {
+    testWidgets('every non-empty line parses (recording fallback)', (
+      tester,
+    ) async {
       const cases = [
         ['1', '2', '3', '4'],
         ['0', '0', '5', '5'],
@@ -116,8 +117,9 @@ void main() {
       expect(r.stepsLatex.last, contains('approx'));
     });
 
-    testWidgets('every line parses across cases (recording fallback)',
-        (tester) async {
+    testWidgets('every line parses across cases (recording fallback)', (
+      tester,
+    ) async {
       final cases = <RadiusResult>[
         RadiusSolver.solve(x: 3, y: 4, h: 0, k: 0), // perfect square -> 5
         RadiusSolver.solve(x: 1, y: 2, h: 0, k: 0), // prime radicand -> sqrt
@@ -140,8 +142,9 @@ void main() {
   });
 
   group('CenterStepsSection renders LaTeX (not monospace)', () {
-    testWidgets('latex path yields parsing math widgets, no monospace Text',
-        (tester) async {
+    testWidgets('latex path yields parsing math widgets, no monospace Text', (
+      tester,
+    ) async {
       final r = CenterSolver.computeExact(x1: '1', y1: '2', x2: '3', y2: '4')!;
       await _pump(
         tester,
@@ -157,8 +160,9 @@ void main() {
       _expectAllRenderedMathParsed(tester);
     });
 
-    testWidgets('plain steps string path still renders monospace Text',
-        (tester) async {
+    testWidgets('plain steps string path still renders monospace Text', (
+      tester,
+    ) async {
       await _pump(tester, const CenterStepsSection(steps: 'h = 1'));
       expect(find.byType(SelectableMath), findsNothing);
       expect(find.text('h = 1'), findsOneWidget);
@@ -167,8 +171,9 @@ void main() {
   });
 
   group('RadiusStepsCard renders LaTeX (not monospace)', () {
-    testWidgets('latex path yields parsing math widgets, no monospace Text',
-        (tester) async {
+    testWidgets('latex path yields parsing math widgets, no monospace Text', (
+      tester,
+    ) async {
       final r = RadiusSolver.solve(x: 1, y: 2, h: 0, k: 0);
       await _pump(
         tester,
@@ -181,8 +186,9 @@ void main() {
       _expectAllRenderedMathParsed(tester);
     });
 
-    testWidgets('plain steps string path still renders monospace Text',
-        (tester) async {
+    testWidgets('plain steps string path still renders monospace Text', (
+      tester,
+    ) async {
       await _pump(tester, const RadiusStepsCard(steps: 'r = 5'));
       expect(find.byType(SelectableMath), findsNothing);
       expect(find.text('r = 5'), findsOneWidget);

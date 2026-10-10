@@ -4,6 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slo
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:material_ui/material_ui.dart';
+
 import 'slope_steps.dart';
 
 /// Opens the slope steps modal for a single-line calculation result.
@@ -30,9 +31,7 @@ Future<void> showSlopeStepsModal({
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => SlopeGraphScreen(
-                      result1: result,
-                    ),
+                    builder: (_) => SlopeGraphScreen(result1: result),
                   ),
                 );
               },
@@ -44,8 +43,11 @@ Future<void> showSlopeStepsModal({
                 ),
                 elevation: 0,
               ),
-              icon: Icon(Icons.show_chart_rounded,
-                  size: 18, color: FinalsTheme.onPrimaryFor(modalContext)),
+              icon: Icon(
+                Icons.show_chart_rounded,
+                size: 18,
+                color: FinalsTheme.onPrimaryFor(modalContext),
+              ),
               label: Text(
                 'View Graph',
                 style: TextStyle(

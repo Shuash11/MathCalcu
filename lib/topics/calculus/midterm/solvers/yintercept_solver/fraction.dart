@@ -25,14 +25,14 @@ class YIFraction {
   }
 
   YIFraction operator +(YIFraction o) => YIFraction(
-        numerator: numerator * o.denominator + o.numerator * denominator,
-        denominator: denominator * o.denominator,
-      ).simplified();
+    numerator: numerator * o.denominator + o.numerator * denominator,
+    denominator: denominator * o.denominator,
+  ).simplified();
 
   YIFraction operator -(YIFraction o) => YIFraction(
-        numerator: numerator * o.denominator - o.numerator * denominator,
-        denominator: denominator * o.denominator,
-      ).simplified();
+    numerator: numerator * o.denominator - o.numerator * denominator,
+    denominator: denominator * o.denominator,
+  ).simplified();
 
   YIFraction operator *(YIFraction o) {
     final g1 = _gcd(numerator.abs(), o.denominator.abs());
@@ -53,8 +53,10 @@ class YIFraction {
 
   YIFraction reciprocal() {
     if (numerator == 0) throw StateError('Reciprocal of zero');
-    return YIFraction(numerator: denominator, denominator: numerator)
-        .simplified();
+    return YIFraction(
+      numerator: denominator,
+      denominator: numerator,
+    ).simplified();
   }
 
   double toDouble() => numerator / denominator;

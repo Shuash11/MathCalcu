@@ -2,9 +2,11 @@ import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_lhopital/solution_steps.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
+
 import 'lhopital_answer_card.dart';
 import 'lhopital_input_field.dart';
 import 'lhopital_steps_view.dart';
+
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
 import 'package:material_ui/material_ui.dart';
@@ -45,7 +47,8 @@ class _LhopitalLimitScreenContent extends StatefulWidget {
 }
 
 class _LhopitalLimitScreenContentState
-    extends State<_LhopitalLimitScreenContent> with TickerProviderStateMixin {
+    extends State<_LhopitalLimitScreenContent>
+    with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   final _expressionFocus = FocusNode();
@@ -69,13 +72,17 @@ class _LhopitalLimitScreenContentState
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim =
-        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.05),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-        parent: _contentController, curve: Curves.easeOutCubic));
+    _fadeAnim = CurvedAnimation(
+      parent: _contentController,
+      curve: Curves.easeOut,
+    );
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _contentController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _contentController.forward();
     _expressionFocus.addListener(_onExpressionFocusChange);
@@ -114,13 +121,14 @@ class _LhopitalLimitScreenContentState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              'Please enter both an expression and an approach value.',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+            'Please enter both an expression and an approach value.',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
       return;
@@ -147,13 +155,14 @@ class _LhopitalLimitScreenContentState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Invalid approach value "$approachText". Please enter a number or infinity.',
-                style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+              'Invalid approach value "$approachText". Please enter a number or infinity.',
+              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
             ),
             backgroundColor: FinalsTheme.dangerNow(context),
             behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -163,11 +172,13 @@ class _LhopitalLimitScreenContentState
 
     try {
       final engine = LhopitalSolverEngine();
-      final result = engine.solve(LhopitalProblem(
-        expression: _expressionController.text,
-        approachValue: approachVal,
-        variable: _currentVariable,
-      ));
+      final result = engine.solve(
+        LhopitalProblem(
+          expression: _expressionController.text,
+          approachValue: approachVal,
+          variable: _currentVariable,
+        ),
+      );
 
       final stepsGen = LhopitalStepsGenerator();
       final steps = stepsGen.generate(result);
@@ -183,8 +194,9 @@ class _LhopitalLimitScreenContentState
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: ${e.toString()}',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+          content: Text(
+            'Error: ${e.toString()}',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
         ),
@@ -213,15 +225,17 @@ class _LhopitalLimitScreenContentState
       child: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context,
-                headerPaddingH: headerPaddingH,
-                titleFontSize: headerTitleFontSize,
-                backSpacing: headerBackSpacing,
-                badgePaddingH: headerBadgePaddingH,
-                badgePaddingV: headerBadgePaddingV,
-                backPadding: headerBackPadding,
-                badgeIconSize: headerBadgeIconSize,
-                badgeFontSize: headerBadgeFontSize),
+            _buildHeader(
+              context,
+              headerPaddingH: headerPaddingH,
+              titleFontSize: headerTitleFontSize,
+              backSpacing: headerBackSpacing,
+              badgePaddingH: headerBadgePaddingH,
+              badgePaddingV: headerBadgePaddingV,
+              backPadding: headerBackPadding,
+              badgeIconSize: headerBadgeIconSize,
+              badgeFontSize: headerBadgeFontSize,
+            ),
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -230,7 +244,11 @@ class _LhopitalLimitScreenContentState
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.fromLTRB(
-                        screenPaddingH, 8, screenPaddingH, screenPaddingBottom),
+                      screenPaddingH,
+                      8,
+                      screenPaddingH,
+                      screenPaddingBottom,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -253,7 +271,8 @@ class _LhopitalLimitScreenContentState
                             resultString: _result!.resultString,
                             method: "By L'Hopital's Rule",
                             isShowingSteps: false,
-                            hasError: !_result!.solved &&
+                            hasError:
+                                !_result!.solved &&
                                 _result!.errorMessage != null,
                             errorMessage: _result!.errorMessage,
                             onTap: () => showSolutionStepsModal(
@@ -282,15 +301,17 @@ class _LhopitalLimitScreenContentState
     );
   }
 
-  Widget _buildHeader(BuildContext context,
-      {double headerPaddingH = 24,
-      double titleFontSize = 24,
-      double backSpacing = 20,
-      double badgePaddingH = 12,
-      double badgePaddingV = 6,
-      double backPadding = 12,
-      double badgeIconSize = 14,
-      double badgeFontSize = 10}) {
+  Widget _buildHeader(
+    BuildContext context, {
+    double headerPaddingH = 24,
+    double titleFontSize = 24,
+    double backSpacing = 20,
+    double badgePaddingH = 12,
+    double badgePaddingV = 6,
+    double backPadding = 12,
+    double badgeIconSize = 14,
+    double badgeFontSize = 10,
+  }) {
     return Padding(
       padding: EdgeInsets.fromLTRB(headerPaddingH, 24, headerPaddingH, 16),
       child: Row(
@@ -304,10 +325,11 @@ class _LhopitalLimitScreenContentState
               foregroundColor: FinalsTheme.textPrimary(context),
               padding: EdgeInsets.all(backPadding),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                borderRadius: BorderRadius.circular(16),
+              ),
               side: BorderSide(
-                  color:
-                      FinalsTheme.secondaryFor(context).withValues(alpha: 0.1)),
+                color: FinalsTheme.secondaryFor(context).withValues(alpha: 0.1),
+              ),
             ),
           ),
           SizedBox(width: backSpacing),
@@ -329,19 +351,23 @@ class _LhopitalLimitScreenContentState
           ),
           Container(
             padding: EdgeInsets.symmetric(
-                horizontal: badgePaddingH, vertical: badgePaddingV),
+              horizontal: badgePaddingH,
+              vertical: badgePaddingV,
+            ),
             decoration: BoxDecoration(
               color: FinalsTheme.secondaryFor(context).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                  color:
-                      FinalsTheme.secondaryFor(context).withValues(alpha: 0.2)),
+                color: FinalsTheme.secondaryFor(context).withValues(alpha: 0.2),
+              ),
             ),
             child: Row(
               children: [
-                Icon(Icons.rule_rounded,
-                    size: badgeIconSize,
-                    color: FinalsTheme.secondaryFor(context)),
+                Icon(
+                  Icons.rule_rounded,
+                  size: badgeIconSize,
+                  color: FinalsTheme.secondaryFor(context),
+                ),
                 SizedBox(width: badgePaddingH * 0.5),
                 ResponsiveText(
                   "By L'Hopital's Rule",

@@ -35,8 +35,9 @@ class YInterceptSteps extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children:
-          steps.map((s) => _buildStep(context, s)).toList(growable: false),
+      children: steps
+          .map((s) => _buildStep(context, s))
+          .toList(growable: false),
     );
   }
 
@@ -71,10 +72,9 @@ class YInterceptSteps extends StatelessWidget {
           const SizedBox(height: 10),
         ],
         if (step.subSteps.isNotEmpty) ...[
-          ...step.subSteps.map((sub) => _SubStepLine(
-                subStep: sub,
-                accentColor: accentColor,
-              )),
+          ...step.subSteps.map(
+            (sub) => _SubStepLine(subStep: sub, accentColor: accentColor),
+          ),
           const SizedBox(height: 10),
         ],
         if (step.resultLatex.isNotEmpty) _ResultBox(latex: step.resultLatex),
@@ -177,9 +177,7 @@ class _ResultBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: primaryColor.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: primaryColor.withValues(alpha: 0.35),
-        ),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.35)),
       ),
       child: Math.tex(
         latex,
@@ -256,10 +254,7 @@ class _SubStepLine extends StatelessWidget {
                 const SizedBox(height: 2),
                 Math.tex(
                   subStep.latex,
-                  textStyle: TextStyle(
-                    fontSize: 14,
-                    color: textColor,
-                  ),
+                  textStyle: TextStyle(fontSize: 14, color: textColor),
                 ),
               ],
             ),
@@ -315,10 +310,7 @@ class _DualPanel extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: SelectableMath.tex(
               latex,
-              textStyle: TextStyle(
-                fontSize: 16,
-                color: primaryColor,
-              ),
+              textStyle: TextStyle(fontSize: 16, color: primaryColor),
             ),
           ),
         ],

@@ -60,8 +60,9 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   Future<void> _loadUpdateStatus() async {
     try {
-      final info = await (widget.updateChecker?.call() ??
-          UpdateService.checkForUpdate());
+      final info =
+          await (widget.updateChecker?.call() ??
+              UpdateService.checkForUpdate());
       if (!mounted) return;
       setState(() {
         _updateInfo = info;
@@ -83,8 +84,9 @@ class _SettingsScreenState extends State<SettingsScreen>
       _updateFailed = false;
     });
     try {
-      final info = await (widget.updateChecker?.call() ??
-          UpdateService.checkForUpdate());
+      final info =
+          await (widget.updateChecker?.call() ??
+              UpdateService.checkForUpdate());
       if (!mounted) return;
       setState(() {
         _updateInfo = info;
@@ -144,7 +146,9 @@ class _SettingsScreenState extends State<SettingsScreen>
     final isWeb = widget.isWeb ?? kIsWeb;
     if (isWeb) {
       (widget.showWebUpdate ?? showWebUpdateDialog)(
-          context, info.latestVersion);
+        context,
+        info.latestVersion,
+      );
       return;
     }
     final isAndroid = widget.isAndroid?.call() ?? Platform.isAndroid;
@@ -170,10 +174,7 @@ class _SettingsScreenState extends State<SettingsScreen>
           label: 'Open',
           onPressed: () async {
             try {
-              await launchUrl(
-                releaseUri,
-                mode: LaunchMode.externalApplication,
-              );
+              await launchUrl(releaseUri, mode: LaunchMode.externalApplication);
             } catch (e) {
               debugPrint('Settings update: failed to open release link: $e');
             }
@@ -252,10 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     Widget buildAnimatedRow(int index, Widget row) {
       return FadeTransition(
         opacity: _fadeFor(index),
-        child: SlideTransition(
-          position: _slideFor(index),
-          child: row,
-        ),
+        child: SlideTransition(position: _slideFor(index), child: row),
       );
     }
 
@@ -289,91 +287,99 @@ class _SettingsScreenState extends State<SettingsScreen>
         children: [
           _sectionHeader('Theme'),
           buildAnimatedRow(
-              0,
-              _buildCard(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: theme.textSecondary.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          theme.isDark ? Icons.dark_mode : Icons.light_mode,
-                          size: 20,
-                          color: theme.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Dark Mode',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: theme.textPrimary,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                theme.isDark
-                                    ? 'Dark theme active'
-                                    : 'Light theme active',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: theme.textSecondary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Switch.adaptive(
-                        value: theme.isDark,
-                        activeThumbColor: theme.textSecondary,
-                        onChanged: (_) {
-                          theme.toggleTheme();
-                          theme.saveTheme();
-                        },
-                      ),
-                    ],
-                  ),
+            0,
+            _buildCard(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
                 ),
-              )),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: theme.textSecondary.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        theme.isDark ? Icons.dark_mode : Icons.light_mode,
+                        size: 20,
+                        color: theme.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Dark Mode',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: theme.textPrimary,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              theme.isDark
+                                  ? 'Dark theme active'
+                                  : 'Light theme active',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: theme.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Switch.adaptive(
+                      value: theme.isDark,
+                      activeThumbColor: theme.textSecondary,
+                      onChanged: (_) {
+                        theme.toggleTheme();
+                        theme.saveTheme();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           sectionDivider(),
           _sectionHeader('Support'),
           buildAnimatedRow(
-              1,
-              _buildTappableCard(
-                child: _SettingsRow(
-                  icon: Icons.coffee_rounded,
-                  label: 'Donate',
-                  subtitle: 'Support the developer',
-                  trailing: Icon(Icons.arrow_forward_ios_rounded,
-                      size: 14, color: _accent.withValues(alpha: 0.6)),
+            1,
+            _buildTappableCard(
+              child: _SettingsRow(
+                icon: Icons.coffee_rounded,
+                label: 'Donate',
+                subtitle: 'Support the developer',
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14,
+                  color: _accent.withValues(alpha: 0.6),
                 ),
-                onTap: () => showDonateSheet(context),
-              )),
+              ),
+              onTap: () => showDonateSheet(context),
+            ),
+          ),
           sectionDivider(),
           _sectionHeader('About'),
           buildAnimatedRow(
-              2,
-              _buildCard(
-                child: _SettingsRow(
-                  icon: Icons.info_outline_rounded,
-                  label: 'MathCalcu',
-                  subtitle: _versionSubtitle,
-                ),
-              )),
+            2,
+            _buildCard(
+              child: _SettingsRow(
+                icon: Icons.info_outline_rounded,
+                label: 'MathCalcu',
+                subtitle: _versionSubtitle,
+              ),
+            ),
+          ),
           buildAnimatedRow(
             3,
             _buildTappableCard(
@@ -389,67 +395,86 @@ class _SettingsScreenState extends State<SettingsScreen>
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Icon(Icons.arrow_forward_ios_rounded,
-                        size: 14, color: _accent.withValues(alpha: 0.6)),
+                    : Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 14,
+                        color: _accent.withValues(alpha: 0.6),
+                      ),
               ),
               onTap: () => _manualCheckForUpdates(),
             ),
           ),
           buildAnimatedRow(
-              4,
-              _buildTappableCard(
-                child: _SettingsRow(
-                  icon: Icons.language_rounded,
-                  label: 'Website',
-                  subtitle: 'mathcalc-calculus.netlify.app',
-                  trailing:
-                      Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+            4,
+            _buildTappableCard(
+              child: _SettingsRow(
+                icon: Icons.language_rounded,
+                label: 'Website',
+                subtitle: 'mathcalc-calculus.netlify.app',
+                trailing: Icon(
+                  Icons.open_in_new_rounded,
+                  size: 16,
+                  color: _accent,
                 ),
-                onTap: () async {
-                  try {
-                    await launchUrl(
-                        Uri.parse('https://mathcalc-calculus.netlify.app/'),
-                        mode: LaunchMode.externalApplication);
-                  } catch (_) {}
-                },
-              )),
+              ),
+              onTap: () async {
+                try {
+                  await launchUrl(
+                    Uri.parse('https://mathcalc-calculus.netlify.app/'),
+                    mode: LaunchMode.externalApplication,
+                  );
+                } catch (_) {}
+              },
+            ),
+          ),
           buildAnimatedRow(
-              5,
-              _buildTappableCard(
-                child: _SettingsRow(
-                  icon: Icons.code_rounded,
-                  label: 'GitHub',
-                  subtitle: 'Shuash11',
-                  trailing:
-                      Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+            5,
+            _buildTappableCard(
+              child: _SettingsRow(
+                icon: Icons.code_rounded,
+                label: 'GitHub',
+                subtitle: 'Shuash11',
+                trailing: Icon(
+                  Icons.open_in_new_rounded,
+                  size: 16,
+                  color: _accent,
                 ),
-                onTap: () async {
-                  try {
-                    await launchUrl(Uri.parse('https://github.com/Shuash11'),
-                        mode: LaunchMode.externalApplication);
-                  } catch (_) {}
-                },
-              )),
+              ),
+              onTap: () async {
+                try {
+                  await launchUrl(
+                    Uri.parse('https://github.com/Shuash11'),
+                    mode: LaunchMode.externalApplication,
+                  );
+                } catch (_) {}
+              },
+            ),
+          ),
           sectionDivider(),
           _sectionHeader('Team'),
           buildAnimatedRow(
-              6,
-              _buildTappableCard(
-                child: _SettingsRow(
-                  icon: Icons.group_rounded,
-                  label: 'Meet the Team',
-                  subtitle: 'mathcalcu-build.netlify.app',
-                  trailing:
-                      Icon(Icons.open_in_new_rounded, size: 16, color: _accent),
+            6,
+            _buildTappableCard(
+              child: _SettingsRow(
+                icon: Icons.group_rounded,
+                label: 'Meet the Team',
+                subtitle: 'mathcalcu-build.netlify.app',
+                trailing: Icon(
+                  Icons.open_in_new_rounded,
+                  size: 16,
+                  color: _accent,
                 ),
-                onTap: () async {
-                  try {
-                    await launchUrl(
-                        Uri.parse('https://mathcalcu-build.netlify.app/'),
-                        mode: LaunchMode.externalApplication);
-                  } catch (_) {}
-                },
-              )),
+              ),
+              onTap: () async {
+                try {
+                  await launchUrl(
+                    Uri.parse('https://mathcalcu-build.netlify.app/'),
+                    mode: LaunchMode.externalApplication,
+                  );
+                } catch (_) {}
+              },
+            ),
+          ),
           const SizedBox(height: 32),
         ],
       ),
@@ -475,8 +500,10 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  Widget _buildTappableCard(
-      {required Widget child, required VoidCallback onTap}) {
+  Widget _buildTappableCard({
+    required Widget child,
+    required VoidCallback onTap,
+  }) {
     return _TappableCard(onTap: onTap, child: child);
   }
 
@@ -500,10 +527,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               height: 1.5,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    _accent.withValues(alpha: 0.3),
-                    Colors.transparent,
-                  ],
+                  colors: [_accent.withValues(alpha: 0.3), Colors.transparent],
                 ),
               ),
             ),

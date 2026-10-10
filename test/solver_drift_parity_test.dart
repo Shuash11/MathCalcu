@@ -59,22 +59,13 @@ void main() {
       expect(strict.answer, contains('or'));
 
       // Abs(x) >= 0  ->  All real numbers
-      expect(
-        InequalitySolverRouter.solve('|x|>=0').answer,
-        'All real numbers',
-      );
+      expect(InequalitySolverRouter.solve('|x|>=0').answer, 'All real numbers');
 
       // Abs(x) < 0  ->  No solution
-      expect(
-        InequalitySolverRouter.solve('|x|<0').answer,
-        'No solution',
-      );
+      expect(InequalitySolverRouter.solve('|x|<0').answer, 'No solution');
 
       // Abs(x) <= 0  ->  x = 0
-      expect(
-        InequalitySolverRouter.solve('|x|<=0').answer,
-        contains('x = 0'),
-      );
+      expect(InequalitySolverRouter.solve('|x|<=0').answer, contains('x = 0'));
 
       // Abs(2*x - 3) <= 5  ->  -1 <= x <= 4
       final compound = InequalitySolverRouter.solve('|2x-3|<=5');

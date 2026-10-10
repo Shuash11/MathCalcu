@@ -59,9 +59,9 @@ class _MathInputFieldState extends State<MathInputField> {
               color: widget.errorText != null
                   ? theme.accentColor.withValues(alpha: 0.6)
                   : (theme.isDark
-                          ? const Color(0xFFE9ECEF)
-                          : const Color(0xFF334155))
-                      .withValues(alpha: 0.2),
+                            ? const Color(0xFFE9ECEF)
+                            : const Color(0xFF334155))
+                        .withValues(alpha: 0.2),
               width: 1,
             ),
           ),
@@ -115,8 +115,9 @@ class _MathInputFieldState extends State<MathInputField> {
                   ),
                   child: Icon(
                     Icons.arrow_forward_rounded,
-                    color:
-                        theme.isDark ? const Color(0xFF1A1A2E) : Colors.white,
+                    color: theme.isDark
+                        ? const Color(0xFF1A1A2E)
+                        : Colors.white,
                     size: 20,
                   ),
                 ),
@@ -138,10 +139,7 @@ class _MathInputFieldState extends State<MathInputField> {
           const SizedBox(height: 6),
           Text(
             widget.helperText!,
-            style: TextStyle(
-              color: theme.textSecondary,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: theme.textSecondary, fontSize: 12),
           ),
         ],
       ],

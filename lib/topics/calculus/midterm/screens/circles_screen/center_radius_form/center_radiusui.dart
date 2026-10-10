@@ -2,11 +2,13 @@ import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
+
 import 'center_radius_controller.dart';
 import 'models/field_def.dart';
 import 'input_card.dart';
 import 'solution_steps.dart';
 import 'widgets_inputcard/equation_input_card.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 class FindingCenterRadiusScreen extends StatefulWidget {
@@ -39,9 +41,8 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
         : _controller.computeGeneralToStandard();
 
     if (!success && _controller.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_controller.errorMessage!)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(_controller.errorMessage!)));
     }
   }
 
@@ -91,11 +92,13 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                           ),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
-                              color:
-                                  FinalsTheme.primary.withValues(alpha: 0.35),
+                              color: FinalsTheme.primary.withValues(
+                                alpha: 0.35,
+                              ),
                             ),
-                            backgroundColor:
-                                FinalsTheme.primary.withValues(alpha: 0.08),
+                            backgroundColor: FinalsTheme.primary.withValues(
+                              alpha: 0.08,
+                            ),
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -142,10 +145,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF334155),
-                  Color(0xFF334155),
-                ],
+                colors: [Color(0xFF334155), Color(0xFF334155)],
               ),
               borderRadius: BorderRadius.circular(14),
             ),
@@ -202,10 +202,7 @@ class _FindingCenterRadiusScreenState extends State<FindingCenterRadiusScreen> {
                 decoration: BoxDecoration(
                   gradient: active
                       ? const LinearGradient(
-                          colors: [
-                            Color(0xFF334155),
-                            Color(0xFF334155),
-                          ],
+                          colors: [Color(0xFF334155), Color(0xFF334155)],
                         )
                       : null,
                   borderRadius: BorderRadius.circular(10),

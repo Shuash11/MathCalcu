@@ -16,7 +16,9 @@ import 'package:calculus_system/core/step_model.dart';
 /// `_stripLatex` and StepList.stripLatex used to each carry.)
 String stripLatex(String s) {
   s = s.replaceAllMapped(
-      RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}'), (m) => '${m[1]}/${m[2]}');
+    RegExp(r'\\frac\{([^}]*)\}\{([^}]*)\}'),
+    (m) => '${m[1]}/${m[2]}',
+  );
   s = s
       .replaceAll(r'\lvert ', '|')
       .replaceAll(r'\lvert', '|')

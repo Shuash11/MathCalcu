@@ -28,10 +28,14 @@ void main() {
     });
 
     test('n=32 -> 8589934590; n=40 -> 2199023255550', () {
-      expect(M12ProofEquation('induction sum 2^k n=32').solve().answer,
-          contains('8589934590'));
-      expect(M12ProofEquation('induction sum 2^k n=40').solve().answer,
-          contains('2199023255550'));
+      expect(
+        M12ProofEquation('induction sum 2^k n=32').solve().answer,
+        contains('8589934590'),
+      );
+      expect(
+        M12ProofEquation('induction sum 2^k n=40').solve().answer,
+        contains('2199023255550'),
+      );
     });
 
     test('n=60 -> 2305843009213693950 (> 2^53, exact digits)', () {
@@ -49,8 +53,10 @@ void main() {
     });
 
     test('C(65,32) = 3609714217008132870 (not the rounded ...133000)', () {
-      expect(M3CombinatoricsEquation('C(65,32)').solve().answer,
-          'C(65,32) = 3609714217008132870');
+      expect(
+        M3CombinatoricsEquation('C(65,32)').solve().answer,
+        'C(65,32) = 3609714217008132870',
+      );
     });
   });
 
@@ -63,7 +69,8 @@ void main() {
     });
 
     test('2^62 exact; 2^62 + 1 rejected with the magnitude error', () {
-      final on = M4BaseConversionEquation('4000000000000000 hex to dec').solve();
+      final on = M4BaseConversionEquation('4000000000000000 hex to dec')
+          .solve();
       expect(on.hasError, isFalse);
       expect(on.answer, contains('4611686018427387904 (base 10)'));
       final over = M4BaseConversionEquation('4000000000000001 hex to dec');

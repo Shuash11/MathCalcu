@@ -15,10 +15,7 @@ void main() {
     });
 
     test('spaces inside parentheses and around operator', () {
-      expect(
-        CalculatorEngine.evaluate('( 2 + 3 ) * 4'),
-        closeTo(20, 1e-9),
-      );
+      expect(CalculatorEngine.evaluate('( 2 + 3 ) * 4'), closeTo(20, 1e-9));
     });
 
     test('space between function name and paren', () {
@@ -26,10 +23,7 @@ void main() {
     });
 
     test('spaces around division and subtraction', () {
-      expect(
-        CalculatorEngine.evaluate('10 - 2 / 2'),
-        closeTo(9, 1e-9),
-      );
+      expect(CalculatorEngine.evaluate('10 - 2 / 2'), closeTo(9, 1e-9));
     });
 
     test('tabs and newlines are skipped', () {
@@ -41,10 +35,7 @@ void main() {
     });
 
     test('exponent with spaces', () {
-      expect(
-        CalculatorEngine.evaluate('(10 - 2) ^ 2 / 4'),
-        closeTo(16, 1e-9),
-      );
+      expect(CalculatorEngine.evaluate('(10 - 2) ^ 2 / 4'), closeTo(16, 1e-9));
     });
   });
 }

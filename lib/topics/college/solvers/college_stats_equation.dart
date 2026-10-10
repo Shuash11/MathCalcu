@@ -31,7 +31,8 @@ class CollegeStatsEquation extends BaseEquation {
         tl.startsWith('z ')) {
       RegExpMatch? numOf(String k) =>
           RegExp('(?:^|[\\s,])$k\\s*=\\s*(-?\\d+(?:\\.\\d+)?)').firstMatch(tl);
-      final mean = numOf('mean') ?? numOf('xbar') ?? numOf('x\u0304') ?? numOf('x');
+      final mean =
+          numOf('mean') ?? numOf('xbar') ?? numOf('x\u0304') ?? numOf('x');
       final mu = numOf('mu') ?? numOf('μ') ?? numOf('null');
       final sd = numOf('sd') ?? numOf('sigma') ?? numOf('σ') ?? numOf('s');
       final nM = RegExp(r'(?:^|[\s,])n\s*=\s*(\d+)').firstMatch(tl);
@@ -45,13 +46,15 @@ class CollegeStatsEquation extends BaseEquation {
           double.parse(mean.group(1)!),
           double.parse(mu.group(1)!),
           sdV,
-          n.toDouble()
-        ]
+          n.toDouble(),
+        ],
       ];
     }
     if (tl.contains('regress') || (tl.contains('x:') && tl.contains('y:'))) {
-      final clean =
-          tl.replaceAll('regression', ' ').replaceAll('regress', ' ').trim();
+      final clean = tl
+          .replaceAll('regression', ' ')
+          .replaceAll('regress', ' ')
+          .trim();
       final xm = RegExp(r'x\s*:\s*([-\d.,\s]+?)(?:y\s*:|$)').firstMatch(clean);
       final ym = RegExp(r'y\s*:\s*([-\d.,\s]+?)$').firstMatch(clean);
       if (xm == null || ym == null) return null;
@@ -63,19 +66,23 @@ class CollegeStatsEquation extends BaseEquation {
       if (xs.length > 500) return null;
       return [
         'regress',
-        [xs, ys]
+        [xs, ys],
       ];
     }
-    final nums = _nums(tl
-        .replaceAll(RegExp(r'\bstats?\b'), '')
-        .replaceAll(RegExp(r'\bdata\b'), ''));
+    final nums = _nums(
+      tl
+          .replaceAll(RegExp(r'\bstats?\b'), '')
+          .replaceAll(RegExp(r'\bdata\b'), ''),
+    );
     if (nums == null || nums.length < 2 || nums.length > 500) return null;
     return ['stats', nums];
   }
 
   static List<double>? _nums(String s) {
-    final parts =
-        s.split(RegExp(r'[,;\s\n]+')).where((e) => e.isNotEmpty).toList();
+    final parts = s
+        .split(RegExp(r'[,;\s\n]+'))
+        .where((e) => e.isNotEmpty)
+        .toList();
     if (parts.length < 2) return null;
     final out = <double>[];
     for (final p in parts) {
@@ -89,7 +96,8 @@ class CollegeStatsEquation extends BaseEquation {
   /// Normal CDF via Abramowitz–Stegun erf approximation.
   static double _phi(double z) {
     final t = 1 / (1 + 0.2316419 * z.abs());
-    final poly = t *
+    final poly =
+        t *
         (0.319381530 +
             t *
                 (-0.356563782 +
@@ -115,8 +123,7 @@ class CollegeStatsEquation extends BaseEquation {
       return false;
     }
     if (_parse() == null) {
-      _error =
-          'Use 4,7,9 stats · x:1,2,3 y:2,4,6 regress · ztest mean=72 mu=70 sd=10 n=25.';
+      _error = 'Use 4,7,9 stats · x:1,2,3 y:2,4,6 regress · ztest mean=72 mu=70 sd=10 n=25.';
       return false;
     }
     _error = null;
@@ -136,7 +143,8 @@ class CollegeStatsEquation extends BaseEquation {
         final pVal = 2 * (1 - _phi(z.abs()));
         final reject = pVal < 0.05;
         return SolveResult(
-          answer: 'z = ${_fmt(z)} (SE = ${_fmt(v[2] / math.sqrt(v[3]))}), '
+          answer:
+              'z = ${_fmt(z)} (SE = ${_fmt(v[2] / math.sqrt(v[3]))}), '
               'two-sided p = ${_fmt(pVal)} → ${reject ? 'reject H₀ at α=0.05' : 'fail to reject H₀ at α=0.05'}.',
           points: [z],
           customData: [
@@ -148,8 +156,8 @@ class CollegeStatsEquation extends BaseEquation {
               'n': v[3],
               'z': z,
               'p': pVal,
-              'reject': reject
-            }
+              'reject': reject,
+            },
           ],
         );
       case 'regress':
@@ -184,8 +192,8 @@ class CollegeStatsEquation extends BaseEquation {
               'r2': r * r,
               'n': n.toDouble(),
               'xs': xs,
-              'ys': ys
-            }
+              'ys': ys,
+            },
           ],
         );
       default:
@@ -204,9 +212,9 @@ class CollegeStatsEquation extends BaseEquation {
         final top = freq.values.fold(0, (a, b) => a > b ? a : b);
         final modes = top > 1
             ? freq.entries
-                .where((e) => e.value == top)
-                .map((e) => e.key)
-                .toList()
+                  .where((e) => e.value == top)
+                  .map((e) => e.key)
+                  .toList()
             : <double>[];
         var ss = 0.0;
         for (final v in xs) {
@@ -215,8 +223,9 @@ class CollegeStatsEquation extends BaseEquation {
         final popSd = math.sqrt(ss / n);
         final sampSd = n > 1 ? math.sqrt(ss / (n - 1)) : 0.0;
         final range = sorted.last - sorted.first;
-        final modeStr =
-            modes.isEmpty ? 'none (all unique)' : modes.map(_fmt).join(', ');
+        final modeStr = modes.isEmpty
+            ? 'none (all unique)'
+            : modes.map(_fmt).join(', ');
         return SolveResult(
           answer:
               'n=$n, mean=${_fmt(mean)}, median=${_fmt(median)}, mode=$modeStr, '
@@ -235,7 +244,7 @@ class CollegeStatsEquation extends BaseEquation {
               'max': sorted.last,
               'range': range,
               'sum': sum,
-            }
+            },
           ],
         );
     }
@@ -247,9 +256,10 @@ class CollegeStatsEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use 4,7,9 stats.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use 4,7,9 stats.',
+        ),
       ];
     }
     final r = solve();
@@ -263,20 +273,23 @@ class CollegeStatsEquation extends BaseEquation {
     final texLines = _texLines(r);
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Summarize the data',
-          explanation: 'Count n, sum, sort for center + spread.'),
+        stepNumber: 1,
+        title: 'Summarize the data',
+        explanation: 'Count n, sum, sort for center + spread.',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Apply the formula',
-          explanation: mid,
-          latex: _formulaTex(mode)),
+        stepNumber: 2,
+        title: 'Apply the formula',
+        explanation: mid,
+        latex: _formulaTex(mode),
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the result',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: texLines.isEmpty ? null : texLines.first,
-          subLatex: texLines.length > 1 ? texLines.sublist(1) : null),
+        stepNumber: 3,
+        title: 'Read the result',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: texLines.isEmpty ? null : texLines.first,
+        subLatex: texLines.length > 1 ? texLines.sublist(1) : null,
+      ),
     ];
   }
 

@@ -117,35 +117,35 @@ class _Grade6SolverScreenState extends State<Grade6SolverScreen> {
     final textSecondary = theme.textSecondary;
     final Widget body = switch (widget.config.graphKind) {
       Grade6GraphKind.numberLine => G6NumberLineGraph(
-          result: result,
-          accentColor: accent,
-          textPrimary: textPrimary,
-          textSecondary: textSecondary,
-        ),
+        result: result,
+        accentColor: accent,
+        textPrimary: textPrimary,
+        textSecondary: textSecondary,
+      ),
       Grade6GraphKind.ratioBars => G6RatioBarsGraph(
-          result: result,
-          accentColor: accent,
-          textPrimary: textPrimary,
-          textSecondary: textSecondary,
-        ),
+        result: result,
+        accentColor: accent,
+        textPrimary: textPrimary,
+        textSecondary: textSecondary,
+      ),
       Grade6GraphKind.shape => G6ShapeGraph(
-          result: result,
-          accentColor: accent,
-          textPrimary: textPrimary,
-          textSecondary: textSecondary,
-        ),
+        result: result,
+        accentColor: accent,
+        textPrimary: textPrimary,
+        textSecondary: textSecondary,
+      ),
       Grade6GraphKind.wireframe => G6WireframeGraph(
-          result: result,
-          accentColor: accent,
-          textPrimary: textPrimary,
-          textSecondary: textSecondary,
-        ),
+        result: result,
+        accentColor: accent,
+        textPrimary: textPrimary,
+        textSecondary: textSecondary,
+      ),
       Grade6GraphKind.pie => G6PieGraph(
-          result: result,
-          accentColor: accent,
-          textPrimary: textPrimary,
-          textSecondary: textSecondary,
-        ),
+        result: result,
+        accentColor: accent,
+        textPrimary: textPrimary,
+        textSecondary: textSecondary,
+      ),
       Grade6GraphKind.none => const SizedBox.shrink(),
     };
     return GraphWidget(result: result, accentColor: accent, graphBody: body);
@@ -277,8 +277,11 @@ class _Grade6SolverScreenState extends State<Grade6SolverScreen> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.error_outline_rounded,
-                                  color: accent, size: 18),
+                              Icon(
+                                Icons.error_outline_rounded,
+                                color: accent,
+                                size: 18,
+                              ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: ResponsiveText(
@@ -298,8 +301,7 @@ class _Grade6SolverScreenState extends State<Grade6SolverScreen> {
                           _graphFor(result, theme)
                         else
                           const NoGraphPlaceholder(
-                            reason:
-                                'Numeric answer only — no diagram needed for this input.',
+                            reason: 'Numeric answer only — no diagram needed for this input.',
                           ),
                         const SizedBox(height: 16),
                         AnswerCard(
@@ -360,9 +362,7 @@ class _Header extends StatelessWidget {
               decoration: BoxDecoration(
                 color: accent.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: accent.withValues(alpha: 0.3),
-                ),
+                border: Border.all(color: accent.withValues(alpha: 0.3)),
               ),
               child: Icon(config.icon, color: accent, size: 22),
             ),
@@ -382,10 +382,7 @@ class _Header extends StatelessWidget {
                   ),
                   ResponsiveText(
                     config.subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: theme.textSecondary,
-                    ),
+                    style: TextStyle(fontSize: 12, color: theme.textSecondary),
                   ),
                 ],
               ),
@@ -398,9 +395,7 @@ class _Header extends StatelessWidget {
           decoration: BoxDecoration(
             color: accent.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: accent.withValues(alpha: 0.25),
-            ),
+            border: Border.all(color: accent.withValues(alpha: 0.25)),
           ),
           child: Text(
             config.depedCode,

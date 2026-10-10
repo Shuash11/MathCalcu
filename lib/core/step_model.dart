@@ -7,7 +7,7 @@ class StepModel {
   final String title;
   final String explanation;
   final String?
-      hint; // brief operation hint (e.g. "Subtract 5 from both sides")
+  hint; // brief operation hint (e.g. "Subtract 5 from both sides")
   final String? latex;
   final List<String>? subLatex;
   final List<String>? details; // expanded arithmetic work (LaTeX strings)

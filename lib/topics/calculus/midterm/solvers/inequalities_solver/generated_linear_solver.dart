@@ -42,10 +42,7 @@ class GeneratedLinearSolver {
 
     int n = 1;
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: input.trim(),
-    ));
+    steps.add(StepModel(stepNumber: n++, latex: input.trim()));
 
     final a = p.a - p.ra;
     final b = p.b - p.rb;
@@ -55,12 +52,14 @@ class GeneratedLinearSolver {
           '${_coefLatex(p.a)}x ${p.b >= 0 ? "+ ${_fmtLatex(p.b)}" : "- ${_fmtLatex(p.b.abs())}"}';
       String rightMove = '';
       if (p.ra != 0) {
-        rightMove +=
-            p.ra > 0 ? ' - ${_coefLatex(p.ra)}x' : ' + ${_coefLatex(-p.ra)}x';
+        rightMove += p.ra > 0
+            ? ' - ${_coefLatex(p.ra)}x'
+            : ' + ${_coefLatex(-p.ra)}x';
       }
       if (p.rb != 0) {
-        rightMove +=
-            p.rb > 0 ? ' - ${_fmtLatex(p.rb)}' : ' + ${_fmtLatex(-p.rb)}';
+        rightMove += p.rb > 0
+            ? ' - ${_fmtLatex(p.rb)}'
+            : ' + ${_fmtLatex(-p.rb)}';
       }
       final intermediate = '$leftExpr$rightMove ${_texOp(p.op)} 0';
       final simplified =
@@ -73,46 +72,52 @@ class GeneratedLinearSolver {
         _parts.add(p.ra > 0 ? 'subtract $term' : 'add $term');
       }
       if (p.rb != 0) {
-        _parts.add(p.rb > 0
-            ? 'subtract ${_fmt(p.rb.abs())}'
-            : 'add ${_fmt(p.rb.abs())}');
+        _parts.add(
+          p.rb > 0 ? 'subtract ${_fmt(p.rb.abs())}' : 'add ${_fmt(p.rb.abs())}',
+        );
       }
       final hint = '${_parts.join(', ')} from both sides';
 
       List<String>? _moveDetails;
       if (p.rb != 0) {
         _moveDetails = [
-          '${_fmtLatex(p.b)} ${p.rb > 0 ? "-" : "+"} ${_fmtLatex(p.rb.abs())} = ${_fmtLatex(b)}'
+          '${_fmtLatex(p.b)} ${p.rb > 0 ? "-" : "+"} ${_fmtLatex(p.rb.abs())} = ${_fmtLatex(b)}',
         ];
       }
 
       if (intermediate != simplified) {
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: hint,
-          details: _moveDetails,
-          latex: intermediate,
-          subLatex: [simplified],
-        ));
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: hint,
+            details: _moveDetails,
+            latex: intermediate,
+            subLatex: [simplified],
+          ),
+        );
       } else {
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: hint,
-          details: _moveDetails,
-          latex: simplified,
-        ));
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: hint,
+            details: _moveDetails,
+            latex: simplified,
+          ),
+        );
       }
     }
 
     if (a == 0) {
       final sat = _evalOp(b, p.op, 0);
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: sat
-            ? 'Always true — no x term remains'
-            : 'Always false — no x term remains',
-        latex: sat ? r'(-\infty, \infty)' : r'\emptyset',
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: sat
+              ? 'Always true — no x term remains'
+              : 'Always false — no x term remains',
+          latex: sat ? r'(-\infty, \infty)' : r'\emptyset',
+        ),
+      );
       return steps;
     }
 
@@ -123,15 +128,17 @@ class GeneratedLinearSolver {
             : '${_coefLatex(a)}x - ${_fmtLatex(-b)} + ${_fmtLatex(-b)} ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} 0 + ${_fmtLatex(-b)}',
         '${_coefLatex(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b)}',
       ];
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: b > 0
-            ? 'Subtract ${_fmt(b)} from both sides'
-            : 'Add ${_fmt(-b)} to both sides',
-        details: isoDetails,
-        latex:
-            '${_coefLatex(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b)}',
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: b > 0
+              ? 'Subtract ${_fmt(b)} from both sides'
+              : 'Add ${_fmt(-b)} to both sides',
+          details: isoDetails,
+          latex:
+              '${_coefLatex(a)}x ${_texOp(a < 0 ? _flipOp(p.op) : p.op)} ${_fmtLatex(-b)}',
+        ),
+      );
     }
 
     if (a != 1 && a != -1) {
@@ -152,28 +159,31 @@ class GeneratedLinearSolver {
         'x ${_texOp(divOp)} ${_fmtLatex(-b / a)}',
       ];
       if (flip) {
-        divDetails.add(r'\text{Dividing by }' +
-            '${_fmt(a)}' +
-            r'\text{ flips }' +
-            '${_texOp(p.op)}' +
-            r'\text{ to }' +
-            '${_texOp(divOp)}');
+        divDetails.add(
+          r'\text{Dividing by }' +
+              '${_fmt(a)}' +
+              r'\text{ flips }' +
+              '${_texOp(p.op)}' +
+              r'\text{ to }' +
+              '${_texOp(divOp)}',
+        );
       }
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: flip
-            ? 'Divide both sides by ${_fmt(a.abs())} and flip the inequality sign'
-            : 'Divide both sides by ${_fmt(a)}',
-        details: divDetails,
-        latex: 'x ${_texOp(divOp)} ${_fmtLatex(-b / a)}',
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: flip
+              ? 'Divide both sides by ${_fmt(a.abs())} and flip the inequality sign'
+              : 'Divide both sides by ${_fmt(a)}',
+          details: divDetails,
+          latex: 'x ${_texOp(divOp)} ${_fmtLatex(-b / a)}',
+        ),
+      );
     }
 
     final finalOp = a < 0 ? _flipOp(p.op) : p.op;
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: _intervalLatex(finalOp, -b / a),
-    ));
+    steps.add(
+      StepModel(stepNumber: n++, latex: _intervalLatex(finalOp, -b / a)),
+    );
 
     return steps;
   }
@@ -382,10 +392,11 @@ class GeneratedLinearSolver {
 class _Parsed {
   final String op;
   final double a, b, ra, rb;
-  const _Parsed(
-      {required this.op,
-      required this.a,
-      required this.b,
-      required this.ra,
-      required this.rb});
+  const _Parsed({
+    required this.op,
+    required this.a,
+    required this.b,
+    required this.ra,
+    required this.rb,
+  });
 }

@@ -146,7 +146,8 @@ class UpdateChecksum {
     // `release-manifest.json` is intentionally NOT matched: it is JSON, not
     // a GNU/BSD checksum file parseable by [parseChecksumFile].
     if (lower == 'sha256sums' || lower == 'checksums') return true;
-    final isChecksumName = lower.contains('checksum') ||
+    final isChecksumName =
+        lower.contains('checksum') ||
         lower.contains('sha256') ||
         lower.contains('sha256sums');
     return isChecksumName &&

@@ -30,9 +30,9 @@ class RationalInequalityEquation extends BaseEquation {
   /// Parses (mx+b)/(nx+c) <op> rhs(num). Returns map or null.
   Map<String, dynamic>? _parse() {
     final t = _n();
-    final m =
-        RegExp(r'^\(?([^()]*x[^()]*)\)?/\(?([^()]*x[^()]*)\)?(<=|>=|<|>)(.+)$')
-            .firstMatch(t);
+    final m = RegExp(
+      r'^\(?([^()]*x[^()]*)\)?/\(?([^()]*x[^()]*)\)?(<=|>=|<|>)(.+)$',
+    ).firstMatch(t);
     if (m == null) return null;
     final numE = m.group(1)!, denE = m.group(2)!;
     final op = m.group(3)!;
@@ -42,7 +42,9 @@ class RationalInequalityEquation extends BaseEquation {
     double? coef(String e) {
       String sub(String expr, String v) => expr
           .replaceAllMapped(
-              RegExp(r'(\d|\))([xX])'), (m) => '${m.group(1)}*${m.group(2)}')
+            RegExp(r'(\d|\))([xX])'),
+            (m) => '${m.group(1)}*${m.group(2)}',
+          )
           .replaceAll('x', v)
           .replaceAll('X', v);
       final f0 = _ev(sub(e, '(0)'));
@@ -53,7 +55,9 @@ class RationalInequalityEquation extends BaseEquation {
 
     String sub0(String expr) => expr
         .replaceAllMapped(
-            RegExp(r'(\d|\))([xX])'), (m) => '${m.group(1)}*${m.group(2)}')
+          RegExp(r'(\d|\))([xX])'),
+          (m) => '${m.group(1)}*${m.group(2)}',
+        )
         .replaceAll('x', '(0)')
         .replaceAll('X', '(0)');
     final a = coef(numE), b0 = _ev(sub0(numE));
@@ -65,8 +69,10 @@ class RationalInequalityEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: '(x - 1)/(x + 2) > 0');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: '(x - 1)/(x + 2) > 0',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -170,7 +176,7 @@ class RationalInequalityEquation extends BaseEquation {
             'zero': zeroN.isNaN ? null : zeroN,
             'asymptote': hole,
             'intervals': [],
-          }
+          },
         ],
       );
     }
@@ -187,12 +193,14 @@ class RationalInequalityEquation extends BaseEquation {
           'verticalAsymptote': 'x = ${fmt(hole)}',
           'horizontalAsymptote': 'y = ${fmt(na / c)}',
           'intervals': keep
-              .map((e) => {
-                    'lo': e[0].isInfinite ? null : e[0],
-                    'hi': e[1].isInfinite ? null : e[1]
-                  })
+              .map(
+                (e) => {
+                  'lo': e[0].isInfinite ? null : e[0],
+                  'hi': e[1].isInfinite ? null : e[1],
+                },
+              )
               .toList(),
-        }
+        },
       ],
     );
   }
@@ -203,9 +211,10 @@ class RationalInequalityEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use (x - 1)/(x + 2) > 0.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use (x - 1)/(x + 2) > 0.',
+        ),
       ];
     }
     final r = solve();
@@ -218,23 +227,26 @@ class RationalInequalityEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Excluded value + asymptotes',
-          explanation:
-              'Denominator ≠ 0 gives the vertical asymptote (open dot).'),
+        stepNumber: 1,
+        title: 'Excluded value + asymptotes',
+        explanation: 'Denominator ≠ 0 gives the vertical asymptote (open dot).',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Move everything left',
-          explanation: 'Subtract RHS so the sign chart compares against 0.'),
+        stepNumber: 2,
+        title: 'Move everything left',
+        explanation: 'Subtract RHS so the sign chart compares against 0.',
+      ),
       const StepModel(
-          stepNumber: 3,
-          title: 'Sign chart',
-          explanation: 'Test each interval between critical points.'),
+        stepNumber: 3,
+        title: 'Sign chart',
+        explanation: 'Test each interval between critical points.',
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Solution intervals',
-          explanation: r.answer,
-          latex: secTex),
+        stepNumber: 4,
+        title: 'Solution intervals',
+        explanation: r.answer,
+        latex: secTex,
+      ),
     ];
   }
 }

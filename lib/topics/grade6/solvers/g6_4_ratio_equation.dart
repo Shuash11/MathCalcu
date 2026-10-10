@@ -42,7 +42,8 @@ class G6RatioEquation extends BaseEquation {
   G6RatioEquation(this.rawInput);
 
   static final RegExp _partitive = RegExp(
-      r'^(?:divide\s+)?(-?\d+(?:\.\d+)?)\s+in(?:to)?(?:\s+ratio)?\s+([\d\s:.,;]+)$');
+    r'^(?:divide\s+)?(-?\d+(?:\.\d+)?)\s+in(?:to)?(?:\s+ratio)?\s+([\d\s:.,;]+)$',
+  );
   static final RegExp _direct = RegExp(
     r'^direct\b.*?x\s*=\s*(-?\d+(?:\.\d+)?).*?y\s*=\s*(-?\d+(?:\.\d+)?)(?:.*?x\s*=\s*(-?\d+(?:\.\d+)?))?.*?$',
   );
@@ -224,9 +225,7 @@ class G6RatioEquation extends BaseEquation {
   SolveResult solve() {
     final _RatioParsed? p = _parse();
     if (p == null) {
-      return SolveResult.error(
-        _error ?? 'Use a:b or a/b = x/d — e.g. 12:18.',
-      );
+      return SolveResult.error(_error ?? 'Use a:b or a/b = x/d — e.g. 12:18.');
     }
     switch (p.kind) {
       case _RatioKind.simplify:
@@ -241,7 +240,7 @@ class G6RatioEquation extends BaseEquation {
                 {'label': 'B', 'value': s[1]},
               ],
               'gcd': s[2],
-            }
+            },
           ],
         );
       case _RatioKind.proportion:
@@ -283,7 +282,7 @@ class G6RatioEquation extends BaseEquation {
                 {'label': 'D', 'value': v[3].isNaN ? 0 : v[3]},
               ],
               'check': G6Format.num(v[0] * v[3]) == G6Format.num(v[1] * v[2]),
-            }
+            },
           ],
         );
       case _RatioKind.direct:
@@ -306,7 +305,7 @@ class G6RatioEquation extends BaseEquation {
                 {'label': 'y', 'value': y},
               ],
               'k': k,
-            }
+            },
           ],
         );
       case _RatioKind.inverse:
@@ -329,7 +328,7 @@ class G6RatioEquation extends BaseEquation {
                 {'label': 'y', 'value': y},
               ],
               'k': k,
-            }
+            },
           ],
         );
       case _RatioKind.partitive:
@@ -337,8 +336,9 @@ class G6RatioEquation extends BaseEquation {
         if (sum == 0) {
           return SolveResult.error('Ratio parts cannot all be zero.');
         }
-        final List<double> shares =
-            p.parts.map((part) => p.total * part / sum).toList();
+        final List<double> shares = p.parts
+            .map((part) => p.total * part / sum)
+            .toList();
         final String answer = shares.map((s) => G6Format.num(s)).join(' : ');
         return SolveResult(
           answer: answer,
@@ -350,7 +350,7 @@ class G6RatioEquation extends BaseEquation {
                   {'label': 'Part ${i + 1}', 'value': shares[i]},
               ],
               'sum': sum,
-            }
+            },
           ],
         );
     }
@@ -378,7 +378,8 @@ class G6RatioEquation extends BaseEquation {
             explanation:
                 '${G6Format.num(p.values[0])}:${G6Format.num(p.values[1])} = '
                 '${p.values[0].truncate()}/${p.values[1].truncate()}.',
-            latex: '${G6Format.num(p.values[0])}:${G6Format.num(p.values[1])} '
+            latex:
+                '${G6Format.num(p.values[0])}:${G6Format.num(p.values[1])} '
                 '= \\frac{${p.values[0].truncate()}}'
                 '{${p.values[1].truncate()}}',
           ),
@@ -386,14 +387,16 @@ class G6RatioEquation extends BaseEquation {
             stepNumber: 2,
             title: 'Find the GCD',
             explanation: 'GCD is ${s[2]}.',
-            latex: '\\gcd(${p.values[0].truncate()}, '
+            latex:
+                '\\gcd(${p.values[0].truncate()}, '
                 '${p.values[1].truncate()}) = ${s[2]}',
           ),
           StepModel(
             stepNumber: 3,
             title: 'Divide both terms',
             explanation: '${s[0]}:${s[1]}.',
-            latex: '\\frac{${p.values[0].truncate()}}'
+            latex:
+                '\\frac{${p.values[0].truncate()}}'
                 '{${p.values[1].truncate()}} = '
                 '\\frac{${s[0]}}{${s[1]}}',
           ),
@@ -448,7 +451,7 @@ class G6RatioEquation extends BaseEquation {
             explanation: '${solve().answer}.',
             latex: kv.isFinite
                 ? 'k = \\frac{${G6Format.num(yv)}}{${G6Format.num(xv)}} '
-                    '= ${G6Format.num(kv)}'
+                      '= ${G6Format.num(kv)}'
                 : null,
           ),
           const StepModel(
@@ -471,7 +474,8 @@ class G6RatioEquation extends BaseEquation {
             stepNumber: 2,
             title: 'k = x × y',
             explanation: '${solve().answer}.',
-            latex: 'k = ${G6Format.num(xv)} \\times ${G6Format.num(yv)} '
+            latex:
+                'k = ${G6Format.num(xv)} \\times ${G6Format.num(yv)} '
                 '= ${G6Format.num(xv * yv)}',
           ),
           const StepModel(

@@ -33,7 +33,8 @@ class SubjectFilterChips extends StatelessWidget {
             for (var i = 0; i < items.length; i++) ...[
               _Chip(
                 label: items[i],
-                selected: selected == items[i] ||
+                selected:
+                    selected == items[i] ||
                     (selected.isEmpty && items[i] == 'All'),
                 accent: accent,
                 theme: theme,

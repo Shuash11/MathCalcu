@@ -41,8 +41,9 @@ class G6GemdasEquation extends BaseEquation {
 
   static final RegExp _allowed = RegExp(r'^[0-9+\-*/^()×÷\s.]+$');
   static final RegExp _group = RegExp(r'\([^()]+\)');
-  static final RegExp _exponent =
-      RegExp(r'-?\d+(?:\.\d+)?\s*\^\s*-?\d+(?:\.\d+)?');
+  static final RegExp _exponent = RegExp(
+    r'-?\d+(?:\.\d+)?\s*\^\s*-?\d+(?:\.\d+)?',
+  );
 
   String _normalized() {
     return rawInput
@@ -153,13 +154,11 @@ class G6GemdasEquation extends BaseEquation {
             'exponents': t.exponents,
             'mulDiv': t.mulDiv,
             'addSub': t.addSub,
-          }
+          },
         ],
       );
     } on FormatException {
-      return SolveResult.error(
-        'Could not parse — check ^ and parentheses.',
-      );
+      return SolveResult.error('Could not parse — check ^ and parentheses.');
     }
   }
 

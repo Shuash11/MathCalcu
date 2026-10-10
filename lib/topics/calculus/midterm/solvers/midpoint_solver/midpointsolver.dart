@@ -53,8 +53,7 @@ class MidpointResult {
     required Fraction y,
     required String formulaX,
     required String formulaY,
-  }) =>
-      MidpointResult(x: x, y: y, formulaX: formulaX, formulaY: formulaY);
+  }) => MidpointResult(x: x, y: y, formulaX: formulaX, formulaY: formulaY);
 
   MidpointResult _copyWith({
     Fraction? x,
@@ -63,15 +62,14 @@ class MidpointResult {
     String? formulaY,
     bool hasError = false,
     String? errorMessage,
-  }) =>
-      MidpointResult(
-        x: x ?? this.x,
-        y: y ?? this.y,
-        formulaX: formulaX ?? this.formulaX,
-        formulaY: formulaY ?? this.formulaY,
-        hasError: hasError,
-        errorMessage: errorMessage ?? this.errorMessage,
-      );
+  }) => MidpointResult(
+    x: x ?? this.x,
+    y: y ?? this.y,
+    formulaX: formulaX ?? this.formulaX,
+    formulaY: formulaY ?? this.formulaY,
+    hasError: hasError,
+    errorMessage: errorMessage ?? this.errorMessage,
+  );
 }
 
 class MidpointSolver {
@@ -166,7 +164,11 @@ class MidpointSolver {
     final f4 = parseFraction(d, 'y2');
     if (f4.hasError) return _ParseResult(error: f4.error);
     return _ParseResult(
-        f1: f1.fraction, f2: f2.fraction, f3: f3.fraction, f4: f4.fraction);
+      f1: f1.fraction,
+      f2: f2.fraction,
+      f3: f3.fraction,
+      f4: f4.fraction,
+    );
   }
 
   static FractionParse parseFraction(String raw, String label) {
@@ -184,7 +186,8 @@ class MidpointSolver {
     final dv = double.tryParse(t);
     if (dv == null || dv.isNaN || dv.isInfinite) {
       return FractionParse.error(
-          '$label must be a number or fraction (e.g. 3/4)');
+        '$label must be a number or fraction (e.g. 3/4)',
+      );
     }
     return FractionParse.success(_fromDouble(dv));
   }

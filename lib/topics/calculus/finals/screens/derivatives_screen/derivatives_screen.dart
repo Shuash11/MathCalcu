@@ -1,5 +1,6 @@
 import 'derivatives_answer_card.dart';
 import 'derivatives_input_field.dart';
+
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/derivatives_solver.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/derivatives_solver/expr_to_latex.dart';
@@ -91,7 +92,8 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
     if (_solution == null) return;
 
     final solution = _solution!;
-    final hasSteps = solution.steps.length > 2 &&
+    final hasSteps =
+        solution.steps.length > 2 &&
         solution.steps.any((s) => s.expression.isNotEmpty);
 
     showSolutionStepsModal(
@@ -110,8 +112,11 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.check_circle_outline_rounded,
-                      color: FinalsTheme.primaryFor(context), size: 24),
+                  Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: FinalsTheme.primaryFor(context),
+                    size: 24,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: ResponsiveText(
@@ -184,8 +189,10 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                 context,
                 child: IconButton(
                   tooltip: 'Back',
-                  icon: Icon(Icons.arrow_back_ios_new_rounded,
-                      color: FinalsTheme.primaryFor(context)),
+                  icon: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: FinalsTheme.primaryFor(context),
+                  ),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
@@ -202,13 +209,16 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Differentiate',
-                            style: FinalsTheme.titleStyle(context)
-                                .copyWith(fontSize: 28)),
+                        Text(
+                          'Differentiate',
+                          style: FinalsTheme.titleStyle(context)
+                              .copyWith(fontSize: 28),
+                        ),
                         const SizedBox(height: 4),
                         Text(
-                            'Enter a function to find its derivative step-by-step.',
-                            style: FinalsTheme.subtitleStyle(context)),
+                          'Enter a function to find its derivative step-by-step.',
+                          style: FinalsTheme.subtitleStyle(context),
+                        ),
                       ],
                     ),
                   ),
@@ -266,12 +276,15 @@ class _DerivativeScreenState extends State<DerivativeScreen> {
                           style: OutlinedButton.styleFrom(
                             foregroundColor: FinalsTheme.primaryFor(context),
                             side: BorderSide(
-                                color: FinalsTheme.primaryFor(context)),
+                              color: FinalsTheme.primaryFor(context),
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 14),
+                              horizontal: 20,
+                              vertical: 14,
+                            ),
                           ),
                         ),
                       ),

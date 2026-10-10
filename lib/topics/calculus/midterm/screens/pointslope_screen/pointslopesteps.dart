@@ -65,16 +65,16 @@ class PointSlopeSteps extends StatelessWidget {
   });
 
   Widget _mathLatex(BuildContext context, String tex) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SelectableMath.tex(
-          tex,
-          textStyle: TextStyle(
-            fontSize: 14,
-            color: FinalsTheme.primaryFor(context),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      );
+    scrollDirection: Axis.horizontal,
+    child: SelectableMath.tex(
+      tex,
+      textStyle: TextStyle(
+        fontSize: 14,
+        color: FinalsTheme.primaryFor(context),
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  );
 
   Widget _buildDualPanel({
     required String leftLabel,
@@ -145,8 +145,9 @@ class PointSlopeSteps extends StatelessWidget {
     final product = mVal * xVal;
     final sign = product < 0 ? '+' : '-';
     final absVal = product.abs().toString();
-    final mWithParens =
-        mSimplified.contains('/') ? '($mSimplified)' : mSimplified;
+    final mWithParens = mSimplified.contains('/')
+        ? '($mSimplified)'
+        : mSimplified;
     final mulSymbol = mSimplified.contains('/') ? r' \cdot ' : ' ';
     return r'\begin{aligned}'
         'y $y1Sign $y1Abs = $mWithParens$mulSymbol'
@@ -162,8 +163,9 @@ class PointSlopeSteps extends StatelessWidget {
     } else {
       bSign = b.trimLeft().startsWith('-') ? '-' : '+';
     }
-    final mWithParens =
-        mSimplified.contains('/') ? '($mSimplified)' : mSimplified;
+    final mWithParens = mSimplified.contains('/')
+        ? '($mSimplified)'
+        : mSimplified;
     final dot = mSimplified.contains('/') ? r' \cdot ' : '';
     return 'y = $mWithParens${dot}x $bSign ${bSimplified.replaceAll('-', '')}';
   }
@@ -178,8 +180,13 @@ class PointSlopeSteps extends StatelessWidget {
     final x1Abs = x1.startsWith('-') ? x1.substring(1) : x1;
     final x1Sign = x1.startsWith('-') ? '+' : '-';
 
-    final step3Latex =
-        _buildStep3Latex(mSimplified, y1Sign, y1Abs, x1Sign, x1Abs);
+    final step3Latex = _buildStep3Latex(
+      mSimplified,
+      y1Sign,
+      y1Abs,
+      x1Sign,
+      x1Abs,
+    );
 
     final step4LeftLatex = _buildStep4LeftLatex(
       mSimplified,
@@ -213,10 +220,20 @@ class PointSlopeSteps extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _mathLatex(context,
-                  r'\text{Point: } (x_1,\;y_1) = (' '$x1' r',\;' '$y1' r')'),
+              _mathLatex(
+                context,
+                r'\text{Point: } (x_1,\;y_1) = ('
+                '$x1'
+                r',\;'
+                '$y1'
+                r')',
+              ),
               const SizedBox(height: 4),
-              _mathLatex(context, r'm = ' '$m'),
+              _mathLatex(
+                context,
+                r'm = '
+                '$m',
+              ),
             ],
           ),
         ),

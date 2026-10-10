@@ -99,7 +99,7 @@ class LCDInputField extends StatelessWidget {
           FinalsSolverButton(onPressed: onSolve, isLoading: isLoading),
           const SizedBox(height: 16),
 
-// ── Limit Meta Row
+          // ── Limit Meta Row
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
             child: Row(
@@ -130,7 +130,7 @@ class LCDInputField extends StatelessWidget {
                   ),
                 ),
 
-// Approach Value Input
+                // Approach Value Input
                 Expanded(
                   flex: isCompact ? 3 : 2,
                   child: Container(
@@ -162,8 +162,9 @@ class LCDInputField extends StatelessWidget {
                               .withValues(alpha: 0.4),
                         ),
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: isCompact ? 6 : 10),
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: isCompact ? 6 : 10,
+                        ),
                       ),
                     ),
                   ),
@@ -210,8 +211,10 @@ class LCDInputField extends StatelessWidget {
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 itemCount: variables.length,
                 itemBuilder: (ctx, i) {
                   final v = variables[i];
@@ -234,7 +237,9 @@ class LCDInputField extends StatelessWidget {
                           style: FinalsTheme.titleStyle(ctx).copyWith(
                             fontFamily: 'serif',
                             fontSize: 18,
-                            color: isSelected ? FinalsTheme.dangerFor(ctx) : null,
+                            color: isSelected
+                                ? FinalsTheme.dangerFor(ctx)
+                                : null,
                           ),
                         ),
                         onTap: () {
@@ -242,10 +247,13 @@ class LCDInputField extends StatelessWidget {
                           Navigator.pop(ctx);
                         },
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         trailing: isSelected
-                            ? Icon(Icons.check_circle_rounded,
-                                color: FinalsTheme.dangerFor(ctx))
+                            ? Icon(
+                                Icons.check_circle_rounded,
+                                color: FinalsTheme.dangerFor(ctx),
+                              )
                             : null,
                       ),
                     ),

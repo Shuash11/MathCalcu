@@ -114,13 +114,15 @@ class _LhopitalAnswerCardContent extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: methodBadgePaddingH,
-                      vertical: methodBadgePaddingV),
+                    horizontal: methodBadgePaddingH,
+                    vertical: methodBadgePaddingV,
+                  ),
                   decoration: BoxDecoration(
                     color: accentColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border:
-                        Border.all(color: accentColor.withValues(alpha: 0.2)),
+                    border: Border.all(
+                      color: accentColor.withValues(alpha: 0.2),
+                    ),
                   ),
                   child: Text(
                     method,
@@ -175,7 +177,9 @@ class _LhopitalAnswerCardContent extends StatelessWidget {
                     style: FinalsTheme.titleStyle(context).copyWith(
                       fontSize: resultFontSize,
                       fontWeight: FontWeight.w800,
-                      color: hasError ? FinalsTheme.dangerFor(context) : accentColor,
+                      color: hasError
+                          ? FinalsTheme.dangerFor(context)
+                          : accentColor,
                     ),
                   ),
                 ),

@@ -1,4 +1,4 @@
-﻿import 'polynomial.dart';
+import 'polynomial.dart';
 
 /// Represents a linear factor of the form (ax + b)
 class LinearFactor {
@@ -8,9 +8,7 @@ class LinearFactor {
   LinearFactor(this.a, this.b);
 
   /// Create a factor (x - root)
-  LinearFactor.fromRoot(double root)
-      : a = 1.0,
-        b = -root;
+  LinearFactor.fromRoot(double root) : a = 1.0, b = -root;
 
   /// Get the root of this factor (where ax + b = 0)
   double get root => -b / a;

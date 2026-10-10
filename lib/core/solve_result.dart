@@ -1,4 +1,4 @@
-﻿// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 // SOLVE RESULT — returned by every BaseEquation.solve()
 // ─────────────────────────────────────────────────────────────
 
@@ -23,9 +23,9 @@ class SolveResult {
   final List<dynamic>? customData;
 
   factory SolveResult.error(String message) => SolveResult(
-        answer: '',
-        points: [],
-        hasError: true,
-        errorMessage: message,
-      );
+    answer: '',
+    points: [],
+    hasError: true,
+    errorMessage: message,
+  );
 }

@@ -122,15 +122,16 @@ class _LhopitalInputFieldContent extends StatelessWidget {
                         ),
                         decoration: InputDecoration(
                           hintText: isCompact ? 'sin x / x' : 'sin(x) / x',
-                          hintStyle:
-                              FinalsTheme.subtitleStyle(context).copyWith(
-                            color: FinalsTheme.textSecondary(context)
-                                .withValues(alpha: 0.3),
-                            fontSize: isCompact ? 12 : 14,
-                          ),
+                          hintStyle: FinalsTheme.subtitleStyle(context)
+                              .copyWith(
+                                color: FinalsTheme.textSecondary(context)
+                                    .withValues(alpha: 0.3),
+                                fontSize: isCompact ? 12 : 14,
+                              ),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
-                              vertical: isCompact ? 8 : 12),
+                            vertical: isCompact ? 8 : 12,
+                          ),
                         ),
                       ),
                     ),
@@ -138,13 +139,18 @@ class _LhopitalInputFieldContent extends StatelessWidget {
                 ),
               ),
               Divider(
-                  height: 1,
-                  thickness: 0.8,
-                  indent: isCompact ? 16 : 20,
-                  endIndent: isCompact ? 16 : 20),
+                height: 1,
+                thickness: 0.8,
+                indent: isCompact ? 16 : 20,
+                endIndent: isCompact ? 16 : 20,
+              ),
               Padding(
-                padding: EdgeInsets.fromLTRB(isCompact ? 8 : 12,
-                    isCompact ? 8 : 12, isCompact ? 8 : 12, isCompact ? 8 : 12),
+                padding: EdgeInsets.fromLTRB(
+                  isCompact ? 8 : 12,
+                  isCompact ? 8 : 12,
+                  isCompact ? 8 : 12,
+                  isCompact ? 8 : 12,
+                ),
                 child: Row(
                   children: [
                     ResponsiveText(
@@ -162,8 +168,9 @@ class _LhopitalInputFieldContent extends StatelessWidget {
                       onTap: () => _showVariablePicker(context),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: isCompact ? 4 : 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isCompact ? 4 : 8,
+                      ),
                       child: Icon(
                         Icons.arrow_forward_rounded,
                         size: isCompact ? 12 : 14,
@@ -195,15 +202,16 @@ class _LhopitalInputFieldContent extends StatelessWidget {
                           ),
                           decoration: InputDecoration(
                             hintText: 'value',
-                            hintStyle:
-                                FinalsTheme.subtitleStyle(context).copyWith(
-                              fontSize: 11,
-                              color: FinalsTheme.textSecondary(context)
-                                  .withValues(alpha: 0.4),
-                            ),
+                            hintStyle: FinalsTheme.subtitleStyle(context)
+                                .copyWith(
+                                  fontSize: 11,
+                                  color: FinalsTheme.textSecondary(context)
+                                      .withValues(alpha: 0.4),
+                                ),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: isCompact ? 6 : 10),
+                              vertical: isCompact ? 6 : 10,
+                            ),
                           ),
                         ),
                       ),
@@ -252,8 +260,10 @@ class _LhopitalInputFieldContent extends StatelessWidget {
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 itemCount: variables.length,
                 itemBuilder: (ctx, i) {
                   final v = variables[i];
@@ -286,10 +296,13 @@ class _LhopitalInputFieldContent extends StatelessWidget {
                           Navigator.pop(ctx);
                         },
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         trailing: isSelected
-                            ? Icon(Icons.check_circle_rounded,
-                                color: FinalsTheme.secondaryFor(ctx))
+                            ? Icon(
+                                Icons.check_circle_rounded,
+                                color: FinalsTheme.secondaryFor(ctx),
+                              )
                             : null,
                       ),
                     ),

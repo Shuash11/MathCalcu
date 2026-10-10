@@ -46,8 +46,7 @@ const _developers = [
     facebook: 'Joashua Marl Barimbao',
     contribution: 'From UI To solvers',
     phone: '09639201328',
-    groups:
-        'Mary Chris Malinao\nKym Alinsonorin\nAljhun Gallego(gwapo)\nCresa Delacruz(Documentation)\nJoseph Rebamonte\nMerjohn Pagente',
+    groups: 'Mary Chris Malinao\nKym Alinsonorin\nAljhun Gallego(gwapo)\nCresa Delacruz(Documentation)\nJoseph Rebamonte\nMerjohn Pagente',
   ),
   _Developer(
     name: 'Michaela Denise Ong',
@@ -57,8 +56,7 @@ const _developers = [
     email: 'michaeladenis11@gmail.com',
     contribution: 'Documentation',
     phone: '09452238406',
-    groups:
-        'Marie Joy Sebusana\nSusan Rhea Tamboboy\nVenus Caliguid\nAlche Paye\nVincent Padillio\nStephen Mark Maluto',
+    groups: 'Marie Joy Sebusana\nSusan Rhea Tamboboy\nVenus Caliguid\nAlche Paye\nVincent Padillio\nStephen Mark Maluto',
   ),
   _Developer(
     name: 'Nash Bruce Quiros',
@@ -68,8 +66,7 @@ const _developers = [
     facebook: 'Nash Bruce Quiros',
     contribution: 'Testing',
     phone: '09953941510',
-    groups:
-        'Cabrera Carl Edward\nTyrus Regine\nRhea Mae Bustamante\nJoshua Barientos',
+    groups: 'Cabrera Carl Edward\nTyrus Regine\nRhea Mae Bustamante\nJoshua Barientos',
   ),
   _Developer(
     name: 'John Carlo Legaste',
@@ -89,8 +86,7 @@ const _developers = [
     contribution: 'Contrinuted/UI Polish',
     facebook: 'Clifford Probetso',
     phone: '09510069125',
-    groups:
-        'Angelie Jerusalem\nIvan Rabanzo\nLausa Dave\nJanwell Nacario\nRoynuj Plaza',
+    groups: 'Angelie Jerusalem\nIvan Rabanzo\nLausa Dave\nJanwell Nacario\nRoynuj Plaza',
   ),
   _Developer(
     name: 'Johnlin Redido',
@@ -100,8 +96,7 @@ const _developers = [
     email: 'linzy21x@gmail.com',
     contribution: 'UI TESTING',
     phone: '09700455407',
-    groups:
-        'Gretechen Tumilap\nGonzaga Blessy\nJemson Tubis\nAllysa Sharise Cagui-at\nAlyssa Jean Toso',
+    groups: 'Gretechen Tumilap\nGonzaga Blessy\nJemson Tubis\nAllysa Sharise Cagui-at\nAlyssa Jean Toso',
   ),
 ];
 
@@ -130,14 +125,17 @@ class _FinalsAboutSheet extends StatelessWidget {
         // Wrap in LayoutBuilder to get exact screen width for scaling
         return LayoutBuilder(
           builder: (context, constraints) {
-            final double s =
-                (constraints.maxWidth / _baseDesignWidth).clamp(0.75, 1.1);
+            final double s = (constraints.maxWidth / _baseDesignWidth).clamp(
+              0.75,
+              1.1,
+            );
 
             return Container(
               decoration: BoxDecoration(
                 color: FinalsTheme.surface(context),
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: FinalsTheme.primary.withValues(alpha: 0.2),
@@ -164,7 +162,9 @@ class _FinalsAboutSheet extends StatelessWidget {
                   // -- Header with flame icon ----------------------
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 28 * s, vertical: 16 * s),
+                      horizontal: 28 * s,
+                      vertical: 16 * s,
+                    ),
                     child: Row(
                       children: [
                         Container(
@@ -175,8 +175,9 @@ class _FinalsAboutSheet extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18 * s),
                             boxShadow: [
                               BoxShadow(
-                                color:
-                                    FinalsTheme.primary.withValues(alpha: 0.4),
+                                color: FinalsTheme.primary.withValues(
+                                  alpha: 0.4,
+                                ),
                                 blurRadius: 20 * s,
                                 offset: Offset(0, 6 * s),
                               ),
@@ -221,8 +222,12 @@ class _FinalsAboutSheet extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       controller: scrollController,
-                      padding:
-                          EdgeInsets.fromLTRB(24 * s, 8 * s, 24 * s, 40 * s),
+                      padding: EdgeInsets.fromLTRB(
+                        24 * s,
+                        8 * s,
+                        24 * s,
+                        40 * s,
+                      ),
                       children: [
                         // -- Description card ------------------------
                         Container(
@@ -287,8 +292,9 @@ class _FinalsAboutSheet extends StatelessWidget {
                                   gradient: LinearGradient(
                                     colors: [
                                       Colors.transparent,
-                                      FinalsTheme.primary
-                                          .withValues(alpha: 0.3),
+                                      FinalsTheme.primary.withValues(
+                                        alpha: 0.3,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -322,8 +328,9 @@ class _FinalsAboutSheet extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      FinalsTheme.primary
-                                          .withValues(alpha: 0.3),
+                                      FinalsTheme.primary.withValues(
+                                        alpha: 0.3,
+                                      ),
                                       Colors.transparent,
                                     ],
                                   ),
@@ -337,12 +344,12 @@ class _FinalsAboutSheet extends StatelessWidget {
 
                         // -- Developer grid cards --------------------
                         ..._developers.asMap().entries.map(
-                              (e) => _FinalsDeveloperCard(
-                                developer: e.value,
-                                index: e.key,
-                                scale: s, // Pass scale down to cards
-                              ),
-                            ),
+                          (e) => _FinalsDeveloperCard(
+                            developer: e.value,
+                            index: e.key,
+                            scale: s, // Pass scale down to cards
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -442,10 +449,7 @@ class _FinalsDeveloperCardState extends State<_FinalsDeveloperCard> {
                     height: _expanded ? 4 * s : 3 * s,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [
-                          color,
-                          color.withValues(alpha: 0.6),
-                        ],
+                        colors: [color, color.withValues(alpha: 0.6)],
                       ),
                     ),
                   ),
@@ -682,8 +686,9 @@ class _DetailItem extends StatelessWidget {
     final s = scale;
 
     return Row(
-      crossAxisAlignment:
-          isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: isMultiline
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
         Container(
           width: 32 * s,
@@ -701,7 +706,9 @@ class _DetailItem extends StatelessWidget {
           flex: 0,
           child: Container(
             constraints: BoxConstraints(
-                minWidth: 70 * s, maxWidth: 90 * s), // Responsive width bounds
+              minWidth: 70 * s,
+              maxWidth: 90 * s,
+            ), // Responsive width bounds
             child: Text(
               label,
               style: TextStyle(

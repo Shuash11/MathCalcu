@@ -79,8 +79,8 @@ void main() {
     });
 
     test('washer steps mention outer and inner radii', () {
-      final steps =
-          eq('volume washer x x^2 about x-axis from 0 to 1').getSteps();
+      final steps = eq('volume washer x x^2 about x-axis from 0 to 1')
+          .getSteps();
       expect(steps.length, 4);
       expect(steps[0].explanation, contains('outer'));
       expect(steps[0].explanation, contains('inner'));
@@ -191,8 +191,9 @@ void main() {
 
   group('Volumes of Revolution — wiring', () {
     testWidgets('registry route renders its screen', (tester) async {
-      final entry = FinalsModuleRegistry.modules
-          .singleWhere((m) => m.label == 'Volumes of Revolution');
+      final entry = FinalsModuleRegistry.modules.singleWhere(
+        (m) => m.label == 'Volumes of Revolution',
+      );
       expect(entry.route, '/topics/calculus/finals/volumes');
 
       await tester.pumpWidget(

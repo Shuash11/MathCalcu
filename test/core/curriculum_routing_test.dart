@@ -21,10 +21,7 @@ void main() {
     test('exact subject, case-insensitive, trims', () {
       final fractions = CurriculumRegistry.bySubject('Fractions');
       expect(fractions.map((t) => t.id), ['g6-1-fractions']);
-      expect(
-        CurriculumRegistry.bySubject('  fractions '),
-        hasLength(1),
-      );
+      expect(CurriculumRegistry.bySubject('  fractions '), hasLength(1));
       expect(
         CurriculumRegistry.bySubject('TRIGONOMETRY').map((t) => t.id),
         containsAll(['g9-trig-ratios', 'g11-trig-equations']),
@@ -67,10 +64,7 @@ void main() {
     });
 
     test('subjects delegate to the central registry', () {
-      expect(
-        Grade6ModuleRegistry.subjects,
-        CurriculumRegistry.grade6Subjects,
-      );
+      expect(Grade6ModuleRegistry.subjects, CurriculumRegistry.grade6Subjects);
     });
   });
 
@@ -88,10 +82,7 @@ void main() {
       }
       // 'trig G9' must not leak G11 topics.
       final g9 = CurriculumRegistry.search('trig G9');
-      expect(
-        g9.any((h) => h.topic.gradeLevel == 'G11'),
-        isFalse,
-      );
+      expect(g9.any((h) => h.topic.gradeLevel == 'G11'), isFalse);
     });
 
     test('single-token behavior is unchanged', () {
@@ -134,8 +125,9 @@ void main() {
 
     test('all 10 /shs/* entries are solver-backed with routes', () {
       for (final id in shsIds) {
-        final topic =
-            CurriculumRegistry.allTopics().firstWhere((t) => t.id == id);
+        final topic = CurriculumRegistry.allTopics().firstWhere(
+          (t) => t.id == id,
+        );
         expect(topic.solverAvailable, isTrue, reason: id);
         expect(topic.route.startsWith('/shs/'), isTrue, reason: id);
       }
@@ -153,7 +145,8 @@ void main() {
           // /grade7/* + /grade8/* algebra leaves (signed-numbers,
           // linear-equations, factoring, systems). Phase 3 adds the
           // /college/* leaf (college-stats thin screen).
-          final wired = topic.route.startsWith('/grade6/') ||
+          final wired =
+              topic.route.startsWith('/grade6/') ||
               topic.route.startsWith('/shs/') ||
               topic.route.startsWith('/grade7/') ||
               topic.route.startsWith('/grade8/') ||
@@ -201,20 +194,19 @@ void main() {
         ...ModmatModuleRegistry.foundationsModules,
         ...ModmatModuleRegistry.advancedModules,
       ]) {
-        expect(ModmatModuleRegistry.isLeafRoute(m.route), isTrue,
-            reason: m.route);
-        expect(ModmatModuleRegistry.isRouteAvailable(m.route),
-            wired.contains(m.route),
-            reason: m.route);
+        expect(
+          ModmatModuleRegistry.isLeafRoute(m.route),
+          isTrue,
+          reason: m.route,
+        );
+        expect(
+          ModmatModuleRegistry.isRouteAvailable(m.route),
+          wired.contains(m.route),
+          reason: m.route,
+        );
       }
-      expect(
-        ModmatModuleRegistry.wiredLeafRoutes,
-        unorderedEquals(wired),
-      );
-      expect(
-        ModmatModuleRegistry.isRouteAvailable('/topics/modmat'),
-        isTrue,
-      );
+      expect(ModmatModuleRegistry.wiredLeafRoutes, unorderedEquals(wired));
+      expect(ModmatModuleRegistry.isRouteAvailable('/topics/modmat'), isTrue);
       expect(
         ModmatModuleRegistry.isRouteAvailable('/topics/modmat/foundations'),
         isTrue,
@@ -236,8 +228,9 @@ void main() {
         'g12-derivatives',
       ];
       for (final id in ids) {
-        final topic =
-            CurriculumRegistry.allTopics().firstWhere((t) => t.id == id);
+        final topic = CurriculumRegistry.allTopics().firstWhere(
+          (t) => t.id == id,
+        );
         expect(topic.solverAvailable, isTrue, reason: id);
       }
       expect(
@@ -260,14 +253,16 @@ void main() {
       // Cycle 9: all 14 M1–M14 leaves are solver-backed, not stubs.
       final wiredHits = UnifiedSearch.search('propositional');
       expect(wiredHits, isNotEmpty);
-      for (final hit in wiredHits
-          .where((h) => h.route.startsWith('/modmat/foundations/'))) {
+      for (final hit in wiredHits.where(
+        (h) => h.route.startsWith('/modmat/foundations/'),
+      )) {
         expect(hit.isStub, isFalse, reason: hit.route);
       }
       final wave2Hits = UnifiedSearch.search('predicate');
       expect(wave2Hits, isNotEmpty);
-      for (final hit in wave2Hits
-          .where((h) => h.route.startsWith('/modmat/foundations/'))) {
+      for (final hit in wave2Hits.where(
+        (h) => h.route.startsWith('/modmat/foundations/'),
+      )) {
         expect(hit.isStub, isFalse, reason: hit.route);
       }
       // Gated curriculum hits are stubs too. Phase 3 ungated the
@@ -330,8 +325,9 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('every registry /shs/* route resolves to a screen',
-        (tester) async {
+    testWidgets('every registry /shs/* route resolves to a screen', (
+      tester,
+    ) async {
       await pumpRouter(tester);
       const routesToTitles = {
         '/shs/trig-ratios': 'Trig Ratios',
@@ -348,15 +344,19 @@ void main() {
       for (final entry in routesToTitles.entries) {
         AppRouter.router.go(entry.key);
         await tester.pumpAndSettle();
-        expect(find.textContaining(entry.value), findsWidgets,
-            reason: entry.key);
+        expect(
+          find.textContaining(entry.value),
+          findsWidgets,
+          reason: entry.key,
+        );
         expect(find.text('Topic coming soon'), findsNothing, reason: entry.key);
         expect(tester.takeException(), isNull);
       }
     });
 
-    testWidgets('Cycle 9: modmat leaves + grade9/10 routes resolve',
-        (tester) async {
+    testWidgets('Cycle 9: modmat leaves + grade9/10 routes resolve', (
+      tester,
+    ) async {
       await pumpRouter(tester);
       const routesToTitles = {
         '/modmat/foundations/propositional_logic': 'Propositional Logic',
@@ -382,8 +382,11 @@ void main() {
       for (final entry in routesToTitles.entries) {
         AppRouter.router.go(entry.key);
         await tester.pumpAndSettle();
-        expect(find.textContaining(entry.value), findsWidgets,
-            reason: entry.key);
+        expect(
+          find.textContaining(entry.value),
+          findsWidgets,
+          reason: entry.key,
+        );
         expect(find.text('Topic coming soon'), findsNothing, reason: entry.key);
         expect(tester.takeException(), isNull);
       }
@@ -402,11 +405,13 @@ void main() {
     // Phase 1: one explicit test per repointed topic — solver flag
     // on, route string set, and the route registered in the real
     // GoRouter configuration (findMatch, not a string check).
-    testWidgets('Phase 1: college-matrices is solver-backed and routed',
-        (tester) async {
+    testWidgets('Phase 1: college-matrices is solver-backed and routed', (
+      tester,
+    ) async {
       await pumpRouter(tester);
-      final topic = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'college-matrices');
+      final topic = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'college-matrices',
+      );
       expect(topic.solverAvailable, isTrue);
       expect(topic.route, '/modmat/advanced/linear_algebra');
       expect(
@@ -415,11 +420,13 @@ void main() {
       );
     });
 
-    testWidgets('Phase 1: g10-combinatorics is solver-backed and routed',
-        (tester) async {
+    testWidgets('Phase 1: g10-combinatorics is solver-backed and routed', (
+      tester,
+    ) async {
       await pumpRouter(tester);
-      final topic = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'g10-combinatorics');
+      final topic = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'g10-combinatorics',
+      );
       expect(topic.solverAvailable, isTrue);
       expect(topic.route, '/modmat/foundations/combinatorics_basics');
       expect(
@@ -428,11 +435,13 @@ void main() {
       );
     });
 
-    testWidgets('Phase 1: g10-circle-equation is solver-backed and routed',
-        (tester) async {
+    testWidgets('Phase 1: g10-circle-equation is solver-backed and routed', (
+      tester,
+    ) async {
       await pumpRouter(tester);
-      final topic = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'g10-circle-equation');
+      final topic = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'g10-circle-equation',
+      );
       expect(topic.solverAvailable, isTrue);
       expect(topic.route, '/circle');
       expect(
@@ -441,11 +450,13 @@ void main() {
       );
     });
 
-    testWidgets('Phase 1: g7-inequalities is solver-backed and routed',
-        (tester) async {
+    testWidgets('Phase 1: g7-inequalities is solver-backed and routed', (
+      tester,
+    ) async {
       await pumpRouter(tester);
-      final topic = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'g7-inequalities');
+      final topic = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'g7-inequalities',
+      );
       expect(topic.solverAvailable, isTrue);
       expect(topic.route, '/inequalities/simple');
       expect(
@@ -454,11 +465,13 @@ void main() {
       );
     });
 
-    testWidgets('Phase 1: g8-slope-intercept is solver-backed and routed',
-        (tester) async {
+    testWidgets('Phase 1: g8-slope-intercept is solver-backed and routed', (
+      tester,
+    ) async {
       await pumpRouter(tester);
-      final topic = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'g8-slope-intercept');
+      final topic = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'g8-slope-intercept',
+      );
       expect(topic.solverAvailable, isTrue);
       expect(topic.route, '/slope-intercept-form');
       expect(
@@ -480,8 +493,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('unknown locations land on the coming-soon screen',
-        (tester) async {
+    testWidgets('unknown locations land on the coming-soon screen', (
+      tester,
+    ) async {
       await pumpRouter(tester);
       AppRouter.router.go('/no-such-topic-xyz');
       await tester.pumpAndSettle();

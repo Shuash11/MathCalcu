@@ -50,8 +50,8 @@ class ModuleRegistry {
     // Clean white/silver accent - unique from orange distance
 
     // ─────────────────────────────────────────────────────
-// ── POINT-SLOPE MODULE ───────────────────────────────
-// Deep violet/purple theme - mathematical sophistication
+    // ── POINT-SLOPE MODULE ───────────────────────────────
+    // Deep violet/purple theme - mathematical sophistication
     const ModuleEntry(
       label: 'point-slope',
       subtitle: 'y − y₁ = m(x − x₁)  Line equations',
@@ -59,7 +59,7 @@ class ModuleRegistry {
       icon: Icons.trending_flat_rounded, // Suggests line/slope
       accent: Color(0xFF334155), // Charcoal
     ),
-// ─────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────
     const ModuleEntry(
       label: 'Two-Point Slope',
       subtitle: 'Find slope from two coordinate points',
@@ -67,8 +67,8 @@ class ModuleRegistry {
       icon: Icons.show_chart_rounded,
       accent: Color(0xFF334155), // Amber
     ),
-// ── Y-INTERCEPT MODULE ────────────────────────────────
-// Emerald green + gold - represents crossing point/growth
+    // ── Y-INTERCEPT MODULE ────────────────────────────────
+    // Emerald green + gold - represents crossing point/growth
     const ModuleEntry(
       label: 'slope-intercept-form',
       subtitle: 'Find where \nline crosses\nY-axis',
@@ -83,9 +83,9 @@ class ModuleRegistry {
       icon: Icons.compare_arrows_rounded,
       accent: Color(0xFF334155),
     ),
-// ─────────────────────────────────────────────────────
-// ── CIRCLE MODULE ─────────────────────────────────────
-// Indigo + cyan theme - 3 solution types inside
+    // ─────────────────────────────────────────────────────
+    // ── CIRCLE MODULE ─────────────────────────────────────
+    // Indigo + cyan theme - 3 solution types inside
     const ModuleEntry(
       label: 'circle',
       subtitle: 'Standard ? General ? Center-Radius',
@@ -93,9 +93,9 @@ class ModuleRegistry {
       icon: Icons.radio_button_unchecked_rounded, // Circle icon
       accent: Color(0xFF334155), // Indigo
     ),
-// ─────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────
 
-// ─────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────
     // ── FUTURE DEV: add your one line here ───────────────
     // ModuleEntry(
     //   label: 'Your Topic',

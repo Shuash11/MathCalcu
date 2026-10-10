@@ -142,7 +142,8 @@ class M13TopologyEquation extends BaseEquation {
       connected ? 'connected' : 'disconnected',
       bounded ? 'bounded' : 'unbounded',
     ];
-    final score = (open ? 1 : 0) +
+    final score =
+        (open ? 1 : 0) +
         (closed ? 1 : 0) +
         (compact ? 1 : 0) +
         (connected ? 1 : 0);
@@ -158,7 +159,7 @@ class M13TopologyEquation extends BaseEquation {
           'compact': compact,
           'connected': connected,
           'bounded': bounded,
-        }
+        },
       ],
     );
   }
@@ -169,9 +170,10 @@ class M13TopologyEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use (0,1).')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use (0,1).',
+        ),
       ];
     }
     final r = solve();
@@ -201,7 +203,8 @@ class M13TopologyEquation extends BaseEquation {
           return d == d.roundToDouble() ? d.toInt().toString() : '$d';
         }
 
-        setTex = '${lc ? '[' : '('}${fmt(ends[0])}, ${fmt(ends[1])}'
+        setTex =
+            '${lc ? '[' : '('}${fmt(ends[0])}, ${fmt(ends[1])}'
             '${rc ? ']' : ')'}';
       }
       final open = data['open'] == true;
@@ -211,10 +214,10 @@ class M13TopologyEquation extends BaseEquation {
       final tag = (open && closed)
           ? 'clopen'
           : open
-              ? 'open'
-              : closed
-                  ? 'closed'
-                  : 'neither open nor closed';
+          ? 'open'
+          : closed
+          ? 'closed'
+          : 'neither open nor closed';
       topLatex = setTex;
       topSub = [
         '\\text{$tag}',
@@ -224,19 +227,22 @@ class M13TopologyEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Open vs closed endpoints',
-          explanation: '( ) exclude the endpoint (open side); [ ] include it.'),
+        stepNumber: 1,
+        title: 'Open vs closed endpoints',
+        explanation: '( ) exclude the endpoint (open side); [ ] include it.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Heine–Borel for compactness',
-          explanation: 'In R: compact ⟺ closed + bounded.'),
+        stepNumber: 2,
+        title: 'Heine–Borel for compactness',
+        explanation: 'In R: compact ⟺ closed + bounded.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the classification',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: topLatex,
-          subLatex: topSub),
+        stepNumber: 3,
+        title: 'Read the classification',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: topLatex,
+        subLatex: topSub,
+      ),
     ];
   }
 }

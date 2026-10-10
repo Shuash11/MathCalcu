@@ -142,8 +142,9 @@ class LhopitalSolverEngine {
 
   LhopitalResult solve(LhopitalProblem problem) {
     try {
-      final (numerator, denominator) =
-          _parseExpressionAsFraction(problem.expression.trim());
+      final (numerator, denominator) = _parseExpressionAsFraction(
+        problem.expression.trim(),
+      );
 
       if (problem.approachValue.isFinite) {
         return _solveAtPoint(problem, numerator, denominator);
@@ -161,8 +162,11 @@ class LhopitalSolverEngine {
     Expr numerator,
     Expr denominator,
   ) {
-    final numAtPoint =
-        _evaluator.evaluate(numerator, problem.approachValue, problem.variable);
+    final numAtPoint = _evaluator.evaluate(
+      numerator,
+      problem.approachValue,
+      problem.variable,
+    );
     final denAtPoint = _evaluator.evaluate(
       denominator,
       problem.approachValue,
@@ -201,14 +205,20 @@ class LhopitalSolverEngine {
     final sign = problem.approachValue > 0 ? 1.0 : -1.0;
     final v = problem.variable;
 
-    final isInfinityOverInfinity = _isUnboundedAt(numerator, sign * 1e3, v) &&
+    final isInfinityOverInfinity =
+        _isUnboundedAt(numerator, sign * 1e3, v) &&
         _isUnboundedAt(numerator, sign * 1e6, v) &&
         _isUnboundedAt(denominator, sign * 1e3, v) &&
         _isUnboundedAt(denominator, sign * 1e6, v);
 
     if (!isInfinityOverInfinity) {
       return _notIndeterminate(
-          problem, numerator, denominator, double.nan, double.nan);
+        problem,
+        numerator,
+        denominator,
+        double.nan,
+        double.nan,
+      );
     }
 
     return _applyRounds(
@@ -228,19 +238,26 @@ class LhopitalSolverEngine {
 
   // ── L'Hopital rounds ─────────────────────────────────────────
 
-  LhopitalResult _applyRounds(LhopitalProblem problem, Expr numerator,
-      Expr denominator, double numAtPoint, double denAtPoint,
-      {required bool isInfinityOverInfinity}) {
+  LhopitalResult _applyRounds(
+    LhopitalProblem problem,
+    Expr numerator,
+    Expr denominator,
+    double numAtPoint,
+    double denAtPoint, {
+    required bool isInfinityOverInfinity,
+  }) {
     final v = problem.variable;
     var curNum = numerator;
     var curDen = denominator;
     final rounds = <LhopitalRound>[];
 
     for (var round = 1; round <= _maxRounds; round++) {
-      final dNum =
-          DerivativeSolver.simplify(DerivativeSolver.differentiate(curNum, v));
-      final dDen =
-          DerivativeSolver.simplify(DerivativeSolver.differentiate(curDen, v));
+      final dNum = DerivativeSolver.simplify(
+        DerivativeSolver.differentiate(curNum, v),
+      );
+      final dDen = DerivativeSolver.simplify(
+        DerivativeSolver.differentiate(curDen, v),
+      );
 
       final numVal = isInfinityOverInfinity
           ? _evaluator.evaluate(dNum, _largeSampleX, v)
@@ -252,13 +269,15 @@ class LhopitalSolverEngine {
       final ratio = _safeDivide(numVal, denVal);
 
       if (_isUsableNumber(ratio)) {
-        rounds.add(LhopitalRound(
-          derivativeNumerator: dNum,
-          derivativeDenominator: dDen,
-          numeratorValue: numVal,
-          denominatorValue: denVal,
-          form: '${_fmtValue(numVal)}/${_fmtValue(denVal)}',
-        ));
+        rounds.add(
+          LhopitalRound(
+            derivativeNumerator: dNum,
+            derivativeDenominator: dDen,
+            numeratorValue: numVal,
+            denominatorValue: denVal,
+            form: '${_fmtValue(numVal)}/${_fmtValue(denVal)}',
+          ),
+        );
         return LhopitalResult(
           originalExpression: problem.expression,
           approachValue: problem.approachValue,
@@ -277,23 +296,26 @@ class LhopitalSolverEngine {
       }
 
       final stillIndeterminate = numVal.abs() < 1e-9 && denVal.abs() < 1e-9;
-      final stillInfinityForm = isInfinityOverInfinity &&
+      final stillInfinityForm =
+          isInfinityOverInfinity &&
           numVal.isFinite &&
           denVal.isFinite &&
           numVal.abs() > 1e2 &&
           denVal.abs() > 1e2;
 
-      rounds.add(LhopitalRound(
-        derivativeNumerator: dNum,
-        derivativeDenominator: dDen,
-        numeratorValue: numVal,
-        denominatorValue: denVal,
-        form: stillIndeterminate
-            ? '0/0'
-            : (stillInfinityForm
-                ? '∞/∞'
-                : '${_fmtValue(numVal)}/${_fmtValue(denVal)}'),
-      ));
+      rounds.add(
+        LhopitalRound(
+          derivativeNumerator: dNum,
+          derivativeDenominator: dDen,
+          numeratorValue: numVal,
+          denominatorValue: denVal,
+          form: stillIndeterminate
+              ? '0/0'
+              : (stillInfinityForm
+                    ? '∞/∞'
+                    : '${_fmtValue(numVal)}/${_fmtValue(denVal)}'),
+        ),
+      );
 
       if (stillIndeterminate || stillInfinityForm) {
         curNum = dNum;
@@ -353,8 +375,7 @@ class LhopitalSolverEngine {
       isIndeterminate: false,
       finalValue: double.nan,
       solved: false,
-      errorMessage:
-          'Not an indeterminate form. L\'Hopital\'s rule applies to 0/0 or ∞/∞. Try using Substitution method instead.',
+      errorMessage: 'Not an indeterminate form. L\'Hopital\'s rule applies to 0/0 or ∞/∞. Try using Substitution method instead.',
     );
   }
 

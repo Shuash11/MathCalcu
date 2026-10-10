@@ -19,8 +19,9 @@ void main() {
   // Smoke test: safety net for future fl_chart upgrades. Pumps the widget with
   // representative inputs and asserts it builds (no exception) with the fl_chart
   // LineChart present.
-  testWidgets('TwoPointSlopeGraph builds a LineChart for a sloped line',
-      (tester) async {
+  testWidgets('TwoPointSlopeGraph builds a LineChart for a sloped line', (
+    tester,
+  ) async {
     final result = TwoPointSlopeSolver.solve(x1: 1, y1: 1, x2: 3, y2: 5);
 
     await tester.pumpWidget(_buildApp(result));
@@ -30,8 +31,9 @@ void main() {
     expect(find.text('GRAPH'), findsOneWidget);
   });
 
-  testWidgets('TwoPointSlopeGraph builds a LineChart for a vertical line',
-      (tester) async {
+  testWidgets('TwoPointSlopeGraph builds a LineChart for a vertical line', (
+    tester,
+  ) async {
     final result = TwoPointSlopeSolver.solve(x1: 2, y1: 1, x2: 2, y2: 4);
     expect(result.isVertical, isTrue);
 

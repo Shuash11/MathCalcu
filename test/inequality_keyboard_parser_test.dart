@@ -21,15 +21,17 @@ void main() {
       expect(result.intervalNotation, '[2, ∞)');
     });
 
-    test('parses a linear inequality with a trailing decimal right-hand side',
-        () {
-      final result = InequalitySolverRouter.solve('2x - 4 > 3.');
+    test(
+      'parses a linear inequality with a trailing decimal right-hand side',
+      () {
+        final result = InequalitySolverRouter.solve('2x - 4 > 3.');
 
-      expect(result.hasError, isFalse);
-      expect(result.points, hasLength(1));
-      expect(result.points.single, closeTo(3.5, 1e-9));
-      expect(result.intervalNotation, '(7/2, ∞)');
-    });
+        expect(result.hasError, isFalse);
+        expect(result.points, hasLength(1));
+        expect(result.points.single, closeTo(3.5, 1e-9));
+        expect(result.intervalNotation, '(7/2, ∞)');
+      },
+    );
 
     test('parses a quadratic with a decimal boundary', () {
       final result = InequalitySolverRouter.solve('x^2 > 0.75');

@@ -22,8 +22,10 @@ import 'package:calculus_system/topics/quadratics/screens/quadratics_sequences_s
 import 'package:calculus_system/topics/quadratics/screens/quadratics_poly_division_screen.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+
 import 'topics/calculus/midterm/screens/circles_screen/center/center_screen.dart';
 import 'topics/calculus/midterm/screens/circles_screen/radius/radiusui.dart';
+
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/slope_intercept_scr.dart';
 import 'package:calculus_system/topics/calculus/midterm/screens/yintercept_screen/parallel_perpendicular_screen.dart';
 import 'package:material_ui/material_ui.dart';
@@ -49,6 +51,7 @@ import 'topics/calculus/midterm/screens/pointslope_screen/pointslopescreen.dart'
 import 'topics/calculus/midterm/screens/two_point_slope_screen/twopointslopescreen.dart';
 import 'topics/calculus/midterm/cards/circles/card_picker_screen.dart';
 import 'topics/calculus/midterm/screens/circles_screen/center_radius_form/center_radiusui.dart';
+
 import 'package:calculus_system/topics/calculus/finals/finals_picker_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/derivatives_screen/derivatives_screen.dart';
 import 'package:calculus_system/topics/calculus/finals/screens/slope_using_derivatives_screen/slope_solver_screen.dart';
@@ -396,26 +399,20 @@ class AppRouter {
           GoRoute(
             path: 'finding-radius',
             name: 'finding-radius',
-            pageBuilder: (context, state) => _fadeRoute(
-              state.pageKey,
-              const FindingRadiusScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const FindingRadiusScreen()),
           ),
           GoRoute(
             path: 'finding-center',
             name: 'finding-center',
-            pageBuilder: (context, state) => _fadeRoute(
-              state.pageKey,
-              const FindingCenterScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const FindingCenterScreen()),
           ),
           GoRoute(
             path: 'finding-center-radius',
             name: 'finding-center-radius',
-            pageBuilder: (context, state) => _fadeRoute(
-              state.pageKey,
-              const FindingCenterRadiusScreen(),
-            ),
+            pageBuilder: (context, state) =>
+                _fadeRoute(state.pageKey, const FindingCenterRadiusScreen()),
           ),
         ],
       ),
@@ -719,10 +716,7 @@ class _RouteNotFoundScreen extends StatelessWidget {
                 Text(
                   '“$location” isn\'t available in this version yet.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: theme.textSecondary,
-                    height: 1.4,
-                  ),
+                  style: TextStyle(color: theme.textSecondary, height: 1.4),
                 ),
                 const SizedBox(height: 24),
                 FilledButton.icon(

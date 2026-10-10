@@ -24,11 +24,11 @@ class StepSection {
     required this.stepLabel,
     required this.guide,
     required this.latexContent,
-  })  : kind = StepKind.single,
-        leftLabel = null,
-        rightLabel = null,
-        leftLatex = null,
-        rightLatex = null;
+  }) : kind = StepKind.single,
+       leftLabel = null,
+       rightLabel = null,
+       leftLatex = null,
+       rightLatex = null;
 
   const StepSection.dual({
     required this.stepLabel,
@@ -37,8 +37,8 @@ class StepSection {
     required String this.rightLabel,
     required String this.leftLatex,
     required String this.rightLatex,
-  })  : kind = StepKind.dual,
-        latexContent = null;
+  }) : kind = StepKind.dual,
+       latexContent = null;
 }
 
 class _StepBuilder {
@@ -75,9 +75,18 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify endpoints',
-        latexContent: r'\begin{aligned}'
-            'A &= (' '$x1s' r',\;' '$y1s' r') \to (x_1,\;y_1) \\'
-            'B &= (' '$x2s' r',\;' '$y2s' r') \to (x_2,\;y_2)'
+        latexContent:
+            r'\begin{aligned}'
+            'A &= ('
+            '$x1s'
+            r',\;'
+            '$y1s'
+            r') \to (x_1,\;y_1) \\'
+            'B &= ('
+            '$x2s'
+            r',\;'
+            '$y2s'
+            r') \to (x_2,\;y_2)'
             r'\end{aligned}',
       ),
 
@@ -97,12 +106,14 @@ class _StepBuilder {
         guide: 'Add both coordinates',
         leftLabel: 'x-coordinate',
         rightLabel: 'y-coordinate',
-        leftLatex: r'\begin{aligned}'
+        leftLatex:
+            r'\begin{aligned}'
             'x_1 + x_2 &= $x1s + $x2s'
             r' \\'
             '&= $sumXs'
             r'\end{aligned}',
-        rightLatex: r'\begin{aligned}'
+        rightLatex:
+            r'\begin{aligned}'
             'y_1 + y_2 &= $y1s + $y2s'
             r' \\'
             '&= $sumYs'
@@ -115,7 +126,8 @@ class _StepBuilder {
         guide: 'Divide by 2',
         leftLabel: 'Find x?',
         rightLabel: 'Find y?',
-        leftLatex: r'\begin{aligned}'
+        leftLatex:
+            r'\begin{aligned}'
             r'x_m &= \dfrac{'
             '$sumXs'
             r'}{2} \\'
@@ -123,7 +135,8 @@ class _StepBuilder {
             '$resXs'
             r'}'
             r'\end{aligned}',
-        rightLatex: r'\begin{aligned}'
+        rightLatex:
+            r'\begin{aligned}'
             r'y_m &= \dfrac{'
             '$sumYs'
             r'}{2} \\'
@@ -147,7 +160,8 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 5',
         guide: 'Answer + verify',
-        latexContent: r'\begin{aligned}'
+        latexContent:
+            r'\begin{aligned}'
             r'M &= \left('
             '$resXs'
             r',\;'
@@ -197,9 +211,18 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 1',
         guide: 'Identify given values',
-        latexContent: r'\begin{aligned}'
-            'M &= (' '$xms' r',\;' '$yms' r') \quad \text{(midpoint)} \\'
-            'A &= (' '$x1s' r',\;' '$y1s' r') \quad \text{(known endpoint)} \\'
+        latexContent:
+            r'\begin{aligned}'
+            'M &= ('
+            '$xms'
+            r',\;'
+            '$yms'
+            r') \quad \text{(midpoint)} \\'
+            'A &= ('
+            '$x1s'
+            r',\;'
+            '$y1s'
+            r') \quad \text{(known endpoint)} \\'
             r'B &= (x_2,\;y_2) \quad \text{(find this)}'
             r'\end{aligned}',
       ),
@@ -216,8 +239,7 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 3',
         guide: 'Rearrange for unknown endpoint',
-        latexContent:
-            r'\begin{aligned} x_2 &= 2x_m - x_1 \\ y_2 &= 2y_m - y_1 \end{aligned}',
+        latexContent: r'\begin{aligned} x_2 &= 2x_m - x_1 \\ y_2 &= 2y_m - y_1 \end{aligned}',
       ),
 
       // -- Step 4 ----------------------------------------------------------
@@ -226,7 +248,8 @@ class _StepBuilder {
         guide: 'Solve both coordinates',
         leftLabel: 'Solve x2',
         rightLabel: 'Solve y2',
-        leftLatex: r'\begin{aligned}'
+        leftLatex:
+            r'\begin{aligned}'
             r'x_2 &= 2('
             '$xms'
             r') - ('
@@ -241,7 +264,8 @@ class _StepBuilder {
             '$resXs'
             r'}'
             r'\end{aligned}',
-        rightLatex: r'\begin{aligned}'
+        rightLatex:
+            r'\begin{aligned}'
             r'y_2 &= 2('
             '$yms'
             r') - ('
@@ -263,7 +287,8 @@ class _StepBuilder {
       StepSection.single(
         stepLabel: 'Step 5',
         guide: 'Answer + verify',
-        latexContent: r'\begin{aligned}'
+        latexContent:
+            r'\begin{aligned}'
             r'B &= \left('
             '$resXs'
             r',\;'
@@ -351,17 +376,9 @@ class MidpointSteps extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Header(
-          stepCount: steps.length,
-          mode: mode,
-          isSmall: isSmall,
-        ),
+        _Header(stepCount: steps.length, mode: mode, isSmall: isSmall),
         SizedBox(height: isSmall ? 12 : 16),
-        _Timeline(
-          steps: steps,
-          isSmall: isSmall,
-          isMedium: isMedium,
-        ),
+        _Timeline(steps: steps, isSmall: isSmall, isMedium: isMedium),
       ],
     );
   }
@@ -623,10 +640,9 @@ class _GuideLabel extends StatelessWidget {
             text: '  ?  ',
             style: TextStyle(
               fontSize: isSmall ? 9 : 10,
-              color: context
-                  .watch<ThemeProvider>()
-                  .textPrimary
-                  .withValues(alpha: 0.4),
+              color: context.watch<ThemeProvider>().textPrimary.withValues(
+                alpha: 0.4,
+              ),
             ),
           ),
           TextSpan(
@@ -840,8 +856,11 @@ class _ErrorCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.error_outline_rounded,
-              color: Colors.red.shade400, size: isSmall ? 16 : 18),
+          Icon(
+            Icons.error_outline_rounded,
+            color: Colors.red.shade400,
+            size: isSmall ? 16 : 18,
+          ),
           SizedBox(width: isSmall ? 10 : 14),
           Expanded(
             child: Text(

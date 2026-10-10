@@ -17,11 +17,8 @@ Future<void> showStepsDrawer({
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => StepsDrawer(
-      steps: steps,
-      accentColor: accentColor,
-      title: title,
-    ),
+    builder: (_) =>
+        StepsDrawer(steps: steps, accentColor: accentColor, title: title),
   );
 }
 
@@ -64,29 +61,29 @@ class _StepsDrawerState extends State<StepsDrawer> {
   /// then its explanation when present — so a latex-less step is never
   /// an empty box.
   List<Widget> _plainStepFacts(StepModel s, ThemeProvider theme) => [
-        if (s.title.isNotEmpty)
-          Text(
-            s.title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: theme.textPrimary,
-              height: 1.5,
-            ),
+    if (s.title.isNotEmpty)
+      Text(
+        s.title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: theme.textPrimary,
+          height: 1.5,
+        ),
+      ),
+    if (s.explanation.isNotEmpty)
+      Padding(
+        padding: EdgeInsets.only(top: s.title.isNotEmpty ? 4 : 0),
+        child: Text(
+          s.explanation,
+          style: TextStyle(
+            fontSize: 13,
+            color: theme.textSecondary,
+            height: 1.45,
           ),
-        if (s.explanation.isNotEmpty)
-          Padding(
-            padding: EdgeInsets.only(top: s.title.isNotEmpty ? 4 : 0),
-            child: Text(
-              s.explanation,
-              style: TextStyle(
-                fontSize: 13,
-                color: theme.textSecondary,
-                height: 1.45,
-              ),
-            ),
-          ),
-      ];
+        ),
+      ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +115,9 @@ class _StepsDrawerState extends State<StepsDrawer> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: widget.accentColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
@@ -126,9 +125,10 @@ class _StepsDrawerState extends State<StepsDrawer> {
                       child: Text(
                         '${widget.steps.length} steps',
                         style: TextStyle(
-                            fontSize: 12,
-                            color: widget.accentColor,
-                            fontWeight: FontWeight.w600),
+                          fontSize: 12,
+                          color: widget.accentColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -148,7 +148,8 @@ class _StepsDrawerState extends State<StepsDrawer> {
                       button: true,
                       onTap: () {
                         Clipboard.setData(
-                            ClipboardData(text: _buildCopyText()));
+                          ClipboardData(text: _buildCopyText()),
+                        );
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Solution copied to clipboard'),
@@ -160,11 +161,14 @@ class _StepsDrawerState extends State<StepsDrawer> {
                       excludeSemantics: true,
                       child: IconButton(
                         tooltip: 'Copy solution',
-                        constraints:
-                            const BoxConstraints(minWidth: 44, minHeight: 44),
+                        constraints: const BoxConstraints(
+                          minWidth: 44,
+                          minHeight: 44,
+                        ),
                         onPressed: () {
                           Clipboard.setData(
-                              ClipboardData(text: _buildCopyText()));
+                            ClipboardData(text: _buildCopyText()),
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Solution copied to clipboard'),
@@ -173,8 +177,11 @@ class _StepsDrawerState extends State<StepsDrawer> {
                             ),
                           );
                         },
-                        icon: Icon(Icons.copy_rounded,
-                            color: theme.textSecondary, size: 20),
+                        icon: Icon(
+                          Icons.copy_rounded,
+                          color: theme.textSecondary,
+                          size: 20,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -185,18 +192,25 @@ class _StepsDrawerState extends State<StepsDrawer> {
                       excludeSemantics: true,
                       child: IconButton(
                         tooltip: 'Close solution steps',
-                        constraints:
-                            const BoxConstraints(minWidth: 44, minHeight: 44),
+                        constraints: const BoxConstraints(
+                          minWidth: 44,
+                          minHeight: 44,
+                        ),
                         onPressed: () => Navigator.pop(context),
-                        icon: Icon(Icons.close_rounded,
-                            color: theme.textSecondary, size: 20),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: theme.textSecondary,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
               Divider(
-                  height: 1, color: theme.textSecondary.withValues(alpha: 0.1)),
+                height: 1,
+                color: theme.textSecondary.withValues(alpha: 0.1),
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
@@ -207,10 +221,13 @@ class _StepsDrawerState extends State<StepsDrawer> {
                       color: theme.surface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                          color: widget.accentColor.withValues(alpha: 0.2)),
+                        color: widget.accentColor.withValues(alpha: 0.2),
+                      ),
                     ),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 24),
+                      horizontal: 20,
+                      vertical: 24,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: List.generate(widget.steps.length, (i) {
@@ -227,12 +244,12 @@ class _StepsDrawerState extends State<StepsDrawer> {
                           child: GestureDetector(
                             onTap: hasDetails
                                 ? () => setState(() {
-                                      if (isExpanded) {
-                                        _expanded.remove(i);
-                                      } else {
-                                        _expanded.add(i);
-                                      }
-                                    })
+                                    if (isExpanded) {
+                                      _expanded.remove(i);
+                                    } else {
+                                      _expanded.add(i);
+                                    }
+                                  })
                                 : null,
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,8 +259,9 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                   width: 22,
                                   height: 22,
                                   decoration: BoxDecoration(
-                                    color: widget.accentColor
-                                        .withValues(alpha: 0.1),
+                                    color: widget.accentColor.withValues(
+                                      alpha: 0.1,
+                                    ),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Center(
@@ -280,33 +298,38 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                             ),
                                           ),
                                         )
-                                      else ..._plainStepFacts(s, theme),
+                                      else
+                                        ..._plainStepFacts(s, theme),
                                       if (s.subLatex != null &&
                                           s.subLatex!.isNotEmpty)
-                                        ...s.subLatex!.map((l) => Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 8),
-                                              child: _DrawerMath(
-                                                l,
+                                        ...s.subLatex!.map(
+                                          (l) => Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 8,
+                                            ),
+                                            child: _DrawerMath(
+                                              l,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: theme.textPrimary,
+                                                height: 1.5,
+                                              ),
+                                              fallback: Text(
+                                                _latexFallbackText(s, l),
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   color: theme.textPrimary,
                                                   height: 1.5,
                                                 ),
-                                                fallback: Text(
-                                                  _latexFallbackText(s, l),
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: theme.textPrimary,
-                                                    height: 1.5,
-                                                  ),
-                                                ),
                                               ),
-                                            )),
+                                            ),
+                                          ),
+                                        ),
                                       if (s.hint != null && s.hint!.isNotEmpty)
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 6),
+                                          padding: const EdgeInsets.only(
+                                            top: 6,
+                                          ),
                                           child: ResponsiveText(
                                             s.hint!,
                                             style: TextStyle(
@@ -319,14 +342,16 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                         ),
                                       if (hasDetails)
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 4),
+                                          padding: const EdgeInsets.only(
+                                            top: 4,
+                                          ),
                                           child: Row(
                                             children: [
                                               AnimatedRotation(
                                                 turns: isExpanded ? 0.5 : 0,
                                                 duration: const Duration(
-                                                    milliseconds: 200),
+                                                  milliseconds: 200,
+                                                ),
                                                 child: Icon(
                                                   Icons.expand_more_rounded,
                                                   size: 16,
@@ -348,27 +373,32 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                           ),
                                         ),
                                       AnimatedSize(
-                                        duration:
-                                            const Duration(milliseconds: 250),
+                                        duration: const Duration(
+                                          milliseconds: 250,
+                                        ),
                                         curve: Curves.easeInOut,
                                         alignment: Alignment.topCenter,
                                         child: isExpanded && hasDetails
                                             ? Padding(
                                                 padding: const EdgeInsets.only(
-                                                    top: 10),
+                                                  top: 10,
+                                                ),
                                                 child: Container(
                                                   width: double.infinity,
-                                                  padding:
-                                                      const EdgeInsets.all(10),
+                                                  padding: const EdgeInsets.all(
+                                                    10,
+                                                  ),
                                                   decoration: BoxDecoration(
                                                     color: theme.surface,
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            8),
+                                                          8,
+                                                        ),
                                                     border: Border.all(
                                                       color: widget.accentColor
                                                           .withValues(
-                                                              alpha: 0.12),
+                                                            alpha: 0.12,
+                                                          ),
                                                     ),
                                                   ),
                                                   child: Column(
@@ -376,52 +406,61 @@ class _StepsDrawerState extends State<StepsDrawer> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: s.details!
-                                                        .map((d) => Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      bottom:
-                                                                          6),
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    '\u2022',
-                                                                    style:
-                                                                        TextStyle(
+                                                        .map(
+                                                          (d) => Padding(
+                                                            padding:
+                                                                const EdgeInsets.only(
+                                                                  bottom: 6,
+                                                                ),
+                                                            child: Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  '\u2022',
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    color: widget
+                                                                        .accentColor,
+                                                                    height: 1.8,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 6,
+                                                                ),
+                                                                Expanded(
+                                                                  child: _DrawerMath(
+                                                                    d,
+                                                                    style: TextStyle(
                                                                       fontSize:
-                                                                          12,
-                                                                      color: widget
-                                                                          .accentColor,
+                                                                          13,
+                                                                      color: theme
+                                                                          .textSecondary,
                                                                       height:
-                                                                          1.8,
+                                                                          1.6,
                                                                     ),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                      width: 6),
-                                                                  Expanded(
-                                                                    child: _DrawerMath(
-                                                                      d,
+                                                                    fallback: Text(
+                                                                      _latexFallbackText(
+                                                                        s,
+                                                                        d,
+                                                                      ),
                                                                       style: TextStyle(
-                                                                        fontSize: 13,
-                                                                        color: theme.textSecondary,
-                                                                        height: 1.6,
-                                                                      ),
-                                                                      fallback: Text(
-                                                                        _latexFallbackText(s, d),
-                                                                        style: TextStyle(
-                                                                          fontSize: 13,
-                                                                          color: theme.textSecondary,
-                                                                          height: 1.6,
-                                                                        ),
+                                                                        fontSize:
+                                                                            13,
+                                                                        color: theme
+                                                                            .textSecondary,
+                                                                        height:
+                                                                            1.6,
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ))
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
                                                         .toList(),
                                                   ),
                                                 ),

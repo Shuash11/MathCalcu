@@ -49,7 +49,9 @@ class _MathBox extends StatelessWidget {
         onErrorFallback: (err) => Text(
           latex,
           style: TextStyle(
-              color: FinalsTheme.primaryFor(context), fontFamily: 'serif'),
+            color: FinalsTheme.primaryFor(context),
+            fontFamily: 'serif',
+          ),
         ),
       ),
     );

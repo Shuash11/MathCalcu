@@ -11,32 +11,34 @@ import 'package:provider/provider.dart';
 
 void main() {
   testWidgets(
-      'shows the normalized up-to-date snackbar for equal and local-newer results',
-      (tester) async {
-    for (final versionCase in [
-      (' v1.12.8+8 ', ' v1.12.8+release ', '1.12.8'),
-      (' v1.12.9+9 ', ' v1.12.8+release ', '1.12.9'),
-    ]) {
-      await _pumpApp(
-        tester,
-        updateChecker: () => _checkWithRawValues(
-          installedVersion: versionCase.$1,
-          tagName: versionCase.$2,
-        ),
-      );
+    'shows the normalized up-to-date snackbar for equal and local-newer results',
+    (tester) async {
+      for (final versionCase in [
+        (' v1.12.8+8 ', ' v1.12.8+release ', '1.12.8'),
+        (' v1.12.9+9 ', ' v1.12.8+release ', '1.12.9'),
+      ]) {
+        await _pumpApp(
+          tester,
+          updateChecker: () => _checkWithRawValues(
+            installedVersion: versionCase.$1,
+            tagName: versionCase.$2,
+          ),
+        );
 
-      expect(
-        find.text('MathCalcu is up to date (v${versionCase.$3})'),
-        findsOneWidget,
-      );
-      expect(find.text('Update available'), findsNothing);
-      expect(find.textContaining('vv'), findsNothing);
-      expect(find.textContaining('+'), findsNothing);
-    }
-  });
+        expect(
+          find.text('MathCalcu is up to date (v${versionCase.$3})'),
+          findsOneWidget,
+        );
+        expect(find.text('Update available'), findsNothing);
+        expect(find.textContaining('vv'), findsNothing);
+        expect(find.textContaining('+'), findsNothing);
+      }
+    },
+  );
 
-  testWidgets('uses the native offer only for a remote-newer result',
-      (tester) async {
+  testWidgets('uses the native offer only for a remote-newer result', (
+    tester,
+  ) async {
     for (final platform in [(true, false), (false, true)]) {
       var nativeOfferCount = 0;
 
@@ -58,8 +60,9 @@ void main() {
     }
   });
 
-  testWidgets('uses the web offer before evaluating native platform checks',
-      (tester) async {
+  testWidgets('uses the web offer before evaluating native platform checks', (
+    tester,
+  ) async {
     var webOfferCount = 0;
 
     await _pumpApp(
@@ -78,8 +81,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('uses the release-link offer on an unsupported native platform',
-      (tester) async {
+  testWidgets('uses the release-link offer on an unsupported native platform', (
+    tester,
+  ) async {
     UpdateInfo? releaseOffer;
 
     await _pumpApp(
@@ -103,8 +107,9 @@ void main() {
     );
   });
 
-  testWidgets('suppresses untrusted unsupported-native release URLs',
-      (tester) async {
+  testWidgets('suppresses untrusted unsupported-native release URLs', (
+    tester,
+  ) async {
     const invalidReleaseUrls = [
       '',
       'http://github.com/Shuash11/MathCalcu/releases/tag/v1.12.9',
@@ -137,42 +142,44 @@ void main() {
     }
   });
 
-  testWidgets('does not offer unavailable results or invoke a failing checker',
-      (tester) async {
-    var offerCount = 0;
+  testWidgets(
+    'does not offer unavailable results or invoke a failing checker',
+    (tester) async {
+      var offerCount = 0;
 
-    await _pumpApp(
-      tester,
-      updateChecker: () async => const UpdateInfo(
-        status: UpdateStatus.unavailable,
-      ),
-      isWeb: true,
-      showWebUpdate: (_, __) => offerCount += 1,
-    );
+      await _pumpApp(
+        tester,
+        updateChecker: () async =>
+            const UpdateInfo(status: UpdateStatus.unavailable),
+        isWeb: true,
+        showWebUpdate: (_, __) => offerCount += 1,
+      );
 
-    expect(offerCount, 0);
-    expect(find.text('Update available'), findsNothing);
-    // Consume the single scheduled retry so no timer outlives the test.
-    await tester.pump(const Duration(seconds: 3));
-    await tester.pump();
-    expect(offerCount, 0);
+      expect(offerCount, 0);
+      expect(find.text('Update available'), findsNothing);
+      // Consume the single scheduled retry so no timer outlives the test.
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
+      expect(offerCount, 0);
 
-    await _pumpApp(
-      tester,
-      updateChecker: () => Future<UpdateInfo>.error(StateError('offline')),
-      isWeb: true,
-      showWebUpdate: (_, __) => offerCount += 1,
-    );
+      await _pumpApp(
+        tester,
+        updateChecker: () => Future<UpdateInfo>.error(StateError('offline')),
+        isWeb: true,
+        showWebUpdate: (_, __) => offerCount += 1,
+      );
 
-    expect(offerCount, 0);
-    expect(tester.takeException(), isNull);
-    await tester.pump(const Duration(seconds: 3));
-    await tester.pump();
-    expect(offerCount, 0);
-  });
+      expect(offerCount, 0);
+      expect(tester.takeException(), isNull);
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
+      expect(offerCount, 0);
+    },
+  );
 
-  testWidgets('defers an updateAvailable result without a navigator context',
-      (tester) async {
+  testWidgets('defers an updateAvailable result without a navigator context', (
+    tester,
+  ) async {
     var offerCount = 0;
 
     await _pumpApp(
@@ -197,8 +204,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('presents a deferred update once a context is available',
-      (tester) async {
+  testWidgets('presents a deferred update once a context is available', (
+    tester,
+  ) async {
     var offerCount = 0;
     var calls = 0;
     BuildContext? realContext;
@@ -255,11 +263,13 @@ void main() {
       showWebUpdate: (_, __) => offerCount += 1,
     );
     await tester.pumpWidget(const SizedBox());
-    delayed.complete(const UpdateInfo(
-      status: UpdateStatus.updateAvailable,
-      installedVersion: '1.12.8',
-      latestVersion: '1.12.9',
-    ));
+    delayed.complete(
+      const UpdateInfo(
+        status: UpdateStatus.updateAvailable,
+        installedVersion: '1.12.8',
+        latestVersion: '1.12.9',
+      ),
+    );
     await tester.pump();
 
     expect(offerCount, 0);
@@ -271,8 +281,9 @@ void main() {
     expect(const CalculusApp(), isA<CalculusApp>());
   });
 
-  testWidgets('runs one update check across a rebuild, then one retry',
-      (tester) async {
+  testWidgets('runs one update check across a rebuild, then one retry', (
+    tester,
+  ) async {
     var checkCount = 0;
     final theme = ThemeProvider();
     final app = CalculusApp(
@@ -283,12 +294,14 @@ void main() {
       navigatorContext: () => null,
     );
 
-    await tester
-        .pumpWidget(ChangeNotifierProvider.value(value: theme, child: app));
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(value: theme, child: app),
+    );
     await tester.pump();
     await tester.pump();
-    await tester
-        .pumpWidget(ChangeNotifierProvider.value(value: theme, child: app));
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(value: theme, child: app),
+    );
     await tester.pump();
 
     // Rebuilds do not trigger duplicate automatic checks.
@@ -312,12 +325,8 @@ Future<UpdateInfo> _checkWithRawValues({
       version: installedVersion,
       buildNumber: '1',
     ),
-    releaseFetcher: (_, __) => Future.value(
-      http.Response(
-        '{"tag_name":"$tagName"}',
-        200,
-      ),
-    ),
+    releaseFetcher: (_, __) =>
+        Future.value(http.Response('{"tag_name":"$tagName"}', 200)),
   );
 }
 

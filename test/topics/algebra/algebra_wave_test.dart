@@ -34,8 +34,9 @@ Future<bool> _parses(WidgetTester tester, String tex) async {
 double _evalFactored(String s, double x) {
   final idx = s.indexOf('(');
   final leadStr = s.substring(0, idx);
-  final lead =
-      leadStr == '-' ? -1.0 : (leadStr.isEmpty ? 1.0 : double.parse(leadStr));
+  final lead = leadStr == '-'
+      ? -1.0
+      : (leadStr.isEmpty ? 1.0 : double.parse(leadStr));
   var prod = lead;
   for (final m in RegExp(r'\(([^)]*)\)').allMatches(s)) {
     prod *= _evalLinear(m.group(1)!, x);
@@ -195,8 +196,11 @@ void main() {
         expect(r.hasError, isFalse, reason: e.key);
         expect(r.answer, e.value, reason: e.key);
         for (final x in <double>[-2.0, 0.0, 1.5, 3.0]) {
-          expect(_evalFactored(r.answer, x), closeTo(_evalPoly(e.key, x), 1e-9),
-              reason: '${e.key} @ x=$x (answer ${r.answer})');
+          expect(
+            _evalFactored(r.answer, x),
+            closeTo(_evalPoly(e.key, x), 1e-9),
+            reason: '${e.key} @ x=$x (answer ${r.answer})',
+          );
         }
       }
     });
@@ -210,8 +214,9 @@ void main() {
       expect(gcf.answer, startsWith('2('));
     });
 
-    testWidgets('step-3 factor TeX equals the answer; parses; ASCII',
-        (tester) async {
+    testWidgets('step-3 factor TeX equals the answer; parses; ASCII', (
+      tester,
+    ) async {
       for (final input in <String>[
         '-x^2 + 9',
         '9 - x^2',
@@ -223,8 +228,11 @@ void main() {
         final steps = FactoringEquation(input).getSteps();
         expect(steps[2].latex, r.answer, reason: input);
         final tex = steps[2].latex!;
-        expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-            reason: 'non-ASCII TeX: $tex');
+        expect(
+          tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+          isTrue,
+          reason: 'non-ASCII TeX: $tex',
+        );
         expect(await _parses(tester, tex), isTrue, reason: input);
       }
     });
@@ -232,10 +240,10 @@ void main() {
 
   group('Algebra LaTeX coverage', () {
     List<String> texOf(BaseEquation eq) => [
-          for (final s in eq.getSteps())
-            if (s.latex != null) s.latex!,
-          for (final s in eq.getSteps()) ...?s.subLatex,
-        ];
+      for (final s in eq.getSteps())
+        if (s.latex != null) s.latex!,
+      for (final s in eq.getSteps()) ...?s.subLatex,
+    ];
 
     test('per-solver math steps carry real-value TeX; prose stays null', () {
       final lin = LinearOneVarEquation('2x - 5 = 9').getSteps();
@@ -266,8 +274,7 @@ void main() {
 
       final sys = System2x2Equation('x + y = 5, x - y = 1').getSteps();
       expect(sys, hasLength(4));
-      expect(sys[0].latex,
-          '\\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}');
+      expect(sys[0].latex, '\\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}');
       expect(sys[0].subLatex, ['\\begin{pmatrix} 5 \\\\ 1 \\end{pmatrix}']);
       expect(sys[1].latex, isNull); // 'eliminate' guidance -> prose
       expect(sys[2].latex, '(x, y) = (3, 2)');
@@ -291,16 +298,20 @@ void main() {
       for (final eq in inputs) {
         for (final t in texOf(eq)) {
           expect(t, isNotEmpty);
-          expect(t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-              reason: 'non-ASCII TeX: $t');
+          expect(
+            t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+            isTrue,
+            reason: 'non-ASCII TeX: $t',
+          );
           checked++;
         }
       }
       expect(checked, greaterThan(0));
     });
 
-    testWidgets('all algebra TeX parses; malformed TeX fires fallback',
-        (tester) async {
+    testWidgets('all algebra TeX parses; malformed TeX fires fallback', (
+      tester,
+    ) async {
       final inputs = <BaseEquation>[
         LinearOneVarEquation('2x - 5 = 9'),
         LinearOneVarEquation('3(x+2) = 15'),

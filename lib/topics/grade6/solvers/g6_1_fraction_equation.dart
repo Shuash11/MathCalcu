@@ -69,8 +69,10 @@ class G6FractionEquation extends BaseEquation {
       if (sign == '-') {
         improper = -improper;
       }
-      final YIFraction value =
-          YIFraction(numerator: improper, denominator: den).simplified();
+      final YIFraction value = YIFraction(
+        numerator: improper,
+        denominator: den,
+      ).simplified();
       return G6FractionOperand(
         value: value,
         improperText: '${improper == 0 ? 0 : improper}/$den',
@@ -86,12 +88,11 @@ class G6FractionEquation extends BaseEquation {
         throw const FormatException('Denominator cannot be zero.');
       }
       final int signed = sign == '-' ? -num : num;
-      final YIFraction value =
-          YIFraction(numerator: signed, denominator: den).simplified();
-      return G6FractionOperand(
-        value: value,
-        improperText: '$signed/$den',
-      );
+      final YIFraction value = YIFraction(
+        numerator: signed,
+        denominator: den,
+      ).simplified();
+      return G6FractionOperand(value: value, improperText: '$signed/$den');
     }
     final RegExpMatch? whole = _whole.firstMatch(t);
     if (whole != null) {
@@ -103,9 +104,7 @@ class G6FractionEquation extends BaseEquation {
         improperText: '$signed/1',
       );
     }
-    throw FormatException(
-      'Could not read "$t" — use a/b or mixed a b/c.',
-    );
+    throw FormatException('Could not read "$t" — use a/b or mixed a b/c.');
   }
 
   /// TeX for a DepEd fraction display (`2 1/3` → `2\frac{1}{3}`,
@@ -224,7 +223,7 @@ class G6FractionEquation extends BaseEquation {
             'den': result.denominator,
             'decimal': result.toDouble(),
             'lcd': lcd,
-          }
+          },
         ],
       );
     } on FormatException catch (e) {
@@ -270,11 +269,11 @@ class G6FractionEquation extends BaseEquation {
           : (op == '*' ? 'Multiply' : 'Divide');
       final String step2 = isAddSub
           ? 'LCD of ${left.value.denominator} and ${right.value.denominator} '
-              'is $lcd. Rewrite: '
-              '${left.value.numerator * (lcd ~/ left.value.denominator)}/$lcd '
-              '$op ${right.value.numerator * (lcd ~/ right.value.denominator)}/$lcd.'
+                'is $lcd. Rewrite: '
+                '${left.value.numerator * (lcd ~/ left.value.denominator)}/$lcd '
+                '$op ${right.value.numerator * (lcd ~/ right.value.denominator)}/$lcd.'
           : 'No LCD needed. For × multiply across; for ÷ flip the second '
-              'fraction, then multiply across.';
+                'fraction, then multiply across.';
       return [
         StepModel(
           stepNumber: 1,
@@ -298,24 +297,27 @@ class G6FractionEquation extends BaseEquation {
           // The ×/÷ path is prose guidance ("no LCD needed") — no TeX.
           latex: isAddSub
               ? '\\frac{${left.value.numerator * (lcd ~/ left.value.denominator)}}'
-                  '{$lcd} $op '
-                  '\\frac{${right.value.numerator * (lcd ~/ right.value.denominator)}}'
-                  '{$lcd}'
+                    '{$lcd} $op '
+                    '\\frac{${right.value.numerator * (lcd ~/ right.value.denominator)}}'
+                    '{$lcd}'
               : null,
         ),
         StepModel(
           stepNumber: 3,
           title: '$opWord the fractions',
-          explanation: '${display(left.value)} $op ${display(right.value)} = '
+          explanation:
+              '${display(left.value)} $op ${display(right.value)} = '
               '${result.numerator}/${result.denominator} before simplifying.',
-          latex: '${_texFraction(display(left.value))} ${_texOp(op)} '
+          latex:
+              '${_texFraction(display(left.value))} ${_texOp(op)} '
               '${_texFraction(display(right.value))} = '
               '\\frac{${result.numerator}}{${result.denominator}}',
         ),
         StepModel(
           stepNumber: 4,
           title: 'Simplify and convert back',
-          explanation: 'Simplified: ${display(result)} '
+          explanation:
+              'Simplified: ${display(result)} '
               '(≈ ${CalculatorEngine.formatResult(result.toDouble())}).',
           latex: _texFraction(display(result)),
         ),

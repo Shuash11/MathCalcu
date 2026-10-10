@@ -18,13 +18,7 @@ void main() {
     test('hashesEqual ignores case but rejects bad input', () {
       const hash =
           'BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD';
-      expect(
-        UpdateChecksum.hashesEqual(
-          hash.toLowerCase(),
-          hash,
-        ),
-        isTrue,
-      );
+      expect(UpdateChecksum.hashesEqual(hash.toLowerCase(), hash), isTrue);
       expect(UpdateChecksum.hashesEqual(hash, '${hash}00'), isFalse);
       expect(UpdateChecksum.hashesEqual(hash, 'not-a-hash'), isFalse);
       expect(UpdateChecksum.isSha256Hex(hash), isTrue);
@@ -48,16 +42,14 @@ void main() {
     });
 
     test('parses BSD format and skips comments', () {
-      const manifest = '# MathCalcu checksums\n'
+      const manifest =
+          '# MathCalcu checksums\n'
           'SHA256 (MathCalcu.apk) = ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\n';
       expect(
         UpdateChecksum.parseChecksumFile(manifest, 'MathCalcu.apk'),
         'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
       );
-      expect(
-        UpdateChecksum.parseChecksumFile(manifest, 'other.apk'),
-        isNull,
-      );
+      expect(UpdateChecksum.parseChecksumFile(manifest, 'other.apk'), isNull);
     });
   });
 
@@ -93,60 +85,51 @@ void main() {
 
   group('UpdateChecksum.resolveFromReleaseJson', () {
     test('uses the per-asset digest first', () {
-      final resolved = UpdateChecksum.resolveFromReleaseJson(
-        {
-          'assets': [
-            {
-              'name': 'MathCalcu.apk',
-              'browser_download_url': 'https://example.com/a.apk',
-              'digest':
-                  'sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
-            },
-          ],
-        },
-        'MathCalcu.apk',
+      final resolved = UpdateChecksum.resolveFromReleaseJson({
+        'assets': [
+          {
+            'name': 'MathCalcu.apk',
+            'browser_download_url': 'https://example.com/a.apk',
+            'digest': 'sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+          },
+        ],
+      }, 'MathCalcu.apk');
+      expect(
+        resolved.sha256Hex,
+        'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
       );
-      expect(resolved.sha256Hex,
-          'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
     });
 
     test('falls back to a manifest URL', () {
-      final resolved = UpdateChecksum.resolveFromReleaseJson(
-        {
-          'assets': [
-            {
-              'name': 'checksums.txt',
-              'browser_download_url': 'https://example.com/checksums.txt',
-            },
-          ],
-        },
-        'MathCalcu.apk',
-      );
+      final resolved = UpdateChecksum.resolveFromReleaseJson({
+        'assets': [
+          {
+            'name': 'checksums.txt',
+            'browser_download_url': 'https://example.com/checksums.txt',
+          },
+        ],
+      }, 'MathCalcu.apk');
       expect(resolved.sha256Hex, isNull);
       expect(resolved.checksumFileUrl, 'https://example.com/checksums.txt');
     });
 
     test('recognizes the published extensionless SHA256SUMS asset', () {
-      final resolved = UpdateChecksum.resolveFromReleaseJson(
-        {
-          'assets': [
-            {
-              'name': 'MathCalcu.apk',
-              'browser_download_url': 'https://example.com/a.apk',
-            },
-            {
-              'name': 'SHA256SUMS',
-              'browser_download_url': 'https://example.com/SHA256SUMS',
-            },
-            {
-              'name': 'release-manifest.json',
-              'browser_download_url':
-                  'https://example.com/release-manifest.json',
-            },
-          ],
-        },
-        'MathCalcu.apk',
-      );
+      final resolved = UpdateChecksum.resolveFromReleaseJson({
+        'assets': [
+          {
+            'name': 'MathCalcu.apk',
+            'browser_download_url': 'https://example.com/a.apk',
+          },
+          {
+            'name': 'SHA256SUMS',
+            'browser_download_url': 'https://example.com/SHA256SUMS',
+          },
+          {
+            'name': 'release-manifest.json',
+            'browser_download_url': 'https://example.com/release-manifest.json',
+          },
+        ],
+      }, 'MathCalcu.apk');
       expect(resolved.sha256Hex, isNull);
       expect(resolved.checksumFileUrl, 'https://example.com/SHA256SUMS');
     });
@@ -172,8 +155,7 @@ void main() {
                 {
                   'name': 'MathCalcu.apk',
                   'browser_download_url': 'https://example.com/a.apk',
-                  'digest':
-                      'sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+                  'digest': 'sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
                 },
               ],
             }),
@@ -183,8 +165,10 @@ void main() {
       );
 
       expect(info.status, UpdateStatus.updateAvailable);
-      expect(info.apkSha256,
-          'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+      expect(
+        info.apkSha256,
+        'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+      );
       expect(info.sha256ForBinary('MathCalcu.apk'), info.apkSha256);
       expect(info.sha256ForBinary('other.bin'), isNull);
     });

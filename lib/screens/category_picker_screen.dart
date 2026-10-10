@@ -9,6 +9,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+
 import 'distancecard.dart';
 import 'slopecard.dart';
 import 'midpointcard.dart';
@@ -55,9 +56,11 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return _modules;
     return _modules
-        .where((m) =>
-            m.label.toLowerCase().contains(q) ||
-            m.subtitle.toLowerCase().contains(q))
+        .where(
+          (m) =>
+              m.label.toLowerCase().contains(q) ||
+              m.subtitle.toLowerCase().contains(q),
+        )
         .toList();
   }
 
@@ -133,9 +136,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
           color: theme.card,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: theme.accentColor.withValues(
-              alpha: isFocused ? 0.45 : 0.18,
-            ),
+            color: theme.accentColor.withValues(alpha: isFocused ? 0.45 : 0.18),
             width: isFocused ? 1.5 : 1,
           ),
         ),
@@ -158,10 +159,7 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
                 : IconButton(
                     tooltip: 'Clear search',
                     onPressed: _clearSearch,
-                    icon: Icon(
-                      Icons.close_rounded,
-                      color: theme.textSecondary,
-                    ),
+                    icon: Icon(Icons.close_rounded, color: theme.textSecondary),
                   ),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 15),
@@ -182,19 +180,14 @@ class _CategoryPickerScreenState extends State<CategoryPickerScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Fixed header — never participates in scroll layout
-            _CategoryHeader(
-              moduleCount: _modules.length,
-              theme: theme,
-            ),
+            _CategoryHeader(moduleCount: _modules.length, theme: theme),
             _buildSearchBar(theme),
             // List takes the remaining bounded space
             Expanded(
               child: _filtered.isEmpty && _curriculumHits.isEmpty
                   ? ListView(
                       padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
-                      children: [
-                        NoTopicsEmptyState(onClear: _clearSearch),
-                      ],
+                      children: [NoTopicsEmptyState(onClear: _clearSearch)],
                     )
                   : ListView(
                       padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
@@ -237,10 +230,7 @@ class _CategoryHeader extends StatelessWidget {
   final int moduleCount;
   final ThemeProvider theme;
 
-  const _CategoryHeader({
-    required this.moduleCount,
-    required this.theme,
-  });
+  const _CategoryHeader({required this.moduleCount, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -272,11 +262,7 @@ class _CategoryHeader extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/app_icon.png',
-                width: 42,
-                height: 42,
-              ),
+              Image.asset('assets/images/app_icon.png', width: 42, height: 42),
               const SizedBox(width: 10),
               // Expanded: the FittedBox only scales down under bounded
               // width — a non-flex Row child gets unbounded main-axis
@@ -300,10 +286,7 @@ class _CategoryHeader extends StatelessWidget {
             padding: const EdgeInsets.only(left: 52),
             child: Text(
               '$moduleCount topics available',
-              style: TextStyle(
-                fontSize: 15,
-                color: theme.textSecondary,
-              ),
+              style: TextStyle(fontSize: 15, color: theme.textSecondary),
             ),
           ),
         ],

@@ -81,10 +81,7 @@ class NotesScreen extends StatelessWidget {
                   // Legacy placeholder copy (kept for F4 coverage):
                   // full notes sync is still coming soon.
                   'Coming soon!',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: theme.textSecondary,
-                  ),
+                  style: TextStyle(fontSize: 12, color: theme.textSecondary),
                 ),
                 const SizedBox(height: 16),
                 Semantics(
@@ -97,10 +94,7 @@ class NotesScreen extends StatelessWidget {
                       height: 48,
                       child: ElevatedButton.icon(
                         onPressed: () => context.push('/topics'),
-                        icon: const Icon(
-                          Icons.arrow_forward_rounded,
-                          size: 18,
-                        ),
+                        icon: const Icon(Icons.arrow_forward_rounded, size: 18),
                         label: const Text('Browse topics'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.accentColor,

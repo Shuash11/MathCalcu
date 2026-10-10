@@ -51,8 +51,8 @@ class G6AlgebraEquation extends BaseEquation {
   static List<dynamic>? _side(String side) {
     final String t = side.trim();
     // Implicit multiply: `3n`, `-2.5x`.
-    final RegExpMatch? implicit =
-        RegExp(r'^(-?\d+(?:\.\d+)?)\s*([a-zA-Z])$').firstMatch(t);
+    final RegExpMatch? implicit = RegExp(r'^(-?\d+(?:\.\d+)?)\s*([a-zA-Z])$')
+        .firstMatch(t);
     if (implicit != null) {
       return [true, implicit.group(2)!, double.parse(implicit.group(1)!), 0.0];
     }
@@ -266,9 +266,7 @@ class G6AlgebraEquation extends BaseEquation {
   SolveResult solve() {
     final _AlgebraParsed? p = _parse();
     if (p == null) {
-      return SolveResult.error(
-        _error ?? 'One-step only — e.g. x + 7 = 15.',
-      );
+      return SolveResult.error(_error ?? 'One-step only — e.g. x + 7 = 15.');
     }
     try {
       final double value = _solveParsed(p);
@@ -278,7 +276,7 @@ class G6AlgebraEquation extends BaseEquation {
         answer: '${p.variable} = ${G6Format.num(value)}',
         points: [value],
         customData: [
-          {'variable': p.variable, 'value': value}
+          {'variable': p.variable, 'value': value},
         ],
       );
     } on FormatException catch (e) {

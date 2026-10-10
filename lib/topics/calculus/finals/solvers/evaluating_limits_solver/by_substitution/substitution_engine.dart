@@ -1,4 +1,4 @@
-﻿import 'expressions_evaluator.dart';
+import 'expressions_evaluator.dart';
 import 'tokenizer.dart';
 import 'smart_parser.dart';
 
@@ -7,10 +7,7 @@ class LimitProblem {
   final String expression;
   final double approachValue;
 
-  const LimitProblem({
-    required this.expression,
-    required this.approachValue,
-  });
+  const LimitProblem({required this.expression, required this.approachValue});
 
   @override
   String toString() => 'lim(x → $approachValue) $expression';
@@ -104,15 +101,21 @@ class SubstitutionEngine {
       final fractionInfo = _extractFractionInfo(ast);
 
       // Step 4: Evaluate
-      final fullResult =
-          ExpressionEvaluator.safeEvaluate(ast, problem.approachValue);
+      final fullResult = ExpressionEvaluator.safeEvaluate(
+        ast,
+        problem.approachValue,
+      );
 
       // Step 5: Handle fraction case specially for better diagnosis
       if (fractionInfo.isFraction) {
         final numResult = ExpressionEvaluator.safeEvaluate(
-            fractionInfo.numerator!, problem.approachValue);
+          fractionInfo.numerator!,
+          problem.approachValue,
+        );
         final denResult = ExpressionEvaluator.safeEvaluate(
-            fractionInfo.denominator!, problem.approachValue);
+          fractionInfo.denominator!,
+          problem.approachValue,
+        );
 
         // Check for 0/0 form
         if (numResult.value.abs() < 1e-9 && denResult.value.abs() < 1e-9) {
@@ -138,8 +141,9 @@ class SubstitutionEngine {
         // Check for non-zero/0
         if (denResult.value.abs() < 1e-9 && numResult.value.abs() >= 1e-9) {
           final sign = numResult.value > 0 ? '+' : '-';
-          final infinity =
-              sign == '+' ? double.infinity : double.negativeInfinity;
+          final infinity = sign == '+'
+              ? double.infinity
+              : double.negativeInfinity;
 
           return SubstitutionResult(
             originalExpression: problem.expression,
@@ -306,7 +310,10 @@ class SubstitutionEngine {
   _FractionInfo _extractFractionInfo(ASTNode node) {
     if (node is BinaryOpNode && node.operator == '/') {
       return _FractionInfo(
-          isFraction: true, numerator: node.left, denominator: node.right);
+        isFraction: true,
+        numerator: node.left,
+        denominator: node.right,
+      );
     }
     return const _FractionInfo(isFraction: false);
   }
@@ -317,6 +324,9 @@ class _FractionInfo {
   final ASTNode? numerator;
   final ASTNode? denominator;
 
-  const _FractionInfo(
-      {required this.isFraction, this.numerator, this.denominator});
+  const _FractionInfo({
+    required this.isFraction,
+    this.numerator,
+    this.denominator,
+  });
 }

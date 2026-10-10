@@ -96,17 +96,14 @@ class _ModuleCardState extends State<ModuleCard> {
                       boxShadow: [
                         BoxShadow(
                           color: _accent.withValues(
-                              alpha: theme.isDark ? 0.15 : 0.10),
+                            alpha: theme.isDark ? 0.15 : 0.10,
+                          ),
                           blurRadius: theme.isDark ? 12 : 10,
                           offset: const Offset(0, 0),
                         ),
                       ],
                     ),
-                    child: Icon(
-                      widget.icon,
-                      color: _accent,
-                      size: 22,
-                    ),
+                    child: Icon(widget.icon, color: _accent, size: 22),
                   ),
                   const SizedBox(width: 14),
                   // Title and subtitle

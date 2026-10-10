@@ -4,8 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  testWidgets('App launches with bottom navigation bar',
-      (WidgetTester tester) async {
+  testWidgets('App launches with bottom navigation bar', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ChangeNotifierProvider.value(
         value: ThemeProvider(),

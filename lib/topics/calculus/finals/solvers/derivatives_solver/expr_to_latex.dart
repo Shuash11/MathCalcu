@@ -27,12 +27,16 @@ String exprToLatex(String expr) {
 
   // 0. Handle d/dx notation.
   result = result.replaceAllMapped(
-      RegExp(r'd/d([a-zA-Z])'), (m) => '\\frac{d}{d${m[1]}} ');
+    RegExp(r'd/d([a-zA-Z])'),
+    (m) => '\\frac{d}{d${m[1]}} ',
+  );
 
   // 1. Keep f'(x) notation intact (normalising pass; parity with the
   //    former steptile copy).
   result = result.replaceAllMapped(
-      RegExp(r"([a-zA-Z])'\((\w+)\)"), (m) => "${m[1]}'(${m[2]})");
+    RegExp(r"([a-zA-Z])'\((\w+)\)"),
+    (m) => "${m[1]}'(${m[2]})",
+  );
 
   // 2. Wrap square brackets so they scale with their contents.
   if (result.contains('[') && !result.contains(r'\left[')) {
@@ -47,16 +51,24 @@ String exprToLatex(String expr) {
 
   // 4. Exponent handling.
   result = result.replaceAllMapped(
-      RegExp(r'(\w)\^(-?\d+)'), (m) => '${m[1]}^{${m[2]}}');
+    RegExp(r'(\w)\^(-?\d+)'),
+    (m) => '${m[1]}^{${m[2]}}',
+  );
   result = result.replaceAllMapped(
-      RegExp(r'(\w)\)\^(-?\d+)'), (m) => '${m[1]}^{${m[2]}}');
+    RegExp(r'(\w)\)\^(-?\d+)'),
+    (m) => '${m[1]}^{${m[2]}}',
+  );
   // Clean up malformed patterns like ( ^-1 or ^ -1.
   result = result.replaceAllMapped(
-      RegExp(r'\(\s*\^\s*(-?\d+)\)'), (m) => '^{${m[1]}}');
+    RegExp(r'\(\s*\^\s*(-?\d+)\)'),
+    (m) => '^{${m[1]}}',
+  );
   result = result.replaceAll('^ -', '^{-');
   // Remove redundant parentheses in exponents (e.g. x^(-1) -> x^{-1}).
   result = result.replaceAllMapped(
-      RegExp(r'\^(\()(-?\d+)(\))'), (m) => '^{${m[2]}}');
+    RegExp(r'\^(\()(-?\d+)(\))'),
+    (m) => '^{${m[2]}}',
+  );
 
   result = _convertFractions(result);
   result = _convertMultiplication(result);
@@ -66,8 +78,9 @@ String exprToLatex(String expr) {
 
   // Use a negative lookbehind to exclude `-` immediately after `^`.
   result = result.replaceAllMapped(
-      RegExp(r'(?<![\^])([a-zA-Z0-9\)])-([a-zA-Z0-9\(])'),
-      (m) => '${m[1]} - ${m[2]}');
+    RegExp(r'(?<![\^])([a-zA-Z0-9\)])-([a-zA-Z0-9\(])'),
+    (m) => '${m[1]} - ${m[2]}',
+  );
 
   // Radicals: `sqrt(...)` needs a *matched* brace pair, so rewrite it with
   // the paren-matching helpers. (The former `sqrt(` -> `\sqrt{` replaceAll
@@ -128,27 +141,39 @@ String _convertMultiplication(String expr) {
 
   // 1. Digit * Variable -> digitvariable (e.g. 2*x -> 2x).
   result = result.replaceAllMapped(
-      RegExp(r'([0-9])\s*##MUL##\s*([a-zA-Z])'), (m) => '${m[1]}${m[2]}');
+    RegExp(r'([0-9])\s*##MUL##\s*([a-zA-Z])'),
+    (m) => '${m[1]}${m[2]}',
+  );
 
   // 2. Digit * ( -> digit(.
   result = result.replaceAllMapped(
-      RegExp(r'([0-9])\s*##MUL##\s*\('), (m) => '${m[1]}(');
+    RegExp(r'([0-9])\s*##MUL##\s*\('),
+    (m) => '${m[1]}(',
+  );
 
   // 3. ) * Digit -> )digit.
   result = result.replaceAllMapped(
-      RegExp(r'\)\s*##MUL##\s*([0-9])'), (m) => ')${m[1]}');
+    RegExp(r'\)\s*##MUL##\s*([0-9])'),
+    (m) => ')${m[1]}',
+  );
 
   // 4. Variable * Variable -> variablevariable.
   result = result.replaceAllMapped(
-      RegExp(r'([a-zA-Z])\s*##MUL##\s*([a-zA-Z])'), (m) => '${m[1]}${m[2]}');
+    RegExp(r'([a-zA-Z])\s*##MUL##\s*([a-zA-Z])'),
+    (m) => '${m[1]}${m[2]}',
+  );
 
   // 5. Variable * ( -> variable(.
   result = result.replaceAllMapped(
-      RegExp(r'([a-zA-Z])\s*##MUL##\s*\('), (m) => '${m[1]}(');
+    RegExp(r'([a-zA-Z])\s*##MUL##\s*\('),
+    (m) => '${m[1]}(',
+  );
 
   // 6. ) * Variable -> )variable.
   result = result.replaceAllMapped(
-      RegExp(r'\)\s*##MUL##\s*([a-zA-Z])'), (m) => ')${m[1]}');
+    RegExp(r'\)\s*##MUL##\s*([a-zA-Z])'),
+    (m) => ')${m[1]}',
+  );
 
   // 7. ) * ( -> )(
   result = result.replaceAllMapped(RegExp(r'\)\s*##MUL##\s*\('), (m) => ')(');

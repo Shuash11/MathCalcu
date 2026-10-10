@@ -37,7 +37,7 @@ class DerivativeAnswerCard extends StatelessWidget {
                 ? LinearGradient(
                     colors: [
                       FinalsTheme.danger.withValues(alpha: 0.1),
-                      FinalsTheme.danger.withValues(alpha: 0.05)
+                      FinalsTheme.danger.withValues(alpha: 0.05),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -137,8 +137,10 @@ class DerivativeAnswerCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: FinalsTheme.surface(context).withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
@@ -172,13 +174,11 @@ class DerivativeAnswerCard extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: ResponsiveText(
                     '',
-                    style: FinalsTheme.labelStyle(context).copyWith(
-                      fontSize: 9,
-                      letterSpacing: 0.5,
-                    ),
+                    style: FinalsTheme.labelStyle(context)
+                        .copyWith(fontSize: 9, letterSpacing: 0.5),
                   ),
                 ),
-              ]
+              ],
             ],
           ),
         ),

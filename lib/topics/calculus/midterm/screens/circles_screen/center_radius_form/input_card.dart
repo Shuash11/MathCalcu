@@ -1,6 +1,7 @@
 import 'models/field_def.dart';
 import 'widgets_inputcard/compute_button.dart';
 import 'widgets_inputcard/quick_key_field.dart';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 
@@ -28,9 +29,10 @@ class InputCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
@@ -41,11 +43,7 @@ class InputCard extends StatelessWidget {
           const SizedBox(height: 16),
           _buildFieldsRow(),
           const SizedBox(height: 16),
-          GradientComputeButton(
-            label: buttonLabel,
-            color: color,
-            onTap: onTap,
-          ),
+          GradientComputeButton(label: buttonLabel, color: color, onTap: onTap),
         ],
       ),
     );
@@ -102,10 +100,7 @@ class InputCard extends StatelessWidget {
             padding: EdgeInsets.only(
               right: index == fields.length - 1 ? 0 : 10,
             ),
-            child: LabeledQuickKeyField(
-              field: field,
-              color: color,
-            ),
+            child: LabeledQuickKeyField(field: field, color: color),
           ),
         );
       }).toList(),

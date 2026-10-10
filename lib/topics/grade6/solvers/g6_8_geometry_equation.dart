@@ -23,7 +23,7 @@ enum _Shape {
   parallelogram,
   trapezoid,
   circle,
-  composite
+  composite,
 }
 
 class _GeoParsed {
@@ -77,18 +77,24 @@ class G6GeometryEquation extends BaseEquation {
       final List<double> d = _all(t);
       if (d.length == 1) {
         return _GeoParsed(
-            shape: _Shape.square, dims: d, unit: unit, diameter: false);
+          shape: _Shape.square,
+          dims: d,
+          unit: unit,
+          diameter: false,
+        );
       }
       return null;
     }
     if (t.startsWith('composite') ||
         t.startsWith('l-shape') ||
         t.startsWith('lshape')) {
-      final List<List<double>> rects = RegExp(
-              r'(-?\d+(?:\.\d+)?)\s*[x×*]\s*(-?\d+(?:\.\d+)?)')
-          .allMatches(t)
-          .map((m) => [double.parse(m.group(1)!), double.parse(m.group(2)!)])
-          .toList();
+      final List<List<double>> rects =
+          RegExp(r'(-?\d+(?:\.\d+)?)\s*[x×*]\s*(-?\d+(?:\.\d+)?)')
+              .allMatches(t)
+              .map(
+                (m) => [double.parse(m.group(1)!), double.parse(m.group(2)!)],
+              )
+              .toList();
       if (rects.length >= 2) {
         return _GeoParsed(
           shape: _Shape.composite,
@@ -100,22 +106,29 @@ class G6GeometryEquation extends BaseEquation {
       return null;
     }
     if (t.startsWith('rect')) {
-      final List<List<double>> pair = RegExp(
-              r'(-?\d+(?:\.\d+)?)\s*[x×*]\s*(-?\d+(?:\.\d+)?)')
-          .allMatches(t)
-          .map((m) => [double.parse(m.group(1)!), double.parse(m.group(2)!)])
-          .toList();
+      final List<List<double>> pair =
+          RegExp(r'(-?\d+(?:\.\d+)?)\s*[x×*]\s*(-?\d+(?:\.\d+)?)')
+              .allMatches(t)
+              .map(
+                (m) => [double.parse(m.group(1)!), double.parse(m.group(2)!)],
+              )
+              .toList();
       if (pair.length == 1) {
         return _GeoParsed(
-            shape: _Shape.rectangle,
-            dims: pair.first,
-            unit: unit,
-            diameter: false);
+          shape: _Shape.rectangle,
+          dims: pair.first,
+          unit: unit,
+          diameter: false,
+        );
       }
       final List<double> d = _all(t);
       if (d.length == 2) {
         return _GeoParsed(
-            shape: _Shape.rectangle, dims: d, unit: unit, diameter: false);
+          shape: _Shape.rectangle,
+          dims: d,
+          unit: unit,
+          diameter: false,
+        );
       }
       return null;
     }
@@ -124,19 +137,28 @@ class G6GeometryEquation extends BaseEquation {
           .hasMatch(t)) {
         final List<double> d = _all(t);
         return _GeoParsed(
-            shape: _Shape.triangleSides,
-            dims: d.sublist(0, 3),
-            unit: unit,
-            diameter: false);
+          shape: _Shape.triangleSides,
+          dims: d.sublist(0, 3),
+          unit: unit,
+          diameter: false,
+        );
       }
       final List<double> d = _all(t);
       if (d.length == 2) {
         return _GeoParsed(
-            shape: _Shape.triangleArea, dims: d, unit: unit, diameter: false);
+          shape: _Shape.triangleArea,
+          dims: d,
+          unit: unit,
+          diameter: false,
+        );
       }
       if (d.length == 3) {
         return _GeoParsed(
-            shape: _Shape.triangleSides, dims: d, unit: unit, diameter: false);
+          shape: _Shape.triangleSides,
+          dims: d,
+          unit: unit,
+          diameter: false,
+        );
       }
       return null;
     }
@@ -144,7 +166,11 @@ class G6GeometryEquation extends BaseEquation {
       final List<double> d = _all(t);
       if (d.length == 2 || d.length == 3) {
         return _GeoParsed(
-            shape: _Shape.parallelogram, dims: d, unit: unit, diameter: false);
+          shape: _Shape.parallelogram,
+          dims: d,
+          unit: unit,
+          diameter: false,
+        );
       }
       return null;
     }
@@ -152,7 +178,11 @@ class G6GeometryEquation extends BaseEquation {
       final List<double> d = _all(t);
       if (d.length == 3) {
         return _GeoParsed(
-            shape: _Shape.trapezoid, dims: d, unit: unit, diameter: false);
+          shape: _Shape.trapezoid,
+          dims: d,
+          unit: unit,
+          diameter: false,
+        );
       }
       return null;
     }
@@ -165,7 +195,11 @@ class G6GeometryEquation extends BaseEquation {
           t.contains('d=') || t.contains('diameter') || t.contains('d ');
       final double v = d.length == 1 ? d.first : _first(t.split('=').last);
       return _GeoParsed(
-          shape: _Shape.circle, dims: [v], unit: unit, diameter: dia);
+        shape: _Shape.circle,
+        dims: [v],
+        unit: unit,
+        diameter: dia,
+      );
     }
     return null;
   }
@@ -192,18 +226,14 @@ class G6GeometryEquation extends BaseEquation {
       case _Shape.triangleSides:
         return 'P = a + b + c';
       case _Shape.parallelogram:
-        return p.dims.length == 3
-            ? 'A = b h, \\quad P = 2(b + s)'
-            : 'A = b h';
+        return p.dims.length == 3 ? 'A = b h, \\quad P = 2(b + s)' : 'A = b h';
       case _Shape.trapezoid:
         return 'A = \\frac{a + b}{2} h';
       case _Shape.circle:
         return 'C = 2 \\pi r, \\quad A = \\pi r^{2}';
       case _Shape.composite:
         final int n = p.dims.length ~/ 2;
-        return 'A = ${[
-          for (var i = 1; i <= n; i++) "l_{$i} w_{$i}",
-        ].join(' + ')}';
+        return 'A = ${[for (var i = 1; i <= n; i++) "l_{$i} w_{$i}"].join(' + ')}';
     }
   }
 
@@ -229,7 +259,7 @@ class G6GeometryEquation extends BaseEquation {
             'A = ${G6Format.num(d[0])} \\cdot ${G6Format.num(d[1])}';
         return d.length == 3
             ? '$base, \\quad P = 2(${G6Format.num(d[0])} + '
-                '${G6Format.num(d[2])})'
+                  '${G6Format.num(d[2])})'
             : base;
       case _Shape.trapezoid:
         return 'A = \\frac{${G6Format.num(d[0])} + ${G6Format.num(d[1])}}{2} '
@@ -239,10 +269,7 @@ class G6GeometryEquation extends BaseEquation {
         return 'C = 2 \\pi (${G6Format.num(r)}), \\quad '
             'A = \\pi (${G6Format.num(r)})^{2}';
       case _Shape.composite:
-        return 'A = ${[
-          for (var i = 0; i + 1 < d.length; i += 2)
-            "${G6Format.num(d[i])} \\cdot ${G6Format.num(d[i + 1])}",
-        ].join(' + ')}';
+        return 'A = ${[for (var i = 0; i + 1 < d.length; i += 2) "${G6Format.num(d[i])} \\cdot ${G6Format.num(d[i + 1])}"].join(' + ')}';
     }
   }
 
@@ -334,7 +361,7 @@ class G6GeometryEquation extends BaseEquation {
             'P = ${G6Format.num(4 * s)} $u, A = ${G6Format.num(s * s)} $u²';
         diagram = {
           'shape': 'square',
-          'dims': {'s': s}
+          'dims': {'s': s},
         };
       case _Shape.rectangle:
         final double l = p.dims[0], w = p.dims[1];
@@ -342,7 +369,7 @@ class G6GeometryEquation extends BaseEquation {
             'P = ${G6Format.num(2 * (l + w))} $u, A = ${G6Format.num(l * w)} $u²';
         diagram = {
           'shape': 'rectangle',
-          'dims': {'l': l, 'w': w}
+          'dims': {'l': l, 'w': w},
         };
       case _Shape.triangleArea:
         final double b = p.dims[0], h = p.dims[1];
@@ -350,19 +377,20 @@ class G6GeometryEquation extends BaseEquation {
             'A = ${G6Format.num(b * h / 2)} $u² (b = ${G6Format.num(b)}, h = ${G6Format.num(h)})';
         diagram = {
           'shape': 'triangle',
-          'dims': {'b': b, 'h': h}
+          'dims': {'b': b, 'h': h},
         };
       case _Shape.triangleSides:
         final List<double> d = List<double>.from(p.dims)..sort();
         if (d[0] + d[1] <= d[2]) {
           return SolveResult.error(
-              'Not a triangle: sides fail the triangle inequality.');
+            'Not a triangle: sides fail the triangle inequality.',
+          );
         }
         final double per = d[0] + d[1] + d[2];
         answer = 'P = ${G6Format.num(per)} $u';
         diagram = {
           'shape': 'triangle',
-          'dims': {'a': d[0], 'b': d[1], 'c': d[2]}
+          'dims': {'a': d[0], 'b': d[1], 'c': d[2]},
         };
       case _Shape.parallelogram:
         final double b = p.dims[0], h = p.dims[1];
@@ -372,14 +400,14 @@ class G6GeometryEquation extends BaseEquation {
         answer = 'A = ${G6Format.num(b * h)} $u²$extra';
         diagram = {
           'shape': 'parallelogram',
-          'dims': {'b': b, 'h': h}
+          'dims': {'b': b, 'h': h},
         };
       case _Shape.trapezoid:
         final double a = p.dims[0], b = p.dims[1], h = p.dims[2];
         answer = 'A = ${G6Format.num((a + b) / 2 * h)} $u²';
         diagram = {
           'shape': 'trapezoid',
-          'dims': {'a': a, 'b': b, 'h': h}
+          'dims': {'a': a, 'b': b, 'h': h},
         };
       case _Shape.circle:
         final double r = p.diameter ? p.dims[0] / 2 : p.dims[0];
@@ -389,7 +417,7 @@ class G6GeometryEquation extends BaseEquation {
             'C = ${G6Format.num(c)} $u, A = ${G6Format.num(a)} $u² (r = ${G6Format.num(r)})';
         diagram = {
           'shape': 'circle',
-          'dims': {'r': r}
+          'dims': {'r': r},
         };
       case _Shape.composite:
         var area = 0.0;
@@ -400,7 +428,7 @@ class G6GeometryEquation extends BaseEquation {
             'A total = ${G6Format.num(area)} $u² (${p.dims.length ~/ 2} rectangles)';
         diagram = {
           'shape': 'composite',
-          'dims': {'parts': p.dims}
+          'dims': {'parts': p.dims},
         };
     }
     return SolveResult(
@@ -416,45 +444,51 @@ class G6GeometryEquation extends BaseEquation {
     if (p == null) {
       return [
         const StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: 'Pick a shape — e.g. rect 6x4.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: 'Pick a shape — e.g. rect 6x4.',
+        ),
       ];
     }
     final SolveResult r = solve();
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: r.errorMessage ?? 'Invalid dimensions.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: r.errorMessage ?? 'Invalid dimensions.',
+        ),
       ];
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Identify the shape',
-          explanation: 'Shape diagram: ${r.customData?.first['shape']}.'),
+        stepNumber: 1,
+        title: 'Identify the shape',
+        explanation: 'Shape diagram: ${r.customData?.first['shape']}.',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Write the formula',
-          explanation: 'P/A formula for this shape.',
-          latex: _formulaTex(p)),
+        stepNumber: 2,
+        title: 'Write the formula',
+        explanation: 'P/A formula for this shape.',
+        latex: _formulaTex(p),
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Substitute dimensions',
-          explanation:
-              'Given: ${p.dims.map(G6Format.num).join(', ')} ${p.unit}.',
-          latex: _substTex(p)),
+        stepNumber: 3,
+        title: 'Substitute dimensions',
+        explanation: 'Given: ${p.dims.map(G6Format.num).join(', ')} ${p.unit}.',
+        latex: _substTex(p),
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Compute',
-          explanation: r.answer,
-          latex: _resultTex(p)),
+        stepNumber: 4,
+        title: 'Compute',
+        explanation: r.answer,
+        latex: _resultTex(p),
+      ),
       StepModel(
-          stepNumber: 5,
-          title: 'Attach units',
-          explanation: 'Lengths in ${p.unit}, areas in ${p.unit}².'),
+        stepNumber: 5,
+        title: 'Attach units',
+        explanation: 'Lengths in ${p.unit}, areas in ${p.unit}².',
+      ),
     ];
   }
 }

@@ -15,8 +15,9 @@ class StepItemWidget extends StatelessWidget {
     if (line.contains('\\') && RegExp(r'[\\{}]').hasMatch(line)) return true;
     if (line.contains('dy/dx') || line.contains('d/dx')) return true;
 
-    final mathPattern =
-        RegExp(r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=');
+    final mathPattern = RegExp(
+      r'[0-9]+[a-zA-Z\^]|[a-zA-Z][0-9]|\^|\+|\-|\/|\*|=',
+    );
     final hasVariables = RegExp(r'[x-yt]').hasMatch(line);
     final hasNumbers = RegExp(r'[0-9]').hasMatch(line);
 
@@ -177,10 +178,8 @@ class StepItemWidget extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Text(
                       line,
-                      style: FinalsTheme.subtitleStyle(context).copyWith(
-                        fontSize: 13,
-                        height: 1.4,
-                      ),
+                      style: FinalsTheme.subtitleStyle(context)
+                          .copyWith(fontSize: 13, height: 1.4),
                     ),
                   );
                 }
@@ -279,8 +278,8 @@ class StepItemWidget extends StatelessWidget {
                 child: Text(
                   line,
                   style: TextStyle(
-                    color:
-                        FinalsTheme.textPrimary(context).withValues(alpha: 0.8),
+                    color: FinalsTheme.textPrimary(context)
+                        .withValues(alpha: 0.8),
                     fontSize: 13,
                     height: 1.4,
                     fontWeight: FontWeight.w500,
@@ -302,49 +301,59 @@ class StepItemWidget extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             FinalsTheme.primary.withValues(alpha: 0.12),
-            FinalsTheme.danger.withValues(alpha: 0.12)
+            FinalsTheme.danger.withValues(alpha: 0.12),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: FinalsTheme.primary.withValues(alpha: 0.5), width: 1.5),
+          color: FinalsTheme.primary.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-              color: FinalsTheme.primary.withValues(alpha: 0.15),
-              blurRadius: 16,
-              offset: const Offset(0, 6)),
+            color: FinalsTheme.primary.withValues(alpha: 0.15),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
         ],
       ),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(children: [
-              Icon(Icons.check_circle,
-                  color: FinalsTheme.primaryFor(context), size: 18),
-              const SizedBox(width: 8),
-              ResponsiveText(
-                '',
-                style: TextStyle(
+            Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
                   color: FinalsTheme.primaryFor(context),
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
-                  fontSize: 11,
+                  size: 18,
                 ),
-              ),
-            ]),
-            const SizedBox(height: 12),
-            ...step.lines.map((line) => _buildMathLine(
-                  line,
-                  TextStyle(
-                    color: FinalsTheme.textPrimary(context),
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
+                const SizedBox(width: 8),
+                ResponsiveText(
+                  '',
+                  style: TextStyle(
+                    color: FinalsTheme.primaryFor(context),
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    fontSize: 11,
                   ),
-                  context,
-                )),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ...step.lines.map(
+              (line) => _buildMathLine(
+                line,
+                TextStyle(
+                  color: FinalsTheme.textPrimary(context),
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+                context,
+              ),
+            ),
           ],
         ),
       ),

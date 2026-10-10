@@ -73,8 +73,9 @@ class _TopicsScreenState extends State<TopicsScreen> {
     // fan-out) instead of hardcoded topic-word lists. A hub card
     // shows when the query is blank, matches the hub name, or hits
     // that hub's section in any registry.
-    final unifiedHits =
-        q.isEmpty ? const <UnifiedHit>[] : UnifiedSearch.search(_query);
+    final unifiedHits = q.isEmpty
+        ? const <UnifiedHit>[]
+        : UnifiedSearch.search(_query);
     bool showHub(String hubName, bool Function(UnifiedHit) inSection) {
       if (q.isEmpty) return true;
       if (hubName.contains(q)) return true;
@@ -89,10 +90,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
       'modern math modmat foundations advanced',
       (h) => h.source == 'Modern Math',
     );
-    final showGrade6 = showHub(
-      'grade 6 g6',
-      (h) => h.source == 'G6',
-    );
+    final showGrade6 = showHub('grade 6 g6', (h) => h.source == 'G6');
     // Cycle 8: topic-hub card. Shows on blank queries or name
     // matches (it lists the whole catalogue via bySubject).
     final showHubCard = q.isEmpty || 'topic hub all subjects'.contains(q);
@@ -103,8 +101,9 @@ class _TopicsScreenState extends State<TopicsScreen> {
       if (q.isEmpty) return true;
       if (subject.toLowerCase().contains(q)) return true;
       return CurriculumRegistry.bySubject(subject).isNotEmpty &&
-          CurriculumRegistry.search(q).any(
-              (h) => h.topic.subject.toLowerCase() == subject.toLowerCase());
+          CurriculumRegistry.search(
+            q,
+          ).any((h) => h.topic.subject.toLowerCase() == subject.toLowerCase());
     }
 
     final showShs = showHub(
@@ -116,7 +115,8 @@ class _TopicsScreenState extends State<TopicsScreen> {
     final curriculumHits = q.isEmpty
         ? const <CurriculumSearchHit>[]
         : CurriculumRegistry.search(q);
-    final hasLocalHits = showCalculus ||
+    final hasLocalHits =
+        showCalculus ||
         showModmat ||
         showGrade6 ||
         showShs ||
@@ -367,10 +367,7 @@ class _TopicsScreenState extends State<TopicsScreen> {
               : IconButton(
                   tooltip: 'Clear search',
                   onPressed: _clearSearch,
-                  icon: Icon(
-                    Icons.close_rounded,
-                    color: theme.textSecondary,
-                  ),
+                  icon: Icon(Icons.close_rounded, color: theme.textSecondary),
                 ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 15),

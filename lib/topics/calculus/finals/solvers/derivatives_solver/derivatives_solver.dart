@@ -88,17 +88,26 @@ class BinOp extends Expr {
       case '-':
         return BinOp('-', left.diff(v), right.diff(v));
       case '*':
-        return BinOp('+', BinOp('*', left.diff(v), right),
-            BinOp('*', left, right.diff(v)));
+        return BinOp(
+          '+',
+          BinOp('*', left.diff(v), right),
+          BinOp('*', left, right.diff(v)),
+        );
       case '/':
-        final num = BinOp('-', BinOp('*', left.diff(v), right),
-            BinOp('*', left, right.diff(v)));
+        final num = BinOp(
+          '-',
+          BinOp('*', left.diff(v), right),
+          BinOp('*', left, right.diff(v)),
+        );
         return BinOp('/', num, BinOp('^', right, const Num(2)));
       case '^':
         if (right.isConst) {
           final n = right.constValue!;
-          return BinOp('*', BinOp('*', Num(n), BinOp('^', left, Num(n - 1))),
-              left.diff(v));
+          return BinOp(
+            '*',
+            BinOp('*', Num(n), BinOp('^', left, Num(n - 1))),
+            left.diff(v),
+          );
         }
         if (left is Var && (left as Var).name == 'e') {
           return BinOp('*', this, right.diff(v));
@@ -107,10 +116,14 @@ class BinOp extends Expr {
           return BinOp('*', BinOp('*', this, Func('ln', left)), right.diff(v));
         }
         return BinOp(
-            '*',
-            this,
-            BinOp('+', BinOp('*', right.diff(v), Func('ln', left)),
-                BinOp('*', right, BinOp('/', left.diff(v), left))));
+          '*',
+          this,
+          BinOp(
+            '+',
+            BinOp('*', right.diff(v), Func('ln', left)),
+            BinOp('*', right, BinOp('/', left.diff(v), left)),
+          ),
+        );
       default:
         throw ArgumentError('Unknown op: $op');
     }
@@ -148,8 +161,11 @@ class BinOp extends Expr {
         if (_isOne(l)) return r;
         if (_isOne(r)) return l;
         if (l is Num && r is BinOp && r.op == '*' && r.left is Num) {
-          return BinOp('*', Num(l.value * (r.left as Num).value), r.right)
-              .simplify();
+          return BinOp(
+            '*',
+            Num(l.value * (r.left as Num).value),
+            r.right,
+          ).simplify();
         }
       case '/':
         if (_isZero(l)) return const Num(0);
@@ -313,22 +329,36 @@ class Func extends Expr {
         break;
       case 'log':
         outer = BinOp(
-            '/', const Num(1), BinOp('*', arg, const Func('ln', Num(10))));
+          '/',
+          const Num(1),
+          BinOp('*', arg, const Func('ln', Num(10))),
+        );
         break;
       case 'asin':
       case 'arcsin':
-        outer = BinOp('/', const Num(1),
-            Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2)))));
+        outer = BinOp(
+          '/',
+          const Num(1),
+          Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2)))),
+        );
         break;
       case 'acos':
       case 'arccos':
-        outer = Neg(BinOp('/', const Num(1),
-            Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2))))));
+        outer = Neg(
+          BinOp(
+            '/',
+            const Num(1),
+            Sqrt(BinOp('-', const Num(1), BinOp('^', arg, const Num(2)))),
+          ),
+        );
         break;
       case 'atan':
       case 'arctan':
-        outer = BinOp('/', const Num(1),
-            BinOp('+', const Num(1), BinOp('^', arg, const Num(2))));
+        outer = BinOp(
+          '/',
+          const Num(1),
+          BinOp('+', const Num(1), BinOp('^', arg, const Num(2))),
+        );
         break;
       case 'sqrt':
         outer = BinOp('/', const Num(1), BinOp('*', const Num(2), Sqrt(arg)));
@@ -575,10 +605,13 @@ class Tokenizer {
       'atan',
       'arcsin',
       'arccos',
-      'arctan'
+      'arctan',
     };
     return Token(
-        funcs.contains(v) ? TokenType.function : TokenType.variable, v, start);
+      funcs.contains(v) ? TokenType.function : TokenType.variable,
+      v,
+      start,
+    );
   }
 }
 
@@ -723,11 +756,12 @@ class DerivativeStep {
   final String description;
   final Expr expression;
   final String? rule;
-  const DerivativeStep(
-      {required this.type,
-      required this.description,
-      required this.expression,
-      this.rule});
+  const DerivativeStep({
+    required this.type,
+    required this.description,
+    required this.expression,
+    this.rule,
+  });
   @override
   String toString() => '[$type] $description: $expression';
 }
@@ -737,11 +771,12 @@ class DerivativeSteps {
   final String variable;
   final Expr derivative;
   final List<DerivativeStep> steps;
-  const DerivativeSteps(
-      {required this.original,
-      required this.variable,
-      required this.derivative,
-      required this.steps});
+  const DerivativeSteps({
+    required this.original,
+    required this.variable,
+    required this.derivative,
+    required this.steps,
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -768,7 +803,7 @@ class DerivativeSolver {
       '⁶': '^6',
       '⁷': '^7',
       '⁸': '^8',
-      '⁹': '^9'
+      '⁹': '^9',
     };
     sup.forEach((k, v) {
       r = r.replaceAll(k, v);
@@ -780,7 +815,9 @@ class DerivativeSolver {
     r = r.replaceAllMapped(RegExp(r'(\d)\('), (m) => '${m[1]}*(');
     r = r.replaceAllMapped(RegExp(r'\)(\d)'), (m) => ')*${m[1]}');
     r = r.replaceAllMapped(
-        RegExp(r'(?<![a-zA-Z])([a-zA-Z])\('), (m) => '${m[1]}*(');
+      RegExp(r'(?<![a-zA-Z])([a-zA-Z])\('),
+      (m) => '${m[1]}*(',
+    );
     // sqrt shorthand
     r = r.replaceAllMapped(RegExp(r'sqrt([a-zA-Z])'), (m) => 'sqrt(${m[1]})');
     r = r.replaceAllMapped(RegExp(r'sqrt(\d)'), (m) => 'sqrt(${m[1]})');
@@ -804,7 +841,7 @@ class DerivativeSolver {
       'exp',
       'ln',
       'log',
-      'abs'
+      'abs',
     ];
     for (final f in funcNames) {
       r = r.replaceAllMapped(RegExp('$f\\s*([a-zA-Z])'), (m) => '$f(${m[1]})');
@@ -832,46 +869,60 @@ class DerivativeSolver {
     final parsed = parse(expr);
     final steps = <DerivativeStep>[];
 
-    steps.add(DerivativeStep(
-      type: StepType.original,
-      description: 'Find derivative of f($v) = $parsed',
-      expression: parsed,
-    ));
+    steps.add(
+      DerivativeStep(
+        type: StepType.original,
+        description: 'Find derivative of f($v) = $parsed',
+        expression: parsed,
+      ),
+    );
 
     final rule = _determineRule(parsed, v);
-    steps.add(DerivativeStep(
-      type: StepType.identifyRule,
-      description: 'Apply: $rule',
-      expression: parsed,
-      rule: rule,
-    ));
+    steps.add(
+      DerivativeStep(
+        type: StepType.identifyRule,
+        description: 'Apply: $rule',
+        expression: parsed,
+        rule: rule,
+      ),
+    );
 
     _collectSubSteps(parsed, v, steps, 0);
 
     final raw = differentiate(parsed, v);
-    steps.add(DerivativeStep(
-      type: StepType.applyRule,
-      description: 'Compute derivative',
-      expression: raw,
-    ));
+    steps.add(
+      DerivativeStep(
+        type: StepType.applyRule,
+        description: 'Compute derivative',
+        expression: raw,
+      ),
+    );
 
     final simp = simplify(raw);
     if (simp != raw) {
-      steps.add(DerivativeStep(
-        type: StepType.simplify,
-        description: 'Simplify the result',
-        expression: simp,
-      ));
+      steps.add(
+        DerivativeStep(
+          type: StepType.simplify,
+          description: 'Simplify the result',
+          expression: simp,
+        ),
+      );
     }
 
-    steps.add(DerivativeStep(
-      type: StepType.finalResult,
-      description: "Derivative: f'($v) = $simp",
-      expression: simp,
-    ));
+    steps.add(
+      DerivativeStep(
+        type: StepType.finalResult,
+        description: "Derivative: f'($v) = $simp",
+        expression: simp,
+      ),
+    );
 
     return DerivativeSteps(
-        original: parsed, variable: v, derivative: simp, steps: steps);
+      original: parsed,
+      variable: v,
+      derivative: simp,
+      steps: steps,
+    );
   }
 
   static String _determineRule(Expr e, String v) {
@@ -938,17 +989,23 @@ class DerivativeSolver {
   /// sibling slope solver's per-rule narration). Guarded by depth and
   /// sub-step caps so deeply nested input cannot flood the step list.
   static void _collectSubSteps(
-      Expr e, String v, List<DerivativeStep> out, int depth) {
+    Expr e,
+    String v,
+    List<DerivativeStep> out,
+    int depth,
+  ) {
     if (depth >= _maxSubStepDepth || out.length >= _maxSubSteps) return;
     if (e is Func) {
       if (e.arg.hasVar(v) && !_isTrivialInner(e.arg)) {
         final chain = 'Chain Rule: outer = ${e.name}(u), inner: u = ${e.arg}';
-        out.add(DerivativeStep(
-          type: StepType.identifyRule,
-          description: chain,
-          expression: e,
-          rule: chain,
-        ));
+        out.add(
+          DerivativeStep(
+            type: StepType.identifyRule,
+            description: chain,
+            expression: e,
+            rule: chain,
+          ),
+        );
         _addInnerRuleLabel(e.arg, v, out);
         _collectSubSteps(e.arg, v, out, depth + 1);
       }
@@ -959,14 +1016,17 @@ class DerivativeSolver {
           e.right.isConst &&
           e.left.hasVar(v) &&
           !_isTrivialInner(e.left)) {
-        final chain = 'Power Rule (with Chain Rule): '
+        final chain =
+            'Power Rule (with Chain Rule): '
             'outer = (${e.left})^${e.right}, inner: u = ${e.left}';
-        out.add(DerivativeStep(
-          type: StepType.identifyRule,
-          description: chain,
-          expression: e,
-          rule: chain,
-        ));
+        out.add(
+          DerivativeStep(
+            type: StepType.identifyRule,
+            description: chain,
+            expression: e,
+            rule: chain,
+          ),
+        );
         _addInnerRuleLabel(e.left, v, out);
         _collectSubSteps(e.left, v, out, depth + 1);
         return;
@@ -979,15 +1039,20 @@ class DerivativeSolver {
   }
 
   static void _addInnerRuleLabel(
-      Expr inner, String v, List<DerivativeStep> out) {
+    Expr inner,
+    String v,
+    List<DerivativeStep> out,
+  ) {
     final rule = _nestedRuleLabel(inner, v);
     if (rule == null) return;
-    out.add(DerivativeStep(
-      type: StepType.identifyRule,
-      description: '$rule (on $inner)',
-      expression: inner,
-      rule: '$rule (on $inner)',
-    ));
+    out.add(
+      DerivativeStep(
+        type: StepType.identifyRule,
+        description: '$rule (on $inner)',
+        expression: inner,
+        rule: '$rule (on $inner)',
+      ),
+    );
   }
 
   static String? _nestedRuleLabel(Expr e, String v) {

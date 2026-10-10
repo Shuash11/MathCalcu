@@ -119,51 +119,51 @@ class UnifiedSearch {
   }
 
   static List<UnifiedHit> _searchModules(String q) => [
-        for (final m in ModuleRegistry.modules)
-          if (m.label.toLowerCase().contains(q) ||
-              m.subtitle.toLowerCase().contains(q))
-            UnifiedHit(
-              label: m.label,
-              subtitle: m.subtitle,
-              route: m.route,
-              icon: m.icon,
-              source: 'Midterm',
-            ),
-      ];
+    for (final m in ModuleRegistry.modules)
+      if (m.label.toLowerCase().contains(q) ||
+          m.subtitle.toLowerCase().contains(q))
+        UnifiedHit(
+          label: m.label,
+          subtitle: m.subtitle,
+          route: m.route,
+          icon: m.icon,
+          source: 'Midterm',
+        ),
+  ];
 
   static List<UnifiedHit> _searchFinals(String q) => [
-        for (final m in FinalsModuleRegistry.modules)
-          if (m.label.toLowerCase().contains(q) ||
-              m.subtitle.toLowerCase().contains(q))
-            UnifiedHit(
-              label: m.label,
-              subtitle: m.subtitle,
-              route: m.route,
-              icon: m.icon,
-              source: 'Finals',
-            ),
-      ];
+    for (final m in FinalsModuleRegistry.modules)
+      if (m.label.toLowerCase().contains(q) ||
+          m.subtitle.toLowerCase().contains(q))
+        UnifiedHit(
+          label: m.label,
+          subtitle: m.subtitle,
+          route: m.route,
+          icon: m.icon,
+          source: 'Finals',
+        ),
+  ];
 
   static List<UnifiedHit> _searchModmat(String q) => [
-        for (final hit in ModmatModuleRegistry.search(q))
-          UnifiedHit(
-            label: hit.module.label,
-            subtitle: hit.module.subtitle,
-            route: hit.module.route,
-            icon: hit.module.icon,
-            source: 'Modern Math',
-          ),
-      ];
+    for (final hit in ModmatModuleRegistry.search(q))
+      UnifiedHit(
+        label: hit.module.label,
+        subtitle: hit.module.subtitle,
+        route: hit.module.route,
+        icon: hit.module.icon,
+        source: 'Modern Math',
+      ),
+  ];
 
   static List<UnifiedHit> _searchCurriculum(String q) => [
-        for (final hit in CurriculumRegistry.search(q))
-          UnifiedHit(
-            label: hit.topic.label,
-            subtitle: hit.topic.subtitle,
-            route: hit.topic.route,
-            icon: hit.topic.icon,
-            source: hit.gradeLevel,
-            curriculumTopic: hit.topic,
-          ),
-      ];
+    for (final hit in CurriculumRegistry.search(q))
+      UnifiedHit(
+        label: hit.topic.label,
+        subtitle: hit.topic.subtitle,
+        route: hit.topic.route,
+        icon: hit.topic.icon,
+        source: hit.gradeLevel,
+        curriculumTopic: hit.topic,
+      ),
+  ];
 }

@@ -36,7 +36,13 @@ class _Series {
   final List<_Term> terms;
   final _Convergence convergence;
   const _Series(
-      this.f, this.varName, this.a, this.n, this.terms, this.convergence);
+    this.f,
+    this.varName,
+    this.a,
+    this.n,
+    this.terms,
+    this.convergence,
+  );
 
   /// '∞' or the estimated radius rounded to 2 decimals, e.g. '1.09'.
   String get radiusText =>
@@ -101,8 +107,8 @@ class _Series {
     final base = t.k == 0
         ? ''
         : a == 0
-            ? 'x'
-            : '\\left(x - ${TaylorSeriesFormat.frac(a)}\\right)';
+        ? 'x'
+        : '\\left(x - ${TaylorSeriesFormat.frac(a)}\\right)';
     final power = t.k >= 2 ? '^{${t.k}}' : '';
     final rational = TaylorSeriesFormat.rational(t.coefficient);
     if (rational == null) {
@@ -125,8 +131,10 @@ class _Series {
 
   /// The full polynomial in LaTeX joined with proper +/- handling.
   String get polynomialLatex {
-    final parts =
-        terms.where((t) => t.coefficient != 0).map(termLatex).toList();
+    final parts = terms
+        .where((t) => t.coefficient != 0)
+        .map(termLatex)
+        .toList();
     if (parts.isEmpty) return '0';
     final buf = StringBuffer(parts.first);
     for (final p in parts.skip(1)) {
@@ -332,12 +340,13 @@ class TaylorSeriesEquation extends BaseEquation {
             'terms': series.termStrings,
             'radius': series.radiusText,
             'interval': series.intervalText,
-          }
+          },
         ],
       );
     } on ParseException catch (e) {
       return SolveResult.error(
-          e.toString().replaceFirst('ParseException: ', ''));
+        e.toString().replaceFirst('ParseException: ', ''),
+      );
     } catch (e) {
       return SolveResult.error('Could not solve: $e');
     }
@@ -356,61 +365,71 @@ class TaylorSeriesEquation extends BaseEquation {
       StepModel(
         stepNumber: 1,
         title: 'Identify the series',
-        explanation: "Taylor series of f = ${series.f} about x = $a: "
+        explanation:
+            "Taylor series of f = ${series.f} about x = $a: "
             "f(a) + f'(a)(x-a) + f''(a)/2!(x-a)^2 + ... — each "
             'coefficient is the k-th derivative at a, divided by k!.'
             '${series.a == 0 ? ' Here a = 0, so this is a Maclaurin series.' : ''}',
-        latex: r'P_{n}(x) = f(a) + f^{\prime}(a)(x-a) + '
+        latex:
+            r'P_{n}(x) = f(a) + f^{\prime}(a)(x-a) + '
             r'\frac{f^{\prime\prime}(a)}{2!}(x-a)^{2} + \cdots',
       ),
     ];
 
     var n = 2;
     for (final t in series.terms) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: t.k == 0
-            ? 'Term 1: constant term'
-            : 'Term ${t.k + 1}: coefficient ${TaylorSeriesFormat.frac(t.coefficient)}',
-        explanation: t.k == 0
-            ? 'f($a) = ${TaylorSeriesFormat.frac(t.coefficient)} — the constant term.'
-            : 'f${sup(t.k)}($v) = ${t.derivative} → '
-                'f${sup(t.k)}($a) = ${TaylorSeriesFormat.frac(t.value)} → '
-                'coefficient = ${TaylorSeriesFormat.frac(t.value)}/${t.k}! = '
-                '${TaylorSeriesFormat.frac(t.coefficient)}',
-        hint: 'Term: ${series.termText(t)}',
-        latex: series.termLatex(t),
-        subLatex: t.k == 0 ? null : [FinalsLatex.expr(t.derivative.toString())],
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          title: t.k == 0
+              ? 'Term 1: constant term'
+              : 'Term ${t.k + 1}: coefficient ${TaylorSeriesFormat.frac(t.coefficient)}',
+          explanation: t.k == 0
+              ? 'f($a) = ${TaylorSeriesFormat.frac(t.coefficient)} — the constant term.'
+              : 'f${sup(t.k)}($v) = ${t.derivative} → '
+                    'f${sup(t.k)}($a) = ${TaylorSeriesFormat.frac(t.value)} → '
+                    'coefficient = ${TaylorSeriesFormat.frac(t.value)}/${t.k}! = '
+                    '${TaylorSeriesFormat.frac(t.coefficient)}',
+          hint: 'Term: ${series.termText(t)}',
+          latex: series.termLatex(t),
+          subLatex: t.k == 0
+              ? null
+              : [FinalsLatex.expr(t.derivative.toString())],
+        ),
+      );
     }
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      title: 'Radius of convergence (ratio test)',
-      explanation: series.convergence.isInfinite
-          ? 'Ratio test on consecutive coefficients: the tail ratio '
-              '|c_k+1/c_k| ≈ ${TaylorSeriesFormat.frac(series.convergence.rho)} '
-              'keeps shrinking (the coefficients decay toward 0), so '
-              'R = ∞ — the series converges for every real x.'
-          : 'Ratio test on consecutive coefficients: the tail ratio '
-              '|c_k+1/c_k| → ρ ≈ '
-              '${TaylorSeriesFormat.frac(series.convergence.rho)}, so '
-              'R = 1/ρ ≈ ${series.radiusText} and the series converges '
-              'on (a − R, a + R) ≈ ${series.intervalText}; check the '
-              'endpoints separately.',
-      hint: 'R = ${series.radiusText}, interval ${series.intervalText}',
-      latex: series.convergence.isInfinite
-          ? r'R = \infty'
-          : r'R = \frac{1}{\rho} \approx ${series.radiusText}',
-      subLatex: [series.intervalLatex],
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        title: 'Radius of convergence (ratio test)',
+        explanation: series.convergence.isInfinite
+            ? 'Ratio test on consecutive coefficients: the tail ratio '
+                  '|c_k+1/c_k| ≈ ${TaylorSeriesFormat.frac(series.convergence.rho)} '
+                  'keeps shrinking (the coefficients decay toward 0), so '
+                  'R = ∞ — the series converges for every real x.'
+            : 'Ratio test on consecutive coefficients: the tail ratio '
+                  '|c_k+1/c_k| → ρ ≈ '
+                  '${TaylorSeriesFormat.frac(series.convergence.rho)}, so '
+                  'R = 1/ρ ≈ ${series.radiusText} and the series converges '
+                  'on (a − R, a + R) ≈ ${series.intervalText}; check the '
+                  'endpoints separately.',
+        hint: 'R = ${series.radiusText}, interval ${series.intervalText}',
+        latex: series.convergence.isInfinite
+            ? r'R = \infty'
+            : r'R = \frac{1}{\rho} \approx ${series.radiusText}',
+        subLatex: [series.intervalLatex],
+      ),
+    );
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      title: 'Final answer',
-      explanation: 'P${series.n}($v) = ${series.polynomial}',
-      latex: series.polynomialLatex,
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        title: 'Final answer',
+        explanation: 'P${series.n}($v) = ${series.polynomial}',
+        latex: series.polynomialLatex,
+      ),
+    );
     return steps;
   }
 

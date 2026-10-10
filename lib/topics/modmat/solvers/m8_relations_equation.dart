@@ -80,8 +80,10 @@ class M8RelationsEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'R={(1,1),(2,2)} on {1,2}');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'R={(1,1),(2,2)} on {1,2}',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -101,8 +103,9 @@ class M8RelationsEquation extends BaseEquation {
       return SolveResult.error(_error ?? 'Use R={(1,1)} on {1,2}.');
     }
     final u = (p[0] as List).cast<String>();
-    final pairs =
-        (p[1] as List).map((e) => (e as List).cast<String>()).toList();
+    final pairs = (p[1] as List)
+        .map((e) => (e as List).cast<String>())
+        .toList();
     final props = _props(u, pairs);
     final isEquiv =
         props['reflexive']! && props['symmetric']! && props['transitive']!;
@@ -111,8 +114,8 @@ class M8RelationsEquation extends BaseEquation {
     final kind = isEquiv
         ? 'equivalence relation'
         : isOrder
-            ? 'partial order'
-            : 'neither equivalence nor order';
+        ? 'partial order'
+        : 'neither equivalence nor order';
     final flags = props.entries
         .map((e) => '${e.key}: ${e.value ? 'yes' : 'no'}')
         .join(', ');
@@ -126,7 +129,7 @@ class M8RelationsEquation extends BaseEquation {
           'pairs': pairs,
           'properties': props,
           'classification': kind,
-        }
+        },
       ],
     );
   }
@@ -137,9 +140,10 @@ class M8RelationsEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use R={(1,1)} on {1,2}.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use R={(1,1)} on {1,2}.',
+        ),
       ];
     }
     final r = solve();
@@ -161,29 +165,30 @@ class M8RelationsEquation extends BaseEquation {
           .map((e) => '${e.key}: ${e.value ? 'yes' : 'no'}')
           .join(', ');
       relLatex = 'R \\subseteq $setTex \\times $setTex';
-      relSub = [
-        'R = $pairsTex',
-        '\\text{$propTex}',
-        '\\text{$kind}',
-      ];
+      relSub = ['R = $pairsTex', '\\text{$propTex}', '\\text{$kind}'];
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Check reflexive + symmetric',
-          explanation: 'Reflexive: every (a,a) present. '
-              'Symmetric: (a,b) forces (b,a).'),
+        stepNumber: 1,
+        title: 'Check reflexive + symmetric',
+        explanation:
+            'Reflexive: every (a,a) present. '
+            'Symmetric: (a,b) forces (b,a).',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Check antisymmetric + transitive',
-          explanation: 'Antisymmetric: (a,b) and (b,a) force a = b. '
-              'Transitive: (a,b) and (b,c) force (a,c).'),
+        stepNumber: 2,
+        title: 'Check antisymmetric + transitive',
+        explanation:
+            'Antisymmetric: (a,b) and (b,a) force a = b. '
+            'Transitive: (a,b) and (b,c) force (a,c).',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Classify',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: relLatex,
-          subLatex: relSub),
+        stepNumber: 3,
+        title: 'Classify',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: relLatex,
+        subLatex: relSub,
+      ),
     ];
   }
 }

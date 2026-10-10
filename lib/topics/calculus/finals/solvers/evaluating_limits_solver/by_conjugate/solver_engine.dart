@@ -1,4 +1,4 @@
-﻿import 'parser.dart';
+import 'parser.dart';
 import 'tokenizer.dart';
 
 class ConjugateProblem {
@@ -111,11 +111,14 @@ class ConjugateResult {
 class ConjugateSolverEngine {
   ConjugateResult solve(ConjugateProblem problem) {
     try {
-      final (numerator, denominator) =
-          _parseExpressionAsFraction(problem.expression.trim());
+      final (numerator, denominator) = _parseExpressionAsFraction(
+        problem.expression.trim(),
+      );
 
-      final numAtPoint =
-          numerator.evaluate(problem.approachValue, variable: problem.variable);
+      final numAtPoint = numerator.evaluate(
+        problem.approachValue,
+        variable: problem.variable,
+      );
       final denAtPoint = denominator.evaluate(
         problem.approachValue,
         variable: problem.variable,

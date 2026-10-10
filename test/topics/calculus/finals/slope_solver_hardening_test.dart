@@ -69,8 +69,10 @@ void main() {
       expect(PointValues.parse('x=2E5'), {'x': 200000.0});
       expect(PointValues.parse('y=-1.5e2'), {'y': -150.0});
       expect(
-        SlopeSolver.solve('x^2', pointValues: PointValues.parse('x=1e-3'))
-            .slopeValue,
+        SlopeSolver.solve(
+          'x^2',
+          pointValues: PointValues.parse('x=1e-3'),
+        ).slopeValue,
         closeTo(0.002, 1e-9),
       );
     });

@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'tokenizer.dart';
 
 /// Exception thrown when parsing fails
@@ -161,7 +162,9 @@ class Parser {
     final result = _parseExpression();
     if (tokens[_current].type != TokenType.eof) {
       throw ParserException(
-          'Unexpected token after expression', tokens[_current]);
+        'Unexpected token after expression',
+        tokens[_current],
+      );
     }
     return result;
   }
@@ -249,8 +252,9 @@ class Parser {
       final expr = _parseExpression();
       if (tokens[_current].type != TokenType.rightParen) {
         throw ParserException(
-            'Expected ")" but found "${tokens[_current].value}"',
-            tokens[_current]);
+          'Expected ")" but found "${tokens[_current].value}"',
+          tokens[_current],
+        );
       }
       _current++;
       return expr;
@@ -262,8 +266,10 @@ class Parser {
       if (funcName == 'sqrt') {
         if (_current >= tokens.length ||
             tokens[_current].type != TokenType.leftParen) {
-          throw ParserException('Expected "(" after $funcName',
-              _current < tokens.length ? tokens[_current] : null);
+          throw ParserException(
+            'Expected "(" after $funcName',
+            _current < tokens.length ? tokens[_current] : null,
+          );
         }
         _current++;
 
@@ -276,8 +282,10 @@ class Parser {
         final arg = _parseExpression();
         if (_current >= tokens.length ||
             tokens[_current].type != TokenType.rightParen) {
-          throw ParserException('Expected ")" after function argument',
-              _current < tokens.length ? tokens[_current] : null);
+          throw ParserException(
+            'Expected ")" after function argument',
+            _current < tokens.length ? tokens[_current] : null,
+          );
         }
         _current++;
         // We lack a FunctionNode in this specific parser's AST,

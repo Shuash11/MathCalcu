@@ -9,10 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  testWidgets('Taylor & Maclaurin Series registry route renders its screen',
-      (tester) async {
-    final entry = FinalsModuleRegistry.modules
-        .singleWhere((m) => m.label == 'Taylor & Maclaurin Series');
+  testWidgets('Taylor & Maclaurin Series registry route renders its screen', (
+    tester,
+  ) async {
+    final entry = FinalsModuleRegistry.modules.singleWhere(
+      (m) => m.label == 'Taylor & Maclaurin Series',
+    );
     expect(entry.route, '/topics/calculus/finals/taylor');
 
     await tester.pumpWidget(

@@ -60,7 +60,7 @@ class DerivativeStepTile extends StatelessWidget {
                     color: step.type == StepType.finalResult
                         ? FinalsTheme.primaryFor(context)
                         : FinalsTheme.primaryFor(context)
-                            .withValues(alpha: 0.5),
+                              .withValues(alpha: 0.5),
                   ),
                 ),
                 child: Center(
@@ -118,13 +118,17 @@ class DerivativeStepTile extends StatelessWidget {
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: FinalsTheme.cardSecondary(context),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: _buildLatexForExpression(
-                            _toLatex(step.expression.toString()), context),
+                          _toLatex(step.expression.toString()),
+                          context,
+                        ),
                       ),
                     ],
                   ],
@@ -138,8 +142,10 @@ class DerivativeStepTile extends StatelessWidget {
   }
 
   List<Widget> _buildExplanationLines(BuildContext context) {
-    final lines =
-        step.explanation.split('\n').where((l) => l.trim().isNotEmpty).toList();
+    final lines = step.explanation
+        .split('\n')
+        .where((l) => l.trim().isNotEmpty)
+        .toList();
     return lines.map((line) {
       final trimmedLine = line.trim();
 
@@ -174,7 +180,8 @@ class DerivativeStepTile extends StatelessWidget {
           trimmedLine.contains('{') && trimmedLine.contains('}');
       final hasExponent =
           trimmedLine.contains('^') && !trimmedLine.contains(r'\^');
-      final hasMathSymbols = trimmedLine.contains('/') ||
+      final hasMathSymbols =
+          trimmedLine.contains('/') ||
           trimmedLine.contains('*') ||
           trimmedLine.contains('[');
 
@@ -188,10 +195,7 @@ class DerivativeStepTile extends StatelessWidget {
       // Case 3: Plain text
       return Padding(
         padding: const EdgeInsets.only(bottom: 4),
-        child: Text(
-          trimmedLine,
-          style: FinalsTheme.subtitleStyle(context),
-        ),
+        child: Text(trimmedLine, style: FinalsTheme.subtitleStyle(context)),
       );
     }).toList();
   }
@@ -213,10 +217,7 @@ class DerivativeStepTile extends StatelessWidget {
         color: FinalsTheme.primaryFor(context).withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(8),
         border: Border(
-          left: BorderSide(
-            color: FinalsTheme.primaryFor(context),
-            width: 3,
-          ),
+          left: BorderSide(color: FinalsTheme.primaryFor(context), width: 3),
         ),
       ),
       child: _buildLatexDisplay(formula, context),
@@ -233,10 +234,7 @@ class DerivativeStepTile extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Math.tex(
         processedTex,
-        textStyle: TextStyle(
-          fontSize: 14,
-          color: FinalsTheme.textPrimary(ctx),
-        ),
+        textStyle: TextStyle(fontSize: 14, color: FinalsTheme.textPrimary(ctx)),
         mathStyle: MathStyle.text,
         onErrorFallback: (err) => Text(
           tex,
@@ -276,8 +274,10 @@ class DerivativeStepTile extends StatelessWidget {
         ),
       );
     } catch (e) {
-      return Text(tex,
-          style: TextStyle(fontSize: 14, color: FinalsTheme.textPrimary(ctx)));
+      return Text(
+        tex,
+        style: TextStyle(fontSize: 14, color: FinalsTheme.textPrimary(ctx)),
+      );
     }
   }
 

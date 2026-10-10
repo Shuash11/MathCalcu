@@ -23,8 +23,8 @@ class M9RealAnalysisEquation extends BaseEquation {
   /// Splits 'lim <expr>' body.
   String? _body() {
     final t = _norm();
-    final m =
-        RegExp(r'^(lim|limit)(n->inf|n→inf|asn->inf)?(.*)$').firstMatch(t);
+    final m = RegExp(r'^(lim|limit)(n->inf|n→inf|asn->inf)?(.*)$')
+        .firstMatch(t);
     if (m == null) return null;
     var body = m.group(3)!;
     body = body.replaceAll(RegExp(r'^(asn->inf|n->inf|n→∞)+'), '');
@@ -127,8 +127,10 @@ class M9RealAnalysisEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'lim (2n+1)/(n+3)');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'lim (2n+1)/(n+3)',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -157,7 +159,7 @@ class M9RealAnalysisEquation extends BaseEquation {
           answer: 'lim = ${_fmt(v)} (constant sequence converges to itself)',
           points: [v],
           customData: [
-            {'kind': 'sequence-limit', 'value': 'constant', 'limit': v}
+            {'kind': 'sequence-limit', 'value': 'constant', 'limit': v},
           ],
         );
       }
@@ -168,7 +170,7 @@ class M9RealAnalysisEquation extends BaseEquation {
             'lim = $sign (degree $d polynomial, leading coeff ${_fmt(lead)})',
         points: [lead > 0 ? double.infinity : double.negativeInfinity],
         customData: [
-          {'kind': 'sequence-limit', 'value': 'infinite', 'sign': sign}
+          {'kind': 'sequence-limit', 'value': 'infinite', 'sign': sign},
         ],
       );
     }
@@ -179,7 +181,7 @@ class M9RealAnalysisEquation extends BaseEquation {
         answer: 'lim = 0 (denominator degree $dd beats numerator degree $dn)',
         points: [0.0],
         customData: [
-          {'kind': 'sequence-limit', 'value': 'zero', 'limit': 0.0}
+          {'kind': 'sequence-limit', 'value': 'zero', 'limit': 0.0},
         ],
       );
     }
@@ -190,7 +192,7 @@ class M9RealAnalysisEquation extends BaseEquation {
             'lim = $sign (numerator degree $dn beats denominator degree $dd)',
         points: [sign == '+∞' ? double.infinity : double.negativeInfinity],
         customData: [
-          {'kind': 'sequence-limit', 'value': 'infinite', 'sign': sign}
+          {'kind': 'sequence-limit', 'value': 'infinite', 'sign': sign},
         ],
       );
     }
@@ -199,7 +201,7 @@ class M9RealAnalysisEquation extends BaseEquation {
       answer: 'lim = ${_fmt(v)} (ratio of leading coefficients)',
       points: [v],
       customData: [
-        {'kind': 'sequence-limit', 'value': 'finite', 'limit': v}
+        {'kind': 'sequence-limit', 'value': 'finite', 'limit': v},
       ],
     );
   }
@@ -212,8 +214,9 @@ class M9RealAnalysisEquation extends BaseEquation {
       final c = p[d]!;
       if (c == 0) continue;
       final a = c.abs();
-      final lit =
-          (a == a.roundToDouble() && a < 1e12) ? a.toInt().toString() : '$a';
+      final lit = (a == a.roundToDouble() && a < 1e12)
+          ? a.toInt().toString()
+          : '$a';
       String term;
       if (d == 0) {
         term = lit;
@@ -221,9 +224,11 @@ class M9RealAnalysisEquation extends BaseEquation {
         final nn = d == 1 ? 'n' : 'n^{$d}';
         term = lit == '1' ? nn : '$lit$nn';
       }
-      parts.add(parts.isEmpty
-          ? (c < 0 ? '-$term' : term)
-          : (c < 0 ? ' - $term' : ' + $term'));
+      parts.add(
+        parts.isEmpty
+            ? (c < 0 ? '-$term' : term)
+            : (c < 0 ? ' - $term' : ' + $term'),
+      );
     }
     return parts.isEmpty ? '0' : parts.join();
   }
@@ -242,9 +247,10 @@ class M9RealAnalysisEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use lim (2n+1)/(n+3).')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use lim (2n+1)/(n+3).',
+        ),
       ];
     }
     final r = solve();
@@ -256,8 +262,7 @@ class M9RealAnalysisEquation extends BaseEquation {
     String? valTex;
     if (den == null) {
       final d = _deg(num);
-      valTex =
-          d == 0 ? _fmt(num[0]!) : (num[d]! > 0 ? '+\\infty' : '-\\infty');
+      valTex = d == 0 ? _fmt(num[0]!) : (num[d]! > 0 ? '+\\infty' : '-\\infty');
     } else {
       final dn = _deg(num);
       final dd = _deg(den);
@@ -272,19 +277,23 @@ class M9RealAnalysisEquation extends BaseEquation {
     final limitLatex = '\\lim_{n \\to \\infty} $bodyTex = $valTex';
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Compare degrees',
-          explanation: 'deg(num) vs deg den: lower → 0, '
-              'equal → leading-coeff ratio, higher → ±∞.'),
+        stepNumber: 1,
+        title: 'Compare degrees',
+        explanation:
+            'deg(num) vs deg den: lower → 0, '
+            'equal → leading-coeff ratio, higher → ±∞.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Divide by the top power',
-          explanation: 'Divide num and den by n^max so vanishing terms → 0.'),
+        stepNumber: 2,
+        title: 'Divide by the top power',
+        explanation: 'Divide num and den by n^max so vanishing terms → 0.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the limit',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: r.hasError ? null : limitLatex),
+        stepNumber: 3,
+        title: 'Read the limit',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: r.hasError ? null : limitLatex,
+      ),
     ];
   }
 }

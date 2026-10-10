@@ -20,9 +20,7 @@ class GradientComputeButton extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color, const Color(0xFF334155)],
-          ),
+          gradient: LinearGradient(colors: [color, const Color(0xFF334155)]),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(

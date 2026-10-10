@@ -33,7 +33,7 @@ class LimitsAnswerCard extends StatelessWidget {
                 ? LinearGradient(
                     colors: [
                       FinalsTheme.danger.withValues(alpha: 0.1),
-                      FinalsTheme.danger.withValues(alpha: 0.05)
+                      FinalsTheme.danger.withValues(alpha: 0.05),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -99,15 +99,16 @@ class LimitsAnswerCard extends StatelessWidget {
               else ...[
                 Text(
                   problemNotation,
-                  style: FinalsTheme.subtitleStyle(context).copyWith(
-                    fontStyle: FontStyle.italic,
-                  ),
+                  style: FinalsTheme.subtitleStyle(context)
+                      .copyWith(fontStyle: FontStyle.italic),
                 ),
                 const SizedBox(height: 8),
                 Container(
                   width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: FinalsTheme.surface(context).withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
@@ -126,13 +127,11 @@ class LimitsAnswerCard extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: ResponsiveText(
                     '',
-                    style: FinalsTheme.labelStyle(context).copyWith(
-                      fontSize: 9,
-                      letterSpacing: 0.5,
-                    ),
+                    style: FinalsTheme.labelStyle(context)
+                        .copyWith(fontSize: 9, letterSpacing: 0.5),
                   ),
                 ),
-              ]
+              ],
             ],
           ),
         ),

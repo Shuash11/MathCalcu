@@ -23,21 +23,16 @@ Widget buildTestApp(Widget child, {ThemeProvider? theme}) {
 Widget buildFullApp(Widget child, {ThemeProvider? theme}) {
   return ChangeNotifierProvider.value(
     value: theme ?? ThemeProvider(),
-    child: MaterialApp(
-      home: child,
-    ),
+    child: MaterialApp(home: child),
   );
 }
 
-SolveResult _testSolve(String input) => const SolveResult(
-      answer: 'x ≥ 0',
-      points: [0],
-      intervalNotation: '[0, ∞)',
-    );
+SolveResult _testSolve(String input) =>
+    const SolveResult(answer: 'x ≥ 0', points: [0], intervalNotation: '[0, ∞)');
 
 List<StepModel> _testSteps(String input) => const [
-      StepModel(stepNumber: 1, latex: r'x \geq 0'),
-    ];
+  StepModel(stepNumber: 1, latex: r'x \geq 0'),
+];
 
 double _contrastRatio(Color foreground, Color background) {
   double luminance(Color color) => color.computeLuminance();
@@ -71,8 +66,9 @@ Future<void> pumpUntilFound(
 
 void main() {
   group('MathKeyboard toggle label', () {
-    testWidgets('shows "Show math keyboard" when hidden',
-        (WidgetTester tester) async {
+    testWidgets('shows "Show math keyboard" when hidden', (
+      WidgetTester tester,
+    ) async {
       final ctrl = TextEditingController();
       await tester.pumpWidget(
         buildTestApp(
@@ -93,8 +89,9 @@ void main() {
       ctrl.dispose();
     });
 
-    testWidgets('shows "Hide math keyboard" when visible initially',
-        (WidgetTester tester) async {
+    testWidgets('shows "Hide math keyboard" when visible initially', (
+      WidgetTester tester,
+    ) async {
       final ctrl = TextEditingController();
       await tester.pumpWidget(
         buildTestApp(
@@ -110,8 +107,9 @@ void main() {
       ctrl.dispose();
     });
 
-    testWidgets('keyboard toggle has Semantics with button flag',
-        (WidgetTester tester) async {
+    testWidgets('keyboard toggle has Semantics with button flag', (
+      WidgetTester tester,
+    ) async {
       final ctrl = TextEditingController();
       await tester.pumpWidget(
         buildTestApp(
@@ -131,8 +129,9 @@ void main() {
       await tester.tap(find.text('Hide math keyboard'));
       await tester.pump();
 
-      final hiddenSemantics =
-          tester.getSemantics(find.text('Show math keyboard'));
+      final hiddenSemantics = tester.getSemantics(
+        find.text('Show math keyboard'),
+      );
       expect(hiddenSemantics.flagsCollection.isButton, isTrue);
       ctrl.dispose();
     });
@@ -153,14 +152,16 @@ void main() {
       expect(find.byIcon(Icons.backspace_outlined), findsOneWidget);
 
       // Check semantics
-      final semantics =
-          tester.getSemantics(find.byIcon(Icons.backspace_outlined));
+      final semantics = tester.getSemantics(
+        find.byIcon(Icons.backspace_outlined),
+      );
       expect(semantics.flagsCollection.isButton, isTrue);
       ctrl.dispose();
     });
 
-    testWidgets('toggle and keys meet the 44px minimum target',
-        (WidgetTester tester) async {
+    testWidgets('toggle and keys meet the 44px minimum target', (
+      WidgetTester tester,
+    ) async {
       final ctrl = TextEditingController();
       await tester.pumpWidget(
         buildTestApp(
@@ -206,8 +207,9 @@ void main() {
   });
 
   group('AnswerCard rendering', () {
-    testWidgets('renders answer text and steps hint',
-        (WidgetTester tester) async {
+    testWidgets('renders answer text and steps hint', (
+      WidgetTester tester,
+    ) async {
       const result = SolveResult(
         answer: 'x > 3',
         points: [3.0],
@@ -216,11 +218,7 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          AnswerCard(
-            result: result,
-            accentColor: Colors.blue,
-            onTap: () {},
-          ),
+          AnswerCard(result: result, accentColor: Colors.blue, onTap: () {}),
         ),
       );
 
@@ -230,8 +228,9 @@ void main() {
       expect(find.text('(3, ∞)'), findsOneWidget);
     });
 
-    testWidgets('renders in dark theme without error',
-        (WidgetTester tester) async {
+    testWidgets('renders in dark theme without error', (
+      WidgetTester tester,
+    ) async {
       const result = SolveResult(
         answer: 'x ≤ 5',
         points: [5.0],
@@ -257,8 +256,9 @@ void main() {
   });
 
   group('FullScreenGraphScreen semantics', () {
-    testWidgets('close/back button has button semantics',
-        (WidgetTester tester) async {
+    testWidgets('close/back button has button semantics', (
+      WidgetTester tester,
+    ) async {
       const result = SolveResult(
         answer: 'x > 3',
         points: [3.0],
@@ -269,21 +269,17 @@ void main() {
         buildFullApp(
           const FullScreenGraphScreen(
             title: 'Test Graph',
-            graph: InequalityGraph(
-              result: result,
-              accentColor: Colors.blue,
-            ),
-            keyInfo: [
-              FullScreenInfoItem(label: 'Interval', value: '(3, ∞)'),
-            ],
+            graph: InequalityGraph(result: result, accentColor: Colors.blue),
+            keyInfo: [FullScreenInfoItem(label: 'Interval', value: '(3, ∞)')],
           ),
         ),
       );
 
       // The back button should have semantics
       expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
-      final semantics =
-          tester.getSemantics(find.byIcon(Icons.arrow_back_rounded));
+      final semantics = tester.getSemantics(
+        find.byIcon(Icons.arrow_back_rounded),
+      );
       expect(semantics.flagsCollection.isButton, isTrue);
       expect(
         tester.getSize(find.bySemanticsLabel('Close full-screen graph')).height,
@@ -293,8 +289,9 @@ void main() {
   });
 
   group('Base inequality actions', () {
-    testWidgets('opens steps after solve without listening outside build',
-        (WidgetTester tester) async {
+    testWidgets('opens steps after solve without listening outside build', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         buildTestApp(
           const BaseInequalityScreen(
@@ -368,16 +365,26 @@ void main() {
 
       expect(embedded.backgroundColor, darkSurface);
       expect(fullscreen.backgroundColor, const Color(0xFF232340));
-      expect(_contrastRatio(embedded.axisColor, embedded.backgroundColor),
-          greaterThanOrEqualTo(3));
-      expect(_contrastRatio(embedded.labelColor, embedded.backgroundColor),
-          greaterThanOrEqualTo(4.5));
-      expect(_contrastRatio(embedded.solutionColor, embedded.backgroundColor),
-          greaterThanOrEqualTo(3));
-      expect(_contrastRatio(embedded.axisArrowColor, embedded.backgroundColor),
-          greaterThanOrEqualTo(3));
-      expect(_contrastRatio(light.axisArrowColor, light.backgroundColor),
-          greaterThanOrEqualTo(3));
+      expect(
+        _contrastRatio(embedded.axisColor, embedded.backgroundColor),
+        greaterThanOrEqualTo(3),
+      );
+      expect(
+        _contrastRatio(embedded.labelColor, embedded.backgroundColor),
+        greaterThanOrEqualTo(4.5),
+      );
+      expect(
+        _contrastRatio(embedded.solutionColor, embedded.backgroundColor),
+        greaterThanOrEqualTo(3),
+      );
+      expect(
+        _contrastRatio(embedded.axisArrowColor, embedded.backgroundColor),
+        greaterThanOrEqualTo(3),
+      );
+      expect(
+        _contrastRatio(light.axisArrowColor, light.backgroundColor),
+        greaterThanOrEqualTo(3),
+      );
     });
 
     test('classifies every required interval direction and endpoint state', () {
@@ -385,16 +392,23 @@ void main() {
       expect(InequalityGraph.isOpenEndpoint('(0, ∞)', goesRight: true), isTrue);
       expect(InequalityGraph.goesRight('(-∞, 0)'), isFalse);
       expect(
-          InequalityGraph.isOpenEndpoint('(-∞, 0]', goesRight: false), isFalse);
+        InequalityGraph.isOpenEndpoint('(-∞, 0]', goesRight: false),
+        isFalse,
+      );
       expect(
-          InequalityGraph.isOpenEndpoint('[0, ∞)', goesRight: true), isFalse);
+        InequalityGraph.isOpenEndpoint('[0, ∞)', goesRight: true),
+        isFalse,
+      );
       expect(
-          InequalityGraph.isOpenEndpoint('(-2, 2]', goesRight: true), isTrue);
+        InequalityGraph.isOpenEndpoint('(-2, 2]', goesRight: true),
+        isTrue,
+      );
       expect('(-∞, -2) ∪ (2, ∞)', contains('∪'));
       expect('∅', isNot('(-∞, ∞)'));
     });
-    testWidgets('renders single-boundary open endpoint in light theme',
-        (WidgetTester tester) async {
+    testWidgets('renders single-boundary open endpoint in light theme', (
+      WidgetTester tester,
+    ) async {
       const result = SolveResult(
         answer: 'x > 3',
         points: [3.0],
@@ -417,8 +431,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('renders single-boundary closed endpoint',
-        (WidgetTester tester) async {
+    testWidgets('renders single-boundary closed endpoint', (
+      WidgetTester tester,
+    ) async {
       const result = SolveResult(
         answer: 'x ≤ 5',
         points: [5.0],
@@ -487,8 +502,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('renders "All real numbers" state',
-        (WidgetTester tester) async {
+    testWidgets('renders "All real numbers" state', (
+      WidgetTester tester,
+    ) async {
       const result = SolveResult(
         answer: 'All real numbers',
         points: [],
@@ -511,8 +527,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('renders in dark theme with light accent color',
-        (WidgetTester tester) async {
+    testWidgets('renders in dark theme with light accent color', (
+      WidgetTester tester,
+    ) async {
       const result = SolveResult(
         answer: 'x > 3',
         points: [3.0],

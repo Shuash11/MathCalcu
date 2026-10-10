@@ -42,8 +42,9 @@ class G6VolumeEquation extends BaseEquation {
   /// h=3 — a numerically WRONG volume (BUG B).
   static Map<String, double> _labels(String t) {
     final Map<String, double> m = <String, double>{};
-    for (final Match match
-        in RegExp(r'([a-z]+)\s*=\s*(-?\d+(?:\.\d+)?)').allMatches(t)) {
+    for (final Match match in RegExp(
+      r'([a-z]+)\s*=\s*(-?\d+(?:\.\d+)?)',
+    ).allMatches(t)) {
       m[match.group(1)!] = double.parse(match.group(2)!);
     }
     return m;
@@ -66,7 +67,9 @@ class G6VolumeEquation extends BaseEquation {
       final Map<String, double> lb = _labels(t);
       if (lb.containsKey('l') && lb.containsKey('w') && lb.containsKey('h')) {
         return _VolParsed(
-            solid: _Solid.prism, dims: [lb['l']!, lb['w']!, lb['h']!]);
+          solid: _Solid.prism,
+          dims: [lb['l']!, lb['w']!, lb['h']!],
+        );
       }
       final List<double> d = _all(t);
       if (d.length == 3) {
@@ -104,7 +107,9 @@ class G6VolumeEquation extends BaseEquation {
       }
       if (lb.containsKey('l') && lb.containsKey('w') && lb.containsKey('h')) {
         return _VolParsed(
-            solid: _Solid.pyramid, dims: [lb['l']!, lb['w']!, lb['h']!]);
+          solid: _Solid.pyramid,
+          dims: [lb['l']!, lb['w']!, lb['h']!],
+        );
       }
       final List<double> d = _all(t);
       if (d.length == 2) {
@@ -277,11 +282,7 @@ class G6VolumeEquation extends BaseEquation {
       answer: 'V = ${G6Format.num(v)} unit³ (${_name(p.solid)})',
       points: [v],
       customData: [
-        {
-          'solid': _name(p.solid),
-          'dims': p.dims,
-          'formula': _formula(p.solid),
-        }
+        {'solid': _name(p.solid), 'dims': p.dims, 'formula': _formula(p.solid)},
       ],
     );
   }
@@ -292,40 +293,46 @@ class G6VolumeEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use L x W x H — e.g. 5 x 3 x 2.'),
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use L x W x H — e.g. 5 x 3 x 2.',
+        ),
       ];
     }
     final SolveResult r = solve();
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: r.errorMessage ?? 'Invalid dimensions.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: r.errorMessage ?? 'Invalid dimensions.',
+        ),
       ];
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Write the formula',
-          explanation: _formula(p.solid),
-          latex: _formulaTex(p.solid)),
+        stepNumber: 1,
+        title: 'Write the formula',
+        explanation: _formula(p.solid),
+        latex: _formulaTex(p.solid),
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Substitute',
-          explanation: 'Given: ${p.dims.map(G6Format.num).join(', ')}.',
-          latex: _substTex(p)),
+        stepNumber: 2,
+        title: 'Substitute',
+        explanation: 'Given: ${p.dims.map(G6Format.num).join(', ')}.',
+        latex: _substTex(p),
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Multiply',
-          explanation: r.answer,
-          latex: _resultTex(p)),
+        stepNumber: 3,
+        title: 'Multiply',
+        explanation: r.answer,
+        latex: _resultTex(p),
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Attach cubic units',
-          explanation: 'Volume is in unit³ (cm³).'),
+        stepNumber: 4,
+        title: 'Attach cubic units',
+        explanation: 'Volume is in unit³ (cm³).',
+      ),
     ];
   }
 }

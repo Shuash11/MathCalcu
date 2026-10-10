@@ -181,7 +181,7 @@ class G6DecimalEquation extends BaseEquation {
             'repeating': repeating,
             'exactNum': exact[0],
             'exactDen': exact[1],
-          }
+          },
         ],
       );
     } on FormatException catch (e) {
@@ -211,10 +211,10 @@ class G6DecimalEquation extends BaseEquation {
       final String opWord = op == '+'
           ? 'Add'
           : op == '-'
-              ? 'Subtract'
-              : op == '*'
-                  ? 'Multiply'
-                  : 'Divide';
+          ? 'Subtract'
+          : op == '*'
+          ? 'Multiply'
+          : 'Divide';
       return [
         StepModel(
           stepNumber: 1,
@@ -222,7 +222,8 @@ class G6DecimalEquation extends BaseEquation {
           explanation:
               '$opWord as whole numbers first: ${a.replaceAll('.', '')} '
               '$op ${b.replaceAll('.', '')}.',
-          latex: '${a.replaceAll('.', '')} ${_texOp(op)} '
+          latex:
+              '${a.replaceAll('.', '')} ${_texOp(op)} '
               '${b.replaceAll('.', '')}',
         ),
         // Step 2 is prose guidance ("then handle the decimal places") — no TeX.

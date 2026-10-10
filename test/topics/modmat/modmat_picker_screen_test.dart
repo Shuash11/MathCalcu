@@ -20,9 +20,7 @@ void main() {
   });
 
   group('ModmatModuleRegistry.search', () {
-    test(
-        'trims and matches titles and subtitles from both sections case-insensitively',
-        () {
+    test('trims and matches titles and subtitles from both sections case-insensitively', () {
       expect(
         ModmatModuleRegistry.search('  PrOpOsItIoNaL  ').single.module.label,
         'Propositional Logic',
@@ -44,58 +42,59 @@ void main() {
     test('preserves registry order and section labels', () {
       final hits = ModmatModuleRegistry.search('theory');
 
-      expect(
-        hits.map((hit) => hit.module.label),
-        [
-          'Set Theory',
-          'Graph Theory Basics',
-          'Advanced Graph Theory',
-          'Number Theory'
-        ],
-      );
-      expect(
-        hits.map((hit) => hit.section),
-        ['Foundations', 'Foundations', 'Advanced', 'Advanced'],
-      );
+      expect(hits.map((hit) => hit.module.label), [
+        'Set Theory',
+        'Graph Theory Basics',
+        'Advanced Graph Theory',
+        'Number Theory',
+      ]);
+      expect(hits.map((hit) => hit.section), [
+        'Foundations',
+        'Foundations',
+        'Advanced',
+        'Advanced',
+      ]);
     });
 
     test(
-        'reads future entries from either canonical registry list at call time',
-        () {
-      const futureFoundation = ModuleEntry(
-        label: 'Future Foundation',
-        subtitle: 'Temporary registry coverage',
-        route: '/test/future-foundation',
-        icon: Icons.add_rounded,
-        accent: Colors.teal,
-      );
-      const futureAdvanced = ModuleEntry(
-        label: 'Future Advanced',
-        subtitle: 'Temporary registry coverage',
-        route: '/test/future-advanced',
-        icon: Icons.add_rounded,
-        accent: Colors.teal,
-      );
+      'reads future entries from either canonical registry list at call time',
+      () {
+        const futureFoundation = ModuleEntry(
+          label: 'Future Foundation',
+          subtitle: 'Temporary registry coverage',
+          route: '/test/future-foundation',
+          icon: Icons.add_rounded,
+          accent: Colors.teal,
+        );
+        const futureAdvanced = ModuleEntry(
+          label: 'Future Advanced',
+          subtitle: 'Temporary registry coverage',
+          route: '/test/future-advanced',
+          icon: Icons.add_rounded,
+          accent: Colors.teal,
+        );
 
-      ModmatModuleRegistry.foundationsModules.add(futureFoundation);
-      ModmatModuleRegistry.advancedModules.add(futureAdvanced);
-      addTearDown(() {
-        ModmatModuleRegistry.foundationsModules.remove(futureFoundation);
-        ModmatModuleRegistry.advancedModules.remove(futureAdvanced);
-      });
+        ModmatModuleRegistry.foundationsModules.add(futureFoundation);
+        ModmatModuleRegistry.advancedModules.add(futureAdvanced);
+        addTearDown(() {
+          ModmatModuleRegistry.foundationsModules.remove(futureFoundation);
+          ModmatModuleRegistry.advancedModules.remove(futureAdvanced);
+        });
 
-      final hits = ModmatModuleRegistry.search('temporary registry coverage');
+        final hits = ModmatModuleRegistry.search('temporary registry coverage');
 
-      expect(hits.map((hit) => hit.module.route), [
-        futureFoundation.route,
-        futureAdvanced.route,
-      ]);
-      expect(hits.map((hit) => hit.section), ['Foundations', 'Advanced']);
-    });
+        expect(hits.map((hit) => hit.module.route), [
+          futureFoundation.route,
+          futureAdvanced.route,
+        ]);
+        expect(hits.map((hit) => hit.section), ['Foundations', 'Advanced']);
+      },
+    );
   });
 
-  testWidgets('empty and whitespace-only input retain the section cards',
-      (tester) async {
+  testWidgets('empty and whitespace-only input retain the section cards', (
+    tester,
+  ) async {
     await _pumpPicker(tester, router);
 
     expect(find.text('Open Foundations'), findsOneWidget);
@@ -113,30 +112,32 @@ void main() {
   });
 
   testWidgets(
-      'shows direct section-labelled results for title and subtitle matches',
-      (tester) async {
-    await _pumpPicker(tester, router);
+    'shows direct section-labelled results for title and subtitle matches',
+    (tester) async {
+      await _pumpPicker(tester, router);
 
-    await tester.enterText(
-      find.byKey(const Key('modmat-search-field')),
-      '  EIGENVALUES ',
-    );
-    await tester.pump();
+      await tester.enterText(
+        find.byKey(const Key('modmat-search-field')),
+        '  EIGENVALUES ',
+      );
+      await tester.pump();
 
-    expect(find.text('Linear Algebra'), findsOneWidget);
-    expect(
-      find.byKey(
-        const Key('modmat-search-result-/modmat/advanced/linear_algebra'),
-      ),
-      findsOneWidget,
-    );
-    // No Foundations-section hit for this query.
-    expect(find.text('Set Theory'), findsNothing);
-    expect(find.text('Graph Theory Basics'), findsNothing);
-  });
+      expect(find.text('Linear Algebra'), findsOneWidget);
+      expect(
+        find.byKey(
+          const Key('modmat-search-result-/modmat/advanced/linear_algebra'),
+        ),
+        findsOneWidget,
+      );
+      // No Foundations-section hit for this query.
+      expect(find.text('Set Theory'), findsNothing);
+      expect(find.text('Graph Theory Basics'), findsNothing);
+    },
+  );
 
-  testWidgets('shows an intentional no-results state and clears the query',
-      (tester) async {
+  testWidgets('shows an intentional no-results state and clears the query', (
+    tester,
+  ) async {
     await _pumpPicker(tester, router);
 
     await tester.enterText(
@@ -159,8 +160,9 @@ void main() {
     expect(find.text('Open Advanced'), findsOneWidget);
   });
 
-  testWidgets('activating a wave-2 leaf result navigates (no gate)',
-      (tester) async {
+  testWidgets('activating a wave-2 leaf result navigates (no gate)', (
+    tester,
+  ) async {
     await _pumpPicker(tester, router);
     // Predicate Logic is wired (Cycle 9 F1+F2) — pushes through.
     final module = ModmatModuleRegistry.foundationsModules[1];
@@ -178,8 +180,9 @@ void main() {
     expect(find.textContaining("isn't built yet"), findsNothing);
   });
 
-  testWidgets('activating a wired leaf result navigates (no gate)',
-      (tester) async {
+  testWidgets('activating a wired leaf result navigates (no gate)', (
+    tester,
+  ) async {
     await _pumpPicker(tester, router);
     // Propositional Logic is wired (Cycle 9 F1) — pushes through.
     final module = ModmatModuleRegistry.foundationsModules.first;
@@ -196,8 +199,9 @@ void main() {
     expect(find.textContaining("isn't built yet"), findsNothing);
   });
 
-  testWidgets('unknown leaf-like routes stay gated at registry level',
-      (tester) async {
+  testWidgets('unknown leaf-like routes stay gated at registry level', (
+    tester,
+  ) async {
     // No widget push can land here: the allowlist is explicit.
     expect(
       ModmatModuleRegistry.isRouteAvailable('/modmat/foundations/nope'),
@@ -237,25 +241,27 @@ void main() {
   });
 
   testWidgets(
-      'has no overflow at narrow and wide widths in light and dark themes',
-      (tester) async {
-    for (final width in [320.0, 1280.0]) {
-      for (final isDark in [false, true]) {
-        await _pumpPicker(tester, router, width: width, isDark: isDark);
-        await tester.enterText(
-          find.byKey(const Key('modmat-search-field')),
-          'theory',
-        );
-        await tester.pump();
+    'has no overflow at narrow and wide widths in light and dark themes',
+    (tester) async {
+      for (final width in [320.0, 1280.0]) {
+        for (final isDark in [false, true]) {
+          await _pumpPicker(tester, router, width: width, isDark: isDark);
+          await tester.enterText(
+            find.byKey(const Key('modmat-search-field')),
+            'theory',
+          );
+          await tester.pump();
 
-        expect(find.text('Search results'), findsOneWidget);
-        expect(tester.takeException(), isNull);
+          expect(find.text('Search results'), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        }
       }
-    }
-  });
+    },
+  );
 
-  testWidgets('F6: subject filter chips are mounted (All + sections)',
-      (tester) async {
+  testWidgets('F6: subject filter chips are mounted (All + sections)', (
+    tester,
+  ) async {
     await _pumpPicker(tester, router);
 
     expect(find.text('All'), findsOneWidget);
@@ -314,9 +320,8 @@ GoRouter _buildRouter() {
       ].map(
         (module) => GoRoute(
           path: module.route,
-          builder: (context, state) => Scaffold(
-            body: Text('Navigated to ${module.route}'),
-          ),
+          builder: (context, state) =>
+              Scaffold(body: Text('Navigated to ${module.route}')),
         ),
       ),
     ],

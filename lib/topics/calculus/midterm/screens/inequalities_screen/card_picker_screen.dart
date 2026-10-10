@@ -1,13 +1,16 @@
 import 'dart:math';
+
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:material_ui/material_ui.dart';
+
 import '../../cards/inequalities/absolute_card.dart';
 import '../../cards/inequalities/continued_card.dart';
 import '../../cards/inequalities/linear_card.dart';
 import '../../cards/inequalities/quadratic_card.dart';
 import '../../cards/inequalities/rational_card.dart';
 import '../../cards/inequalities/radical_card.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
@@ -33,8 +36,10 @@ class InequalityCardPickerScreen extends StatelessWidget {
           Positioned(
             bottom: -80,
             left: -60,
-            child:
-                _AmbientOrb(color: _purple.withValues(alpha: 0.10), size: 200),
+            child: _AmbientOrb(
+              color: _purple.withValues(alpha: 0.10),
+              size: 200,
+            ),
           ),
           SafeArea(
             child: Padding(
@@ -56,16 +61,18 @@ class InequalityCardPickerScreen extends StatelessWidget {
                               color: theme.accentColor,
                             ),
                             style: IconButton.styleFrom(
-                              backgroundColor:
-                                  theme.accentColor.withValues(alpha: 0.12),
+                              backgroundColor: theme.accentColor.withValues(
+                                alpha: 0.12,
+                              ),
                               foregroundColor: theme.accentColor,
                               padding: EdgeInsets.zero,
                               minimumSize: const Size(44, 44),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 side: BorderSide(
-                                  color:
-                                      theme.accentColor.withValues(alpha: 0.40),
+                                  color: theme.accentColor.withValues(
+                                    alpha: 0.40,
+                                  ),
                                   width: 1.5,
                                 ),
                               ),
@@ -104,16 +111,18 @@ class InequalityCardPickerScreen extends StatelessWidget {
   }
 
   Widget _divider() => Container(
-        height: 1,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Colors.transparent,
-            Color(0x4D334155),
-            Color(0x332DD4BF),
-            Colors.transparent,
-          ]),
-        ),
-      );
+    height: 1,
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.transparent,
+          Color(0x4D334155),
+          Color(0x332DD4BF),
+          Colors.transparent,
+        ],
+      ),
+    ),
+  );
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────
@@ -145,8 +154,9 @@ class _PickerHeader extends StatelessWidget {
             ResponsiveText(
               'Select a module to explore',
               style: TextStyle(
-                  fontSize: 12,
-                  color: context.watch<ThemeProvider>().textSecondary),
+                fontSize: 12,
+                color: context.watch<ThemeProvider>().textSecondary,
+              ),
             ),
           ],
         ),
@@ -174,17 +184,20 @@ class _PickerHeader extends StatelessWidget {
   }
 
   Widget _dot(Color c) => Container(
-        width: 6,
-        height: 6,
-        decoration: BoxDecoration(
-          color: c,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-                color: c.withValues(alpha: 0.6), blurRadius: 4, spreadRadius: 1)
-          ],
+    width: 6,
+    height: 6,
+    decoration: BoxDecoration(
+      color: c,
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: c.withValues(alpha: 0.6),
+          blurRadius: 4,
+          spreadRadius: 1,
         ),
-      );
+      ],
+    ),
+  );
 }
 
 // ── Orbit Badge ───────────────────────────────────────────────────────────────
@@ -201,9 +214,10 @@ class _OrbitBadgeState extends State<_OrbitBadge>
   @override
   void initState() {
     super.initState();
-    _ctrl =
-        AnimationController(vsync: this, duration: const Duration(seconds: 4))
-          ..repeat();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
   }
 
   @override
@@ -233,15 +247,21 @@ class _OrbitBadgeState extends State<_OrbitBadge>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: const Color(0xFF334155).withValues(alpha: 0.4),
-                  width: 1.5),
-              gradient: RadialGradient(colors: [
-                const Color(0xFF334155).withValues(alpha: 0.25),
-                const Color(0xFF2DD4BF).withValues(alpha: 0.08),
-              ]),
+                color: const Color(0xFF334155).withValues(alpha: 0.4),
+                width: 1.5,
+              ),
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFF334155).withValues(alpha: 0.25),
+                  const Color(0xFF2DD4BF).withValues(alpha: 0.08),
+                ],
+              ),
             ),
-            child: const Icon(Icons.code_rounded,
-                color: Color(0xFFF5EBF5), size: 18),
+            child: const Icon(
+              Icons.code_rounded,
+              color: Color(0xFFF5EBF5),
+              size: 18,
+            ),
           ),
         ],
       ),
@@ -270,9 +290,14 @@ class _OrbitRingPainter extends CustomPainter {
 
     final angle = progress * 2 * pi;
     final dot = Offset(
-        center.dx + radius * cos(angle), center.dy + radius * sin(angle));
-    canvas.drawCircle(dot, 5,
-        Paint()..color = const Color(0xFF2DD4BF).withValues(alpha: 0.3));
+      center.dx + radius * cos(angle),
+      center.dy + radius * sin(angle),
+    );
+    canvas.drawCircle(
+      dot,
+      5,
+      Paint()..color = const Color(0xFF2DD4BF).withValues(alpha: 0.3),
+    );
     canvas.drawCircle(dot, 2.5, Paint()..color = const Color(0xFF2DD4BF));
   }
 

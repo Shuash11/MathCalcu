@@ -102,9 +102,11 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return _modules;
     return _modules
-        .where((m) =>
-            m.label.toLowerCase().contains(q) ||
-            m.subtitle.toLowerCase().contains(q))
+        .where(
+          (m) =>
+              m.label.toLowerCase().contains(q) ||
+              m.subtitle.toLowerCase().contains(q),
+        )
         .toList();
   }
 
@@ -347,8 +349,10 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: accent,
                   borderRadius: BorderRadius.circular(20),
@@ -398,29 +402,26 @@ class _FinalsPickerScreenState extends State<FinalsPickerScreen>
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            if (index < hits.length) {
-              final module = hits[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: FadeTransition(
-                  opacity: _fadeAnims[index],
-                  child: SlideTransition(
-                    position: _slideAnims[index],
-                    child: _buildModuleCard(module),
-                  ),
-                ),
-              );
-            }
-            // Curriculum matches render below the local hits.
+        delegate: SliverChildBuilderDelegate((context, index) {
+          if (index < hits.length) {
+            final module = hits[index];
             return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: CurriculumMatchesSection(query: _query),
+              padding: const EdgeInsets.only(bottom: 16),
+              child: FadeTransition(
+                opacity: _fadeAnims[index],
+                child: SlideTransition(
+                  position: _slideAnims[index],
+                  child: _buildModuleCard(module),
+                ),
+              ),
             );
-          },
-          childCount: hits.length + (curriculumHits.isEmpty ? 0 : 1),
-        ),
+          }
+          // Curriculum matches render below the local hits.
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: CurriculumMatchesSection(query: _query),
+          );
+        }, childCount: hits.length + (curriculumHits.isEmpty ? 0 : 1)),
       ),
     );
   }
@@ -495,17 +496,11 @@ class _EmptyState extends StatelessWidget {
         decoration: BoxDecoration(
           color: accent.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: accent.withValues(alpha: 0.18),
-          ),
+          border: Border.all(color: accent.withValues(alpha: 0.18)),
         ),
         child: Column(
           children: [
-            Icon(
-              Icons.hourglass_empty_rounded,
-              size: 48,
-              color: accent,
-            ),
+            Icon(Icons.hourglass_empty_rounded, size: 48, color: accent),
             const SizedBox(height: 16),
             Text(
               'Topics coming soon',
@@ -662,9 +657,11 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                               gradient: LinearGradient(
                                 colors: [
                                   accent.withValues(
-                                      alpha: _hovered ? 0.22 : 0.13),
+                                    alpha: _hovered ? 0.22 : 0.13,
+                                  ),
                                   accent.withValues(
-                                      alpha: _hovered ? 0.10 : 0.05),
+                                    alpha: _hovered ? 0.10 : 0.05,
+                                  ),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -679,7 +676,8 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                               boxShadow: [
                                 BoxShadow(
                                   color: accent.withValues(
-                                      alpha: _hovered ? 0.28 : 0.12),
+                                    alpha: _hovered ? 0.28 : 0.12,
+                                  ),
                                   blurRadius: _hovered ? 14 : 6,
                                   offset: const Offset(0, 3),
                                 ),
@@ -705,8 +703,9 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                                     width: 18,
                                     height: 18,
                                     decoration: BoxDecoration(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.9),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
                                       shape: BoxShape.circle,
                                       border: Border.all(
                                         color: accent.withValues(alpha: 0.3),
@@ -736,8 +735,9 @@ class _FinalsDefaultCardState extends State<_FinalsDefaultCard> {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
-                                    color:
-                                        _hovered ? accent : theme.textPrimary,
+                                    color: _hovered
+                                        ? accent
+                                        : theme.textPrimary,
                                     letterSpacing: -0.3,
                                   ),
                                   child: Text(widget.module.label),

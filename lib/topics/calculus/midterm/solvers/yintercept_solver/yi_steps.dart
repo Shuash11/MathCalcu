@@ -81,15 +81,15 @@ class YISolverStep {
     String explanation = '',
     List<YISubStep> subSteps = const [],
   }) : this(
-          number: number,
-          title: title,
-          layout: YIStepLayout.single,
-          formulaLatex: formulaLatex,
-          substitutionLatex: substitutionLatex,
-          resultLatex: resultLatex,
-          explanation: explanation,
-          subSteps: subSteps,
-        );
+         number: number,
+         title: title,
+         layout: YIStepLayout.single,
+         formulaLatex: formulaLatex,
+         substitutionLatex: substitutionLatex,
+         resultLatex: resultLatex,
+         explanation: explanation,
+         subSteps: subSteps,
+       );
 
   const YISolverStep.dual({
     required int number,
@@ -100,15 +100,15 @@ class YISolverStep {
     required String rightLatex,
     required String resultLatex,
   }) : this(
-          number: number,
-          title: title,
-          layout: YIStepLayout.dual,
-          leftLabel: leftLabel,
-          rightLabel: rightLabel,
-          leftLatex: leftLatex,
-          rightLatex: rightLatex,
-          resultLatex: resultLatex,
-        );
+         number: number,
+         title: title,
+         layout: YIStepLayout.dual,
+         leftLabel: leftLabel,
+         rightLabel: rightLabel,
+         leftLatex: leftLatex,
+         rightLatex: rightLatex,
+         resultLatex: resultLatex,
+       );
 }
 
 // ── PP Step Models ──────────────────────────────────────────────────
@@ -156,38 +156,42 @@ List<YISolverStep> buildSlopeStepsFromStandard(
   final yOnly = B == 1
       ? 'y'
       : B == -1
-          ? '-y'
-          : '${B}y';
+      ? '-y'
+      : '${B}y';
   return [
     YISolverStep.single(
-        number: 1,
-        title: 'Standard Form',
-        formulaLatex: r'Ax + By = C',
-        substitutionLatex: sfTex,
-        resultLatex: sfTex,
-        explanation: 'Start with the equation in standard form.'),
+      number: 1,
+      title: 'Standard Form',
+      formulaLatex: r'Ax + By = C',
+      substitutionLatex: sfTex,
+      resultLatex: sfTex,
+      explanation: 'Start with the equation in standard form.',
+    ),
     YISolverStep.single(
-        number: 2,
-        title: 'Move x-term',
-        formulaLatex: r'By = C - Ax',
-        substitutionLatex: 'Move the x-term to the right',
-        resultLatex: '$yOnly = $C ${A > 0 ? '-' : '+'} ${A.abs()}x',
-        explanation: 'Subtract the x-term from both sides.'),
+      number: 2,
+      title: 'Move x-term',
+      formulaLatex: r'By = C - Ax',
+      substitutionLatex: 'Move the x-term to the right',
+      resultLatex: '$yOnly = $C ${A > 0 ? '-' : '+'} ${A.abs()}x',
+      explanation: 'Subtract the x-term from both sides.',
+    ),
     YISolverStep.single(
-        number: 3,
-        title: 'Divide by $B',
-        formulaLatex: r'y = mx + b',
-        substitutionLatex: 'y = \\frac{${-A}}{$B}x + \\frac{$C}{$B}',
-        resultLatex: eqTex,
-        explanation: 'Divide every term by the coefficient of y.'),
+      number: 3,
+      title: 'Divide by $B',
+      formulaLatex: r'y = mx + b',
+      substitutionLatex: 'y = \\frac{${-A}}{$B}x + \\frac{$C}{$B}',
+      resultLatex: eqTex,
+      explanation: 'Divide every term by the coefficient of y.',
+    ),
     YISolverStep.dual(
-        number: 4,
-        title: 'Read m and b',
-        leftLabel: 'Slope  m',
-        rightLabel: 'y-intercept  b',
-        leftLatex: 'm = \\boxed{${fracLatex(m)}}',
-        rightLatex: 'b = \\boxed{${fracLatex(b)}}',
-        resultLatex: 'm = ${fracLatex(m)}, \\quad b = ${fracLatex(b)}'),
+      number: 4,
+      title: 'Read m and b',
+      leftLabel: 'Slope  m',
+      rightLabel: 'y-intercept  b',
+      leftLatex: 'm = \\boxed{${fracLatex(m)}}',
+      rightLatex: 'b = \\boxed{${fracLatex(b)}}',
+      resultLatex: 'm = ${fracLatex(m)}, \\quad b = ${fracLatex(b)}',
+    ),
   ];
 }
 
@@ -206,34 +210,38 @@ List<YISolverStep> buildSlopeStepsFromGeneral(
   final sfFromGf = '${A}x ${B >= 0 ? '+' : '-'} ${B.abs()}y = $C';
   return [
     YISolverStep.single(
-        number: 1,
-        title: 'General Form',
-        formulaLatex: r'Ax + By + C = 0',
-        substitutionLatex: gfTex,
-        resultLatex: gfTex,
-        explanation: 'Start with the equation in general form.'),
+      number: 1,
+      title: 'General Form',
+      formulaLatex: r'Ax + By + C = 0',
+      substitutionLatex: gfTex,
+      resultLatex: gfTex,
+      explanation: 'Start with the equation in general form.',
+    ),
     YISolverStep.single(
-        number: 2,
-        title: 'Convert to Standard Form',
-        formulaLatex: r'Ax + By = -C',
-        substitutionLatex: 'Move the constant to the right',
-        resultLatex: sfFromGf,
-        explanation: 'Move the constant term to the right side.'),
+      number: 2,
+      title: 'Convert to Standard Form',
+      formulaLatex: r'Ax + By = -C',
+      substitutionLatex: 'Move the constant to the right',
+      resultLatex: sfFromGf,
+      explanation: 'Move the constant term to the right side.',
+    ),
     YISolverStep.single(
-        number: 3,
-        title: 'Move x-term and divide by $B',
-        formulaLatex: r'y = mx + b',
-        substitutionLatex: 'y = \\frac{${-A}}{$B}x + \\frac{$C}{$B}',
-        resultLatex: eqTex,
-        explanation: 'Move x-term, then divide by $B.'),
+      number: 3,
+      title: 'Move x-term and divide by $B',
+      formulaLatex: r'y = mx + b',
+      substitutionLatex: 'y = \\frac{${-A}}{$B}x + \\frac{$C}{$B}',
+      resultLatex: eqTex,
+      explanation: 'Move x-term, then divide by $B.',
+    ),
     YISolverStep.dual(
-        number: 4,
-        title: 'Read m and b',
-        leftLabel: 'Slope  m',
-        rightLabel: 'y-intercept  b',
-        leftLatex: 'm = \\boxed{${fracLatex(m)}}',
-        rightLatex: 'b = \\boxed{${fracLatex(b)}}',
-        resultLatex: 'm = ${fracLatex(m)}, \\quad b = ${fracLatex(b)}'),
+      number: 4,
+      title: 'Read m and b',
+      leftLabel: 'Slope  m',
+      rightLabel: 'y-intercept  b',
+      leftLatex: 'm = \\boxed{${fracLatex(m)}}',
+      rightLatex: 'b = \\boxed{${fracLatex(b)}}',
+      resultLatex: 'm = ${fracLatex(m)}, \\quad b = ${fracLatex(b)}',
+    ),
   ];
 }
 
@@ -245,38 +253,41 @@ List<YISolverStep> buildSlopeInterceptDirectSteps(
   String eqTex,
   String sfTex,
   String gfTex,
-) =>
-    [
-      YISolverStep.single(
-          number: 1,
-          title: 'Slope-Intercept Form',
-          formulaLatex: r'y = mx + b',
-          substitutionLatex: eqTex,
-          resultLatex: eqTex,
-          explanation: 'Already in slope-intercept form.'),
-      YISolverStep.single(
-          number: 2,
-          title: 'Identify slope m',
-          formulaLatex: r'\text{coefficient of } x',
-          substitutionLatex: '${fracLatex(m)}x',
-          resultLatex: 'm = \\boxed{${fracLatex(m)}}',
-          explanation: 'The slope is the coefficient of x.'),
-      YISolverStep.single(
-          number: 3,
-          title: 'Identify y-intercept b',
-          formulaLatex: r'\text{the constant term}',
-          substitutionLatex: fracLatex(b),
-          resultLatex: 'b = \\boxed{${fracLatex(b)}}',
-          explanation: 'The y-intercept is the constant term.'),
-      YISolverStep.dual(
-          number: 4,
-          title: 'Answer',
-          leftLabel: 'Slope  m',
-          rightLabel: 'y-intercept  b',
-          leftLatex: 'm = \\boxed{${fracLatex(m)}}',
-          rightLatex: 'b = \\boxed{${fracLatex(b)}}',
-          resultLatex: 'm = ${fracLatex(m)}, \\quad b = ${fracLatex(b)}'),
-    ];
+) => [
+  YISolverStep.single(
+    number: 1,
+    title: 'Slope-Intercept Form',
+    formulaLatex: r'y = mx + b',
+    substitutionLatex: eqTex,
+    resultLatex: eqTex,
+    explanation: 'Already in slope-intercept form.',
+  ),
+  YISolverStep.single(
+    number: 2,
+    title: 'Identify slope m',
+    formulaLatex: r'\text{coefficient of } x',
+    substitutionLatex: '${fracLatex(m)}x',
+    resultLatex: 'm = \\boxed{${fracLatex(m)}}',
+    explanation: 'The slope is the coefficient of x.',
+  ),
+  YISolverStep.single(
+    number: 3,
+    title: 'Identify y-intercept b',
+    formulaLatex: r'\text{the constant term}',
+    substitutionLatex: fracLatex(b),
+    resultLatex: 'b = \\boxed{${fracLatex(b)}}',
+    explanation: 'The y-intercept is the constant term.',
+  ),
+  YISolverStep.dual(
+    number: 4,
+    title: 'Answer',
+    leftLabel: 'Slope  m',
+    rightLabel: 'y-intercept  b',
+    leftLatex: 'm = \\boxed{${fracLatex(m)}}',
+    rightLatex: 'b = \\boxed{${fracLatex(b)}}',
+    resultLatex: 'm = ${fracLatex(m)}, \\quad b = ${fracLatex(b)}',
+  ),
+];
 
 // ── Standard Form Steps ─────────────────────────────────────────────
 
@@ -286,31 +297,33 @@ List<YISolverStep> buildStandardFormSteps(
   int C,
   String gfTex,
   String sfTex,
-) =>
-    [
-      YISolverStep.single(
-          number: 1,
-          title: 'General Form',
-          formulaLatex: r'Ax + By + C = 0',
-          substitutionLatex: gfTex,
-          resultLatex: gfTex,
-          explanation: 'Given equation.'),
-      YISolverStep.single(
-          number: 2,
-          title: 'Move constant to right',
-          formulaLatex: r'Ax + By = -C',
-          substitutionLatex: sfTex,
-          resultLatex: sfTex,
-          explanation: 'Move the constant to the right side.'),
-      YISolverStep.single(
-          number: 3,
-          title: 'Identify coefficients',
-          formulaLatex: r'Ax + By = C',
-          substitutionLatex: sfTex,
-          resultLatex:
-              'A = ${boxLatex('$A')}, \\quad B = ${boxLatex('$B')}, \\quad C = ${boxLatex('$C')}',
-          explanation: 'Read coefficients from standard form.'),
-    ];
+) => [
+  YISolverStep.single(
+    number: 1,
+    title: 'General Form',
+    formulaLatex: r'Ax + By + C = 0',
+    substitutionLatex: gfTex,
+    resultLatex: gfTex,
+    explanation: 'Given equation.',
+  ),
+  YISolverStep.single(
+    number: 2,
+    title: 'Move constant to right',
+    formulaLatex: r'Ax + By = -C',
+    substitutionLatex: sfTex,
+    resultLatex: sfTex,
+    explanation: 'Move the constant to the right side.',
+  ),
+  YISolverStep.single(
+    number: 3,
+    title: 'Identify coefficients',
+    formulaLatex: r'Ax + By = C',
+    substitutionLatex: sfTex,
+    resultLatex:
+        'A = ${boxLatex('$A')}, \\quad B = ${boxLatex('$B')}, \\quad C = ${boxLatex('$C')}',
+    explanation: 'Read coefficients from standard form.',
+  ),
+];
 
 // ── General Form Steps ──────────────────────────────────────────────
 
@@ -320,31 +333,33 @@ List<YISolverStep> buildGeneralFormSteps(
   int C,
   String sfTex,
   String gfTex,
-) =>
-    [
-      YISolverStep.single(
-          number: 1,
-          title: 'Standard Form',
-          formulaLatex: r'Ax + By = C',
-          substitutionLatex: sfTex,
-          resultLatex: sfTex,
-          explanation: 'Given equation.'),
-      YISolverStep.single(
-          number: 2,
-          title: 'Move all terms to left',
-          formulaLatex: r'Ax + By - C = 0',
-          substitutionLatex: gfTex,
-          resultLatex: gfTex,
-          explanation: 'Move everything to the left side.'),
-      YISolverStep.single(
-          number: 3,
-          title: 'Identify coefficients',
-          formulaLatex: r'Ax + By + C = 0',
-          substitutionLatex: gfTex,
-          resultLatex:
-              'A = ${boxLatex('$A')}, \\quad B = ${boxLatex('$B')}, \\quad C = ${boxLatex('${-C}')}',
-          explanation: 'Read coefficients from general form.'),
-    ];
+) => [
+  YISolverStep.single(
+    number: 1,
+    title: 'Standard Form',
+    formulaLatex: r'Ax + By = C',
+    substitutionLatex: sfTex,
+    resultLatex: sfTex,
+    explanation: 'Given equation.',
+  ),
+  YISolverStep.single(
+    number: 2,
+    title: 'Move all terms to left',
+    formulaLatex: r'Ax + By - C = 0',
+    substitutionLatex: gfTex,
+    resultLatex: gfTex,
+    explanation: 'Move everything to the left side.',
+  ),
+  YISolverStep.single(
+    number: 3,
+    title: 'Identify coefficients',
+    formulaLatex: r'Ax + By + C = 0',
+    substitutionLatex: gfTex,
+    resultLatex:
+        'A = ${boxLatex('$A')}, \\quad B = ${boxLatex('$B')}, \\quad C = ${boxLatex('${-C}')}',
+    explanation: 'Read coefficients from general form.',
+  ),
+];
 
 // ── X-Intercept Steps ───────────────────────────────────────────────
 
@@ -356,53 +371,59 @@ List<YISolverStep> buildXInterceptSteps(
   if (m.isZero) {
     return [
       YISolverStep.single(
-          number: 1,
-          title: 'Set y = 0',
-          formulaLatex: r'0 = mx + b',
-          substitutionLatex: '0 = (0)x + ${fracLatex(b)}',
-          resultLatex: '0 = ${fracLatex(b)}',
-          explanation: 'Substitute y = 0.'),
-      const YISolverStep.single(
-          number: 2,
-          title: 'No x-intercept',
-          formulaLatex: r'\text{Horizontal line}',
-          substitutionLatex: r'm = 0',
-          resultLatex: r'\text{No solution}',
-          explanation: 'Horizontal lines never cross the x-axis.'),
-    ];
-  }
-  if (xInt == null) return [];
-  final negB =
-      (b * const YIFraction(numerator: -1, denominator: 1)).simplified();
-  return [
-    YISolverStep.single(
         number: 1,
         title: 'Set y = 0',
         formulaLatex: r'0 = mx + b',
-        substitutionLatex: '0 = ${mxLatex(m)} + ${fracLatex(b)}',
-        resultLatex: '0 = ${mxLatex(m)} + ${fracLatex(b)}',
-        explanation: 'The x-intercept occurs when y = 0.'),
-    YISolverStep.single(
+        substitutionLatex: '0 = (0)x + ${fracLatex(b)}',
+        resultLatex: '0 = ${fracLatex(b)}',
+        explanation: 'Substitute y = 0.',
+      ),
+      const YISolverStep.single(
         number: 2,
-        title: 'Isolate x',
-        formulaLatex: r'mx = -b',
-        substitutionLatex: 'Subtract ${fracLatex(b)} from both sides',
-        resultLatex: '${mxLatex(m)} = ${fracLatex(negB)}',
-        explanation: 'Move b to the right.'),
+        title: 'No x-intercept',
+        formulaLatex: r'\text{Horizontal line}',
+        substitutionLatex: r'm = 0',
+        resultLatex: r'\text{No solution}',
+        explanation: 'Horizontal lines never cross the x-axis.',
+      ),
+    ];
+  }
+  if (xInt == null) return [];
+  final negB = (b * const YIFraction(numerator: -1, denominator: 1))
+      .simplified();
+  return [
     YISolverStep.single(
-        number: 3,
-        title: 'Divide by m',
-        formulaLatex: r'x = \frac{-b}{m}',
-        substitutionLatex: 'x = \\frac{${fracLatex(negB)}}{${fracLatex(m)}}',
-        resultLatex: 'x = \\boxed{${fracLatex(xInt)}}',
-        explanation: 'Divide both sides by m.'),
+      number: 1,
+      title: 'Set y = 0',
+      formulaLatex: r'0 = mx + b',
+      substitutionLatex: '0 = ${mxLatex(m)} + ${fracLatex(b)}',
+      resultLatex: '0 = ${mxLatex(m)} + ${fracLatex(b)}',
+      explanation: 'The x-intercept occurs when y = 0.',
+    ),
     YISolverStep.single(
-        number: 4,
-        title: 'Answer',
-        formulaLatex: r'\text{Point} = (x, 0)',
-        substitutionLatex: 'x = ${fracLatex(xInt)}, y = 0',
-        resultLatex: '\\text{x-intercept} = \\boxed{(${fracLatex(xInt)}, 0)}',
-        explanation: 'Where the line crosses the x-axis.'),
+      number: 2,
+      title: 'Isolate x',
+      formulaLatex: r'mx = -b',
+      substitutionLatex: 'Subtract ${fracLatex(b)} from both sides',
+      resultLatex: '${mxLatex(m)} = ${fracLatex(negB)}',
+      explanation: 'Move b to the right.',
+    ),
+    YISolverStep.single(
+      number: 3,
+      title: 'Divide by m',
+      formulaLatex: r'x = \frac{-b}{m}',
+      substitutionLatex: 'x = \\frac{${fracLatex(negB)}}{${fracLatex(m)}}',
+      resultLatex: 'x = \\boxed{${fracLatex(xInt)}}',
+      explanation: 'Divide both sides by m.',
+    ),
+    YISolverStep.single(
+      number: 4,
+      title: 'Answer',
+      formulaLatex: r'\text{Point} = (x, 0)',
+      substitutionLatex: 'x = ${fracLatex(xInt)}, y = 0',
+      resultLatex: '\\text{x-intercept} = \\boxed{(${fracLatex(xInt)}, 0)}',
+      explanation: 'Where the line crosses the x-axis.',
+    ),
   ];
 }
 
@@ -413,46 +434,43 @@ List<YISolverStep> buildVerticalSlopeSteps(
   int C,
   String sfTex,
   String gfTex,
-) =>
-    [
-      const YISolverStep.single(
-          number: 1,
-          title: 'Vertical Line',
-          formulaLatex: r'Ax = C \quad \text{(no y-term)}',
-          substitutionLatex: r'\text{No y-term}',
-          resultLatex: r'\text{Slope is undefined}',
-          explanation: 'Vertical lines have no slope.'),
-      const YISolverStep.single(
-          number: 2,
-          title: 'Slope undefined',
-          formulaLatex: r'm = \frac{\text{rise}}{\text{run}}',
-          substitutionLatex:
-              r'\text{run} = 0 \Rightarrow \text{division by zero}',
-          resultLatex: r'm = \text{undefined}',
-          explanation: 'Vertical lines have undefined slope.'),
-    ];
+) => [
+  const YISolverStep.single(
+    number: 1,
+    title: 'Vertical Line',
+    formulaLatex: r'Ax = C \quad \text{(no y-term)}',
+    substitutionLatex: r'\text{No y-term}',
+    resultLatex: r'\text{Slope is undefined}',
+    explanation: 'Vertical lines have no slope.',
+  ),
+  const YISolverStep.single(
+    number: 2,
+    title: 'Slope undefined',
+    formulaLatex: r'm = \frac{\text{rise}}{\text{run}}',
+    substitutionLatex: r'\text{run} = 0 \Rightarrow \text{division by zero}',
+    resultLatex: r'm = \text{undefined}',
+    explanation: 'Vertical lines have undefined slope.',
+  ),
+];
 
-List<YISolverStep> buildVerticalXSteps(
-  int A,
-  int C,
-  YIFraction xVal,
-) =>
-    [
-      YISolverStep.single(
-          number: 1,
-          title: 'Solve for x',
-          formulaLatex: r'Ax = C \Rightarrow x = \frac{C}{A}',
-          substitutionLatex: 'x = \\frac{$C}{$A}',
-          resultLatex: 'x = \\boxed{${fracLatex(xVal)}}',
-          explanation: 'Divide both sides by A.'),
-      YISolverStep.single(
-          number: 2,
-          title: 'State x-intercept',
-          formulaLatex: r'\text{Point} = (x, 0)',
-          substitutionLatex: 'x = ${fracLatex(xVal)}, y = 0',
-          resultLatex: '\\text{x-intercept} = \\boxed{(${fracLatex(xVal)}, 0)}',
-          explanation: 'All points on this vertical line share this x-value.'),
-    ];
+List<YISolverStep> buildVerticalXSteps(int A, int C, YIFraction xVal) => [
+  YISolverStep.single(
+    number: 1,
+    title: 'Solve for x',
+    formulaLatex: r'Ax = C \Rightarrow x = \frac{C}{A}',
+    substitutionLatex: 'x = \\frac{$C}{$A}',
+    resultLatex: 'x = \\boxed{${fracLatex(xVal)}}',
+    explanation: 'Divide both sides by A.',
+  ),
+  YISolverStep.single(
+    number: 2,
+    title: 'State x-intercept',
+    formulaLatex: r'\text{Point} = (x, 0)',
+    substitutionLatex: 'x = ${fracLatex(xVal)}, y = 0',
+    resultLatex: '\\text{x-intercept} = \\boxed{(${fracLatex(xVal)}, 0)}',
+    explanation: 'All points on this vertical line share this x-value.',
+  ),
+];
 
 // ── Form Conversion Steps ──────────────────────────────────────────
 
@@ -465,19 +483,21 @@ List<YISolverStep> buildStandardFormFromSlopeInterceptSteps(
   final eqTex = eqLatex(m, b);
   return [
     YISolverStep.single(
-        number: 1,
-        title: 'Slope-Intercept Form',
-        formulaLatex: r'y = mx + b',
-        substitutionLatex: eqTex,
-        resultLatex: eqTex,
-        explanation: 'Given equation.'),
+      number: 1,
+      title: 'Slope-Intercept Form',
+      formulaLatex: r'y = mx + b',
+      substitutionLatex: eqTex,
+      resultLatex: eqTex,
+      explanation: 'Given equation.',
+    ),
     YISolverStep.single(
-        number: 2,
-        title: 'Convert to Standard Form',
-        formulaLatex: r'Ax + By = C',
-        substitutionLatex: 'Move x-term to the left',
-        resultLatex: sfTex,
-        explanation: 'Standard form: x and y on the left.'),
+      number: 2,
+      title: 'Convert to Standard Form',
+      formulaLatex: r'Ax + By = C',
+      substitutionLatex: 'Move x-term to the left',
+      resultLatex: sfTex,
+      explanation: 'Standard form: x and y on the left.',
+    ),
   ];
 }
 
@@ -490,25 +510,28 @@ List<YISolverStep> buildGeneralFormFromSlopeInterceptSteps(
   final eqTex = eqLatex(m, b);
   return [
     YISolverStep.single(
-        number: 1,
-        title: 'Slope-Intercept Form',
-        formulaLatex: r'y = mx + b',
-        substitutionLatex: eqTex,
-        resultLatex: eqTex,
-        explanation: 'Starting equation.'),
+      number: 1,
+      title: 'Slope-Intercept Form',
+      formulaLatex: r'y = mx + b',
+      substitutionLatex: eqTex,
+      resultLatex: eqTex,
+      explanation: 'Starting equation.',
+    ),
     YISolverStep.single(
-        number: 2,
-        title: 'Convert to Standard Form',
-        formulaLatex: r'Ax + By = C',
-        substitutionLatex: 'Move x-term to the left',
-        resultLatex: sfTex,
-        explanation: 'Intermediate: standard form.'),
+      number: 2,
+      title: 'Convert to Standard Form',
+      formulaLatex: r'Ax + By = C',
+      substitutionLatex: 'Move x-term to the left',
+      resultLatex: sfTex,
+      explanation: 'Intermediate: standard form.',
+    ),
     YISolverStep.single(
-        number: 3,
-        title: 'Convert to General Form',
-        formulaLatex: r'Ax + By + C = 0',
-        substitutionLatex: 'Move all terms to the left',
-        resultLatex: gfTex,
-        explanation: 'General form: everything on the left equals 0.'),
+      number: 3,
+      title: 'Convert to General Form',
+      formulaLatex: r'Ax + By + C = 0',
+      substitutionLatex: 'Move all terms to the left',
+      resultLatex: gfTex,
+      explanation: 'General form: everything on the left equals 0.',
+    ),
   ];
 }

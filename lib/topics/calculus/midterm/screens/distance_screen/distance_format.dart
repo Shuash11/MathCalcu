@@ -22,9 +22,9 @@ class DistanceFormat {
       return abs == abs.toInt()
           ? abs.toInt().toString()
           : abs
-              .toStringAsFixed(6)
-              .replaceAll(RegExp(r'0+$'), '')
-              .replaceAll(RegExp(r'\.$'), '');
+                .toStringAsFixed(6)
+                .replaceAll(RegExp(r'0+$'), '')
+                .replaceAll(RegExp(r'\.$'), '');
     }
 
     final int squared = (value * value).round();

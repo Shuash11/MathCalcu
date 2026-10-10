@@ -1,6 +1,7 @@
 import 'lcd_answer_card.dart';
 import 'lcd_input_field.dart';
 import 'lcd_steps_view.dart';
+
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_lcd/math_limits_library.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/math_keyboard.dart';
@@ -40,13 +41,17 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim =
-        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.05),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-        parent: _contentController, curve: Curves.easeOutCubic));
+    _fadeAnim = CurvedAnimation(
+      parent: _contentController,
+      curve: Curves.easeOut,
+    );
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _contentController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _contentController.forward();
 
@@ -86,13 +91,14 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              'Please enter both an expression and an approach value.',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+            'Please enter both an expression and an approach value.',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
       return;
@@ -109,13 +115,15 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
     if (approachText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please enter an approach value.',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+          content: Text(
+            'Please enter an approach value.',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
       return;
@@ -134,13 +142,14 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Invalid approach value "$approachText". Please enter a number or infinity.',
-                style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+              'Invalid approach value "$approachText". Please enter a number or infinity.',
+              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
             ),
             backgroundColor: FinalsTheme.dangerNow(context),
             behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -166,8 +175,9 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: ${e.toString()}',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+          content: Text(
+            'Error: ${e.toString()}',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
         ),
@@ -262,9 +272,11 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
               foregroundColor: FinalsTheme.textPrimary(context),
               padding: const EdgeInsets.all(12),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-              side:
-                  BorderSide(color: FinalsTheme.danger.withValues(alpha: 0.1)),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              side: BorderSide(
+                color: FinalsTheme.danger.withValues(alpha: 0.1),
+              ),
             ),
           ),
           const SizedBox(width: 20),
@@ -290,13 +302,17 @@ class _LCDLimitScreenState extends State<LCDLimitScreen>
             decoration: BoxDecoration(
               color: FinalsTheme.danger.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
-              border:
-                  Border.all(color: FinalsTheme.danger.withValues(alpha: 0.2)),
+              border: Border.all(
+                color: FinalsTheme.danger.withValues(alpha: 0.2),
+              ),
             ),
             child: Row(
               children: [
-                Icon(Icons.layers_rounded,
-                    size: 14, color: FinalsTheme.dangerFor(context)),
+                Icon(
+                  Icons.layers_rounded,
+                  size: 14,
+                  color: FinalsTheme.dangerFor(context),
+                ),
                 const SizedBox(width: 6),
                 ResponsiveText(
                   'By LCD',

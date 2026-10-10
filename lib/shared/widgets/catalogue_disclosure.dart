@@ -29,9 +29,7 @@ class CatalogueDisclosure extends StatelessWidget {
         decoration: BoxDecoration(
           color: theme.card,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: theme.textSecondary.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: theme.textSecondary.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [

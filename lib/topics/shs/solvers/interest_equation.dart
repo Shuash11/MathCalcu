@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import 'dart:math' as math;
+
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
@@ -57,8 +58,10 @@ class InterestEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'P = 10000, r = 5%, t = 2, compound');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'P = 10000, r = 5%, t = 2, compound',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -76,7 +79,8 @@ class InterestEquation extends BaseEquation {
     final mode = _mode();
     if (mode == null) {
       return SolveResult.error(
-          _error ?? 'Add a mode: simple/compound/annuity/loan.');
+        _error ?? 'Add a mode: simple/compound/annuity/loan.',
+      );
     }
     final p = _param(['p']);
     final r = _rate();
@@ -84,7 +88,8 @@ class InterestEquation extends BaseEquation {
     if (mode == 'simple') {
       if (p == null || r == null || t == null) {
         return SolveResult.error(
-            'Simple needs P, r, t — e.g. P = 10000, r = 5%, t = 2, simple.');
+          'Simple needs P, r, t — e.g. P = 10000, r = 5%, t = 2, simple.',
+        );
       }
       if (p < 0 || t < 0) return SolveResult.error('P and t must be ≥ 0.');
       final i = p * r * t;
@@ -93,21 +98,23 @@ class InterestEquation extends BaseEquation {
             'Interest = ${G6Format.money(i)}, Total = ${G6Format.money(p + i)}',
         points: [i, p + i],
         customData: [
-          {'kind': 'interest', 'mode': 'simple', 'interest': i, 'total': p + i}
+          {'kind': 'interest', 'mode': 'simple', 'interest': i, 'total': p + i},
         ],
       );
     }
     if (mode == 'compound') {
       if (p == null || r == null || t == null) {
         return SolveResult.error(
-            'Compound needs P, r, t — e.g. P = 10000, r = 5%, t = 2, compound.');
+          'Compound needs P, r, t — e.g. P = 10000, r = 5%, t = 2, compound.',
+        );
       }
       if (p < 0 || t < 0) return SolveResult.error('P and t must be ≥ 0.');
       final m = _param(['m']);
       final freq = m ?? 1;
       if (freq <= 0 || freq != freq.roundToDouble()) {
         return SolveResult.error(
-            'm (compounds/year) must be a positive whole number.');
+          'm (compounds/year) must be a positive whole number.',
+        );
       }
       final fv = p * math.pow(1 + r / freq, freq * t);
       if (!fv.isFinite) return SolveResult.error('Value overflows.');
@@ -115,7 +122,7 @@ class InterestEquation extends BaseEquation {
         answer: 'FV = ${G6Format.money(fv.toDouble())}  (P(1 + r/m)^mt)',
         points: [fv.toDouble()],
         customData: [
-          {'kind': 'interest', 'mode': 'compound', 'fv': fv, 'freq': freq}
+          {'kind': 'interest', 'mode': 'compound', 'fv': fv, 'freq': freq},
         ],
       );
     }
@@ -125,7 +132,8 @@ class InterestEquation extends BaseEquation {
       final n = _param(['n', 't']);
       if (pay == null || i == null || n == null) {
         return SolveResult.error(
-            'Annuity needs R, i, n — e.g. R = 1000, i = 1%, n = 12, annuity.');
+          'Annuity needs R, i, n — e.g. R = 1000, i = 1%, n = 12, annuity.',
+        );
       }
       if (n <= 0 || n != n.roundToDouble()) {
         return SolveResult.error('n must be a positive whole number.');
@@ -136,7 +144,7 @@ class InterestEquation extends BaseEquation {
           answer: 'FV = ${G6Format.money(fv)} (i = 0)',
           points: [fv],
           customData: [
-            {'kind': 'interest', 'mode': 'annuity', 'fv': fv}
+            {'kind': 'interest', 'mode': 'annuity', 'fv': fv},
           ],
         );
       }
@@ -150,7 +158,7 @@ class InterestEquation extends BaseEquation {
             'FV = ${G6Format.money(fv.toDouble())}, PV = ${G6Format.money(pv.toDouble())}',
         points: [fv.toDouble(), pv.toDouble()],
         customData: [
-          {'kind': 'interest', 'mode': 'annuity', 'fv': fv, 'pv': pv}
+          {'kind': 'interest', 'mode': 'annuity', 'fv': fv, 'pv': pv},
         ],
       );
     }
@@ -160,7 +168,8 @@ class InterestEquation extends BaseEquation {
     final n = _param(['n', 't']);
     if (loan == null || i == null || n == null) {
       return SolveResult.error(
-          'Loan needs L, i, n — e.g. loan L = 100000, i = 1%, n = 12.');
+        'Loan needs L, i, n — e.g. loan L = 100000, i = 1%, n = 12.',
+      );
     }
     if (n <= 0 || n != n.roundToDouble()) {
       return SolveResult.error('n must be a positive whole number.');
@@ -177,7 +186,7 @@ class InterestEquation extends BaseEquation {
       answer: 'Payment = ${G6Format.money(pmt.toDouble())} per period',
       points: [pmt.toDouble()],
       customData: [
-        {'kind': 'interest', 'mode': 'loan', 'payment': pmt, 'total': pmt * n}
+        {'kind': 'interest', 'mode': 'loan', 'payment': pmt, 'total': pmt * n},
       ],
     );
   }
@@ -188,26 +197,27 @@ class InterestEquation extends BaseEquation {
     if (mode == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Add simple/compound/annuity/loan.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Add simple/compound/annuity/loan.',
+        ),
       ];
     }
     final r = solve();
     final formula = mode == 'simple'
         ? 'I = Prt, F = P + I'
         : mode == 'compound'
-            ? 'F = P(1 + r/m)^(mt)'
-            : mode == 'annuity'
-                ? 'FV = R[((1+i)^n − 1)/i], PV = R[(1 − (1+i)^−n)/i]'
-                : 'PMT = Li/(1 − (1+i)^−n)';
+        ? 'F = P(1 + r/m)^(mt)'
+        : mode == 'annuity'
+        ? 'FV = R[((1+i)^n − 1)/i], PV = R[(1 − (1+i)^−n)/i]'
+        : 'PMT = Li/(1 − (1+i)^−n)';
     final formulaTex = mode == 'simple'
         ? r'I = Prt,\quad F = P + I'
         : mode == 'compound'
-            ? r'F = P(1 + \frac{r}{m})^{mt}'
-            : mode == 'annuity'
-                ? r'FV = R\,\frac{(1+i)^{n} - 1}{i},\quad PV = R\,\frac{1 - (1+i)^{-n}}{i}'
-                : r'PMT = \frac{Li}{1 - (1+i)^{-n}}';
+        ? r'F = P(1 + \frac{r}{m})^{mt}'
+        : mode == 'annuity'
+        ? r'FV = R\,\frac{(1+i)^{n} - 1}{i},\quad PV = R\,\frac{1 - (1+i)^{-n}}{i}'
+        : r'PMT = \frac{Li}{1 - (1+i)^{-n}}';
     String? computeTex;
     if (!r.hasError && r.customData != null && r.customData!.isNotEmpty) {
       final d = r.customData!.first;
@@ -232,17 +242,22 @@ class InterestEquation extends BaseEquation {
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Formula',
-          explanation: formula,
-          latex: formulaTex),
+        stepNumber: 1,
+        title: 'Formula',
+        explanation: formula,
+        latex: formulaTex,
+      ),
       const StepModel(
-          stepNumber: 2, title: 'Rate as decimal', explanation: '5% → 0.05.'),
+        stepNumber: 2,
+        title: 'Rate as decimal',
+        explanation: '5% → 0.05.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Substitute + compute',
-          explanation: r.answer,
-          latex: computeTex),
+        stepNumber: 3,
+        title: 'Substitute + compute',
+        explanation: r.answer,
+        latex: computeTex,
+      ),
     ];
   }
 }

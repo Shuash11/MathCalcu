@@ -24,7 +24,9 @@ class IntegralSubEquation extends BaseEquation {
   double? _ev(String e, double x) {
     try {
       var s = e.replaceAllMapped(
-          RegExp(r'(\d|\))([x])'), (m) => '${m.group(1)}*${m.group(2)}');
+        RegExp(r'(\d|\))([x])'),
+        (m) => '${m.group(1)}*${m.group(2)}',
+      );
       s = s.replaceAll('x', '($x)');
       final v = CalculatorEngine.evaluate(s);
       return v.isFinite ? v : null;
@@ -70,8 +72,8 @@ class IntegralSubEquation extends BaseEquation {
     // k*(m*x+b)^n with outer k optional: '2x(x^2+1)^3' handled as chain
     // u=x^2+1 special-case below; general linear-inner:
     m = RegExp(
-            r'^([+-]?\d+(?:\.\d+)?)?\*?\(([+-]?\d+(?:\.\d+)?)\*?x([+-]\d+(?:\.\d+)?)?\)\^(\d+)$')
-        .firstMatch(f);
+      r'^([+-]?\d+(?:\.\d+)?)?\*?\(([+-]?\d+(?:\.\d+)?)\*?x([+-]\d+(?:\.\d+)?)?\)\^(\d+)$',
+    ).firstMatch(f);
     if (m != null) {
       final k = m.group(1) == null || m.group(1)!.isEmpty
           ? 1.0
@@ -84,8 +86,8 @@ class IntegralSubEquation extends BaseEquation {
     }
     // 2x*(x^2+1)^n chain: outer derivative of inner.
     m = RegExp(
-            r'^([+-]?\d+(?:\.\d+)?)\*?x\*?\(x\^2([+-]\d+(?:\.\d+)?)?\)\^(\d+)$')
-        .firstMatch(f);
+      r'^([+-]?\d+(?:\.\d+)?)\*?x\*?\(x\^2([+-]\d+(?:\.\d+)?)?\)\^(\d+)$',
+    ).firstMatch(f);
     if (m != null) {
       final k = double.parse(m.group(1)!);
       final pw = int.parse(m.group(3)!);
@@ -97,8 +99,10 @@ class IntegralSubEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'def a = 0, b = 2, f = x^2');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'def a = 0, b = 2, f = x^2',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -121,8 +125,9 @@ class IntegralSubEquation extends BaseEquation {
       final bm = RegExp(r'\b(?:def)?b\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
       final fm = RegExp(r'\b(?:def)?f\s*=\s*(.+)$').firstMatch(t);
       if (am == null || bm == null || fm == null) {
-        return SolveResult.error(_error ??
-            'Definite needs a, b, f — e.g. def a = 0, b = 2, f = x^2.');
+        return SolveResult.error(
+          _error ?? 'Definite needs a, b, f — e.g. def a = 0, b = 2, f = x^2.',
+        );
       }
       final a = double.parse(am.group(1)!), b = double.parse(bm.group(1)!);
       final f = fm.group(1)!;
@@ -136,7 +141,7 @@ class IntegralSubEquation extends BaseEquation {
           : 'Area = ${G6Format.num(area)}  (F(x) = $anti)';
       // Sample curve for graph.
       final pts = [
-        for (var i = 0; i <= 10; i++) _ev(f, a + (b - a) * i / 10) ?? 0
+        for (var i = 0; i <= 10; i++) _ev(f, a + (b - a) * i / 10) ?? 0,
       ];
       return SolveResult(
         answer: ans,
@@ -148,8 +153,8 @@ class IntegralSubEquation extends BaseEquation {
             'b': b,
             'f': f,
             'area': area,
-            'antiderivative': anti
-          }
+            'antiderivative': anti,
+          },
         ],
       );
     }
@@ -161,7 +166,8 @@ class IntegralSubEquation extends BaseEquation {
     final anti = _antiderivative(f);
     if (anti == null) {
       return SolveResult.error(
-          'u-sub patterns only: k*x^n, k*(mx+b)^n, or 2x*(x^2+c)^n.');
+        'u-sub patterns only: k*x^n, k*(mx+b)^n, or 2x*(x^2+c)^n.',
+      );
     }
     final isChain = f.contains('(x^2') || (f.contains('(') && f.contains(')^'));
     return SolveResult(
@@ -173,7 +179,7 @@ class IntegralSubEquation extends BaseEquation {
           'f': f,
           'antiderivative': anti,
           'u': isChain ? 'u = inner function (e.g. x²+1)' : 'direct power rule',
-        }
+        },
       ],
     );
   }
@@ -185,9 +191,10 @@ class IntegralSubEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Cannot integrate',
-            explanation: r.errorMessage ?? '')
+          stepNumber: 1,
+          title: 'Cannot integrate',
+          explanation: r.errorMessage ?? '',
+        ),
       ];
     }
     String? antiTex;
@@ -205,35 +212,41 @@ class IntegralSubEquation extends BaseEquation {
     if (isDef) {
       return [
         const StepModel(
-            stepNumber: 1,
-            title: 'FTC setup',
-            explanation: 'Area = F(b) − F(a); shade above the x-axis.'),
+          stepNumber: 1,
+          title: 'FTC setup',
+          explanation: 'Area = F(b) − F(a); shade above the x-axis.',
+        ),
         StepModel(
-            stepNumber: 2,
-            title: 'Antiderivative',
-            explanation: r.answer,
-            latex: antiTex),
+          stepNumber: 2,
+          title: 'Antiderivative',
+          explanation: r.answer,
+          latex: antiTex,
+        ),
         const StepModel(
-            stepNumber: 3,
-            title: 'Evaluate + numeric check',
-            explanation: 'Simpson rule confirms the shaded area.'),
+          stepNumber: 3,
+          title: 'Evaluate + numeric check',
+          explanation: 'Simpson rule confirms the shaded area.',
+        ),
       ];
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Choose u',
-          explanation: 'u = inner function; du absorbs the outer factor.'),
+        stepNumber: 1,
+        title: 'Choose u',
+        explanation: 'u = inner function; du absorbs the outer factor.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Rewrite in u',
-          explanation: 'Integrate the power: ∫u^n du = u^(n+1)/(n+1).',
-          latex: r'\int u^{n}\,du = \frac{u^{n+1}}{n+1}'),
+        stepNumber: 2,
+        title: 'Rewrite in u',
+        explanation: 'Integrate the power: ∫u^n du = u^(n+1)/(n+1).',
+        latex: r'\int u^{n}\,du = \frac{u^{n+1}}{n+1}',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Back-substitute + C',
-          explanation: r.answer,
-          latex: antiTex),
+        stepNumber: 3,
+        title: 'Back-substitute + C',
+        explanation: r.answer,
+        latex: antiTex,
+      ),
     ];
   }
 }

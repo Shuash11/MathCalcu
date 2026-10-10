@@ -138,8 +138,8 @@ void main() {
       final chain = IntegrationTechniquesEquation('int x*(x^2+1)^3 dx').solve();
       expect(chain.latex, isNotNull);
       expect(chain.latex, contains(r'\frac{1}{8}'));
-      final def =
-          IntegrationTechniquesEquation('def a = 0, b = 2, f = x^2').solve();
+      final def = IntegrationTechniquesEquation('def a = 0, b = 2, f = x^2')
+          .solve();
       expect(def.latex, isNotNull);
       expect(def.latex, contains(r'\int_{0}^{2}'));
       expect(def.latex, contains(r'x^{2}'));

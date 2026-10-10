@@ -27,10 +27,9 @@ class PPAppBar extends StatelessWidget {
                 color: context.watch<ThemeProvider>().card,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.2),
+                  color: context.watch<ThemeProvider>().accentColor.withValues(
+                    alpha: 0.2,
+                  ),
                 ),
                 boxShadow: AccentGlow.stack(context),
               ),
@@ -46,16 +45,14 @@ class PPAppBar extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: context
-                  .watch<ThemeProvider>()
-                  .accentColor
-                  .withValues(alpha: 0.1),
+              color: context.watch<ThemeProvider>().accentColor.withValues(
+                alpha: 0.1,
+              ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: context
-                    .watch<ThemeProvider>()
-                    .accentColor
-                    .withValues(alpha: 0.2),
+                color: context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.2,
+                ),
               ),
               boxShadow: AccentGlow.stack(context),
             ),

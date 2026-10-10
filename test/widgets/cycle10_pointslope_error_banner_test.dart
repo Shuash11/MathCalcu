@@ -13,14 +13,15 @@ Widget buildTestApp() {
 
 void main() {
   Finder errorBanner(Finder child) => find.ancestor(
-        of: child,
-        matching: find.byWidgetPredicate(
-          (w) => w is Padding && w.padding == const EdgeInsets.only(bottom: 8),
-        ),
-      );
+    of: child,
+    matching: find.byWidgetPredicate(
+      (w) => w is Padding && w.padding == const EdgeInsets.only(bottom: 8),
+    ),
+  );
 
-  testWidgets('shows inline error banner when any field is empty',
-      (tester) async {
+  testWidgets('shows inline error banner when any field is empty', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildTestApp());
 
     await tester.enterText(find.byType(TextField).at(0), '2');
@@ -29,12 +30,15 @@ void main() {
     await tester.pump();
 
     expect(find.text('Please fill in all three fields'), findsOneWidget);
-    expect(errorBanner(find.text('Please fill in all three fields')),
-        findsOneWidget);
+    expect(
+      errorBanner(find.text('Please fill in all three fields')),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('shows inline error banner when input is invalid',
-      (tester) async {
+  testWidgets('shows inline error banner when input is invalid', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildTestApp());
 
     await tester.enterText(find.byType(TextField).at(0), '3/');
@@ -49,8 +53,9 @@ void main() {
     );
   });
 
-  testWidgets('clears the error banner after a successful solve',
-      (tester) async {
+  testWidgets('clears the error banner after a successful solve', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildTestApp());
 
     await tester.tap(find.text('Solve'));

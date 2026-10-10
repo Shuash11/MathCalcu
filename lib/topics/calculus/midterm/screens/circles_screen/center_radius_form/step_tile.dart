@@ -39,7 +39,10 @@ class StepTile extends StatelessWidget {
 
     if (step.isFinal) {
       return _FinalBox(
-          step: step, accentColor: accentColor, onCopy: _copyToClipboard);
+        step: step,
+        accentColor: accentColor,
+        onCopy: _copyToClipboard,
+      );
     }
 
     return IntrinsicHeight(
@@ -47,10 +50,11 @@ class StepTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _TimelineRail(
-              accentColor: accentColor,
-              label: step.arrow ? '?' : '${index + 1}',
-              isArrow: step.arrow,
-              isLast: isLast),
+            accentColor: accentColor,
+            label: step.arrow ? '?' : '${index + 1}',
+            isArrow: step.arrow,
+            isLast: isLast,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Padding(
@@ -73,12 +77,15 @@ class StepTile extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF334155),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                            color: accentColor.withValues(alpha: 0.15)),
+                          color: accentColor.withValues(alpha: 0.15),
+                        ),
                       ),
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -90,7 +97,7 @@ class StepTile extends StatelessWidget {
                             color: step.color != null
                                 ? accentColor
                                 : const Color(0xFFE8E8F0)
-                                    .withValues(alpha: 0.9),
+                                      .withValues(alpha: 0.9),
                           ),
                         ),
                       ),
@@ -183,8 +190,10 @@ class _FinalBox extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border:
-            Border.all(color: accentColor.withValues(alpha: 0.4), width: 1.5),
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.4),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [

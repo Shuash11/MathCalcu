@@ -42,14 +42,16 @@ class DistanceModeButton extends StatelessWidget {
                 ? TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: theme.surface)
+                    color: theme.surface,
+                  )
                 : TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: context
                         .watch<ThemeProvider>()
                         .textPrimary
-                        .withValues(alpha: 0.35)),
+                        .withValues(alpha: 0.35),
+                  ),
           ),
         ),
       ),

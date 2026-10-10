@@ -35,8 +35,7 @@ class PPScreenController extends ChangeNotifier {
     final parsed = ParallelPerpendicularSolver.tryParse(line1: l1, line2: l2);
     if (parsed == null) {
       result = null;
-      errorMsg =
-          'Could not parse one or both equations.\nTry: 2x + 3y = 6  or  2x + 3y + 4 = 0';
+      errorMsg = 'Could not parse one or both equations.\nTry: 2x + 3y = 6  or  2x + 3y + 4 = 0';
       hasSolved = false;
       notifyListeners();
       return;

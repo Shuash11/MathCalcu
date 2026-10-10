@@ -43,8 +43,9 @@ class InequalityCoreSolver {
       if (value == 0) return;
       final sign = value < 0 ? '-' : (terms.isEmpty ? '' : '+');
       final magnitude = value.abs();
-      final coefficient =
-          variable.isNotEmpty && magnitude == 1 ? '' : fmt(magnitude);
+      final coefficient = variable.isNotEmpty && magnitude == 1
+          ? ''
+          : fmt(magnitude);
       terms.add('$sign$coefficient$variable');
     }
 
@@ -144,7 +145,8 @@ class InequalityCoreSolver {
       const strictnessStr = '-continued';
 
       if (normalized.contains('|')) return 'absolute$strictnessStr';
-      final hasRadical = normalized.contains('sqrt') ||
+      final hasRadical =
+          normalized.contains('sqrt') ||
           normalized.contains('root') ||
           normalized.contains('\u221A') ||
           normalized.contains('√');
@@ -161,7 +163,8 @@ class InequalityCoreSolver {
     final strictnessStr = _isStrict(normalized) ? '-strict' : '-non-strict';
 
     if (normalized.contains('|')) return 'absolute$strictnessStr';
-    final hasRadical = normalized.contains('sqrt') ||
+    final hasRadical =
+        normalized.contains('sqrt') ||
         normalized.contains('root') ||
         normalized.contains('\u221A') ||
         normalized.contains('√');

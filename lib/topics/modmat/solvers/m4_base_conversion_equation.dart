@@ -49,9 +49,9 @@ class M4BaseConversionEquation extends BaseEquation {
     final t = rawInput.trim();
     // '1011 base2 to base10' / 'FF hex to dec' / '255 to bin'.
     var m = RegExp(
-            r'^([0-9a-zA-Z]+)\s+(?:base\s*(\d{1,2})|(bin|binary|oct|octal|dec|decimal|hex|hexadecimal))\s*(?:to|->|in|=|>)\s*(?:base\s*(\d{1,2})|(bin|binary|oct|octal|dec|decimal|hex|hexadecimal|base\d{1,2}))\s*$',
-            caseSensitive: false)
-        .firstMatch(t);
+      r'^([0-9a-zA-Z]+)\s+(?:base\s*(\d{1,2})|(bin|binary|oct|octal|dec|decimal|hex|hexadecimal))\s*(?:to|->|in|=|>)\s*(?:base\s*(\d{1,2})|(bin|binary|oct|octal|dec|decimal|hex|hexadecimal|base\d{1,2}))\s*$',
+      caseSensitive: false,
+    ).firstMatch(t);
     if (m != null) {
       final digits = m.group(1)!;
       final from = _baseOf(m.group(2) ?? m.group(3));
@@ -61,15 +61,15 @@ class M4BaseConversionEquation extends BaseEquation {
     }
     // '0b1011 to dec', '0xFF to bin', '0o17 to dec'.
     m = RegExp(
-            r'^(0[bB][01]+|0[oO][0-7]+|0[xX][0-9a-fA-F]+)\s*(?:to|->|in|=|>)\s*(.+)\s*$')
-        .firstMatch(t);
+      r'^(0[bB][01]+|0[oO][0-7]+|0[xX][0-9a-fA-F]+)\s*(?:to|->|in|=|>)\s*(.+)\s*$',
+    ).firstMatch(t);
     if (m != null) {
       final lit = m.group(1)!;
       final from = lit.startsWith('0b') || lit.startsWith('0B')
           ? 2
           : lit.startsWith('0o') || lit.startsWith('0O')
-              ? 8
-              : 16;
+          ? 8
+          : 16;
       final digits = lit.substring(2);
       final to = _baseOf(m.group(2));
       if (to == null) return null;
@@ -141,8 +141,10 @@ class M4BaseConversionEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: '1011 base2 to base10');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: '1011 base2 to base10',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -177,9 +179,11 @@ class M4BaseConversionEquation extends BaseEquation {
     final to = p[2] as int;
     final dec = toDecimal(digits, from);
     if (dec == null) {
-      return SolveResult.error(_digitsLegalForBase(digits, from)
-          ? _magnitudeMessage
-          : 'Digits do not fit base $from — check each digit < $from.');
+      return SolveResult.error(
+        _digitsLegalForBase(digits, from)
+            ? _magnitudeMessage
+            : 'Digits do not fit base $from — check each digit < $from.',
+      );
     }
     final out = fromDecimal(dec, to);
     return SolveResult(
@@ -193,7 +197,7 @@ class M4BaseConversionEquation extends BaseEquation {
           'toBase': to,
           'decimal': dec,
           'result': out,
-        }
+        },
       ],
     );
   }
@@ -204,9 +208,10 @@ class M4BaseConversionEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use 1011 base2 to base10.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use 1011 base2 to base10.',
+        ),
       ];
     }
     final r = solve();
@@ -220,20 +225,23 @@ class M4BaseConversionEquation extends BaseEquation {
     final out = data?['result'];
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Expand in the source base',
-          explanation:
-              '${(p[0] as String).toUpperCase()} base ${p[1]} → decimal by place value.',
-          latex: dec == null ? null : '${digits}_{$from} = ${dec}_{10}'),
+        stepNumber: 1,
+        title: 'Expand in the source base',
+        explanation:
+            '${(p[0] as String).toUpperCase()} base ${p[1]} → decimal by place value.',
+        latex: dec == null ? null : '${digits}_{$from} = ${dec}_{10}',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Divide into the target base',
-          explanation: 'Repeated ÷ ${p[2]}, read remainders bottom-up.'),
+        stepNumber: 2,
+        title: 'Divide into the target base',
+        explanation: 'Repeated ÷ ${p[2]}, read remainders bottom-up.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the result',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: out == null ? null : '${digits}_{$from} = ${out}_{$to}'),
+        stepNumber: 3,
+        title: 'Read the result',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: out == null ? null : '${digits}_{$from} = ${out}_{$to}',
+      ),
     ];
   }
 }

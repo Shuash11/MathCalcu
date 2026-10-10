@@ -26,9 +26,13 @@ class LinearOneVarEquation extends BaseEquation {
         .replaceAll(' ', '');
     // Implicit multiply: 3x -> 3*x, 2(x+1) -> 2*(x+1), )x -> )*x.
     e = e.replaceAllMapped(
-        RegExp(r'(\d|\))([xX])'), (m) => '${m.group(1)}*${m.group(2)}');
+      RegExp(r'(\d|\))([xX])'),
+      (m) => '${m.group(1)}*${m.group(2)}',
+    );
     e = e.replaceAllMapped(
-        RegExp(r'(\d|\))(\()'), (m) => '${m.group(1)}*${m.group(2)}');
+      RegExp(r'(\d|\))(\()'),
+      (m) => '${m.group(1)}*${m.group(2)}',
+    );
     e = e.replaceAll(RegExp(r'[xX]'), '($xVal)');
     return e;
   }
@@ -89,20 +93,23 @@ class LinearOneVarEquation extends BaseEquation {
     final c = _parse();
     if (c == null) {
       return SolveResult.error(
-          _error ?? 'Enter a linear equation — e.g. 2x - 5 = 9.');
+        _error ?? 'Enter a linear equation — e.g. 2x - 5 = 9.',
+      );
     }
     final a = c[0], b = c[1];
     if (a.abs() < 1e-12) {
       if (b.abs() < 1e-9) {
         return const SolveResult(
-            answer: 'All real numbers (identity)',
-            points: [],
-            customData: [
-              {'kind': 'line', 'identity': true}
-            ]);
+          answer: 'All real numbers (identity)',
+          points: [],
+          customData: [
+            {'kind': 'line', 'identity': true},
+          ],
+        );
       }
       return SolveResult.error(
-          'No solution — parallel lines (0 = ${b.toStringAsFixed(2)}).');
+        'No solution — parallel lines (0 = ${b.toStringAsFixed(2)}).',
+      );
     }
     final x = b / a;
     return SolveResult(
@@ -113,7 +120,7 @@ class LinearOneVarEquation extends BaseEquation {
           'kind': 'line',
           'root': x,
           'line': [-5 + x, -4 + x, -3 + x, -2 + x, -1 + x, x, 1 + x, 2 + x],
-        }
+        },
       ],
     );
   }
@@ -124,42 +131,49 @@ class LinearOneVarEquation extends BaseEquation {
     if (c == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use 2x - 5 = 9.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use 2x - 5 = 9.',
+        ),
       ];
     }
     final a = c[0], b = c[1];
     if (a.abs() < 1e-12) {
       return [
         const StepModel(
-            stepNumber: 1,
-            title: 'Collect like terms',
-            explanation: 'x terms cancel — check constants.'),
+          stepNumber: 1,
+          title: 'Collect like terms',
+          explanation: 'x terms cancel — check constants.',
+        ),
       ];
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Move x terms left, constants right',
-          explanation: 'Add/subtract both sides to get ax = b.'),
+        stepNumber: 1,
+        title: 'Move x terms left, constants right',
+        explanation: 'Add/subtract both sides to get ax = b.',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Combine',
-          explanation:
-              '${G6Format.num(a)}x = ${G6Format.num(b)} — like terms collected.',
-          latex: '${G6Format.num(a)}x = ${G6Format.num(b)}'),
+        stepNumber: 2,
+        title: 'Combine',
+        explanation:
+            '${G6Format.num(a)}x = ${G6Format.num(b)} — like terms collected.',
+        latex: '${G6Format.num(a)}x = ${G6Format.num(b)}',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Divide',
-          explanation: 'x = ${G6Format.num(b)} ÷ ${G6Format.num(a)}.',
-          latex: 'x = \\frac{${G6Format.num(b)}}{${G6Format.num(a)}} = '
-              '${G6Format.num(b / a)}'),
+        stepNumber: 3,
+        title: 'Divide',
+        explanation: 'x = ${G6Format.num(b)} ÷ ${G6Format.num(a)}.',
+        latex:
+            'x = \\frac{${G6Format.num(b)}}{${G6Format.num(a)}} = '
+            '${G6Format.num(b / a)}',
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Check',
-          explanation:
-              'Substitute x = ${G6Format.num(b / a)} back into both sides.'),
+        stepNumber: 4,
+        title: 'Check',
+        explanation:
+            'Substitute x = ${G6Format.num(b / a)} back into both sides.',
+      ),
     ];
   }
 }

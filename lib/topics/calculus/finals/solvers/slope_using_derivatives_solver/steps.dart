@@ -87,7 +87,7 @@ class DerivativeNarrator {
         return ['Identity Rule:  d/d$wrtVar[$wrtVar] = 1'];
       }
       return [
-        'Constant Rule:  d/d$wrtVar[${expr.name}] = 0  (${expr.name} is constant w.r.t. $wrtVar)'
+        'Constant Rule:  d/d$wrtVar[${expr.name}] = 0  (${expr.name} is constant w.r.t. $wrtVar)',
       ];
     }
     if (expr is UnaryNeg) {
@@ -148,8 +148,9 @@ class DerivativeNarrator {
   static List<String> _narrateFunc(Func expr, String wrtVar) {
     final u = expr.arg.toMathString();
     final needsChain = u != wrtVar;
-    final chain =
-        needsChain ? '  + Chain Rule: multiply by d/d$wrtVar[$u]' : '';
+    final chain = needsChain
+        ? '  + Chain Rule: multiply by d/d$wrtVar[$u]'
+        : '';
 
     switch (expr.name) {
       case 'sin':
@@ -159,40 +160,40 @@ class DerivativeNarrator {
       case 'tan':
         return [
           'd/d$wrtVar[tan u] = sec²u · u\'  =  u\' / cos²u$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'cot':
         return [
           'd/d$wrtVar[cot u] = −csc²u · u\'  =  −u\' / sin²u$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'sec':
         return [
           'd/d$wrtVar[sec u] = sec u · tan u · u\'  =  sin u · u\' / cos²u$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'csc':
         return [
           'd/d$wrtVar[csc u] = −csc u · cot u · u\'  =  −cos u · u\' / sin²u$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'asin':
       case 'arcsin':
         return [
           'd/d$wrtVar[arcsin u] = u\' / √(1 − u²)$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'acos':
       case 'arccos':
         return [
           'd/d$wrtVar[arccos u] = −u\' / √(1 − u²)$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'atan':
       case 'arctan':
         return [
           'd/d$wrtVar[arctan u] = u\' / (1 + u²)$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'sinh':
         return ['d/d$wrtVar[sinh u] = cosh u · u\'$chain', '  where  u = $u'];
@@ -205,7 +206,7 @@ class DerivativeNarrator {
       case 'log':
         return [
           'd/d$wrtVar[log₁₀ u] = u\' / (u · ln 10)$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'exp':
         return ['d/d$wrtVar[eᵘ] = eᵘ · u\'$chain', '  where  u = $u'];
@@ -214,17 +215,17 @@ class DerivativeNarrator {
       case 'abs':
         return [
           'd/d$wrtVar[|u|] = u · u\' / |u|   (u ≠ 0)$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       case 'cbrt':
         return [
           'd/d$wrtVar[∛u] = u\' / (3 · u^(2/3))$chain',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
       default:
         return [
           'd/d$wrtVar[${expr.name}(u)] · u\'  (Chain Rule)',
-          '  where  u = $u'
+          '  where  u = $u',
         ];
     }
   }
@@ -266,72 +267,80 @@ class ExplicitSolutionBuilder {
     final ruleLines = DerivativeNarrator.narrate(f, x);
 
     // ── Given ───
-    steps.add(ClassroomStep(
-      kind: StepKind.sectionHeader,
-      label: 'Given',
-      lines: [
-        '$y = $fLatex',
-        if (hasPoint) 'Find slope at $x = ${_fmt(r.point[x]!)}',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.sectionHeader,
+        label: 'Given',
+        lines: [
+          '$y = $fLatex',
+          if (hasPoint) 'Find slope at $x = ${_fmt(r.point[x]!)}',
+        ],
+      ),
+    );
 
     // ── Differentiate (rules + result merged) ───
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Differentiate',
-      hint: 'Apply differentiation rules to find $y\'($x)',
-      lines: [
-        '\\frac{d$y}{d$x} = \\frac{d}{d$x}[ $fLatex ]',
-        '',
-        ...ruleLines,
-        '',
-        '\\frac{d$y}{d$x} = $rawLatex',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.algebra,
+        label: 'Differentiate',
+        hint: 'Apply differentiation rules to find $y\'($x)',
+        lines: [
+          '\\frac{d$y}{d$x} = \\frac{d}{d$x}[ $fLatex ]',
+          '',
+          ...ruleLines,
+          '',
+          '\\frac{d$y}{d$x} = $rawLatex',
+        ],
+      ),
+    );
 
     // ── Simplify (separate, only if different) ───
     if (showSimplify) {
-      steps.add(ClassroomStep(
-        kind: StepKind.algebra,
-        label: 'Simplify',
-        hint: 'Combine like terms and reduce',
-        lines: [
-          '\\frac{d$y}{d$x} = $simpLatex',
-        ],
-      ));
+      steps.add(
+        ClassroomStep(
+          kind: StepKind.algebra,
+          label: 'Simplify',
+          hint: 'Combine like terms and reduce',
+          lines: ['\\frac{d$y}{d$x} = $simpLatex'],
+        ),
+      );
     }
 
     // ── Evaluate ───
     if (hasPoint && r.slopeValue != null) {
       final xv = r.point[x]!;
-      steps.add(ClassroomStep(
-        kind: StepKind.substitution,
-        label: 'Evaluate',
-        hint: 'Substitute $x = ${_fmt(xv)} into the derivative',
-        lines: [
-          'm = $simpLatex  at  $x = ${_fmt(xv)}',
-          '',
-          'm = ${_fmt(r.slopeValue!)}',
-        ],
-      ));
+      steps.add(
+        ClassroomStep(
+          kind: StepKind.substitution,
+          label: 'Evaluate',
+          hint: 'Substitute $x = ${_fmt(xv)} into the derivative',
+          lines: [
+            'm = $simpLatex  at  $x = ${_fmt(xv)}',
+            '',
+            'm = ${_fmt(r.slopeValue!)}',
+          ],
+        ),
+      );
 
       // ── Tangent Line ─── (tangent ONLY)
       final yVal = _evalSafe(r.functionExpr, r.point);
       if (yVal != null && r.tangentLineEquation != null) {
         final m = r.slopeValue!;
-        steps.add(ClassroomStep(
-          kind: StepKind.tangentNormal,
-          label: 'Tangent Line',
-          hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
-          lines: [
-            'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xv)}, ${_fmt(yVal)})',
-            '',
-            'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xv)})',
-            'y = ${_fmt(m)}x + ${_fmt(yVal - m * xv)}',
-            '',
-            '${r.tangentLineEquation}',
-          ],
-        ));
+        steps.add(
+          ClassroomStep(
+            kind: StepKind.tangentNormal,
+            label: 'Tangent Line',
+            hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
+            lines: [
+              'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xv)}, ${_fmt(yVal)})',
+              '',
+              'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xv)})',
+              'y = ${_fmt(m)}x + ${_fmt(yVal - m * xv)}',
+              '',
+              '${r.tangentLineEquation}',
+            ],
+          ),
+        );
       }
 
       // ── Normal Line ─── (normal ONLY)
@@ -339,36 +348,40 @@ class ExplicitSolutionBuilder {
           r.normalLineEquation != null &&
           r.normalSlope != null) {
         final mN = r.normalSlope!;
-        steps.add(ClassroomStep(
-          kind: StepKind.tangentNormal,
-          label: 'Normal Line',
-          hint: 'm_normal = -1 / m_tangent',
-          lines: [
-            'm_normal = -1 / ${_fmt(r.slopeValue!)} = ${_fmt(mN)}',
-            '',
-            'y - ${_fmt(yVal)} = ${_fmt(mN)}(x - ${_fmt(xv)})',
-            'y = ${_fmt(mN)}x + ${_fmt(yVal - mN * xv)}',
-            '',
-            '${r.normalLineEquation}',
-          ],
-        ));
+        steps.add(
+          ClassroomStep(
+            kind: StepKind.tangentNormal,
+            label: 'Normal Line',
+            hint: 'm_normal = -1 / m_tangent',
+            lines: [
+              'm_normal = -1 / ${_fmt(r.slopeValue!)} = ${_fmt(mN)}',
+              '',
+              'y - ${_fmt(yVal)} = ${_fmt(mN)}(x - ${_fmt(xv)})',
+              'y = ${_fmt(mN)}x + ${_fmt(yVal - mN * xv)}',
+              '',
+              '${r.normalLineEquation}',
+            ],
+          ),
+        );
       }
     }
 
     // ── Result ───
-    steps.add(ClassroomStep(
-      kind: StepKind.result,
-      label: 'Answer',
-      lines: [
-        '\\frac{d$y}{d$x} = $simpLatex',
-        if (r.slopeValue != null)
-          'Slope at $x = ${_fmt(r.point[x]!)}:   m = ${_fmt(r.slopeValue!)}',
-        if (r.tangentLineEquation != null)
-          'Tangent line:  ${r.tangentLineEquation}',
-        if (r.normalLineEquation != null)
-          'Normal line:   ${r.normalLineEquation}',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.result,
+        label: 'Answer',
+        lines: [
+          '\\frac{d$y}{d$x} = $simpLatex',
+          if (r.slopeValue != null)
+            'Slope at $x = ${_fmt(r.point[x]!)}:   m = ${_fmt(r.slopeValue!)}',
+          if (r.tangentLineEquation != null)
+            'Tangent line:  ${r.tangentLineEquation}',
+          if (r.normalLineEquation != null)
+            'Normal line:   ${r.normalLineEquation}',
+        ],
+      ),
+    );
 
     return ClassroomSolution(
       problemTitle: 'Explicit Differentiation — ${r.originalInput}',
@@ -391,7 +404,8 @@ class ImplicitSolutionBuilder {
     final dLatex = r.leftDerivative?.toLatexString() ?? '';
     final dRLatex = r.rightDerivative?.toLatexString() ?? '';
     final diffLatex = r.derivative.toLatexString();
-    final slopeLatex = r.implicitSlopeExpr?.toLatexString() ??
+    final slopeLatex =
+        r.implicitSlopeExpr?.toLatexString() ??
         r.simplifiedDerivative.toLatexString();
     final hasPoint = r.point.containsKey('x') && r.point.containsKey('y');
     final hasDyDx = ExprUtils.containsDerivSym(r.derivative);
@@ -403,55 +417,60 @@ class ImplicitSolutionBuilder {
         : <String>[];
 
     // ── GIVEN ───
-    steps.add(ClassroomStep(
-      kind: StepKind.sectionHeader,
-      label: 'Given',
-      lines: [
-        '$lhsLatex  =  $rhsLatex',
-        'Find:  \\frac{dy}{dx}  using Implicit Differentiation'
-            '${hasPoint ? '  at  (${_fmt(r.point['x']!)}, ${_fmt(r.point['y']!)})' : ''}',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.sectionHeader,
+        label: 'Given',
+        lines: [
+          '$lhsLatex  =  $rhsLatex',
+          'Find:  \\frac{dy}{dx}  using Implicit Differentiation'
+              '${hasPoint ? '  at  (${_fmt(r.point['x']!)}, ${_fmt(r.point['y']!)})' : ''}',
+        ],
+      ),
+    );
 
     // ── Differentiate LHS ───
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Diff LHS',
-      hint: 'Differentiate left side with respect to x, treat y as y(x)',
-      lines: [
-        '\\frac{d}{dx}[ $lhsLatex ]',
-        ...dLRuleLines.map((l) => '  → $l'),
-        '',
-        '= $dLatex',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.algebra,
+        label: 'Diff LHS',
+        hint: 'Differentiate left side with respect to x, treat y as y(x)',
+        lines: [
+          '\\frac{d}{dx}[ $lhsLatex ]',
+          ...dLRuleLines.map((l) => '  → $l'),
+          '',
+          '= $dLatex',
+        ],
+      ),
+    );
 
     // ── Differentiate RHS ───
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Diff RHS',
-      hint: 'Differentiate right side with respect to x',
-      lines: [
-        '\\frac{d}{dx}[ $rhsLatex ]',
-        ...dRRuleLines.map((l) => '  → $l'),
-        '',
-        '= $dRLatex',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.algebra,
+        label: 'Diff RHS',
+        hint: 'Differentiate right side with respect to x',
+        lines: [
+          '\\frac{d}{dx}[ $rhsLatex ]',
+          ...dRRuleLines.map((l) => '  → $l'),
+          '',
+          '= $dRLatex',
+        ],
+      ),
+    );
 
     // ── Combine ───
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Combine',
-      hint: 'Set the derivatives equal',
-      lines: [
-        '$dLatex  =  $dRLatex',
-        if (hasDyDx) ...[
-          '',
-          '$diffLatex  =  0',
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.algebra,
+        label: 'Combine',
+        hint: 'Set the derivatives equal',
+        lines: [
+          '$dLatex  =  $dRLatex',
+          if (hasDyDx) ...['', '$diffLatex  =  0'],
         ],
-      ],
-    ));
+      ),
+    );
 
     // ── Move Terms ───
     if (hasDyDx) {
@@ -459,38 +478,38 @@ class ImplicitSolutionBuilder {
       final cLatex = c.toLatexString();
       final negRem = Simplifier.simplify(UnaryNeg(rem));
       final negRemLatex = negRem.toLatexString();
-      steps.add(ClassroomStep(
-        kind: StepKind.algebra,
-        label: 'Move Terms',
-        hint: 'Move non-dy/dx terms to the right side',
-        lines: [
-          '$cLatex \\cdot \\frac{dy}{dx} = $negRemLatex',
-        ],
-      ));
+      steps.add(
+        ClassroomStep(
+          kind: StepKind.algebra,
+          label: 'Move Terms',
+          hint: 'Move non-dy/dx terms to the right side',
+          lines: ['$cLatex \\cdot \\frac{dy}{dx} = $negRemLatex'],
+        ),
+      );
 
       // ── Isolate dy/dx ───
       final rawSlope = BinOp(negRem, '/', c);
       final rawSlopeLatex = rawSlope.toLatexString();
       final showSimplify = rawSlopeLatex != slopeLatex;
-      steps.add(ClassroomStep(
-        kind: StepKind.algebra,
-        label: 'Isolate dy/dx',
-        hint: 'Divide by the coefficient of dy/dx',
-        lines: [
-          '\\frac{dy}{dx} = $rawSlopeLatex',
-        ],
-      ));
+      steps.add(
+        ClassroomStep(
+          kind: StepKind.algebra,
+          label: 'Isolate dy/dx',
+          hint: 'Divide by the coefficient of dy/dx',
+          lines: ['\\frac{dy}{dx} = $rawSlopeLatex'],
+        ),
+      );
 
       // ── Simplify (only if needed) ───
       if (showSimplify) {
-        steps.add(ClassroomStep(
-          kind: StepKind.algebra,
-          label: 'Simplify',
-          hint: 'Reduce to lowest terms',
-          lines: [
-            '\\frac{dy}{dx} = $slopeLatex',
-          ],
-        ));
+        steps.add(
+          ClassroomStep(
+            kind: StepKind.algebra,
+            label: 'Simplify',
+            hint: 'Reduce to lowest terms',
+            lines: ['\\frac{dy}{dx} = $slopeLatex'],
+          ),
+        );
       }
     }
 
@@ -498,71 +517,79 @@ class ImplicitSolutionBuilder {
     if (hasPoint && r.slopeValue != null) {
       final xVal = r.point['x']!;
       final yVal = r.point['y']!;
-      steps.add(ClassroomStep(
-        kind: StepKind.substitution,
-        label: 'Evaluate',
-        hint:
-            'Substitute x = ${_fmt(xVal)}, y = ${_fmt(yVal)} into the slope formula',
-        lines: [
-          '\\frac{dy}{dx} = $slopeLatex  at  (${_fmt(xVal)}, ${_fmt(yVal)})',
-          '',
-          'm = ${_fmt(r.slopeValue!)}',
-        ],
-      ));
+      steps.add(
+        ClassroomStep(
+          kind: StepKind.substitution,
+          label: 'Evaluate',
+          hint:
+              'Substitute x = ${_fmt(xVal)}, y = ${_fmt(yVal)} into the slope formula',
+          lines: [
+            '\\frac{dy}{dx} = $slopeLatex  at  (${_fmt(xVal)}, ${_fmt(yVal)})',
+            '',
+            'm = ${_fmt(r.slopeValue!)}',
+          ],
+        ),
+      );
 
       // ── Tangent Line ─── (tangent ONLY)
       if (r.tangentLineEquation != null) {
         final m = r.slopeValue!;
         final b = yVal - m * xVal;
-        steps.add(ClassroomStep(
-          kind: StepKind.tangentNormal,
-          label: 'Tangent Line',
-          hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
-          lines: [
-            'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xVal)}, ${_fmt(yVal)})',
-            '',
-            'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xVal)})',
-            'y = ${_fmt(m)}x + ${_fmt(b)}',
-            '',
-            '${r.tangentLineEquation}',
-          ],
-        ));
+        steps.add(
+          ClassroomStep(
+            kind: StepKind.tangentNormal,
+            label: 'Tangent Line',
+            hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
+            lines: [
+              'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xVal)}, ${_fmt(yVal)})',
+              '',
+              'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xVal)})',
+              'y = ${_fmt(m)}x + ${_fmt(b)}',
+              '',
+              '${r.tangentLineEquation}',
+            ],
+          ),
+        );
       }
 
       // ── Normal Line ─── (normal ONLY)
       if (r.normalLineEquation != null && r.normalSlope != null) {
         final mN = r.normalSlope!;
         final bN = yVal - mN * xVal;
-        steps.add(ClassroomStep(
-          kind: StepKind.tangentNormal,
-          label: 'Normal Line',
-          hint: 'm_normal = -1 / m_tangent',
-          lines: [
-            'm_normal = -1 / ${_fmt(r.slopeValue!)} = ${_fmt(mN)}',
-            '',
-            'y - ${_fmt(yVal)} = ${_fmt(mN)}(x - ${_fmt(xVal)})',
-            'y = ${_fmt(mN)}x + ${_fmt(bN)}',
-            '',
-            '${r.normalLineEquation}',
-          ],
-        ));
+        steps.add(
+          ClassroomStep(
+            kind: StepKind.tangentNormal,
+            label: 'Normal Line',
+            hint: 'm_normal = -1 / m_tangent',
+            lines: [
+              'm_normal = -1 / ${_fmt(r.slopeValue!)} = ${_fmt(mN)}',
+              '',
+              'y - ${_fmt(yVal)} = ${_fmt(mN)}(x - ${_fmt(xVal)})',
+              'y = ${_fmt(mN)}x + ${_fmt(bN)}',
+              '',
+              '${r.normalLineEquation}',
+            ],
+          ),
+        );
       }
     }
 
     // ── RESULT ───
-    steps.add(ClassroomStep(
-      kind: StepKind.result,
-      label: 'Answer',
-      lines: [
-        'dy/dx  =  $slopeLatex',
-        if (r.slopeValue != null)
-          'Slope at (${_fmt(r.point['x']!)}, ${_fmt(r.point['y']!)}):   m = ${_fmt(r.slopeValue!)}',
-        if (r.tangentLineEquation != null)
-          'Tangent line:  ${r.tangentLineEquation}',
-        if (r.normalLineEquation != null)
-          'Normal line:   ${r.normalLineEquation}',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.result,
+        label: 'Answer',
+        lines: [
+          'dy/dx  =  $slopeLatex',
+          if (r.slopeValue != null)
+            'Slope at (${_fmt(r.point['x']!)}, ${_fmt(r.point['y']!)}):   m = ${_fmt(r.slopeValue!)}',
+          if (r.tangentLineEquation != null)
+            'Tangent line:  ${r.tangentLineEquation}',
+          if (r.normalLineEquation != null)
+            'Normal line:   ${r.normalLineEquation}',
+        ],
+      ),
+    );
 
     return ClassroomSolution(
       problemTitle: 'Implicit Differentiation — ${r.originalInput}',
@@ -594,32 +621,35 @@ class ParametricSolutionBuilder {
         : <String>[];
 
     // ── GIVEN ───
-    steps.add(ClassroomStep(
-      kind: StepKind.sectionHeader,
-      label: 'Given',
-      lines: [
-        'x(t)  =  $xLatex',
-        'y(t)  =  $yLatex',
-        'Find:  dy/dx  using Parametric Differentiation${r.point.containsKey(t) ? '  at  t = ${_fmt(r.point[t]!)}' : ''}',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.sectionHeader,
+        label: 'Given',
+        lines: [
+          'x(t)  =  $xLatex',
+          'y(t)  =  $yLatex',
+          'Find:  dy/dx  using Parametric Differentiation${r.point.containsKey(t) ? '  at  t = ${_fmt(r.point[t]!)}' : ''}',
+        ],
+      ),
+    );
 
     // ── Find Derivatives (merged: concept hint + diff x + diff y) ───
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Find Derivatives',
-      hint:
-          'Use Chain Rule: dy/dx = (dy/dt)/(dx/dt). Differentiate x(t) and y(t) with respect to t',
-      lines: [
-        '\\frac{dx}{dt}:',
-        ...dxRuleLines.map((l) => '  → $l'),
-        '  dx/dt  =  $dxLatex',
-        '',
-        '\\frac{dy}{dt}:',
-        ...dyRuleLines.map((l) => '  → $l'),
-        '  dy/dt  =  $dyLatex',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.algebra,
+        label: 'Find Derivatives',
+        hint: 'Use Chain Rule: dy/dx = (dy/dt)/(dx/dt). Differentiate x(t) and y(t) with respect to t',
+        lines: [
+          '\\frac{dx}{dt}:',
+          ...dxRuleLines.map((l) => '  → $l'),
+          '  dx/dt  =  $dxLatex',
+          '',
+          '\\frac{dy}{dt}:',
+          ...dyRuleLines.map((l) => '  → $l'),
+          '  dy/dt  =  $dyLatex',
+        ],
+      ),
+    );
 
     // ── Form Slope ───
     final dxE = r.dxDt;
@@ -629,20 +659,18 @@ class ParametricSolutionBuilder {
         : slopeLatex;
     final showSimplify = rawRatioLatex != slopeLatex;
 
-    steps.add(ClassroomStep(
-      kind: StepKind.algebra,
-      label: 'Form Slope',
-      hint: 'Apply parametric slope formula: dy/dx = (dy/dt)/(dx/dt)',
-      lines: [
-        '\\frac{dy}{dx} = \\frac{ $dyLatex }{ $dxLatex }',
-        if (showSimplify) ...[
-          '  = $rawRatioLatex',
-          '',
-          'Simplify:',
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.algebra,
+        label: 'Form Slope',
+        hint: 'Apply parametric slope formula: dy/dx = (dy/dt)/(dx/dt)',
+        lines: [
+          '\\frac{dy}{dx} = \\frac{ $dyLatex }{ $dxLatex }',
+          if (showSimplify) ...['  = $rawRatioLatex', '', 'Simplify:'],
+          '\\frac{dy}{dx} = $slopeLatex',
         ],
-        '\\frac{dy}{dx} = $slopeLatex',
-      ],
-    ));
+      ),
+    );
 
     // ── Evaluate ───
     if (r.point.containsKey(t) && r.slopeValue != null) {
@@ -654,25 +682,27 @@ class ParametricSolutionBuilder {
 
       final verticalTangent = dxVal != null && dxVal.abs() < 1e-12;
 
-      steps.add(ClassroomStep(
-        kind: StepKind.substitution,
-        label: 'Evaluate',
-        hint: 'Substitute t = ${_fmt(tVal)} into each derivative',
-        lines: [
-          if (dxVal != null)
-            'dx/dt at t=${_fmt(tVal)}  =  $dxLatex  =  ${_fmt(dxVal)}',
-          if (dyVal != null)
-            'dy/dt at t=${_fmt(tVal)}  =  $dyLatex  =  ${_fmt(dyVal)}',
-          '',
-          if (verticalTangent)
-            'dx/dt = 0  →  Vertical tangent at this point.'
-          else ...[
-            'dy/dx  =  ${_fmt(dyVal ?? 0)} / ${_fmt(dxVal ?? 1)}  =  ${_fmt(r.slopeValue!)}',
+      steps.add(
+        ClassroomStep(
+          kind: StepKind.substitution,
+          label: 'Evaluate',
+          hint: 'Substitute t = ${_fmt(tVal)} into each derivative',
+          lines: [
+            if (dxVal != null)
+              'dx/dt at t=${_fmt(tVal)}  =  $dxLatex  =  ${_fmt(dxVal)}',
+            if (dyVal != null)
+              'dy/dt at t=${_fmt(tVal)}  =  $dyLatex  =  ${_fmt(dyVal)}',
+            '',
+            if (verticalTangent)
+              'dx/dt = 0  →  Vertical tangent at this point.'
+            else ...[
+              'dy/dx  =  ${_fmt(dyVal ?? 0)} / ${_fmt(dxVal ?? 1)}  =  ${_fmt(r.slopeValue!)}',
+            ],
+            if (xVal != null && yVal != null)
+              'Point:  (${_fmt(xVal)}, ${_fmt(yVal)})',
           ],
-          if (xVal != null && yVal != null)
-            'Point:  (${_fmt(xVal)}, ${_fmt(yVal)})',
-        ],
-      ));
+        ),
+      );
 
       // ── Tangent Line ─── (tangent ONLY)
       if (r.tangentLineEquation != null &&
@@ -681,19 +711,21 @@ class ParametricSolutionBuilder {
           !verticalTangent) {
         final m = r.slopeValue!;
         final b = yVal - m * xVal;
-        steps.add(ClassroomStep(
-          kind: StepKind.tangentNormal,
-          label: 'Tangent Line',
-          hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
-          lines: [
-            'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xVal)}, ${_fmt(yVal)})',
-            '',
-            'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xVal)})',
-            'y = ${_fmt(m)}x + ${_fmt(b)}',
-            '',
-            '${r.tangentLineEquation}',
-          ],
-        ));
+        steps.add(
+          ClassroomStep(
+            kind: StepKind.tangentNormal,
+            label: 'Tangent Line',
+            hint: 'Use point-slope form: y - y₀ = m(x - x₀)',
+            lines: [
+              'm = ${_fmt(m)},  (x₀, y₀) = (${_fmt(xVal)}, ${_fmt(yVal)})',
+              '',
+              'y - ${_fmt(yVal)} = ${_fmt(m)}(x - ${_fmt(xVal)})',
+              'y = ${_fmt(m)}x + ${_fmt(b)}',
+              '',
+              '${r.tangentLineEquation}',
+            ],
+          ),
+        );
       }
 
       // ── Normal Line ─── (normal ONLY)
@@ -704,36 +736,40 @@ class ParametricSolutionBuilder {
           !verticalTangent) {
         final mN = r.normalSlope!;
         final bN = yVal - mN * xVal;
-        steps.add(ClassroomStep(
-          kind: StepKind.tangentNormal,
-          label: 'Normal Line',
-          hint: 'm_normal = -1 / m_tangent',
-          lines: [
-            'm_normal = -1 / ${_fmt(r.slopeValue!)} = ${_fmt(mN)}',
-            '',
-            'y - ${_fmt(yVal)} = ${_fmt(mN)}(x - ${_fmt(xVal)})',
-            'y = ${_fmt(mN)}x + ${_fmt(bN)}',
-            '',
-            '${r.normalLineEquation}',
-          ],
-        ));
+        steps.add(
+          ClassroomStep(
+            kind: StepKind.tangentNormal,
+            label: 'Normal Line',
+            hint: 'm_normal = -1 / m_tangent',
+            lines: [
+              'm_normal = -1 / ${_fmt(r.slopeValue!)} = ${_fmt(mN)}',
+              '',
+              'y - ${_fmt(yVal)} = ${_fmt(mN)}(x - ${_fmt(xVal)})',
+              'y = ${_fmt(mN)}x + ${_fmt(bN)}',
+              '',
+              '${r.normalLineEquation}',
+            ],
+          ),
+        );
       }
     }
 
     // ── RESULT ───
-    steps.add(ClassroomStep(
-      kind: StepKind.result,
-      label: 'Answer',
-      lines: [
-        'dy/dx  =  $slopeLatex',
-        if (r.slopeValue != null)
-          'Slope at t = ${_fmt(r.point[t]!)}:   m = ${_fmt(r.slopeValue!)}',
-        if (r.tangentLineEquation != null)
-          'Tangent line:  ${r.tangentLineEquation}',
-        if (r.normalLineEquation != null)
-          'Normal line:   ${r.normalLineEquation}',
-      ],
-    ));
+    steps.add(
+      ClassroomStep(
+        kind: StepKind.result,
+        label: 'Answer',
+        lines: [
+          'dy/dx  =  $slopeLatex',
+          if (r.slopeValue != null)
+            'Slope at t = ${_fmt(r.point[t]!)}:   m = ${_fmt(r.slopeValue!)}',
+          if (r.tangentLineEquation != null)
+            'Tangent line:  ${r.tangentLineEquation}',
+          if (r.normalLineEquation != null)
+            'Normal line:   ${r.normalLineEquation}',
+        ],
+      ),
+    );
 
     return ClassroomSolution(
       problemTitle: 'Parametric Differentiation — ${r.originalInput}',

@@ -4,8 +4,10 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/yintercept_solve
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
+
 import 'slope_intercept.dart';
 import 'slope_intercept_steps.dart';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -44,9 +46,10 @@ class _YInterceptScreenState extends State<YInterceptScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _pulseAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
-    );
+    _pulseAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -102,8 +105,7 @@ class _YInterceptScreenState extends State<YInterceptScreen>
       }
       final r = YInterceptSolver.tryParseAny(text);
       if (r == null) {
-        _errorNotifier.value =
-            'Invalid format — try  6x - 3y = -3  or  3y - 6x = -3  or  -6x + 3y + 3 = 0';
+        _errorNotifier.value = 'Invalid format — try  6x - 3y = -3  or  3y - 6x = -3  or  -6x + 3y + 3 = 0';
         _resultNotifier.value = null;
       } else {
         _errorNotifier.value = null;
@@ -226,20 +228,23 @@ class _YInterceptScreenState extends State<YInterceptScreen>
             ),
           ),
           const SizedBox(width: 12),
-          ResponsiveText('Slope-Intercept Form',
-              style: TextStyle(
-                  fontSize: 13,
-                  color: theme.isLight
-                      ? accent.withValues(alpha: 0.8)
-                      : accent.withValues(alpha: 0.7),
-                  height: 1.3,
-                  shadows: [
-                    Shadow(
-                      color: accent.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: Offset.zero,
-                    ),
-                  ])),
+          ResponsiveText(
+            'Slope-Intercept Form',
+            style: TextStyle(
+              fontSize: 13,
+              color: theme.isLight
+                  ? accent.withValues(alpha: 0.8)
+                  : accent.withValues(alpha: 0.7),
+              height: 1.3,
+              shadows: [
+                Shadow(
+                  color: accent.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: Offset.zero,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

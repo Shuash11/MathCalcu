@@ -82,24 +82,29 @@ class TwoPointSlopeSolver {
     final List<SolverStep> steps = [];
 
     // Step 1 — Identify points
-    steps.add(SolverStep(
-      number: 1,
-      title: 'Points',
-      formula: '',
-      substitution:
-          '(${_fmt(x1)},\\; ${_fmt(y1)}) \\text{ and } (${_fmt(x2)},\\; ${_fmt(y2)})',
-      result: '',
-    ));
+    steps.add(
+      SolverStep(
+        number: 1,
+        title: 'Points',
+        formula: '',
+        substitution:
+            '(${_fmt(x1)},\\; ${_fmt(y1)}) \\text{ and } (${_fmt(x2)},\\; ${_fmt(y2)})',
+        result: '',
+      ),
+    );
 
     // Step 2 — Slope formula
-    steps.add(SolverStep(
-      number: 2,
-      title: 'Slope',
-      formula: r'm = \frac{y_2 - y_1}{x_2 - x_1}',
-      substitution: _toLatex(
-          'm = \\frac{${_fmt(y2)}-${_fmt(y1)}}{${_fmt(x2)}-${_fmt(x1)}} = \\frac{${_fmt(dy)}}{${_fmt(dx)}}'),
-      result: '\\frac{${_fmt(dy)}}{${_fmt(dx)}}',
-    ));
+    steps.add(
+      SolverStep(
+        number: 2,
+        title: 'Slope',
+        formula: r'm = \frac{y_2 - y_1}{x_2 - x_1}',
+        substitution: _toLatex(
+          'm = \\frac{${_fmt(y2)}-${_fmt(y1)}}{${_fmt(x2)}-${_fmt(x1)}} = \\frac{${_fmt(dy)}}{${_fmt(dx)}}',
+        ),
+        result: '\\frac{${_fmt(dy)}}{${_fmt(dx)}}',
+      ),
+    );
 
     if (isVertical) {
       slope = null;
@@ -110,46 +115,55 @@ class TwoPointSlopeSolver {
       generalForm = 'x - ${_fmt(x1)} = 0';
       slopeType = 'Vertical Line';
 
-      steps.add(SolverStep(
-        number: 3,
-        title: 'Vertical Line',
-        formula: r'm = \frac{\Delta y}{0}',
-        substitution: '',
-        result: _toLatex('x = ${_fmt(x1)}'),
-      ));
+      steps.add(
+        SolverStep(
+          number: 3,
+          title: 'Vertical Line',
+          formula: r'm = \frac{\Delta y}{0}',
+          substitution: '',
+          result: _toLatex('x = ${_fmt(x1)}'),
+        ),
+      );
     } else {
       slope = dy / dx;
       slopeDisplay = _fmtSlope(slope);
 
       // Step 3 — Simplify slope
-      steps.add(SolverStep(
-        number: 3,
-        title: 'Simplify',
-        formula: _toLatex('m = \\frac{${_fmt(dy)}}{${_fmt(dx)}}'),
-        substitution: _fractionString(dy, dx),
-        result: _toLatex('m = $slopeDisplay'),
-      ));
+      steps.add(
+        SolverStep(
+          number: 3,
+          title: 'Simplify',
+          formula: _toLatex('m = \\frac{${_fmt(dy)}}{${_fmt(dx)}}'),
+          substitution: _fractionString(dy, dx),
+          result: _toLatex('m = $slopeDisplay'),
+        ),
+      );
 
       // Step 4 — Y-intercept
       yIntercept = y1 - slope * x1;
-      steps.add(SolverStep(
-        number: 4,
-        title: 'Y-Intercept',
-        formula: r'b = y_1 - m \cdot x_1',
-        substitution: _toLatex(
-            'b = ${_fmt(y1)} - (${_fmtSlope(slope)})(${_fmt(x1)}) = ${_fmtSlope(yIntercept)}'),
-        result: _toLatex('b = ${_fmtSlope(yIntercept)}'),
-      ));
+      steps.add(
+        SolverStep(
+          number: 4,
+          title: 'Y-Intercept',
+          formula: r'b = y_1 - m \cdot x_1',
+          substitution: _toLatex(
+            'b = ${_fmt(y1)} - (${_fmtSlope(slope)})(${_fmt(x1)}) = ${_fmtSlope(yIntercept)}',
+          ),
+          result: _toLatex('b = ${_fmtSlope(yIntercept)}'),
+        ),
+      );
 
       // Step 5 — Slope-intercept form
       lineEquation = _buildSlopeIntercept(slope, yIntercept);
-      steps.add(SolverStep(
-        number: 5,
-        title: 'y = mx + b',
-        formula: r'y = mx + b',
-        substitution: _toLatex(lineEquation),
-        result: _toLatex(lineEquation),
-      ));
+      steps.add(
+        SolverStep(
+          number: 5,
+          title: 'y = mx + b',
+          formula: r'y = mx + b',
+          substitution: _toLatex(lineEquation),
+          result: _toLatex(lineEquation),
+        ),
+      );
 
       // Standard & general forms with integer coefficients
       final rawA = y1 - y2;
@@ -174,27 +188,31 @@ class TwoPointSlopeSolver {
       standardForm = _buildStandardForm(a, b, c);
       generalForm = _buildGeneralForm(a, b, c);
 
-      steps.add(SolverStep(
-        number: 6,
-        title: 'Standard Form',
-        formula: r'Ax + By = C',
-        substitution: _toLatex('A = $a, B = $b, C = $c'),
-        result: _toLatex(standardForm),
-      ));
+      steps.add(
+        SolverStep(
+          number: 6,
+          title: 'Standard Form',
+          formula: r'Ax + By = C',
+          substitution: _toLatex('A = $a, B = $b, C = $c'),
+          result: _toLatex(standardForm),
+        ),
+      );
 
-      steps.add(SolverStep(
-        number: 7,
-        title: 'General Form',
-        formula: r'Ax + By + C = 0',
-        substitution: '',
-        result: _toLatex(generalForm),
-      ));
+      steps.add(
+        SolverStep(
+          number: 7,
+          title: 'General Form',
+          formula: r'Ax + By + C = 0',
+          substitution: '',
+          result: _toLatex(generalForm),
+        ),
+      );
 
       slopeType = isHorizontal
           ? 'Horizontal (m = 0)'
           : slope > 0
-              ? 'Positive \u2197'
-              : 'Negative \u2198';
+          ? 'Positive \u2197'
+          : 'Negative \u2198';
     }
 
     return TwoPointSlopeResult(

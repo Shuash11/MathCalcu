@@ -28,11 +28,12 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
     super.initState();
 
     _controllers = List.generate(
-        2,
-        (i) => AnimationController(
-              vsync: this,
-              duration: const Duration(milliseconds: 600),
-            ));
+      2,
+      (i) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      ),
+    );
 
     _fadeAnims = _controllers
         .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOut))
@@ -260,8 +261,10 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: accent,
                   borderRadius: BorderRadius.circular(20),
@@ -303,10 +306,12 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
     final hits = q.isEmpty
         ? sections
         : sections
-            .where((s) =>
-                s.label.toLowerCase().contains(q) ||
-                s.subtitle.toLowerCase().contains(q))
-            .toList();
+              .where(
+                (s) =>
+                    s.label.toLowerCase().contains(q) ||
+                    s.subtitle.toLowerCase().contains(q),
+              )
+              .toList();
     final curriculumHits = q.isEmpty
         ? const <CurriculumSearchHit>[]
         : CurriculumRegistry.search(q);
@@ -323,37 +328,34 @@ class _CalculusPickerScreenState extends State<CalculusPickerScreen>
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            if (index < hits.length) {
-              final section = hits[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: FadeTransition(
-                  opacity: _fadeAnims[index],
-                  child: SlideTransition(
-                    position: _slideAnims[index],
-                    child: _CalculusSectionCard(
-                      section: section,
-                      onTap: () {
-                        if (section.label == 'Midterm') {
-                          context.push('/topics/calculus/midterm');
-                        } else {
-                          context.push('/topics/calculus/finals');
-                        }
-                      },
-                    ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          if (index < hits.length) {
+            final section = hits[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: FadeTransition(
+                opacity: _fadeAnims[index],
+                child: SlideTransition(
+                  position: _slideAnims[index],
+                  child: _CalculusSectionCard(
+                    section: section,
+                    onTap: () {
+                      if (section.label == 'Midterm') {
+                        context.push('/topics/calculus/midterm');
+                      } else {
+                        context.push('/topics/calculus/finals');
+                      }
+                    },
                   ),
                 ),
-              );
-            }
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: CurriculumMatchesSection(query: _query),
+              ),
             );
-          },
-          childCount: hits.length + (curriculumHits.isEmpty ? 0 : 1),
-        ),
+          }
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: CurriculumMatchesSection(query: _query),
+          );
+        }, childCount: hits.length + (curriculumHits.isEmpty ? 0 : 1)),
       ),
     );
   }
@@ -510,8 +512,9 @@ class _CalculusSectionCardState extends State<_CalculusSectionCard> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color:
-                              accent.withValues(alpha: _hovered ? 0.28 : 0.12),
+                          color: accent.withValues(
+                            alpha: _hovered ? 0.28 : 0.12,
+                          ),
                           blurRadius: _hovered ? 14 : 6,
                           offset: const Offset(0, 3),
                         ),
@@ -575,8 +578,9 @@ class _CalculusSectionCardState extends State<_CalculusSectionCard> {
                       ),
                       child: Icon(
                         Icons.arrow_forward_ios_rounded,
-                        color:
-                            _hovered ? accent : accent.withValues(alpha: 0.85),
+                        color: _hovered
+                            ? accent
+                            : accent.withValues(alpha: 0.85),
                         size: 15,
                       ),
                     ),

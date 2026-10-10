@@ -74,10 +74,7 @@ class _DevelopersScreenState extends State<DevelopersScreen>
             opacity: _fadeFor(index),
             child: SlideTransition(
               position: _slideFor(index),
-              child: DeveloperTile(
-                developer: developers[index],
-                index: index,
-              ),
+              child: DeveloperTile(developer: developers[index], index: index),
             ),
           );
         },

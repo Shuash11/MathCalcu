@@ -25,8 +25,9 @@ void main() {
   });
 
   group('NotesScreen (F4)', () {
-    testWidgets('renders title, placeholder copy, and icon',
-        (WidgetTester tester) async {
+    testWidgets('renders title, placeholder copy, and icon', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(_wrap(const NotesScreen(), ThemeProvider()));
       await tester.pumpAndSettle();
 
@@ -38,11 +39,10 @@ void main() {
   });
 
   group('DevelopersScreen (F4)', () {
-    testWidgets('renders header and one tile per developer',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        _wrap(const DevelopersScreen(), ThemeProvider()),
-      );
+    testWidgets('renders header and one tile per developer', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const DevelopersScreen(), ThemeProvider()));
       await tester.pumpAndSettle();
 
       expect(find.text('Developers'), findsOneWidget);
@@ -55,11 +55,10 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tapping a tile expands its details',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        _wrap(const DevelopersScreen(), ThemeProvider()),
-      );
+    testWidgets('tapping a tile expands its details', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const DevelopersScreen(), ThemeProvider()));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(DeveloperTile).first);
@@ -114,8 +113,9 @@ void main() {
   });
 
   group('GlobalSearchScreen (F4)', () {
-    testWidgets('renders search field with default hint section',
-        (WidgetTester tester) async {
+    testWidgets('renders search field with default hint section', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(const GlobalSearchScreen(), ThemeProvider()),
       );
@@ -130,17 +130,15 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('typing a known topic shows result cards',
-        (WidgetTester tester) async {
+    testWidgets('typing a known topic shows result cards', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(const GlobalSearchScreen(), ThemeProvider()),
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byType(TextField),
-        'slope',
-      );
+      await tester.enterText(find.byType(TextField), 'slope');
       await tester.pumpAndSettle();
 
       expect(find.byType(UnifiedResultCard), findsWidgets);
@@ -148,17 +146,15 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('unknown query shows empty state with clear action',
-        (WidgetTester tester) async {
+    testWidgets('unknown query shows empty state with clear action', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(const GlobalSearchScreen(), ThemeProvider()),
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byType(TextField),
-        'zzzz_no_such_topic_xyz',
-      );
+      await tester.enterText(find.byType(TextField), 'zzzz_no_such_topic_xyz');
       await tester.pumpAndSettle();
 
       expect(find.text('No topics found'), findsOneWidget);
@@ -168,8 +164,9 @@ void main() {
   });
 
   group('AboutSheet (F4)', () {
-    testWidgets('shows MathCalc header, divider, and developer cards',
-        (WidgetTester tester) async {
+    testWidgets('shows MathCalc header, divider, and developer cards', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(_wrap(const SizedBox(), ThemeProvider()));
       showAboutSheet(tester.element(find.byType(Scaffold)));
       await tester.pumpAndSettle();

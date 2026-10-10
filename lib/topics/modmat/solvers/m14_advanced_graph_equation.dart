@@ -22,8 +22,10 @@ class M14AdvancedGraphEquation extends BaseEquation {
   List<dynamic>? _parse() {
     final t = rawInput.replaceAll('−', '-');
     final tl = t.toLowerCase();
-    final nMatch =
-        RegExp(r'\bv\s*(?:=|is|:)?\s*(\d+)', caseSensitive: false).firstMatch(t);
+    final nMatch = RegExp(
+      r'\bv\s*(?:=|is|:)?\s*(\d+)',
+      caseSensitive: false,
+    ).firstMatch(t);
     final pairRe = RegExp(r'\(\s*(\d+)\s*,\s*(\d+)\s*\)');
     final edges = pairRe
         .allMatches(t)
@@ -101,8 +103,10 @@ class M14AdvancedGraphEquation extends BaseEquation {
   static List<int> _greedy(int n, List<List<int>> adj) {
     final color = List<int>.filled(n, -1);
     for (var v = 0; v < n; v++) {
-      final used =
-          adj[v].where((w) => color[w] != -1).map((w) => color[w]).toSet();
+      final used = adj[v]
+          .where((w) => color[w] != -1)
+          .map((w) => color[w])
+          .toSet();
       var c = 0;
       while (used.contains(c)) {
         c++;
@@ -141,8 +145,10 @@ class M14AdvancedGraphEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'V=4 E={(0,1),(1,2),(2,3)} bipartite');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'V=4 E={(0,1),(1,2),(2,3)} bipartite',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -187,8 +193,8 @@ class M14AdvancedGraphEquation extends BaseEquation {
               'kind': 'adv-graph',
               'query': query,
               'bipartite': bip,
-              'coloring': coloring
-            }
+              'coloring': coloring,
+            },
           ],
         );
       case 'color':
@@ -202,8 +208,8 @@ class M14AdvancedGraphEquation extends BaseEquation {
               'kind': 'adv-graph',
               'query': query,
               'colors': chiUpper,
-              'assignment': greedy
-            }
+              'assignment': greedy,
+            },
           ],
         );
       case 'planar':
@@ -218,8 +224,8 @@ class M14AdvancedGraphEquation extends BaseEquation {
               'query': query,
               'm': m,
               'n': n,
-              'passesBound': planarOk
-            }
+              'passesBound': planarOk,
+            },
           ],
         );
       case 'shortest':
@@ -233,8 +239,8 @@ class M14AdvancedGraphEquation extends BaseEquation {
                 'query': query,
                 'src': src,
                 'dst': dst,
-                'path': null
-              }
+                'path': null,
+              },
             ],
           );
         }
@@ -248,13 +254,14 @@ class M14AdvancedGraphEquation extends BaseEquation {
               'query': query,
               'src': src,
               'dst': dst,
-              'path': path
-            }
+              'path': path,
+            },
           ],
         );
       default:
         return SolveResult(
-          answer: 'n=$n m=$m: ${bip ? 'bipartite' : 'not bipartite'}, '
+          answer:
+              'n=$n m=$m: ${bip ? 'bipartite' : 'not bipartite'}, '
               'greedy χ ≤ $chiUpper, '
               '${planarOk ? 'passes' : 'violates'} planarity bound, '
               '${path == null ? 'no $src→$dst path' : '$src→$dst dist ${path.length - 1}'}.',
@@ -270,7 +277,7 @@ class M14AdvancedGraphEquation extends BaseEquation {
               'assignment': greedy,
               'passesBound': planarOk,
               'path': path,
-            }
+            },
           ],
         );
     }
@@ -282,9 +289,10 @@ class M14AdvancedGraphEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use V=4 E={(0,1)}. ')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use V=4 E={(0,1)}. ',
+        ),
       ];
     }
     final r = solve();
@@ -301,7 +309,7 @@ class M14AdvancedGraphEquation extends BaseEquation {
         final chi = data['colors'];
         advLatex = '\\chi(G) \\leq $chi';
         advSub = [
-          '\\text{colors } [${(data['assignment'] as List).join(', ')}]'
+          '\\text{colors } [${(data['assignment'] as List).join(', ')}]',
         ];
       } else if (q == 'planar') {
         final m = data['m'];
@@ -332,21 +340,24 @@ class M14AdvancedGraphEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Two-color the graph',
-          explanation:
-              'BFS 2-coloring: a clash means an odd cycle (not bipartite).'),
+        stepNumber: 1,
+        title: 'Two-color the graph',
+        explanation:
+            'BFS 2-coloring: a clash means an odd cycle (not bipartite).',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Greedy-color + bound checks',
-          explanation:
-              'Greedy gives χ upper bound; m ≤ 3n−6 is the planarity screen.'),
+        stepNumber: 2,
+        title: 'Greedy-color + bound checks',
+        explanation:
+            'Greedy gives χ upper bound; m ≤ 3n−6 is the planarity screen.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the answer',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: advLatex,
-          subLatex: advSub),
+        stepNumber: 3,
+        title: 'Read the answer',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: advLatex,
+        subLatex: advSub,
+      ),
     ];
   }
 }

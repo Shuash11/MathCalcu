@@ -126,7 +126,8 @@ class VolumesOfRevolutionEquation extends BaseEquation {
     }
     final m = _match;
     if (m == null) {
-      _error = 'Formats: volume f about x-axis from a to b, '
+      _error =
+          'Formats: volume f about x-axis from a to b, '
           'volume washer f g about x-axis from a to b, or '
           'volume shell f about y-axis from a to b.';
       return false;
@@ -145,7 +146,8 @@ class VolumesOfRevolutionEquation extends BaseEquation {
 
     // Shell: the radius is y itself, so y = f's variable must be ≥ 0.
     if (isShell && a < 0) {
-      _error = 'Shell method integrates y·f(y) — the radius y must be '
+      _error =
+          'Shell method integrates y·f(y) — the radius y must be '
           'non-negative, so the lower limit a must be ≥ 0.';
       return false;
     }
@@ -154,8 +156,8 @@ class VolumesOfRevolutionEquation extends BaseEquation {
     final method = isShell
         ? _Method.shell
         : isWasher
-            ? _Method.washer
-            : _Method.disk;
+        ? _Method.washer
+        : _Method.disk;
     switch (method) {
       case _Method.disk:
         final fMin = _sampledMin(f, 'x', a, b);
@@ -164,13 +166,15 @@ class VolumesOfRevolutionEquation extends BaseEquation {
           return false;
         }
         if (fMin < -_tol) {
-          _error = 'Disk method needs f(x) ≥ 0 on [a, b] — the disk '
+          _error =
+              'Disk method needs f(x) ≥ 0 on [a, b] — the disk '
               'radius cannot be negative.';
           return false;
         }
       case _Method.washer:
         if (!_outerAboveInner(f, g!, a, b)) {
-          _error = 'Could not evaluate f(x) or g(x) on [a, b], or the '
+          _error =
+              'Could not evaluate f(x) or g(x) on [a, b], or the '
               'outer radius f(x) ≤ the inner radius g(x) somewhere on '
               '[a, b] — swap f and g or check the limits.';
           return false;
@@ -196,7 +200,8 @@ class VolumesOfRevolutionEquation extends BaseEquation {
       final volume = _volume(v);
       if (volume == null || volume.isNaN || volume.isInfinite) {
         return SolveResult.error(
-            'Could not evaluate the solid of revolution on [a, b].');
+          'Could not evaluate the solid of revolution on [a, b].',
+        );
       }
       return SolveResult(
         answer: _answerText(volume),
@@ -212,7 +217,7 @@ class VolumesOfRevolutionEquation extends BaseEquation {
             'b': v.b,
             'volume': volume,
             'formula': v.formula,
-          }
+          },
         ],
       );
     } catch (e) {
@@ -225,7 +230,10 @@ class VolumesOfRevolutionEquation extends BaseEquation {
     if (!validate()) {
       return [
         StepModel(
-            stepNumber: 1, title: 'Cannot solve', explanation: _error ?? '')
+          stepNumber: 1,
+          title: 'Cannot solve',
+          explanation: _error ?? '',
+        ),
       ];
     }
     final v = _parsed!;
@@ -238,8 +246,9 @@ class VolumesOfRevolutionEquation extends BaseEquation {
     final gLatex = v.g == null ? null : FinalsLatex.expr(v.g!);
     final substituted = switch (v.method) {
       _Method.disk => 'V = \\pi $lLimits \\left($fLatex\\right)^{2} dx',
-      _Method.washer => 'V = \\pi $lLimits \\left(\\left($fLatex\\right)^{2} - '
-          '\\left($gLatex\\right)^{2}\\right) dx',
+      _Method.washer =>
+        'V = \\pi $lLimits \\left(\\left($fLatex\\right)^{2} - '
+            '\\left($gLatex\\right)^{2}\\right) dx',
       _Method.shell => 'V = 2\\pi $lLimits y \\cdot $fLatex dy',
     };
 
@@ -249,14 +258,14 @@ class VolumesOfRevolutionEquation extends BaseEquation {
         title: 'Identify the method',
         explanation: v.method == _Method.disk
             ? 'Revolving f(x) = ${v.f} about the x-axis: each '
-                'cross-section is a disk of radius f(x), so '
-                '${v.formula}.'
+                  'cross-section is a disk of radius f(x), so '
+                  '${v.formula}.'
             : v.method == _Method.washer
-                ? 'Revolving the region between f(x) = ${v.f} (outer) '
-                    'and g(x) = ${v.g} (inner) about the x-axis: each '
-                    'cross-section is a washer, so ${v.formula}.'
-                : 'Revolving f(y) = ${v.f} about the y-axis: shells of '
-                    'radius y and height f(y), so ${v.formula}.',
+            ? 'Revolving the region between f(x) = ${v.f} (outer) '
+                  'and g(x) = ${v.g} (inner) about the x-axis: each '
+                  'cross-section is a washer, so ${v.formula}.'
+            : 'Revolving f(y) = ${v.f} about the y-axis: shells of '
+                  'radius y and height f(y), so ${v.formula}.',
         hint: v.method == _Method.washer
             ? 'Outer ${v.f} − inner ${v.g}'
             : 'Limits $limits',
@@ -267,43 +276,51 @@ class VolumesOfRevolutionEquation extends BaseEquation {
         title: 'Substitute',
         explanation: v.method == _Method.washer
             ? 'With f(x) = ${v.f} and g(x) = ${v.g} over $limits: '
-                'V = π ∫$limits ((${v.f})² − (${v.g})²) dx.'
+                  'V = π ∫$limits ((${v.f})² − (${v.g})²) dx.'
             : v.method == _Method.shell
-                ? 'With f(y) = ${v.f} over $limits: '
-                    'V = 2π ∫$limits y·(${v.f}) dy.'
-                : 'With f(x) = ${v.f} over $limits: '
-                    'V = π ∫$limits (${v.f})² dx.',
+            ? 'With f(y) = ${v.f} over $limits: '
+                  'V = 2π ∫$limits y·(${v.f}) dy.'
+            : 'With f(x) = ${v.f} over $limits: '
+                  'V = π ∫$limits (${v.f})² dx.',
         hint: 'Integrand over $limits',
         latex: substituted,
       ),
     ];
 
     if (volume == null || volume.isNaN || volume.isInfinite) {
-      steps.add(const StepModel(
-        stepNumber: 3,
-        title: 'Numerical evaluation failed',
-        explanation: 'The solid could not be evaluated on [a, b] — check '
-            'that the function is defined there.',
-      ));
+      steps.add(
+        const StepModel(
+          stepNumber: 3,
+          title: 'Numerical evaluation failed',
+          explanation:
+              'The solid could not be evaluated on [a, b] — check '
+              'that the function is defined there.',
+        ),
+      );
       return steps;
     }
 
     final integral = volume / (v.method == _Method.shell ? 2 : 1) / math.pi;
-    steps.add(StepModel(
-      stepNumber: 3,
-      title: 'Evaluate numerically (Simpson)',
-      explanation: "Simpson's rule over $limits gives the integral "
-          '≈ ${_fmt(integral)}; multiplying by $piFactor gives the '
-          'volume.',
-      hint: '∫ ≈ ${_fmt(integral)}',
-      latex: '$piFactorLatex \\cdot ${_fmt(integral)}',
-    ));
-    steps.add(StepModel(
-      stepNumber: 4,
-      title: 'Final answer',
-      explanation: 'V = ${_answerText(volume)}',
-      latex: _answerLatex(volume),
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: 3,
+        title: 'Evaluate numerically (Simpson)',
+        explanation:
+            "Simpson's rule over $limits gives the integral "
+            '≈ ${_fmt(integral)}; multiplying by $piFactor gives the '
+            'volume.',
+        hint: '∫ ≈ ${_fmt(integral)}',
+        latex: '$piFactorLatex \\cdot ${_fmt(integral)}',
+      ),
+    );
+    steps.add(
+      StepModel(
+        stepNumber: 4,
+        title: 'Final answer',
+        explanation: 'V = ${_answerText(volume)}',
+        latex: _answerLatex(volume),
+      ),
+    );
     return steps;
   }
 
@@ -316,7 +333,9 @@ class VolumesOfRevolutionEquation extends BaseEquation {
   static double? _ev(String expr, String varName, double at) {
     try {
       var s = expr.replaceAllMapped(
-          RegExp('([0-9\\)])$varName'), (m) => '${m.group(1)}*$varName');
+        RegExp('([0-9\\)])$varName'),
+        (m) => '${m.group(1)}*$varName',
+      );
       s = s.replaceAll(varName, '($at)');
       final v = CalculatorEngine.evaluate(s);
       return v.isFinite ? v : null;
@@ -329,7 +348,10 @@ class VolumesOfRevolutionEquation extends BaseEquation {
   /// with [_n] subintervals. Returns null when any sample is
   /// undefined — the caller decides how to surface that.
   static double? _simpson(
-      double? Function(double) integrand, double a, double b) {
+    double? Function(double) integrand,
+    double a,
+    double b,
+  ) {
     final h = (b - a) / _n;
     final f0 = integrand(a);
     final f1 = integrand(b);
@@ -376,31 +398,31 @@ class VolumesOfRevolutionEquation extends BaseEquation {
   double? _volume(_Volume v) {
     final integral = switch (v.method) {
       _Method.disk => _simpson(
-          (x) {
-            final f = _ev(v.f, 'x', x);
-            return f == null ? null : f * f;
-          },
-          v.a,
-          v.b,
-        ),
+        (x) {
+          final f = _ev(v.f, 'x', x);
+          return f == null ? null : f * f;
+        },
+        v.a,
+        v.b,
+      ),
       _Method.washer => _simpson(
-          (x) {
-            final outer = _ev(v.f, 'x', x);
-            final inner = _ev(v.g!, 'x', x);
-            if (outer == null || inner == null) return null;
-            return outer * outer - inner * inner;
-          },
-          v.a,
-          v.b,
-        ),
+        (x) {
+          final outer = _ev(v.f, 'x', x);
+          final inner = _ev(v.g!, 'x', x);
+          if (outer == null || inner == null) return null;
+          return outer * outer - inner * inner;
+        },
+        v.a,
+        v.b,
+      ),
       _Method.shell => _simpson(
-          (y) {
-            final f = _ev(v.f, 'y', y);
-            return f == null ? null : y * f;
-          },
-          v.a,
-          v.b,
-        ),
+        (y) {
+          final f = _ev(v.f, 'y', y);
+          return f == null ? null : y * f;
+        },
+        v.a,
+        v.b,
+      ),
     };
     if (integral == null || integral.isNaN || integral.isInfinite) return null;
     return v.method == _Method.shell

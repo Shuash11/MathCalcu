@@ -72,7 +72,7 @@ class InequalitySolverRouter {
             title: 'Error',
             explanation: 'Could not detect inequality type',
             latex: r'\text{Unknown inequality type}',
-          )
+          ),
         ];
     }
   }
@@ -82,14 +82,18 @@ class InequalitySolverRouter {
     // Check for more specific suffixes first (-non-strict before -strict)
     if (detectedType.endsWith('-non-strict')) {
       return detectedType.substring(
-          0, detectedType.length - '-non-strict'.length);
+        0,
+        detectedType.length - '-non-strict'.length,
+      );
     }
     if (detectedType.endsWith('-strict')) {
       return detectedType.substring(0, detectedType.length - '-strict'.length);
     }
     if (detectedType.endsWith('-continued')) {
       return detectedType.substring(
-          0, detectedType.length - '-continued'.length);
+        0,
+        detectedType.length - '-continued'.length,
+      );
     }
     return detectedType;
   }

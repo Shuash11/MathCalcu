@@ -104,8 +104,10 @@ class _MidpointScreenState extends State<MidpointScreen> {
     final slotLabels = [_fieldAX, _fieldAY, _fieldBX, _fieldBY];
     final slotErrors = <String, String?>{};
     for (var i = 0; i < slots.length; i++) {
-      slotErrors[slots[i]] =
-          FieldValidators.number(ctrls[i].text, slotLabels[i]);
+      slotErrors[slots[i]] = FieldValidators.number(
+        ctrls[i].text,
+        slotLabels[i],
+      );
     }
     if (slotErrors.values.any((e) => e != null)) {
       setState(() {
@@ -253,7 +255,10 @@ class _MidpointScreenState extends State<MidpointScreen> {
       child: Row(
         children: [
           _buildSegment(
-              'Midpoint', Icons.center_focus_strong_rounded, StepMode.midpoint),
+            'Midpoint',
+            Icons.center_focus_strong_rounded,
+            StepMode.midpoint,
+          ),
           _buildSegment('Endpoint', Icons.adjust_rounded, StepMode.endpoint),
         ],
       ),
@@ -275,14 +280,15 @@ class _MidpointScreenState extends State<MidpointScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon,
-                  size: 14,
-                  color: isActive
-                      ? context.watch<ThemeProvider>().surface
-                      : context
-                          .watch<ThemeProvider>()
-                          .textPrimary
-                          .withValues(alpha: 0.4)),
+              Icon(
+                icon,
+                size: 14,
+                color: isActive
+                    ? context.watch<ThemeProvider>().surface
+                    : context.watch<ThemeProvider>().textPrimary.withValues(
+                        alpha: 0.4,
+                      ),
+              ),
               const SizedBox(width: 6),
               ResponsiveText(
                 label,
@@ -291,10 +297,9 @@ class _MidpointScreenState extends State<MidpointScreen> {
                   fontWeight: FontWeight.w600,
                   color: isActive
                       ? context.watch<ThemeProvider>().surface
-                      : context
-                          .watch<ThemeProvider>()
-                          .textPrimary
-                          .withValues(alpha: 0.4),
+                      : context.watch<ThemeProvider>().textPrimary.withValues(
+                          alpha: 0.4,
+                        ),
                 ),
               ),
             ],
@@ -323,44 +328,51 @@ class _MidpointScreenState extends State<MidpointScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ResponsiveText(label,
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: context
-                    .watch<ThemeProvider>()
-                    .textPrimary
-                    .withValues(alpha: 0.4),
-                letterSpacing: 0.8)),
+        ResponsiveText(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: context.watch<ThemeProvider>().textPrimary.withValues(
+              alpha: 0.4,
+            ),
+            letterSpacing: 0.8,
+          ),
+        ),
         const SizedBox(height: 6.0),
         Container(
           decoration: BoxDecoration(
-              color: context.watch<ThemeProvider>().card,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                  color: const Color(0xFF334155).withValues(alpha: 0.15),
-                  width: 1)),
+            color: context.watch<ThemeProvider>().card,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFF334155).withValues(alpha: 0.15),
+              width: 1,
+            ),
+          ),
           child: TextField(
             controller: controller,
             focusNode: focusNode,
             keyboardType: TextInputType.text,
             style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: context.watch<ThemeProvider>().textPrimary),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: context.watch<ThemeProvider>().textPrimary,
+            ),
             textInputAction: textInputAction,
             onEditingComplete: onEditingComplete,
             decoration: InputDecoration(
               hintText: _hintForLabel[label] ?? 'e.g. 3',
               hintStyle: TextStyle(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .textPrimary
-                      .withValues(alpha: 0.2),
-                  fontSize: 18),
+                color: context.watch<ThemeProvider>().textPrimary.withValues(
+                  alpha: 0.2,
+                ),
+                fontSize: 18,
+              ),
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
             onChanged: (_) {
               if (_fieldErrors[errorKey] != null) {
@@ -381,10 +393,9 @@ class _MidpointScreenState extends State<MidpointScreen> {
             fontWeight: error != null ? FontWeight.w600 : FontWeight.w400,
             color: error != null
                 ? const Color(0xFFFF6B6B)
-                : context
-                    .watch<ThemeProvider>()
-                    .textPrimary
-                    .withValues(alpha: 0.4),
+                : context.watch<ThemeProvider>().textPrimary.withValues(
+                    alpha: 0.4,
+                  ),
           ),
         ),
       ],
@@ -401,15 +412,16 @@ class _MidpointScreenState extends State<MidpointScreen> {
       width: double.infinity,
       padding: EdgeInsets.all(cardPadding),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          accent.withValues(alpha: 0.15),
-          accent.withValues(alpha: 0.06)
-        ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-        borderRadius: BorderRadius.circular(18.0),
-        border: Border.all(
-          color: accent.withValues(alpha: 0.3),
-          width: 1,
+        gradient: LinearGradient(
+          colors: [
+            accent.withValues(alpha: 0.15),
+            accent.withValues(alpha: 0.06),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(18.0),
+        border: Border.all(color: accent.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,23 +431,26 @@ class _MidpointScreenState extends State<MidpointScreen> {
             spacing: 8,
             runSpacing: 6,
             children: [
-              ResponsiveText(_resultLabel,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: accent.withValues(alpha: 0.5),
-                      letterSpacing: 1.4)),
+              ResponsiveText(
+                _resultLabel,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: accent.withValues(alpha: 0.5),
+                  letterSpacing: 1.4,
+                ),
+              ),
               GestureDetector(
                 onTap: _openStepsModal,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: accent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: accent.withValues(alpha: 0.35),
-                    ),
+                    border: Border.all(color: accent.withValues(alpha: 0.35)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -454,20 +469,18 @@ class _MidpointScreenState extends State<MidpointScreen> {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: _openGraph,
-                child: _buildGraphChip(),
-              ),
+              GestureDetector(onTap: _openGraph, child: _buildGraphChip()),
             ],
           ),
           const SizedBox(height: 10.0),
           ResponsiveText(
             '$_resultPrefix = (${_resX ?? '\u2014'}, ${_resY ?? '\u2014'})',
             style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.w700,
-                color: theme.textPrimary,
-                letterSpacing: -1.0),
+              fontSize: 36,
+              fontWeight: FontWeight.w700,
+              color: theme.textPrimary,
+              letterSpacing: -1.0,
+            ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -476,8 +489,10 @@ class _MidpointScreenState extends State<MidpointScreen> {
               const SizedBox(height: 12.0),
               Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10.0,
+                ),
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8.0),
@@ -488,19 +503,21 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     ResponsiveText(
                       _formulaX ?? '',
                       style: TextStyle(
-                          fontSize: 12,
-                          color: theme.textPrimary.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w500,
-                          height: 1.4),
+                        fontSize: 12,
+                        color: theme.textPrimary.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     ResponsiveText(
                       _formulaY ?? '',
                       style: TextStyle(
-                          fontSize: 12,
-                          color: theme.textPrimary.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w500,
-                          height: 1.4),
+                        fontSize: 12,
+                        color: theme.textPrimary.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                      ),
                     ),
                   ],
                 ),
@@ -558,16 +575,19 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     context,
                     child: IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(Icons.arrow_back_rounded,
-                          color: context.watch<ThemeProvider>().accentColor,
-                          size: 22),
+                      icon: Icon(
+                        Icons.arrow_back_rounded,
+                        color: context.watch<ThemeProvider>().accentColor,
+                        size: 22,
+                      ),
                       style: IconButton.styleFrom(
                         backgroundColor: context
                             .watch<ThemeProvider>()
                             .accentColor
                             .withValues(alpha: 0.12),
-                        foregroundColor:
-                            context.watch<ThemeProvider>().accentColor,
+                        foregroundColor: context
+                            .watch<ThemeProvider>()
+                            .accentColor,
                         padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -587,16 +607,20 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                        color: context.watch<ThemeProvider>().accentColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color: context
-                                .watch<ThemeProvider>()
-                                .accentColor
-                                .withValues(alpha: 0.15))),
-                    child: Icon(Icons.center_focus_strong_rounded,
-                        color: context.watch<ThemeProvider>().surface,
-                        size: 22),
+                      color: context.watch<ThemeProvider>().accentColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.15),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.center_focus_strong_rounded,
+                      color: context.watch<ThemeProvider>().surface,
+                      size: 22,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -606,20 +630,21 @@ class _MidpointScreenState extends State<MidpointScreen> {
                         ResponsiveText(
                           _mode == StepMode.midpoint ? 'Midpoint' : 'Endpoint',
                           style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: context.watch<ThemeProvider>().textPrimary,
-                              letterSpacing: -0.5,
-                              shadows: [
-                                Shadow(
-                                  color: context
-                                      .watch<ThemeProvider>()
-                                      .accentColor
-                                      .withValues(alpha: 0.3),
-                                  blurRadius: 8,
-                                  offset: Offset.zero,
-                                ),
-                              ]),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: context.watch<ThemeProvider>().textPrimary,
+                            letterSpacing: -0.5,
+                            shadows: [
+                              Shadow(
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .accentColor
+                                    .withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: Offset.zero,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -630,38 +655,44 @@ class _MidpointScreenState extends State<MidpointScreen> {
               _buildSegmentedControl(),
               const SizedBox(height: 28.0),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10.0,
+                ),
                 decoration: BoxDecoration(
+                  color: context.watch<ThemeProvider>().accentColor.withValues(
+                    alpha: 0.06,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
                     color: context
                         .watch<ThemeProvider>()
                         .accentColor
-                        .withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        color: context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.1))),
+                        .withValues(alpha: 0.1),
+                  ),
+                ),
                 child: Row(
                   children: [
-                    Icon(Icons.functions_rounded,
-                        color: context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.5),
-                        size: 16),
+                    Icon(
+                      Icons.functions_rounded,
+                      color: context
+                          .watch<ThemeProvider>()
+                          .accentColor
+                          .withValues(alpha: 0.5),
+                      size: 16,
+                    ),
                     const SizedBox(width: 14.0),
                     Expanded(
                       child: ResponsiveText(
                         _formulaHint,
                         style: TextStyle(
-                            fontSize: 13,
-                            color: context
-                                .watch<ThemeProvider>()
-                                .textPrimary
-                                .withValues(alpha: 0.5),
-                            fontWeight: FontWeight.w500),
+                          fontSize: 13,
+                          color: context
+                              .watch<ThemeProvider>()
+                              .textPrimary
+                              .withValues(alpha: 0.5),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ],
@@ -675,15 +706,18 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ResponsiveText(_groupALabel,
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: context
-                                    .watch<ThemeProvider>()
-                                    .accentColor
-                                    .withValues(alpha: 0.5),
-                                letterSpacing: 1.2)),
+                        ResponsiveText(
+                          _groupALabel,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: context
+                                .watch<ThemeProvider>()
+                                .accentColor
+                                .withValues(alpha: 0.5),
+                            letterSpacing: 1.2,
+                          ),
+                        ),
                         const SizedBox(height: 10.0),
                         _buildInputField(
                           label: _fieldAX,
@@ -715,8 +749,8 @@ class _MidpointScreenState extends State<MidpointScreen> {
                           height: 6,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color:
-                                const Color(0xFF334155).withValues(alpha: 0.3),
+                            color: const Color(0xFF334155)
+                                .withValues(alpha: 0.3),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -725,8 +759,8 @@ class _MidpointScreenState extends State<MidpointScreen> {
                           height: 6,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color:
-                                const Color(0xFF334155).withValues(alpha: 0.15),
+                            color: const Color(0xFF334155)
+                                .withValues(alpha: 0.15),
                           ),
                         ),
                       ],
@@ -737,15 +771,18 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ResponsiveText(_groupBLabel,
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: context
-                                    .watch<ThemeProvider>()
-                                    .accentColor
-                                    .withValues(alpha: 0.5),
-                                letterSpacing: 1.2)),
+                        ResponsiveText(
+                          _groupBLabel,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: context
+                                .watch<ThemeProvider>()
+                                .accentColor
+                                .withValues(alpha: 0.5),
+                            letterSpacing: 1.2,
+                          ),
+                        ),
                         const SizedBox(height: 10.0),
                         _buildInputField(
                           label: _fieldBX,
@@ -782,23 +819,29 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     backgroundColor: context.watch<ThemeProvider>().accentColor,
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14.0)),
+                      borderRadius: BorderRadius.circular(14.0),
+                    ),
                     elevation: 0,
                     shadowColor: Colors.transparent,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.calculate_rounded,
-                          color: context.watch<ThemeProvider>().surface,
-                          size: 18),
+                      Icon(
+                        Icons.calculate_rounded,
+                        color: context.watch<ThemeProvider>().surface,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8.0),
-                      ResponsiveText(_buttonLabel,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: context.watch<ThemeProvider>().surface,
-                              letterSpacing: 0.3)),
+                      ResponsiveText(
+                        _buttonLabel,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: context.watch<ThemeProvider>().surface,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -812,13 +855,18 @@ class _MidpointScreenState extends State<MidpointScreen> {
                     decoration: const BoxDecoration(color: Color(0xFFFF6B6B)),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline_rounded,
-                            color: Color(0xFFFF6B6B), size: 18),
+                        const Icon(
+                          Icons.error_outline_rounded,
+                          color: Color(0xFFFF6B6B),
+                          size: 18,
+                        ),
                         const SizedBox(width: 14.0),
                         Expanded(
-                            child: ResponsiveText(_errorMsg,
-                                style:
-                                    const TextStyle(color: Color(0xFFFF6B6B)))),
+                          child: ResponsiveText(
+                            _errorMsg,
+                            style: const TextStyle(color: Color(0xFFFF6B6B)),
+                          ),
+                        ),
                       ],
                     ),
                   )

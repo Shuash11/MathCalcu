@@ -127,45 +127,56 @@ class SlopeGraphScreen extends StatelessWidget {
   List<FullScreenInfoItem> _buildKeyInfo(Color accent) {
     final items = <FullScreenInfoItem>[];
 
-    items.add(FullScreenInfoItem(
-      label: 'Slope',
-      value:
-          result1.isVertical ? 'Undefined' : result1.slope.toStringAsFixed(1),
-      color: accent,
-    ));
+    items.add(
+      FullScreenInfoItem(
+        label: 'Slope',
+        value: result1.isVertical
+            ? 'Undefined'
+            : result1.slope.toStringAsFixed(1),
+        color: accent,
+      ),
+    );
 
-    items.add(FullScreenInfoItem(
-      label: 'Y-intercept',
-      value: result1.isVertical
-          ? 'N/A'
-          : (result1.y1 - result1.slope * result1.x1).toStringAsFixed(1),
-      color: accent,
-    ));
+    items.add(
+      FullScreenInfoItem(
+        label: 'Y-intercept',
+        value: result1.isVertical
+            ? 'N/A'
+            : (result1.y1 - result1.slope * result1.x1).toStringAsFixed(1),
+        color: accent,
+      ),
+    );
 
     if (result2 != null) {
-      items.add(FullScreenInfoItem(
-        label: 'Slope 2',
-        value: result2!.isVertical
-            ? 'Undefined'
-            : result2!.slope.toStringAsFixed(1),
-        color: accent,
-      ));
+      items.add(
+        FullScreenInfoItem(
+          label: 'Slope 2',
+          value: result2!.isVertical
+              ? 'Undefined'
+              : result2!.slope.toStringAsFixed(1),
+          color: accent,
+        ),
+      );
 
-      items.add(FullScreenInfoItem(
-        label: 'Y-intercept 2',
-        value: result2!.isVertical
-            ? 'N/A'
-            : (result2!.y1 - result2!.slope * result2!.x1).toStringAsFixed(1),
-        color: accent,
-      ));
+      items.add(
+        FullScreenInfoItem(
+          label: 'Y-intercept 2',
+          value: result2!.isVertical
+              ? 'N/A'
+              : (result2!.y1 - result2!.slope * result2!.x1).toStringAsFixed(1),
+          color: accent,
+        ),
+      );
     }
 
     if (_relationshipLabel.isNotEmpty) {
-      items.add(FullScreenInfoItem(
-        label: 'Relationship',
-        value: _relationshipLabel,
-        color: _relationshipColor(accent),
-      ));
+      items.add(
+        FullScreenInfoItem(
+          label: 'Relationship',
+          value: _relationshipLabel,
+          color: _relationshipColor(accent),
+        ),
+      );
     }
 
     return items;
@@ -193,9 +204,10 @@ class SlopeGraphScreen extends StatelessWidget {
         title: Text(
           'Slope Graph',
           style: TextStyle(
-              color: theme.textPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w600),
+            color: theme.textPrimary,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         backgroundColor: theme.card,
         iconTheme: IconThemeData(color: accent),
@@ -213,7 +225,9 @@ class SlopeGraphScreen extends StatelessWidget {
                 color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                    color: color.withValues(alpha: 0.35), width: 1.5),
+                  color: color.withValues(alpha: 0.35),
+                  width: 1.5,
+                ),
               ),
               child: Row(
                 children: [
@@ -315,7 +329,9 @@ class _LegendDot extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.75), fontSize: 12),
+            color: Colors.white.withValues(alpha: 0.75),
+            fontSize: 12,
+          ),
         ),
       ],
     );
@@ -540,11 +556,25 @@ class _SlopePainter extends CustomPainter {
     }
 
     // ── Equation labels ───────────────────────────────────────
-    _drawLineLabel(canvas, result1, color1, size, scale, scaleFactor,
-        verticalOffset: 0);
+    _drawLineLabel(
+      canvas,
+      result1,
+      color1,
+      size,
+      scale,
+      scaleFactor,
+      verticalOffset: 0,
+    );
     if (result2 != null && !isCoincident) {
-      _drawLineLabel(canvas, result2!, color2, size, scale, scaleFactor,
-          verticalOffset: 16 * scaleFactor);
+      _drawLineLabel(
+        canvas,
+        result2!,
+        color2,
+        size,
+        scale,
+        scaleFactor,
+        verticalOffset: 16 * scaleFactor,
+      );
     }
 
     // ── Points ────────────────────────────────────────────────
@@ -611,7 +641,11 @@ class _SlopePainter extends CustomPainter {
   }
 
   void _drawCenteredBadge(
-      Canvas canvas, Size size, String text, double scaleFactor) {
+    Canvas canvas,
+    Size size,
+    String text,
+    double scaleFactor,
+  ) {
     final tp = TextPainter(
       textDirection: TextDirection.ltr,
       text: TextSpan(

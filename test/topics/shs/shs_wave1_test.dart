@@ -50,8 +50,7 @@ Future<void> _expectTexParses(WidgetTester tester, String tex) async {
 /// Split an answer like 'f⁻¹(x) = (3x + 1)/(x - 2)' into the four linear
 /// coefficients (numX, numK, denX, denK) of the emitted fraction.
 (double, double, double, double) _fracLin(String answer) {
-  final body =
-      answer.split(' = ').last.replaceAll('(', '').replaceAll(')', '');
+  final body = answer.split(' = ').last.replaceAll('(', '').replaceAll(')', '');
   final parts = body.split('/');
   final n = _linear(parts[0]);
   final d = _linear(parts[1]);
@@ -143,15 +142,15 @@ void main() {
     });
 
     test('formula + result carry LaTeX, rate step stays prose', () {
-      final s =
-          InterestEquation('P = 10000, r = 5%, t = 2, compound').getSteps();
+      final s = InterestEquation('P = 10000, r = 5%, t = 2, compound')
+          .getSteps();
       expect(s, hasLength(3));
       expect(s[0].latex, r'F = P(1 + \frac{r}{m})^{mt}');
       expect(s[1].latex, isNull); // '5% → 0.05.' guidance
       expect(s[2].latex, startsWith(r'F = '));
 
-      final sim =
-          InterestEquation('P = 10000, r = 5%, t = 2, simple').getSteps();
+      final sim = InterestEquation('P = 10000, r = 5%, t = 2, simple')
+          .getSteps();
       expect(sim[0].latex, r'I = Prt,\quad F = P + I');
       expect(sim[1].latex, isNull);
       expect(sim[2].latex, isNotNull);
@@ -203,22 +202,24 @@ void main() {
       expect(r.answer, 'f⁻¹(x) = (3x + 1)/(x - 2)');
     });
 
-    test('round-trip: f(f^-1(y)) == y and f^-1(f(t)) == t for several values',
-        () {
-      // The strongest guard: it catches ANY sign error, not just this string.
-      final r = InverseFunctionEquation('f(x) = (2x + 1)/(x - 3)').solve();
-      expect(r.hasError, isFalse);
-      final (nc, nk, dc, dk) = _fracLin(r.answer);
-      double inv(double y) => (nc * y + nk) / (dc * y + dk);
-      double f(double x) => (2 * x + 1) / (x - 3);
-      // NB: y = 2 is the pole of f^-1 (denominator x-2), so it is excluded.
-      for (final y in <double>[-1.5, 0.0, 5.0, -4.0, 3.0]) {
-        expect(f(inv(y)), closeTo(y, 1e-9), reason: 'f(f^-1($y)) != $y');
-      }
-      for (final t in <double>[-2.0, 0.0, 1.0, 4.0]) {
-        expect(inv(f(t)), closeTo(t, 1e-9), reason: 'f^-1(f($t)) != $t');
-      }
-    });
+    test(
+      'round-trip: f(f^-1(y)) == y and f^-1(f(t)) == t for several values',
+      () {
+        // The strongest guard: it catches ANY sign error, not just this string.
+        final r = InverseFunctionEquation('f(x) = (2x + 1)/(x - 3)').solve();
+        expect(r.hasError, isFalse);
+        final (nc, nk, dc, dk) = _fracLin(r.answer);
+        double inv(double y) => (nc * y + nk) / (dc * y + dk);
+        double f(double x) => (2 * x + 1) / (x - 3);
+        // NB: y = 2 is the pole of f^-1 (denominator x-2), so it is excluded.
+        for (final y in <double>[-1.5, 0.0, 5.0, -4.0, 3.0]) {
+          expect(f(inv(y)), closeTo(y, 1e-9), reason: 'f(f^-1($y)) != $y');
+        }
+        for (final t in <double>[-2.0, 0.0, 1.0, 4.0]) {
+          expect(inv(f(t)), closeTo(t, 1e-9), reason: 'f^-1(f($t)) != $t');
+        }
+      },
+    );
 
     test('step-4 TeX equals the answer fraction (lockstep guard)', () {
       // Guards against fixing solve() but not getSteps(): the steps must not
@@ -231,13 +232,17 @@ void main() {
       expect(_texBody(s[3].latex!), _ansBody(r.answer));
     });
 
-    testWidgets('step-4 inverse TeX parses (recording fallback) + ASCII',
-        (tester) async {
+    testWidgets('step-4 inverse TeX parses (recording fallback) + ASCII', (
+      tester,
+    ) async {
       final s = InverseFunctionEquation('f(x) = (2x + 1)/(x - 3)').getSteps();
       final tex = s[3].latex!;
       var checked = 0;
-      expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-          reason: 'non-ASCII TeX: $tex');
+      expect(
+        tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+        isTrue,
+        reason: 'non-ASCII TeX: $tex',
+      );
       checked++;
       await _expectTexParses(tester, tex);
       expect(checked, greaterThan(0));
@@ -344,8 +349,11 @@ void main() {
         for (final s in eq.getSteps()) {
           for (final tex in <String?>[s.latex, ...?s.subLatex]) {
             if (tex == null) continue;
-            expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-                reason: '$tex (${s.title})');
+            expect(
+              tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+              isTrue,
+              reason: '$tex (${s.title})',
+            );
             checked++;
           }
         }
@@ -353,9 +361,9 @@ void main() {
       expect(checked, greaterThan(0));
     });
 
-    testWidgets(
-        'every emitted wave1 TeX line parses (recording fallback)',
-        (tester) async {
+    testWidgets('every emitted wave1 TeX line parses (recording fallback)', (
+      tester,
+    ) async {
       var checked = 0;
       for (final eq in cases) {
         for (final s in eq.getSteps()) {

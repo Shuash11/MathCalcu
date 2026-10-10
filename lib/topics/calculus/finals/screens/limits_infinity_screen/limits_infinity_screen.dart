@@ -159,15 +159,12 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
               color: FinalsTheme.primaryFor(context).withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color:
-                      FinalsTheme.primaryFor(context).withValues(alpha: 0.2)),
+                color: FinalsTheme.primaryFor(context).withValues(alpha: 0.2),
+              ),
             ),
             child: Column(
               children: [
-                ResponsiveText(
-                  '',
-                  style: FinalsTheme.labelStyle(context),
-                ),
+                ResponsiveText('', style: FinalsTheme.labelStyle(context)),
                 const SizedBox(height: 12),
                 ResponsiveText(
                   '',
@@ -186,14 +183,20 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
     final latex = expr
         .replaceAll('*', ' \\cdot ')
         .replaceAllMapped(
-            RegExp(r'(\w+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
+          RegExp(r'(\w+)\s*\^\s*(\d+)'),
+          (m) => '${m[1]}^{${m[2]}}',
+        )
         .replaceAll('x ^ 2', 'x^{2}')
         .replaceAll('x ^ 3', 'x^{3}')
         .replaceAll('x ^ 4', 'x^{4}')
         .replaceAllMapped(
-            RegExp(r'(\d+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
-        .replaceAllMapped(RegExp(r'([^\s]+)\s*/\s*([^\s]+)'),
-            (m) => '\\frac{${m[1]}}{${m[2]}}');
+          RegExp(r'(\d+)\s*\^\s*(\d+)'),
+          (m) => '${m[1]}^{${m[2]}}',
+        )
+        .replaceAllMapped(
+          RegExp(r'([^\s]+)\s*/\s*([^\s]+)'),
+          (m) => '\\frac{${m[1]}}{${m[2]}}',
+        );
 
     try {
       return Math.tex(
@@ -226,26 +229,29 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
         child: Column(
           children: [
             SafeArea(
-                bottom: false,
-                child: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  leading: AccentGlow.iconHalo(
-                    context,
-                    child: IconButton(
-                      tooltip: 'Back',
-                      icon: Icon(Icons.arrow_back_ios_new_rounded,
-                          color: FinalsTheme.primaryFor(context)),
-                      onPressed: () => Navigator.of(context).pop(),
+              bottom: false,
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: AccentGlow.iconHalo(
+                  context,
+                  child: IconButton(
+                    tooltip: 'Back',
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: FinalsTheme.primaryFor(context),
                     ),
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                )),
+                ),
+              ),
+            ),
             Expanded(
               child: CustomScrollView(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-// Header Section
+                  // Header Section
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverToBoxAdapter(
@@ -344,12 +350,15 @@ class _LimitsInfinityScreenState extends State<LimitsInfinityScreen> {
                             style: OutlinedButton.styleFrom(
                               foregroundColor: FinalsTheme.primaryFor(context),
                               side: BorderSide(
-                                  color: FinalsTheme.primaryFor(context)),
+                                color: FinalsTheme.primaryFor(context),
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 14),
+                                horizontal: 20,
+                                vertical: 14,
+                              ),
                             ),
                           ),
                         ),

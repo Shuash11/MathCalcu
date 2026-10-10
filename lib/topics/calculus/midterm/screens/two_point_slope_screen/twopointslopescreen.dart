@@ -1,6 +1,9 @@
 import 'two_point_slope_controller.dart';
+
 import 'package:calculus_system/topics/calculus/midterm/graph/two_point_slope_graph/two_point_slope_graph.dart';
+
 import 'two_point_slope_steps.dart';
+
 import 'package:calculus_system/shared/widgets/accent_glow.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
 import 'package:material_ui/material_ui.dart';
@@ -43,10 +46,7 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
       duration: const Duration(milliseconds: 700),
     )..forward();
 
-    _headerFade = CurvedAnimation(
-      parent: _headerAnim,
-      curve: Curves.easeOut,
-    );
+    _headerFade = CurvedAnimation(parent: _headerAnim, curve: Curves.easeOut);
   }
 
   @override
@@ -181,21 +181,22 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
                 ResponsiveText(
                   'Two-Point Slope',
                   style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: context.watch<ThemeProvider>().textPrimary,
-                      letterSpacing: -1.0,
-                      height: 1.1,
-                      shadows: [
-                        Shadow(
-                          color: context
-                              .watch<ThemeProvider>()
-                              .accentColor
-                              .withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: Offset.zero,
-                        ),
-                      ]),
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: context.watch<ThemeProvider>().textPrimary,
+                    letterSpacing: -1.0,
+                    height: 1.1,
+                    shadows: [
+                      Shadow(
+                        color: context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: Offset.zero,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -209,21 +210,24 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
   Widget _buildInputCard() {
     return Container(
       decoration: BoxDecoration(
-          color: context.watch<ThemeProvider>().card,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-              color: context
-                  .watch<ThemeProvider>()
-                  .accentColor
-                  .withValues(alpha: 0.15),
-              width: 1),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withValues(
-                    alpha: context.watch<ThemeProvider>().isLight ? 0.05 : 0.3),
-                blurRadius: 16,
-                offset: const Offset(0, 4))
-          ]),
+        color: context.watch<ThemeProvider>().card,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.15,
+          ),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(
+              alpha: context.watch<ThemeProvider>().isLight ? 0.05 : 0.3,
+            ),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       padding: const EdgeInsets.all(24),
       child: Form(
         key: _controller.formKey,
@@ -231,15 +235,17 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Section label
-            ResponsiveText('ENTER COORDINATES',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: context
-                        .watch<ThemeProvider>()
-                        .textSecondary
-                        .withValues(alpha: 0.7),
-                    letterSpacing: 0.5)),
+            ResponsiveText(
+              'ENTER COORDINATES',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: context.watch<ThemeProvider>().textSecondary.withValues(
+                  alpha: 0.7,
+                ),
+                letterSpacing: 0.5,
+              ),
+            ),
             const SizedBox(height: 20),
 
             // Point 1
@@ -415,16 +421,18 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeOutCubic,
       decoration: BoxDecoration(
-          color: theme.card,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: accent.withValues(alpha: 0.35), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-                color: accent.withValues(alpha: 0.15),
-                blurRadius: 32,
-                offset: const Offset(0, 8),
-                spreadRadius: 2)
-          ]),
+        color: theme.card,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: accent.withValues(alpha: 0.35), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: accent.withValues(alpha: 0.15),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+            spreadRadius: 2,
+          ),
+        ],
+      ),
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,15 +440,18 @@ class _TwoPointSlopeScreenState extends State<TwoPointSlopeScreen>
           Row(
             children: [
               Expanded(
-                child: Text('RESULT',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: context
-                            .watch<ThemeProvider>()
-                            .textSecondary
-                            .withValues(alpha: 0.7),
-                        letterSpacing: 0.5)),
+                child: Text(
+                  'RESULT',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: context
+                        .watch<ThemeProvider>()
+                        .textSecondary
+                        .withValues(alpha: 0.7),
+                    letterSpacing: 0.5,
+                  ),
+                ),
               ),
               GestureDetector(
                 onTap: _toggleGraph,
@@ -601,23 +612,23 @@ class _PointLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 8),
-          ResponsiveText(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
-      );
+    children: [
+      Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      ),
+      const SizedBox(width: 8),
+      ResponsiveText(
+        label,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
+    ],
+  );
 }
 
 class _CoordField extends StatelessWidget {
@@ -654,44 +665,51 @@ class _CoordField extends StatelessWidget {
         fontFamily: 'monospace',
       ),
       decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          labelStyle: TextStyle(
-              color: context.watch<ThemeProvider>().textSecondary,
-              fontSize: 13,
-              fontWeight: FontWeight.w500),
-          hintStyle: TextStyle(
-              color: context
-                  .watch<ThemeProvider>()
-                  .textSecondary
-                  .withValues(alpha: 0.6),
-              fontSize: 14),
-          filled: true,
-          fillColor: context.watch<ThemeProvider>().surface,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.15))),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.5),
-                  width: 1.5)),
-          errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Colors.redAccent)),
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide:
-                  const BorderSide(color: Colors.redAccent, width: 1.5))),
+        labelText: label,
+        hintText: hint,
+        labelStyle: TextStyle(
+          color: context.watch<ThemeProvider>().textSecondary,
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+        ),
+        hintStyle: TextStyle(
+          color: context.watch<ThemeProvider>().textSecondary.withValues(
+            alpha: 0.6,
+          ),
+          fontSize: 14,
+        ),
+        filled: true,
+        fillColor: context.watch<ThemeProvider>().surface,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 16,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: context.watch<ThemeProvider>().accentColor.withValues(
+              alpha: 0.15,
+            ),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: context.watch<ThemeProvider>().accentColor.withValues(
+              alpha: 0.5,
+            ),
+            width: 1.5,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.redAccent),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+        ),
+      ),
     );
   }
 }
@@ -709,55 +727,58 @@ class _SolveButtonState extends State<_SolveButton> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) {
-          setState(() => _pressed = false);
-          widget.onTap();
-        },
-        onTapCancel: () => setState(() => _pressed = false),
-        child: AnimatedScale(
-          scale: _pressed ? 0.97 : 1.0,
-          duration: const Duration(milliseconds: 100),
-          child: Container(
-            height: 52,
-            decoration: BoxDecoration(
+    onTapDown: (_) => setState(() => _pressed = true),
+    onTapUp: (_) {
+      setState(() => _pressed = false);
+      widget.onTap();
+    },
+    onTapCancel: () => setState(() => _pressed = false),
+    child: AnimatedScale(
+      scale: _pressed ? 0.97 : 1.0,
+      duration: const Duration(milliseconds: 100),
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [AccentGlow.halo(context)],
+        ),
+        child: ElevatedButton(
+          onPressed: widget.onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: context.watch<ThemeProvider>().accentColor,
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
-              boxShadow: [AccentGlow.halo(context)],
             ),
-            child: ElevatedButton(
-              onPressed: widget.onTap,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.watch<ThemeProvider>().accentColor,
-                padding: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                elevation: 0,
-                shadowColor: Colors.transparent,
-              ),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.calculate_rounded,
-                        color: context.watch<ThemeProvider>().surface,
-                        size: 18),
-                    const SizedBox(width: 8),
-                    ResponsiveText(
-                      'Solve',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: context.watch<ThemeProvider>().surface,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ],
+            elevation: 0,
+            shadowColor: Colors.transparent,
+          ),
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.calculate_rounded,
+                  color: context.watch<ThemeProvider>().surface,
+                  size: 18,
                 ),
-              ),
+                const SizedBox(width: 8),
+                ResponsiveText(
+                  'Solve',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: context.watch<ThemeProvider>().surface,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _EquationTile extends StatelessWidget {
@@ -856,42 +877,42 @@ class _ResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: color.withValues(alpha: 0.2)),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                Icon(icon, size: 14, color: color.withValues(alpha: 0.7)),
-                const SizedBox(width: 6),
-                ResponsiveText(
-                  label,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: color.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
+            Icon(icon, size: 14, color: color.withValues(alpha: 0.7)),
+            const SizedBox(width: 6),
             ResponsiveText(
-              value,
+              label,
               style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: smallText ? 13 : 22,
-                fontWeight: FontWeight.w700,
-                color: color,
-                height: 1.2,
+                fontSize: 11,
+                color: color.withValues(alpha: 0.7),
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
               ),
             ),
           ],
         ),
-      );
+        const SizedBox(height: 8),
+        ResponsiveText(
+          value,
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: smallText ? 13 : 22,
+            fontWeight: FontWeight.w700,
+            color: color,
+            height: 1.2,
+          ),
+        ),
+      ],
+    ),
+  );
 }

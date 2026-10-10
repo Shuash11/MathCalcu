@@ -71,8 +71,10 @@ class M2SetsEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'A={1,2,3} B={3,4} UNION');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'A={1,2,3} B={3,4} UNION',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -95,7 +97,8 @@ class M2SetsEquation extends BaseEquation {
     final sets = _sets();
     if (sets.isEmpty) {
       return SolveResult.error(
-          _error ?? 'Write sets in braces — e.g. {1,2,3}.');
+        _error ?? 'Write sets in braces — e.g. {1,2,3}.',
+      );
     }
     final op = _op();
     final a = elementsOf(sets[0]);
@@ -108,7 +111,7 @@ class M2SetsEquation extends BaseEquation {
         final out = [
           ...a,
           for (final e in b)
-            if (!a.contains(e)) e
+            if (!a.contains(e)) e,
         ];
         return _setResult('A ∪ B = {${out.join(', ')}}', out, 'union');
       case 'intersect':
@@ -141,7 +144,7 @@ class M2SetsEquation extends BaseEquation {
           answer: isSub ? 'A ⊆ B is True' : 'A ⊆ B is False',
           points: [isSub ? 1 : 0],
           customData: [
-            {'kind': 'sets', 'mode': 'subset', 'value': isSub}
+            {'kind': 'sets', 'mode': 'subset', 'value': isSub},
           ],
         );
       case 'card':
@@ -149,7 +152,7 @@ class M2SetsEquation extends BaseEquation {
           answer: '|A| = ${a.length}',
           points: [a.length.toDouble()],
           customData: [
-            {'kind': 'sets', 'mode': 'card', 'value': a.length}
+            {'kind': 'sets', 'mode': 'card', 'value': a.length},
           ],
         );
       case 'power':
@@ -161,7 +164,7 @@ class M2SetsEquation extends BaseEquation {
           answer: '|P(A)| = 2^${a.length} = $size',
           points: [size.toDouble()],
           customData: [
-            {'kind': 'sets', 'mode': 'power', 'n': a.length, 'value': size}
+            {'kind': 'sets', 'mode': 'power', 'n': a.length, 'value': size},
           ],
         );
     }
@@ -173,15 +176,14 @@ class M2SetsEquation extends BaseEquation {
       answer: out.isEmpty ? '$answer (empty set ∅)' : answer,
       points: [out.length.toDouble()],
       customData: [
-        {'kind': 'sets', 'mode': mode, 'elements': out, 'size': out.length}
+        {'kind': 'sets', 'mode': mode, 'elements': out, 'size': out.length},
       ],
     );
   }
 
   /// LaTeX brace-set: `\{1, 2, 3\}` (or `\emptyset` when empty).
-  static String _texSet(List<String> elements) => elements.isEmpty
-      ? r'\emptyset'
-      : r'\{' + elements.join(', ') + r'\}';
+  static String _texSet(List<String> elements) =>
+      elements.isEmpty ? r'\emptyset' : r'\{' + elements.join(', ') + r'\}';
 
   /// LaTeX for the result line, rebuilt from the real computed data
   /// (never from the unicode answer string). Null when the solve errored.
@@ -216,9 +218,10 @@ class M2SetsEquation extends BaseEquation {
     if (sets.isEmpty) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use {1,2,3}.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use {1,2,3}.',
+        ),
       ];
     }
     final r = solve();
@@ -234,24 +237,29 @@ class M2SetsEquation extends BaseEquation {
     };
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'List the elements',
-          explanation: 'A = {${elementsOf(sets[0]).join(', ')}}'
-              '${sets.length > 1 ? ', B = {${elementsOf(sets[1]).join(', ')}}' : ''}.',
-          latex: 'A = ${_texSet(elementsOf(sets[0]))}'
-              '${sets.length > 1 ? ', \\quad B = ${_texSet(elementsOf(sets[1]))}' : ''}'),
+        stepNumber: 1,
+        title: 'List the elements',
+        explanation:
+            'A = {${elementsOf(sets[0]).join(', ')}}'
+            '${sets.length > 1 ? ', B = {${elementsOf(sets[1]).join(', ')}}' : ''}.',
+        latex:
+            'A = ${_texSet(elementsOf(sets[0]))}'
+            '${sets.length > 1 ? ', \\quad B = ${_texSet(elementsOf(sets[1]))}' : ''}',
+      ),
       StepModel(
-          stepNumber: 2, title: 'Apply the operation', explanation: label),
+        stepNumber: 2,
+        title: 'Apply the operation',
+        explanation: label,
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the result',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: _resultLatex(r, op),
-          subLatex: op == 'subset' && !r.hasError
-              ? [
-                  '\\text{is ${r.customData!.first['value'] == true ? 'True' : 'False'}}'
-                ]
-              : null),
+        stepNumber: 3,
+        title: 'Read the result',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: _resultLatex(r, op),
+        subLatex: op == 'subset' && !r.hasError
+            ? ['\\text{is ${r.customData!.first['value'] == true ? 'True' : 'False'}}']
+            : null,
+      ),
     ];
   }
 }

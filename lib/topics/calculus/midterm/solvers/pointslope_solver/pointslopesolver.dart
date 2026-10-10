@@ -55,14 +55,14 @@ class Fraction {
   double toDouble() => numerator / denominator;
 
   Fraction operator +(Fraction o) => _simplify(
-        numerator * o.denominator + o.numerator * denominator,
-        denominator * o.denominator,
-      );
+    numerator * o.denominator + o.numerator * denominator,
+    denominator * o.denominator,
+  );
 
   Fraction operator -(Fraction o) => _simplify(
-        numerator * o.denominator - o.numerator * denominator,
-        denominator * o.denominator,
-      );
+    numerator * o.denominator - o.numerator * denominator,
+    denominator * o.denominator,
+  );
 
   Fraction operator *(Fraction o) {
     final g1 = _gcd(numerator.abs(), o.denominator);
@@ -78,7 +78,10 @@ class Fraction {
       Fraction(numerator: -numerator, denominator: denominator);
 
   Fraction abs() => Fraction(
-      numerator: numerator.abs(), denominator: denominator, isWhole: isWhole);
+    numerator: numerator.abs(),
+    denominator: denominator,
+    isWhole: isWhole,
+  );
   Fraction reciprocal() => _simplify(denominator, numerator);
 
   Fraction simplified() {
@@ -142,8 +145,11 @@ class SolveStep {
   final String title;
   final String explanation;
   final String result;
-  const SolveStep(
-      {required this.title, required this.explanation, required this.result});
+  const SolveStep({
+    required this.title,
+    required this.explanation,
+    required this.result,
+  });
 }
 
 class PointSlopeSolver {
@@ -157,12 +163,11 @@ class PointSlopeSolver {
     required double m,
     required double x1,
     required double y1,
-  }) =>
-      PointSlopeSolver(
-        m: Fraction.fromDouble(m),
-        x1: Fraction.fromDouble(x1),
-        y1: Fraction.fromDouble(y1),
-      );
+  }) => PointSlopeSolver(
+    m: Fraction.fromDouble(m),
+    x1: Fraction.fromDouble(x1),
+    y1: Fraction.fromDouble(y1),
+  );
 
   factory PointSlopeSolver.fromStrings({
     required String mText,
@@ -223,35 +228,34 @@ class PointSlopeSolver {
   String get simplifiedAnswer => standardForm;
 
   List<SolveStep> get steps => [
-        SolveStep(
-          title: 'Point-Slope Form',
-          explanation:
-              'Write the equation using the point and slope: y - y1 = m(x - x1).',
-          result: pointSlopeForm,
-        ),
-        const SolveStep(
-          title: 'Expand to Slope-Intercept Form',
-          explanation:
-              'Distribute m: y - y1 = m * (x - x1). Then, solve for y.',
-          result: 'y = y1 + m(x - x1)',
-        ),
-        SolveStep(
-          title: 'Simplify Constant Term',
-          explanation: 'Combine y1 and -m*x1 into a single constant term.',
-          result:
-              'y = (${y1.toString()}) + ${m.simplified()}(x ${x1.numerator >= 0 ? '-' : '+'} ${x1.abs()})',
-        ),
-        SolveStep(
-          title: 'Convert to General Form',
-          explanation: 'Bring all terms to one side: mx - y + (y1 - m*x1) = 0.',
-          result: generalForm,
-        ),
-        SolveStep(
-          title: 'Convert to Standard Form',
-          explanation: 'Rearrange to get Ax + By = C.',
-          result: standardForm,
-        ),
-      ];
+    SolveStep(
+      title: 'Point-Slope Form',
+      explanation:
+          'Write the equation using the point and slope: y - y1 = m(x - x1).',
+      result: pointSlopeForm,
+    ),
+    const SolveStep(
+      title: 'Expand to Slope-Intercept Form',
+      explanation: 'Distribute m: y - y1 = m * (x - x1). Then, solve for y.',
+      result: 'y = y1 + m(x - x1)',
+    ),
+    SolveStep(
+      title: 'Simplify Constant Term',
+      explanation: 'Combine y1 and -m*x1 into a single constant term.',
+      result:
+          'y = (${y1.toString()}) + ${m.simplified()}(x ${x1.numerator >= 0 ? '-' : '+'} ${x1.abs()})',
+    ),
+    SolveStep(
+      title: 'Convert to General Form',
+      explanation: 'Bring all terms to one side: mx - y + (y1 - m*x1) = 0.',
+      result: generalForm,
+    ),
+    SolveStep(
+      title: 'Convert to Standard Form',
+      explanation: 'Rearrange to get Ax + By = C.',
+      result: standardForm,
+    ),
+  ];
 
   static PointSlopeSolver? tryParse({
     required String mText,

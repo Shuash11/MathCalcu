@@ -109,9 +109,10 @@ class _EquationInputCardState extends State<EquationInputCard> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: widget.color.withValues(alpha: 0.2)),
       ),
@@ -132,13 +133,16 @@ class _EquationInputCardState extends State<EquationInputCard> {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: widget.color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(color: widget.color.withValues(alpha: 0.3)),
+                  border: Border.all(
+                    color: widget.color.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Math.tex(
                   r'x^2 + y^2 + Dx + Ey + F = 0',
@@ -158,9 +162,16 @@ class _EquationInputCardState extends State<EquationInputCard> {
             Wrap(
               spacing: 6,
               runSpacing: 6,
-              children: ['x²', 'y²', 'x', 'y', '+', '-', '=', '0']
-                  .map(_quickKey)
-                  .toList(),
+              children: [
+                'x²',
+                'y²',
+                'x',
+                'y',
+                '+',
+                '-',
+                '=',
+                '0',
+              ].map(_quickKey).toList(),
             ),
             const SizedBox(height: 12),
           ],

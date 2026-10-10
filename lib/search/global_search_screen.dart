@@ -70,8 +70,9 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
     final accent = theme.accentColor;
     final isFocused = _searchFocusNode.hasFocus;
     final trimmed = _query.trim();
-    final rawHits =
-        trimmed.isEmpty ? const <UnifiedHit>[] : UnifiedSearch.search(trimmed);
+    final rawHits = trimmed.isEmpty
+        ? const <UnifiedHit>[]
+        : UnifiedSearch.search(trimmed);
     // Topic-first: subject chip ANDs with the query.
     final hits = _subject == 'All'
         ? rawHits
@@ -153,9 +154,7 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
                 onSelected: (s) => setState(() => _subject = s),
               ),
             ),
-            Expanded(
-              child: _buildBody(theme, trimmed, hits),
-            ),
+            Expanded(child: _buildBody(theme, trimmed, hits)),
           ],
         ),
       ),

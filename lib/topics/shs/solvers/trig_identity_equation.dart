@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import 'dart:math' as math;
+
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
@@ -204,8 +205,10 @@ class TrigIdentityEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'prove: sin^2 + cos^2 = 1');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'prove: sin^2 + cos^2 = 1',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -240,19 +243,21 @@ class TrigIdentityEquation extends BaseEquation {
     final key = _match();
     if (checked > 0 && okCount < checked) {
       return SolveResult.error(
-          'Not an identity — sides differ at sample angles ($okCount/$checked match).');
+        'Not an identity — sides differ at sample angles ($okCount/$checked match).',
+      );
     }
     if (key == null) {
       if (checked == 0) {
         return SolveResult.error(
-            'Could not verify — keep to sin/cos/tan/sec/csc/cot with numeric angles.');
+          'Could not verify — keep to sin/cos/tan/sec/csc/cot with numeric angles.',
+        );
       }
       return SolveResult(
         answer:
             'Verified numerically at $okCount/$checked sample angles (no named proof template).',
         points: const [],
         customData: [
-          {'kind': 'identity', 'template': 'numeric', 'matches': okCount}
+          {'kind': 'identity', 'template': 'numeric', 'matches': okCount},
         ],
       );
     }
@@ -260,7 +265,7 @@ class TrigIdentityEquation extends BaseEquation {
       answer: 'Identity holds — ${_known[key]!.last}',
       points: const [],
       customData: [
-        {'kind': 'identity', 'template': key, 'steps': _known[key]}
+        {'kind': 'identity', 'template': key, 'steps': _known[key]},
       ],
     );
   }
@@ -271,24 +276,25 @@ class TrigIdentityEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Check failed',
-            explanation: r.errorMessage ?? '')
+          stepNumber: 1,
+          title: 'Check failed',
+          explanation: r.errorMessage ?? '',
+        ),
       ];
     }
     final data = r.customData!.first as Map;
-    final steps = (data['steps'] as List?)?.cast<String>() ??
+    final steps =
+        (data['steps'] as List?)?.cast<String>() ??
         ['Both sides agree at sample angles.'];
     final texSteps = _texByTemplate[data['template'] as String?];
     return [
       for (var i = 0; i < steps.length; i++)
         StepModel(
-            stepNumber: i + 1,
-            title: i == steps.length - 1 ? 'Conclusion' : 'Step ${i + 1}',
-            explanation: steps[i],
-            latex: (texSteps != null && i < texSteps.length)
-                ? texSteps[i]
-                : null),
+          stepNumber: i + 1,
+          title: i == steps.length - 1 ? 'Conclusion' : 'Step ${i + 1}',
+          explanation: steps[i],
+          latex: (texSteps != null && i < texSteps.length) ? texSteps[i] : null,
+        ),
     ];
   }
 }

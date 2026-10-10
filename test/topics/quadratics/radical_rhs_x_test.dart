@@ -32,26 +32,29 @@ void main() {
       expect(eq.getSteps().last.explanation, r.answer);
     });
 
-    test('sqrt(x + 5) = -x -> root -(1+sqrt(21))/2, positive one extraneous',
-        () {
-      final eq = RadicalEquation('sqrt(x + 5) = -x');
-      expect(eq.validate(), isTrue);
-      final r = eq.solve();
-      expect(r.hasError, isFalse);
-      expect(r.points, hasLength(1));
-      expect(r.points[0], closeTo(-1.791288, 1e-5));
-      expect(r.answer, isNot(contains('2.791')));
-    });
+    test(
+      'sqrt(x + 5) = -x -> root -(1+sqrt(21))/2, positive one extraneous',
+      () {
+        final eq = RadicalEquation('sqrt(x + 5) = -x');
+        expect(eq.validate(), isTrue);
+        final r = eq.solve();
+        expect(r.hasError, isFalse);
+        expect(r.points, hasLength(1));
+        expect(r.points[0], closeTo(-1.791288, 1e-5));
+        expect(r.answer, isNot(contains('2.791')));
+      },
+    );
 
     test(
-        'sqrt(-x) = x - 0.2 -> both squaring candidates extraneous -> rejected',
-        () {
-      final eq = RadicalEquation('sqrt(-x) = x - 0.2');
-      expect(eq.validate(), isTrue);
-      final r = eq.solve();
-      expect(r.hasError, isTrue);
-      expect(r.errorMessage, contains('extraneous'));
-    });
+      'sqrt(-x) = x - 0.2 -> both squaring candidates extraneous -> rejected',
+      () {
+        final eq = RadicalEquation('sqrt(-x) = x - 0.2');
+        expect(eq.validate(), isTrue);
+        final r = eq.solve();
+        expect(r.hasError, isTrue);
+        expect(r.errorMessage, contains('extraneous'));
+      },
+    );
 
     test('plain-number right side unchanged: sqrt(x + 5) = 3 -> x = 4', () {
       final eq = RadicalEquation('sqrt(x + 5) = 3');
@@ -62,15 +65,20 @@ void main() {
       expect(r.points, [4]);
     });
 
-    test('steps for x-form inputs: 4 steps incl. square + verify, no throw',
-        () {
-      final eq = RadicalEquation('sqrt(x + 5) = x');
-      expect(eq.validate(), isTrue);
-      final steps = eq.getSteps();
-      expect(steps, hasLength(4));
-      expect(steps.map((s) => s.title), contains('Square both sides'));
-      expect(steps.map((s) => s.title), contains('Verify (extraneous check)'));
-    });
+    test(
+      'steps for x-form inputs: 4 steps incl. square + verify, no throw',
+      () {
+        final eq = RadicalEquation('sqrt(x + 5) = x');
+        expect(eq.validate(), isTrue);
+        final steps = eq.getSteps();
+        expect(steps, hasLength(4));
+        expect(steps.map((s) => s.title), contains('Square both sides'));
+        expect(
+          steps.map((s) => s.title),
+          contains('Verify (extraneous check)'),
+        );
+      },
+    );
 
     test('nonlinear right side stays unsupported', () {
       final eq = RadicalEquation('sqrt(x + 5) = x^2');

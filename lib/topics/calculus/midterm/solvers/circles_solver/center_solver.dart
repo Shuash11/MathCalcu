@@ -53,7 +53,8 @@ class CenterFraction {
   }
 
   CenterFraction operator +(CenterFraction o) {
-    final num = (isNegative ? -numerator : numerator) * o.denominator +
+    final num =
+        (isNegative ? -numerator : numerator) * o.denominator +
         (o.isNegative ? -o.numerator : o.numerator) * denominator;
     return CenterFraction(num, denominator * o.denominator);
   }
@@ -151,7 +152,8 @@ class CenterSolver {
     final sumX = fx1 + fx2;
     final sumY = fy1 + fy2;
 
-    final steps = 'Midpoint Formula: C(h, k) = ((x₁ + x₂)/2, (y₁ + y₂)/2)\n'
+    final steps =
+        'Midpoint Formula: C(h, k) = ((x₁ + x₂)/2, (y₁ + y₂)/2)\n'
         '\n'
         'h = (x₁ + x₂) / 2\n'
         'h = ($fx1 + $fx2) / 2\n'

@@ -16,12 +16,16 @@ class GeneratedRadicalSolver {
       if (p.k < 0) {
         if (p.op == '>' || p.op == '≥') {
           return SolveResult(
-              answer: 'x ≥ ${_fmt(-p.c / p.b)} (domain only)',
-              points: [],
-              intervalNotation: '');
+            answer: 'x ≥ ${_fmt(-p.c / p.b)} (domain only)',
+            points: [],
+            intervalNotation: '',
+          );
         }
         return const SolveResult(
-            answer: 'No solution', points: [], intervalNotation: '∅');
+          answer: 'No solution',
+          points: [],
+          intervalNotation: '∅',
+        );
       }
 
       // k == 0: sqrt(bx + c) is never negative. It is zero only when the
@@ -30,13 +34,17 @@ class GeneratedRadicalSolver {
       if (p.k == 0) {
         if (p.op == '<') {
           return const SolveResult(
-              answer: 'No solution', points: [], intervalNotation: '∅');
+            answer: 'No solution',
+            points: [],
+            intervalNotation: '∅',
+          );
         }
         final zeroBoundary = -p.c / p.b;
         return SolveResult(
-            answer: 'x = ${_fmt(zeroBoundary)}',
-            points: [zeroBoundary],
-            intervalNotation: '[${_fmt(zeroBoundary)}, ${_fmt(zeroBoundary)}]');
+          answer: 'x = ${_fmt(zeroBoundary)}',
+          points: [zeroBoundary],
+          intervalNotation: '[${_fmt(zeroBoundary)}, ${_fmt(zeroBoundary)}]',
+        );
       }
 
       // Domain: bx + c >= 0  =>  x >= -c/b (if b > 0) or x <= -c/b (if b < 0)
@@ -97,7 +105,10 @@ class GeneratedRadicalSolver {
       pts.sort();
 
       return SolveResult(
-          answer: answer, points: pts, intervalNotation: interval);
+        answer: answer,
+        points: pts,
+        intervalNotation: interval,
+      );
     } catch (e) {
       return SolveResult.error('Error: $e');
     }
@@ -110,38 +121,41 @@ class GeneratedRadicalSolver {
 
     int n = 1;
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: input.trim(),
-    ));
+    steps.add(StepModel(stepNumber: n++, latex: input.trim()));
 
     final radStrLatex = _linearStrLatex(p.b, p.c);
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: 'Radicand must be non-negative for real solutions',
-      latex: r'\text{' + radStrLatex + r'} \geq 0',
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        hint: 'Radicand must be non-negative for real solutions',
+        latex: r'\text{' + radStrLatex + r'} \geq 0',
+      ),
+    );
 
     if (p.k >= 0) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'Square both sides to eliminate the radical',
-        details: [
-          r'(' +
-              radStrLatex +
-              r')^2 ' +
-              '${_texOp(p.op)} ' +
-              '${_fmtLatex(p.k)}^2',
-          '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
-        ],
-        latex: '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Square both sides to eliminate the radical',
+          details: [
+            r'(' +
+                radStrLatex +
+                r')^2 ' +
+                '${_texOp(p.op)} ' +
+                '${_fmtLatex(p.k)}^2',
+            '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
+          ],
+          latex: '$radStrLatex ${_texOp(p.op)} ${_fmtLatex(p.k * p.k)}',
+        ),
+      );
     }
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
+      ),
+    );
 
     return steps;
   }
@@ -312,6 +326,10 @@ class GeneratedRadicalSolver {
 class _Parsed {
   final String op;
   final double b, c, k;
-  const _Parsed(
-      {required this.op, required this.b, required this.c, required this.k});
+  const _Parsed({
+    required this.op,
+    required this.b,
+    required this.c,
+    required this.k,
+  });
 }

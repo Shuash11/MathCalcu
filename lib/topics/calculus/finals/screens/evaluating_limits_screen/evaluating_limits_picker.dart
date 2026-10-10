@@ -93,19 +93,24 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
                         onTap: () => Navigator.of(context).maybePop(),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                                color: FinalsTheme.primaryFor(context)
-                                    .withValues(alpha: 0.3)),
+                              color: FinalsTheme.primaryFor(context)
+                                  .withValues(alpha: 0.3),
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.arrow_back_ios_new_rounded,
-                                  size: 12,
-                                  color: FinalsTheme.primaryFor(context)),
+                              Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                size: 12,
+                                color: FinalsTheme.primaryFor(context),
+                              ),
                               const SizedBox(width: 8),
                               ResponsiveText(
                                 'Back to Finals',
@@ -137,21 +142,18 @@ class _EvaluatingLimitsPickerState extends State<EvaluatingLimitsPicker>
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: FadeTransition(
-                        opacity: _fadeAnims[index],
-                        child: SlideTransition(
-                          position: _slideAnims[index],
-                          child: _topicCards[index],
-                        ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: FadeTransition(
+                      opacity: _fadeAnims[index],
+                      child: SlideTransition(
+                        position: _slideAnims[index],
+                        child: _topicCards[index],
                       ),
-                    );
-                  },
-                  childCount: _topicCards.length,
-                ),
+                    ),
+                  );
+                }, childCount: _topicCards.length),
               ),
             ),
 

@@ -37,8 +37,9 @@ class G6IntegerEquation extends BaseEquation {
 
   G6IntegerEquation(this.rawInput);
 
-  static final RegExp _arith =
-      RegExp(r'^\s*(-?\d+)\s*([+\-×÷*/])\s*(-?\d+)\s*$');
+  static final RegExp _arith = RegExp(
+    r'^\s*(-?\d+)\s*([+\-×÷*/])\s*(-?\d+)\s*$',
+  );
   static final RegExp _compare = RegExp(
     r'^\s*(?:compare\s+)?(-?\d+)\s*(<=|>=|≤|≥|<|>|=)\s*(-?\d+)\s*$',
   );
@@ -135,10 +136,7 @@ class G6IntegerEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final String? empty = FieldValidators.notEmpty(
-      rawInput,
-      example: '-5 + 8',
-    );
+    final String? empty = FieldValidators.notEmpty(rawInput, example: '-5 + 8');
     if (empty != null) {
       _error = empty;
       return false;
@@ -159,9 +157,7 @@ class G6IntegerEquation extends BaseEquation {
   SolveResult solve() {
     final _IntParsed? p = _parse();
     if (p == null) {
-      return SolveResult.error(
-        _error ?? 'Use integers — e.g. -5 + 8.',
-      );
+      return SolveResult.error(_error ?? 'Use integers — e.g. -5 + 8.');
     }
     if (p.kind == _IntKind.compare) {
       late final bool holds;

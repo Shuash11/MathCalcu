@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:calculus_system/shared/widgets/full_screen_graph_screen.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
@@ -77,21 +78,21 @@ class DistanceGraphScreen extends StatelessWidget {
   String get _formula => is2D ? 'd = √((x2-x1)² + (y2-y1)²)' : 'd = |x2 - x1|';
 
   List<FullScreenInfoItem> _keyInfo(Color accent) => [
-        FullScreenInfoItem(
-          label: 'Point A',
-          value: is2D ? '($x1, $y1)' : 'x = $x1',
-          color: accent,
-        ),
-        FullScreenInfoItem(
-          label: 'Point B',
-          value: is2D ? '($x2, $y2)' : 'x = $x2',
-        ),
-        FullScreenInfoItem(
-          label: 'Distance',
-          value: 'd = $distanceLabel',
-          color: accent,
-        ),
-      ];
+    FullScreenInfoItem(
+      label: 'Point A',
+      value: is2D ? '($x1, $y1)' : 'x = $x1',
+      color: accent,
+    ),
+    FullScreenInfoItem(
+      label: 'Point B',
+      value: is2D ? '($x2, $y2)' : 'x = $x2',
+    ),
+    FullScreenInfoItem(
+      label: 'Distance',
+      value: 'd = $distanceLabel',
+      color: accent,
+    ),
+  ];
 
   void _openFullScreen(BuildContext context) {
     final accent = context.watch<ThemeProvider>().accentColor;
@@ -138,8 +139,9 @@ class DistanceGraphScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: theme.card,
                         borderRadius: BorderRadius.circular(12),
-                        border:
-                            Border.all(color: accent.withValues(alpha: 0.15)),
+                        border: Border.all(
+                          color: accent.withValues(alpha: 0.15),
+                        ),
                       ),
                       child: Icon(
                         Icons.arrow_back_rounded,
@@ -156,16 +158,18 @@ class DistanceGraphScreen extends StatelessWidget {
                         Text(
                           'Graph Visualization',
                           style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: theme.textPrimary,
-                              letterSpacing: -0.5),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: theme.textPrimary,
+                            letterSpacing: -0.5,
+                          ),
                         ),
                         Text(
                           is2D ? 'Coordinate Plane' : 'Number Line',
                           style: TextStyle(
-                              fontSize: 12,
-                              color: accent.withValues(alpha: 0.7)),
+                            fontSize: 12,
+                            color: accent.withValues(alpha: 0.7),
+                          ),
                         ),
                       ],
                     ),
@@ -218,20 +222,34 @@ class DistanceGraphScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildInfoItem(context, 'Point A',
-                            is2D ? '($x1, $y1)' : 'x = $x1', accent),
-                        Container(
-                            width: 1,
-                            height: 40,
-                            color: accent.withValues(alpha: 0.2)),
-                        _buildInfoItem(context, 'Point B',
-                            is2D ? '($x2, $y2)' : 'x = $x2', theme.textPrimary),
-                        Container(
-                            width: 1,
-                            height: 40,
-                            color: accent.withValues(alpha: 0.2)),
                         _buildInfoItem(
-                            context, 'Distance', 'd = $distanceLabel', accent),
+                          context,
+                          'Point A',
+                          is2D ? '($x1, $y1)' : 'x = $x1',
+                          accent,
+                        ),
+                        Container(
+                          width: 1,
+                          height: 40,
+                          color: accent.withValues(alpha: 0.2),
+                        ),
+                        _buildInfoItem(
+                          context,
+                          'Point B',
+                          is2D ? '($x2, $y2)' : 'x = $x2',
+                          theme.textPrimary,
+                        ),
+                        Container(
+                          width: 1,
+                          height: 40,
+                          color: accent.withValues(alpha: 0.2),
+                        ),
+                        _buildInfoItem(
+                          context,
+                          'Distance',
+                          'd = $distanceLabel',
+                          accent,
+                        ),
                       ],
                     ),
                   ],
@@ -245,17 +263,20 @@ class DistanceGraphScreen extends StatelessWidget {
   }
 
   Widget _buildInfoItem(
-      BuildContext context, String label, String value, Color valueColor) {
+    BuildContext context,
+    String label,
+    String value,
+    Color valueColor,
+  ) {
     return Column(
       children: [
         Text(
           label,
           style: TextStyle(
             fontSize: 11,
-            color: context
-                .watch<ThemeProvider>()
-                .textPrimary
-                .withValues(alpha: 0.4),
+            color: context.watch<ThemeProvider>().textPrimary.withValues(
+              alpha: 0.4,
+            ),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -333,12 +354,18 @@ class FullScreenCoordinatePainter extends CustomPainter {
     for (double i = minX.floorToDouble(); i <= maxX.ceilToDouble(); i += 1) {
       final x = tx(i);
       canvas.drawLine(
-          Offset(x, padding), Offset(x, size.height - padding), gridPaint);
+        Offset(x, padding),
+        Offset(x, size.height - padding),
+        gridPaint,
+      );
     }
     for (double i = minY.floorToDouble(); i <= maxY.ceilToDouble(); i += 1) {
       final y = ty(i);
       canvas.drawLine(
-          Offset(padding, y), Offset(size.width - padding, y), gridPaint);
+        Offset(padding, y),
+        Offset(size.width - padding, y),
+        gridPaint,
+      );
     }
 
     final axisPaint = Paint()
@@ -347,14 +374,20 @@ class FullScreenCoordinatePainter extends CustomPainter {
 
     final zeroY = ty(0);
     if (zeroY >= padding && zeroY <= size.height - padding) {
-      canvas.drawLine(Offset(padding, zeroY),
-          Offset(size.width - padding, zeroY), axisPaint);
+      canvas.drawLine(
+        Offset(padding, zeroY),
+        Offset(size.width - padding, zeroY),
+        axisPaint,
+      );
     }
 
     final zeroX = tx(0);
     if (zeroX >= padding && zeroX <= size.width - padding) {
-      canvas.drawLine(Offset(zeroX, padding),
-          Offset(zeroX, size.height - padding), axisPaint);
+      canvas.drawLine(
+        Offset(zeroX, padding),
+        Offset(zeroX, size.height - padding),
+        axisPaint,
+      );
     }
 
     final pointA = Offset(tx(x1), ty(y1));
@@ -407,10 +440,26 @@ class FullScreenCoordinatePainter extends CustomPainter {
       textColor,
     );
 
-    _drawPoint(canvas, pointA, accentColor, 'A', '$x1, $y1', pointRadius,
-        glowRadius, posA);
-    _drawPoint(canvas, pointB, textColor, 'B', '$x2, $y2', pointRadius,
-        glowRadius, posB);
+    _drawPoint(
+      canvas,
+      pointA,
+      accentColor,
+      'A',
+      '$x1, $y1',
+      pointRadius,
+      glowRadius,
+      posA,
+    );
+    _drawPoint(
+      canvas,
+      pointB,
+      textColor,
+      'B',
+      '$x2, $y2',
+      pointRadius,
+      glowRadius,
+      posB,
+    );
 
     final midX = (pointA.dx + pointB.dx) / 2;
     final midY = (pointA.dy + pointB.dy) / 2;
@@ -467,8 +516,10 @@ class FullScreenCoordinatePainter extends CustomPainter {
 
     distTextPainter.paint(
       canvas,
-      Offset(midX - distTextPainter.width / 2,
-          distLabelY - distTextPainter.height / 2),
+      Offset(
+        midX - distTextPainter.width / 2,
+        distLabelY - distTextPainter.height / 2,
+      ),
     );
   }
 
@@ -507,10 +558,12 @@ class FullScreenCoordinatePainter extends CustomPainter {
 
     positions.add(Offset(point.dx + labelOffsetX, point.dy - labelOffsetY));
     positions.add(
-        Offset(point.dx - labelOffsetX - labelWidth, point.dy - labelOffsetY));
+      Offset(point.dx - labelOffsetX - labelWidth, point.dy - labelOffsetY),
+    );
     positions.add(Offset(point.dx + labelOffsetX, point.dy + labelOffsetY));
     positions.add(
-        Offset(point.dx - labelOffsetX - labelWidth, point.dy + labelOffsetY));
+      Offset(point.dx - labelOffsetX - labelWidth, point.dy + labelOffsetY),
+    );
 
     final otherLabelRect = Rect.fromCenter(
       center: otherPoint,
@@ -533,14 +586,15 @@ class FullScreenCoordinatePainter extends CustomPainter {
   }
 
   void _drawPoint(
-      Canvas canvas,
-      Offset position,
-      Color color,
-      String label,
-      String coords,
-      double pointRadius,
-      double glowRadius,
-      Offset labelCenter) {
+    Canvas canvas,
+    Offset position,
+    Color color,
+    String label,
+    String coords,
+    double pointRadius,
+    double glowRadius,
+    Offset labelCenter,
+  ) {
     final glowPaint = Paint()
       ..color = color.withValues(alpha: 0.4)
       ..style = PaintingStyle.fill;
@@ -553,11 +607,7 @@ class FullScreenCoordinatePainter extends CustomPainter {
 
     final labelSpan = TextSpan(
       text: '$label ($coords)',
-      style: TextStyle(
-        color: color,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-      ),
+      style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
     );
     final labelPainter = TextPainter(
       text: labelSpan,
@@ -566,8 +616,10 @@ class FullScreenCoordinatePainter extends CustomPainter {
     labelPainter.layout();
     labelPainter.paint(
       canvas,
-      Offset(labelCenter.dx - labelPainter.width / 2,
-          labelCenter.dy - labelPainter.height / 2),
+      Offset(
+        labelCenter.dx - labelPainter.width / 2,
+        labelCenter.dy - labelPainter.height / 2,
+      ),
     );
   }
 
@@ -635,7 +687,10 @@ class FullScreenNumberLinePainter extends CustomPainter {
       ..color = textColor.withValues(alpha: 0.4)
       ..strokeWidth = (4 * scaleFactor).clamp(2.0, 6.0);
     canvas.drawLine(
-        Offset(lineStart, lineY), Offset(lineEnd, lineY), linePaint);
+      Offset(lineStart, lineY),
+      Offset(lineEnd, lineY),
+      linePaint,
+    );
 
     // Ticks
     final tickPaint = Paint()
@@ -650,15 +705,19 @@ class FullScreenNumberLinePainter extends CustomPainter {
     final tickFormat = _chooseTickFormat(step);
     for (double i = minVal; i <= maxVal; i += step) {
       final x = tx(i);
-      canvas.drawLine(Offset(x, lineY - tickHeight),
-          Offset(x, lineY + tickHeight), tickPaint);
+      canvas.drawLine(
+        Offset(x, lineY - tickHeight),
+        Offset(x, lineY + tickHeight),
+        tickPaint,
+      );
       _drawText(
-          canvas,
-          _formatNumber(i, tickFormat),
-          x,
-          lineY + tickLabelOffset,
-          textColor.withValues(alpha: 0.6),
-          tickFontSize);
+        canvas,
+        _formatNumber(i, tickFormat),
+        x,
+        lineY + tickLabelOffset,
+        textColor.withValues(alpha: 0.6),
+        tickFontSize,
+      );
     }
 
     // Points
@@ -671,25 +730,27 @@ class FullScreenNumberLinePainter extends CustomPainter {
     final pointLabelOffset = (35.0 * scaleFactor).clamp(22.0, 50.0);
 
     _drawPoint(
-        canvas,
-        p1,
-        lineY,
-        accentColor,
-        'x1 = ${_formatNumber(x1, tickFormat)}',
-        pointRadius,
-        glowRadius,
-        pointLabelOffset,
-        pointFontSize);
+      canvas,
+      p1,
+      lineY,
+      accentColor,
+      'x1 = ${_formatNumber(x1, tickFormat)}',
+      pointRadius,
+      glowRadius,
+      pointLabelOffset,
+      pointFontSize,
+    );
     _drawPoint(
-        canvas,
-        p2,
-        lineY,
-        textColor,
-        'x2 = ${_formatNumber(x2, tickFormat)}',
-        pointRadius,
-        glowRadius,
-        pointLabelOffset,
-        pointFontSize);
+      canvas,
+      p2,
+      lineY,
+      textColor,
+      'x2 = ${_formatNumber(x2, tickFormat)}',
+      pointRadius,
+      glowRadius,
+      pointLabelOffset,
+      pointFontSize,
+    );
 
     // Bracket
     _drawBracket(canvas, p1, p2, lineY, scaleFactor, tickFormat);
@@ -735,15 +796,16 @@ class FullScreenNumberLinePainter extends CustomPainter {
   }
 
   void _drawPoint(
-      Canvas canvas,
-      double x,
-      double y,
-      Color color,
-      String label,
-      double pointRadius,
-      double glowRadius,
-      double labelOffset,
-      double fontSize) {
+    Canvas canvas,
+    double x,
+    double y,
+    Color color,
+    String label,
+    double pointRadius,
+    double glowRadius,
+    double labelOffset,
+    double fontSize,
+  ) {
     final glowPaint = Paint()
       ..color = color.withValues(alpha: 0.4)
       ..style = PaintingStyle.fill;
@@ -757,8 +819,14 @@ class FullScreenNumberLinePainter extends CustomPainter {
     _drawText(canvas, label, x, y - labelOffset, color, fontSize);
   }
 
-  void _drawBracket(Canvas canvas, double p1, double p2, double y,
-      double scaleFactor, String tickFormat) {
+  void _drawBracket(
+    Canvas canvas,
+    double p1,
+    double p2,
+    double y,
+    double scaleFactor,
+    String tickFormat,
+  ) {
     final left = min(p1, p2);
     final right = max(p1, p2);
     final bracketY = y + 50 * scaleFactor;
@@ -768,12 +836,21 @@ class FullScreenNumberLinePainter extends CustomPainter {
       ..strokeWidth = (3 * scaleFactor).clamp(2.0, 5.0);
 
     final armLength = (10.0 * scaleFactor).clamp(6.0, 16.0);
-    canvas.drawLine(Offset(left, bracketY - armLength),
-        Offset(left, bracketY + armLength), bracketPaint);
-    canvas.drawLine(Offset(right, bracketY - armLength),
-        Offset(right, bracketY + armLength), bracketPaint);
     canvas.drawLine(
-        Offset(left, bracketY), Offset(right, bracketY), bracketPaint);
+      Offset(left, bracketY - armLength),
+      Offset(left, bracketY + armLength),
+      bracketPaint,
+    );
+    canvas.drawLine(
+      Offset(right, bracketY - armLength),
+      Offset(right, bracketY + armLength),
+      bracketPaint,
+    );
+    canvas.drawLine(
+      Offset(left, bracketY),
+      Offset(right, bracketY),
+      bracketPaint,
+    );
 
     // Arrow heads
     final arrowPaint = Paint()
@@ -795,19 +872,36 @@ class FullScreenNumberLinePainter extends CustomPainter {
 
     final bracketFontSize = (13.0 * scaleFactor).clamp(9.0, 18.0);
     final bracketLabelOffset = (20.0 * scaleFactor).clamp(12.0, 30.0);
-    _drawText(canvas, 'd = $distanceLabel', (left + right) / 2,
-        bracketY + bracketLabelOffset, accentColor, bracketFontSize);
+    _drawText(
+      canvas,
+      'd = $distanceLabel',
+      (left + right) / 2,
+      bracketY + bracketLabelOffset,
+      accentColor,
+      bracketFontSize,
+    );
   }
 
-  void _drawText(Canvas canvas, String text, double x, double y, Color color,
-      double size) {
+  void _drawText(
+    Canvas canvas,
+    String text,
+    double x,
+    double y,
+    Color color,
+    double size,
+  ) {
     final textSpan = TextSpan(
       text: text,
-      style:
-          TextStyle(color: color, fontSize: size, fontWeight: FontWeight.w600),
+      style: TextStyle(
+        color: color,
+        fontSize: size,
+        fontWeight: FontWeight.w600,
+      ),
     );
-    final textPainter =
-        TextPainter(text: textSpan, textDirection: TextDirection.ltr);
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
     textPainter.layout();
     textPainter.paint(canvas, Offset(x - textPainter.width / 2, y));
   }

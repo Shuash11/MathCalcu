@@ -3,6 +3,7 @@
 //  - 'e' (Euler's number) threw FormatException despite 'pi' being supported,
 //  - 'n!' threw FormatException instead of evaluating small factorials.
 import 'dart:math' as math;
+
 import 'package:calculus_system/calculator/calculator_engine.dart';
 import 'package:flutter_test/flutter_test.dart';
 

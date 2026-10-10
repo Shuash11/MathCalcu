@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import 'dart:math' as math;
+
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
@@ -20,14 +21,17 @@ class RelatedRatesEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'max xy, x + y = 20');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'max xy, x + y = 20',
+    );
     if (empty != null) {
       _error = empty;
       return false;
     }
     final t = rawInput.toLowerCase();
-    final ok = (t.contains('max') || t.contains('min') || t.contains('rate')) &&
+    final ok =
+        (t.contains('max') || t.contains('min') || t.contains('rate')) &&
         (t.contains('x+y') ||
             t.contains('x + y') ||
             t.contains('rect') ||
@@ -44,16 +48,19 @@ class RelatedRatesEquation extends BaseEquation {
   }
 
   double? _num(String name) {
-    final m = RegExp('\\b$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)', caseSensitive: false)
-        .firstMatch(rawInput);
+    final m = RegExp(
+      '\\b$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)',
+      caseSensitive: false,
+    ).firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
 
   double? _sumXY() {
     // 'x+y=20' (spaces optional).
-    final m =
-        RegExp(r'\bx\s*\+\s*y\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
-            .firstMatch(rawInput);
+    final m = RegExp(
+      r'\bx\s*\+\s*y\s*=\s*(-?\d+(?:\.\d+)?)',
+      caseSensitive: false,
+    ).firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
 
@@ -75,8 +82,8 @@ class RelatedRatesEquation extends BaseEquation {
             'x': x,
             'y': y,
             'max': prod,
-            's': s
-          }
+            's': s,
+          },
         ],
       );
     }
@@ -84,7 +91,8 @@ class RelatedRatesEquation extends BaseEquation {
       final p = _num('p');
       if (p == null || p <= 0) {
         return SolveResult.error(
-            'Rectangle needs P > 0 — e.g. rect P = 40 max area.');
+          'Rectangle needs P > 0 — e.g. rect P = 40 max area.',
+        );
       }
       final side = p / 4, area = side * side;
       return SolveResult(
@@ -97,8 +105,8 @@ class RelatedRatesEquation extends BaseEquation {
             'mode': 'rectangle',
             'side': side,
             'area': area,
-            'p': p
-          }
+            'p': p,
+          },
         ],
       );
     }
@@ -106,13 +114,15 @@ class RelatedRatesEquation extends BaseEquation {
       final r = _num('r');
       // Accept 'dr=0.5' or 'dr/dt=0.5'.
       double? rate;
-      final m =
-          RegExp(r'\bdr(?:/dt)?\s*=\s*(-?\d+(?:\.\d+)?)', caseSensitive: false)
-              .firstMatch(rawInput);
+      final m = RegExp(
+        r'\bdr(?:/dt)?\s*=\s*(-?\d+(?:\.\d+)?)',
+        caseSensitive: false,
+      ).firstMatch(rawInput);
       if (m != null) rate = double.parse(m.group(1)!);
       if (r == null || rate == null || r <= 0) {
         return SolveResult.error(
-            'Sphere needs r > 0 and dr/dt — e.g. sphere r = 3, dr/dt = 0.5.');
+          'Sphere needs r > 0 and dr/dt — e.g. sphere r = 3, dr/dt = 0.5.',
+        );
       }
       final dv = 4 * math.pi * r * r * rate;
       final da = 8 * math.pi * r * rate;
@@ -127,14 +137,15 @@ class RelatedRatesEquation extends BaseEquation {
             'r': r,
             'dr': rate,
             'dv': dv,
-            'da': da
-          }
+            'da': da,
+          },
         ],
       );
     }
     if (t.contains('ladder')) {
       return SolveResult.error(
-          'Ladder problems need x, y, L, dx/dt — e.g. ladder L = 10, x = 6, dx/dt = 2.');
+        'Ladder problems need x, y, L, dx/dt — e.g. ladder L = 10, x = 6, dx/dt = 2.',
+      );
     }
     return SolveResult.error(_error ?? 'Unsupported optimization pattern.');
   }
@@ -145,9 +156,10 @@ class RelatedRatesEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: r.errorMessage ?? '')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: r.errorMessage ?? '',
+        ),
       ];
     }
     String? optTex;
@@ -168,23 +180,27 @@ class RelatedRatesEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Constraint → one variable',
-          explanation:
-              'Use the constraint (x + y = S, P = 2l + 2w) to eliminate y.'),
+        stepNumber: 1,
+        title: 'Constraint → one variable',
+        explanation:
+            'Use the constraint (x + y = S, P = 2l + 2w) to eliminate y.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Derivative = 0',
-          explanation: 'Critical point where the rate vanishes (vertex).'),
+        stepNumber: 2,
+        title: 'Derivative = 0',
+        explanation: 'Critical point where the rate vanishes (vertex).',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Optimum',
-          explanation: r.answer,
-          latex: optTex),
+        stepNumber: 3,
+        title: 'Optimum',
+        explanation: r.answer,
+        latex: optTex,
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Second-derivative check',
-          explanation: 'Concave down → maximum; up → minimum.'),
+        stepNumber: 4,
+        title: 'Second-derivative check',
+        explanation: 'Concave down → maximum; up → minimum.',
+      ),
     ];
   }
 }

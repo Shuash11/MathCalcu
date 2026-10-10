@@ -169,8 +169,7 @@ class G6RateEquation extends BaseEquation {
       return false;
     }
     if (_parse() == null) {
-      _error =
-          'Use R=? D=120 T=2, compare 500g 120 vs 1kg 220, or prev=1250 pres=1380 rate=12.';
+      _error = 'Use R=? D=120 T=2, compare 500g 120 vs 1kg 220, or prev=1250 pres=1380 rate=12.';
       return false;
     }
     _error = null;
@@ -190,7 +189,7 @@ class G6RateEquation extends BaseEquation {
           answer: 'D = ${G6Format.num(d)}',
           points: [d],
           customData: [
-            {'mode': 'distance', 'value': d}
+            {'mode': 'distance', 'value': d},
           ],
         );
       case _RateKind.speed:
@@ -199,7 +198,7 @@ class G6RateEquation extends BaseEquation {
           answer: 'R = ${G6Format.num(r)} per hour',
           points: [r],
           customData: [
-            {'mode': 'speed', 'value': r}
+            {'mode': 'speed', 'value': r},
           ],
         );
       case _RateKind.time:
@@ -208,7 +207,7 @@ class G6RateEquation extends BaseEquation {
           answer: 'T = ${G6Format.num(t)} hours',
           points: [t],
           customData: [
-            {'mode': 'time', 'value': t}
+            {'mode': 'time', 'value': t},
           ],
         );
       case _RateKind.bestBuy:
@@ -222,10 +221,11 @@ class G6RateEquation extends BaseEquation {
         final String winner = u1 < u2
             ? 'First'
             : u2 < u1
-                ? 'Second'
-                : 'Tie';
+            ? 'Second'
+            : 'Tie';
         return SolveResult(
-          answer: '$winner is cheaper '
+          answer:
+              '$winner is cheaper '
               '(${G6Format.money(u1)} vs ${G6Format.money(u2)} per unit)',
           points: [u1, u2],
           customData: [
@@ -235,7 +235,7 @@ class G6RateEquation extends BaseEquation {
                 {'label': 'Offer 1', 'value': u1},
                 {'label': 'Offer 2', 'value': u2},
               ],
-            }
+            },
           ],
         );
       case _RateKind.meter:
@@ -250,11 +250,12 @@ class G6RateEquation extends BaseEquation {
         final double use = p.second - p.first;
         final double bill = use * p.third;
         return SolveResult(
-          answer: 'Use = ${G6Format.num(use)} kWh, '
+          answer:
+              'Use = ${G6Format.num(use)} kWh, '
               'Bill = ${G6Format.money(bill)}',
           points: [use, bill],
           customData: [
-            {'mode': 'meter', 'use': use, 'bill': bill}
+            {'mode': 'meter', 'use': use, 'bill': bill},
           ],
         );
     }
@@ -276,112 +277,135 @@ class G6RateEquation extends BaseEquation {
       case _RateKind.distance:
         return [
           const StepModel(
-              stepNumber: 1,
-              title: 'Write D = R × T',
-              explanation: 'Distance equals rate times time.',
-              latex: 'D = R \\times T'),
+            stepNumber: 1,
+            title: 'Write D = R × T',
+            explanation: 'Distance equals rate times time.',
+            latex: 'D = R \\times T',
+          ),
           StepModel(
-              stepNumber: 2,
-              title: 'Substitute',
-              explanation:
-                  'D = ${G6Format.num(p.first)} × ${G6Format.num(p.second)}.',
-              latex: 'D = ${G6Format.num(p.first)} '
-                  '\\times ${G6Format.num(p.second)}'),
+            stepNumber: 2,
+            title: 'Substitute',
+            explanation:
+                'D = ${G6Format.num(p.first)} × ${G6Format.num(p.second)}.',
+            latex:
+                'D = ${G6Format.num(p.first)} '
+                '\\times ${G6Format.num(p.second)}',
+          ),
           StepModel(
-              stepNumber: 3,
-              title: 'Multiply with units',
-              explanation: '${solve().answer}.',
-              latex: 'D = ${G6Format.num(p.first * p.second)}'),
+            stepNumber: 3,
+            title: 'Multiply with units',
+            explanation: '${solve().answer}.',
+            latex: 'D = ${G6Format.num(p.first * p.second)}',
+          ),
         ];
       case _RateKind.speed:
         return [
           const StepModel(
-              stepNumber: 1,
-              title: 'Write R = D ÷ T',
-              explanation: 'Speed equals distance over time.',
-              latex: 'R = \\frac{D}{T}'),
+            stepNumber: 1,
+            title: 'Write R = D ÷ T',
+            explanation: 'Speed equals distance over time.',
+            latex: 'R = \\frac{D}{T}',
+          ),
           StepModel(
-              stepNumber: 2,
-              title: 'Substitute',
-              explanation:
-                  'R = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.',
-              latex: 'R = \\frac{${G6Format.num(p.first)}}'
-                  '{${G6Format.num(p.second)}}'),
+            stepNumber: 2,
+            title: 'Substitute',
+            explanation:
+                'R = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.',
+            latex:
+                'R = \\frac{${G6Format.num(p.first)}}'
+                '{${G6Format.num(p.second)}}',
+          ),
           StepModel(
-              stepNumber: 3,
-              title: 'Divide with units',
-              explanation: '${solve().answer}.',
-              latex: 'R = ${G6Format.num(p.first / p.second)} '
-                  '\\text{ per hour}'),
+            stepNumber: 3,
+            title: 'Divide with units',
+            explanation: '${solve().answer}.',
+            latex:
+                'R = ${G6Format.num(p.first / p.second)} '
+                '\\text{ per hour}',
+          ),
         ];
       case _RateKind.time:
         return [
           const StepModel(
-              stepNumber: 1,
-              title: 'Write T = D ÷ R',
-              explanation: 'Time equals distance over rate.',
-              latex: 'T = \\frac{D}{R}'),
+            stepNumber: 1,
+            title: 'Write T = D ÷ R',
+            explanation: 'Time equals distance over rate.',
+            latex: 'T = \\frac{D}{R}',
+          ),
           StepModel(
-              stepNumber: 2,
-              title: 'Substitute',
-              explanation:
-                  'T = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.',
-              latex: 'T = \\frac{${G6Format.num(p.first)}}'
-                  '{${G6Format.num(p.second)}}'),
+            stepNumber: 2,
+            title: 'Substitute',
+            explanation:
+                'T = ${G6Format.num(p.first)} ÷ ${G6Format.num(p.second)}.',
+            latex:
+                'T = \\frac{${G6Format.num(p.first)}}'
+                '{${G6Format.num(p.second)}}',
+          ),
           StepModel(
-              stepNumber: 3,
-              title: 'Divide with units',
-              explanation: '${solve().answer}.',
-              latex: 'T = ${G6Format.num(p.first / p.second)} '
-                  '\\text{ hours}'),
+            stepNumber: 3,
+            title: 'Divide with units',
+            explanation: '${solve().answer}.',
+            latex:
+                'T = ${G6Format.num(p.first / p.second)} '
+                '\\text{ hours}',
+          ),
         ];
       case _RateKind.bestBuy:
         return [
           const StepModel(
-              stepNumber: 1,
-              title: 'Convert to same units',
-              explanation: 'g/kg and ml/L to one base unit.',
-              latex: '\\text{kg} = 1000 \\text{ g}, \\quad '
-                  '\\text{L} = 1000 \\text{ mL}'),
+            stepNumber: 1,
+            title: 'Convert to same units',
+            explanation: 'g/kg and ml/L to one base unit.',
+            latex:
+                '\\text{kg} = 1000 \\text{ g}, \\quad '
+                '\\text{L} = 1000 \\text{ mL}',
+          ),
           const StepModel(
-              stepNumber: 2,
-              title: 'Unit price each',
-              explanation: 'Price ÷ quantity per offer.',
-              latex: '\\frac{\\text{price}}{\\text{quantity}}'),
+            stepNumber: 2,
+            title: 'Unit price each',
+            explanation: 'Price ÷ quantity per offer.',
+            latex: '\\frac{\\text{price}}{\\text{quantity}}',
+          ),
           StepModel(
-              stepNumber: 3,
-              title: 'Compare',
-              explanation: '${solve().answer}.',
-              latex: solve().hasError
-                  ? null
-                  : '${G6Format.num(p.second / _toBase(p.first, p.unitA))} '
+            stepNumber: 3,
+            title: 'Compare',
+            explanation: '${solve().answer}.',
+            latex: solve().hasError
+                ? null
+                : '${G6Format.num(p.second / _toBase(p.first, p.unitA))} '
                       '\\text{ vs } '
                       '${G6Format.num(p.fourth / _toBase(p.third, p.unitB))} '
-                      '\\text{ per unit}'),
+                      '\\text{ per unit}',
+          ),
         ];
       case _RateKind.meter:
         return [
           StepModel(
-              stepNumber: 1,
-              title: 'Subtract readings',
-              explanation: 'Use = present − previous.',
-              latex: '${G6Format.num(p.second)} '
-                  '- ${G6Format.num(p.first)}'),
+            stepNumber: 1,
+            title: 'Subtract readings',
+            explanation: 'Use = present − previous.',
+            latex:
+                '${G6Format.num(p.second)} '
+                '- ${G6Format.num(p.first)}',
+          ),
           StepModel(
-              stepNumber: 2,
-              title: 'Multiply by rate',
-              explanation: 'Bill = use × rate.',
-              latex: '${G6Format.num(p.second - p.first)} '
-                  '\\times ${G6Format.num(p.third)}'),
+            stepNumber: 2,
+            title: 'Multiply by rate',
+            explanation: 'Bill = use × rate.',
+            latex:
+                '${G6Format.num(p.second - p.first)} '
+                '\\times ${G6Format.num(p.third)}',
+          ),
           StepModel(
-              stepNumber: 3,
-              title: 'Label kWh and pesos',
-              explanation: '${solve().answer}.',
-              latex: solve().hasError
-                  ? null
-                  : '\\text{Use} = ${G6Format.num(p.second - p.first)} '
+            stepNumber: 3,
+            title: 'Label kWh and pesos',
+            explanation: '${solve().answer}.',
+            latex: solve().hasError
+                ? null
+                : '\\text{Use} = ${G6Format.num(p.second - p.first)} '
                       '\\text{ kWh}, \\quad \\text{Bill} = '
-                      '${G6Format.num((p.second - p.first) * p.third)}'),
+                      '${G6Format.num((p.second - p.first) * p.third)}',
+          ),
         ];
     }
   }

@@ -25,8 +25,9 @@ void main() {
   };
 
   guidelines.forEach((name, guideline) {
-    testWidgets('home screen meets the $name guideline (both themes)',
-        (tester) async {
+    testWidgets('home screen meets the $name guideline (both themes)', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
 
       for (final isDark in [false, true]) {
@@ -57,50 +58,52 @@ void main() {
     });
 
     testWidgets(
-        'category picker screen meets the $name guideline (both themes)',
-        (tester) async {
-      final handle = tester.ensureSemantics();
+      'category picker screen meets the $name guideline (both themes)',
+      (tester) async {
+        final handle = tester.ensureSemantics();
 
-      for (final isDark in [false, true]) {
-        final theme = ThemeProvider();
-        if (isDark) theme.toggleTheme();
+        for (final isDark in [false, true]) {
+          final theme = ThemeProvider();
+          if (isDark) theme.toggleTheme();
 
-        tester.view.physicalSize = const Size(390, 844);
-        tester.view.devicePixelRatio = 1.0;
+          tester.view.physicalSize = const Size(390, 844);
+          tester.view.devicePixelRatio = 1.0;
 
-        final router = GoRouter(
-          initialLocation: '/midterm',
-          routes: [
-            GoRoute(
-              path: '/midterm',
-              builder: (context, state) => const CategoryPickerScreen(),
+          final router = GoRouter(
+            initialLocation: '/midterm',
+            routes: [
+              GoRoute(
+                path: '/midterm',
+                builder: (context, state) => const CategoryPickerScreen(),
+              ),
+            ],
+          );
+
+          await tester.pumpWidget(
+            ChangeNotifierProvider.value(
+              value: theme,
+              child: MaterialApp.router(routerConfig: router),
             ),
-          ],
-        );
+          );
+          await tester.pump();
+          // Stagger fade-in for the module cards (900ms controller).
+          await tester.pump(const Duration(milliseconds: 900));
 
-        await tester.pumpWidget(
-          ChangeNotifierProvider.value(
-            value: theme,
-            child: MaterialApp.router(routerConfig: router),
-          ),
-        );
-        await tester.pump();
-        // Stagger fade-in for the module cards (900ms controller).
-        await tester.pump(const Duration(milliseconds: 900));
+          await expectLater(tester, meetsGuideline(guideline));
 
-        await expectLater(tester, meetsGuideline(guideline));
+          router.dispose();
+        }
 
-        router.dispose();
-      }
-
-      handle.dispose();
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-    });
+        handle.dispose();
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+      },
+    );
   });
 
-  testWidgets('finals token pairs meet 4.5:1 contrast (both themes)',
-      (tester) async {
+  testWidgets('finals token pairs meet 4.5:1 contrast (both themes)', (
+    tester,
+  ) async {
     double ratio(Color fg, Color bg) {
       double lum(Color c) {
         double channel(double v) => (v <= 0.03928)
@@ -151,16 +154,28 @@ void main() {
 
       final mode = isDark ? 'dark' : 'light';
 
-      expect(ratio(primary!, card!), greaterThanOrEqualTo(4.5),
-          reason: 'primaryFor on card fails in $mode');
-      expect(ratio(danger!, card!), greaterThanOrEqualTo(4.5),
-          reason: 'dangerFor on card fails in $mode');
-      expect(ratio(tertiary!, card!), greaterThanOrEqualTo(4.5),
-          reason: 'tertiaryFor on card fails in $mode');
+      expect(
+        ratio(primary!, card!),
+        greaterThanOrEqualTo(4.5),
+        reason: 'primaryFor on card fails in $mode',
+      );
+      expect(
+        ratio(danger!, card!),
+        greaterThanOrEqualTo(4.5),
+        reason: 'dangerFor on card fails in $mode',
+      );
+      expect(
+        ratio(tertiary!, card!),
+        greaterThanOrEqualTo(4.5),
+        reason: 'tertiaryFor on card fails in $mode',
+      );
       // SnackBar content Text uses onErrorNow via contentTextStyle, so this
       // pairing is the meaningful check for the 13 migrated SnackBars.
-      expect(ratio(onErrorNowFg!, dangerNowBg!), greaterThanOrEqualTo(4.5),
-          reason: 'onErrorNow on dangerNow background fails in $mode');
+      expect(
+        ratio(onErrorNowFg!, dangerNowBg!),
+        greaterThanOrEqualTo(4.5),
+        reason: 'onErrorNow on dangerNow background fails in $mode',
+      );
     }
   });
 }

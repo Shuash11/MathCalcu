@@ -16,8 +16,9 @@ class LCDStepsView extends StatelessWidget {
   Widget build(BuildContext context) {
     // This widget is already inside a parent scroll view.
     // Using Column avoids nested scrolling/render edge cases.
-    final visibleSteps =
-        steps.where((step) => step.trim().isNotEmpty).toList(growable: false);
+    final visibleSteps = steps
+        .where((step) => step.trim().isNotEmpty)
+        .toList(growable: false);
 
     return Column(
       children: List.generate(
@@ -67,10 +68,8 @@ class _FormattedStepText extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Math.tex(
             part,
-            textStyle: FinalsTheme.titleStyle(context).copyWith(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
+            textStyle: FinalsTheme.titleStyle(context)
+                .copyWith(fontSize: 15, fontWeight: FontWeight.w600),
             onErrorFallback: (err) {
               return ResponsiveText(
                 part,
@@ -94,8 +93,9 @@ class _FormattedStepText extends StatelessWidget {
                     color: FinalsTheme.cardSecondary(context),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: FinalsTheme.primaryFor(context)
-                            .withValues(alpha: 0.1)),
+                      color: FinalsTheme.primaryFor(context)
+                          .withValues(alpha: 0.1),
+                    ),
                   ),
                   child: mathWidget,
                 )
@@ -147,8 +147,8 @@ class _InlineMathText extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 13,
-                    color:
-                        FinalsTheme.primaryFor(context).withValues(alpha: 0.7),
+                    color: FinalsTheme.primaryFor(context)
+                        .withValues(alpha: 0.7),
                   ),
                 );
               },

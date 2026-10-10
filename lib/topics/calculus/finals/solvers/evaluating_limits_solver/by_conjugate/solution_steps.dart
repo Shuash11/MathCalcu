@@ -85,41 +85,50 @@ class ConjugateStepsGenerator {
 
     final isRationalizingNumerator = result.rationalizedNumeratorNotDenominator;
 
-    steps.add(ConjugateStep(
-      stepNumber: 1,
-      title: 'Write the Equation',
-      explanation:
-          'We need to evaluate the limit as $varName approaches $approachStr.',
-      latexExpression:
-          '\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex}',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 1,
+        title: 'Write the Equation',
+        explanation:
+            'We need to evaluate the limit as $varName approaches $approachStr.',
+        latexExpression:
+            '\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex}',
+      ),
+    );
 
-    steps.add(ConjugateStep(
-      stepNumber: 2,
-      title: 'Try Substitution',
-      explanation:
-          'Substituting $varName = $approachStr gives \\frac{0}{0}, which is indeterminate.',
-      latexExpression:
-          '\\frac{$numTex}{$denTex}\\bigg|_{$varName = $approachStr} = \\frac{0}{0}',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 2,
+        title: 'Try Substitution',
+        explanation:
+            'Substituting $varName = $approachStr gives \\frac{0}{0}, which is indeterminate.',
+        latexExpression:
+            '\\frac{$numTex}{$denTex}\\bigg|_{$varName = $approachStr} = \\frac{0}{0}',
+      ),
+    );
 
-    steps.add(ConjugateStep(
-      stepNumber: 3,
-      title: 'Identify the Conjugate',
-      explanation: isRationalizingNumerator
-          ? 'The numerator contains a square root. Its conjugate is $conjTex.'
-          : 'The denominator contains a square root. Its conjugate is $conjTex.',
-      latexExpression: '\\text{Conjugate: } $conjTex',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 3,
+        title: 'Identify the Conjugate',
+        explanation: isRationalizingNumerator
+            ? 'The numerator contains a square root. Its conjugate is $conjTex.'
+            : 'The denominator contains a square root. Its conjugate is $conjTex.',
+        latexExpression: '\\text{Conjugate: } $conjTex',
+      ),
+    );
 
-    steps.add(ConjugateStep(
-      stepNumber: 4,
-      title: 'Multiply Top and Bottom by the Conjugate',
-      explanation: 'Multiply both numerator and denominator by the conjugate.',
-      latexExpression: isRationalizingNumerator
-          ? '\\frac{$numTex}{$denTex} \\cdot \\frac{$conjTex}{$conjTex} = \\frac{$numTex \\cdot $conjTex}{$denTex \\cdot $conjTex}'
-          : '\\frac{$numTex}{$denTex} \\cdot \\frac{$conjTex}{$conjTex} = \\frac{$numTex \\cdot $conjTex}{$denTex \\cdot $conjTex}',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 4,
+        title: 'Multiply Top and Bottom by the Conjugate',
+        explanation:
+            'Multiply both numerator and denominator by the conjugate.',
+        latexExpression: isRationalizingNumerator
+            ? '\\frac{$numTex}{$denTex} \\cdot \\frac{$conjTex}{$conjTex} = \\frac{$numTex \\cdot $conjTex}{$denTex \\cdot $conjTex}'
+            : '\\frac{$numTex}{$denTex} \\cdot \\frac{$conjTex}{$conjTex} = \\frac{$numTex \\cdot $conjTex}{$denTex \\cdot $conjTex}',
+      ),
+    );
 
     final numNode = result.originalNumerator;
     final denNode = result.originalDenominator;
@@ -134,79 +143,101 @@ class ConjugateStepsGenerator {
     }
 
     if (isRationalizingNumerator) {
-      steps.add(ConjugateStep(
-        stepNumber: 5,
-        title: 'Expand the Numerator',
-        explanation:
-            'Using the difference of squares formula: (a - b)(a + b) = a² - b²',
-        latexExpression: numeratorExpansion ??
-            '\\text{Numerator: } $numTex \\cdot $conjTex = \\text{expanding...}',
-      ));
+      steps.add(
+        ConjugateStep(
+          stepNumber: 5,
+          title: 'Expand the Numerator',
+          explanation: 'Using the difference of squares formula: (a - b)(a + b) = a² - b²',
+          latexExpression:
+              numeratorExpansion ??
+              '\\text{Numerator: } $numTex \\cdot $conjTex = \\text{expanding...}',
+        ),
+      );
 
-      steps.add(ConjugateStep(
-        stepNumber: 6,
-        title: 'Expand the Denominator',
-        explanation: 'The denominator remains multiplied by the conjugate.',
-        latexExpression: '\\text{Denominator: } $denTex \\cdot $conjTex',
-      ));
+      steps.add(
+        ConjugateStep(
+          stepNumber: 6,
+          title: 'Expand the Denominator',
+          explanation: 'The denominator remains multiplied by the conjugate.',
+          latexExpression: '\\text{Denominator: } $denTex \\cdot $conjTex',
+        ),
+      );
     } else {
-      steps.add(ConjugateStep(
-        stepNumber: 5,
-        title: 'Expand the Numerator',
-        explanation: 'The numerator is multiplied by the conjugate.',
-        latexExpression: '\\text{Numerator: } $numTex \\cdot $conjTex',
-      ));
+      steps.add(
+        ConjugateStep(
+          stepNumber: 5,
+          title: 'Expand the Numerator',
+          explanation: 'The numerator is multiplied by the conjugate.',
+          latexExpression: '\\text{Numerator: } $numTex \\cdot $conjTex',
+        ),
+      );
 
-      steps.add(ConjugateStep(
-        stepNumber: 6,
-        title: 'Expand the Denominator',
-        explanation:
-            'Using the difference of squares formula: (a - b)(a + b) = a² - b²',
-        latexExpression: denominatorExpansion ??
-            '\\text{Denominator: } $denTex \\cdot $conjTex = \\text{expanding...}',
-      ));
+      steps.add(
+        ConjugateStep(
+          stepNumber: 6,
+          title: 'Expand the Denominator',
+          explanation: 'Using the difference of squares formula: (a - b)(a + b) = a² - b²',
+          latexExpression:
+              denominatorExpansion ??
+              '\\text{Denominator: } $denTex \\cdot $conjTex = \\text{expanding...}',
+        ),
+      );
     }
 
-    steps.add(ConjugateStep(
-      stepNumber: 7,
-      title: 'Rewrite the Fraction',
-      explanation: 'After rationalization, we get:',
-      latexExpression: '\\frac{$ratNumTex}{$ratDenTex}',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 7,
+        title: 'Rewrite the Fraction',
+        explanation: 'After rationalization, we get:',
+        latexExpression: '\\frac{$ratNumTex}{$ratDenTex}',
+      ),
+    );
 
-    steps.add(ConjugateStep(
-      stepNumber: 8,
-      title: 'Cancel Common Factors',
-      explanation:
-          'Look for any $varName terms that can be cancelled from numerator and denominator.',
-      latexExpression:
-          '\\frac{$ratNumTex}{$ratDenTex} \\Rightarrow \\text{cancelled form}',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 8,
+        title: 'Cancel Common Factors',
+        explanation:
+            'Look for any $varName terms that can be cancelled from numerator and denominator.',
+        latexExpression:
+            '\\frac{$ratNumTex}{$ratDenTex} \\Rightarrow \\text{cancelled form}',
+      ),
+    );
 
-    final newNumVal = result.rationalizedNumerator
-            ?.evaluate(result.approachValue, variable: result.variable) ??
+    final newNumVal =
+        result.rationalizedNumerator?.evaluate(
+          result.approachValue,
+          variable: result.variable,
+        ) ??
         0;
-    final newDenVal = result.rationalizedDenominator
-            ?.evaluate(result.approachValue, variable: result.variable) ??
+    final newDenVal =
+        result.rationalizedDenominator?.evaluate(
+          result.approachValue,
+          variable: result.variable,
+        ) ??
         0;
 
-    steps.add(ConjugateStep(
-      stepNumber: 9,
-      title: 'Substitute x = $approachStr',
-      explanation:
-          'Now substitute $varName = $approachStr into the simplified expression.',
-      latexExpression:
-          '\\frac{$ratNumTex}{$ratDenTex}\\bigg|_{$varName = $approachStr} = \\frac{${_fmt(newNumVal)}}{${_fmt(newDenVal)}} = ${_fmt(result.finalValue)}',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 9,
+        title: 'Substitute x = $approachStr',
+        explanation:
+            'Now substitute $varName = $approachStr into the simplified expression.',
+        latexExpression:
+            '\\frac{$ratNumTex}{$ratDenTex}\\bigg|_{$varName = $approachStr} = \\frac{${_fmt(newNumVal)}}{${_fmt(newDenVal)}} = ${_fmt(result.finalValue)}',
+      ),
+    );
 
     final finalAnswer = _fmt(result.finalValue);
-    steps.add(ConjugateStep(
-      stepNumber: 10,
-      title: 'Final Answer',
-      explanation: 'The limit has been evaluated successfully.',
-      latexExpression:
-          '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex} = $finalAnswer}',
-    ));
+    steps.add(
+      ConjugateStep(
+        stepNumber: 10,
+        title: 'Final Answer',
+        explanation: 'The limit has been evaluated successfully.',
+        latexExpression:
+            '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex} = $finalAnswer}',
+      ),
+    );
 
     return steps;
   }
@@ -250,14 +281,14 @@ class ConjugateStepsGenerator {
       ConjugateStep(
         stepNumber: 3,
         title: 'Identify the Conjugate',
-        explanation: result.errorMessage ??
+        explanation:
+            result.errorMessage ??
             'Attempting to find a conjugate to rationalize...',
       ),
       const ConjugateStep(
         stepNumber: 4,
         title: 'Cannot Solve',
-        explanation:
-            'This limit cannot be solved by the conjugate method. Try a different approach like Factoring or LCD.',
+        explanation: 'This limit cannot be solved by the conjugate method. Try a different approach like Factoring or LCD.',
       ),
     ];
   }

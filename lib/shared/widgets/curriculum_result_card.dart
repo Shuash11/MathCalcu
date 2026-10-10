@@ -29,9 +29,7 @@ void showTopicComingSoon(BuildContext context, String label) {
     ..hideCurrentSnackBar()
     ..showSnackBar(
       SnackBar(
-        content: Text(
-          'Coming in Phase 1 — "$label" solver isn\'t built yet.',
-        ),
+        content: Text('Coming in Phase 1 — "$label" solver isn\'t built yet.'),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -71,8 +69,10 @@ void handleCurriculumTap(BuildContext context, CurriculumTopic topic) {
     return;
   }
   // Task 7: record recently opened (fire-and-forget, offline prefs).
-  const HistoryService()
-      .addRecentSolved(label: topic.label, route: topic.route);
+  const HistoryService().addRecentSolved(
+    label: topic.label,
+    route: topic.route,
+  );
   context.push(topic.route);
 }
 
@@ -132,8 +132,11 @@ class CurriculumResultCard extends StatelessWidget {
   final CurriculumTopic topic;
   final String? sectionLabel;
 
-  const CurriculumResultCard(
-      {super.key, required this.topic, this.sectionLabel});
+  const CurriculumResultCard({
+    super.key,
+    required this.topic,
+    this.sectionLabel,
+  });
 
   @override
   Widget build(BuildContext context) {

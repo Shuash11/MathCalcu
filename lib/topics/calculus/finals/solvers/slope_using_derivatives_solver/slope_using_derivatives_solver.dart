@@ -34,7 +34,7 @@ enum TokenType {
   rparen,
   equals,
   comma,
-  eof
+  eof,
 }
 
 class Token {
@@ -75,7 +75,7 @@ class Tokenizer {
     'exp',
     'sqrt',
     'abs',
-    'cbrt'
+    'cbrt',
   };
   static const knownConstants = {'e', 'pi', '\u03c0'};
   Tokenizer(this.input);
@@ -295,9 +295,10 @@ class Parser {
       }
       if (current.type == TokenType.lparen) {
         throw FormatException(
-            'Unknown function "$name": call notation like $name(...) is not '
-            'supported. Use known functions (sin, cos, tan, ln, exp, sqrt, '
-            '...) or write the expression explicitly.');
+          'Unknown function "$name": call notation like $name(...) is not '
+          'supported. Use known functions (sin, cos, tan, ln, exp, sqrt, '
+          '...) or write the expression explicitly.',
+        );
       }
       return Var(name);
     }
@@ -313,7 +314,8 @@ class Parser {
   void _expect(TokenType type) {
     if (current.type != type) {
       throw FormatException(
-          'Expected ${type.name} but got "${current.value}" at $pos');
+        'Expected ${type.name} but got "${current.value}" at $pos',
+      );
     }
     advance();
   }
@@ -597,14 +599,14 @@ class Simplifier {
           final (rc, rr) = extractDerivCoeff(e.right, dv);
           return (
             simplify(BinOp(e.left, '*', rc)),
-            simplify(BinOp(e.left, '*', rr))
+            simplify(BinOp(e.left, '*', rr)),
           );
         }
         if (lH) {
           final (lc, lr) = extractDerivCoeff(e.left, dv);
           return (
             simplify(BinOp(lc, '*', e.right)),
-            simplify(BinOp(lr, '*', e.right))
+            simplify(BinOp(lr, '*', e.right)),
           );
         }
       }
@@ -615,7 +617,7 @@ class Simplifier {
           final (nc, nr) = extractDerivCoeff(e.left, dv);
           return (
             simplify(BinOp(nc, '/', e.right)),
-            simplify(BinOp(nr, '/', e.right))
+            simplify(BinOp(nr, '/', e.right)),
           );
         }
       }
@@ -630,8 +632,11 @@ class Simplifier {
 // ═══════════════════════════════════════════════════════════════════
 
 class Differentiator {
-  static Expr differentiate(Expr e, String v,
-      {Set<String> dependentVars = const {}}) {
+  static Expr differentiate(
+    Expr e,
+    String v, {
+    Set<String> dependentVars = const {},
+  }) {
     if (e is Num || e is Const) return const Num(0);
     if (e is Var) {
       if (e.name == v) return const Num(1);
@@ -641,28 +646,43 @@ class Differentiator {
     if (e is DerivSym) return const Num(0);
     if (e is UnaryNeg) {
       return Simplifier.simplify(
-          UnaryNeg(differentiate(e.operand, v, dependentVars: dependentVars)));
+        UnaryNeg(differentiate(e.operand, v, dependentVars: dependentVars)),
+      );
     }
     if (e is BinOp && (e.op == '+' || e.op == '-')) {
-      return Simplifier.simplify(BinOp(
+      return Simplifier.simplify(
+        BinOp(
           differentiate(e.left, v, dependentVars: dependentVars),
           e.op,
-          differentiate(e.right, v, dependentVars: dependentVars)));
+          differentiate(e.right, v, dependentVars: dependentVars),
+        ),
+      );
     }
     if (e is BinOp && e.op == '*') {
       final df = differentiate(e.left, v, dependentVars: dependentVars),
           dg = differentiate(e.right, v, dependentVars: dependentVars);
-      return Simplifier.simplify(BinOp(BinOp(df, '*', e.right.clone()), '+',
-          BinOp(e.left.clone(), '*', dg)));
+      return Simplifier.simplify(
+        BinOp(
+          BinOp(df, '*', e.right.clone()),
+          '+',
+          BinOp(e.left.clone(), '*', dg),
+        ),
+      );
     }
     if (e is BinOp && e.op == '/') {
       final df = differentiate(e.left, v, dependentVars: dependentVars),
           dg = differentiate(e.right, v, dependentVars: dependentVars);
-      return Simplifier.simplify(BinOp(
-          BinOp(BinOp(df, '*', e.right.clone()), '-',
-              BinOp(e.left.clone(), '*', dg)),
+      return Simplifier.simplify(
+        BinOp(
+          BinOp(
+            BinOp(df, '*', e.right.clone()),
+            '-',
+            BinOp(e.left.clone(), '*', dg),
+          ),
           '/',
-          Pow(e.right.clone(), const Num(2))));
+          Pow(e.right.clone(), const Num(2)),
+        ),
+      );
     }
     if (e is Pow) return _diffPow(e, v, dependentVars);
     if (e is Func) return _diffFunc(e, v, dependentVars);
@@ -675,30 +695,45 @@ class Differentiator {
     if (!bH && !eH) return const Num(0);
     if (bH && !eH) {
       final df = differentiate(e.base, v, dependentVars: dep);
-      return Simplifier.simplify(BinOp(
+      return Simplifier.simplify(
+        BinOp(
           BinOp(
-              e.exponent.clone(),
-              '*',
-              Pow(e.base.clone(),
-                  BinOp(e.exponent.clone(), '-', const Num(1)))),
+            e.exponent.clone(),
+            '*',
+            Pow(e.base.clone(), BinOp(e.exponent.clone(), '-', const Num(1))),
+          ),
           '*',
-          df));
+          df,
+        ),
+      );
     }
     if (!bH && eH) {
       final dg = differentiate(e.exponent, v, dependentVars: dep);
-      return Simplifier.simplify(BinOp(
-          BinOp(Pow(e.base.clone(), e.exponent.clone()), '*',
-              Func('ln', e.base.clone())),
+      return Simplifier.simplify(
+        BinOp(
+          BinOp(
+            Pow(e.base.clone(), e.exponent.clone()),
+            '*',
+            Func('ln', e.base.clone()),
+          ),
           '*',
-          dg));
+          dg,
+        ),
+      );
     }
     final df = differentiate(e.base, v, dependentVars: dep),
         dg = differentiate(e.exponent, v, dependentVars: dep);
-    return Simplifier.simplify(BinOp(
+    return Simplifier.simplify(
+      BinOp(
         Pow(e.base.clone(), e.exponent.clone()),
         '*',
-        BinOp(BinOp(dg, '*', Func('ln', e.base.clone())), '+',
-            BinOp(BinOp(e.exponent.clone(), '*', df), '/', e.base.clone()))));
+        BinOp(
+          BinOp(dg, '*', Func('ln', e.base.clone())),
+          '+',
+          BinOp(BinOp(e.exponent.clone(), '*', df), '/', e.base.clone()),
+        ),
+      ),
+    );
   }
 
   static bool _hasDep(Expr e, Set<String> dep) {
@@ -723,15 +758,20 @@ class Differentiator {
         break;
       case 'cot':
         od = UnaryNeg(
-            BinOp(const Num(1), '/', Pow(Func('sin', u), const Num(2))));
+          BinOp(const Num(1), '/', Pow(Func('sin', u), const Num(2))),
+        );
         break;
       case 'sec':
         od = BinOp(
-            Func('sin', u.clone()), '/', Pow(Func('cos', u), const Num(2)));
+          Func('sin', u.clone()),
+          '/',
+          Pow(Func('cos', u), const Num(2)),
+        );
         break;
       case 'csc':
-        od = UnaryNeg(BinOp(
-            Func('cos', u.clone()), '/', Pow(Func('sin', u), const Num(2))));
+        od = UnaryNeg(
+          BinOp(Func('cos', u.clone()), '/', Pow(Func('sin', u), const Num(2))),
+        );
         break;
       case 'ln':
         od = BinOp(const Num(1), '/', u);
@@ -743,8 +783,11 @@ class Differentiator {
         od = Func('exp', u);
         break;
       case 'sqrt':
-        od =
-            BinOp(const Num(1), '/', BinOp(const Num(2), '*', Func('sqrt', u)));
+        od = BinOp(
+          const Num(1),
+          '/',
+          BinOp(const Num(2), '*', Func('sqrt', u)),
+        );
         break;
       case 'abs':
         od = BinOp(u, '/', Func('abs', u.clone()));
@@ -827,7 +870,11 @@ class SlopeSolver {
   }
 
   static SlopeResult _solveExplicit(
-      Expr l, Expr r, String orig, Map<String, double> pv) {
+    Expr l,
+    Expr r,
+    String orig,
+    Map<String, double> pv,
+  ) {
     const iv = 'x';
     final dv = (l is Var) ? l.name : 'y';
     final rd = Differentiator.differentiate(r, iv),
@@ -853,24 +900,29 @@ class SlopeSolver {
       } catch (_) {}
     }
     return SlopeResult(
-        type: ProblemType.explicit,
-        originalInput: orig,
-        functionExpr: r,
-        derivative: rd,
-        simplifiedDerivative: sd,
-        slopeValue: sv,
-        point: pv,
-        independentVar: iv,
-        dependentVar: dv,
-        tangentSlope: ts,
-        tangentYIntercept: ty,
-        normalSlope: ns,
-        tangentLineEquation: te,
-        normalLineEquation: ne);
+      type: ProblemType.explicit,
+      originalInput: orig,
+      functionExpr: r,
+      derivative: rd,
+      simplifiedDerivative: sd,
+      slopeValue: sv,
+      point: pv,
+      independentVar: iv,
+      dependentVar: dv,
+      tangentSlope: ts,
+      tangentYIntercept: ty,
+      normalSlope: ns,
+      tangentLineEquation: te,
+      normalLineEquation: ne,
+    );
   }
 
   static SlopeResult _solveImplicit(
-      Expr l, Expr r, String orig, Map<String, double> pv) {
+    Expr l,
+    Expr r,
+    String orig,
+    Map<String, double> pv,
+  ) {
     final F = Simplifier.simplify(BinOp(l, '-', r));
     final dL = Differentiator.differentiate(l, 'x', dependentVars: {'y'});
     final dR = Differentiator.differentiate(r, 'x', dependentVars: {'y'});
@@ -898,24 +950,25 @@ class SlopeSolver {
       } catch (_) {}
     }
     return SlopeResult(
-        type: ProblemType.implicit,
-        originalInput: orig,
-        functionExpr: F,
-        derivative: dX,
-        simplifiedDerivative: iS,
-        slopeValue: sv,
-        point: pv,
-        independentVar: 'x',
-        dependentVar: 'y',
-        leftSide: l,
-        rightSide: r,
-        leftDerivative: dL,
-        rightDerivative: dR,
-        implicitSlopeExpr: iS,
-        tangentSlope: ts,
-        tangentLineEquation: te,
-        normalSlope: ns,
-        normalLineEquation: ne);
+      type: ProblemType.implicit,
+      originalInput: orig,
+      functionExpr: F,
+      derivative: dX,
+      simplifiedDerivative: iS,
+      slopeValue: sv,
+      point: pv,
+      independentVar: 'x',
+      dependentVar: 'y',
+      leftSide: l,
+      rightSide: r,
+      leftDerivative: dL,
+      rightDerivative: dR,
+      implicitSlopeExpr: iS,
+      tangentSlope: ts,
+      tangentLineEquation: te,
+      normalSlope: ns,
+      normalLineEquation: ne,
+    );
   }
 
   static SlopeResult _solveParametric(String input, Map<String, double> pv) {
@@ -981,23 +1034,24 @@ class SlopeSolver {
       } catch (_) {}
     }
     return SlopeResult(
-        type: ProblemType.parametric,
-        originalInput: input,
-        functionExpr: ps,
-        derivative: ps,
-        simplifiedDerivative: ps,
-        slopeValue: sv,
-        point: pv,
-        independentVar: pv2,
-        dependentVar: 'y',
-        paramXExpr: xE,
-        paramYExpr: yE,
-        dxDt: dx,
-        dyDt: dy,
-        secondDerivative: sD,
-        tangentSlope: ts,
-        tangentLineEquation: te,
-        normalSlope: ns,
-        normalLineEquation: ne);
+      type: ProblemType.parametric,
+      originalInput: input,
+      functionExpr: ps,
+      derivative: ps,
+      simplifiedDerivative: ps,
+      slopeValue: sv,
+      point: pv,
+      independentVar: pv2,
+      dependentVar: 'y',
+      paramXExpr: xE,
+      paramYExpr: yE,
+      dxDt: dx,
+      dyDt: dy,
+      secondDerivative: sD,
+      tangentSlope: ts,
+      tangentLineEquation: te,
+      normalSlope: ns,
+      normalLineEquation: ne,
+    );
   }
 }

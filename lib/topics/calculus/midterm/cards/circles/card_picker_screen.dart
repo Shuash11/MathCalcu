@@ -1,7 +1,9 @@
 import 'dart:math';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+
 import 'finding_radius_card.dart';
 import 'finding_center_card.dart';
 import 'finding_center_radius_card.dart';
@@ -21,13 +23,17 @@ class CircleCardPickerScreen extends StatelessWidget {
             top: -60,
             right: -60,
             child: _AmbientOrb(
-                color: theme.accentColor.withValues(alpha: 0.12), size: 260),
+              color: theme.accentColor.withValues(alpha: 0.12),
+              size: 260,
+            ),
           ),
           Positioned(
             bottom: -80,
             left: -60,
             child: _AmbientOrb(
-                color: theme.accentColor.withValues(alpha: 0.10), size: 200),
+              color: theme.accentColor.withValues(alpha: 0.10),
+              size: 200,
+            ),
           ),
           SafeArea(
             child: Padding(
@@ -76,26 +82,33 @@ class CircleCardPickerScreen extends StatelessWidget {
             color: theme.accentColor.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-                color: theme.accentColor.withValues(alpha: 0.35), width: 1.5),
+              color: theme.accentColor.withValues(alpha: 0.35),
+              width: 1.5,
+            ),
           ),
-          child: Icon(Icons.arrow_back_ios_new_rounded,
-              color: theme.accentColor, size: 18),
+          child: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: theme.accentColor,
+            size: 18,
+          ),
         ),
       ),
     );
   }
 
   Widget _divider() => Container(
-        height: 1,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Colors.transparent,
-            Color(0x4D334155),
-            Color(0x33334155),
-            Colors.transparent,
-          ]),
-        ),
-      );
+    height: 1,
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.transparent,
+          Color(0x4D334155),
+          Color(0x33334155),
+          Colors.transparent,
+        ],
+      ),
+    ),
+  );
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────
@@ -151,17 +164,20 @@ class _PickerHeader extends StatelessWidget {
   }
 
   Widget _dot(Color c) => Container(
-        width: 6,
-        height: 6,
-        decoration: BoxDecoration(
-          color: c,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-                color: c.withValues(alpha: 0.6), blurRadius: 4, spreadRadius: 1)
-          ],
+    width: 6,
+    height: 6,
+    decoration: BoxDecoration(
+      color: c,
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: c.withValues(alpha: 0.6),
+          blurRadius: 4,
+          spreadRadius: 1,
         ),
-      );
+      ],
+    ),
+  );
 }
 
 // ── Orbit Badge ───────────────────────────────────────────────────────────────
@@ -178,9 +194,10 @@ class _OrbitBadgeState extends State<_OrbitBadge>
   @override
   void initState() {
     super.initState();
-    _ctrl =
-        AnimationController(vsync: this, duration: const Duration(seconds: 4))
-          ..repeat();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
   }
 
   @override
@@ -215,15 +232,21 @@ class _OrbitBadgeState extends State<_OrbitBadge>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: const Color(0xFF334155).withValues(alpha: 0.4),
-                  width: 1.5),
-              gradient: RadialGradient(colors: [
-                const Color(0xFF334155).withValues(alpha: 0.25),
-                const Color(0xFF334155).withValues(alpha: 0.08),
-              ]),
+                color: const Color(0xFF334155).withValues(alpha: 0.4),
+                width: 1.5,
+              ),
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFF334155).withValues(alpha: 0.25),
+                  const Color(0xFF334155).withValues(alpha: 0.08),
+                ],
+              ),
             ),
-            child: const Icon(Icons.trip_origin_rounded,
-                color: Color(0xFF334155), size: 18),
+            child: const Icon(
+              Icons.trip_origin_rounded,
+              color: Color(0xFF334155),
+              size: 18,
+            ),
           ),
         ],
       ),
@@ -252,9 +275,14 @@ class _OrbitRingPainter extends CustomPainter {
 
     final angle = progress * 2 * pi;
     final dot = Offset(
-        center.dx + radius * cos(angle), center.dy + radius * sin(angle));
-    canvas.drawCircle(dot, 5,
-        Paint()..color = const Color(0xFF334155).withValues(alpha: 0.3));
+      center.dx + radius * cos(angle),
+      center.dy + radius * sin(angle),
+    );
+    canvas.drawCircle(
+      dot,
+      5,
+      Paint()..color = const Color(0xFF334155).withValues(alpha: 0.3),
+    );
     canvas.drawCircle(dot, 2.5, Paint()..color = const Color(0xFF334155));
   }
 

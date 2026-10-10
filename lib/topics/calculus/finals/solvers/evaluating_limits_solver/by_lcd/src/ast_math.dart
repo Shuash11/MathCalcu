@@ -1,4 +1,4 @@
-﻿library ast_math;
+library ast_math;
 
 /// src/ast_math.dart
 import 'lcd_math_engine.dart';
@@ -8,7 +8,10 @@ import 'dart:math';
 class AlgebraicSimplifier {
   /// Attempts to solve a conjugate form: (sqrt(A) - B) / C
   static SimplificationResult solveConjugate(
-      MathNode ast, String varName, double val) {
+    MathNode ast,
+    String varName,
+    double val,
+  ) {
     if (ast is! BinaryOpNode || ast.op != '/') {
       return SimplificationResult(false, null, null, null);
     }
@@ -27,10 +30,12 @@ class AlgebraicSimplifier {
     }
 
     // Identify which side has the sqrt
-    MathNode sqrtSide =
-        _findSqrt(numerator.left) != null ? numerator.left : numerator.right;
-    MathNode constSide =
-        (sqrtSide == numerator.left) ? numerator.right : numerator.left;
+    MathNode sqrtSide = _findSqrt(numerator.left) != null
+        ? numerator.left
+        : numerator.right;
+    MathNode constSide = (sqrtSide == numerator.left)
+        ? numerator.right
+        : numerator.left;
 
     if (sqrtSide is! FunctionNode || sqrtSide.name != 'sqrt') {
       return SimplificationResult(false, null, null, null);
@@ -76,12 +81,19 @@ class AlgebraicSimplifier {
     double answer = _numericLimit(ast, varName, val);
 
     return SimplificationResult(
-        true, [step1, step2, step3, step4], simplifiedNum, answer);
+      true,
+      [step1, step2, step3, step4],
+      simplifiedNum,
+      answer,
+    );
   }
 
   /// Attempts to solve LCD forms: e.g., (1/x - 1/a) / (x - a)
   static SimplificationResult solveLCD(
-      MathNode ast, String varName, double val) {
+    MathNode ast,
+    String varName,
+    double val,
+  ) {
     if (ast is! BinaryOpNode || ast.op != '/') {
       return SimplificationResult(false, null, null, null);
     }
@@ -124,7 +136,11 @@ class AlgebraicSimplifier {
     double answer = _numericLimit(ast, varName, val);
 
     return SimplificationResult(
-        true, [stepLCD, stepCombinedNum, stepNewDen], combinedNum, answer);
+      true,
+      [stepLCD, stepCombinedNum, stepNewDen],
+      combinedNum,
+      answer,
+    );
   }
 
   // ==========================================
@@ -222,5 +238,9 @@ class SimplificationResult {
   final double? answer;
 
   SimplificationResult(
-      this.success, this.stepStrings, this.resultingAST, this.answer);
+    this.success,
+    this.stepStrings,
+    this.resultingAST,
+    this.answer,
+  );
 }

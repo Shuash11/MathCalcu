@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:calculus_system/shared/widgets/solution_step_card.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
@@ -204,8 +205,9 @@ class DistanceSteps extends StatelessWidget {
                 steps[i].latex,
                 textStyle: TextStyle(
                   fontSize: 15,
-                  fontWeight:
-                      steps[i].isResult ? FontWeight.w600 : FontWeight.w500,
+                  fontWeight: steps[i].isResult
+                      ? FontWeight.w600
+                      : FontWeight.w500,
                   color: steps[i].isResult
                       ? FinalsTheme.primaryFor(context)
                       : FinalsTheme.textSecondary(context),

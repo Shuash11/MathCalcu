@@ -41,12 +41,7 @@ class TwoPointSlopeController extends ChangeNotifier {
       final x2 = double.parse(x2Controller.text.trim());
       final y2 = double.parse(y2Controller.text.trim());
 
-      _result = TwoPointSlopeSolver.solve(
-        x1: x1,
-        y1: y1,
-        x2: x2,
-        y2: y2,
-      );
+      _result = TwoPointSlopeSolver.solve(x1: x1, y1: y1, x2: x2, y2: y2);
       _state = SolveState.solved;
       _errorMessage = null;
     } catch (e) {

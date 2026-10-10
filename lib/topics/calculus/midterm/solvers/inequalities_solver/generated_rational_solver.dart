@@ -15,7 +15,10 @@ class GeneratedRationalSolver {
       final intervals = _buildIntervals(p);
       if (intervals.isEmpty) {
         return const SolveResult(
-            answer: 'No solution', points: [], intervalNotation: '∅');
+          answer: 'No solution',
+          points: [],
+          intervalNotation: '∅',
+        );
       }
 
       return SolveResult(
@@ -35,35 +38,35 @@ class GeneratedRationalSolver {
 
     int n = 1;
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: input.trim(),
-    ));
+    steps.add(StepModel(stepNumber: n++, latex: input.trim()));
 
     final combStr = _linearStrLatex(p.combA, p.combC);
     final denStr = _linearStrLatex(p.denA, p.denC);
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: 'Combine into a single fraction, set to zero',
-      latex: r'\frac{' + combStr + r'}{' + denStr + r'} ' + _texOp(p.op) + ' 0',
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        hint: 'Combine into a single fraction, set to zero',
+        latex:
+            r'\frac{' + combStr + r'}{' + denStr + r'} ' + _texOp(p.op) + ' 0',
+      ),
+    );
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      hint: 'Find critical points from numerator and denominator',
-      latex: (p.combA != 0 ? '$combStr = 0' : '') +
-          r' \text{ and } ' +
-          (p.denA != 0 ? '$denStr = 0' : ''),
-    ));
+    steps.add(
+      StepModel(
+        stepNumber: n++,
+        hint: 'Find critical points from numerator and denominator',
+        latex:
+            (p.combA != 0 ? '$combStr = 0' : '') +
+            r' \text{ and } ' +
+            (p.denA != 0 ? '$denStr = 0' : ''),
+      ),
+    );
 
     final intervals = _buildIntervals(p);
     final intervalStr = intervals.isEmpty ? '∅' : intervals.join(' ∪ ');
 
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: _toLatexInterval(intervalStr),
-    ));
+    steps.add(StepModel(stepNumber: n++, latex: _toLatexInterval(intervalStr)));
 
     return steps;
   }
@@ -86,10 +89,14 @@ class GeneratedRationalSolver {
     final slashIdx = lhs.indexOf('/');
     if (slashIdx == -1) return null;
 
-    final numStr =
-        lhs.substring(0, slashIdx).replaceAll('(', '').replaceAll(')', '');
-    final denStr =
-        lhs.substring(slashIdx + 1).replaceAll('(', '').replaceAll(')', '');
+    final numStr = lhs
+        .substring(0, slashIdx)
+        .replaceAll('(', '')
+        .replaceAll(')', '');
+    final denStr = lhs
+        .substring(slashIdx + 1)
+        .replaceAll('(', '')
+        .replaceAll(')', '');
     final rhsVal = double.tryParse(rhs.trim()) ?? 0.0;
 
     final numP = _parseLinear(numStr);
@@ -270,16 +277,19 @@ class GeneratedRationalSolver {
       if (i == 0) {
         final hi = pts[0];
         solution.add(
-            '(-∞, ${_fmt(hi)}${strict || undefinedPts.contains(hi) ? ")" : "]"}');
+          '(-∞, ${_fmt(hi)}${strict || undefinedPts.contains(hi) ? ")" : "]"}',
+        );
       } else if (i == testPts.length - 1) {
         final lo = pts.last;
         solution.add(
-            '${strict || undefinedPts.contains(lo) ? "(" : "["}${_fmt(lo)}, ∞)');
+          '${strict || undefinedPts.contains(lo) ? "(" : "["}${_fmt(lo)}, ∞)',
+        );
       } else {
         final lo = pts[i - 1];
         final hi = pts[i];
         solution.add(
-            '${strict || undefinedPts.contains(lo) ? "(" : "["}${_fmt(lo)}, ${_fmt(hi)}${strict || undefinedPts.contains(hi) ? ")" : "]"}');
+          '${strict || undefinedPts.contains(lo) ? "(" : "["}${_fmt(lo)}, ${_fmt(hi)}${strict || undefinedPts.contains(hi) ? ")" : "]"}',
+        );
       }
     }
     return solution;

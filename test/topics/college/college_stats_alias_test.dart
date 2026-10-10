@@ -47,14 +47,20 @@ void main() {
       expect(data['z'], closeTo(1.0, 0.0001), reason: input);
     }
 
-    test('comma-separated keys accepted',
-        () => ok('ztest mean=72,mu=70,sd=10,n=25'));
+    test(
+      'comma-separated keys accepted',
+      () => ok('ztest mean=72,mu=70,sd=10,n=25'),
+    );
 
-    test('greek sigma literal accepted',
-        () => ok('ztest x=72 mu=70 σ=10 n=25'));
+    test(
+      'greek sigma literal accepted',
+      () => ok('ztest x=72 mu=70 σ=10 n=25'),
+    );
 
-    test('combining-macron x-bar accepted',
-        () => ok('ztest x\u0304=72 mu=70 s=10 n=25'));
+    test(
+      'combining-macron x-bar accepted',
+      () => ok('ztest x\u0304=72 mu=70 s=10 n=25'),
+    );
 
     test('hijack guard retained (no false mean)', () {
       // 'max=5': the char before 'x' is 'a', not whitespace/comma/start,
@@ -68,25 +74,30 @@ void main() {
 
   group('College stats LaTeX coverage', () {
     List<String> texOf(CollegeStatsEquation eq) => [
-          for (final s in eq.getSteps())
-            if (s.latex != null) s.latex!,
-          for (final s in eq.getSteps()) ...?s.subLatex,
-        ];
+      for (final s in eq.getSteps())
+        if (s.latex != null) s.latex!,
+      for (final s in eq.getSteps()) ...?s.subLatex,
+    ];
 
     test('per-mode math steps carry real-value TeX; prose stays null', () {
       final d = CollegeStatsEquation('4,7,9 stats').getSteps();
       expect(d, hasLength(3));
       expect(d[0].latex, isNull); // 'summarize the data' guidance -> prose
-      expect(d[1].latex, '\\bar{x} = \\frac{\\sum x}{n},\\quad '
-          '\\sigma = \\sqrt{\\frac{\\sum (x - \\bar{x})^{2}}{n}}');
+      expect(
+        d[1].latex,
+        '\\bar{x} = \\frac{\\sum x}{n},\\quad '
+        '\\sigma = \\sqrt{\\frac{\\sum (x - \\bar{x})^{2}}{n}}',
+      );
       expect(d[2].latex, '\\bar{x} = 6.6667');
       expect(d[2].subLatex, ['\\sigma = 2.0548,\\quad s = 2.5166']);
 
       final reg = CollegeStatsEquation('x:1,2,3 y:2,4,6 regress').getSteps();
       expect(reg, hasLength(3));
       expect(reg[0].latex, isNull);
-      expect(reg[1].latex,
-          'b = \\frac{S_{xy}}{S_{xx}},\\quad a = \\bar{y} - b\\bar{x}');
+      expect(
+        reg[1].latex,
+        'b = \\frac{S_{xy}}{S_{xx}},\\quad a = \\bar{y} - b\\bar{x}',
+      );
       expect(reg[2].latex, '\\hat{y} = 0 + 2x');
       expect(reg[2].subLatex, ['r = 1,\\quad R^{2} = 1']);
 
@@ -94,7 +105,10 @@ void main() {
           .getSteps();
       expect(z, hasLength(3));
       expect(z[0].latex, isNull);
-      expect(z[1].latex, 'z = \\frac{\\bar{x} - \\mu_{0}}{\\sigma / \\sqrt{n}}');
+      expect(
+        z[1].latex,
+        'z = \\frac{\\bar{x} - \\mu_{0}}{\\sigma / \\sqrt{n}}',
+      );
       expect(z[2].latex, 'z = 1');
       expect(z[2].subLatex, ['p = 0.3173']);
 
@@ -116,16 +130,20 @@ void main() {
       for (final eq in inputs) {
         for (final t in texOf(eq)) {
           expect(t, isNotEmpty);
-          expect(t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-              reason: 'non-ASCII TeX: $t');
+          expect(
+            t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+            isTrue,
+            reason: 'non-ASCII TeX: $t',
+          );
           checked++;
         }
       }
       expect(checked, greaterThan(0));
     });
 
-    testWidgets('all college-stats TeX parses; malformed TeX fires fallback',
-        (tester) async {
+    testWidgets('all college-stats TeX parses; malformed TeX fires fallback', (
+      tester,
+    ) async {
       final inputs = <CollegeStatsEquation>[
         CollegeStatsEquation('4,7,9 stats'),
         CollegeStatsEquation('10, 20, 30, 40 stats'),

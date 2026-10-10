@@ -58,7 +58,7 @@ class LimitsStepTile extends StatelessWidget {
                     color: step.type == StepType.conclusion
                         ? FinalsTheme.primaryFor(context)
                         : FinalsTheme.primaryFor(context)
-                            .withValues(alpha: 0.5),
+                              .withValues(alpha: 0.5),
                   ),
                 ),
                 child: Center(
@@ -170,7 +170,9 @@ class LimitsStepTile extends StatelessWidget {
         .replaceAll('x^3', 'x³')
         .replaceAll('x^4', 'x4')
         .replaceAllMapped(
-            RegExp(r'(\d+)\^(\d+)'), (m) => '${m[1]}${_superscript(m[2]!)}');
+          RegExp(r'(\d+)\^(\d+)'),
+          (m) => '${m[1]}${_superscript(m[2]!)}',
+        );
     return formatted;
   }
 
@@ -185,7 +187,7 @@ class LimitsStepTile extends StatelessWidget {
       '6': '6',
       '7': '7',
       '8': '8',
-      '9': '?'
+      '9': '?',
     };
     return num.split('').map((c) => superscripts[c] ?? c).join('');
   }
@@ -196,10 +198,7 @@ class LimitsStepTile extends StatelessWidget {
     try {
       return Math.tex(
         latex,
-        textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         onErrorFallback: (error) {
           return SelectableText(
             expression,
@@ -230,12 +229,16 @@ class LimitsStepTile extends StatelessWidget {
         .replaceAll(' - ', ' - ')
         .replaceAll(' / ', ' / ')
         .replaceAllMapped(
-            RegExp(r'(\w+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}')
+          RegExp(r'(\w+)\s*\^\s*(\d+)'),
+          (m) => '${m[1]}^{${m[2]}}',
+        )
         .replaceAll('x ^ 2', 'x^{2}')
         .replaceAll('x ^ 3', 'x^{3}')
         .replaceAll('x ^ 4', 'x^{4}')
         .replaceAllMapped(
-            RegExp(r'(\d+)\s*\^\s*(\d+)'), (m) => '${m[1]}^{${m[2]}}');
+          RegExp(r'(\d+)\s*\^\s*(\d+)'),
+          (m) => '${m[1]}^{${m[2]}}',
+        );
 
     // Handle division - convert a/b to \frac{a}{b}
     result = _convertDivision(result);

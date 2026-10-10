@@ -200,10 +200,7 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
               ),
               ResponsiveText(
                 widget.subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: theme.textSecondary,
-                ),
+                style: TextStyle(fontSize: 12, color: theme.textSecondary),
               ),
             ],
           ),
@@ -328,8 +325,9 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
     if (_detectedStrictness == 'continued') {
       detectedLabel = 'Continued $baseLabel';
     } else {
-      final strictnessLabel =
-          _detectedStrictness == 'strict' ? 'Strict' : 'Non-strict';
+      final strictnessLabel = _detectedStrictness == 'strict'
+          ? 'Strict'
+          : 'Non-strict';
       detectedLabel = '$strictnessLabel $baseLabel';
     }
 
@@ -337,8 +335,9 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
     final (Color bgColor, Color textColor) = matchesScreen
         ? (theme.accentColor.withValues(alpha: 0.12), theme.textPrimary)
         : (const Color(0xFF2A1F10), const Color(0xFFFFB84D));
-    final icon =
-        matchesScreen ? Icons.check_circle_outline : Icons.info_outline;
+    final icon = matchesScreen
+        ? Icons.check_circle_outline
+        : Icons.info_outline;
     final bannerText = matchesScreen
         ? 'Recognized input: $detectedLabel.'
         : 'Detected as $detectedLabel \u2014 try $_suggestedScreen screen';
@@ -358,7 +357,10 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
             child: ResponsiveText(
               bannerText,
               style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w500, color: textColor),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: textColor,
+              ),
             ),
           ),
         ],
@@ -381,8 +383,9 @@ class _BaseInequalityScreenState extends State<BaseInequalityScreen> {
     }
 
     final baseScreen = suggestions[_baseDetectedType] ?? 'appropriate';
-    final correctStrictness =
-        _detectedStrictness == 'strict' ? 'Strict' : 'Non-strict';
+    final correctStrictness = _detectedStrictness == 'strict'
+        ? 'Strict'
+        : 'Non-strict';
     return '$correctStrictness $baseScreen';
   }
 

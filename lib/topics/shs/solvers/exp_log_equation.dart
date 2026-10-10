@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import 'dart:math' as math;
+
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
@@ -71,8 +72,8 @@ class ExpLogEquation extends BaseEquation {
     }
     // L2: log_b(x+a)+log_b(x+b2) = rhs (same base, plus only).
     m = RegExp(
-            r'^log(\d+(?:\.\d+)?)\((x(?:[+-]\d+(?:\.\d+)?)?)\)\+log\1\((x(?:[+-]\d+(?:\.\d+)?)?)\)$')
-        .firstMatch(left.replaceAll('X', 'x'));
+      r'^log(\d+(?:\.\d+)?)\((x(?:[+-]\d+(?:\.\d+)?)?)\)\+log\1\((x(?:[+-]\d+(?:\.\d+)?)?)\)$',
+    ).firstMatch(left.replaceAll('X', 'x'));
     if (m != null) {
       return ['log2', double.parse(m.group(1)!), m.group(2)!, m.group(3)!, rhs];
     }
@@ -94,8 +95,10 @@ class ExpLogEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'log2(x) + log2(x - 2) = 3');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'log2(x) + log2(x - 2) = 3',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -121,7 +124,8 @@ class ExpLogEquation extends BaseEquation {
     final p = _parse();
     if (p == null) {
       return SolveResult.error(
-          _error ?? 'Supported: 2^x = 32, log2(x)+log2(x-2) = 3.');
+        _error ?? 'Supported: 2^x = 32, log2(x)+log2(x-2) = 3.',
+      );
     }
     if (p[0] == 'exp') {
       final b = p[1] as double, mm = p[2] as double;
@@ -131,7 +135,8 @@ class ExpLogEquation extends BaseEquation {
       }
       if (rhs <= 0) {
         return SolveResult.error(
-            'No real solution — b^(…) is always positive.');
+          'No real solution — b^(…) is always positive.',
+        );
       }
       if (mm.abs() < 1e-12) {
         return SolveResult.error('Exponent must include x.');
@@ -141,7 +146,7 @@ class ExpLogEquation extends BaseEquation {
         answer: 'x = ${G6Format.num(x)}',
         points: [x],
         customData: [
-          {'kind': 'explog', 'mode': 'exp', 'base': b, 'root': x}
+          {'kind': 'explog', 'mode': 'exp', 'base': b, 'root': x},
         ],
       );
     }
@@ -156,13 +161,14 @@ class ExpLogEquation extends BaseEquation {
       final x = arg - k;
       if (x + k <= 0) {
         return SolveResult.error(
-            'No solution — log argument must be positive.');
+          'No solution — log argument must be positive.',
+        );
       }
       return SolveResult(
         answer: 'x = ${G6Format.num(x)}',
         points: [x],
         customData: [
-          {'kind': 'explog', 'mode': 'log', 'base': b, 'root': x}
+          {'kind': 'explog', 'mode': 'log', 'base': b, 'root': x},
         ],
       );
     }
@@ -184,7 +190,8 @@ class ExpLogEquation extends BaseEquation {
     final valid = cands.where((x) => x + a > 0 && x + b2 > 0).toList();
     if (valid.isEmpty) {
       return SolveResult.error(
-          'No solution — candidates fail the log domain (arguments > 0).');
+        'No solution — candidates fail the log domain (arguments > 0).',
+      );
     }
     final ans = valid.length == 1
         ? 'x = ${G6Format.num(valid.first)}'
@@ -201,7 +208,7 @@ class ExpLogEquation extends BaseEquation {
           'base': b,
           'roots': valid,
           'rejected': cands.where((e) => !valid.contains(e)).toList(),
-        }
+        },
       ],
     );
   }
@@ -221,9 +228,10 @@ class ExpLogEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use 2^x = 32.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use 2^x = 32.',
+        ),
       ];
     }
     final r = solve();
@@ -233,8 +241,9 @@ class ExpLogEquation extends BaseEquation {
       final d = r.customData!.first;
       final mode = d['mode'] as String;
       if (mode == 'log-sum') {
-        final roots =
-            (d['roots'] as List).map((e) => (e as num).toDouble()).toList();
+        final roots = (d['roots'] as List)
+            .map((e) => (e as num).toDouble())
+            .toList();
         solveTex = 'x = ${roots.map(G6Format.num).join(', ')}';
       } else {
         solveTex = 'x = ${G6Format.num((d['root'] as num).toDouble())}';
@@ -242,29 +251,33 @@ class ExpLogEquation extends BaseEquation {
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: isExp ? 'One-to-one (exponents)' : 'Domain first',
-          explanation: isExp
-              ? 'RHS must be positive for a real solution.'
-              : 'Every log argument must be > 0.'),
+        stepNumber: 1,
+        title: isExp ? 'One-to-one (exponents)' : 'Domain first',
+        explanation: isExp
+            ? 'RHS must be positive for a real solution.'
+            : 'Every log argument must be > 0.',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: isExp ? 'Take logs' : 'Condense the logs',
-          explanation: isExp
-              ? 'x = (log_b(RHS) − k)/m.'
-              : 'log_b A + log_b B = log_b(AB), then exponentiate.',
-          latex: isExp
-              ? r'x = \frac{\log_{b}(\text{RHS}) - k}{m}'
-              : r'\log_{b} A + \log_{b} B = \log_{b}(AB)'),
+        stepNumber: 2,
+        title: isExp ? 'Take logs' : 'Condense the logs',
+        explanation: isExp
+            ? 'x = (log_b(RHS) − k)/m.'
+            : 'log_b A + log_b B = log_b(AB), then exponentiate.',
+        latex: isExp
+            ? r'x = \frac{\log_{b}(\text{RHS}) - k}{m}'
+            : r'\log_{b} A + \log_{b} B = \log_{b}(AB)',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Solve the resulting equation',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: solveTex),
+        stepNumber: 3,
+        title: 'Solve the resulting equation',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: solveTex,
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Verify domain',
-          explanation: 'Reject any candidate outside the domain (extraneous).'),
+        stepNumber: 4,
+        title: 'Verify domain',
+        explanation: 'Reject any candidate outside the domain (extraneous).',
+      ),
     ];
   }
 }

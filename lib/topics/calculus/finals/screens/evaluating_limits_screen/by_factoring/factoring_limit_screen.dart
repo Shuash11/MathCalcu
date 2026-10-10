@@ -1,6 +1,7 @@
 import 'factoring_answer_card.dart';
 import 'factoring_input_field.dart';
 import 'factoring_steps_view.dart';
+
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_factoring/solver_engine.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/evaluating_limits_solver/by_factoring/solution_steps.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
@@ -45,7 +46,8 @@ class _FactoringLimitScreenContent extends StatefulWidget {
 }
 
 class _FactoringLimitScreenContentState
-    extends State<_FactoringLimitScreenContent> with TickerProviderStateMixin {
+    extends State<_FactoringLimitScreenContent>
+    with TickerProviderStateMixin {
   final TextEditingController _expressionController = TextEditingController();
   final TextEditingController _approachController = TextEditingController();
   final _expressionFocus = FocusNode();
@@ -69,13 +71,17 @@ class _FactoringLimitScreenContentState
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim =
-        CurvedAnimation(parent: _contentController, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.05),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-        parent: _contentController, curve: Curves.easeOutCubic));
+    _fadeAnim = CurvedAnimation(
+      parent: _contentController,
+      curve: Curves.easeOut,
+    );
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _contentController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _contentController.forward();
 
@@ -115,13 +121,14 @@ class _FactoringLimitScreenContentState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              'Please enter both an expression and an approach value.',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+            'Please enter both an expression and an approach value.',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
       return;
@@ -133,18 +140,21 @@ class _FactoringLimitScreenContentState
 
     double approachVal = 0;
     try {
-      approachVal =
-          double.parse(_approachController.text.replaceAll('inf', 'Infinity'));
+      approachVal = double.parse(
+        _approachController.text.replaceAll('inf', 'Infinity'),
+      );
     } catch (e) {
       approachVal = 0;
     }
 
     try {
       final engine = LimitSolverEngine();
-      final result = engine.solve(LimitProblem(
-        expression: _expressionController.text,
-        approachValue: approachVal,
-      ));
+      final result = engine.solve(
+        LimitProblem(
+          expression: _expressionController.text,
+          approachValue: approachVal,
+        ),
+      );
 
       final stepsGen = SolutionStepsGenerator();
       final steps = stepsGen.generate(result);
@@ -160,8 +170,9 @@ class _FactoringLimitScreenContentState
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: ${e.toString()}',
-              style: TextStyle(color: FinalsTheme.onErrorNow(context)),
+          content: Text(
+            'Error: ${e.toString()}',
+            style: TextStyle(color: FinalsTheme.onErrorNow(context)),
           ),
           backgroundColor: FinalsTheme.dangerNow(context),
         ),
@@ -190,15 +201,17 @@ class _FactoringLimitScreenContentState
       child: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context,
-                headerPaddingH: headerPaddingH,
-                titleFontSize: headerTitleFontSize,
-                backSpacing: headerBackSpacing,
-                badgePaddingH: headerBadgePaddingH,
-                badgePaddingV: headerBadgePaddingV,
-                backPadding: headerBackPadding,
-                badgeIconSize: headerBadgeIconSize,
-                badgeFontSize: headerBadgeFontSize),
+            _buildHeader(
+              context,
+              headerPaddingH: headerPaddingH,
+              titleFontSize: headerTitleFontSize,
+              backSpacing: headerBackSpacing,
+              badgePaddingH: headerBadgePaddingH,
+              badgePaddingV: headerBadgePaddingV,
+              backPadding: headerBackPadding,
+              badgeIconSize: headerBadgeIconSize,
+              badgeFontSize: headerBadgeFontSize,
+            ),
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -207,7 +220,11 @@ class _FactoringLimitScreenContentState
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.fromLTRB(
-                        screenPaddingH, 8, screenPaddingH, screenPaddingBottom),
+                      screenPaddingH,
+                      8,
+                      screenPaddingH,
+                      screenPaddingBottom,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -255,15 +272,17 @@ class _FactoringLimitScreenContentState
     );
   }
 
-  Widget _buildHeader(BuildContext context,
-      {double headerPaddingH = 24,
-      double titleFontSize = 24,
-      double backSpacing = 20,
-      double badgePaddingH = 12,
-      double badgePaddingV = 6,
-      double backPadding = 12,
-      double badgeIconSize = 14,
-      double badgeFontSize = 10}) {
+  Widget _buildHeader(
+    BuildContext context, {
+    double headerPaddingH = 24,
+    double titleFontSize = 24,
+    double backSpacing = 20,
+    double badgePaddingH = 12,
+    double badgePaddingV = 6,
+    double backPadding = 12,
+    double badgeIconSize = 14,
+    double badgeFontSize = 10,
+  }) {
     return Padding(
       padding: EdgeInsets.fromLTRB(headerPaddingH, 24, headerPaddingH, 16),
       child: Row(
@@ -277,10 +296,11 @@ class _FactoringLimitScreenContentState
               foregroundColor: FinalsTheme.textPrimary(context),
               padding: EdgeInsets.all(backPadding),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                borderRadius: BorderRadius.circular(16),
+              ),
               side: BorderSide(
-                  color:
-                      FinalsTheme.primaryFor(context).withValues(alpha: 0.1)),
+                color: FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
+              ),
             ),
           ),
           SizedBox(width: backSpacing),
@@ -293,28 +313,29 @@ class _FactoringLimitScreenContentState
                   style: FinalsTheme.titleStyle(context)
                       .copyWith(fontSize: titleFontSize),
                 ),
-                ResponsiveText(
-                  '',
-                  style: FinalsTheme.subtitleStyle(context),
-                ),
+                ResponsiveText('', style: FinalsTheme.subtitleStyle(context)),
               ],
             ),
           ),
           Container(
             padding: EdgeInsets.symmetric(
-                horizontal: badgePaddingH, vertical: badgePaddingV),
+              horizontal: badgePaddingH,
+              vertical: badgePaddingV,
+            ),
             decoration: BoxDecoration(
               color: FinalsTheme.primaryFor(context).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                  color:
-                      FinalsTheme.primaryFor(context).withValues(alpha: 0.2)),
+                color: FinalsTheme.primaryFor(context).withValues(alpha: 0.2),
+              ),
             ),
             child: Row(
               children: [
-                Icon(Icons.layers_rounded,
-                    size: badgeIconSize,
-                    color: FinalsTheme.primaryFor(context)),
+                Icon(
+                  Icons.layers_rounded,
+                  size: badgeIconSize,
+                  color: FinalsTheme.primaryFor(context),
+                ),
                 SizedBox(width: badgePaddingH * 0.5),
                 ResponsiveText(
                   '',

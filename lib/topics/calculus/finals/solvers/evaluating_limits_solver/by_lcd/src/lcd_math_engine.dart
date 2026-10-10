@@ -206,7 +206,8 @@ class Parser {
     }
 
     throw Exception(
-        "Math Error: Unexpected '${token.value}' at this position.");
+      "Math Error: Unexpected '${token.value}' at this position.",
+    );
   }
 
   void _expect(TokenType type) {
@@ -223,7 +224,10 @@ enum LimitStrategy { directSubstitution, lcd, conjugate, unknown }
 class LimitEngine {
   /// Main entry point to solve a limit
   static LimitSolution solve(
-      String equation, String variable, double approachValue) {
+    String equation,
+    String variable,
+    double approachValue,
+  ) {
     // Clean up input
     equation = equation.replaceAll(' ', '').replaceAll('lim', '');
 
@@ -252,7 +256,12 @@ class LimitEngine {
 
       if (directResult != null && directResult.isFinite) {
         return StepGenerator.directSubstitutionSuccess(
-            equation, variable, approachValue, directResult, ast);
+          equation,
+          variable,
+          approachValue,
+          directResult,
+          ast,
+        );
       }
     }
 
@@ -260,10 +269,18 @@ class LimitEngine {
     LimitSolution solution;
     if (strategy == LimitStrategy.conjugate) {
       solution = StepGenerator.solveByConjugate(
-          equation, variable, approachValue, ast);
+        equation,
+        variable,
+        approachValue,
+        ast,
+      );
     } else if (strategy == LimitStrategy.lcd) {
-      solution =
-          StepGenerator.solveByLCD(equation, variable, approachValue, ast);
+      solution = StepGenerator.solveByLCD(
+        equation,
+        variable,
+        approachValue,
+        ast,
+      );
     } else {
       solution = StepGenerator.unknownForm(equation, variable, approachValue);
     }
@@ -308,7 +325,10 @@ class LimitEngine {
   }
 
   static LimitStrategy _identifyStrategy(
-      MathNode node, String varName, double val) {
+    MathNode node,
+    String varName,
+    double val,
+  ) {
     // Heuristic: Does the top-level structure have divisions inside the numerator or denominator? Assume LCD.
     if (_hasNestedFractions(node)) return LimitStrategy.lcd;
 

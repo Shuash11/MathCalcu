@@ -25,9 +25,13 @@ class System2x2Equation extends BaseEquation {
         .replaceAll('−', '-')
         .replaceAll(' ', '');
     e = e.replaceAllMapped(
-        RegExp(r'(\d|\))([xXyY])'), (m) => '${m.group(1)}*${m.group(2)}');
+      RegExp(r'(\d|\))([xXyY])'),
+      (m) => '${m.group(1)}*${m.group(2)}',
+    );
     e = e.replaceAllMapped(
-        RegExp(r'(\d|\))(\()'), (m) => '${m.group(1)}*${m.group(2)}');
+      RegExp(r'(\d|\))(\()'),
+      (m) => '${m.group(1)}*${m.group(2)}',
+    );
     e = e.replaceAll(RegExp(r'[xX]'), '($xv)');
     e = e.replaceAll(RegExp(r'[yY]'), '($yv)');
     try {
@@ -68,8 +72,10 @@ class System2x2Equation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'x + y = 5, x - y = 1');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'x + y = 5, x - y = 1',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -87,7 +93,8 @@ class System2x2Equation extends BaseEquation {
     final rows = _parse();
     if (rows == null) {
       return SolveResult.error(
-          _error ?? 'Enter two equations — e.g. x + y = 5, x - y = 1.');
+        _error ?? 'Enter two equations — e.g. x + y = 5, x - y = 1.',
+      );
     }
     final a1 = rows[0][0], b1 = rows[0][1], c1 = rows[0][2];
     final a2 = rows[1][0], b2 = rows[1][1], c2 = rows[1][2];
@@ -97,11 +104,12 @@ class System2x2Equation extends BaseEquation {
       if ((a1 * c2 - a2 * c1).abs() < 1e-9 &&
           (b1 * c2 - b2 * c1).abs() < 1e-9) {
         return const SolveResult(
-            answer: 'Infinitely many solutions (same line)',
-            points: [],
-            customData: [
-              {'kind': 'system', 'type': 'coincident'}
-            ]);
+          answer: 'Infinitely many solutions (same line)',
+          points: [],
+          customData: [
+            {'kind': 'system', 'type': 'coincident'},
+          ],
+        );
       }
       return SolveResult.error('No solution — parallel lines.');
     }
@@ -120,7 +128,7 @@ class System2x2Equation extends BaseEquation {
             {'a': a1, 'b': b1, 'c': c1},
             {'a': a2, 'b': b2, 'c': c2},
           ],
-        }
+        },
       ],
     );
   }
@@ -131,9 +139,10 @@ class System2x2Equation extends BaseEquation {
     if (rows == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use x + y = 5, x - y = 1.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use x + y = 5, x - y = 1.',
+        ),
       ];
     }
     final r = solve();
@@ -141,28 +150,33 @@ class System2x2Equation extends BaseEquation {
     final a2 = rows[1][0], b2 = rows[1][1], c2 = rows[1][2];
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Write in ax + by = c form',
-          explanation: 'Align x, y, and constant columns.',
-          latex: '\\begin{pmatrix} ${G6Format.num(a1)} & ${G6Format.num(b1)} '
-              '\\\\ ${G6Format.num(a2)} & ${G6Format.num(b2)} \\end{pmatrix}',
-          subLatex: [
-            '\\begin{pmatrix} ${G6Format.num(c1)} \\\\ '
-            '${G6Format.num(c2)} \\end{pmatrix}',
-          ]),
+        stepNumber: 1,
+        title: 'Write in ax + by = c form',
+        explanation: 'Align x, y, and constant columns.',
+        latex:
+            '\\begin{pmatrix} ${G6Format.num(a1)} & ${G6Format.num(b1)} '
+            '\\\\ ${G6Format.num(a2)} & ${G6Format.num(b2)} \\end{pmatrix}',
+        subLatex: [
+          '\\begin{pmatrix} ${G6Format.num(c1)} \\\\ '
+              '${G6Format.num(c2)} \\end{pmatrix}',
+        ],
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Eliminate one variable',
-          explanation: 'Scale and add the equations so one variable cancels.'),
+        stepNumber: 2,
+        title: 'Eliminate one variable',
+        explanation: 'Scale and add the equations so one variable cancels.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Solve the point',
-          explanation: r.answer,
-          latex: _pointTex(r)),
+        stepNumber: 3,
+        title: 'Solve the point',
+        explanation: r.answer,
+        latex: _pointTex(r),
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Check by substitution',
-          explanation: 'Both equations must balance at the point.'),
+        stepNumber: 4,
+        title: 'Check by substitution',
+        explanation: 'Both equations must balance at the point.',
+      ),
     ];
   }
 

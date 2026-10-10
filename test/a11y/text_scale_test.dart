@@ -53,9 +53,8 @@ Future<void> _pump(
         // The text-scale override wraps the app so every Text inside
         // (StepList rows and the finals screens) lays out at 2.0.
         builder: (context, widget) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(textScaleFactor),
-          ),
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: TextScaler.linear(textScaleFactor)),
           child: widget ?? const SizedBox.shrink(),
         ),
         home: Scaffold(body: child),
@@ -86,8 +85,9 @@ const List<StepModel> _kRepresentativeSteps = [
 
 void main() {
   group('StepList semantic structure', () {
-    testWidgets('exposes list role, header label and listItem roles',
-        (tester) async {
+    testWidgets('exposes list role, header label and listItem roles', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
 
       await _pump(
@@ -122,9 +122,11 @@ void main() {
       // The step toggle inside the list keeps its button semantics.
       final toggle = tester
           .widgetList<Semantics>(find.byType(Semantics))
-          .where((s) =>
-              s.properties.button == true &&
-              (s.properties.label == 'Show work'))
+          .where(
+            (s) =>
+                s.properties.button == true &&
+                (s.properties.label == 'Show work'),
+          )
           .toList();
       expect(toggle, hasLength(1));
 
@@ -157,8 +159,9 @@ void main() {
   });
 
   group('StepList text scale 2.0', () {
-    testWidgets('builds with zero overflow exceptions in both themes',
-        (tester) async {
+    testWidgets('builds with zero overflow exceptions in both themes', (
+      tester,
+    ) async {
       for (final isDark in [false, true]) {
         await _pump(
           tester,
@@ -178,8 +181,9 @@ void main() {
       }
     });
 
-    testWidgets('expanded details build with zero overflows at 2.0',
-        (tester) async {
+    testWidgets('expanded details build with zero overflows at 2.0', (
+      tester,
+    ) async {
       await _pump(
         tester,
         const SingleChildScrollView(
@@ -206,8 +210,9 @@ void main() {
   });
 
   group('Finals screens text scale 2.0', () {
-    testWidgets('derivatives screen builds with zero overflows at 2.0',
-        (tester) async {
+    testWidgets('derivatives screen builds with zero overflows at 2.0', (
+      tester,
+    ) async {
       await _pump(
         tester,
         const MaterialApp(home: DerivativeScreen()),
@@ -226,8 +231,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('evaluating limits picker builds with zero overflows at 2.0',
-        (tester) async {
+    testWidgets('evaluating limits picker builds with zero overflows at 2.0', (
+      tester,
+    ) async {
       await _pump(
         tester,
         const MaterialApp(home: EvaluatingLimitsPicker()),
@@ -242,8 +248,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('limits infinity screen builds with zero overflows at 2.0',
-        (tester) async {
+    testWidgets('limits infinity screen builds with zero overflows at 2.0', (
+      tester,
+    ) async {
       await _pump(
         tester,
         const MaterialApp(home: LimitsInfinityScreen()),
@@ -263,8 +270,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('slope solver screen builds with zero overflows at 2.0',
-        (tester) async {
+    testWidgets('slope solver screen builds with zero overflows at 2.0', (
+      tester,
+    ) async {
       await _pump(
         tester,
         const MaterialApp(home: SlopeSolverScreen()),
@@ -280,8 +288,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('slope steps screen builds with zero overflows at 2.0',
-        (tester) async {
+    testWidgets('slope steps screen builds with zero overflows at 2.0', (
+      tester,
+    ) async {
       final result = SlopeSolver.solve(
         'y = x^3 - 2x + 1',
         pointValues: PointValues.parse('x=2'),
@@ -296,10 +305,7 @@ void main() {
       // Settle the sliver list layout before asserting.
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(
-        find.bySemanticsLabel('Back to slope solution'),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel('Back to slope solution'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

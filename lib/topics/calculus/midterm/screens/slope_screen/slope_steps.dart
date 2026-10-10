@@ -43,7 +43,12 @@ class SlopeSteps extends StatelessWidget {
   }
 
   List<Widget> _buildVerticalSteps(
-      BuildContext context, String x1s, String y1s, String x2s, String y2s) {
+    BuildContext context,
+    String x1s,
+    String y1s,
+    String x2s,
+    String y2s,
+  ) {
     return [
       SolutionStepCard(
         design: AppDesign.app,
@@ -54,9 +59,23 @@ class SlopeSteps extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _mathLatex(context, r'A = (x_1,\;y_1) = (' '$x1s' r',\;' '$y1s' r')'),
+            _mathLatex(
+              context,
+              r'A = (x_1,\;y_1) = ('
+              '$x1s'
+              r',\;'
+              '$y1s'
+              r')',
+            ),
             const SizedBox(height: 4),
-            _mathLatex(context, r'B = (x_2,\;y_2) = (' '$x2s' r',\;' '$y2s' r')'),
+            _mathLatex(
+              context,
+              r'B = (x_2,\;y_2) = ('
+              '$x2s'
+              r',\;'
+              '$y2s'
+              r')',
+            ),
           ],
         ),
       ),
@@ -67,7 +86,11 @@ class SlopeSteps extends StatelessWidget {
         description: 'Step 2',
         mathContent: _mathLatex(
           context,
-          r'\Delta x = x_2 - x_1 = ' '$x2s' r' - ' '$x1s' r' = 0',
+          r'\Delta x = x_2 - x_1 = '
+          '$x2s'
+          r' - '
+          '$x1s'
+          r' = 0',
         ),
       ),
       SolutionStepCard(
@@ -85,13 +108,22 @@ class SlopeSteps extends StatelessWidget {
         stepNumber: 4,
         title: 'Line equation',
         description: 'Step 4',
-        mathContent: _mathLatex(context, r'x = ' '$x1s'),
+        mathContent: _mathLatex(
+          context,
+          r'x = '
+          '$x1s',
+        ),
       ),
     ];
   }
 
   List<Widget> _buildHorizontalSteps(
-      BuildContext context, String x1s, String y1s, String x2s, String y2s) {
+    BuildContext context,
+    String x1s,
+    String y1s,
+    String x2s,
+    String y2s,
+  ) {
     return [
       SolutionStepCard(
         design: AppDesign.app,
@@ -102,9 +134,23 @@ class SlopeSteps extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _mathLatex(context, r'A = (x_1,\;y_1) = (' '$x1s' r',\;' '$y1s' r')'),
+            _mathLatex(
+              context,
+              r'A = (x_1,\;y_1) = ('
+              '$x1s'
+              r',\;'
+              '$y1s'
+              r')',
+            ),
             const SizedBox(height: 4),
-            _mathLatex(context, r'B = (x_2,\;y_2) = (' '$x2s' r',\;' '$y2s' r')'),
+            _mathLatex(
+              context,
+              r'B = (x_2,\;y_2) = ('
+              '$x2s'
+              r',\;'
+              '$y2s'
+              r')',
+            ),
           ],
         ),
       ),
@@ -115,7 +161,11 @@ class SlopeSteps extends StatelessWidget {
         description: 'Step 2',
         mathContent: _mathLatex(
           context,
-          r'\Delta y = y_2 - y_1 = ' '$y2s' r' - ' '$y1s' r' = 0',
+          r'\Delta y = y_2 - y_1 = '
+          '$y2s'
+          r' - '
+          '$y1s'
+          r' = 0',
         ),
       ),
       SolutionStepCard(
@@ -135,8 +185,16 @@ class SlopeSteps extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildGenericSteps(BuildContext context, String x1s, String y1s,
-      String x2s, String y2s, String dys, String dxs, String slopeStr) {
+  List<Widget> _buildGenericSteps(
+    BuildContext context,
+    String x1s,
+    String y1s,
+    String x2s,
+    String y2s,
+    String dys,
+    String dxs,
+    String slopeStr,
+  ) {
     return [
       SolutionStepCard(
         design: AppDesign.app,
@@ -147,9 +205,23 @@ class SlopeSteps extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _mathLatex(context, r'A = (x_1,\;y_1) = (' '$x1s' r',\;' '$y1s' r')'),
+            _mathLatex(
+              context,
+              r'A = (x_1,\;y_1) = ('
+              '$x1s'
+              r',\;'
+              '$y1s'
+              r')',
+            ),
             const SizedBox(height: 4),
-            _mathLatex(context, r'B = (x_2,\;y_2) = (' '$x2s' r',\;' '$y2s' r')'),
+            _mathLatex(
+              context,
+              r'B = (x_2,\;y_2) = ('
+              '$x2s'
+              r',\;'
+              '$y2s'
+              r')',
+            ),
           ],
         ),
       ),
@@ -222,7 +294,11 @@ class SlopeSteps extends StatelessWidget {
         stepNumber: 5,
         title: 'Result',
         description: 'Step 5',
-        mathContent: _mathLatex(context, r'm = ' '$slopeStr'),
+        mathContent: _mathLatex(
+          context,
+          r'm = '
+          '$slopeStr',
+        ),
       ),
     ];
   }
@@ -233,16 +309,16 @@ class SlopeSteps extends StatelessWidget {
   }
 
   Widget _mathLatex(BuildContext context, String tex) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SelectableMath.tex(
-          tex,
-          textStyle: TextStyle(
-            fontSize: 14,
-            color: FinalsTheme.primaryFor(context),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      );
+    scrollDirection: Axis.horizontal,
+    child: SelectableMath.tex(
+      tex,
+      textStyle: TextStyle(
+        fontSize: 14,
+        color: FinalsTheme.primaryFor(context),
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -282,8 +358,8 @@ class SlopeComparisonSteps extends StatelessWidget {
     final relLabel = comparison.isParallel
         ? 'Parallel'
         : comparison.isPerpendicular
-            ? 'Perpendicular'
-            : 'Neither';
+        ? 'Perpendicular'
+        : 'Neither';
 
     return [
       SolutionStepCard(
@@ -312,7 +388,11 @@ class SlopeComparisonSteps extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: _mathLatex(context, r'm_1 = ' '$m1'),
+              child: _mathLatex(
+                context,
+                r'm_1 = '
+                '$m1',
+              ),
             ),
           ],
         ),
@@ -343,7 +423,11 @@ class SlopeComparisonSteps extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: _mathLatex(context, r'm_2 = ' '$m2'),
+              child: _mathLatex(
+                context,
+                r'm_2 = '
+                '$m2',
+              ),
             ),
           ],
         ),
@@ -358,8 +442,8 @@ class SlopeComparisonSteps extends StatelessWidget {
           comparison.isParallel
               ? r'm_1 = m_2 \implies \text{Parallel}'
               : comparison.isPerpendicular
-                  ? r'm_1 \cdot m_2 = -1 \implies \text{Perpendicular}'
-                  : r'm_1 \neq m_2 \text{ and } m_1 \cdot m_2 \neq -1',
+              ? r'm_1 \cdot m_2 = -1 \implies \text{Perpendicular}'
+              : r'm_1 \neq m_2 \text{ and } m_1 \cdot m_2 \neq -1',
         ),
       ),
       SolutionStepCard(
@@ -371,7 +455,9 @@ class SlopeComparisonSteps extends StatelessWidget {
           context,
           relLabel == 'Neither'
               ? r'\text{Neither parallel nor perpendicular}'
-              : r'\text{' '$relLabel' r'}',
+              : r'\text{'
+                    '$relLabel'
+                    r'}',
         ),
       ),
     ];
@@ -383,16 +469,16 @@ class SlopeComparisonSteps extends StatelessWidget {
   }
 
   Widget _mathLatex(BuildContext context, String tex) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SelectableMath.tex(
-          tex,
-          textStyle: TextStyle(
-            fontSize: 14,
-            color: FinalsTheme.primaryFor(context),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      );
+    scrollDirection: Axis.horizontal,
+    child: SelectableMath.tex(
+      tex,
+      textStyle: TextStyle(
+        fontSize: 14,
+        color: FinalsTheme.primaryFor(context),
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {

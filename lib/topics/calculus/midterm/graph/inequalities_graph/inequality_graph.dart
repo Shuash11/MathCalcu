@@ -22,8 +22,10 @@ class InequalityGraph extends BaseGraph {
     required Color accentColor,
     required Color secondaryTextColor,
   }) {
-    final resolvedSecondary =
-        Color.alphaBlend(secondaryTextColor, backgroundColor);
+    final resolvedSecondary = Color.alphaBlend(
+      secondaryTextColor,
+      backgroundColor,
+    );
     return InequalityGraphPalette(
       backgroundColor: backgroundColor,
       axisColor: resolvedSecondary,
@@ -78,11 +80,12 @@ class _NumberLinePainter extends CustomPainter {
   final Color backgroundColor;
   final Color secondaryTextColor;
 
-  _NumberLinePainter(
-      {required this.result,
-      required this.accentColor,
-      required this.backgroundColor,
-      required this.secondaryTextColor});
+  _NumberLinePainter({
+    required this.result,
+    required this.accentColor,
+    required this.backgroundColor,
+    required this.secondaryTextColor,
+  });
 
   static const double gap = 40.0;
   static const int ticks = 5;
@@ -170,13 +173,17 @@ class _NumberLinePainter extends CustomPainter {
     final lineRight = size.width - marginR;
 
     canvas.drawLine(
-        const Offset(lineLeft, cy), Offset(lineRight, cy), linePaint);
+      const Offset(lineLeft, cy),
+      Offset(lineRight, cy),
+      linePaint,
+    );
     _drawArrow(canvas, Offset(lineRight + 4, cy), true, arrowPaint);
     _drawArrow(canvas, const Offset(lineLeft - 4, cy), false, arrowPaint);
 
     // Collect boundary x-positions so we can skip overlapping tick labels
-    final boundaryXs =
-        result.points.map((p) => cx + p * gap - viewCenter * gap).toList();
+    final boundaryXs = result.points
+        .map((p) => cx + p * gap - viewCenter * gap)
+        .toList();
 
     for (int i = -ticks; i <= ticks; i++) {
       final val = viewCenter + i;
@@ -184,11 +191,7 @@ class _NumberLinePainter extends CustomPainter {
 
       if (xPos < marginL + 8 || xPos > lineRight - 8) continue;
 
-      canvas.drawLine(
-        Offset(xPos, cy - 7),
-        Offset(xPos, cy + 7),
-        tickPaint,
-      );
+      canvas.drawLine(Offset(xPos, cy - 7), Offset(xPos, cy + 7), tickPaint);
 
       // Skip tick label if a boundary label is too close (within 18 px)
       final tooClose = boundaryXs.any((bx) => (bx - xPos).abs() < 18);
@@ -217,10 +220,18 @@ class _NumberLinePainter extends CustomPainter {
         Rect.fromLTRB(lineLeft, cy - 8, lineRight, cy + 8),
         shadePaint,
       );
-      _drawArrow(canvas, Offset(lineRight + 4, cy), true,
-          arrowPaint..color = accentColor);
-      _drawArrow(canvas, const Offset(lineLeft - 4, cy), false,
-          arrowPaint..color = accentColor);
+      _drawArrow(
+        canvas,
+        Offset(lineRight + 4, cy),
+        true,
+        arrowPaint..color = accentColor,
+      );
+      _drawArrow(
+        canvas,
+        const Offset(lineLeft - 4, cy),
+        false,
+        arrowPaint..color = accentColor,
+      );
       _drawLabel(canvas, 'All real numbers', cx, cy - 30, accentColor);
       return;
     }
@@ -230,20 +241,34 @@ class _NumberLinePainter extends CustomPainter {
       final boundary = result.points[0];
       final bx = cx + boundary * gap - viewCenter * gap;
       final goRight = InequalityGraph.goesRight(interval);
-      final isOpen =
-          InequalityGraph.isOpenEndpoint(interval, goesRight: goRight);
+      final isOpen = InequalityGraph.isOpenEndpoint(
+        interval,
+        goesRight: goRight,
+      );
 
       if (goRight) {
         canvas.drawRect(
-            Rect.fromLTRB(bx, cy - 8, lineRight, cy + 8), shadePaint);
-        _drawArrow(canvas, Offset(lineRight + 4, cy), true,
-            arrowPaint..color = accentColor);
+          Rect.fromLTRB(bx, cy - 8, lineRight, cy + 8),
+          shadePaint,
+        );
+        _drawArrow(
+          canvas,
+          Offset(lineRight + 4, cy),
+          true,
+          arrowPaint..color = accentColor,
+        );
         _drawLabel(canvas, '+∞', lineRight - 8, cy - 26, accentColor);
       } else {
         canvas.drawRect(
-            Rect.fromLTRB(lineLeft, cy - 8, bx, cy + 8), shadePaint);
-        _drawArrow(canvas, const Offset(lineLeft - 4, cy), false,
-            arrowPaint..color = accentColor);
+          Rect.fromLTRB(lineLeft, cy - 8, bx, cy + 8),
+          shadePaint,
+        );
+        _drawArrow(
+          canvas,
+          const Offset(lineLeft - 4, cy),
+          false,
+          arrowPaint..color = accentColor,
+        );
         _drawLabel(canvas, '-∞', lineLeft + 8, cy - 26, accentColor);
       }
 
@@ -251,9 +276,14 @@ class _NumberLinePainter extends CustomPainter {
       _drawLabel(canvas, _fmtVal(boundary), bx, cy - 26, accentColor);
 
       _drawBoundaryCircle(
-          canvas, bx, cy, isOpen, boundaryPaint, boundaryFillPaint);
+        canvas,
+        bx,
+        cy,
+        isOpen,
+        boundaryPaint,
+        boundaryFillPaint,
+      );
     }
-
     // ── Two boundaries ────────────────────────────────────
     else if (result.points.length == 2) {
       final lo = result.points[0] < result.points[1]
@@ -269,13 +299,25 @@ class _NumberLinePainter extends CustomPainter {
 
       if (isUnion) {
         canvas.drawRect(
-            Rect.fromLTRB(lineLeft, cy - 8, lx, cy + 8), shadePaint);
+          Rect.fromLTRB(lineLeft, cy - 8, lx, cy + 8),
+          shadePaint,
+        );
         canvas.drawRect(
-            Rect.fromLTRB(hx, cy - 8, lineRight, cy + 8), shadePaint);
-        _drawArrow(canvas, Offset(lineRight + 4, cy), true,
-            arrowPaint..color = accentColor);
-        _drawArrow(canvas, const Offset(lineLeft - 4, cy), false,
-            arrowPaint..color = accentColor);
+          Rect.fromLTRB(hx, cy - 8, lineRight, cy + 8),
+          shadePaint,
+        );
+        _drawArrow(
+          canvas,
+          Offset(lineRight + 4, cy),
+          true,
+          arrowPaint..color = accentColor,
+        );
+        _drawArrow(
+          canvas,
+          const Offset(lineLeft - 4, cy),
+          false,
+          arrowPaint..color = accentColor,
+        );
         _drawLabel(canvas, '+∞', lineRight - 8, cy - 26, accentColor);
         _drawLabel(canvas, '-∞', lineLeft + 8, cy - 26, accentColor);
       } else {
@@ -307,14 +349,38 @@ class _NumberLinePainter extends CustomPainter {
 
       if (isUnion) {
         _drawBoundaryCircle(
-            canvas, lx, cy, loOpen, boundaryPaint, boundaryFillPaint);
+          canvas,
+          lx,
+          cy,
+          loOpen,
+          boundaryPaint,
+          boundaryFillPaint,
+        );
         _drawBoundaryCircle(
-            canvas, hx, cy, hiOpen, boundaryPaint, boundaryFillPaint);
+          canvas,
+          hx,
+          cy,
+          hiOpen,
+          boundaryPaint,
+          boundaryFillPaint,
+        );
       } else {
         _drawBoundaryCircle(
-            canvas, lx, cy, loOpen, boundaryPaint, boundaryFillPaint);
+          canvas,
+          lx,
+          cy,
+          loOpen,
+          boundaryPaint,
+          boundaryFillPaint,
+        );
         _drawBoundaryCircle(
-            canvas, hx, cy, hiOpen, boundaryPaint, boundaryFillPaint);
+          canvas,
+          hx,
+          cy,
+          hiOpen,
+          boundaryPaint,
+          boundaryFillPaint,
+        );
       }
     }
 

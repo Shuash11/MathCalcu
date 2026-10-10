@@ -15,10 +15,13 @@ void main() {
       // so the loan read 5000 -> Payment = PHP 444.24 (wrong).
       // Post-fix: no bounded 'l =' / 'p =' anchor exists -> error.
       final r = InterestEquation(
-              'loan total = 5000, principal = 100000, i = 1%, n = 12')
-          .solve();
-      expect(r.hasError, isTrue,
-          reason: 'must not fabricate a loan from the "l" in "total"');
+        'loan total = 5000, principal = 100000, i = 1%, n = 12',
+      ).solve();
+      expect(
+        r.hasError,
+        isTrue,
+        reason: 'must not fabricate a loan from the "l" in "total"',
+      );
       expect(r.hasError ? r.errorMessage : '', contains('Loan'));
     });
 
@@ -46,14 +49,16 @@ void main() {
       expect(r.customData, isNull, reason: 'must never read a = 9');
     });
 
-    test('"(x^2 - 1)/(x - 1), area = 3" no longer anchors on the "a" of "area"',
-        () {
-      // Regressive: pre-fix THIS input validated TRUE (the "a" in "area"
-      // was accepted as the anchor a = 3); post-fix there is no real 'a ='
-      // so validation fails.
-      final eq = LHopitalEquation('(x^2 - 1)/(x - 1), area = 3');
-      expect(eq.validate(), isFalse);
-    });
+    test(
+      '"(x^2 - 1)/(x - 1), area = 3" no longer anchors on the "a" of "area"',
+      () {
+        // Regressive: pre-fix THIS input validated TRUE (the "a" in "area"
+        // was accepted as the anchor a = 3); post-fix there is no real 'a ='
+        // so validation fails.
+        final eq = LHopitalEquation('(x^2 - 1)/(x - 1), area = 3');
+        expect(eq.validate(), isFalse);
+      },
+    );
 
     test('a genuine bounded "a =" is still accepted', () {
       // The \b must not break a legitimate 'a ='.
@@ -72,8 +77,8 @@ void main() {
     test('"a" inside "beta" is not read as the lower limit', () {
       // Pre-fix: `a\s*=` matched the "a = 5" inside "beta = 5", so a = 5
       // and Area = -39. Post-fix: a = 0, b = 2, Area = 8/3.
-      final r =
-          IntegralSubEquation('def beta = 5, a = 0, b = 2, f = x^2').solve();
+      final r = IntegralSubEquation('def beta = 5, a = 0, b = 2, f = x^2')
+          .solve();
       expect(r.hasError, isFalse);
       final cd = r.customData!.first as Map;
       expect((cd['a'] as num).toDouble(), 0.0);

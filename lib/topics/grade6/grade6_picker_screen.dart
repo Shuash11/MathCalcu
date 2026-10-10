@@ -73,14 +73,14 @@ class _Grade6PickerScreenState extends State<Grade6PickerScreen> {
     final List<CurriculumTopic> base = _subject == 'All'
         ? Grade6ModuleRegistry.modules
         : Grade6ModuleRegistry.modules
-            .where((t) => t.subject == _subject)
-            .toList();
+              .where((t) => t.subject == _subject)
+              .toList();
     final List<CurriculumTopic> topics = q.isEmpty
         ? base
         : Grade6ModuleRegistry.search(q)
-            .map((h) => h.topic)
-            .where((t) => _subject == 'All' || t.subject == _subject)
-            .toList();
+              .map((h) => h.topic)
+              .where((t) => _subject == 'All' || t.subject == _subject)
+              .toList();
 
     return Scaffold(
       backgroundColor: theme.surface,

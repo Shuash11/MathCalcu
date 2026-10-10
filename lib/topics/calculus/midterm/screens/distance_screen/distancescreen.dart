@@ -4,9 +4,11 @@ import 'package:calculus_system/shared/widgets/input_validation.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:calculus_system/shared/widgets/responsive_text.dart';
+
 import 'distance_format.dart';
 import 'distance_mode_button.dart';
 import 'distancesteps.dart';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -185,27 +187,31 @@ class _DistancescreenState extends State<Distancescreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ResponsiveText(label,
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: context
-                    .watch<ThemeProvider>()
-                    .textPrimary
-                    .withValues(alpha: 0.4),
-                letterSpacing: 0.8)),
+        ResponsiveText(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: context.watch<ThemeProvider>().textPrimary.withValues(
+              alpha: 0.4,
+            ),
+            letterSpacing: 0.8,
+          ),
+        ),
         const SizedBox(height: 6.0),
         GestureDetector(
           onTap: () => focusNode.requestFocus(),
           child: Container(
             decoration: BoxDecoration(
-                color: context.watch<ThemeProvider>().card,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                    color: context.watch<ThemeProvider>().isLight
-                        ? const Color(0xFF334155).withValues(alpha: 0.15)
-                        : const Color(0xFF334155).withValues(alpha: 0.15),
-                    width: 1)),
+              color: context.watch<ThemeProvider>().card,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: context.watch<ThemeProvider>().isLight
+                    ? const Color(0xFF334155).withValues(alpha: 0.15)
+                    : const Color(0xFF334155).withValues(alpha: 0.15),
+                width: 1,
+              ),
+            ),
             child: TextField(
               controller: controller,
               focusNode: focusNode,
@@ -217,20 +223,23 @@ class _DistancescreenState extends State<Distancescreen>
                   ? () => nextFocus.requestFocus()
                   : () => focusNode.unfocus(),
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: context.watch<ThemeProvider>().textPrimary),
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: context.watch<ThemeProvider>().textPrimary,
+              ),
               decoration: InputDecoration(
                 hintText: _hintForLabel[label] ?? 'e.g. 3',
                 hintStyle: TextStyle(
-                    color: context
-                        .watch<ThemeProvider>()
-                        .textPrimary
-                        .withValues(alpha: 0.2),
-                    fontSize: 18),
+                  color: context.watch<ThemeProvider>().textPrimary.withValues(
+                    alpha: 0.2,
+                  ),
+                  fontSize: 18,
+                ),
                 border: InputBorder.none,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
               ),
               onChanged: (_) {
                 if (_fieldErrors[label] != null) {
@@ -248,10 +257,9 @@ class _DistancescreenState extends State<Distancescreen>
             fontWeight: error != null ? FontWeight.w600 : FontWeight.w400,
             color: error != null
                 ? const Color(0xFFFF6B6B)
-                : context
-                    .watch<ThemeProvider>()
-                    .textPrimary
-                    .withValues(alpha: 0.4),
+                : context.watch<ThemeProvider>().textPrimary.withValues(
+                    alpha: 0.4,
+                  ),
           ),
         ),
       ],
@@ -279,16 +287,19 @@ class _DistancescreenState extends State<Distancescreen>
                     context,
                     child: IconButton(
                       onPressed: _goBack,
-                      icon: Icon(Icons.arrow_back_rounded,
-                          color: context.watch<ThemeProvider>().accentColor,
-                          size: 22),
+                      icon: Icon(
+                        Icons.arrow_back_rounded,
+                        color: context.watch<ThemeProvider>().accentColor,
+                        size: 22,
+                      ),
                       style: IconButton.styleFrom(
                         backgroundColor: context
                             .watch<ThemeProvider>()
                             .accentColor
                             .withValues(alpha: 0.12),
-                        foregroundColor:
-                            context.watch<ThemeProvider>().accentColor,
+                        foregroundColor: context
+                            .watch<ThemeProvider>()
+                            .accentColor,
                         padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -308,54 +319,61 @@ class _DistancescreenState extends State<Distancescreen>
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                        color: context.watch<ThemeProvider>().accentColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color: context
-                                .watch<ThemeProvider>()
-                                .accentColor
-                                .withValues(alpha: 0.15))),
-                    child: Icon(Icons.straighten_rounded,
-                        color: context.watch<ThemeProvider>().surface,
-                        size: 22),
+                      color: context.watch<ThemeProvider>().accentColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.15),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.straighten_rounded,
+                      color: context.watch<ThemeProvider>().surface,
+                      size: 22,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ResponsiveText('Distance',
-                            style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                                color:
-                                    context.watch<ThemeProvider>().textPrimary,
-                                letterSpacing: -0.5,
-                                shadows: [
-                                  Shadow(
-                                    color: context
-                                        .watch<ThemeProvider>()
-                                        .accentColor
-                                        .withValues(alpha: 0.3),
-                                    blurRadius: 8,
-                                    offset: Offset.zero,
-                                  ),
-                                ])),
+                        ResponsiveText(
+                          'Distance',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: context.watch<ThemeProvider>().textPrimary,
+                            letterSpacing: -0.5,
+                            shadows: [
+                              Shadow(
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .accentColor
+                                    .withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: Offset.zero,
+                              ),
+                            ],
+                          ),
+                        ),
                         ResponsiveText(
                           _is2D ? 'Two points in a plane' : 'Number line',
                           style: TextStyle(
-                              fontSize: 12,
-                              color: context.watch<ThemeProvider>().accentColor,
-                              shadows: [
-                                Shadow(
-                                  color: context
-                                      .watch<ThemeProvider>()
-                                      .accentColor
-                                      .withValues(alpha: 0.15),
-                                  blurRadius: 4,
-                                  offset: Offset.zero,
-                                ),
-                              ]),
+                            fontSize: 12,
+                            color: context.watch<ThemeProvider>().accentColor,
+                            shadows: [
+                              Shadow(
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .accentColor
+                                    .withValues(alpha: 0.15),
+                                blurRadius: 4,
+                                offset: Offset.zero,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -368,16 +386,14 @@ class _DistancescreenState extends State<Distancescreen>
               // -- Mode toggle ------------------------------
               Container(
                 decoration: BoxDecoration(
-                        color: context.watch<ThemeProvider>().card,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color: context.watch<ThemeProvider>().isLight
-                                ? const Color(0xFF334155).withValues(alpha: 0.1)
-                                : const Color(0xFF334155)
-                                    .withValues(alpha: 0.1)))
-                    .copyWith(
-                  border: Border.all(color: const Color(0x1F334155)),
-                ),
+                  color: context.watch<ThemeProvider>().card,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: context.watch<ThemeProvider>().isLight
+                        ? const Color(0xFF334155).withValues(alpha: 0.1)
+                        : const Color(0xFF334155).withValues(alpha: 0.1),
+                  ),
+                ).copyWith(border: Border.all(color: const Color(0x1F334155))),
                 padding: const EdgeInsets.all(4),
                 child: Row(
                   children: [
@@ -396,38 +412,45 @@ class _DistancescreenState extends State<Distancescreen>
 
                     const SizedBox(height: 28.0),
 
-// -- Formula hint -----------------------------
+                    // -- Formula hint -----------------------------
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10.0),
+                        horizontal: 14,
+                        vertical: 10.0,
+                      ),
                       decoration: BoxDecoration(
+                        color: context
+                            .watch<ThemeProvider>()
+                            .accentColor
+                            .withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
                           color: context
                               .watch<ThemeProvider>()
                               .accentColor
-                              .withValues(alpha: 0.06),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              color: context
-                                  .watch<ThemeProvider>()
-                                  .accentColor
-                                  .withValues(alpha: 0.12))),
+                              .withValues(alpha: 0.12),
+                        ),
+                      ),
                       child: Row(
                         children: [
-                          Icon(Icons.functions_rounded,
-                              color: context.watch<ThemeProvider>().accentColor,
-                              size: 16),
+                          Icon(
+                            Icons.functions_rounded,
+                            color: context.watch<ThemeProvider>().accentColor,
+                            size: 16,
+                          ),
                           const SizedBox(width: 14.0),
                           ResponsiveText(
                             _is2D
                                 ? 'd = √((x2-x1)² + (y2-y1)²)'
                                 : 'd = |x2 - x1|',
                             style: TextStyle(
-                                fontSize: 13,
-                                color: context
-                                    .watch<ThemeProvider>()
-                                    .textPrimary
-                                    .withValues(alpha: 0.55),
-                                fontWeight: FontWeight.w500),
+                              fontSize: 13,
+                              color: context
+                                  .watch<ThemeProvider>()
+                                  .textPrimary
+                                  .withValues(alpha: 0.55),
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
@@ -453,8 +476,11 @@ class _DistancescreenState extends State<Distancescreen>
                     const SizedBox(width: 12.0),
                     const Padding(
                       padding: EdgeInsets.only(top: 22),
-                      child: Icon(Icons.arrow_forward_rounded,
-                          color: Color(0x4D334155), size: 20),
+                      child: Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Color(0x4D334155),
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 12.0),
                     Expanded(
@@ -474,14 +500,15 @@ class _DistancescreenState extends State<Distancescreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ResponsiveText('POINT A',
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: context
-                                      .watch<ThemeProvider>()
-                                      .accentColor,
-                                  letterSpacing: 1.2)),
+                          ResponsiveText(
+                            'POINT A',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: context.watch<ThemeProvider>().accentColor,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
                           const SizedBox(height: 10.0),
                           _buildInputField(
                             label: 'x1',
@@ -508,16 +535,18 @@ class _DistancescreenState extends State<Distancescreen>
                             width: 6,
                             height: 6,
                             decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0x4D334155)),
+                              shape: BoxShape.circle,
+                              color: Color(0x4D334155),
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Container(
                             width: 6,
                             height: 6,
                             decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0x26334155)),
+                              shape: BoxShape.circle,
+                              color: Color(0x26334155),
+                            ),
                           ),
                         ],
                       ),
@@ -527,14 +556,15 @@ class _DistancescreenState extends State<Distancescreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ResponsiveText('POINT B',
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: context
-                                      .watch<ThemeProvider>()
-                                      .accentColor,
-                                  letterSpacing: 1.2)),
+                          ResponsiveText(
+                            'POINT B',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: context.watch<ThemeProvider>().accentColor,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
                           const SizedBox(height: 10.0),
                           _buildInputField(
                             label: 'x2',
@@ -569,27 +599,34 @@ class _DistancescreenState extends State<Distancescreen>
                   child: ElevatedButton(
                     onPressed: _onCalculate,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          context.watch<ThemeProvider>().accentColor,
+                      backgroundColor: context
+                          .watch<ThemeProvider>()
+                          .accentColor,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.0)),
+                        borderRadius: BorderRadius.circular(14.0),
+                      ),
                       elevation: 0,
                       shadowColor: Colors.transparent,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.calculate_rounded,
-                            color: context.watch<ThemeProvider>().surface,
-                            size: 18),
+                        Icon(
+                          Icons.calculate_rounded,
+                          color: context.watch<ThemeProvider>().surface,
+                          size: 18,
+                        ),
                         const SizedBox(width: 8.0),
-                        ResponsiveText('Calculate Distance',
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: context.watch<ThemeProvider>().surface,
-                                letterSpacing: 0.3)),
+                        ResponsiveText(
+                          'Calculate Distance',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: context.watch<ThemeProvider>().surface,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -604,20 +641,29 @@ class _DistancescreenState extends State<Distancescreen>
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                        color: context.watch<ThemeProvider>().isLight
-                            ? const Color(0xFFFFEAEA)
-                            : const Color(0xFF2A1010),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0x4DFF6B6B))),
+                      color: context.watch<ThemeProvider>().isLight
+                          ? const Color(0xFFFFEAEA)
+                          : const Color(0xFF2A1010),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0x4DFF6B6B)),
+                    ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline_rounded,
-                            color: Color(0xFFFF6B6B), size: 18),
+                        const Icon(
+                          Icons.error_outline_rounded,
+                          color: Color(0xFFFF6B6B),
+                          size: 18,
+                        ),
                         const SizedBox(width: 14.0),
                         Expanded(
-                            child: ResponsiveText(_errorMsg,
-                                style: const TextStyle(
-                                    color: Color(0xFFFF6B6B), fontSize: 14))),
+                          child: ResponsiveText(
+                            _errorMsg,
+                            style: const TextStyle(
+                              color: Color(0xFFFF6B6B),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )
@@ -637,13 +683,15 @@ class _DistancescreenState extends State<Distancescreen>
                             .accentColor
                             .withValues(alpha: 0.1),
                         side: BorderSide(
-                            color: context
-                                .watch<ThemeProvider>()
-                                .accentColor
-                                .withValues(alpha: 0.3)),
+                          color: context
+                              .watch<ThemeProvider>()
+                              .accentColor
+                              .withValues(alpha: 0.3),
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14)),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -682,16 +730,18 @@ class _DistancescreenState extends State<Distancescreen>
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.15),
-                        context
-                            .watch<ThemeProvider>()
-                            .accentColor
-                            .withValues(alpha: 0.06)
-                      ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                      gradient: LinearGradient(
+                        colors: [
+                          context.watch<ThemeProvider>().accentColor.withValues(
+                            alpha: 0.15,
+                          ),
+                          context.watch<ThemeProvider>().accentColor.withValues(
+                            alpha: 0.06,
+                          ),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       borderRadius: BorderRadius.circular(18.0),
                       border: Border.all(
                         color: context
@@ -704,38 +754,43 @@ class _DistancescreenState extends State<Distancescreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ResponsiveText('DISTANCE',
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color:
-                                    context.watch<ThemeProvider>().accentColor,
-                                letterSpacing: 1.4,
-                                shadows: [
-                                  Shadow(
-                                    color: context
-                                        .watch<ThemeProvider>()
-                                        .accentColor
-                                        .withValues(alpha: 0.3),
-                                    blurRadius: 6,
-                                    offset: Offset.zero,
-                                  ),
-                                ])),
+                        ResponsiveText(
+                          'DISTANCE',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: context.watch<ThemeProvider>().accentColor,
+                            letterSpacing: 1.4,
+                            shadows: [
+                              Shadow(
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .accentColor
+                                    .withValues(alpha: 0.3),
+                                blurRadius: 6,
+                                offset: Offset.zero,
+                              ),
+                            ],
+                          ),
+                        ),
                         const SizedBox(height: 10.0),
                         ResponsiveText(
                           'd = ${_distance ?? '\u2014'}',
                           style: TextStyle(
-                              fontSize: 36,
-                              fontWeight: FontWeight.w700,
-                              color: context.watch<ThemeProvider>().textPrimary,
-                              letterSpacing: -1.0),
+                            fontSize: 36,
+                            fontWeight: FontWeight.w700,
+                            color: context.watch<ThemeProvider>().textPrimary,
+                            letterSpacing: -1.0,
+                          ),
                         ),
                         if (_formula != null) ...[
                           const SizedBox(height: 12.0),
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10.0),
+                              horizontal: 12,
+                              vertical: 10.0,
+                            ),
                             decoration: BoxDecoration(
                               color: context
                                   .watch<ThemeProvider>()
@@ -746,13 +801,14 @@ class _DistancescreenState extends State<Distancescreen>
                             child: ResponsiveText(
                               _formula!,
                               style: TextStyle(
-                                  fontSize: 12,
-                                  color: context
-                                      .watch<ThemeProvider>()
-                                      .textPrimary
-                                      .withValues(alpha: 0.55),
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.4),
+                                fontSize: 12,
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .textPrimary
+                                    .withValues(alpha: 0.55),
+                                fontWeight: FontWeight.w500,
+                                height: 1.4,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),

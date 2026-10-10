@@ -1,5 +1,6 @@
 // lib/Screens/SubScreens/input_section.dart
 import 'centercontroller.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 class CenterInputSection extends StatelessWidget {
@@ -87,9 +88,10 @@ class _PointCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
@@ -114,8 +116,10 @@ class _PointCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -291,10 +295,7 @@ class _FieldState extends State<_Field> {
           keyboardType: TextInputType.text,
           textInputAction: widget.textInputAction,
           onEditingComplete: widget.onEditingComplete,
-          style: const TextStyle(
-            color: Color(0xFFE8E8F0),
-            fontSize: 16,
-          ),
+          style: const TextStyle(color: Color(0xFFE8E8F0), fontSize: 16),
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: TextStyle(

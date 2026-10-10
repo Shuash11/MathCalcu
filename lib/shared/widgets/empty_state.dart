@@ -32,9 +32,7 @@ class NoTopicsEmptyState extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.card,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: theme.accentColor.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: theme.accentColor.withValues(alpha: 0.2)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -64,10 +62,7 @@ class NoTopicsEmptyState extends StatelessWidget {
             const SizedBox(height: 12),
             TextButton.icon(
               onPressed: onClear,
-              icon: Icon(
-                Icons.close_rounded,
-                color: theme.accentColor,
-              ),
+              icon: Icon(Icons.close_rounded, color: theme.accentColor),
               label: Text(
                 clearLabel,
                 style: TextStyle(color: theme.accentColor),
@@ -97,9 +92,7 @@ class NoGraphPlaceholder extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardSecondary,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: theme.accentColor.withValues(alpha: 0.12),
-        ),
+        border: Border.all(color: theme.accentColor.withValues(alpha: 0.12)),
       ),
       child: Center(
         child: Column(

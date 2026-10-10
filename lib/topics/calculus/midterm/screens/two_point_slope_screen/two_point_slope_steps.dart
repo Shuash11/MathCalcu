@@ -46,10 +46,12 @@ class _TwoPointSlopeStepsState extends State<TwoPointSlopeSteps>
         .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOut))
         .toList();
     _slideAnims = _controllers
-        .map((c) => Tween<Offset>(
-              begin: const Offset(0, 0.2),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(parent: c, curve: Curves.easeOutCubic)))
+        .map(
+          (c) => Tween<Offset>(
+            begin: const Offset(0, 0.2),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: c, curve: Curves.easeOutCubic)),
+        )
         .toList();
 
     for (int i = 0; i < count; i++) {
@@ -139,26 +141,26 @@ class _CombinedMathBlock extends StatelessWidget {
   });
 
   Widget _mathWidget(String tex) => FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.centerLeft,
-        child: Math.tex(
-          tex,
-          textStyle: TextStyle(
-            fontSize: fontSize,
-            color: color,
-            fontWeight: FontWeight.w500,
-          ),
-          onErrorFallback: (error) => Text(
-            tex,
-            style: TextStyle(
-              fontFamily: 'serif',
-              fontSize: fontSize,
-              color: color,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+    fit: BoxFit.scaleDown,
+    alignment: Alignment.centerLeft,
+    child: Math.tex(
+      tex,
+      textStyle: TextStyle(
+        fontSize: fontSize,
+        color: color,
+        fontWeight: FontWeight.w500,
+      ),
+      onErrorFallback: (error) => Text(
+        tex,
+        style: TextStyle(
+          fontFamily: 'serif',
+          fontSize: fontSize,
+          color: color,
+          fontWeight: FontWeight.w500,
         ),
-      );
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -168,9 +170,7 @@ class _CombinedMathBlock extends StatelessWidget {
       decoration: BoxDecoration(
         color: FinalsTheme.cardSecondary(context),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: FinalsTheme.primary.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: FinalsTheme.primary.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

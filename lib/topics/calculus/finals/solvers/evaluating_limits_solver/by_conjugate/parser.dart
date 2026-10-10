@@ -120,8 +120,9 @@ class BinaryOpNode extends ASTNode {
     final simpRight = right.simplify();
 
     if (simpLeft is NumberNode && simpRight is NumberNode) {
-      return NumberNode(BinaryOpNode(operator, simpLeft, simpRight)
-          .evaluate(0, variable: 'x'));
+      return NumberNode(
+        BinaryOpNode(operator, simpLeft, simpRight).evaluate(0, variable: 'x'),
+      );
     }
 
     if (operator == '+') {
@@ -218,15 +219,18 @@ class Parser {
       final context = _getTokenContext(token);
       if (token.type == TokenType.rparen) {
         throw ParserException(
-            'Unexpected ")". There\'s an extra closing parenthesis or a missing opening "("$context');
+          'Unexpected ")". There\'s an extra closing parenthesis or a missing opening "("$context',
+        );
       }
       if (_parenStack.isNotEmpty) {
         final mismatchedPos = _parenStack.removeLast();
         throw ParserException(
-            'Mismatched parenthesis: extra ")" found near position $mismatchedPos. Did you forget an opening "("$context?');
+          'Mismatched parenthesis: extra ")" found near position $mismatchedPos. Did you forget an opening "("$context?',
+        );
       }
       throw ParserException(
-          'Unexpected token "$token" at position $pos$context');
+        'Unexpected token "$token" at position $pos$context',
+      );
     }
     return result;
   }
@@ -321,10 +325,12 @@ class Parser {
         pos++;
         final arg = _parseExpression();
         if (tokens[pos].type != TokenType.rparen) {
-          final openingPos =
-              _parenStack.isNotEmpty ? _parenStack.removeLast() : 0;
+          final openingPos = _parenStack.isNotEmpty
+              ? _parenStack.removeLast()
+              : 0;
           throw ParserException(
-              'Missing closing ")". The opening "(" at position $openingPos was never closed.');
+            'Missing closing ")". The opening "(" at position $openingPos was never closed.',
+          );
         }
         _parenStack.removeLast();
         pos++;
@@ -342,10 +348,12 @@ class Parser {
       pos++;
       final arg = _parseExpression();
       if (tokens[pos].type != TokenType.rparen) {
-        final openingPos =
-            _parenStack.isNotEmpty ? _parenStack.removeLast() : 0;
+        final openingPos = _parenStack.isNotEmpty
+            ? _parenStack.removeLast()
+            : 0;
         throw ParserException(
-            'Missing closing ")". The opening "(" at position $openingPos was never closed.');
+          'Missing closing ")". The opening "(" at position $openingPos was never closed.',
+        );
       }
       _parenStack.removeLast();
       pos++;
@@ -361,7 +369,8 @@ class Parser {
           final openingPos = _parenStack.last;
           _parenStack.removeLast();
           throw ParserException(
-              'Missing closing ")". The opening "(" at position $openingPos was never closed.');
+            'Missing closing ")". The opening "(" at position $openingPos was never closed.',
+          );
         }
         throw ParserException('Missing closing ")"');
       }
@@ -372,7 +381,8 @@ class Parser {
 
     if (token.type == TokenType.rparen) {
       throw ParserException(
-          'Unexpected ")". There\'s an extra closing parenthesis or a missing opening "("');
+        'Unexpected ")". There\'s an extra closing parenthesis or a missing opening "("',
+      );
     }
 
     throw ParserException('Unexpected token: $token');

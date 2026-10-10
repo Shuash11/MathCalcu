@@ -64,12 +64,13 @@ class PartialDerivativesEquation extends BaseEquation {
             'variable': v,
             'f': f,
             'derivative': result.toString(),
-          }
+          },
         ],
       );
     } on ParseException catch (e) {
       return SolveResult.error(
-          e.toString().replaceFirst('ParseException: ', ''));
+        e.toString().replaceFirst('ParseException: ', ''),
+      );
     } catch (e) {
       return SolveResult.error('Could not solve: $e');
     }
@@ -85,7 +86,8 @@ class PartialDerivativesEquation extends BaseEquation {
       StepModel(
         stepNumber: 1,
         title: 'Identify the partial derivative',
-        explanation: '∂f/∂$v: f = ${raw.original} — treat all other '
+        explanation:
+            '∂f/∂$v: f = ${raw.original} — treat all other '
             'variables as constants.',
         latex: '\\frac{\\partial f}{\\partial $v}',
       ),
@@ -95,16 +97,19 @@ class PartialDerivativesEquation extends BaseEquation {
     for (final s in raw.steps.skip(1)) {
       final isFinal = s.type == StepType.finalResult;
       final exprLatex = FinalsLatex.expr(s.expression.toString());
-      steps.add(StepModel(
-        stepNumber: n++,
-        title: isFinal ? 'Final answer' : s.description,
-        explanation:
-            isFinal ? '∂f/∂$v = ${s.expression}' : s.expression.toString(),
-        hint: s.rule,
-        latex: isFinal
-            ? '\\frac{\\partial f}{\\partial $v} = $exprLatex'
-            : exprLatex,
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          title: isFinal ? 'Final answer' : s.description,
+          explanation: isFinal
+              ? '∂f/∂$v = ${s.expression}'
+              : s.expression.toString(),
+          hint: s.rule,
+          latex: isFinal
+              ? '\\frac{\\partial f}{\\partial $v} = $exprLatex'
+              : exprLatex,
+        ),
+      );
     }
     return steps;
   }

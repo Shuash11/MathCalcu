@@ -1,4 +1,5 @@
-﻿import 'dart:math';
+import 'dart:math';
+
 import 'tokenizer.dart';
 
 /// Exception thrown when parsing fails
@@ -214,7 +215,9 @@ class SmartParser {
     if (smartResult != null) {
       if (tokens[_current].type != TokenType.eof) {
         throw ParserException(
-            'Unexpected token after expression', tokens[_current]);
+          'Unexpected token after expression',
+          tokens[_current],
+        );
       }
       return smartResult;
     }
@@ -223,7 +226,9 @@ class SmartParser {
     final result = _parseExpression();
     if (tokens[_current].type != TokenType.eof) {
       throw ParserException(
-          'Unexpected token after expression', tokens[_current]);
+        'Unexpected token after expression',
+        tokens[_current],
+      );
     }
     return result;
   }
@@ -436,7 +441,9 @@ class SmartParser {
       final arg = _parseExpression();
       if (tokens[_current].type != TokenType.rightParen) {
         throw ParserException(
-            'Expected ")" after function argument', tokens[_current]);
+          'Expected ")" after function argument',
+          tokens[_current],
+        );
       }
       _current++;
       return FunctionCallNode(funcName, arg);
@@ -457,8 +464,9 @@ class SmartParser {
       final expr = _parseExpression();
       if (tokens[_current].type != TokenType.rightParen) {
         throw ParserException(
-            'Expected ")" but found "${tokens[_current].value}"',
-            tokens[_current]);
+          'Expected ")" but found "${tokens[_current].value}"',
+          tokens[_current],
+        );
       }
       _current++;
       return expr;

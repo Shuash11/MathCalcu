@@ -7,55 +7,56 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 void main() {
   group('UpdateService.checkForUpdate', () {
-    test('normalizes whitespace, one leading v, and valid build metadata',
-        () async {
-      for (final installedVersion in [
-        '1.12.8',
-        ' v1.12.8 ',
-        '1.12.8+8',
-        '1.12.8+build.42-release',
-      ]) {
-        final result = await _check(
-          installedVersion: installedVersion,
-          tagName: ' v1.12.8+release.42-build ',
+    test(
+      'normalizes whitespace, one leading v, and valid build metadata',
+      () async {
+        for (final installedVersion in [
+          '1.12.8',
+          ' v1.12.8 ',
+          '1.12.8+8',
+          '1.12.8+build.42-release',
+        ]) {
+          final result = await _check(
+            installedVersion: installedVersion,
+            tagName: ' v1.12.8+release.42-build ',
+          );
+
+          expect(result.status, UpdateStatus.upToDate);
+          expect(result.installedVersion, '1.12.8');
+          expect(result.latestVersion, '1.12.8');
+          expect(result.hasUpdate, isFalse);
+        }
+      },
+    );
+
+    test(
+      'compares multi-digit and unequal-length numeric components',
+      () async {
+        final multiDigit = await _check(
+          installedVersion: '1.9',
+          tagName: '1.12',
+        );
+        final equalLength = await _check(
+          installedVersion: '1.2',
+          tagName: '1.2.0',
+        );
+        final longerRemote = await _check(
+          installedVersion: '1.2',
+          tagName: '1.2.0.1',
         );
 
-        expect(result.status, UpdateStatus.upToDate);
-        expect(result.installedVersion, '1.12.8');
-        expect(result.latestVersion, '1.12.8');
-        expect(result.hasUpdate, isFalse);
-      }
-    });
-
-    test('compares multi-digit and unequal-length numeric components',
-        () async {
-      final multiDigit = await _check(
-        installedVersion: '1.9',
-        tagName: '1.12',
-      );
-      final equalLength = await _check(
-        installedVersion: '1.2',
-        tagName: '1.2.0',
-      );
-      final longerRemote = await _check(
-        installedVersion: '1.2',
-        tagName: '1.2.0.1',
-      );
-
-      expect(multiDigit.status, UpdateStatus.updateAvailable);
-      expect(equalLength.status, UpdateStatus.upToDate);
-      expect(longerRemote.status, UpdateStatus.updateAvailable);
-    });
+        expect(multiDigit.status, UpdateStatus.updateAvailable);
+        expect(equalLength.status, UpdateStatus.upToDate);
+        expect(longerRemote.status, UpdateStatus.updateAvailable);
+      },
+    );
 
     test('offers an update only when the remote version is newer', () async {
       final remoteNewer = await _check(
         installedVersion: '1.12.8',
         tagName: '1.12.9',
       );
-      final equal = await _check(
-        installedVersion: '1.12.8',
-        tagName: '1.12.8',
-      );
+      final equal = await _check(installedVersion: '1.12.8', tagName: '1.12.8');
       final localNewer = await _check(
         installedVersion: '1.12.9',
         tagName: '1.12.8',
@@ -69,59 +70,65 @@ void main() {
       expect(localNewer.hasUpdate, isFalse);
     });
 
-    test('preserves normalized versions and release details on success',
-        () async {
-      final result = await _check(
-        installedVersion: ' v1.12.8+8 ',
-        tagName: ' v1.13.0+9 ',
-        releaseUrl:
-            'https://github.com/Shuash11/MathCalcu/releases/tag/v1.13.0',
-        releaseNotes: 'Release notes',
-      );
-
-      expect(result.status, UpdateStatus.updateAvailable);
-      expect(result.installedVersion, '1.12.8');
-      expect(result.latestVersion, '1.13.0');
-      expect(result.releaseUrl, contains('v1.13.0'));
-      expect(result.releaseNotes, 'Release notes');
-    });
-
-    test('returns unavailable for invalid installed versions and tags',
-        () async {
-      for (final invalidInstalled in ['', '1..2', '1.two', '1.2+']) {
+    test(
+      'preserves normalized versions and release details on success',
+      () async {
         final result = await _check(
-          installedVersion: invalidInstalled,
-          tagName: '1.12.9',
+          installedVersion: ' v1.12.8+8 ',
+          tagName: ' v1.13.0+9 ',
+          releaseUrl:
+              'https://github.com/Shuash11/MathCalcu/releases/tag/v1.13.0',
+          releaseNotes: 'Release notes',
         );
 
-        expect(result.status, UpdateStatus.unavailable);
-        expect(result.hasUpdate, isFalse);
-      }
-
-      for (final invalidTag in ['', 'v', '1..2', '1.two', '1.2+']) {
-        final result = await _check(
-          installedVersion: '1.12.8',
-          tagName: invalidTag,
-        );
-
-        expect(result.status, UpdateStatus.unavailable);
+        expect(result.status, UpdateStatus.updateAvailable);
         expect(result.installedVersion, '1.12.8');
-        expect(result.hasUpdate, isFalse);
-      }
-    });
+        expect(result.latestVersion, '1.13.0');
+        expect(result.releaseUrl, contains('v1.13.0'));
+        expect(result.releaseNotes, 'Release notes');
+      },
+    );
 
-    test('returns unavailable for malformed installed build metadata',
-        () async {
-      for (final installedVersion in _malformedBuildMetadata) {
-        final result = await _check(
-          installedVersion: installedVersion,
-          tagName: '1.12.9',
-        );
+    test(
+      'returns unavailable for invalid installed versions and tags',
+      () async {
+        for (final invalidInstalled in ['', '1..2', '1.two', '1.2+']) {
+          final result = await _check(
+            installedVersion: invalidInstalled,
+            tagName: '1.12.9',
+          );
 
-        expect(result.status, UpdateStatus.unavailable);
-        expect(result.hasUpdate, isFalse);
-      }
-    });
+          expect(result.status, UpdateStatus.unavailable);
+          expect(result.hasUpdate, isFalse);
+        }
+
+        for (final invalidTag in ['', 'v', '1..2', '1.two', '1.2+']) {
+          final result = await _check(
+            installedVersion: '1.12.8',
+            tagName: invalidTag,
+          );
+
+          expect(result.status, UpdateStatus.unavailable);
+          expect(result.installedVersion, '1.12.8');
+          expect(result.hasUpdate, isFalse);
+        }
+      },
+    );
+
+    test(
+      'returns unavailable for malformed installed build metadata',
+      () async {
+        for (final installedVersion in _malformedBuildMetadata) {
+          final result = await _check(
+            installedVersion: installedVersion,
+            tagName: '1.12.9',
+          );
+
+          expect(result.status, UpdateStatus.unavailable);
+          expect(result.hasUpdate, isFalse);
+        }
+      },
+    );
 
     test('returns unavailable for malformed remote build metadata', () async {
       for (final tagName in _malformedBuildMetadata) {
@@ -135,35 +142,35 @@ void main() {
       }
     });
 
-    test('returns unavailable for non-200 and malformed JSON responses',
-        () async {
-      final non200 = await _check(
-        installedVersion: '1.12.8',
-        response: http.Response('not found', 404),
-      );
-      final malformedJson = await _check(
-        installedVersion: '1.12.8',
-        response: http.Response('not json', 200),
-      );
+    test(
+      'returns unavailable for non-200 and malformed JSON responses',
+      () async {
+        final non200 = await _check(
+          installedVersion: '1.12.8',
+          response: http.Response('not found', 404),
+        );
+        final malformedJson = await _check(
+          installedVersion: '1.12.8',
+          response: http.Response('not json', 200),
+        );
 
-      expect(non200.status, UpdateStatus.unavailable);
-      expect(non200.installedVersion, '1.12.8');
-      expect(malformedJson.status, UpdateStatus.unavailable);
-      expect(malformedJson.installedVersion, '1.12.8');
-    });
+        expect(non200.status, UpdateStatus.unavailable);
+        expect(non200.installedVersion, '1.12.8');
+        expect(malformedJson.status, UpdateStatus.unavailable);
+        expect(malformedJson.installedVersion, '1.12.8');
+      },
+    );
 
     test('returns unavailable for HTTP errors and timeouts', () async {
       final httpFailure = await _check(
         installedVersion: '1.12.8',
-        releaseFetcher: (_, __) => Future<http.Response>.error(
-          StateError('network unavailable'),
-        ),
+        releaseFetcher: (_, __) =>
+            Future<http.Response>.error(StateError('network unavailable')),
       );
       final timeout = await _check(
         installedVersion: '1.12.8',
-        releaseFetcher: (_, __) => Future<http.Response>.error(
-          TimeoutException('request timed out'),
-        ),
+        releaseFetcher: (_, __) =>
+            Future<http.Response>.error(TimeoutException('request timed out')),
       );
 
       expect(httpFailure.status, UpdateStatus.unavailable);
@@ -177,9 +184,8 @@ void main() {
         packageInfoLoader: () => Future<PackageInfo>.error(
           StateError('package metadata unavailable'),
         ),
-        releaseFetcher: (_, __) => Future.value(
-          http.Response('{"tag_name":"1.12.9"}', 200),
-        ),
+        releaseFetcher: (_, __) =>
+            Future.value(http.Response('{"tag_name":"1.12.9"}', 200)),
       );
 
       expect(result.status, UpdateStatus.unavailable);
@@ -215,13 +221,14 @@ Future<UpdateInfo> _check({
       version: installedVersion,
       buildNumber: '1',
     ),
-    releaseFetcher: releaseFetcher ??
+    releaseFetcher:
+        releaseFetcher ??
         (_, __) => Future.value(
-              response ??
-                  http.Response(
-                    '{"tag_name":"$tagName","html_url":"$releaseUrl","body":"$releaseNotes"}',
-                    200,
-                  ),
-            ),
+          response ??
+              http.Response(
+                '{"tag_name":"$tagName","html_url":"$releaseUrl","body":"$releaseNotes"}',
+                200,
+              ),
+        ),
   );
 }

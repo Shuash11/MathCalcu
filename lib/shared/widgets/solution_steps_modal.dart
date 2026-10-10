@@ -23,11 +23,8 @@ Future<void> showSolutionStepsModal({
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _SolutionStepsModal(
-      title: title,
-      design: design,
-      child: child,
-    ),
+    builder: (_) =>
+        _SolutionStepsModal(title: title, design: design, child: child),
   );
 }
 
@@ -81,13 +78,18 @@ class _SolutionStepsModal extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: design.accent,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.list_alt_rounded,
-                          color: Colors.white, size: 16),
+                      child: const Icon(
+                        Icons.list_alt_rounded,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

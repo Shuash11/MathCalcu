@@ -1,5 +1,7 @@
 import 'package:calculus_system/topics/calculus/midterm/solvers/inequalities_solver/generated_linear_solver.dart';
+
 import 'base_inequality_screen.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 class StrictScreen extends StatelessWidget {

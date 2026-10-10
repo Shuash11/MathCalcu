@@ -16,8 +16,8 @@ class CollegeStatsScreen extends StatelessWidget {
         title: 'Hypothesis Testing & Regression',
         subtitle: 'College — stats, regression, z-test',
         hint: spec?.hint ?? 'e.g. 4,7,9 stats',
-        helper: spec?.helper ??
-            'Mean / median / mode / SD + regression + z-test.',
+        helper:
+            spec?.helper ?? 'Mean / median / mode / SD + regression + z-test.',
         depedCode: 'College-Stats',
         icon: Icons.scatter_plot_outlined,
         createEquation: (input) => CollegeStatsEquation(input),

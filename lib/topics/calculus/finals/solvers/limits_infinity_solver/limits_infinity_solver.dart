@@ -26,7 +26,7 @@ enum TokenType {
   operator,
   lparen,
   rparen,
-  eof
+  eof,
 }
 
 class Token {
@@ -206,7 +206,7 @@ enum StepType {
   transformation,
   simplification,
   substitution,
-  conclusion
+  conclusion,
 }
 
 class SolutionStep {
@@ -215,12 +215,13 @@ class SolutionStep {
   final String? formula;
   final String? explanation;
   final String? expression;
-  const SolutionStep(
-      {required this.description,
-      required this.type,
-      this.formula,
-      this.explanation,
-      this.expression});
+  const SolutionStep({
+    required this.description,
+    required this.type,
+    this.formula,
+    this.explanation,
+    this.expression,
+  });
 }
 
 class LimitSolution {
@@ -229,12 +230,13 @@ class LimitSolution {
   final double finalValue;
   final String methodUsed;
   final List<SolutionStep> steps;
-  const LimitSolution(
-      {required this.problemNotation,
-      required this.resultString,
-      required this.finalValue,
-      required this.methodUsed,
-      required this.steps});
+  const LimitSolution({
+    required this.problemNotation,
+    required this.resultString,
+    required this.finalValue,
+    required this.methodUsed,
+    required this.steps,
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -251,7 +253,7 @@ class Tokenizer {
     'ln',
     'log',
     'exp',
-    'sqrt'
+    'sqrt',
   };
   Tokenizer(this.input);
 
@@ -341,8 +343,8 @@ class Tokenizer {
 
   Token _readIdent() {
     final start = pos;
-    while (
-        pos < input.length && (_isAlpha(input[pos]) || _isDigit(input[pos]))) {
+    while (pos < input.length &&
+        (_isAlpha(input[pos]) || _isDigit(input[pos]))) {
       pos++;
     }
     return Token(TokenType.ident, input.substring(start, pos));
@@ -449,7 +451,10 @@ class Parser {
         _expect(TokenType.rparen);
         if (Tokenizer.knownFunctions.contains(name)) return Func(name, arg);
         return BinOp(
-            Var(name), '*', arg); // implicit multiplication: f(x) -> f * (x)
+          Var(name),
+          '*',
+          arg,
+        ); // implicit multiplication: f(x) -> f * (x)
       }
       return Var(name);
     }
@@ -610,7 +615,7 @@ class LimitSolver {
       '⁶': '^6',
       '⁷': '^7',
       '⁸': '^8',
-      '⁹': '^9'
+      '⁹': '^9',
     };
     sup.forEach((k, v) {
       r = r.replaceAll(k, v);
@@ -648,31 +653,48 @@ class LimitSolver {
         ? (isNegInf ? '-\\infty' : '\\infty')
         : approachValue.toString();
 
-    steps.add(SolutionStep(
-      description: 'Analyze the limit',
-      type: StepType.analysis,
-      formula: "\\lim_{x \\to $approachStr} f(x)",
-      explanation:
-          'We need to find what value f(x) approaches as x approaches $approachStr.',
-    ));
+    steps.add(
+      SolutionStep(
+        description: 'Analyze the limit',
+        type: StepType.analysis,
+        formula: "\\lim_{x \\to $approachStr} f(x)",
+        explanation:
+            'We need to find what value f(x) approaches as x approaches $approachStr.',
+      ),
+    );
 
     if (expr is BinOp && expr.op == '/') {
       return _solveRational(
-          expr, pre, approachValue, isInfinity, isNegInf, approachStr, steps);
+        expr,
+        pre,
+        approachValue,
+        isInfinity,
+        isNegInf,
+        approachStr,
+        steps,
+      );
     }
 
     return _solvePolynomial(
-        expr, pre, approachValue, isInfinity, isNegInf, approachStr, steps);
+      expr,
+      pre,
+      approachValue,
+      isInfinity,
+      isNegInf,
+      approachStr,
+      steps,
+    );
   }
 
   static LimitSolution _solveRational(
-      BinOp expr,
-      String rawExpr,
-      double approachValue,
-      bool isInfinity,
-      bool isNegInf,
-      String approachStr,
-      List<SolutionStep> steps) {
+    BinOp expr,
+    String rawExpr,
+    double approachValue,
+    bool isInfinity,
+    bool isNegInf,
+    String approachStr,
+    List<SolutionStep> steps,
+  ) {
     final parts = _splitTop(rawExpr);
     final numeratorStr = parts.sublist(0, parts.length - 1).join('/');
     final denominatorStr = parts.last;
@@ -680,42 +702,49 @@ class LimitSolver {
     final numExpr = expr.left;
     final denExpr = expr.right;
 
-    steps.add(SolutionStep(
-      description: 'Identify as a rational function',
-      type: StepType.analysis,
-      formula: 'f(x) = \\frac{$numeratorStr}{$denominatorStr}',
-      explanation:
-          'The given expression is a rational function: \\frac{$numeratorStr}{$denominatorStr}',
-    ));
+    steps.add(
+      SolutionStep(
+        description: 'Identify as a rational function',
+        type: StepType.analysis,
+        formula: 'f(x) = \\frac{$numeratorStr}{$denominatorStr}',
+        explanation:
+            'The given expression is a rational function: \\frac{$numeratorStr}{$denominatorStr}',
+      ),
+    );
 
     final numDegree = ExprUtils.getDegree(numExpr);
     final denDegree = ExprUtils.getDegree(denExpr);
 
-    steps.add(SolutionStep(
-      description: 'Compare degrees',
-      type: StepType.analysis,
-      formula: 'deg(N) = $numDegree,\\quad deg(D) = $denDegree',
-      explanation:
-          'The degree of the numerator is $numDegree and the degree of the denominator is $denDegree.',
-    ));
+    steps.add(
+      SolutionStep(
+        description: 'Compare degrees',
+        type: StepType.analysis,
+        formula: 'deg(N) = $numDegree,\\quad deg(D) = $denDegree',
+        explanation:
+            'The degree of the numerator is $numDegree and the degree of the denominator is $denDegree.',
+      ),
+    );
 
     if (numDegree < denDegree) {
-      steps.add(SolutionStep(
-        description: 'Denominator degree > Numerator degree',
-        type: StepType.transformation,
-        formula:
-            '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = 0',
-        explanation:
-            'When denominator has higher degree, it grows faster, so the fraction approaches 0.',
-        expression: '= 0',
-      ));
-      steps.add(SolutionStep(
-        description: 'Final result',
-        type: StepType.conclusion,
-        formula:
-            '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = 0',
-        expression: '= 0',
-      ));
+      steps.add(
+        SolutionStep(
+          description: 'Denominator degree > Numerator degree',
+          type: StepType.transformation,
+          formula:
+              '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = 0',
+          explanation: 'When denominator has higher degree, it grows faster, so the fraction approaches 0.',
+          expression: '= 0',
+        ),
+      );
+      steps.add(
+        SolutionStep(
+          description: 'Final result',
+          type: StepType.conclusion,
+          formula:
+              '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = 0',
+          expression: '= 0',
+        ),
+      );
       return LimitSolution(
         problemNotation: 'lim(x → $approachStr) $rawExpr',
         resultString: '0',
@@ -727,22 +756,26 @@ class LimitSolver {
 
     if (numDegree > denDegree) {
       final resultStr = isNegInf ? '-\\infty' : '\\infty';
-      steps.add(SolutionStep(
-        description: 'Numerator degree > Denominator degree',
-        type: StepType.transformation,
-        formula:
-            '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = $resultStr',
-        explanation:
-            'The numerator grows faster, so the limit approaches $resultStr.',
-        expression: '= $resultStr',
-      ));
-      steps.add(SolutionStep(
-        description: 'Final result',
-        type: StepType.conclusion,
-        formula:
-            '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = $resultStr',
-        expression: '= $resultStr',
-      ));
+      steps.add(
+        SolutionStep(
+          description: 'Numerator degree > Denominator degree',
+          type: StepType.transformation,
+          formula:
+              '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = $resultStr',
+          explanation:
+              'The numerator grows faster, so the limit approaches $resultStr.',
+          expression: '= $resultStr',
+        ),
+      );
+      steps.add(
+        SolutionStep(
+          description: 'Final result',
+          type: StepType.conclusion,
+          formula:
+              '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = $resultStr',
+          expression: '= $resultStr',
+        ),
+      );
       return LimitSolution(
         problemNotation: 'lim(x → $approachStr) $rawExpr',
         resultString: isNegInf ? '-\\infty' : '\\infty',
@@ -758,21 +791,25 @@ class LimitSolver {
     final result = numLC / denLC;
     final resultStr = _fmt(result);
 
-    steps.add(SolutionStep(
-      description: 'Equal degrees - compare leading coefficients',
-      type: StepType.transformation,
-      formula: '\\frac{$numLC}{$denLC} = $resultStr',
-      explanation:
-          'When degrees are equal, the limit is the ratio of leading coefficients: $numLC / $denLC = $resultStr.',
-      expression: '= $resultStr',
-    ));
-    steps.add(SolutionStep(
-      description: 'Final result',
-      type: StepType.conclusion,
-      formula:
-          '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = $resultStr',
-      expression: '= $resultStr',
-    ));
+    steps.add(
+      SolutionStep(
+        description: 'Equal degrees - compare leading coefficients',
+        type: StepType.transformation,
+        formula: '\\frac{$numLC}{$denLC} = $resultStr',
+        explanation:
+            'When degrees are equal, the limit is the ratio of leading coefficients: $numLC / $denLC = $resultStr.',
+        expression: '= $resultStr',
+      ),
+    );
+    steps.add(
+      SolutionStep(
+        description: 'Final result',
+        type: StepType.conclusion,
+        formula:
+            '\\lim_{x \\to $approachStr} \\frac{$numeratorStr}{$denominatorStr} = $resultStr',
+        expression: '= $resultStr',
+      ),
+    );
     return LimitSolution(
       problemNotation: 'lim(x → $approachStr) $rawExpr',
       resultString: resultStr,
@@ -783,34 +820,39 @@ class LimitSolver {
   }
 
   static LimitSolution _solvePolynomial(
-      Expr expr,
-      String rawExpr,
-      double approachValue,
-      bool isInfinity,
-      bool isNegInf,
-      String approachStr,
-      List<SolutionStep> steps) {
+    Expr expr,
+    String rawExpr,
+    double approachValue,
+    bool isInfinity,
+    bool isNegInf,
+    String approachStr,
+    List<SolutionStep> steps,
+  ) {
     if (!isInfinity) {
       // Finite limit: direct substitution
       try {
         final result = ExprUtils.evaluateAt(expr, approachValue);
         final resultStr = _fmt(result);
 
-        steps.add(SolutionStep(
-          description: 'Direct substitution',
-          type: StepType.substitution,
-          formula: 'f(${_fmt(approachValue)}) = $resultStr',
-          explanation:
-              'Substituting x = ${_fmt(approachValue)} directly gives $resultStr.',
-          expression: '= $resultStr',
-        ));
-        steps.add(SolutionStep(
-          description: 'Final result',
-          type: StepType.conclusion,
-          formula:
-              '\\lim_{x \\to ${_fmt(approachValue)}} $rawExpr = $resultStr',
-          expression: '= $resultStr',
-        ));
+        steps.add(
+          SolutionStep(
+            description: 'Direct substitution',
+            type: StepType.substitution,
+            formula: 'f(${_fmt(approachValue)}) = $resultStr',
+            explanation:
+                'Substituting x = ${_fmt(approachValue)} directly gives $resultStr.',
+            expression: '= $resultStr',
+          ),
+        );
+        steps.add(
+          SolutionStep(
+            description: 'Final result',
+            type: StepType.conclusion,
+            formula:
+                '\\lim_{x \\to ${_fmt(approachValue)}} $rawExpr = $resultStr',
+            expression: '= $resultStr',
+          ),
+        );
         return LimitSolution(
           problemNotation: 'lim(x → ${_fmt(approachValue)}) $rawExpr',
           resultString: resultStr,
@@ -819,12 +861,14 @@ class LimitSolver {
           steps: steps,
         );
       } catch (e) {
-        steps.add(SolutionStep(
-          description: 'Error evaluating',
-          type: StepType.conclusion,
-          formula: 'Undefined',
-          explanation: 'Could not evaluate at x = ${_fmt(approachValue)}.',
-        ));
+        steps.add(
+          SolutionStep(
+            description: 'Error evaluating',
+            type: StepType.conclusion,
+            formula: 'Undefined',
+            explanation: 'Could not evaluate at x = ${_fmt(approachValue)}.',
+          ),
+        );
         return LimitSolution(
           problemNotation: 'lim(x → ${_fmt(approachValue)}) $rawExpr',
           resultString: 'Undefined',
@@ -838,21 +882,25 @@ class LimitSolver {
     final degree = ExprUtils.getDegree(expr);
     final lc = ExprUtils.getLeadingCoeff(expr);
 
-    steps.add(SolutionStep(
-      description: 'Polynomial of degree $degree',
-      type: StepType.analysis,
-      formula: 'deg(f) = $degree, \\text{ leading coefficient } = $lc',
-      explanation:
-          'This is a polynomial of degree $degree with leading coefficient $lc.',
-    ));
+    steps.add(
+      SolutionStep(
+        description: 'Polynomial of degree $degree',
+        type: StepType.analysis,
+        formula: 'deg(f) = $degree, \\text{ leading coefficient } = $lc',
+        explanation:
+            'This is a polynomial of degree $degree with leading coefficient $lc.',
+      ),
+    );
 
     if (degree == 0) {
-      steps.add(SolutionStep(
-        description: 'Constant function',
-        type: StepType.conclusion,
-        formula: '\\lim_{x \\to $approachStr} $rawExpr = ${_fmt(lc)}',
-        expression: '= ${_fmt(lc)}',
-      ));
+      steps.add(
+        SolutionStep(
+          description: 'Constant function',
+          type: StepType.conclusion,
+          formula: '\\lim_{x \\to $approachStr} $rawExpr = ${_fmt(lc)}',
+          expression: '= ${_fmt(lc)}',
+        ),
+      );
       return LimitSolution(
         problemNotation: 'lim(x → $approachStr) $rawExpr',
         resultString: _fmt(lc),
@@ -863,20 +911,23 @@ class LimitSolver {
     }
 
     if (degree < 0) {
-      steps.add(SolutionStep(
-        description: 'Rational terms dominate',
-        type: StepType.transformation,
-        formula: '\\lim_{x \\to $approachStr} $rawExpr = 0',
-        explanation:
-            'The terms with x in the denominator decay to 0 as x grows, so the limit is 0.',
-        expression: '= 0',
-      ));
-      steps.add(SolutionStep(
-        description: 'Final result',
-        type: StepType.conclusion,
-        formula: '\\lim_{x \\to $approachStr} $rawExpr = 0',
-        expression: '= 0',
-      ));
+      steps.add(
+        SolutionStep(
+          description: 'Rational terms dominate',
+          type: StepType.transformation,
+          formula: '\\lim_{x \\to $approachStr} $rawExpr = 0',
+          explanation: 'The terms with x in the denominator decay to 0 as x grows, so the limit is 0.',
+          expression: '= 0',
+        ),
+      );
+      steps.add(
+        SolutionStep(
+          description: 'Final result',
+          type: StepType.conclusion,
+          formula: '\\lim_{x \\to $approachStr} $rawExpr = 0',
+          expression: '= 0',
+        ),
+      );
       return LimitSolution(
         problemNotation: 'lim(x → $approachStr) $rawExpr',
         resultString: '0',
@@ -886,26 +937,31 @@ class LimitSolver {
       );
     }
 
-    final resultIsNeg = (lc < 0) ||
+    final resultIsNeg =
+        (lc < 0) ||
         (isNegInf && degree % 2 == 1 && lc > 0) ||
         (isNegInf && degree % 2 == 0 && lc < 0);
     final result = resultIsNeg ? double.negativeInfinity : double.infinity;
     final resultStr = resultIsNeg ? '-\\infty' : '\\infty';
 
-    steps.add(SolutionStep(
-      description: 'Leading term dominates',
-      type: StepType.transformation,
-      formula: '\\lim_{x \\to $approachStr} $rawExpr = $resultStr',
-      explanation:
-          'For polynomials, the leading term ${lc}x^$degree dominates. As x → $approachStr, the function approaches $resultStr.',
-      expression: '= $resultStr',
-    ));
-    steps.add(SolutionStep(
-      description: 'Final result',
-      type: StepType.conclusion,
-      formula: '\\lim_{x \\to $approachStr} $rawExpr = $resultStr',
-      expression: '= $resultStr',
-    ));
+    steps.add(
+      SolutionStep(
+        description: 'Leading term dominates',
+        type: StepType.transformation,
+        formula: '\\lim_{x \\to $approachStr} $rawExpr = $resultStr',
+        explanation:
+            'For polynomials, the leading term ${lc}x^$degree dominates. As x → $approachStr, the function approaches $resultStr.',
+        expression: '= $resultStr',
+      ),
+    );
+    steps.add(
+      SolutionStep(
+        description: 'Final result',
+        type: StepType.conclusion,
+        formula: '\\lim_{x \\to $approachStr} $rawExpr = $resultStr',
+        expression: '= $resultStr',
+      ),
+    );
     return LimitSolution(
       problemNotation: 'lim(x → $approachStr) $rawExpr',
       resultString: resultIsNeg ? '-∞' : '∞',

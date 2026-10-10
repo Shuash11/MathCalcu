@@ -69,32 +69,35 @@ class FinalsTheme {
       context.watch<ThemeProvider>().isLight;
 
   // ── Typography ────────────────────────────────────────────
-  static TextStyle titleStyle(BuildContext context,
-          {bool responsive = false}) =>
-      TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w700,
-        color: textPrimary(context),
-        letterSpacing: -0.4,
-      );
+  static TextStyle titleStyle(
+    BuildContext context, {
+    bool responsive = false,
+  }) => TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    color: textPrimary(context),
+    letterSpacing: -0.4,
+  );
 
-  static TextStyle subtitleStyle(BuildContext context,
-          {bool responsive = false}) =>
-      TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w400,
-        color: textSecondary(context),
-        height: 1.4,
-      );
+  static TextStyle subtitleStyle(
+    BuildContext context, {
+    bool responsive = false,
+  }) => TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    color: textSecondary(context),
+    height: 1.4,
+  );
 
-  static TextStyle labelStyle(BuildContext context,
-          {bool responsive = false}) =>
-      TextStyle(
-        fontSize: 10,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 1.1,
-        color: textSecondary(context),
-      );
+  static TextStyle labelStyle(
+    BuildContext context, {
+    bool responsive = false,
+  }) => TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 1.1,
+    color: textSecondary(context),
+  );
 
   // ── Gradients ─────────────────────────────────────────────
   static const LinearGradient headerGradient = LinearGradient(
@@ -104,11 +107,11 @@ class FinalsTheme {
   );
 
   static LinearGradient cardGlow({bool hovered = false}) => LinearGradient(
-        colors: [
-          primary.withValues(alpha: hovered ? 0.18 : 0.10),
-          secondary.withValues(alpha: hovered ? 0.08 : 0.04),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+    colors: [
+      primary.withValues(alpha: hovered ? 0.18 : 0.10),
+      secondary.withValues(alpha: hovered ? 0.08 : 0.04),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }

@@ -23,7 +23,9 @@
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/shared/utils/latex_text.dart' as latex_text;
 import 'package:calculus_system/theme/theme_provider.dart';
+
 import 'dart:ui' show SemanticsRole;
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:provider/provider.dart';
@@ -108,11 +110,7 @@ class _StepRow extends StatelessWidget {
     final hasLatex = step.latex != null && step.latex!.isNotEmpty;
     final fallback = Text(
       step.explanation,
-      style: TextStyle(
-        fontSize: 13,
-        height: 1.45,
-        color: theme.textPrimary,
-      ),
+      style: TextStyle(fontSize: 13, height: 1.45, color: theme.textPrimary),
     );
 
     // Step anchor for reading order: the first meaningful text (title,

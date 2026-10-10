@@ -35,8 +35,11 @@ class CenterHeaderBar extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(16),
           ),
-          child:
-              const Icon(Icons.adjust_rounded, color: Colors.white, size: 26),
+          child: const Icon(
+            Icons.adjust_rounded,
+            color: Colors.white,
+            size: 26,
+          ),
         ),
         const SizedBox(width: 14),
         const Expanded(
@@ -54,10 +57,7 @@ class CenterHeaderBar extends StatelessWidget {
               SizedBox(height: 2),
               Text(
                 'Midpoint formula method',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Color(0xFF94A3B8),
-                ),
+                style: TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
               ),
             ],
           ),

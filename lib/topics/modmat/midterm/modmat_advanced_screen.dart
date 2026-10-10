@@ -6,6 +6,7 @@ import 'package:calculus_system/theme/theme_provider.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import '../modmat_theme.dart';
 import '../modmat_module_registry.dart';
 
@@ -29,11 +30,12 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
     super.initState();
 
     _controllers = List.generate(
-        _modules.length,
-        (i) => AnimationController(
-              vsync: this,
-              duration: const Duration(milliseconds: 600),
-            ));
+      _modules.length,
+      (i) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      ),
+    );
 
     _fadeAnims = _controllers
         .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOut))
@@ -153,10 +155,7 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
                   Text(
                     // P0-2: truthful counts from the registry.
                     '${_modules.length} topics · $solverBacked with solvers',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: theme.textSecondary,
-                    ),
+                    style: TextStyle(fontSize: 15, color: theme.textSecondary),
                   ),
                   const SizedBox(width: 8),
                   SectionPill(label: 'Advanced', accent: accent),
@@ -231,8 +230,10 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: accent,
                   borderRadius: BorderRadius.circular(20),
@@ -258,35 +259,30 @@ class _ModmatAdvancedScreenState extends State<ModmatAdvancedScreen>
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final module = _modules[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: FadeTransition(
-                opacity: _fadeAnims[index],
-                child: SlideTransition(
-                  position: _slideAnims[index],
-                  child: _AdvancedModuleCard(
-                    module: module,
-                    // Cycle 9: unwired leaves stay gated — gate
-                    // instead of dead-pushing.
-                    onTap: () {
-                      if (!ModmatModuleRegistry.isRouteAvailable(
-                        module.route,
-                      )) {
-                        showTopicComingSoon(context, module.label);
-                        return;
-                      }
-                      context.push(module.route);
-                    },
-                  ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final module = _modules[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: FadeTransition(
+              opacity: _fadeAnims[index],
+              child: SlideTransition(
+                position: _slideAnims[index],
+                child: _AdvancedModuleCard(
+                  module: module,
+                  // Cycle 9: unwired leaves stay gated — gate
+                  // instead of dead-pushing.
+                  onTap: () {
+                    if (!ModmatModuleRegistry.isRouteAvailable(module.route)) {
+                      showTopicComingSoon(context, module.label);
+                      return;
+                    }
+                    context.push(module.route);
+                  },
                 ),
               ),
-            );
-          },
-          childCount: _modules.length,
-        ),
+            ),
+          );
+        }, childCount: _modules.length),
       ),
     );
   }
@@ -339,8 +335,10 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 260),
                   curve: Curves.easeOutCubic,
-                  decoration:
-                      ModmatTheme.cardDecoration(context, hovered: _hovered),
+                  decoration: ModmatTheme.cardDecoration(
+                    context,
+                    hovered: _hovered,
+                  ),
                   child: Padding(
                     padding: EdgeInsets.all(22 * s),
                     child: Row(
@@ -352,10 +350,12 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                ModmatTheme.secondary
-                                    .withValues(alpha: _hovered ? 0.22 : 0.13),
-                                ModmatTheme.accent
-                                    .withValues(alpha: _hovered ? 0.10 : 0.05),
+                                ModmatTheme.secondary.withValues(
+                                  alpha: _hovered ? 0.22 : 0.13,
+                                ),
+                                ModmatTheme.accent.withValues(
+                                  alpha: _hovered ? 0.10 : 0.05,
+                                ),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -363,16 +363,19 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                             borderRadius: BorderRadius.circular(16 * s),
                             border: Border.all(
                               color: _hovered
-                                  ? ModmatTheme.secondary
-                                      .withValues(alpha: 0.55)
-                                  : ModmatTheme.secondary
-                                      .withValues(alpha: 0.25),
+                                  ? ModmatTheme.secondary.withValues(
+                                      alpha: 0.55,
+                                    )
+                                  : ModmatTheme.secondary.withValues(
+                                      alpha: 0.25,
+                                    ),
                               width: _hovered ? 1.5 * s : 1 * s,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: ModmatTheme.secondary
-                                    .withValues(alpha: _hovered ? 0.28 : 0.12),
+                                color: ModmatTheme.secondary.withValues(
+                                  alpha: _hovered ? 0.28 : 0.12,
+                                ),
                                 blurRadius: _hovered ? 14 * s : 6 * s,
                                 offset: Offset(0, 3 * s),
                               ),
@@ -437,16 +440,19 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                               height: 48 * s,
                               decoration: BoxDecoration(
                                 color: _hovered
-                                    ? ModmatTheme.secondary
-                                        .withValues(alpha: 0.15)
+                                    ? ModmatTheme.secondary.withValues(
+                                        alpha: 0.15,
+                                      )
                                     : Colors.transparent,
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: _hovered
-                                      ? ModmatTheme.secondary
-                                          .withValues(alpha: 0.45)
-                                      : ModmatTheme.secondary
-                                          .withValues(alpha: 0.2),
+                                      ? ModmatTheme.secondary.withValues(
+                                          alpha: 0.45,
+                                        )
+                                      : ModmatTheme.secondary.withValues(
+                                          alpha: 0.2,
+                                        ),
                                   width: 1.5 * s,
                                 ),
                               ),
@@ -454,8 +460,9 @@ class _AdvancedModuleCardState extends State<_AdvancedModuleCard> {
                                 Icons.arrow_forward_ios_rounded,
                                 color: _hovered
                                     ? theme.modmatAccent
-                                    : theme.modmatAccent
-                                        .withValues(alpha: 0.85),
+                                    : theme.modmatAccent.withValues(
+                                        alpha: 0.85,
+                                      ),
                                 size: 15 * s,
                               ),
                             ),

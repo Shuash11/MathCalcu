@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import 'dart:math' as math;
+
 import 'package:calculus_system/calculator/calculator_engine.dart';
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
@@ -47,8 +48,8 @@ class TrigEquationSolver extends BaseEquation {
           return n == 1
               ? 'π'
               : n == -1
-                  ? '-π'
-                  : '$nπ';
+              ? '-π'
+              : '$nπ';
         }
         final g = _gcd(n.abs(), d);
         final nn = n ~/ g, dd = d ~/ g;
@@ -104,19 +105,23 @@ class TrigEquationSolver extends BaseEquation {
         return SolveResult.error('No solution — |cos x| ≤ 1.');
       }
       final a = math.acos(k.clamp(-1, 1));
-      sols =
-          (k - 1).abs() < 1e-12 || (k + 1).abs() < 1e-12 ? [a] : [a, twoPi - a];
+      sols = (k - 1).abs() < 1e-12 || (k + 1).abs() < 1e-12
+          ? [a]
+          : [a, twoPi - a];
     } else {
       final a = math.atan(k);
       sols = [a < 0 ? a + math.pi : a, (a < 0 ? a + math.pi : a) + math.pi];
     }
-    sols = sols
-        .map((e) => e < 0
-            ? e + twoPi
-            : (e >= twoPi && (e - twoPi).abs() < 1e-9 ? 0.0 : e))
-        .toSet()
-        .toList()
-      ..sort();
+    sols =
+        sols
+            .map(
+              (e) => e < 0
+                  ? e + twoPi
+                  : (e >= twoPi && (e - twoPi).abs() < 1e-9 ? 0.0 : e),
+            )
+            .toSet()
+            .toList()
+          ..sort();
     final degs = sols.map((e) => G6Format.num(e * 180 / math.pi)).join('°, ');
     final ans = 'x = ${sols.map(_fmtPi).join(', ')}  ($degs° on [0, 2π))';
     return SolveResult(
@@ -129,7 +134,7 @@ class TrigEquationSolver extends BaseEquation {
           'k': k,
           'radians': sols,
           'degrees': sols.map((e) => e * 180 / math.pi).toList(),
-        }
+        },
       ],
     );
   }
@@ -139,9 +144,10 @@ class TrigEquationSolver extends BaseEquation {
     if (_parse() == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use sin x = 1/2.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use sin x = 1/2.',
+        ),
       ];
     }
     final r = solve();
@@ -160,8 +166,8 @@ class TrigEquationSolver extends BaseEquation {
               return n == 1
                   ? '\\pi'
                   : n == -1
-                      ? '-\\pi'
-                      : '$n\\pi';
+                  ? '-\\pi'
+                  : '$n\\pi';
             }
             final g = _gcd(n.abs(), d);
             final nn = n ~/ g, dd = d ~/ g;
@@ -177,18 +183,21 @@ class TrigEquationSolver extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Reference angle',
-          explanation: 'Solve for the acute reference angle first.'),
+        stepNumber: 1,
+        title: 'Reference angle',
+        explanation: 'Solve for the acute reference angle first.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Quadrants by sign',
-          explanation: 'sin + in I/II, cos + in I/IV, tan + in I/III.'),
+        stepNumber: 2,
+        title: 'Quadrants by sign',
+        explanation: 'sin + in I/II, cos + in I/IV, tan + in I/III.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Solutions on [0, 2π)',
-          explanation: r.answer,
-          latex: solTex),
+        stepNumber: 3,
+        title: 'Solutions on [0, 2π)',
+        explanation: r.answer,
+        latex: solTex,
+      ),
     ];
   }
 }

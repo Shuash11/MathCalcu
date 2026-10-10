@@ -20,20 +20,9 @@ class ResponsiveMath extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = selectable
-        ? SelectableMath.tex(
-            tex,
-            mathStyle: mathStyle,
-            textStyle: textStyle,
-          )
-        : Math.tex(
-            tex,
-            mathStyle: mathStyle,
-            textStyle: textStyle,
-          );
+        ? SelectableMath.tex(tex, mathStyle: mathStyle, textStyle: textStyle)
+        : Math.tex(tex, mathStyle: mathStyle, textStyle: textStyle);
 
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: child,
-    );
+    return FittedBox(fit: BoxFit.scaleDown, child: child);
   }
 }

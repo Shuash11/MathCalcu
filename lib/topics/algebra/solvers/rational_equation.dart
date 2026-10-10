@@ -20,8 +20,10 @@ class RationalEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: '1/x + 1/2 = 3/4');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: '1/x + 1/2 = 3/4',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -64,8 +66,8 @@ class RationalEquation extends BaseEquation {
 
     // Pattern A: p/x + q = r   (q, r plain numbers)
     var m = RegExp(
-            r'^([+-]?\d+(?:\.\d+)?)/x([+-]\d+(?:\.\d+)?/)?([+-]?\d+(?:\.\d+)?)?$')
-        .firstMatch(sides[0]);
+      r'^([+-]?\d+(?:\.\d+)?)/x([+-]\d+(?:\.\d+)?/)?([+-]?\d+(?:\.\d+)?)?$',
+    ).firstMatch(sides[0]);
     // General approach for A: split LHS into fraction + rest.
     final rSide = _numberOrFraction(sides[1]);
     if (rSide != null) {
@@ -97,13 +99,13 @@ class RationalEquation extends BaseEquation {
         return [
           [x],
           [0.0],
-          'p/x + q = r with p=${G6Format.num(p)}, q=${G6Format.num(q)}, r=${G6Format.num(rSide)}'
+          'p/x + q = r with p=${G6Format.num(p)}, q=${G6Format.num(q)}, r=${G6Format.num(rSide)}',
         ];
       }
       // Pattern B: a/(x+b) (+q) = r
-      final bm =
-          RegExp(r'^([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)([+-].+)?$')
-              .firstMatch(left);
+      final bm = RegExp(
+        r'^([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)([+-].+)?$',
+      ).firstMatch(left);
       if (bm != null) {
         final a = double.parse(bm.group(1)!);
         final b = double.parse(bm.group(2)!);
@@ -134,15 +136,15 @@ class RationalEquation extends BaseEquation {
         return [
           [x],
           [excl],
-          'a/(x+b) = r−q with a=${G6Format.num(a)}, b=${G6Format.num(b)}'
+          'a/(x+b) = r−q with a=${G6Format.num(a)}, b=${G6Format.num(b)}',
         ];
       }
     }
 
     // Pattern C: a/(x+b) = c/(x+d).
     final cm = RegExp(
-            r'^([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)=([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)$')
-        .firstMatch(t);
+      r'^([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)=([+-]?\d+(?:\.\d+)?)/\(x([+-]\d+(?:\.\d+)?)\)$',
+    ).firstMatch(t);
     if (cm != null) {
       final a = double.parse(cm.group(1)!);
       final b = double.parse(cm.group(2)!);
@@ -155,7 +157,7 @@ class RationalEquation extends BaseEquation {
       return [
         [x],
         ex,
-        'Cross-multiply: a(x+d) = c(x+b)'
+        'Cross-multiply: a(x+d) = c(x+b)',
       ];
     }
     if (m != null) {
@@ -168,12 +170,14 @@ class RationalEquation extends BaseEquation {
   SolveResult solve() {
     final s = _solve();
     if (s == null) {
-      return SolveResult.error(_error ??
-          'Supported: 1/x + 1/2 = 3/4, 2/(x-1) = 4, a/(x+b) = c/(x+d).');
+      return SolveResult.error(
+        _error ?? 'Supported: 1/x + 1/2 = 3/4, 2/(x-1) = 4, a/(x+b) = c/(x+d).',
+      );
     }
     if (s.length == 1 && s[0] == 'extraneous') {
       return SolveResult.error(
-          'No solution — the only candidate makes a denominator zero (extraneous).');
+        'No solution — the only candidate makes a denominator zero (extraneous).',
+      );
     }
     final xs = (s[0] as List).cast<double>();
     final ex = (s[1] as List).cast<double>();
@@ -182,12 +186,7 @@ class RationalEquation extends BaseEquation {
       answer: 'x = ${G6Format.num(x)}',
       points: [x],
       customData: [
-        {
-          'kind': 'rational',
-          'root': x,
-          'excluded': ex,
-          'detail': s[2],
-        }
+        {'kind': 'rational', 'root': x, 'excluded': ex, 'detail': s[2]},
       ],
     );
   }
@@ -199,37 +198,41 @@ class RationalEquation extends BaseEquation {
     if (s == null || isExtraneous) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: isExtraneous ? 'Extraneous root' : 'Invalid input',
-            explanation: isExtraneous
-                ? 'Candidate zeroes a denominator — no solution.'
-                : (_error ?? 'Use 1/x + 1/2 = 3/4 or a/(x+b) = c/(x+d).'))
+          stepNumber: 1,
+          title: isExtraneous ? 'Extraneous root' : 'Invalid input',
+          explanation: isExtraneous
+              ? 'Candidate zeroes a denominator — no solution.'
+              : (_error ?? 'Use 1/x + 1/2 = 3/4 or a/(x+b) = c/(x+d).'),
+        ),
       ];
     }
     final ex = (s[1] as List).cast<double>();
     final r = solve();
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Excluded values',
-          explanation:
-              'Denominators ≠ 0, so x ≠ ${ex.map(G6Format.num).join(', ')}.',
-          latex:
-              ex.map((e) => 'x \\neq ${G6Format.num(e)}').join(',\\quad ')),
+        stepNumber: 1,
+        title: 'Excluded values',
+        explanation:
+            'Denominators ≠ 0, so x ≠ ${ex.map(G6Format.num).join(', ')}.',
+        latex: ex.map((e) => 'x \\neq ${G6Format.num(e)}').join(',\\quad '),
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Clear denominators',
-          explanation: s[2] as String),
+        stepNumber: 2,
+        title: 'Clear denominators',
+        explanation: s[2] as String,
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Solve the linear equation',
-          explanation: r.answer,
-          latex: r.hasError ? null : 'x = ${G6Format.num(r.points.first)}'),
+        stepNumber: 3,
+        title: 'Solve the linear equation',
+        explanation: r.answer,
+        latex: r.hasError ? null : 'x = ${G6Format.num(r.points.first)}',
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Check for extraneous roots',
-          explanation:
-              'Substitute back — reject any x that zeroes a denominator.'),
+        stepNumber: 4,
+        title: 'Check for extraneous roots',
+        explanation:
+            'Substitute back — reject any x that zeroes a denominator.',
+      ),
     ];
   }
 }

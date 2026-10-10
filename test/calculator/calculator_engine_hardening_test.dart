@@ -36,17 +36,11 @@ void main() {
     });
 
     test('2(3+4) throws instead of silently returning 2', () {
-      expect(
-        () => CalculatorEngine.evaluate('2(3+4)'),
-        throwsFormatException,
-      );
+      expect(() => CalculatorEngine.evaluate('2(3+4)'), throwsFormatException);
     });
 
     test('5sin(2) throws instead of silently returning 5', () {
-      expect(
-        () => CalculatorEngine.evaluate('5sin(2)'),
-        throwsFormatException,
-      );
+      expect(() => CalculatorEngine.evaluate('5sin(2)'), throwsFormatException);
     });
 
     test('leading/trailing whitespace is consumed, not treated as garbage', () {

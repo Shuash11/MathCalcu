@@ -59,7 +59,8 @@ class _MathKeyboardState extends State<MathKeyboard> {
           value.text.substring(0, cursor) + text + value.text.substring(cursor);
       offset = cursor + text.length;
     } else {
-      newText = value.text.substring(0, sel.start) +
+      newText =
+          value.text.substring(0, sel.start) +
           text +
           value.text.substring(sel.end);
       offset = sel.start + text.length;
@@ -144,9 +145,11 @@ class _MathKeyboardState extends State<MathKeyboard> {
   Widget _buildRow(List<String> labels) {
     return Row(
       children: labels
-          .map((l) => l == '?'
-              ? _key(l, bg: widget.accentColor.withValues(alpha: 0.15))
-              : _key(l))
+          .map(
+            (l) => l == '?'
+                ? _key(l, bg: widget.accentColor.withValues(alpha: 0.15))
+                : _key(l),
+          )
           .toList(),
     );
   }
@@ -160,9 +163,7 @@ class _MathKeyboardState extends State<MathKeyboard> {
       decoration: BoxDecoration(
         color: theme.cardSecondary.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: widget.accentColor.withValues(alpha: 0.15),
-        ),
+        border: Border.all(color: widget.accentColor.withValues(alpha: 0.15)),
       ),
       child: Column(
         children: [

@@ -147,8 +147,13 @@ class _NumberLinePainter extends CustomPainter {
           ..color = textSecondary.withValues(alpha: 0.35)
           ..strokeWidth = 1.5,
       );
-      _label(canvas, '$t', Offset(x, midY + 20),
-          color: textSecondary, size: 10);
+      _label(
+        canvas,
+        '$t',
+        Offset(x, midY + 20),
+        color: textSecondary,
+        size: 10,
+      );
     }
 
     // Jump arrow from a to the answer, arcing above the axis.
@@ -390,8 +395,12 @@ class _ShapePainter extends CustomPainter {
         canvas.drawCircle(Offset(cx, cy), r, fill);
         canvas.drawCircle(Offset(cx, cy), r, outline);
         canvas.drawLine(Offset(cx, cy), Offset(cx + r, cy), outline);
-        _label(canvas, 'r = ${_dim(dims, 'r')}', Offset(cx + r / 2, cy - 14),
-            color: textPrimary);
+        _label(
+          canvas,
+          'r = ${_dim(dims, 'r')}',
+          Offset(cx + r / 2, cy - 14),
+          color: textPrimary,
+        );
       case 'triangle':
         final path = Path()
           ..moveTo(cx, cy - 64)
@@ -400,10 +409,18 @@ class _ShapePainter extends CustomPainter {
           ..close();
         canvas.drawPath(path, fill);
         canvas.drawPath(path, outline);
-        _label(canvas, 'b = ${_dim(dims, 'b')}', Offset(cx, cy + 68),
-            color: textPrimary);
-        _label(canvas, 'h = ${_dim(dims, 'h')}', Offset(cx + 84, cy + 6),
-            color: textPrimary);
+        _label(
+          canvas,
+          'b = ${_dim(dims, 'b')}',
+          Offset(cx, cy + 68),
+          color: textPrimary,
+        );
+        _label(
+          canvas,
+          'h = ${_dim(dims, 'h')}',
+          Offset(cx + 84, cy + 6),
+          color: textPrimary,
+        );
       case 'parallelogram':
         const skew = 28.0;
         final path = Path()
@@ -414,8 +431,12 @@ class _ShapePainter extends CustomPainter {
           ..close();
         canvas.drawPath(path, fill);
         canvas.drawPath(path, outline);
-        _label(canvas, 'b = ${_dim(dims, 'b')}', Offset(cx, cy + 66),
-            color: textPrimary);
+        _label(
+          canvas,
+          'b = ${_dim(dims, 'b')}',
+          Offset(cx, cy + 66),
+          color: textPrimary,
+        );
       case 'trapezoid':
         final path = Path()
           ..moveTo(cx - 44, cy - 50)
@@ -425,15 +446,29 @@ class _ShapePainter extends CustomPainter {
           ..close();
         canvas.drawPath(path, fill);
         canvas.drawPath(path, outline);
-        _label(canvas, 'a = ${_dim(dims, 'a')}', Offset(cx, cy - 64),
-            color: textPrimary);
-        _label(canvas, 'b = ${_dim(dims, 'b')}', Offset(cx, cy + 66),
-            color: textPrimary);
+        _label(
+          canvas,
+          'a = ${_dim(dims, 'a')}',
+          Offset(cx, cy - 64),
+          color: textPrimary,
+        );
+        _label(
+          canvas,
+          'b = ${_dim(dims, 'b')}',
+          Offset(cx, cy + 66),
+          color: textPrimary,
+        );
       case 'composite':
-        final r1 =
-            Rect.fromCenter(center: Offset(cx - 44, cy), width: 88, height: 96);
+        final r1 = Rect.fromCenter(
+          center: Offset(cx - 44, cy),
+          width: 88,
+          height: 96,
+        );
         final r2 = Rect.fromCenter(
-            center: Offset(cx + 52, cy + 20), width: 64, height: 56);
+          center: Offset(cx + 52, cy + 20),
+          width: 64,
+          height: 56,
+        );
         for (final r in [r1, r2]) {
           canvas.drawRect(r, fill);
           canvas.drawRect(r, outline);
@@ -441,8 +476,11 @@ class _ShapePainter extends CustomPainter {
       default:
         // square / rectangle fallback.
         final w = shape == 'square' ? 110.0 : 150.0;
-        final rect =
-            Rect.fromCenter(center: Offset(cx, cy), width: w, height: 100);
+        final rect = Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: w,
+          height: 100,
+        );
         canvas.drawRect(rect, fill);
         canvas.drawRect(rect, outline);
         final keys = dims.keys.map((e) => '$e').toList();
@@ -456,8 +494,12 @@ class _ShapePainter extends CustomPainter {
         );
     }
     _label(
-        canvas, shape.isEmpty ? 'shape' : shape, Offset(cx, size.height - 18),
-        color: textSecondary, size: 10);
+      canvas,
+      shape.isEmpty ? 'shape' : shape,
+      Offset(cx, size.height - 18),
+      color: textSecondary,
+      size: 10,
+    );
   }
 
   @override
@@ -500,11 +542,7 @@ void _dashedLine(Canvas canvas, Offset a, Offset b, Paint paint) {
   while (drawn < total) {
     final t0 = drawn / total;
     final t1 = math.min((drawn + dash) / total, 1.0);
-    canvas.drawLine(
-      Offset.lerp(a, b, t0)!,
-      Offset.lerp(a, b, t1)!,
-      paint,
-    );
+    canvas.drawLine(Offset.lerp(a, b, t0)!, Offset.lerp(a, b, t1)!, paint);
     drawn += dash + gap;
   }
 }
@@ -551,18 +589,25 @@ class _WireframePainter extends CustomPainter {
         edge,
       );
       canvas.drawLine(
-          Offset(cx - w / 2, cy - h / 2), Offset(cx - w / 2, cy + h / 2), edge);
+        Offset(cx - w / 2, cy - h / 2),
+        Offset(cx - w / 2, cy + h / 2),
+        edge,
+      );
       canvas.drawLine(
-          Offset(cx + w / 2, cy - h / 2), Offset(cx + w / 2, cy + h / 2), edge);
+        Offset(cx + w / 2, cy - h / 2),
+        Offset(cx + w / 2, cy + h / 2),
+        edge,
+      );
       canvas.drawOval(
         Rect.fromCenter(center: Offset(cx, cy + h / 2), width: w, height: 30),
         edge,
       );
     } else if (solid == 'cone' || solid == 'pyramid') {
       final base = Rect.fromCenter(
-          center: Offset(cx, cy + 52),
-          width: 140,
-          height: solid == 'cone' ? 30 : 26);
+        center: Offset(cx, cy + 52),
+        width: 140,
+        height: solid == 'cone' ? 30 : 26,
+      );
       if (solid == 'cone') {
         canvas.drawOval(base, edge);
       } else {
@@ -579,8 +624,11 @@ class _WireframePainter extends CustomPainter {
       const h = 100.0;
       const dx = 34.0;
       const dy = -26.0;
-      final front =
-          Rect.fromCenter(center: Offset(cx - 10, cy + 6), width: w, height: h);
+      final front = Rect.fromCenter(
+        center: Offset(cx - 10, cy + 6),
+        width: w,
+        height: h,
+      );
       final back = front.shift(const Offset(dx, dy));
       canvas.drawRect(back, edge);
       _dashedLine(canvas, back.topLeft, front.topLeft, hidden);
@@ -592,11 +640,22 @@ class _WireframePainter extends CustomPainter {
 
     final dims = data['dims'];
     final dimText = dims is List ? dims.map((d) => '$d').join(' × ') : '';
-    _label(canvas, solid, Offset(cx, size.height - 34),
-        color: textPrimary, size: 13, weight: FontWeight.w800);
+    _label(
+      canvas,
+      solid,
+      Offset(cx, size.height - 34),
+      color: textPrimary,
+      size: 13,
+      weight: FontWeight.w800,
+    );
     if (dimText.isNotEmpty) {
-      _label(canvas, dimText, Offset(cx, size.height - 16),
-          color: textSecondary, size: 11);
+      _label(
+        canvas,
+        dimText,
+        Offset(cx, size.height - 16),
+        color: textSecondary,
+        size: 11,
+      );
     }
   }
 
@@ -691,12 +750,13 @@ class _PiePainter extends CustomPainter {
       start += sweep;
     }
     canvas.drawCircle(
-        center,
-        radius,
-        Paint()
-          ..color = accent
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2);
+      center,
+      radius,
+      Paint()
+        ..color = accent
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2,
+    );
 
     // Legend on the right.
     var ly = 34.0;

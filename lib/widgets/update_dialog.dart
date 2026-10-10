@@ -120,8 +120,8 @@ class _UpdateDialogState extends State<_UpdateDialog>
               _error == 'NEED_PERMISSION'
                   ? 'Permission needed'
                   : _error?.contains('signature') == true
-                      ? 'Signature mismatch'
-                      : 'Update failed',
+                  ? 'Signature mismatch'
+                  : 'Update failed',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -133,9 +133,8 @@ class _UpdateDialogState extends State<_UpdateDialog>
               _error == 'NEED_PERMISSION'
                   ? 'Allow MathCalcu to install updates in your phone settings, then try again.'
                   : _error?.contains('signature') == true
-                      ? 'This update was signed with a different key.\nUninstall the app first, then download the new version.'
-                      : (_error ??
-                          'Something went wrong. Please try again later.'),
+                  ? 'This update was signed with a different key.\nUninstall the app first, then download the new version.'
+                  : (_error ?? 'Something went wrong. Please try again later.'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -150,7 +149,8 @@ class _UpdateDialogState extends State<_UpdateDialog>
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   style: TextButton.styleFrom(
-                      foregroundColor: theme.textSecondary),
+                    foregroundColor: theme.textSecondary,
+                  ),
                   child: const Text('Cancel'),
                 ),
                 const SizedBox(width: 12),
@@ -160,7 +160,8 @@ class _UpdateDialogState extends State<_UpdateDialog>
                       : _startDownload,
                   style: FilledButton.styleFrom(backgroundColor: accent),
                   child: Text(
-                      _error == 'NEED_PERMISSION' ? 'Open Settings' : 'Retry'),
+                    _error == 'NEED_PERMISSION' ? 'Open Settings' : 'Retry',
+                  ),
                 ),
               ],
             ),
@@ -184,11 +185,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
                 color: accent.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.system_update_rounded,
-                size: 32,
-                color: accent,
-              ),
+              child: Icon(Icons.system_update_rounded, size: 32, color: accent),
             ),
             const SizedBox(height: 16),
             Text(
@@ -238,11 +235,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
               color: accent.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.system_update_rounded,
-              size: 32,
-              color: accent,
-            ),
+            child: Icon(Icons.system_update_rounded, size: 32, color: accent),
           ),
           const SizedBox(height: 16),
           Text(
@@ -256,10 +249,7 @@ class _UpdateDialogState extends State<_UpdateDialog>
           const SizedBox(height: 8),
           Text(
             'Version ${widget.info.latestVersion}',
-            style: TextStyle(
-              fontSize: 14,
-              color: theme.textSecondary,
-            ),
+            style: TextStyle(fontSize: 14, color: theme.textSecondary),
           ),
           const SizedBox(height: 20),
           Row(

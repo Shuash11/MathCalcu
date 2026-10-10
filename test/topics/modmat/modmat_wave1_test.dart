@@ -151,11 +151,17 @@ void main() {
     test('BUG A: overflowing C/P never return a wrapped (wrong) value', () {
       for (final input in ['C(67,33)', 'C(100,50)', 'P(30,15)', 'P(100,50)']) {
         final eq = M3CombinatoricsEquation(input);
-        expect(eq.validate(), isTrue,
-            reason: '$input is well-formed and within 0 <= r <= n <= 100');
+        expect(
+          eq.validate(),
+          isTrue,
+          reason: '$input is well-formed and within 0 <= r <= n <= 100',
+        );
         final r = eq.solve();
-        expect(r.hasError, isTrue,
-            reason: '$input silently overflowed instead of erroring');
+        expect(
+          r.hasError,
+          isTrue,
+          reason: '$input silently overflowed instead of erroring',
+        );
         expect(r.errorMessage, isNotNull);
         expect(r.errorMessage, contains('exceeds the largest integer'));
         // An error result carries no answer — never the old wrapped value.
@@ -169,16 +175,22 @@ void main() {
       // Small cases must be byte-identical to before the fix.
       expect(M3CombinatoricsEquation('C(5,2)').solve().answer, 'C(5,2) = 10');
       expect(M3CombinatoricsEquation('P(5,2)').solve().answer, 'P(5,2) = 20');
-      expect(M3CombinatoricsEquation('C(20,10)').solve().answer,
-          'C(20,10) = 184756');
+      expect(
+        M3CombinatoricsEquation('C(20,10)').solve().answer,
+        'C(20,10) = 184756',
+      );
       expect(M3CombinatoricsEquation('5!').solve().answer, contains('120'));
       // Large-but-representable cases: the 64-bit multiplicative recurrence
       // overflowed its intermediate product even though the final value fits,
       // so these were silently wrong too and are now exact.
-      expect(M3CombinatoricsEquation('C(65,32)').solve().answer,
-          'C(65,32) = 3609714217008132870');
-      expect(M3CombinatoricsEquation('C(66,33)').solve().answer,
-          'C(66,33) = 7219428434016265740');
+      expect(
+        M3CombinatoricsEquation('C(65,32)').solve().answer,
+        'C(65,32) = 3609714217008132870',
+      );
+      expect(
+        M3CombinatoricsEquation('C(66,33)').solve().answer,
+        'C(66,33) = 7219428434016265740',
+      );
     });
 
     // ── Phase 5/6 regression: the exactness bound is EXACTLY 2^63 − 1 ──────
@@ -213,8 +225,10 @@ void main() {
     });
 
     test('boundary 2^63-1: C(65,32) stays exact at 3609714217008132870', () {
-      expect(M3CombinatoricsEquation('C(65,32)').solve().answer,
-          'C(65,32) = 3609714217008132870');
+      expect(
+        M3CombinatoricsEquation('C(65,32)').solve().answer,
+        'C(65,32) = 3609714217008132870',
+      );
     });
 
     // ── Phase 6 regression: >2^53 nCr must never round through `int` ────────
@@ -260,7 +274,9 @@ void main() {
 
     test('binary digits 2 rejected', () {
       expect(
-          M4BaseConversionEquation('102 base2 to base10').validate(), isFalse);
+        M4BaseConversionEquation('102 base2 to base10').validate(),
+        isFalse,
+      );
     });
 
     test('garbage never throws', () {
@@ -286,8 +302,7 @@ void main() {
       expect(() => eq.getSteps(), returnsNormally);
     });
 
-    test('BUG B sibling: value just over 1<<62 gets the magnitude message',
-        () {
+    test('BUG B sibling: value just over 1<<62 gets the magnitude message', () {
       // 16 hex F's (2^64 - 1) wrapped to -1 and slipped through entirely;
       // 2^62 + 1 was caught but reported with the misleading 'digits' message.
       for (final hex in ['FFFFFFFFFFFFFFFF', '4000000000000001']) {
@@ -301,18 +316,23 @@ void main() {
     });
 
     test('BUG B regression: in-range conversions stay exact', () {
-      expect(M4BaseConversionEquation('1011 base2 to base10').solve().answer,
-          contains('11 (base 10)'));
-      expect(M4BaseConversionEquation('FF hex to dec').solve().answer,
-          contains('255 (base 10)'));
-      expect(M4BaseConversionEquation('255 dec to hex').solve().answer,
-          contains('FF (base 16)'));
+      expect(
+        M4BaseConversionEquation('1011 base2 to base10').solve().answer,
+        contains('11 (base 10)'),
+      );
+      expect(
+        M4BaseConversionEquation('FF hex to dec').solve().answer,
+        contains('255 (base 10)'),
+      );
+      expect(
+        M4BaseConversionEquation('255 dec to hex').solve().answer,
+        contains('FF (base 16)'),
+      );
       // Exactly on the bound (2^62 = 4611686018427387904) still converts.
       expect(
-          M4BaseConversionEquation('4000000000000000 hex to dec')
-              .solve()
-              .answer,
-          contains('4611686018427387904 (base 10)'));
+        M4BaseConversionEquation('4000000000000000 hex to dec').solve().answer,
+        contains('4611686018427387904 (base 10)'),
+      );
       // A genuine bad-digit input keeps the digits message (not the size one).
       final bad = M4BaseConversionEquation('102 base2 to base10');
       expect(bad.validate(), isFalse);
@@ -329,7 +349,8 @@ void main() {
     // number). These cases pin the observable behaviour at the bound.
     test('Phase5: 2^62 bound converts exactly; 2^62+1 rejects (web-safe)', () {
       // 4000000000000000 hex == 2^62 == 4611686018427387904 (in range).
-      final on = M4BaseConversionEquation('4000000000000000 hex to dec').solve();
+      final on = M4BaseConversionEquation('4000000000000000 hex to dec')
+          .solve();
       expect(on.hasError, isFalse);
       expect(on.answer, contains('4611686018427387904 (base 10)'));
       // 4000000000000001 hex == 2^62 + 1 must be rejected as out of range.
@@ -339,8 +360,10 @@ void main() {
       expect(r.hasError, isTrue);
       expect(r.errorMessage, contains('exceeds the largest integer'));
       // A small conversion still resolves — the bound must not over-reject.
-      expect(M4BaseConversionEquation('1011 base2 to base10').solve().answer,
-          contains('11 (base 10)'));
+      expect(
+        M4BaseConversionEquation('1011 base2 to base10').solve().answer,
+        contains('11 (base 10)'),
+      );
     });
 
     // ── Phase 6 regression: the CONVERSION and guard are exact on both targets
@@ -361,8 +384,8 @@ void main() {
 
     test('Phase6: 2^62 exact; 2^62+1 rejected; 2^62-1 exact', () {
       // Exactly on the bound still converts, with exact digits on both targets.
-      final on =
-          M4BaseConversionEquation('4000000000000000 hex to dec').solve();
+      final on = M4BaseConversionEquation('4000000000000000 hex to dec')
+          .solve();
       expect(on.hasError, isFalse);
       expect(on.answer, contains('4611686018427387904 (base 10)'));
       // 2^62 + 1 must be rejected — the web guard's `~/` used to round, so this
@@ -373,8 +396,8 @@ void main() {
       expect(r.hasError, isTrue);
       expect(r.errorMessage, contains('exceeds the largest integer'));
       // 2^62 - 1 (0x3FFFFFFFFFFFFFFF) is in range and exact.
-      final under =
-          M4BaseConversionEquation('3FFFFFFFFFFFFFFF hex to dec').solve();
+      final under = M4BaseConversionEquation('3FFFFFFFFFFFFFFF hex to dec')
+          .solve();
       expect(under.hasError, isFalse);
       expect(under.answer, contains('4611686018427387903 (base 10)'));
     });
@@ -459,15 +482,17 @@ void main() {
   });
 
   group('Modmat wave1 LaTeX emission (batch 1 of 2)', () {
-    test('M1 propositional: variable + result steps carry TeX, rules stay prose',
-        () {
-      final steps = M1PropositionalEquation('p -> q').getSteps();
-      expect(steps, hasLength(4));
-      expect(steps[0].latex, 'p, q'); // variables
-      expect(steps[1].latex, isNull); // precedence rule
-      expect(steps[2].latex, r'\text{contingency (true in 3 of 4 rows)}');
-      expect(steps[3].latex, isNull); // classification rule
-    });
+    test(
+      'M1 propositional: variable + result steps carry TeX, rules stay prose',
+      () {
+        final steps = M1PropositionalEquation('p -> q').getSteps();
+        expect(steps, hasLength(4));
+        expect(steps[0].latex, 'p, q'); // variables
+        expect(steps[1].latex, isNull); // precedence rule
+        expect(steps[2].latex, r'\text{contingency (true in 3 of 4 rows)}');
+        expect(steps[3].latex, isNull); // classification rule
+      },
+    );
 
     test('M2 sets: element list + result carry TeX, op label stays prose', () {
       final union = M2SetsEquation('A={1,2,3} B={3,4} UNION').getSteps();
@@ -475,32 +500,40 @@ void main() {
       expect(union[0].latex, r'A = \{1, 2, 3\}, \quad B = \{3, 4\}');
       expect(union[1].latex, isNull); // operation description
       expect(union[2].latex, r'A \cup B = \{1, 2, 3, 4\}');
-      expect(M2SetsEquation('{1,2,3} INTERSECT {2,3,9}').getSteps()[2].latex,
-          r'A \cap B = \{2, 3\}');
-      expect(M2SetsEquation('{1,2,3} DIFF {2}').getSteps()[2].latex,
-          r'A \setminus B = \{1, 3\}');
+      expect(
+        M2SetsEquation('{1,2,3} INTERSECT {2,3,9}').getSteps()[2].latex,
+        r'A \cap B = \{2, 3\}',
+      );
+      expect(
+        M2SetsEquation('{1,2,3} DIFF {2}').getSteps()[2].latex,
+        r'A \setminus B = \{1, 3\}',
+      );
       final sub = M2SetsEquation('{1,2} SUBSET {1,2,3}').getSteps();
       expect(sub[2].latex, r'A \subseteq B');
       expect(sub[2].subLatex, [r'\text{is True}']);
       expect(M2SetsEquation('{1,2,3} CARD').getSteps()[2].latex, r'|A| = 3');
-      expect(M2SetsEquation('{1,2,3} POWER').getSteps()[2].latex,
-          r'|\mathcal{P}(A)| = 2^{3} = 8');
+      expect(
+        M2SetsEquation('{1,2,3} POWER').getSteps()[2].latex,
+        r'|\mathcal{P}(A)| = 2^{3} = 8',
+      );
     });
 
-    test('M3 combinatorics: form + compute carry TeX, range rule stays prose',
-        () {
-      final comb = M3CombinatoricsEquation('C(5,2)').getSteps();
-      expect(comb, hasLength(3));
-      expect(comb[0].latex, r'\binom{n}{r} = \frac{n!}{r!\,(n - r)!}');
-      expect(comb[1].latex, isNull); // 0 <= r <= n rejection rule
-      expect(comb[2].latex, r'\binom{5}{2} = 10');
-      final perm = M3CombinatoricsEquation('P(5,2)').getSteps();
-      expect(perm[0].latex, r'P(n, r) = \frac{n!}{(n - r)!}');
-      expect(perm[2].latex, r'P(5, 2) = 20');
-      final fact = M3CombinatoricsEquation('5!').getSteps();
-      expect(fact[0].latex, r'n! = 1 \times 2 \times \cdots \times n');
-      expect(fact[2].latex, r'5! = 120');
-    });
+    test(
+      'M3 combinatorics: form + compute carry TeX, range rule stays prose',
+      () {
+        final comb = M3CombinatoricsEquation('C(5,2)').getSteps();
+        expect(comb, hasLength(3));
+        expect(comb[0].latex, r'\binom{n}{r} = \frac{n!}{r!\,(n - r)!}');
+        expect(comb[1].latex, isNull); // 0 <= r <= n rejection rule
+        expect(comb[2].latex, r'\binom{5}{2} = 10');
+        final perm = M3CombinatoricsEquation('P(5,2)').getSteps();
+        expect(perm[0].latex, r'P(n, r) = \frac{n!}{(n - r)!}');
+        expect(perm[2].latex, r'P(5, 2) = 20');
+        final fact = M3CombinatoricsEquation('5!').getSteps();
+        expect(fact[0].latex, r'n! = 1 \times 2 \times \cdots \times n');
+        expect(fact[2].latex, r'5! = 120');
+      },
+    );
 
     test('M4 bases: expand + result carry TeX, division rule stays prose', () {
       final bin = M4BaseConversionEquation('1011 base2 to base10').getSteps();
@@ -513,138 +546,159 @@ void main() {
       expect(hex[2].latex, r'255_{10} = FF_{16}');
     });
 
-    test('M5 matrices: pmatrix + det + inverse carry TeX, verify stays prose',
-        () {
-      final det = M5MatrixEquation('det [[1,2],[3,4]]').getSteps();
-      expect(det, hasLength(3));
-      expect(det[0].latex, r'\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}');
-      expect(det[0].subLatex, [r'\det = a \cdot d - b \cdot c']);
-      expect(det[1].latex, r'\det = -2');
-      expect(det[2].latex, isNull); // verify rule
-      final det3 =
-          M5MatrixEquation('det [[1,0,0],[0,1,0],[0,0,1]]').getSteps();
-      expect(
+    test(
+      'M5 matrices: pmatrix + det + inverse carry TeX, verify stays prose',
+      () {
+        final det = M5MatrixEquation('det [[1,2],[3,4]]').getSteps();
+        expect(det, hasLength(3));
+        expect(det[0].latex, r'\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}');
+        expect(det[0].subLatex, [r'\det = a \cdot d - b \cdot c']);
+        expect(det[1].latex, r'\det = -2');
+        expect(det[2].latex, isNull); // verify rule
+        final det3 = M5MatrixEquation('det [[1,0,0],[0,1,0],[0,0,1]]')
+            .getSteps();
+        expect(
           det3[0].latex,
-          r'\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}');
-      expect(det3[0].subLatex,
-          [r'\det = a(ei - fh) - b(di - fg) + c(dh - eg)']);
-      expect(det3[1].latex, r'\det = 1');
-      final inv = M5MatrixEquation('inv [[2,0],[0,2]]').getSteps();
-      expect(inv, hasLength(4));
-      expect(inv[1].latex, r'\det = 4');
-      expect(inv[2].latex, startsWith(r'A^{-1} = \begin{pmatrix}'));
-      expect(inv[2].latex, contains('0.5'));
-      expect(inv[3].latex, isNull); // verify rule
-    });
+          r'\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}',
+        );
+        expect(det3[0].subLatex, [
+          r'\det = a(ei - fh) - b(di - fg) + c(dh - eg)',
+        ]);
+        expect(det3[1].latex, r'\det = 1');
+        final inv = M5MatrixEquation('inv [[2,0],[0,2]]').getSteps();
+        expect(inv, hasLength(4));
+        expect(inv[1].latex, r'\det = 4');
+        expect(inv[2].latex, startsWith(r'A^{-1} = \begin{pmatrix}'));
+        expect(inv[2].latex, contains('0.5'));
+        expect(inv[3].latex, isNull); // verify rule
+      },
+    );
 
-    test('M6 modular: residue carries TeX, reduce/operate guidance stays prose',
-        () {
-      final norm = M6ModularEquation('17 mod 5').getSteps();
-      expect(norm, hasLength(3));
-      expect(norm[0].latex, isNull); // reduce-into-range rule
-      expect(norm[1].latex, isNull); // operate rule
-      expect(norm[2].latex, r'17 \equiv 2 \pmod{5}');
-      expect(M6ModularEquation('3^4 mod 5').getSteps()[2].latex,
-          r'3^{4} \bmod 5 = 1');
-      expect(M6ModularEquation('inv 3 mod 7').getSteps()[2].latex,
-          r'3^{-1} \equiv 5 \pmod{7}');
-      expect(M6ModularEquation('(12 + 30) mod 7').getSteps()[2].latex,
-          r'(12 + 30) \bmod 7 = 0');
-    });
+    test(
+      'M6 modular: residue carries TeX, reduce/operate guidance stays prose',
+      () {
+        final norm = M6ModularEquation('17 mod 5').getSteps();
+        expect(norm, hasLength(3));
+        expect(norm[0].latex, isNull); // reduce-into-range rule
+        expect(norm[1].latex, isNull); // operate rule
+        expect(norm[2].latex, r'17 \equiv 2 \pmod{5}');
+        expect(
+          M6ModularEquation('3^4 mod 5').getSteps()[2].latex,
+          r'3^{4} \bmod 5 = 1',
+        );
+        expect(
+          M6ModularEquation('inv 3 mod 7').getSteps()[2].latex,
+          r'3^{-1} \equiv 5 \pmod{7}',
+        );
+        expect(
+          M6ModularEquation('(12 + 30) mod 7').getSteps()[2].latex,
+          r'(12 + 30) \bmod 7 = 0',
+        );
+      },
+    );
 
-    test('M7 predicate: statement carries TeX, quantifier/test guidance prose',
-        () {
-      final fa = M7PredicateEquation('forall x in {1,2,3}: x > 0').getSteps();
-      expect(fa, hasLength(3));
-      expect(fa[0].latex, isNull); // quantifier semantics rule
-      expect(fa[1].latex, isNull); // substitution rule
-      expect(fa[2].latex, r'\forall x \in \{1, 2, 3\}: x > 0');
-      expect(fa[2].subLatex, [r'\text{is True}']);
-      final ex = M7PredicateEquation('exists x in {1,2}: x > 5').getSteps();
-      expect(ex[2].latex, r'\exists x \in \{1, 2\}: x > 5');
-      expect(ex[2].subLatex, [r'\text{is False}']);
-    });
+    test(
+      'M7 predicate: statement carries TeX, quantifier/test guidance prose',
+      () {
+        final fa = M7PredicateEquation('forall x in {1,2,3}: x > 0').getSteps();
+        expect(fa, hasLength(3));
+        expect(fa[0].latex, isNull); // quantifier semantics rule
+        expect(fa[1].latex, isNull); // substitution rule
+        expect(fa[2].latex, r'\forall x \in \{1, 2, 3\}: x > 0');
+        expect(fa[2].subLatex, [r'\text{is True}']);
+        final ex = M7PredicateEquation('exists x in {1,2}: x > 5').getSteps();
+        expect(ex[2].latex, r'\exists x \in \{1, 2\}: x > 5');
+        expect(ex[2].subLatex, [r'\text{is False}']);
+      },
+    );
 
-    test('every emitted wave1-modmat TeX line is ASCII (no unicode/control)', () {
-      for (final eq in <BaseEquation>[
-        M1PropositionalEquation('p -> q'),
-        M1PropositionalEquation('p OR NOT p'),
-        M2SetsEquation('A={1,2,3} B={3,4} UNION'),
-        M2SetsEquation('{1,2,3} INTERSECT {2,3,9}'),
-        M2SetsEquation('{1,2,3} DIFF {2}'),
-        M2SetsEquation('{1,2} SUBSET {1,2,3}'),
-        M2SetsEquation('{1,2,3} CARD'),
-        M2SetsEquation('{1,2,3} POWER'),
-        M3CombinatoricsEquation('C(5,2)'),
-        M3CombinatoricsEquation('P(5,2)'),
-        M3CombinatoricsEquation('5!'),
-        M4BaseConversionEquation('1011 base2 to base10'),
-        M4BaseConversionEquation('FF hex to dec'),
-        M4BaseConversionEquation('255 dec to hex'),
-        M5MatrixEquation('det [[1,2],[3,4]]'),
-        M5MatrixEquation('inv [[2,0],[0,2]]'),
-        M5MatrixEquation('det [[1,0,0],[0,1,0],[0,0,1]]'),
-        M6ModularEquation('17 mod 5'),
-        M6ModularEquation('3^4 mod 5'),
-        M6ModularEquation('inv 3 mod 7'),
-        M6ModularEquation('(12 + 30) mod 7'),
-        M7PredicateEquation('forall x in {1,2,3}: x > 0'),
-        M7PredicateEquation('exists x in {1,2}: x > 5'),
-      ]) {
-        for (final s in eq.getSteps()) {
-          for (final tex in <String?>[s.latex, ...?s.subLatex]) {
-            if (tex == null) continue;
-            expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-                reason: '$tex (${s.title})');
-          }
-        }
-      }
-    });
-
-    testWidgets(
-        'every emitted wave1-modmat TeX line parses (recording fallback)',
-        (tester) async {
-      final cases = <BaseEquation>[
-        M1PropositionalEquation('p -> q'),
-        M1PropositionalEquation('p OR NOT p'),
-        M2SetsEquation('A={1,2,3} B={3,4} UNION'),
-        M2SetsEquation('{1,2,3} INTERSECT {2,3,9}'),
-        M2SetsEquation('{1,2,3} DIFF {2}'),
-        M2SetsEquation('{1,2} SUBSET {1,2,3}'),
-        M2SetsEquation('{1,2,3} CARD'),
-        M2SetsEquation('{1,2,3} POWER'),
-        M3CombinatoricsEquation('C(5,2)'),
-        M3CombinatoricsEquation('P(5,2)'),
-        M3CombinatoricsEquation('5!'),
-        M4BaseConversionEquation('1011 base2 to base10'),
-        M4BaseConversionEquation('FF hex to dec'),
-        M4BaseConversionEquation('255 dec to hex'),
-        M5MatrixEquation('det [[1,2],[3,4]]'),
-        M5MatrixEquation('inv [[2,0],[0,2]]'),
-        M5MatrixEquation('det [[1,0,0],[0,1,0],[0,0,1]]'),
-        M6ModularEquation('17 mod 5'),
-        M6ModularEquation('3^4 mod 5'),
-        M6ModularEquation('inv 3 mod 7'),
-        M6ModularEquation('(12 + 30) mod 7'),
-        M7PredicateEquation('forall x in {1,2,3}: x > 0'),
-        M7PredicateEquation('exists x in {1,2}: x > 5'),
-      ];
-      var checked = 0;
-      for (final eq in cases) {
-        for (final s in eq.getSteps()) {
-          if (s.latex != null && s.latex!.isNotEmpty) {
-            await _expectTexParses(tester, s.latex!);
-            checked++;
-          }
-          for (final line in s.subLatex ?? const <String>[]) {
-            if (line.trim().isNotEmpty) {
-              await _expectTexParses(tester, line);
-              checked++;
+    test(
+      'every emitted wave1-modmat TeX line is ASCII (no unicode/control)',
+      () {
+        for (final eq in <BaseEquation>[
+          M1PropositionalEquation('p -> q'),
+          M1PropositionalEquation('p OR NOT p'),
+          M2SetsEquation('A={1,2,3} B={3,4} UNION'),
+          M2SetsEquation('{1,2,3} INTERSECT {2,3,9}'),
+          M2SetsEquation('{1,2,3} DIFF {2}'),
+          M2SetsEquation('{1,2} SUBSET {1,2,3}'),
+          M2SetsEquation('{1,2,3} CARD'),
+          M2SetsEquation('{1,2,3} POWER'),
+          M3CombinatoricsEquation('C(5,2)'),
+          M3CombinatoricsEquation('P(5,2)'),
+          M3CombinatoricsEquation('5!'),
+          M4BaseConversionEquation('1011 base2 to base10'),
+          M4BaseConversionEquation('FF hex to dec'),
+          M4BaseConversionEquation('255 dec to hex'),
+          M5MatrixEquation('det [[1,2],[3,4]]'),
+          M5MatrixEquation('inv [[2,0],[0,2]]'),
+          M5MatrixEquation('det [[1,0,0],[0,1,0],[0,0,1]]'),
+          M6ModularEquation('17 mod 5'),
+          M6ModularEquation('3^4 mod 5'),
+          M6ModularEquation('inv 3 mod 7'),
+          M6ModularEquation('(12 + 30) mod 7'),
+          M7PredicateEquation('forall x in {1,2,3}: x > 0'),
+          M7PredicateEquation('exists x in {1,2}: x > 5'),
+        ]) {
+          for (final s in eq.getSteps()) {
+            for (final tex in <String?>[s.latex, ...?s.subLatex]) {
+              if (tex == null) continue;
+              expect(
+                tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+                isTrue,
+                reason: '$tex (${s.title})',
+              );
             }
           }
         }
-      }
-      expect(checked, greaterThan(0));
-    });
+      },
+    );
+
+    testWidgets(
+      'every emitted wave1-modmat TeX line parses (recording fallback)',
+      (tester) async {
+        final cases = <BaseEquation>[
+          M1PropositionalEquation('p -> q'),
+          M1PropositionalEquation('p OR NOT p'),
+          M2SetsEquation('A={1,2,3} B={3,4} UNION'),
+          M2SetsEquation('{1,2,3} INTERSECT {2,3,9}'),
+          M2SetsEquation('{1,2,3} DIFF {2}'),
+          M2SetsEquation('{1,2} SUBSET {1,2,3}'),
+          M2SetsEquation('{1,2,3} CARD'),
+          M2SetsEquation('{1,2,3} POWER'),
+          M3CombinatoricsEquation('C(5,2)'),
+          M3CombinatoricsEquation('P(5,2)'),
+          M3CombinatoricsEquation('5!'),
+          M4BaseConversionEquation('1011 base2 to base10'),
+          M4BaseConversionEquation('FF hex to dec'),
+          M4BaseConversionEquation('255 dec to hex'),
+          M5MatrixEquation('det [[1,2],[3,4]]'),
+          M5MatrixEquation('inv [[2,0],[0,2]]'),
+          M5MatrixEquation('det [[1,0,0],[0,1,0],[0,0,1]]'),
+          M6ModularEquation('17 mod 5'),
+          M6ModularEquation('3^4 mod 5'),
+          M6ModularEquation('inv 3 mod 7'),
+          M6ModularEquation('(12 + 30) mod 7'),
+          M7PredicateEquation('forall x in {1,2,3}: x > 0'),
+          M7PredicateEquation('exists x in {1,2}: x > 5'),
+        ];
+        var checked = 0;
+        for (final eq in cases) {
+          for (final s in eq.getSteps()) {
+            if (s.latex != null && s.latex!.isNotEmpty) {
+              await _expectTexParses(tester, s.latex!);
+              checked++;
+            }
+            for (final line in s.subLatex ?? const <String>[]) {
+              if (line.trim().isNotEmpty) {
+                await _expectTexParses(tester, line);
+                checked++;
+              }
+            }
+          }
+        }
+        expect(checked, greaterThan(0));
+      },
+    );
   });
 }

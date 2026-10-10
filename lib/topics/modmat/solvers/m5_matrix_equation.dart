@@ -24,8 +24,8 @@ class M5MatrixEquation extends BaseEquation {
   /// Returns [mode, matrix].
   List<dynamic>? _parse() {
     final t = _norm();
-    final m =
-        RegExp(r'^(det|determinant|inv|inverse)\[?(\[.*\])\]?$').firstMatch(t);
+    final m = RegExp(r'^(det|determinant|inv|inverse)\[?(\[.*\])\]?$')
+        .firstMatch(t);
     if (m == null) return null;
     final word = m.group(1)!;
     final mode = word.startsWith('det') ? 'det' : 'inv';
@@ -91,7 +91,8 @@ class M5MatrixEquation extends BaseEquation {
     double co(int r, int c) {
       final rows = [0, 1, 2].where((i) => i != r).toList();
       final cols = [0, 1, 2].where((i) => i != c).toList();
-      final minor = m[rows[0]][cols[0]] * m[rows[1]][cols[1]] -
+      final minor =
+          m[rows[0]][cols[0]] * m[rows[1]][cols[1]] -
           m[rows[0]][cols[1]] * m[rows[1]][cols[0]];
       return ((r + c) % 2 == 0 ? 1 : -1) * minor;
     }
@@ -117,8 +118,10 @@ class M5MatrixEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'det [[1,2],[3,4]]');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'det [[1,2],[3,4]]',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -151,14 +154,15 @@ class M5MatrixEquation extends BaseEquation {
             'size': mat.length,
             'det': det,
             'matrix': mat,
-          }
+          },
         ],
       );
     }
     final inv = inverse(mat);
     if (inv == null) {
       return SolveResult.error(
-          'Singular matrix (det = 0) — no inverse exists.');
+        'Singular matrix (det = 0) — no inverse exists.',
+      );
     }
     return SolveResult(
       answer: 'inv = ${fmtMat(inv)} (det = ${G6Format.num(det)})',
@@ -171,7 +175,7 @@ class M5MatrixEquation extends BaseEquation {
           'det': det,
           'matrix': mat,
           'inverse': inv,
-        }
+        },
       ],
     );
   }
@@ -182,9 +186,10 @@ class M5MatrixEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use det [[1,2],[3,4]].')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use det [[1,2],[3,4]].',
+        ),
       ];
     }
     final r = solve();
@@ -195,35 +200,39 @@ class M5MatrixEquation extends BaseEquation {
     final inv = isDet ? null : inverse(mat);
     final steps = [
       StepModel(
-          stepNumber: 1,
-          title: n == 2 ? 'Write ad − bc' : 'Write the Sarrus/cofactor sum',
-          explanation: n == 2
-              ? 'det = a·d − b·c for [[a,b],[c,d]].'
-              : 'det = a(ei−fh) − b(di−fg) + c(dh−eg).',
-          latex: _texMatrix(mat),
-          subLatex: [
-            n == 2
-                ? '\\det = a \\cdot d - b \\cdot c'
-                : '\\det = a(ei - fh) - b(di - fg) + c(dh - eg)',
-          ]),
+        stepNumber: 1,
+        title: n == 2 ? 'Write ad − bc' : 'Write the Sarrus/cofactor sum',
+        explanation: n == 2
+            ? 'det = a·d − b·c for [[a,b],[c,d]].'
+            : 'det = a(ei−fh) − b(di−fg) + c(dh−eg).',
+        latex: _texMatrix(mat),
+        subLatex: [
+          n == 2
+              ? '\\det = a \\cdot d - b \\cdot c'
+              : '\\det = a(ei - fh) - b(di - fg) + c(dh - eg)',
+        ],
+      ),
       StepModel(
-          stepNumber: 2,
-          title: isDet ? 'Evaluate the determinant' : 'Check det ≠ 0',
-          explanation: isDet
-              ? (r.hasError ? (r.errorMessage ?? '') : r.answer)
-              : 'det = ${G6Format.num(det)}; '
+        stepNumber: 2,
+        title: isDet ? 'Evaluate the determinant' : 'Check det ≠ 0',
+        explanation: isDet
+            ? (r.hasError ? (r.errorMessage ?? '') : r.answer)
+            : 'det = ${G6Format.num(det)}; '
                   'zero means singular (no inverse).',
-          latex: '\\det = ${G6Format.num(det)}'),
+        latex: '\\det = ${G6Format.num(det)}',
+      ),
       if (!isDet)
         StepModel(
-            stepNumber: 3,
-            title: 'Adjugate ÷ det',
-            explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-            latex: inv == null ? null : 'A^{-1} = ${_texMatrix(inv)}'),
+          stepNumber: 3,
+          title: 'Adjugate ÷ det',
+          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+          latex: inv == null ? null : 'A^{-1} = ${_texMatrix(inv)}',
+        ),
       StepModel(
-          stepNumber: isDet ? 3 : 4,
-          title: 'Verify',
-          explanation: 'Multiply A·A⁻¹ — the identity confirms it.'),
+        stepNumber: isDet ? 3 : 4,
+        title: 'Verify',
+        explanation: 'Multiply A·A⁻¹ — the identity confirms it.',
+      ),
     ];
     return steps;
   }

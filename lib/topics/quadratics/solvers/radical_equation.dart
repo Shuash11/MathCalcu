@@ -84,8 +84,10 @@ class RadicalEquation extends BaseEquation {
 
   @override
   bool validate() {
-    final empty =
-        FieldValidators.notEmpty(rawInput, example: 'sqrt(x + 5) = 3');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'sqrt(x + 5) = 3',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -108,7 +110,8 @@ class RadicalEquation extends BaseEquation {
     final p = _parse();
     if (p == null) {
       return SolveResult.error(
-          _error ?? 'Enter a radical equation — e.g. sqrt(x + 5) = 3.');
+        _error ?? 'Enter a radical equation — e.g. sqrt(x + 5) = 3.',
+      );
     }
     if (p[3] == null) return _solveXRhs(p);
     // Plain-number right side.
@@ -117,19 +120,22 @@ class RadicalEquation extends BaseEquation {
     final iso = rhs - b; // sqrt(...) = iso
     if (iso < -1e-12) {
       return SolveResult.error(
-          'No real solution — square root cannot equal ${G6Format.num(iso)} < 0.');
+        'No real solution — square root cannot equal ${G6Format.num(iso)} < 0.',
+      );
     }
     final x = (iso * iso - k) / m;
     // Domain + verification (extraneous check).
     final inside = m * x + k;
     if (inside < -1e-9) {
       return SolveResult.error(
-          'No solution — candidate x = ${G6Format.num(x)} is outside the domain.');
+        'No solution — candidate x = ${G6Format.num(x)} is outside the domain.',
+      );
     }
     final check = _eval('sqrt(($inside))+($b)');
     if (check == null || (check - rhs).abs() > 1e-6) {
       return SolveResult.error(
-          'No solution — candidate x = ${G6Format.num(x)} fails verification (extraneous).');
+        'No solution — candidate x = ${G6Format.num(x)} fails verification (extraneous).',
+      );
     }
     return SolveResult(
       answer: 'x = ${G6Format.num(x)}',
@@ -140,7 +146,7 @@ class RadicalEquation extends BaseEquation {
           'root': x,
           'domain': 'x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}',
           'check': check,
-        }
+        },
       ],
     );
   }
@@ -161,7 +167,8 @@ class RadicalEquation extends BaseEquation {
     final disc = b2 * b2 - 4 * a * c2;
     if (disc < -1e-12) {
       return SolveResult.error(
-          'No real solution — squaring gives a quadratic with a negative discriminant.');
+        'No real solution — squaring gives a quadratic with a negative discriminant.',
+      );
     }
     final sq = math.sqrt(disc < 0 ? 0 : disc);
     final candidates = disc.abs() <= 1e-12
@@ -183,7 +190,8 @@ class RadicalEquation extends BaseEquation {
     if (roots.isEmpty) {
       final listed = candidates.map((x) => 'x = ${G6Format.num(x)}').join(', ');
       return SolveResult.error(
-          'No solution — candidates $listed fail verification (extraneous).');
+        'No solution — candidates $listed fail verification (extraneous).',
+      );
     }
     roots.sort(); // ascending for readability, e.g. 'x = 0 or x = 1'
     final answer = roots.map((x) => 'x = ${G6Format.num(x)}').join(' or ');
@@ -197,7 +205,7 @@ class RadicalEquation extends BaseEquation {
             'root': roots[i],
             'domain': 'x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}',
             'check': checks[i],
-          }
+          },
       ],
     );
   }
@@ -208,9 +216,10 @@ class RadicalEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use sqrt(x + 5) = 3.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use sqrt(x + 5) = 3.',
+        ),
       ];
     }
     if (p[3] == null) return _stepsXRhs(p);
@@ -219,28 +228,34 @@ class RadicalEquation extends BaseEquation {
     final r = solve();
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Domain',
-          explanation:
-              'Need ${p[4]} ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.',
-          latex: '${p[4]} \\ge 0 \\implies '
-              'x ${m > 0 ? '\\ge' : '\\le'} ${G6Format.num(-k / m)}'),
+        stepNumber: 1,
+        title: 'Domain',
+        explanation:
+            'Need ${p[4]} ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.',
+        latex:
+            '${p[4]} \\ge 0 \\implies '
+            'x ${m > 0 ? '\\ge' : '\\le'} ${G6Format.num(-k / m)}',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Isolate the root',
-          explanation:
-              'sqrt(${p[4]}) = ${G6Format.num(rhs)} − ${G6Format.num(b)} = ${G6Format.num(rhs - b)}.',
-          latex: '\\sqrt{${p[4]}} = ${G6Format.num(rhs)} - '
-              '${G6Format.num(b)} = ${G6Format.num(rhs - b)}'),
+        stepNumber: 2,
+        title: 'Isolate the root',
+        explanation:
+            'sqrt(${p[4]}) = ${G6Format.num(rhs)} − ${G6Format.num(b)} = ${G6Format.num(rhs - b)}.',
+        latex:
+            '\\sqrt{${p[4]}} = ${G6Format.num(rhs)} - '
+            '${G6Format.num(b)} = ${G6Format.num(rhs - b)}',
+      ),
       const StepModel(
-          stepNumber: 3,
-          title: 'Square both sides',
-          explanation: 'Squaring is not reversible — verify at the end.'),
+        stepNumber: 3,
+        title: 'Square both sides',
+        explanation: 'Squaring is not reversible — verify at the end.',
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Verify (extraneous check)',
-          explanation: r.answer,
-          latex: r.hasError ? null : _rootsTex(r)),
+        stepNumber: 4,
+        title: 'Verify (extraneous check)',
+        explanation: r.answer,
+        latex: r.hasError ? null : _rootsTex(r),
+      ),
     ];
   }
 
@@ -256,28 +271,33 @@ class RadicalEquation extends BaseEquation {
     final res = solve();
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Domain',
-          explanation:
-              'Need $inside ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.',
-          latex: '$inside \\ge 0 \\implies '
-              'x ${m > 0 ? '\\ge' : '\\le'} ${G6Format.num(-k / m)}'),
+        stepNumber: 1,
+        title: 'Domain',
+        explanation:
+            'Need $inside ≥ 0, so x ${m > 0 ? '≥' : '≤'} ${G6Format.num(-k / m)}.',
+        latex:
+            '$inside \\ge 0 \\implies '
+            'x ${m > 0 ? '\\ge' : '\\le'} ${G6Format.num(-k / m)}',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: 'Isolate the root',
-          explanation: _isolateExpl(inside, r, s, b),
-          latex: _isolateTex(inside, r, s, b)),
+        stepNumber: 2,
+        title: 'Isolate the root',
+        explanation: _isolateExpl(inside, r, s, b),
+        latex: _isolateTex(inside, r, s, b),
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Square both sides',
-          explanation:
-              '${_quadStr(a, b2, c2)} Squaring is not reversible — verify at the end.',
-          latex: _quadTex(a, b2, c2)),
+        stepNumber: 3,
+        title: 'Square both sides',
+        explanation:
+            '${_quadStr(a, b2, c2)} Squaring is not reversible — verify at the end.',
+        latex: _quadTex(a, b2, c2),
+      ),
       StepModel(
-          stepNumber: 4,
-          title: 'Verify (extraneous check)',
-          explanation: res.answer,
-          latex: res.hasError ? null : _rootsTex(res)),
+        stepNumber: 4,
+        title: 'Verify (extraneous check)',
+        explanation: res.answer,
+        latex: res.hasError ? null : _rootsTex(res),
+      ),
     ];
   }
 
@@ -291,13 +311,13 @@ class RadicalEquation extends BaseEquation {
     String coef(double v) => v == 1
         ? 'x'
         : v == -1
-            ? '-x'
-            : '${G6Format.num(v)}x';
+        ? '-x'
+        : '${G6Format.num(v)}x';
     String tail(double v) => v == 0
         ? ''
         : v > 0
-            ? ' + ${G6Format.num(v)}'
-            : ' - ${G6Format.num(-v)}';
+        ? ' + ${G6Format.num(v)}'
+        : ' - ${G6Format.num(-v)}';
     final isolated = '${coef(r)}${tail(t)}';
     final root = '\\sqrt{$inside}';
     if (b == 0) return '$root = $isolated';
@@ -331,13 +351,13 @@ class RadicalEquation extends BaseEquation {
     String coef(double v) => v == 1
         ? 'x'
         : v == -1
-            ? '-x'
-            : '${G6Format.num(v)}x';
+        ? '-x'
+        : '${G6Format.num(v)}x';
     String tail(double v) => v == 0
         ? ''
         : v > 0
-            ? ' + ${G6Format.num(v)}'
-            : ' - ${G6Format.num(-v)}';
+        ? ' + ${G6Format.num(v)}'
+        : ' - ${G6Format.num(-v)}';
     final isolated = '${coef(r)}${tail(t)}';
     if (b == 0) return 'sqrt($inside) = $isolated.';
     return 'sqrt($inside)${tail(b)} = ${coef(r)}${tail(s)} → '

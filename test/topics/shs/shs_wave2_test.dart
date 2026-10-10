@@ -184,8 +184,6 @@ void main() {
       expect(r.answer, contains('100'));
     });
 
-
-
     test('unsupported never throws', () {
       final eq = RelatedRatesEquation('hello');
       expect(eq.validate(), isFalse);
@@ -204,8 +202,7 @@ void main() {
       final rect = RelatedRatesEquation('rect P = 40 max area').getSteps();
       expect(rect[2].latex, r'\text{Square } 10 \times 10,\quad A = 100');
 
-      final sph =
-          RelatedRatesEquation('sphere r = 3, dr/dt = 0.5').getSteps();
+      final sph = RelatedRatesEquation('sphere r = 3, dr/dt = 0.5').getSteps();
       expect(sph[2].latex, contains(r'\frac{dV}{dt}'));
     });
   });
@@ -251,8 +248,9 @@ void main() {
         'g12-optimization',
         'college-lhopital',
       ]) {
-        final topic =
-            CurriculumRegistry.allTopics().firstWhere((t) => t.id == id);
+        final topic = CurriculumRegistry.allTopics().firstWhere(
+          (t) => t.id == id,
+        );
         // P1-2: backend engine (waves 1-3) + frontend screen
         // (topics/shs/screens) + GoRoute (/shs/*) all landed.
         expect(topic.solverAvailable, isTrue, reason: id);
@@ -294,8 +292,11 @@ void main() {
         for (final s in eq.getSteps()) {
           for (final tex in <String?>[s.latex, ...?s.subLatex]) {
             if (tex == null) continue;
-            expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-                reason: '$tex (${s.title})');
+            expect(
+              tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+              isTrue,
+              reason: '$tex (${s.title})',
+            );
             checked++;
           }
         }
@@ -303,9 +304,9 @@ void main() {
       expect(checked, greaterThan(0));
     });
 
-    testWidgets(
-        'every emitted wave2 TeX line parses (recording fallback)',
-        (tester) async {
+    testWidgets('every emitted wave2 TeX line parses (recording fallback)', (
+      tester,
+    ) async {
       var checked = 0;
       for (final eq in cases) {
         for (final s in eq.getSteps()) {

@@ -8,10 +8,7 @@ class LimitProblem {
   final String expression;
   final double approachValue;
 
-  const LimitProblem({
-    required this.expression,
-    required this.approachValue,
-  });
+  const LimitProblem({required this.expression, required this.approachValue});
 
   @override
   String toString() => 'lim(x → $approachValue) $expression';
@@ -182,8 +179,7 @@ class LimitSolverEngine {
           simplifiedDenominator: denominator,
           finalValue: double.nan,
           solved: false,
-          errorMessage:
-              'No common factors found. This limit may require a different method.',
+          errorMessage: 'No common factors found. This limit may require a different method.',
         );
       }
 
@@ -325,7 +321,8 @@ class LimitSolverEngine {
       // Don't descend into division - that's handled separately
       if (node.operator == '/') {
         throw StateError(
-            'Division found where polynomial expected. Ensure expression is a simple fraction.');
+          'Division found where polynomial expected. Ensure expression is a simple fraction.',
+        );
       }
 
       final left = _toPolynomial(node.left);

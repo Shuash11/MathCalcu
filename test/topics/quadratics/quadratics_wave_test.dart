@@ -95,10 +95,10 @@ void main() {
 
   group('Quadratics LaTeX coverage', () {
     List<String> texOf(BaseEquation eq) => [
-          for (final s in eq.getSteps())
-            if (s.latex != null) s.latex!,
-          for (final s in eq.getSteps()) ...?s.subLatex,
-        ];
+      for (final s in eq.getSteps())
+        if (s.latex != null) s.latex!,
+      for (final s in eq.getSteps()) ...?s.subLatex,
+    ];
 
     test('per-solver math steps carry real-value TeX; prose stays null', () {
       final v = VariationEquation('direct, x = 2, y = 10, x = 5').getSteps();
@@ -145,8 +145,8 @@ void main() {
       final qn = QuadraticEquation('x^2 + 1 = 0').getSteps();
       expect(qn[3].latex, '\\Delta = -4 < 0 \\implies \\text{no real roots}');
 
-      final p =
-          PolyDivisionEquation('(x^3 + 2x^2 - 5x + 1)/(x - 1)').getSteps();
+      final p = PolyDivisionEquation('(x^3 + 2x^2 - 5x + 1)/(x - 1)')
+          .getSteps();
       expect(p, hasLength(4));
       expect(p[0].latex, isNull); // synthetic-division guidance -> prose
       expect(p[1].latex, isNull); // bring-down/multiply guidance -> prose
@@ -176,16 +176,20 @@ void main() {
       for (final eq in inputs) {
         for (final t in texOf(eq)) {
           expect(t, isNotEmpty);
-          expect(t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-              reason: 'non-ASCII TeX: $t');
+          expect(
+            t.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+            isTrue,
+            reason: 'non-ASCII TeX: $t',
+          );
           checked++;
         }
       }
       expect(checked, greaterThan(0));
     });
 
-    testWidgets('all quadratics TeX parses; malformed TeX fires fallback',
-        (tester) async {
+    testWidgets('all quadratics TeX parses; malformed TeX fires fallback', (
+      tester,
+    ) async {
       final inputs = <BaseEquation>[
         VariationEquation('direct, x = 2, y = 10, x = 5'),
         VariationEquation('inverse, x = 2, y = 10, x = 5'),

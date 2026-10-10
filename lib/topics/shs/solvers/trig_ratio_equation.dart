@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import 'dart:math' as math;
+
 import 'package:calculus_system/core/base_equation.dart';
 import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
@@ -18,15 +19,19 @@ class TrigRatioEquation extends BaseEquation {
   TrigRatioEquation(this.rawInput);
 
   double? _num(String name) {
-    final m = RegExp('$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)', caseSensitive: false)
-        .firstMatch(rawInput);
+    final m = RegExp(
+      '$name\\s*=\\s*(-?\\d+(?:\\.\\d+)?)',
+      caseSensitive: false,
+    ).firstMatch(rawInput);
     return m == null ? null : double.parse(m.group(1)!);
   }
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'sin 30° or opp = 3, hyp = 6');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'sin 30° or opp = 3, hyp = 6',
+    );
     if (empty != null) {
       _error = empty;
       return false;
@@ -45,8 +50,11 @@ class TrigRatioEquation extends BaseEquation {
 
   @override
   SolveResult solve() {
-    final t =
-        rawInput.toLowerCase().replaceAll('°', '').replaceAll('deg', '').trim();
+    final t = rawInput
+        .toLowerCase()
+        .replaceAll('°', '')
+        .replaceAll('deg', '')
+        .trim();
     // Case 1: ratio of an angle: 'sin 30'.
     final rm = RegExp(r'\b(sin|cos|tan)\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
     if (rm != null && !_hasSides()) {
@@ -74,8 +82,8 @@ class TrigRatioEquation extends BaseEquation {
             'mode': 'ratio',
             'fn': fn,
             'deg': deg,
-            'value': rounded
-          }
+            'value': rounded,
+          },
         ],
       );
     }
@@ -85,7 +93,8 @@ class TrigRatioEquation extends BaseEquation {
     if (known < 2) {
       // Angle from ratio? e.g. 'sin x = 0.5' handled by trig-equation solver; here:
       // 'sin=0.5 find angle'.
-      final vm = RegExp(r'\b(sin|cos|tan)\s*=\s*(-?\d+(?:\.\d+)?)').firstMatch(t);
+      final vm = RegExp(r'\b(sin|cos|tan)\s*=\s*(-?\d+(?:\.\d+)?)')
+          .firstMatch(t);
       if (vm != null) {
         final fn = vm.group(1)!;
         final v = double.parse(vm.group(2)!);
@@ -104,12 +113,13 @@ class TrigRatioEquation extends BaseEquation {
           answer: 'θ = ${G6Format.num(deg)}° ($fn θ = ${G6Format.num(v)})',
           points: [deg],
           customData: [
-            {'kind': 'trig-ratio', 'mode': 'angle', 'fn': fn, 'deg': deg}
+            {'kind': 'trig-ratio', 'mode': 'angle', 'fn': fn, 'deg': deg},
           ],
         );
       }
       return SolveResult.error(
-          _error ?? 'Give two sides — e.g. opp = 3, hyp = 6.');
+        _error ?? 'Give two sides — e.g. opp = 3, hyp = 6.',
+      );
     }
     for (final s in [opp, adj, hyp]) {
       if (s != null && s <= 0) {
@@ -136,8 +146,8 @@ class TrigRatioEquation extends BaseEquation {
             'theta': a,
             'opp': opp,
             'adj': ad,
-            'hyp': hyp
-          }
+            'hyp': hyp,
+          },
         ],
       );
     }
@@ -155,8 +165,8 @@ class TrigRatioEquation extends BaseEquation {
             'theta': a,
             'opp': op,
             'adj': adj,
-            'hyp': hyp
-          }
+            'hyp': hyp,
+          },
         ],
       );
     }
@@ -175,8 +185,8 @@ class TrigRatioEquation extends BaseEquation {
           'theta': a,
           'opp': o,
           'adj': j,
-          'hyp': h
-        }
+          'hyp': h,
+        },
       ],
     );
   }
@@ -192,9 +202,10 @@ class TrigRatioEquation extends BaseEquation {
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: r.errorMessage ?? (_error ?? 'Use sin 30°.'))
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: r.errorMessage ?? (_error ?? 'Use sin 30°.'),
+        ),
       ];
     }
     String? ratioTex;
@@ -206,8 +217,8 @@ class TrigRatioEquation extends BaseEquation {
         final cmd = fn == 'sin'
             ? '\\sin'
             : fn == 'cos'
-                ? '\\cos'
-                : '\\tan';
+            ? '\\cos'
+            : '\\tan';
         ratioTex =
             '$cmd(${G6Format.num((d['deg'] as num).toDouble())}^{\\circ}) = ${G6Format.num((d['value'] as num).toDouble())}';
       } else if (mode == 'angle') {
@@ -220,18 +231,21 @@ class TrigRatioEquation extends BaseEquation {
     }
     return [
       const StepModel(
-          stepNumber: 1,
-          title: 'Label SOH-CAH-TOA',
-          explanation: 'Sin = Opp/Hyp, Cos = Adj/Hyp, Tan = Opp/Adj.'),
+        stepNumber: 1,
+        title: 'Label SOH-CAH-TOA',
+        explanation: 'Sin = Opp/Hyp, Cos = Adj/Hyp, Tan = Opp/Adj.',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Pick the ratio with two knowns',
-          explanation: 'The hypotenuse is always the longest side.'),
+        stepNumber: 2,
+        title: 'Pick the ratio with two knowns',
+        explanation: 'The hypotenuse is always the longest side.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Solve',
-          explanation: r.answer,
-          latex: ratioTex),
+        stepNumber: 3,
+        title: 'Solve',
+        explanation: r.answer,
+        latex: ratioTex,
+      ),
     ];
   }
 }

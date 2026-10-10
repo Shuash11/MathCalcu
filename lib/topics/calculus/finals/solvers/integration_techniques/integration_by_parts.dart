@@ -44,10 +44,7 @@ class ByPartsIntegration {
     if (ln != null) {
       final k = _k(ln);
       // ∫k·x·ln(x) dx = (k/2)·x²·ln(x) − (k/4)·x² + C
-      return _result([
-        _Term('x^2 ln(x)', k / 2),
-        _Term('x^2', -k / 4),
-      ]);
+      return _result([_Term('x^2 ln(x)', k / 2), _Term('x^2', -k / 4)]);
     }
     final exp = RegExp(r'^([+-]?\d+(?:\.\d+)?)?\*?x\*?e\^x$').firstMatch(f);
     if (exp != null) {
@@ -59,19 +56,13 @@ class ByPartsIntegration {
     if (sin != null) {
       final k = _k(sin);
       // ∫k·x·sin(x) dx = −k·x·cos(x) + k·sin(x) + C
-      return _result([
-        _Term('x cos(x)', -k),
-        _Term('sin(x)', k),
-      ]);
+      return _result([_Term('x cos(x)', -k), _Term('sin(x)', k)]);
     }
     final cos = RegExp(r'^([+-]?\d+(?:\.\d+)?)?\*?x\*?cos\(x\)$').firstMatch(f);
     if (cos != null) {
       final k = _k(cos);
       // ∫k·x·cos(x) dx = k·x·sin(x) + k·cos(x) + C
-      return _result([
-        _Term('x sin(x)', k),
-        _Term('cos(x)', k),
-      ]);
+      return _result([_Term('x sin(x)', k), _Term('cos(x)', k)]);
     }
     return null;
   }
@@ -83,7 +74,10 @@ class ByPartsIntegration {
   }
 
   ByPartsResult _result(List<_Term> terms) => ByPartsResult(
-      _join(terms), 'integration by parts (LIATE)', _joinLatex(terms));
+    _join(terms),
+    'integration by parts (LIATE)',
+    _joinLatex(terms),
+  );
 
   /// Joins the LaTeX monomial terms into '\frac{a} - b + C'-style.
   String _joinLatex(List<_Term> terms) {

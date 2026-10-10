@@ -19,23 +19,36 @@ class GeneratedAbsoluteSolver {
       if (isNarrow) {
         if (p.k < 0)
           return const SolveResult(
-              answer: 'No solution', points: [], intervalNotation: '∅');
+            answer: 'No solution',
+            points: [],
+            intervalNotation: '∅',
+          );
         if (p.k == 0 && effectiveOp == '<')
           return const SolveResult(
-              answer: 'No solution', points: [], intervalNotation: '∅');
+            answer: 'No solution',
+            points: [],
+            intervalNotation: '∅',
+          );
         if (p.k == 0 && effectiveOp == '≤') {
           if (p.a == 0)
             return const SolveResult(
-                answer: 'No solution', points: [], intervalNotation: '∅');
+              answer: 'No solution',
+              points: [],
+              intervalNotation: '∅',
+            );
           final root = -p.b / p.a;
           return SolveResult(
-              answer: 'x = ${_fmt(root)}',
-              points: [root],
-              intervalNotation: '{${_fmt(root)}}');
+            answer: 'x = ${_fmt(root)}',
+            points: [root],
+            intervalNotation: '{${_fmt(root)}}',
+          );
         }
         if (p.a == 0)
           return const SolveResult(
-              answer: 'No solution', points: [], intervalNotation: '∅');
+            answer: 'No solution',
+            points: [],
+            intervalNotation: '∅',
+          );
 
         final v1 = (-p.k - p.b) / p.a;
         final v2 = (p.k - p.b) / p.a;
@@ -51,24 +64,30 @@ class GeneratedAbsoluteSolver {
       } else {
         if (p.k < 0)
           return const SolveResult(
-              answer: 'All real numbers',
-              points: [],
-              intervalNotation: '(-∞, ∞)');
+            answer: 'All real numbers',
+            points: [],
+            intervalNotation: '(-∞, ∞)',
+          );
         if (p.k == 0 && effectiveOp == '≥')
           return const SolveResult(
-              answer: 'All real numbers',
-              points: [],
-              intervalNotation: '(-∞, ∞)');
+            answer: 'All real numbers',
+            points: [],
+            intervalNotation: '(-∞, ∞)',
+          );
         if (p.a == 0)
           return const SolveResult(
-              answer: 'No solution', points: [], intervalNotation: '∅');
+            answer: 'No solution',
+            points: [],
+            intervalNotation: '∅',
+          );
         if (p.k == 0 && effectiveOp == '>') {
           final root = -p.b / p.a;
           final fR = _fmt(root);
           return SolveResult(
-              answer: 'x < $fR or x > $fR',
-              points: [root],
-              intervalNotation: '(-∞, $fR) ∪ ($fR, ∞)');
+            answer: 'x < $fR or x > $fR',
+            points: [root],
+            intervalNotation: '(-∞, $fR) ∪ ($fR, ∞)',
+          );
         }
 
         final v1 = (-p.k - p.b) / p.a;
@@ -99,10 +118,7 @@ class GeneratedAbsoluteSolver {
     int n = 1;
 
     // Step 1: Show the original inequality with proper absolute value delimiters
-    steps.add(StepModel(
-      stepNumber: n++,
-      latex: _absToLatex(input.trim()),
-    ));
+    steps.add(StepModel(stepNumber: n++, latex: _absToLatex(input.trim())));
 
     final innerStr = p.b == 0
         ? '${_coefLatex(p.a)}x'
@@ -114,56 +130,66 @@ class GeneratedAbsoluteSolver {
 
     // ---- Edge cases ----
     if (p.a == 0) {
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'No variable term — evaluate the constant directly',
-        latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'No variable term — evaluate the constant directly',
+          latex: _toLatexInterval(solve(input).intervalNotation ?? ''),
+        ),
+      );
       return steps;
     }
 
     if (p.k < 0) {
       if (isNarrow) {
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint:
-              'Absolute value is always \u2265 0, so it can never be < ${_fmt(p.k)}',
-          latex: r'\emptyset',
-        ));
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint:
+                'Absolute value is always \u2265 0, so it can never be < ${_fmt(p.k)}',
+            latex: r'\emptyset',
+          ),
+        );
       } else {
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint:
-              'Absolute value is always \u2265 0, which is always \u2265 ${_fmt(p.k)}',
-          latex: r'(-\infty, \infty)',
-        ));
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint:
+                'Absolute value is always \u2265 0, which is always \u2265 ${_fmt(p.k)}',
+            latex: r'(-\infty, \infty)',
+          ),
+        );
       }
       return steps;
     }
 
     if (p.k == 0 && effectiveOp == '<') {
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint:
-            'Absolute value is always \u2265 0, so |expr| < 0 has no solution',
-        latex: r'\emptyset',
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Absolute value is always \u2265 0, so |expr| < 0 has no solution',
+          latex: r'\emptyset',
+        ),
+      );
       return steps;
     }
 
     if (p.k == 0 && effectiveOp == '>') {
       // |ax+b| > 0  =>  ax+b ≠ 0  =>  x ≠ -b/a
       final root = _fmtLatex(-p.b / p.a);
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint:
-            'Absolute value is always \u2265 0, so |expr| > 0 means expr \u2260 0',
-        latex: r'x \neq ' + root,
-      ));
-      steps.add(StepModel(
-        stepNumber: n++,
-        latex: r'(-\infty, ' + root + r') \cup (' + root + r', \infty)',
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Absolute value is always \u2265 0, so |expr| > 0 means expr \u2260 0',
+          latex: r'x \neq ' + root,
+        ),
+      );
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          latex: r'(-\infty, ' + root + r') \cup (' + root + r', \infty)',
+        ),
+      );
       return steps;
     }
 
@@ -188,24 +214,26 @@ class GeneratedAbsoluteSolver {
 
       // ──────────────────────────────────────────────────────────
       // Step 2: Apply Theorem 1 — |X| < k  =>  -k < X < k
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'Apply Theorem 1',
-        details: [
-          _absToLatex(input.trim()),
-          r'\Downarrow',
-          r'\text{Theorem 1: } |X| ' +
-              _texOp(effectiveOp) +
-              r' k \Rightarrow -k ' +
-              _texOp(effectiveOp) +
-              r' X ' +
-              _texOp(effectiveOp) +
-              r' k',
-          '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
-        ],
-        latex:
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Apply Theorem 1',
+          details: [
+            _absToLatex(input.trim()),
+            r'\Downarrow',
+            r'\text{Theorem 1: } |X| ' +
+                _texOp(effectiveOp) +
+                r' k \Rightarrow -k ' +
+                _texOp(effectiveOp) +
+                r' X ' +
+                _texOp(effectiveOp) +
+                r' k',
             '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
-      ));
+          ],
+          latex:
+              '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+        ),
+      );
 
       // ──────────────────────────────────────────────────────────
       // Step 3: Isolate x-term — subtract/add constant
@@ -219,19 +247,21 @@ class GeneratedAbsoluteSolver {
             ? '${_coefLatex(p.a)}x + $bStr - $bAbs'
             : '${_coefLatex(p.a)}x - $bAbs + $bAbs';
         final rightArith = p.b > 0 ? '$kStr - $bAbs' : '$kStr + $bAbs';
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: '$opWord $amount from all three parts',
-          details: [
-            '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
-            r'\Downarrow',
-            '$leftArith ${_texOp(effectiveOp)} $midArith ${_texOp(effectiveOp)} $rightArith',
-            r'\Downarrow',
-            '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
-          ],
-          latex:
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: '$opWord $amount from all three parts',
+            details: [
+              '$negKStr ${_texOp(effectiveOp)} $innerStr ${_texOp(effectiveOp)} $kStr',
+              r'\Downarrow',
+              '$leftArith ${_texOp(effectiveOp)} $midArith ${_texOp(effectiveOp)} $rightArith',
+              r'\Downarrow',
               '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
-        ));
+            ],
+            latex:
+                '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+          ),
+        );
       }
 
       // ──────────────────────────────────────────────────────────
@@ -239,58 +269,64 @@ class GeneratedAbsoluteSolver {
       if (p.a != 1 && p.a != -1) {
         final finalOpNarrow = p.a < 0 ? _flipOp(effectiveOp) : effectiveOp;
         final aStr = _fmtLatex(p.a);
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: p.a < 0
-              ? 'Divide all parts by ${_fmt(p.a.abs())}, flip inequality signs'
-              : 'Divide all parts by ${_fmt(p.a)}',
-          details: [
-            '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
-            r'\Downarrow',
-            r'\frac{' +
-                _fmtLatex(-p.k - p.b) +
-                '}{' +
-                aStr +
-                '} ' +
-                _texOp(finalOpNarrow) +
-                r' \frac{' +
-                _coefLatex(p.a) +
-                'x}{' +
-                aStr +
-                '} ' +
-                _texOp(finalOpNarrow) +
-                r' \frac{' +
-                _fmtLatex(p.k - p.b) +
-                '}{' +
-                aStr +
-                '}',
-            r'\Downarrow',
-            '${_fmtLatex(l)} ${_texOp(finalOpNarrow)} x ${_texOp(finalOpNarrow)} ${_fmtLatex(h)}',
-          ],
-          latex:
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: p.a < 0
+                ? 'Divide all parts by ${_fmt(p.a.abs())}, flip inequality signs'
+                : 'Divide all parts by ${_fmt(p.a)}',
+            details: [
+              '$leftConst ${_texOp(effectiveOp)} ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rightConst',
+              r'\Downarrow',
+              r'\frac{' +
+                  _fmtLatex(-p.k - p.b) +
+                  '}{' +
+                  aStr +
+                  '} ' +
+                  _texOp(finalOpNarrow) +
+                  r' \frac{' +
+                  _coefLatex(p.a) +
+                  'x}{' +
+                  aStr +
+                  '} ' +
+                  _texOp(finalOpNarrow) +
+                  r' \frac{' +
+                  _fmtLatex(p.k - p.b) +
+                  '}{' +
+                  aStr +
+                  '}',
+              r'\Downarrow',
               '${_fmtLatex(l)} ${_texOp(finalOpNarrow)} x ${_texOp(finalOpNarrow)} ${_fmtLatex(h)}',
-        ));
+            ],
+            latex:
+                '${_fmtLatex(l)} ${_texOp(finalOpNarrow)} x ${_texOp(finalOpNarrow)} ${_fmtLatex(h)}',
+          ),
+        );
       } else if (p.a == -1) {
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: 'Multiply all parts by -1, flip signs',
-          details: [
-            '$leftConst ${_texOp(effectiveOp)} -x ${_texOp(effectiveOp)} $rightConst',
-            r'\Downarrow',
-            '${_fmtLatex(l)} ${_texOp(effectiveOp)} x ${_texOp(effectiveOp)} ${_fmtLatex(h)}',
-          ],
-          latex:
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: 'Multiply all parts by -1, flip signs',
+            details: [
+              '$leftConst ${_texOp(effectiveOp)} -x ${_texOp(effectiveOp)} $rightConst',
+              r'\Downarrow',
               '${_fmtLatex(l)} ${_texOp(effectiveOp)} x ${_texOp(effectiveOp)} ${_fmtLatex(h)}',
-        ));
+            ],
+            latex:
+                '${_fmtLatex(l)} ${_texOp(effectiveOp)} x ${_texOp(effectiveOp)} ${_fmtLatex(h)}',
+          ),
+        );
       }
 
       // ──────────────────────────────────────────────────────────
       // Final: Interval notation
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'Write solution in interval notation',
-        latex: _toLatexInterval(result.intervalNotation ?? ''),
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Write solution in interval notation',
+          latex: _toLatexInterval(result.intervalNotation ?? ''),
+        ),
+      );
     } else {
       // ──────────────────────────────────────────────────────────
       // WIDE CASE  |ax+b| > k  →  ax+b < -k  OR  ax+b > k
@@ -299,24 +335,26 @@ class GeneratedAbsoluteSolver {
 
       // ──────────────────────────────────────────────────────────
       // Step 2: Apply Theorem 2 — |X| > k  =>  X < -k  or  X > k
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'Apply Theorem 2',
-        details: [
-          _absToLatex(input.trim()),
-          r'\Downarrow',
-          r'\text{Theorem 2: } |X| ' +
-              _texOp(effectiveOp) +
-              r' k \Rightarrow X ' +
-              _texOp(flipOp) +
-              r' -k \text{ or } X ' +
-              _texOp(effectiveOp) +
-              r' k',
-          '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
-        ],
-        latex:
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Apply Theorem 2',
+          details: [
+            _absToLatex(input.trim()),
+            r'\Downarrow',
+            r'\text{Theorem 2: } |X| ' +
+                _texOp(effectiveOp) +
+                r' k \Rightarrow X ' +
+                _texOp(flipOp) +
+                r' -k \text{ or } X ' +
+                _texOp(effectiveOp) +
+                r' k',
             '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
-      ));
+          ],
+          latex:
+              '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+        ),
+      );
 
       final leftOp = p.a < 0 ? _flipOp(flipOp) : flipOp;
       final leftVal = _fmtLatex((-p.k - p.b) / p.a);
@@ -337,19 +375,21 @@ class GeneratedAbsoluteSolver {
         final midArith = p.b > 0
             ? '${_coefLatex(p.a)}x + $bStr - $bAbs'
             : '${_coefLatex(p.a)}x - $bAbs + $bAbs';
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: '$opWord $amount from both sides of each inequality',
-          details: [
-            '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
-            r'\Downarrow',
-            '$midArith ${_texOp(flipOp)} $leftArith \\text{ or } $midArith ${_texOp(effectiveOp)} $rightArith',
-            r'\Downarrow',
-            '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lConst \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rConst',
-          ],
-          latex:
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: '$opWord $amount from both sides of each inequality',
+            details: [
+              '$innerStr ${_texOp(flipOp)} $negKStr \\text{ or } $innerStr ${_texOp(effectiveOp)} $kStr',
+              r'\Downarrow',
+              '$midArith ${_texOp(flipOp)} $leftArith \\text{ or } $midArith ${_texOp(effectiveOp)} $rightArith',
+              r'\Downarrow',
               '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lConst \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rConst',
-        ));
+            ],
+            latex:
+                '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lConst \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rConst',
+          ),
+        );
       }
 
       // Step 4: Divide by coefficient in both branches
@@ -357,61 +397,67 @@ class GeneratedAbsoluteSolver {
         final aStr = _fmtLatex(p.a);
         final lcStr = _fmtLatex(-p.k - p.b);
         final rcStr = _fmtLatex(p.k - p.b);
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: p.a < 0
-              ? 'Divide both sides by ${_fmt(p.a.abs())}, flip signs'
-              : 'Divide both sides by ${_fmt(p.a)}',
-          details: [
-            '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lcStr \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rcStr',
-            r'\Downarrow',
-            r'\frac{' +
-                _coefLatex(p.a) +
-                'x}{' +
-                aStr +
-                '} ' +
-                _texOp(leftOp) +
-                r' \frac{' +
-                lcStr +
-                '}{' +
-                aStr +
-                '} \\text{ or } ' +
-                r'\frac{' +
-                _coefLatex(p.a) +
-                'x}{' +
-                aStr +
-                '} ' +
-                _texOp(rightOp) +
-                r' \frac{' +
-                rcStr +
-                '}{' +
-                aStr +
-                '}',
-            r'\Downarrow',
-            'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
-          ],
-          latex:
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: p.a < 0
+                ? 'Divide both sides by ${_fmt(p.a.abs())}, flip signs'
+                : 'Divide both sides by ${_fmt(p.a)}',
+            details: [
+              '${_coefLatex(p.a)}x ${_texOp(flipOp)} $lcStr \\text{ or } ${_coefLatex(p.a)}x ${_texOp(effectiveOp)} $rcStr',
+              r'\Downarrow',
+              r'\frac{' +
+                  _coefLatex(p.a) +
+                  'x}{' +
+                  aStr +
+                  '} ' +
+                  _texOp(leftOp) +
+                  r' \frac{' +
+                  lcStr +
+                  '}{' +
+                  aStr +
+                  '} \\text{ or } ' +
+                  r'\frac{' +
+                  _coefLatex(p.a) +
+                  'x}{' +
+                  aStr +
+                  '} ' +
+                  _texOp(rightOp) +
+                  r' \frac{' +
+                  rcStr +
+                  '}{' +
+                  aStr +
+                  '}',
+              r'\Downarrow',
               'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
-        ));
+            ],
+            latex:
+                'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+          ),
+        );
       } else if (p.a == -1) {
-        steps.add(StepModel(
-          stepNumber: n++,
-          hint: 'Multiply by -1, flip signs',
-          details: [
-            'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
-          ],
-          latex:
+        steps.add(
+          StepModel(
+            stepNumber: n++,
+            hint: 'Multiply by -1, flip signs',
+            details: [
               'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
-        ));
+            ],
+            latex:
+                'x ${_texOp(leftOp)} ${leftVal} \\text{ or } x ${_texOp(rightOp)} ${rightVal}',
+          ),
+        );
       }
 
       // ──────────────────────────────────────────────────────────
       // Step 5: Interval notation
-      steps.add(StepModel(
-        stepNumber: n++,
-        hint: 'Combine into solution set',
-        latex: _toLatexInterval(result.intervalNotation ?? ''),
-      ));
+      steps.add(
+        StepModel(
+          stepNumber: n++,
+          hint: 'Combine into solution set',
+          latex: _toLatexInterval(result.intervalNotation ?? ''),
+        ),
+      );
     }
 
     return steps;
@@ -459,7 +505,12 @@ class GeneratedAbsoluteSolver {
     if (parsed == null) return null;
 
     return _Parsed(
-        op: op, a: parsed['x']!, b: parsed['c']!, k: k, absOnLeft: absOnLeft);
+      op: op,
+      a: parsed['x']!,
+      b: parsed['c']!,
+      k: k,
+      absOnLeft: absOnLeft,
+    );
   }
 
   static String? _extractOp(String s) {
@@ -609,10 +660,11 @@ class _Parsed {
   final String op;
   final double a, b, k;
   final bool absOnLeft;
-  const _Parsed(
-      {required this.op,
-      required this.a,
-      required this.b,
-      required this.k,
-      required this.absOnLeft});
+  const _Parsed({
+    required this.op,
+    required this.a,
+    required this.b,
+    required this.k,
+    required this.absOnLeft,
+  });
 }

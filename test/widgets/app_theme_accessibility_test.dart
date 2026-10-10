@@ -63,8 +63,9 @@ double _contrastRatio(Color foreground, Color background) {
 }
 
 void main() {
-  testWidgets('calculator equality key has a theme-aware readable foreground',
-      (WidgetTester tester) async {
+  testWidgets('calculator equality key has a theme-aware readable foreground', (
+    WidgetTester tester,
+  ) async {
     final theme = ThemeProvider()..toggleTheme();
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -77,31 +78,34 @@ void main() {
     expect((equality.style?.color), theme.surface);
   });
 
-  testWidgets('module cards use the active theme accent and expose one action',
-      (WidgetTester tester) async {
-    final theme = ThemeProvider()..toggleTheme();
-    await tester.pumpWidget(
-      _app(
-        ModuleCard(
-          icon: Icons.functions_rounded,
-          title: 'Inequalities',
-          subtitle: 'Solve inequalities',
-          accentColor: const Color(0xFF334155),
-          onTap: () {},
+  testWidgets(
+    'module cards use the active theme accent and expose one action',
+    (WidgetTester tester) async {
+      final theme = ThemeProvider()..toggleTheme();
+      await tester.pumpWidget(
+        _app(
+          ModuleCard(
+            icon: Icons.functions_rounded,
+            title: 'Inequalities',
+            subtitle: 'Solve inequalities',
+            accentColor: const Color(0xFF334155),
+            onTap: () {},
+          ),
+          theme,
         ),
-        theme,
-      ),
-    );
+      );
 
-    expect(
-      (tester.widget<Icon>(find.byIcon(Icons.functions_rounded))).color,
-      theme.accentColor,
-    );
-    expect(find.bySemanticsLabel('Inequalities'), findsOneWidget);
-  });
+      expect(
+        (tester.widget<Icon>(find.byIcon(Icons.functions_rounded))).color,
+        theme.accentColor,
+      );
+      expect(find.bySemanticsLabel('Inequalities'), findsOneWidget);
+    },
+  );
 
-  testWidgets('home cards expose one labeled action with a readable icon',
-      (WidgetTester tester) async {
+  testWidgets('home cards expose one labeled action with a readable icon', (
+    WidgetTester tester,
+  ) async {
     final theme = ThemeProvider()..toggleTheme();
     await tester.pumpWidget(
       _app(
@@ -123,19 +127,21 @@ void main() {
   });
 
   testWidgets(
-      'accent-filled distance mode labels use the theme on-accent color',
-      (WidgetTester tester) async {
-    for (final isDark in [false, true]) {
-      final theme = _theme(isDark);
-      await tester.pumpWidget(_app(const Distancescreen(), theme));
+    'accent-filled distance mode labels use the theme on-accent color',
+    (WidgetTester tester) async {
+      for (final isDark in [false, true]) {
+        final theme = _theme(isDark);
+        await tester.pumpWidget(_app(const Distancescreen(), theme));
 
-      final label = tester.widget<Text>(find.text('Number Line (1D)'));
-      expect(label.style?.color, theme.surface);
-    }
-  });
+        final label = tester.widget<Text>(find.text('Number Line (1D)'));
+        expect(label.style?.color, theme.surface);
+      }
+    },
+  );
 
-  testWidgets('finals conclusion indicators use the theme on-accent color',
-      (WidgetTester tester) async {
+  testWidgets('finals conclusion indicators use the theme on-accent color', (
+    WidgetTester tester,
+  ) async {
     for (final isDark in [false, true]) {
       final theme = _theme(isDark);
       await tester.pumpWidget(
@@ -154,8 +160,9 @@ void main() {
     }
   });
 
-  testWidgets('finals about header icon uses the theme on-accent color',
-      (WidgetTester tester) async {
+  testWidgets('finals about header icon uses the theme on-accent color', (
+    WidgetTester tester,
+  ) async {
     for (final isDark in [false, true]) {
       final theme = _theme(isDark);
       await tester.pumpWidget(_app(const SizedBox(), theme));
@@ -175,8 +182,9 @@ void main() {
     }
   });
 
-  testWidgets('finals accent indicators use contrast-safe foregrounds',
-      (WidgetTester tester) async {
+  testWidgets('finals accent indicators use contrast-safe foregrounds', (
+    WidgetTester tester,
+  ) async {
     for (final isDark in [false, true]) {
       final theme = _theme(isDark);
       final primaryForeground = theme.surface;
@@ -192,8 +200,10 @@ void main() {
           theme,
         ),
       );
-      expect(tester.widget<Icon>(find.byIcon(Icons.check)).color,
-          primaryForeground);
+      expect(
+        tester.widget<Icon>(find.byIcon(Icons.check)).color,
+        primaryForeground,
+      );
 
       await tester.pumpWidget(
         _app(
@@ -245,8 +255,9 @@ void main() {
     }
   });
 
-  testWidgets('about-sheet accent labels use the theme on-accent color',
-      (WidgetTester tester) async {
+  testWidgets('about-sheet accent labels use the theme on-accent color', (
+    WidgetTester tester,
+  ) async {
     for (final isDark in [false, true]) {
       final theme = _theme(isDark);
       await tester.pumpWidget(_app(const SizedBox(), theme));
@@ -262,8 +273,9 @@ void main() {
     }
   });
 
-  testWidgets('finals avatar ink remains readable across fixed avatar colors',
-      (WidgetTester tester) async {
+  testWidgets('finals avatar ink remains readable across fixed avatar colors', (
+    WidgetTester tester,
+  ) async {
     const avatarInk = Color(0xFF0C0C09);
     const avatarColors = [
       Color(0xFFFFB020),
@@ -291,8 +303,9 @@ void main() {
     }
   });
 
-  testWidgets('O3/O4 update dialogs render actual widgets in both themes',
-      (WidgetTester tester) async {
+  testWidgets('O3/O4 update dialogs render actual widgets in both themes', (
+    WidgetTester tester,
+  ) async {
     const info = UpdateInfo(
       status: UpdateStatus.updateAvailable,
       installedVersion: '1.2.2',
@@ -309,8 +322,10 @@ void main() {
 
       expect(find.text('Update available'), findsOneWidget);
       expect(find.text('Version 1.2.3'), findsOneWidget);
-      expect(tester.getSize(find.byType(FilledButton)).height,
-          greaterThanOrEqualTo(44));
+      expect(
+        tester.getSize(find.byType(FilledButton)).height,
+        greaterThanOrEqualTo(44),
+      );
       expect(tester.takeException(), isNull);
 
       await tester.tap(find.text('Later'));
@@ -320,8 +335,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Update available'), findsOneWidget);
       expect(find.text('Version 1.2.3'), findsOneWidget);
-      expect(tester.getSize(find.byType(FilledButton)).height,
-          greaterThanOrEqualTo(44));
+      expect(
+        tester.getSize(find.byType(FilledButton)).height,
+        greaterThanOrEqualTo(44),
+      );
       expect(tester.takeException(), isNull);
       await tester.tap(find.text('Later'));
       await tester.pumpAndSettle();
@@ -329,77 +346,83 @@ void main() {
   });
 
   testWidgets(
-      'O5/O6 donate sheet and QR dialog render actual widgets in both themes',
-      (WidgetTester tester) async {
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+    'O5/O6 donate sheet and QR dialog render actual widgets in both themes',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
-    for (final isDark in [false, true]) {
-      final theme = _theme(isDark);
-      await tester.pumpWidget(_app(const SizedBox(), theme));
-      showDonateSheet(tester.element(find.byType(Scaffold)));
-      await tester.pumpAndSettle();
+      for (final isDark in [false, true]) {
+        final theme = _theme(isDark);
+        await tester.pumpWidget(_app(const SizedBox(), theme));
+        showDonateSheet(tester.element(find.byType(Scaffold)));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Buy us a Coffee'), findsOneWidget);
-      expect(find.bySemanticsLabel('Zoom donation QR code'), findsOneWidget);
-      await tester
-          .ensureVisible(find.bySemanticsLabel('Zoom donation QR code'));
-      await tester.tap(find.bySemanticsLabel('Zoom donation QR code'));
-      await tester.pumpAndSettle();
-      expect(find.text('Tap anywhere to close'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-      await tester.tap(find.text('Tap anywhere to close'));
-      await tester.pumpAndSettle();
-      Navigator.of(tester.element(find.byType(Scaffold))).pop();
-      await tester.pumpAndSettle();
-    }
-  });
+        expect(find.text('Buy us a Coffee'), findsOneWidget);
+        expect(find.bySemanticsLabel('Zoom donation QR code'), findsOneWidget);
+        await tester.ensureVisible(
+          find.bySemanticsLabel('Zoom donation QR code'),
+        );
+        await tester.tap(find.bySemanticsLabel('Zoom donation QR code'));
+        await tester.pumpAndSettle();
+        expect(find.text('Tap anywhere to close'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.tap(find.text('Tap anywhere to close'));
+        await tester.pumpAndSettle();
+        Navigator.of(tester.element(find.byType(Scaffold))).pop();
+        await tester.pumpAndSettle();
+      }
+    },
+  );
 
   testWidgets(
-      'O7/O8 steps drawer and solution modal render actual widgets in both themes',
-      (WidgetTester tester) async {
-    const steps = [StepModel(stepNumber: 1, latex: r'x = 2')];
-    for (final isDark in [false, true]) {
-      final theme = _theme(isDark);
-      await tester.pumpWidget(_app(const SizedBox(), theme));
-      final context = tester.element(find.byType(Scaffold));
-      showStepsDrawer(
-        context: context,
-        steps: steps,
-        accentColor: theme.accentColor,
-        title: 'Steps',
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('1 steps'), findsOneWidget);
-      expect(find.bySemanticsLabel('Copy solution'), findsOneWidget);
-      expect(tester.getSize(find.bySemanticsLabel('Copy solution')).height,
-          greaterThanOrEqualTo(44));
-      await tester.tap(find.bySemanticsLabel('Close solution steps'));
-      await tester.pumpAndSettle();
+    'O7/O8 steps drawer and solution modal render actual widgets in both themes',
+    (WidgetTester tester) async {
+      const steps = [StepModel(stepNumber: 1, latex: r'x = 2')];
+      for (final isDark in [false, true]) {
+        final theme = _theme(isDark);
+        await tester.pumpWidget(_app(const SizedBox(), theme));
+        final context = tester.element(find.byType(Scaffold));
+        showStepsDrawer(
+          context: context,
+          steps: steps,
+          accentColor: theme.accentColor,
+          title: 'Steps',
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('1 steps'), findsOneWidget);
+        expect(find.bySemanticsLabel('Copy solution'), findsOneWidget);
+        expect(
+          tester.getSize(find.bySemanticsLabel('Copy solution')).height,
+          greaterThanOrEqualTo(44),
+        );
+        await tester.tap(find.bySemanticsLabel('Close solution steps'));
+        await tester.pumpAndSettle();
 
-      showSolutionStepsModal(
-        context: tester.element(find.byType(Scaffold)),
-        title: 'Solution Steps',
-        design: AppDesign.app,
-        child: const Text('Proof body'),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Solution Steps'), findsOneWidget);
-      expect(find.text('Proof body'), findsOneWidget);
-      expect(
-        tester.getSize(find.bySemanticsLabel('Close solution steps')).height,
-        greaterThanOrEqualTo(44),
-      );
-      expect(tester.takeException(), isNull);
-      await tester.tap(find.bySemanticsLabel('Close solution steps'));
-      await tester.pumpAndSettle();
-    }
-  });
+        showSolutionStepsModal(
+          context: tester.element(find.byType(Scaffold)),
+          title: 'Solution Steps',
+          design: AppDesign.app,
+          child: const Text('Proof body'),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Solution Steps'), findsOneWidget);
+        expect(find.text('Proof body'), findsOneWidget);
+        expect(
+          tester.getSize(find.bySemanticsLabel('Close solution steps')).height,
+          greaterThanOrEqualTo(44),
+        );
+        expect(tester.takeException(), isNull);
+        await tester.tap(find.bySemanticsLabel('Close solution steps'));
+        await tester.pumpAndSettle();
+      }
+    },
+  );
 
-  testWidgets('O9-O14 finals input and variable picker render in both themes',
-      (WidgetTester tester) async {
+  testWidgets('O9-O14 finals input and variable picker render in both themes', (
+    WidgetTester tester,
+  ) async {
     for (final isDark in [false, true]) {
       final theme = _theme(isDark);
       await tester.pumpWidget(
@@ -418,12 +441,14 @@ void main() {
     }
   });
 
-  testWidgets('O15 steps drawer copy reports feedback in both themes',
-      (WidgetTester tester) async {
+  testWidgets('O15 steps drawer copy reports feedback in both themes', (
+    WidgetTester tester,
+  ) async {
     _mockClipboard();
-    addTearDown(() => TestDefaultBinaryMessengerBinding
-        .instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, null));
+    addTearDown(
+      () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null),
+    );
 
     for (final isDark in [false, true]) {
       final theme = _theme(isDark);
@@ -445,12 +470,14 @@ void main() {
     }
   });
 
-  testWidgets('O15 donate sheet copy reports feedback in both themes',
-      (WidgetTester tester) async {
+  testWidgets('O15 donate sheet copy reports feedback in both themes', (
+    WidgetTester tester,
+  ) async {
     _mockClipboard();
-    addTearDown(() => TestDefaultBinaryMessengerBinding
-        .instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, null));
+    addTearDown(
+      () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null),
+    );
 
     for (final isDark in [false, true]) {
       final theme = _theme(isDark);
@@ -474,68 +501,68 @@ void main() {
   });
 
   testWidgets(
-      'steps drawer renders a latex-less step as prose, never a blank box',
-      (WidgetTester tester) async {
-    for (final isDark in [false, true]) {
-      final theme = _theme(isDark);
-      await tester.pumpWidget(_app(const SizedBox(), theme));
-      showStepsDrawer(
-        context: tester.element(find.byType(Scaffold)),
-        steps: const [
-          StepModel(
-            stepNumber: 1,
-            title: 'Add 5 to both sides',
-            explanation: 'Isolate the x term before dividing by 2.',
-          ),
-        ],
-        accentColor: theme.accentColor,
-        title: 'Steps',
-      );
-      await tester.pumpAndSettle();
+    'steps drawer renders a latex-less step as prose, never a blank box',
+    (WidgetTester tester) async {
+      for (final isDark in [false, true]) {
+        final theme = _theme(isDark);
+        await tester.pumpWidget(_app(const SizedBox(), theme));
+        showStepsDrawer(
+          context: tester.element(find.byType(Scaffold)),
+          steps: const [
+            StepModel(
+              stepNumber: 1,
+              title: 'Add 5 to both sides',
+              explanation: 'Isolate the x term before dividing by 2.',
+            ),
+          ],
+          accentColor: theme.accentColor,
+          title: 'Steps',
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('1 steps'), findsOneWidget);
-      // The regression: a latex-less step used to render an empty box.
-      expect(find.text('Add 5 to both sides'), findsOneWidget);
-      expect(find.text('Isolate the x term before dividing by 2.'),
-          findsOneWidget);
-      expect(tester.takeException(), isNull);
+        expect(find.text('1 steps'), findsOneWidget);
+        // The regression: a latex-less step used to render an empty box.
+        expect(find.text('Add 5 to both sides'), findsOneWidget);
+        expect(
+          find.text('Isolate the x term before dividing by 2.'),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
 
-      await tester.tap(find.bySemanticsLabel('Close solution steps'));
-      await tester.pumpAndSettle();
-    }
-  });
+        await tester.tap(find.bySemanticsLabel('Close solution steps'));
+        await tester.pumpAndSettle();
+      }
+    },
+  );
 
   testWidgets(
-      'steps drawer shows readable plain text for malformed TeX, never a red box',
-      (WidgetTester tester) async {
-    const malformed = r'\frac{1}{';
-    final expected = stripLatex(malformed);
-    expect(expected, isNotEmpty); // the fallback must not itself be blank;
+    'steps drawer shows readable plain text for malformed TeX, never a red box',
+    (WidgetTester tester) async {
+      const malformed = r'\frac{1}{';
+      final expected = stripLatex(malformed);
+      expect(expected, isNotEmpty); // the fallback must not itself be blank;
 
-    for (final isDark in [false, true]) {
-      final theme = _theme(isDark);
-      await tester.pumpWidget(_app(const SizedBox(), theme));
-      showStepsDrawer(
-        context: tester.element(find.byType(Scaffold)),
-        steps: const [
-          StepModel(
-            stepNumber: 1,
-            title: 'Malformed step',
-            latex: malformed,
-          ),
-        ],
-        accentColor: theme.accentColor,
-        title: 'Steps',
-      );
-      await tester.pumpAndSettle();
+      for (final isDark in [false, true]) {
+        final theme = _theme(isDark);
+        await tester.pumpWidget(_app(const SizedBox(), theme));
+        showStepsDrawer(
+          context: tester.element(find.byType(Scaffold)),
+          steps: const [
+            StepModel(stepNumber: 1, title: 'Malformed step', latex: malformed),
+          ],
+          accentColor: theme.accentColor,
+          title: 'Steps',
+        );
+        await tester.pumpAndSettle();
 
-      // The broken formula renders its stripped plain text via
-      // onErrorFallback — not a red error box, and no thrown exception.
-      expect(find.text(expected), findsOneWidget);
-      expect(tester.takeException(), isNull);
+        // The broken formula renders its stripped plain text via
+        // onErrorFallback — not a red error box, and no thrown exception.
+        expect(find.text(expected), findsOneWidget);
+        expect(tester.takeException(), isNull);
 
-      await tester.tap(find.bySemanticsLabel('Close solution steps'));
-      await tester.pumpAndSettle();
-    }
-  });
+        await tester.tap(find.bySemanticsLabel('Close solution steps'));
+        await tester.pumpAndSettle();
+      }
+    },
+  );
 }

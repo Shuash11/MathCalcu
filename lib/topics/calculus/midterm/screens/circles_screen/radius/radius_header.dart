@@ -56,10 +56,7 @@ class RadiusHeader extends StatelessWidget {
               SizedBox(height: 2),
               Text(
                 'Distance formula method',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Color(0xFF94A3B8),
-                ),
+                style: TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
               ),
             ],
           ),

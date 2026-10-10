@@ -28,8 +28,9 @@ class FinalsSolverButton extends StatelessWidget {
           backgroundColor: theme.accentColor,
           disabledBackgroundColor: theme.accentColor,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           elevation: 0,
           shadowColor: Colors.transparent,
         ),
@@ -38,7 +39,9 @@ class FinalsSolverButton extends StatelessWidget {
                 height: 22,
                 width: 22,
                 child: CircularProgressIndicator(
-                    color: theme.surface, strokeWidth: 2),
+                  color: theme.surface,
+                  strokeWidth: 2,
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,

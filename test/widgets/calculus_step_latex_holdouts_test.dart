@@ -77,8 +77,9 @@ Future<void> _expectTexParses(WidgetTester tester, String tex) async {
 
 void main() {
   group('SlopeSteps identify-points body renders LaTeX', () {
-    testWidgets('A/B points are math widgets, not monospace Text',
-        (tester) async {
+    testWidgets('A/B points are math widgets, not monospace Text', (
+      tester,
+    ) async {
       await _pump(
         tester,
         SlopeSteps(
@@ -115,8 +116,9 @@ void main() {
   });
 
   group('PointSlopeSteps identify-values body renders LaTeX', () {
-    testWidgets('point and slope are math widgets, not monospace Text',
-        (tester) async {
+    testWidgets('point and slope are math widgets, not monospace Text', (
+      tester,
+    ) async {
       await _pump(
         tester,
         const PointSlopeSteps(
@@ -138,15 +140,15 @@ void main() {
       _expectAllRenderedMathParsed(tester);
 
       // The step-1 point/slope lines must parse.
-      await _expectTexParses(
-          tester, r'\text{Point: } (x_1,\;y_1) = (1,\;3)');
+      await _expectTexParses(tester, r'\text{Point: } (x_1,\;y_1) = (1,\;3)');
       await _expectTexParses(tester, r'm = 2');
     });
   });
 
   group('MidpointSteps identify-endpoints body renders LaTeX', () {
-    testWidgets('point bodies are math widgets, not monospace Text',
-        (tester) async {
+    testWidgets('point bodies are math widgets, not monospace Text', (
+      tester,
+    ) async {
       await _pump(
         tester,
         const MidpointSteps(
@@ -182,8 +184,9 @@ void main() {
   });
 
   group('exprToLatex function/radical transforms parse (Phase B2)', () {
-    testWidgets('ln/sqrt/sin and the app hint input emit parseable TeX',
-        (tester) async {
+    testWidgets('ln/sqrt/sin and the app hint input emit parseable TeX', (
+      tester,
+    ) async {
       const exprs = [
         'ln(x)',
         'sqrt(x)',

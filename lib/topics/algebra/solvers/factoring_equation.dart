@@ -96,12 +96,14 @@ class FactoringEquation extends BaseEquation {
     final cf = _coeffs();
     if (cf == null) {
       return SolveResult.error(
-          _error ?? 'Enter a quadratic — e.g. x^2 + 5x + 6.');
+        _error ?? 'Enter a quadratic — e.g. x^2 + 5x + 6.',
+      );
     }
     final ai = _asInt(cf[0]), bi = _asInt(cf[1]), ci = _asInt(cf[2]);
     if (ai == null || bi == null || ci == null || ai == 0) {
       return SolveResult.error(
-          'Integer coefficients only — e.g. x^2 + 5x + 6.');
+        'Integer coefficients only — e.g. x^2 + 5x + 6.',
+      );
     }
     // GCF across non-zero terms. When the leading coefficient is negative we
     // factor out the SIGN too (signedG = -g) so the reduced polynomial has a
@@ -121,8 +123,9 @@ class FactoringEquation extends BaseEquation {
     if (b == 0 && c != 0) {
       // a x^2 + c: DOTS when signs differ.
       if (a * c < 0) {
-        final p =
-            _intSqrt((c ~/ -a * (a < 0 ? -1 : 1)).abs() == 0 ? 0 : (-c ~/ a));
+        final p = _intSqrt(
+          (c ~/ -a * (a < 0 ? -1 : 1)).abs() == 0 ? 0 : (-c ~/ a),
+        );
         if (p != null) {
           factored = '(x+$p)(x-$p)';
           kind = 'dots';
@@ -134,7 +137,8 @@ class FactoringEquation extends BaseEquation {
     factored ??= _trinomial(a, b, c);
     if (factored == null) {
       return SolveResult.error(
-          'Not factorable over integers — try the quadratic formula.');
+        'Not factorable over integers — try the quadratic formula.',
+      );
     }
     final disc = b * b - 4 * a * c;
     // Re-attach the factored-out GCF including its sign: '' for +1, '-' for
@@ -155,7 +159,7 @@ class FactoringEquation extends BaseEquation {
           'factorKind': kind,
           'discriminant': disc,
           'factored': answer,
-        }
+        },
       ],
     );
   }
@@ -192,7 +196,7 @@ class FactoringEquation extends BaseEquation {
           m,
           -m,
           c ~/ (m == 0 ? 1 : m),
-          -(c ~/ (m == 0 ? 1 : m))
+          -(c ~/ (m == 0 ? 1 : m)),
         ]) {
           final n = b - s;
           if (s * n == c) return _fmtFactor(1, s) + _fmtFactor(1, n);
@@ -244,45 +248,51 @@ class FactoringEquation extends BaseEquation {
     if (cf == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use x^2 + 5x + 6.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use x^2 + 5x + 6.',
+        ),
       ];
     }
     final r = solve();
     if (r.hasError) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'No integer factors',
-            explanation: r.errorMessage ?? '')
+          stepNumber: 1,
+          title: 'No integer factors',
+          explanation: r.errorMessage ?? '',
+        ),
       ];
     }
     final m = (r.customData!.first as Map)['factorKind'] as String;
     final g = (r.customData!.first as Map)['gcf'] as int;
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Factor out the GCF',
-          explanation: g > 1
-              ? 'GCF is $g — divide every term by $g first.'
-              : 'GCF is 1 — nothing to pull out.'),
+        stepNumber: 1,
+        title: 'Factor out the GCF',
+        explanation: g > 1
+            ? 'GCF is $g — divide every term by $g first.'
+            : 'GCF is 1 — nothing to pull out.',
+      ),
       StepModel(
-          stepNumber: 2,
-          title: m == 'dots' ? 'Difference of squares' : 'Find two numbers',
-          explanation: m == 'dots'
-              ? 'a² − b² = (a+b)(a−b).'
-              : 'Two numbers that multiply to c and add to b.',
-          latex: m == 'dots' ? 'a^{2} - b^{2} = (a + b)(a - b)' : null),
+        stepNumber: 2,
+        title: m == 'dots' ? 'Difference of squares' : 'Find two numbers',
+        explanation: m == 'dots'
+            ? 'a² − b² = (a+b)(a−b).'
+            : 'Two numbers that multiply to c and add to b.',
+        latex: m == 'dots' ? 'a^{2} - b^{2} = (a + b)(a - b)' : null,
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Write the factors',
-          explanation: r.answer,
-          latex: r.answer),
+        stepNumber: 3,
+        title: 'Write the factors',
+        explanation: r.answer,
+        latex: r.answer,
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Check (FOIL)',
-          explanation: 'Multiply back — outer + inner must give bx.'),
+        stepNumber: 4,
+        title: 'Check (FOIL)',
+        explanation: 'Multiply back — outer + inner must give bx.',
+      ),
     ];
   }
 }

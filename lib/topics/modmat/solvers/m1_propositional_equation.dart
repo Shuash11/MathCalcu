@@ -103,8 +103,8 @@ class M1PropositionalEquation extends BaseEquation {
     final kind = allTrue
         ? 'tautology'
         : allFalse
-            ? 'contradiction'
-            : 'contingency';
+        ? 'contradiction'
+        : 'contingency';
     final trueCount = vals.where((v) => v).length;
     return SolveResult(
       answer: '$kind (true in $trueCount of ${vals.length} rows)',
@@ -114,13 +114,16 @@ class M1PropositionalEquation extends BaseEquation {
           'kind': 'truth-table',
           'classification': kind,
           'rows': rows
-              .map((r) => {
-                    'env': (r['env'] as Map<String, bool>)
-                        .map((k, v) => MapEntry(k, v ? 'T' : 'F')),
-                    'value': (r['value'] as bool) ? 'T' : 'F',
-                  })
+              .map(
+                (r) => {
+                  'env': (r['env'] as Map<String, bool>).map(
+                    (k, v) => MapEntry(k, v ? 'T' : 'F'),
+                  ),
+                  'value': (r['value'] as bool) ? 'T' : 'F',
+                },
+              )
               .toList(),
-        }
+        },
       ],
     );
   }
@@ -131,34 +134,41 @@ class M1PropositionalEquation extends BaseEquation {
     if (rows == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use p -> q.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use p -> q.',
+        ),
       ];
     }
     final r = solve();
     final vars = _vars(_norm());
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'List the variables',
-          explanation: 'Variables: ${vars.join(', ')} '
-              '(${rows.length} rows).',
-          latex: vars.join(', ')),
+        stepNumber: 1,
+        title: 'List the variables',
+        explanation:
+            'Variables: ${vars.join(', ')} '
+            '(${rows.length} rows).',
+        latex: vars.join(', '),
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Evaluate each row',
-          explanation: '~ binds tightest, then AND, OR, ->, <->.'),
+        stepNumber: 2,
+        title: 'Evaluate each row',
+        explanation: '~ binds tightest, then AND, OR, ->, <->.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the column',
-          explanation: r.answer,
-          latex: '\\text{${r.answer}}'),
+        stepNumber: 3,
+        title: 'Read the column',
+        explanation: r.answer,
+        latex: '\\text{${r.answer}}',
+      ),
       const StepModel(
-          stepNumber: 4,
-          title: 'Classify',
-          explanation: 'All T = tautology, all F = contradiction, '
-              'mixed = contingency.'),
+        stepNumber: 4,
+        title: 'Classify',
+        explanation:
+            'All T = tautology, all F = contradiction, '
+            'mixed = contingency.',
+      ),
     ];
   }
 }

@@ -1,5 +1,6 @@
 import 'package:calculus_system/topics/calculus/midterm/solvers/circles_solver/center_radius_solver.dart';
 import 'package:material_ui/material_ui.dart';
+
 import 'step_tile.dart';
 
 class SolutionSteps extends StatelessWidget {
@@ -23,12 +24,10 @@ class SolutionSteps extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         ...List.generate(
-            steps.length,
-            (i) => StepTile(
-                  step: steps[i],
-                  index: i,
-                  isLast: i == steps.length - 1,
-                )),
+          steps.length,
+          (i) =>
+              StepTile(step: steps[i], index: i, isLast: i == steps.length - 1),
+        ),
       ],
     );
   }

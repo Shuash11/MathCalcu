@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:calculus_system/topics/calculus/finals/finals_theme.dart';
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
+
 import 'centercontroller.dart';
 import 'header_bar.dart';
 import 'formula_card.dart';
@@ -118,8 +119,9 @@ class _FindingCenterScreenState extends State<FindingCenterScreen> {
                       side: BorderSide(
                         color: FinalsTheme.primary.withValues(alpha: 0.35),
                       ),
-                      backgroundColor:
-                          FinalsTheme.primary.withValues(alpha: 0.08),
+                      backgroundColor: FinalsTheme.primary.withValues(
+                        alpha: 0.08,
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

@@ -2,6 +2,7 @@ import 'package:calculus_system/core/solve_result.dart';
 import 'package:calculus_system/core/step_model.dart';
 import 'package:calculus_system/topics/calculus/finals/solvers/finals_latex.dart';
 import 'package:calculus_system/topics/grade6/solvers/g6_support.dart';
+
 import '../../../../shs/solvers/integral_sub_equation.dart';
 import 'integration_by_parts.dart';
 
@@ -40,7 +41,7 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
               'f': f,
               'antiderivative': bp.antiderivative,
               'rule': bp.rule,
-            }
+            },
           ],
         );
       }
@@ -76,7 +77,8 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
     if (anti == null) return r;
     return SolveResult(
       answer: r.answer,
-      latex: '\\int ${FinalsLatex.expr(r.customData!.first['f'] as String)} dx '
+      latex:
+          '\\int ${FinalsLatex.expr(r.customData!.first['f'] as String)} dx '
           '= ${FinalsLatex.anti(anti)}',
       points: r.points,
       intervalNotation: r.intervalNotation,
@@ -88,15 +90,16 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
   /// regex requires an explicit numeric coefficient, so integrate directly
   /// with implicit k = 1 — same result as u-sub with coefficient 1.
   SolveResult? _solveImplicitOneChain(String f) {
-    final m =
-        RegExp(r'^x\*?\(x\^2([+-]\d+(?:\.\d+)?)?\)\^(\d+)$').firstMatch(f);
+    final m = RegExp(r'^x\*?\(x\^2([+-]\d+(?:\.\d+)?)?\)\^(\d+)$')
+        .firstMatch(f);
     if (m == null) return null;
     final pw = int.parse(m.group(2)!);
     final c = 1.0 / (2 * (pw + 1));
     final anti = '${G6Format.num(c)}(x^2${m.group(1) ?? ''})^${pw + 1} + C';
     return SolveResult(
       answer: '∫ $f dx = $anti',
-      latex: '\\int ${FinalsLatex.expr(f)} dx = ${FinalsLatex.num(c)}'
+      latex:
+          '\\int ${FinalsLatex.expr(f)} dx = ${FinalsLatex.num(c)}'
           '\\left(${FinalsLatex.expr('x^2${m.group(1) ?? ''}')}\\right)'
           '^{${pw + 1}} + C',
       points: const [],
@@ -106,7 +109,7 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
           'f': f,
           'antiderivative': anti,
           'rule': 'u-substitution (chain, implicit coefficient 1)',
-        }
+        },
       ],
     );
   }
@@ -119,22 +122,24 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
       if (bp != null) {
         return [
           const StepModel(
-              stepNumber: 1,
-              title: 'Choose u by LIATE',
-              latex: r'\int u\,dv = uv - \int v\,du',
-              explanation:
-                  'LIATE order: Log, Inverse trig, Algebraic, Trig, Exponential — pick the first function type that appears.'),
+            stepNumber: 1,
+            title: 'Choose u by LIATE',
+            latex: r'\int u\,dv = uv - \int v\,du',
+            explanation: 'LIATE order: Log, Inverse trig, Algebraic, Trig, Exponential — pick the first function type that appears.',
+          ),
           const StepModel(
-              stepNumber: 2,
-              title: 'Apply ∫u dv = uv − ∫v du',
-              latex: r'\int v\,du',
-              explanation:
-                  'dv is the remaining factor; integrate v, then subtract ∫v du.'),
+            stepNumber: 2,
+            title: 'Apply ∫u dv = uv − ∫v du',
+            latex: r'\int v\,du',
+            explanation:
+                'dv is the remaining factor; integrate v, then subtract ∫v du.',
+          ),
           StepModel(
-              stepNumber: 3,
-              title: 'Simplify + C',
-              latex: '\\int ${FinalsLatex.expr(f)} dx = ${bp.latex}',
-              explanation: '∫ $f dx = ${bp.antiderivative}'),
+            stepNumber: 3,
+            title: 'Simplify + C',
+            latex: '\\int ${FinalsLatex.expr(f)} dx = ${bp.latex}',
+            explanation: '∫ $f dx = ${bp.antiderivative}',
+          ),
         ];
       }
     }
@@ -150,8 +155,9 @@ class IntegrationTechniquesEquation extends IntegralSubEquation {
           title: s.title,
           explanation: s.explanation,
           hint: s.hint,
-          latex:
-              (s.explanation == r.answer && r.latex != null) ? r.latex : null,
+          latex: (s.explanation == r.answer && r.latex != null)
+              ? r.latex
+              : null,
         ),
     ];
   }

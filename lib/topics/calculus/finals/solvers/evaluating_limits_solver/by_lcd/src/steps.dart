@@ -3,6 +3,7 @@
 library steps;
 
 import 'dart:math';
+
 import 'lcd_math_engine.dart';
 
 const _d = r'$';
@@ -40,7 +41,12 @@ class StepGenerator {
   // 1. Direct Substitution
   // -------------------------------------------------------------------
   static LimitSolution directSubstitutionSuccess(
-      String eq, String varName, double val, double result, MathNode ast) {
+    String eq,
+    String varName,
+    double val,
+    double result,
+    MathNode ast,
+  ) {
     final valStr = _doubleToStr(val);
     final eqTex = _nodeToTex(ast);
 
@@ -84,7 +90,11 @@ class StepGenerator {
   // 2. LCD / Factoring Method (handles any nested fraction)
   // -------------------------------------------------------------------
   static LimitSolution solveByLCD(
-      String eq, String varName, double val, MathNode ast) {
+    String eq,
+    String varName,
+    double val,
+    MathNode ast,
+  ) {
     if (ast is! BinaryOpNode || ast.op != '/') {
       return unknownForm(eq, varName, val);
     }
@@ -105,11 +115,17 @@ class StepGenerator {
 
     const dot = r'\cdot';
     final lcdTex = "($d1Tex) $dot $d2Tex";
-    final combinedNumTex =
-        _buildCombinedNumeratorTex(n1Tex, d2Tex, numerator.op, n2Tex, d1Tex);
+    final combinedNumTex = _buildCombinedNumeratorTex(
+      n1Tex,
+      d2Tex,
+      numerator.op,
+      n2Tex,
+      d1Tex,
+    );
 
     // Step 1: Write the given limit
-    final step1 = "Write the given limit.\n"
+    final step1 =
+        "Write the given limit.\n"
         r"$$"
         r"\lim_{"
         '$varName'
@@ -128,14 +144,16 @@ class StepGenerator {
         r"}$$";
 
     // Step 2: Find the LCD of the fractions in the numerator
-    final step2 = "Find the LCD of the fractions in the numerator.\n"
+    final step2 =
+        "Find the LCD of the fractions in the numerator.\n"
         r"$$"
         r"\text{LCD} = "
         '$lcdTex'
         r"$$";
 
     // Step 3: Rewrite the numerator as a single fraction
-    final step3 = "Rewrite the numerator as a single fraction.\n"
+    final step3 =
+        "Rewrite the numerator as a single fraction.\n"
         r"$$"
         r"\frac{"
         '$n1Tex'
@@ -152,7 +170,8 @@ class StepGenerator {
         r"}$$";
 
     // Step 4: Rewrite the entire complex fraction
-    final step4 = "Rewrite the entire complex fraction.\n"
+    final step4 =
+        "Rewrite the entire complex fraction.\n"
         r"$$"
         r"\frac{\frac{"
         '$combinedNumTex'
@@ -170,16 +189,41 @@ class StepGenerator {
 
     // Check if this is a sqrt case that needs rationalization
     final isSqrtRationalization = _isSqrtRationalizationCase(
-        combinedNumTex, denTex, denominator, varName, d1Tex, d2Tex, lcdTex);
+      combinedNumTex,
+      denTex,
+      denominator,
+      varName,
+      d1Tex,
+      d2Tex,
+      lcdTex,
+    );
 
     if (isSqrtRationalization != null) {
-      return _buildSqrtRationalizationSolution(eq, varName, val, ast, n1Tex,
-          n2Tex, denTex, combinedNumTex, lcdTex, valStr, isSqrtRationalization);
+      return _buildSqrtRationalizationSolution(
+        eq,
+        varName,
+        val,
+        ast,
+        n1Tex,
+        n2Tex,
+        denTex,
+        combinedNumTex,
+        lcdTex,
+        valStr,
+        isSqrtRationalization,
+      );
     }
 
     // Step 3: Factor denominator and cancel common factors
     final factorization = _dynamicFactorAndCancel(
-        combinedNumTex, denTex, denominator, varName, d1Tex, d2Tex, lcdTex);
+      combinedNumTex,
+      denTex,
+      denominator,
+      varName,
+      d1Tex,
+      d2Tex,
+      lcdTex,
+    );
 
     // Step 4: Try exact rational evaluation first, fallback to numerical
     final rationalAns = _evaluateToRational(ast, varName, val);
@@ -210,10 +254,17 @@ class StepGenerator {
     }
     final substitutionExpr = factorization.simplifiedExpr.isNotEmpty
         ? factorization.simplifiedExpr
-        : r"\frac{" '$combinedNumTex' r"}{(" '$lcdTex' r")(" '$denTex' r")}";
+        : r"\frac{"
+              '$combinedNumTex'
+              r"}{("
+              '$lcdTex'
+              r")("
+              '$denTex'
+              r")}";
 
     // Step 5: Simplify and cancel common factors
-    final step5 = "Simplify and cancel common factors.\n"
+    final step5 =
+        "Simplify and cancel common factors.\n"
         r"$$"
         '$substitutionExpr'
         r"$$";
@@ -244,7 +295,8 @@ class StepGenerator {
     }
 
     // Step 7: State the exact answer
-    final step7 = "State the exact answer.\n"
+    final step7 =
+        "State the exact answer.\n"
         r"$$"
         r"\text{Exact answer: }"
         '$exactAnswerTex'
@@ -253,7 +305,8 @@ class StepGenerator {
     // Step 8: State the approximation (only for irrational)
     final String step8;
     if (hasSqrt && approxAnswerTex.isNotEmpty) {
-      step8 = "State the approximation.\n"
+      step8 =
+          "State the approximation.\n"
           r"$$"
           r"\text{Approximation: }"
           '$approxAnswerTex'
@@ -300,7 +353,11 @@ class StepGenerator {
   // 3. Conjugate Method
   // -------------------------------------------------------------------
   static LimitSolution solveByConjugate(
-      String eq, String varName, double val, MathNode ast) {
+    String eq,
+    String varName,
+    double val,
+    MathNode ast,
+  ) {
     if (ast is! BinaryOpNode || ast.op != '/') {
       return unknownForm(eq, varName, val);
     }
@@ -354,7 +411,7 @@ class StepGenerator {
       originalEquation: eq,
       methodUsed: "Analytical Approach",
       steps: [
-        "**Note:** This expression requires L'Hôpital's Rule or advanced factoring."
+        "**Note:** This expression requires L'Hôpital's Rule or advanced factoring.",
       ],
     );
   }
@@ -363,7 +420,12 @@ class StepGenerator {
   // Utility: Build combined numerator LaTeX
   // -------------------------------------------------------------------
   static String _buildCombinedNumeratorTex(
-      String n1, String d2, String op, String n2, String d1) {
+    String n1,
+    String d2,
+    String op,
+    String n2,
+    String d1,
+  ) {
     return "($n1 \\cdot $d2) $op ($n2 \\cdot ($d1))";
   }
 
@@ -371,13 +433,14 @@ class StepGenerator {
   // Dynamic factoring: handles √x and polynomial differences
   // -------------------------------------------------------------------
   static _FactorizationResult _dynamicFactorAndCancel(
-      String combinedNumTex,
-      String denTex,
-      MathNode denNode,
-      String varName,
-      String d1Tex,
-      String d2Tex,
-      String lcdTex) {
+    String combinedNumTex,
+    String denTex,
+    MathNode denNode,
+    String varName,
+    String d1Tex,
+    String d2Tex,
+    String lcdTex,
+  ) {
     // 1. Square‑root pattern: denominator = x - a?
     if (denNode is BinaryOpNode &&
         denNode.op == '-' &&
@@ -392,13 +455,16 @@ class StepGenerator {
 
         if (combinedNumTex.contains("$aStr - $sqrtTerm") ||
             combinedNumTex.contains("$sqrtTerm - $aStr")) {
-          final bool numeratorIsNegative =
-              combinedNumTex.contains("$aStr - $sqrtTerm");
+          final bool numeratorIsNegative = combinedNumTex.contains(
+            "$aStr - $sqrtTerm",
+          );
           final sign = numeratorIsNegative ? "-" : "";
           final conjugate = "$aStr + $sqrtTerm";
-          final rationalizedNumerator =
-              numeratorIsNegative ? "$aStr^2 - $varName" : "$varName - $aStr^2";
-          final simplified = sign +
+          final rationalizedNumerator = numeratorIsNegative
+              ? "$aStr^2 - $varName"
+              : "$varName - $aStr^2";
+          final simplified =
+              sign +
               r"\frac{1}{" +
               lcdTex +
               r" \cdot (" +
@@ -446,12 +512,14 @@ class StepGenerator {
 
               if (combinedNumTex.contains(pattern1) ||
                   combinedNumTex.contains(pattern2)) {
-                final bool numeratorIsNegative =
-                    combinedNumTex.contains(pattern1);
+                final bool numeratorIsNegative = combinedNumTex.contains(
+                  pattern1,
+                );
                 final sign = numeratorIsNegative ? "-" : "";
                 final factor1 = "$varName - $aStr";
                 final factor2 = "$varName + $aStr";
-                final simplified = sign +
+                final simplified =
+                    sign +
                     r"\frac{1}{" +
                     lcdTex +
                     r" \cdot (" +
@@ -481,11 +549,12 @@ class StepGenerator {
 
         final cancelMsg = isNegative
             ? r'**Factor -1: $-x = -($varName)**'
-                '\n'
-                r'**Cancel the common factor ($varName):**'
+                  '\n'
+                  r'**Cancel the common factor ($varName):**'
             : r'**Cancel the common factor ($varName):**';
 
-        final factorStep = "$cancelMsg\n"
+        final factorStep =
+            "$cancelMsg\n"
             r"$$\frac{$combinedNumTex}{$lcdTex \cdot $varName} = $simplified$$";
 
         return _FactorizationResult(factorStep, simplified);
@@ -527,7 +596,10 @@ class StepGenerator {
   }
 
   static _RationalResult? _evaluateToRational(
-      MathNode node, String varName, double val) {
+    MathNode node,
+    String varName,
+    double val,
+  ) {
     try {
       return _evalNodeToRational(node, varName, val);
     } catch (_) {
@@ -536,7 +608,10 @@ class StepGenerator {
   }
 
   static _RationalResult? _evalNodeToRational(
-      MathNode node, String varName, double val) {
+    MathNode node,
+    String varName,
+    double val,
+  ) {
     if (node is NumberNode) {
       return _RationalResult(node.value.toInt(), 1);
     }
@@ -558,12 +633,14 @@ class StepGenerator {
       int num, den;
       switch (node.op) {
         case '+':
-          num = left.numerator * right.denominator +
+          num =
+              left.numerator * right.denominator +
               right.numerator * left.denominator;
           den = left.denominator * right.denominator;
           break;
         case '-':
-          num = left.numerator * right.denominator -
+          num =
+              left.numerator * right.denominator -
               right.numerator * left.denominator;
           den = left.denominator * right.denominator;
           break;
@@ -618,7 +695,10 @@ class StepGenerator {
   }
 
   static double _calculateNumericalLimit(
-      MathNode ast, String varName, double val) {
+    MathNode ast,
+    String varName,
+    double val,
+  ) {
     final hValues = [0.1, 0.01, 0.001, 0.0001, 0.00001];
     final validResults = <double>[];
 
@@ -764,13 +844,14 @@ class StepGenerator {
   }
 
   static _SqrtRationalizationData? _isSqrtRationalizationCase(
-      String combinedNumTex,
-      String denTex,
-      MathNode denNode,
-      String varName,
-      String d1Tex,
-      String d2Tex,
-      String lcdTex) {
+    String combinedNumTex,
+    String denTex,
+    MathNode denNode,
+    String varName,
+    String d1Tex,
+    String d2Tex,
+    String lcdTex,
+  ) {
     if (denNode is BinaryOpNode &&
         denNode.op == '-' &&
         denNode.left is VariableNode &&
@@ -784,8 +865,9 @@ class StepGenerator {
 
         if (combinedNumTex.contains(aStr + r" - " + sqrtTerm) ||
             combinedNumTex.contains(sqrtTerm + r" - " + aStr)) {
-          final bool numeratorIsNegative =
-              combinedNumTex.contains(aStr + r" - " + sqrtTerm);
+          final bool numeratorIsNegative = combinedNumTex.contains(
+            aStr + r" - " + sqrtTerm,
+          );
           return _SqrtRationalizationData(
             aInt: aInt,
             aStr: aStr,
@@ -811,17 +893,18 @@ class StepGenerator {
   }
 
   static LimitSolution _buildSqrtRationalizationSolution(
-      String eq,
-      String varName,
-      double val,
-      MathNode ast,
-      String n1Tex,
-      String n2Tex,
-      String denTex,
-      String combinedNumTex,
-      String lcdTex,
-      String valStr,
-      _SqrtRationalizationData data) {
+    String eq,
+    String varName,
+    double val,
+    MathNode ast,
+    String n1Tex,
+    String n2Tex,
+    String denTex,
+    String combinedNumTex,
+    String lcdTex,
+    String valStr,
+    _SqrtRationalizationData data,
+  ) {
     final ans = _calculateNumericalLimit(ast, varName, val);
 
     // Try to get exact rational answer first
@@ -847,7 +930,8 @@ class StepGenerator {
         ? aStr + r"^2 - " + varName
         : varName + r" - " + aStr + r"^2";
     final simplified = numeratorIsNegative ? r"-" : r"";
-    final finalExpr = simplified +
+    final finalExpr =
+        simplified +
         r"\frac{1}{" +
         lcdTex +
         r" \cdot (" +
@@ -857,7 +941,8 @@ class StepGenerator {
         r")}";
 
     // ignore: prefer_const_declarations
-    final step1 = "Identify the complex fraction.\n"
+    final step1 =
+        "Identify the complex fraction.\n"
         r"$$"
         r"\lim_{"
         '$varName'
@@ -876,7 +961,8 @@ class StepGenerator {
         r"}$$";
 
     // ignore: prefer_const_declarations
-    final step2 = "Find the LCD of the numerator terms.\n"
+    final step2 =
+        "Find the LCD of the numerator terms.\n"
         r"$$"
         r"\text{LCD} = "
         '${data.d1Tex}'
@@ -886,7 +972,8 @@ class StepGenerator {
         '$lcdTex'
         r"$$";
 
-    final step3 = "Rewrite with common denominator.\n"
+    final step3 =
+        "Rewrite with common denominator.\n"
         r"$$"
         r"\frac{"
         '$aStr'
@@ -906,7 +993,8 @@ class StepGenerator {
         '$denTex'
         r")}$$";
 
-    final step4 = "Rationalize by multiplying by the conjugate.\n"
+    final step4 =
+        "Rationalize by multiplying by the conjugate.\n"
         r"$$"
         r"\frac{"
         '$aStr'
@@ -933,7 +1021,8 @@ class StepGenerator {
     final step5 =
         "Apply difference of squares: $denTex \\cdot $conjugate = ${numeratorIsNegative ? "-" : ""}($denTex)\$\$\nThen simplify the numerator.";
 
-    final step6 = "Substitute $varName = $valStr and simplify.\n"
+    final step6 =
+        "Substitute $varName = $valStr and simplify.\n"
         "${finalExpr.replaceAll(r'\sqrt{' + varName + r'}', aStr)} = $ansTex";
 
     return LimitSolution(

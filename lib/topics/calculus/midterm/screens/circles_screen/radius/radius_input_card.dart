@@ -128,10 +128,7 @@ class _RadiusInputFieldState extends State<RadiusInputField> {
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[-0-9./]')),
           ],
-          style: const TextStyle(
-            color: Color(0xFFE8E8F0),
-            fontSize: 16,
-          ),
+          style: const TextStyle(color: Color(0xFFE8E8F0), fontSize: 16),
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: TextStyle(
@@ -206,9 +203,10 @@ class RadiusInputCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)]),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),

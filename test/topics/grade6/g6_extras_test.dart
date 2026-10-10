@@ -103,13 +103,17 @@ void main() {
       expect(rate, hasLength(3));
       for (final s in rate) {
         expect(s.latex, isNotNull, reason: s.title);
-        expect(s.latex!.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-            reason: s.latex!);
+        expect(
+          s.latex!.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+          isTrue,
+          reason: s.latex!,
+        );
       }
     });
 
-    testWidgets('extras registry TeX parses (recording fallback)',
-        (tester) async {
+    testWidgets('extras registry TeX parses (recording fallback)', (
+      tester,
+    ) async {
       final cases = <BaseEquation>[
         G6ExtrasRegistry.byId('g6-gcf-lcm')!.create('GCF(12, 18)'),
         G6ExtrasRegistry.byId('g6-gcf-lcm')!.create('lcm 4 6'),

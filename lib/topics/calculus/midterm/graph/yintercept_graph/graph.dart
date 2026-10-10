@@ -29,19 +29,14 @@ class YInterceptGraph extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: accentColor.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: accentColor.withValues(alpha: 0.3)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return CustomPaint(
-              size: Size(
-                constraints.maxWidth,
-                height ?? constraints.maxHeight,
-              ),
+              size: Size(constraints.maxWidth, height ?? constraints.maxHeight),
               painter: YInterceptGraphPainter(
                 mText: mText,
                 bText: bText,
@@ -168,30 +163,14 @@ class YInterceptGraphPainter extends CustomPainter {
 
     // Draw y-intercept point
     final yIntPoint = toScreen(0, b);
-    canvas.drawCircle(
-      yIntPoint,
-      8,
-      Paint()..color = accentColor,
-    );
-    canvas.drawCircle(
-      yIntPoint,
-      4,
-      Paint()..color = Colors.white,
-    );
+    canvas.drawCircle(yIntPoint, 8, Paint()..color = accentColor);
+    canvas.drawCircle(yIntPoint, 4, Paint()..color = Colors.white);
 
     // Draw x-intercept point
     if (m != 0) {
       final xIntPoint = toScreen(xIntercept, 0);
-      canvas.drawCircle(
-        xIntPoint,
-        8,
-        Paint()..color = accentColor,
-      );
-      canvas.drawCircle(
-        xIntPoint,
-        4,
-        Paint()..color = Colors.white,
-      );
+      canvas.drawCircle(xIntPoint, 8, Paint()..color = accentColor);
+      canvas.drawCircle(xIntPoint, 4, Paint()..color = Colors.white);
 
       // Label x-intercept
       final xLabel = TextPainter(

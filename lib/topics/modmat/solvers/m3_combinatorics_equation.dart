@@ -169,7 +169,7 @@ class M3CombinatoricsEquation extends BaseEquation {
         answer: '$n! = ${G6Format.num(v.toDouble())}',
         points: [v.toDouble()],
         customData: [
-          {'kind': 'combinatorics', 'mode': 'fact', 'n': n, 'value': v}
+          {'kind': 'combinatorics', 'mode': 'fact', 'n': n, 'value': v},
         ],
       );
     }
@@ -191,7 +191,7 @@ class M3CombinatoricsEquation extends BaseEquation {
       answer: '$sym = ${big.toString()}',
       points: [big.toDouble()],
       customData: [
-        {'kind': 'combinatorics', 'mode': mode, 'n': n, 'r': r, 'value': big}
+        {'kind': 'combinatorics', 'mode': mode, 'n': n, 'r': r, 'value': big},
       ],
     );
   }
@@ -202,9 +202,10 @@ class M3CombinatoricsEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use C(5,2).')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use C(5,2).',
+        ),
       ];
     }
     final r = solve();
@@ -231,23 +232,26 @@ class M3CombinatoricsEquation extends BaseEquation {
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: mode == 'fact'
-              ? 'Factorial form'
-              : mode == 'nPr'
-                  ? 'Permutation form'
-                  : 'Combination form',
-          explanation: formula,
-          latex: formLatex),
+        stepNumber: 1,
+        title: mode == 'fact'
+            ? 'Factorial form'
+            : mode == 'nPr'
+            ? 'Permutation form'
+            : 'Combination form',
+        explanation: formula,
+        latex: formLatex,
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Check 0 ≤ r ≤ n',
-          explanation: 'r beyond n has no meaning — reject it.'),
+        stepNumber: 2,
+        title: 'Check 0 ≤ r ≤ n',
+        explanation: 'r beyond n has no meaning — reject it.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Compute',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: computeLatex),
+        stepNumber: 3,
+        title: 'Compute',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: computeLatex,
+      ),
     ];
   }
 }

@@ -48,30 +48,31 @@ class M7PredicateEquation extends BaseEquation {
       m.group(2)!.toLowerCase(),
       domain,
       m.group(4)!,
-      int.parse(m.group(5)!)
+      int.parse(m.group(5)!),
     ];
   }
 
   static bool _test(int x, String op, int rhs) => switch (op) {
-        '>' => x > rhs,
-        '<' => x < rhs,
-        '>=' => x >= rhs,
-        '<=' => x <= rhs,
-        '==' => x == rhs,
-        _ => x != rhs,
-      };
+    '>' => x > rhs,
+    '<' => x < rhs,
+    '>=' => x >= rhs,
+    '<=' => x <= rhs,
+    '==' => x == rhs,
+    _ => x != rhs,
+  };
 
   @override
   bool validate() {
-    final empty = FieldValidators.notEmpty(rawInput,
-        example: 'forall x in {1,2,3}: x > 0');
+    final empty = FieldValidators.notEmpty(
+      rawInput,
+      example: 'forall x in {1,2,3}: x > 0',
+    );
     if (empty != null) {
       _error = empty;
       return false;
     }
     if (_parse() == null) {
-      _error =
-          'Use forall/exists x in {…}: x > k — e.g. forall x in {1,2,3}: x > 0.';
+      _error = 'Use forall/exists x in {…}: x > k — e.g. forall x in {1,2,3}: x > 0.';
       return false;
     }
     _error = null;
@@ -94,17 +95,21 @@ class M7PredicateEquation extends BaseEquation {
         ? results.values.every((e) => e)
         : results.values.any((e) => e);
     final q = isForall ? '∀$v' : '∃$v';
-    final witnesses =
-        results.entries.where((e) => e.value).map((e) => e.key).toList();
-    final counters =
-        results.entries.where((e) => !e.value).map((e) => e.key).toList();
+    final witnesses = results.entries
+        .where((e) => e.value)
+        .map((e) => e.key)
+        .toList();
+    final counters = results.entries
+        .where((e) => !e.value)
+        .map((e) => e.key)
+        .toList();
     final detail = isForall
         ? (truth
-            ? 'holds for all ${domain.length} values'
-            : 'fails at {${counters.join(', ')}}')
+              ? 'holds for all ${domain.length} values'
+              : 'fails at {${counters.join(', ')}}')
         : (truth
-            ? 'witnessed by {${witnesses.join(', ')}}'
-            : 'no witness in the domain');
+              ? 'witnessed by {${witnesses.join(', ')}}'
+              : 'no witness in the domain');
     return SolveResult(
       answer:
           '$q ∈ {${domain.join(', ')}}: $v $op $rhs is ${truth ? 'True' : 'False'} ($detail)',
@@ -119,7 +124,7 @@ class M7PredicateEquation extends BaseEquation {
           'value': truth,
           'witnesses': witnesses,
           'counterexamples': counters,
-        }
+        },
       ],
     );
   }
@@ -130,9 +135,10 @@ class M7PredicateEquation extends BaseEquation {
     if (p == null) {
       return [
         StepModel(
-            stepNumber: 1,
-            title: 'Invalid input',
-            explanation: _error ?? 'Use forall x in {1,2,3}: x > 0.')
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation: _error ?? 'Use forall x in {1,2,3}: x > 0.',
+        ),
       ];
     }
     final r = solve();
@@ -159,21 +165,24 @@ class M7PredicateEquation extends BaseEquation {
     }
     return [
       StepModel(
-          stepNumber: 1,
-          title: 'Read the quantifier',
-          explanation: isForall
-              ? '∀ needs every value to pass; one failure kills it.'
-              : '∃ needs one passing value (a witness).'),
+        stepNumber: 1,
+        title: 'Read the quantifier',
+        explanation: isForall
+            ? '∀ needs every value to pass; one failure kills it.'
+            : '∃ needs one passing value (a witness).',
+      ),
       const StepModel(
-          stepNumber: 2,
-          title: 'Test each domain value',
-          explanation: 'Substitute every element into the predicate.'),
+        stepNumber: 2,
+        title: 'Test each domain value',
+        explanation: 'Substitute every element into the predicate.',
+      ),
       StepModel(
-          stepNumber: 3,
-          title: 'Read the truth value',
-          explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
-          latex: statementLatex,
-          subLatex: statementSub),
+        stepNumber: 3,
+        title: 'Read the truth value',
+        explanation: r.hasError ? (r.errorMessage ?? '') : r.answer,
+        latex: statementLatex,
+        subLatex: statementSub,
+      ),
     ];
   }
 }

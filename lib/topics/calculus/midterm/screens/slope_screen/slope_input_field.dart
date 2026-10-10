@@ -98,8 +98,10 @@ class _SlopeInputFieldState extends State<SlopeInputField> {
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: 'e.g. 3',
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
                 cursorColor: const Color(0xFF334155),
               ),

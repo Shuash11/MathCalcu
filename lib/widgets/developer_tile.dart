@@ -84,10 +84,7 @@ class _DeveloperTileState extends State<DeveloperTile> {
                     height: _expanded ? 4 : 3,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [
-                          color,
-                          color.withValues(alpha: 0.6),
-                        ],
+                        colors: [color, color.withValues(alpha: 0.6)],
                       ),
                     ),
                   ),
@@ -312,8 +309,9 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment:
-          isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: isMultiline
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
         Container(
           width: 32,

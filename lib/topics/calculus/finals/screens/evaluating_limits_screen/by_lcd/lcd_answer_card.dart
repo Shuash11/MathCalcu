@@ -48,8 +48,9 @@ class LCDAnswerCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color:
-                  accentColor.withValues(alpha: isShowingSteps ? 0.15 : 0.05),
+              color: accentColor.withValues(
+                alpha: isShowingSteps ? 0.15 : 0.05,
+              ),
               blurRadius: isShowingSteps ? 30 : 20,
               offset: const Offset(0, 10),
             ),
@@ -60,9 +61,10 @@ class LCDAnswerCard extends StatelessWidget {
             Row(
               children: [
                 _StatusIcon(
-                    isShowingSteps: isShowingSteps,
-                    accentColor: accentColor,
-                    size: isCompact ? 40 : 48),
+                  isShowingSteps: isShowingSteps,
+                  accentColor: accentColor,
+                  size: isCompact ? 40 : 48,
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -70,18 +72,15 @@ class LCDAnswerCard extends StatelessWidget {
                     children: [
                       ResponsiveText(
                         'FINAL ANSWER',
-                        style: FinalsTheme.labelStyle(context).copyWith(
-                          color: accentColor,
-                          fontSize: 11,
-                        ),
+                        style: FinalsTheme.labelStyle(context)
+                            .copyWith(color: accentColor, fontSize: 11),
                       ),
                       const SizedBox(height: 4),
                       ResponsiveText(
                         method,
-                        style: FinalsTheme.subtitleStyle(context).copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
+                        style: FinalsTheme.subtitleStyle(
+                          context,
+                        ).copyWith(fontWeight: FontWeight.w700, fontSize: 14),
                       ),
                     ],
                   ),
@@ -103,9 +102,11 @@ class LCDAnswerCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.expand_more_rounded,
-                              size: 16,
-                              color: accentColor.withValues(alpha: 0.5)),
+                          Icon(
+                            Icons.expand_more_rounded,
+                            size: 16,
+                            color: accentColor.withValues(alpha: 0.5),
+                          ),
                           const SizedBox(width: 8),
                           ResponsiveText(
                             'TAP TO REVEAL SOLUTIONS',
@@ -117,9 +118,11 @@ class LCDAnswerCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Icon(Icons.expand_more_rounded,
-                              size: 16,
-                              color: accentColor.withValues(alpha: 0.5)),
+                          Icon(
+                            Icons.expand_more_rounded,
+                            size: 16,
+                            color: accentColor.withValues(alpha: 0.5),
+                          ),
                         ],
                       ),
                     )
@@ -137,10 +140,11 @@ class _StatusIcon extends StatelessWidget {
   final Color accentColor;
   final double size;
 
-  const _StatusIcon(
-      {required this.isShowingSteps,
-      required this.accentColor,
-      this.size = 48});
+  const _StatusIcon({
+    required this.isShowingSteps,
+    required this.accentColor,
+    this.size = 48,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -152,13 +156,11 @@ class _StatusIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color:
-            isShowingSteps ? accentColor : accentColor.withValues(alpha: 0.1),
+        color: isShowingSteps
+            ? accentColor
+            : accentColor.withValues(alpha: 0.1),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: accentColor.withValues(alpha: 0.3),
-          width: 2,
-        ),
+        border: Border.all(color: accentColor.withValues(alpha: 0.3), width: 2),
       ),
       child: Icon(
         isShowingSteps ? Icons.auto_awesome_rounded : Icons.check_rounded,
@@ -183,8 +185,12 @@ class _ValueDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (answer == null || answer!.isNaN) {
-      return _buildTextDisplay('Undefined', accentColor, context,
-          wrapFlexible: true);
+      return _buildTextDisplay(
+        'Undefined',
+        accentColor,
+        context,
+        wrapFlexible: true,
+      );
     }
 
     // Always use fractionalAnswer if provided - this is the authoritative answer from steps.dart
@@ -248,7 +254,8 @@ class _ValueDisplay extends StatelessWidget {
           ),
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: fractionalAnswer!.contains(r'\frac') ||
+            child:
+                fractionalAnswer!.contains(r'\frac') ||
                     fractionalAnswer!.contains(r'\sqrt')
                 ? Math.tex(
                     fractionalAnswer!,
@@ -283,8 +290,12 @@ class _ValueDisplay extends StatelessWidget {
     }
 
     // Fallback: if no fractionalAnswer, format the numerical answer
-    return _buildTextDisplay(_formatAnswer(answer!), accentColor, context,
-        wrapFlexible: true);
+    return _buildTextDisplay(
+      _formatAnswer(answer!),
+      accentColor,
+      context,
+      wrapFlexible: true,
+    );
   }
 
   String _formatAnswer(double val) {
@@ -349,8 +360,11 @@ class _ValueDisplay extends StatelessWidget {
   }
 
   Widget _buildTextDisplay(
-      String displayVal, Color accentColor, BuildContext context,
-      {required bool wrapFlexible}) {
+    String displayVal,
+    Color accentColor,
+    BuildContext context, {
+    required bool wrapFlexible,
+  }) {
     final container = Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(

@@ -36,35 +36,41 @@ class LhopitalStepsGenerator {
 
     final numTex = _tex(result.originalNumerator) ?? '?';
     final denTex = _tex(result.originalDenominator) ?? '1';
-    final indeterminateForm =
-        result.isInfinityOverInfinity ? '\\infty/\\infty' : '0/0';
+    final indeterminateForm = result.isInfinityOverInfinity
+        ? '\\infty/\\infty'
+        : '0/0';
 
-    steps.add(LhopitalStep(
-      stepNumber: 1,
-      title: 'Write the Equation',
-      explanation:
-          'We need to evaluate the limit as $varName approaches $approachStr.',
-      latexExpression:
-          '\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex}',
-    ));
+    steps.add(
+      LhopitalStep(
+        stepNumber: 1,
+        title: 'Write the Equation',
+        explanation:
+            'We need to evaluate the limit as $varName approaches $approachStr.',
+        latexExpression:
+            '\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex}',
+      ),
+    );
 
-    steps.add(LhopitalStep(
-      stepNumber: 2,
-      title: 'Check the Form',
-      explanation:
-          'Substituting $varName = $approachStr gives $indeterminateForm, which is indeterminate.',
-      latexExpression:
-          '\\frac{$numTex}{$denTex}\\bigg|_{$varName = $approachStr} = $indeterminateForm',
-    ));
+    steps.add(
+      LhopitalStep(
+        stepNumber: 2,
+        title: 'Check the Form',
+        explanation:
+            'Substituting $varName = $approachStr gives $indeterminateForm, which is indeterminate.',
+        latexExpression:
+            '\\frac{$numTex}{$denTex}\\bigg|_{$varName = $approachStr} = $indeterminateForm',
+      ),
+    );
 
-    steps.add(const LhopitalStep(
-      stepNumber: 3,
-      title: "Apply L'Hopital's Rule",
-      explanation:
-          "Differentiate the numerator and the denominator separately, then take the limit of their ratio.",
-      latexExpression:
-          '\\lim \\frac{f(x)}{g(x)} = \\lim \\frac{f\'(x)}{g\'(x)}',
-    ));
+    steps.add(
+      const LhopitalStep(
+        stepNumber: 3,
+        title: "Apply L'Hopital's Rule",
+        explanation: "Differentiate the numerator and the denominator separately, then take the limit of their ratio.",
+        latexExpression:
+            '\\lim \\frac{f(x)}{g(x)} = \\lim \\frac{f\'(x)}{g\'(x)}',
+      ),
+    );
 
     var stepNumber = 4;
     for (var i = 0; i < result.rounds.length; i++) {
@@ -72,47 +78,57 @@ class LhopitalStepsGenerator {
       final dNumTex = _tex(round.derivativeNumerator) ?? '?';
       final dDenTex = _tex(round.derivativeDenominator) ?? '?';
 
-      steps.add(LhopitalStep(
-        stepNumber: stepNumber++,
-        title: "Differentiate Numerator (Round ${i + 1})",
-        explanation: "The derivative of the numerator is $dNumTex.",
-        latexExpression: '\\frac{d}{dx}\\left[$numTex\\right] = $dNumTex',
-      ));
+      steps.add(
+        LhopitalStep(
+          stepNumber: stepNumber++,
+          title: "Differentiate Numerator (Round ${i + 1})",
+          explanation: "The derivative of the numerator is $dNumTex.",
+          latexExpression: '\\frac{d}{dx}\\left[$numTex\\right] = $dNumTex',
+        ),
+      );
 
-      steps.add(LhopitalStep(
-        stepNumber: stepNumber++,
-        title: "Differentiate Denominator (Round ${i + 1})",
-        explanation: "The derivative of the denominator is $dDenTex.",
-        latexExpression: '\\frac{d}{dx}\\left[$denTex\\right] = $dDenTex',
-      ));
+      steps.add(
+        LhopitalStep(
+          stepNumber: stepNumber++,
+          title: "Differentiate Denominator (Round ${i + 1})",
+          explanation: "The derivative of the denominator is $dDenTex.",
+          latexExpression: '\\frac{d}{dx}\\left[$denTex\\right] = $dDenTex',
+        ),
+      );
 
-      steps.add(LhopitalStep(
-        stepNumber: stepNumber++,
-        title: 'Substitute and Evaluate',
-        explanation:
-            "Substituting gives \\frac{${_fmt(round.numeratorValue)}}{${_fmt(round.denominatorValue)}}.",
-        latexExpression:
-            '\\frac{$dNumTex}{$dDenTex}\\bigg|_{$varName = $approachStr} = \\frac{${_fmt(round.numeratorValue)}}{${_fmt(round.denominatorValue)}}',
-      ));
+      steps.add(
+        LhopitalStep(
+          stepNumber: stepNumber++,
+          title: 'Substitute and Evaluate',
+          explanation:
+              "Substituting gives \\frac{${_fmt(round.numeratorValue)}}{${_fmt(round.denominatorValue)}}.",
+          latexExpression:
+              '\\frac{$dNumTex}{$dDenTex}\\bigg|_{$varName = $approachStr} = \\frac{${_fmt(round.numeratorValue)}}{${_fmt(round.denominatorValue)}}',
+        ),
+      );
 
       if (i < result.rounds.length - 1) {
-        steps.add(LhopitalStep(
-          stepNumber: stepNumber++,
-          title: 'Still Indeterminate',
-          explanation:
-              'The result is ${round.form}, still indeterminate. Apply L\'Hopital\'s rule again.',
-        ));
+        steps.add(
+          LhopitalStep(
+            stepNumber: stepNumber++,
+            title: 'Still Indeterminate',
+            explanation:
+                'The result is ${round.form}, still indeterminate. Apply L\'Hopital\'s rule again.',
+          ),
+        );
       }
     }
 
     final finalAnswer = _fmt(result.finalValue);
-    steps.add(LhopitalStep(
-      stepNumber: stepNumber,
-      title: 'Final Answer',
-      explanation: "The limit has been evaluated using L'Hopital's rule.",
-      latexExpression:
-          '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex} = $finalAnswer}',
-    ));
+    steps.add(
+      LhopitalStep(
+        stepNumber: stepNumber,
+        title: 'Final Answer',
+        explanation: "The limit has been evaluated using L'Hopital's rule.",
+        latexExpression:
+            '\\boxed{\\lim_{$varName \\to $approachStr} \\frac{$numTex}{$denTex} = $finalAnswer}',
+      ),
+    );
 
     return steps;
   }
@@ -151,21 +167,24 @@ class LhopitalStepsGenerator {
       final round = result.rounds[i];
       final dNumTex = _tex(round.derivativeNumerator) ?? '?';
       final dDenTex = _tex(round.derivativeDenominator) ?? '?';
-      steps.add(LhopitalStep(
-        stepNumber: steps.length + 1,
-        title: 'Round ${i + 1}',
-        explanation:
-            "Differentiating gives f' = $dNumTex and g' = $dDenTex, which evaluates to ${round.form}.",
-        latexExpression: '\\frac{$dNumTex}{$dDenTex} = ${round.form}',
-      ));
+      steps.add(
+        LhopitalStep(
+          stepNumber: steps.length + 1,
+          title: 'Round ${i + 1}',
+          explanation:
+              "Differentiating gives f' = $dNumTex and g' = $dDenTex, which evaluates to ${round.form}.",
+          latexExpression: '\\frac{$dNumTex}{$dDenTex} = ${round.form}',
+        ),
+      );
     }
 
-    steps.add(LhopitalStep(
-      stepNumber: steps.length + 1,
-      title: 'Cannot Solve',
-      explanation:
-          "This limit cannot be solved by L'Hopital's rule here. Try a different method like Factoring, Conjugate, or LCD.",
-    ));
+    steps.add(
+      LhopitalStep(
+        stepNumber: steps.length + 1,
+        title: 'Cannot Solve',
+        explanation: "This limit cannot be solved by L'Hopital's rule here. Try a different method like Factoring, Conjugate, or LCD.",
+      ),
+    );
 
     return steps;
   }

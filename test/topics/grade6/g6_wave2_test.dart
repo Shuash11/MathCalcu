@@ -151,8 +151,11 @@ void main() {
       expect(steps, hasLength(3));
       for (final s in steps) {
         // '0 - x' as a leading operand (boundary-aware, so '20 - x' passes).
-        expect(RegExp(r'(^|[^0-9])0 - x').hasMatch(s.latex ?? ''), isFalse,
-            reason: s.title);
+        expect(
+          RegExp(r'(^|[^0-9])0 - x').hasMatch(s.latex ?? ''),
+          isFalse,
+          reason: s.title,
+        );
         expect(s.explanation, isNot(contains('with 0 ')), reason: s.title);
       }
       // prose and TeX both carry the real equation.
@@ -196,8 +199,10 @@ void main() {
     });
 
     test('reversed meter errors', () {
-      expect(G6RateEquation('prev=1380 pres=1250 rate=12').solve().hasError,
-          isTrue);
+      expect(
+        G6RateEquation('prev=1380 pres=1250 rate=12').solve().hasError,
+        isTrue,
+      );
     });
   });
 
@@ -298,8 +303,9 @@ void main() {
       }
     });
 
-    testWidgets('every emitted wave2 TeX line parses (recording fallback)',
-        (tester) async {
+    testWidgets('every emitted wave2 TeX line parses (recording fallback)', (
+      tester,
+    ) async {
       final cases = <BaseEquation>[
         G6PercentEquation('25% of 200'),
         G6PercentEquation('R=? P=50 B=200'),
@@ -368,51 +374,59 @@ void main() {
       expect(meter[2].latex, contains('1560'));
     });
 
-    test('every emitted wave2-batch2 TeX line is ASCII (no unicode/control)', () {
-      for (final eq in <BaseEquation>[
-        G6RateEquation('R=? D=120 T=2'),
-        G6RateEquation('D=? R=60 T=2'),
-        G6RateEquation('T=? D=120 R=40'),
-        G6RateEquation('compare 500g 120 vs 1kg 220'),
-        G6RateEquation('prev=1250 pres=1380 rate=12'),
-      ]) {
-        for (final s in eq.getSteps()) {
-          for (final tex in <String?>[s.latex, ...?s.subLatex]) {
-            if (tex == null) {
-              continue;
+    test(
+      'every emitted wave2-batch2 TeX line is ASCII (no unicode/control)',
+      () {
+        for (final eq in <BaseEquation>[
+          G6RateEquation('R=? D=120 T=2'),
+          G6RateEquation('D=? R=60 T=2'),
+          G6RateEquation('T=? D=120 R=40'),
+          G6RateEquation('compare 500g 120 vs 1kg 220'),
+          G6RateEquation('prev=1250 pres=1380 rate=12'),
+        ]) {
+          for (final s in eq.getSteps()) {
+            for (final tex in <String?>[s.latex, ...?s.subLatex]) {
+              if (tex == null) {
+                continue;
+              }
+              expect(
+                tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e),
+                isTrue,
+                reason: '$tex (${s.title})',
+              );
             }
-            expect(tex.codeUnits.every((c) => c >= 0x20 && c <= 0x7e), isTrue,
-                reason: '$tex (${s.title})');
           }
         }
-      }
-    });
+      },
+    );
 
-    testWidgets('every emitted wave2-batch2 TeX line parses (recording fallback)',
-        (tester) async {
-      final cases = <BaseEquation>[
-        G6RateEquation('R=? D=120 T=2'),
-        G6RateEquation('D=? R=60 T=2'),
-        G6RateEquation('T=? D=120 R=40'),
-        G6RateEquation('compare 500g 120 vs 1kg 220'),
-        G6RateEquation('prev=1250 pres=1380 rate=12'),
-      ];
-      var checked = 0;
-      for (final eq in cases) {
-        for (final s in eq.getSteps()) {
-          if (s.latex != null && s.latex!.isNotEmpty) {
-            await _expectTexParses(tester, s.latex!);
-            checked++;
-          }
-          for (final line in s.subLatex ?? const <String>[]) {
-            if (line.trim().isNotEmpty) {
-              await _expectTexParses(tester, line);
+    testWidgets(
+      'every emitted wave2-batch2 TeX line parses (recording fallback)',
+      (tester) async {
+        final cases = <BaseEquation>[
+          G6RateEquation('R=? D=120 T=2'),
+          G6RateEquation('D=? R=60 T=2'),
+          G6RateEquation('T=? D=120 R=40'),
+          G6RateEquation('compare 500g 120 vs 1kg 220'),
+          G6RateEquation('prev=1250 pres=1380 rate=12'),
+        ];
+        var checked = 0;
+        for (final eq in cases) {
+          for (final s in eq.getSteps()) {
+            if (s.latex != null && s.latex!.isNotEmpty) {
+              await _expectTexParses(tester, s.latex!);
               checked++;
             }
+            for (final line in s.subLatex ?? const <String>[]) {
+              if (line.trim().isNotEmpty) {
+                await _expectTexParses(tester, line);
+                checked++;
+              }
+            }
           }
         }
-      }
-      expect(checked, greaterThan(0));
-    });
+        expect(checked, greaterThan(0));
+      },
+    );
   });
 }

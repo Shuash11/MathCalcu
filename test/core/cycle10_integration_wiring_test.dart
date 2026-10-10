@@ -8,10 +8,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  testWidgets('Integration Techniques registry route renders its screen',
-      (tester) async {
-    final entry = FinalsModuleRegistry.modules
-        .singleWhere((m) => m.label == 'Integration Techniques');
+  testWidgets('Integration Techniques registry route renders its screen', (
+    tester,
+  ) async {
+    final entry = FinalsModuleRegistry.modules.singleWhere(
+      (m) => m.label == 'Integration Techniques',
+    );
     expect(entry.route, '/topics/calculus/finals/integration');
 
     await tester.pumpWidget(

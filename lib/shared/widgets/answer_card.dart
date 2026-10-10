@@ -39,9 +39,10 @@ class _AnswerCardState extends State<AnswerCard>
       vsync: this,
       duration: const Duration(milliseconds: 180),
     );
-    _scale = Tween<double>(begin: 1.0, end: 0.96).animate(
-      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
-    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 0.96,
+    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -105,8 +106,9 @@ class _AnswerCardState extends State<AnswerCard>
                               mathStyle: MathStyle.display,
                               textStyle: TextStyle(
                                 fontSize: 24,
-                                color:
-                                    context.watch<ThemeProvider>().textPrimary,
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .textPrimary,
                               ),
                             ),
                           )
@@ -118,8 +120,9 @@ class _AnswerCardState extends State<AnswerCard>
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w700,
-                                color:
-                                    context.watch<ThemeProvider>().textPrimary,
+                                color: context
+                                    .watch<ThemeProvider>()
+                                    .textPrimary,
                                 letterSpacing: -0.5,
                               ),
                             ),

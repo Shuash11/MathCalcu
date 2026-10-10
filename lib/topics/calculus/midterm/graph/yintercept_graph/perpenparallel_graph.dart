@@ -60,14 +60,15 @@ class _GraphSheet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Graph',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: context
-                                      .watch<ThemeProvider>()
-                                      .textPrimary,
-                                  letterSpacing: -0.5)),
+                          Text(
+                            'Graph',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: context.watch<ThemeProvider>().textPrimary,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
                           const SizedBox(height: 2),
                           Text(
                             '${result.verdictSymbol}  ${result.verdict}',
@@ -92,10 +93,7 @@ class _GraphSheet extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    _LegendDot(
-                      color: accent,
-                      label: result.slopeIntercept1,
-                    ),
+                    _LegendDot(color: accent, label: result.slopeIntercept1),
                     const SizedBox(width: 16),
                     _LegendDot(
                       color: accent.withValues(alpha: 0.6),
@@ -120,8 +118,10 @@ class _GraphSheet extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: CustomPaint(
-                        painter:
-                            PPLinePainter(result: result, accentColor: accent),
+                        painter: PPLinePainter(
+                          result: result,
+                          accentColor: accent,
+                        ),
                         child: const SizedBox.expand(),
                       ),
                     ),
@@ -249,10 +249,14 @@ class PPLinePainter extends CustomPainter {
       final perp = Offset(-dir.dy, dir.dx);
       final path = Path()
         ..moveTo(tip.dx, tip.dy)
-        ..lineTo(tip.dx - dir.dx * sz + perp.dx * (sz / 2),
-            tip.dy - dir.dy * sz + perp.dy * (sz / 2))
-        ..lineTo(tip.dx - dir.dx * sz - perp.dx * (sz / 2),
-            tip.dy - dir.dy * sz - perp.dy * (sz / 2))
+        ..lineTo(
+          tip.dx - dir.dx * sz + perp.dx * (sz / 2),
+          tip.dy - dir.dy * sz + perp.dy * (sz / 2),
+        )
+        ..lineTo(
+          tip.dx - dir.dx * sz - perp.dx * (sz / 2),
+          tip.dy - dir.dy * sz - perp.dy * (sz / 2),
+        )
         ..close();
       canvas.drawPath(path, arrowPaint);
     }
@@ -269,8 +273,12 @@ class PPLinePainter extends CustomPainter {
       fontWeight: FontWeight.w600,
     );
 
-    void drawText(String text, double sx, double sy,
-        {TextAlign align = TextAlign.left}) {
+    void drawText(
+      String text,
+      double sx,
+      double sy, {
+      TextAlign align = TextAlign.left,
+    }) {
       final tp = TextPainter(
         text: TextSpan(text: text, style: axisNameStyle),
         textDirection: TextDirection.ltr,
@@ -361,7 +369,11 @@ class PPLinePainter extends CustomPainter {
 
     drawLine(result.a1, result.b1, result.c1, accentColor);
     drawLine(
-        result.a2, result.b2, result.c2, accentColor.withValues(alpha: 0.6));
+      result.a2,
+      result.b2,
+      result.c2,
+      accentColor.withValues(alpha: 0.6),
+    );
 
     // -- Equation labels at line endpoints --------------------
     void drawLineLabel(int A, int B, int C, String label, Color color) {
@@ -387,16 +399,23 @@ class PPLinePainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       )..layout();
 
-      tp.paint(
-        canvas,
-        Offset(_marginLeft + plotW - tp.width - 6, clampedSY),
-      );
+      tp.paint(canvas, Offset(_marginLeft + plotW - tp.width - 6, clampedSY));
     }
 
     drawLineLabel(
-        result.a1, result.b1, result.c1, result.slopeIntercept1, accentColor);
-    drawLineLabel(result.a2, result.b2, result.c2, result.slopeIntercept2,
-        accentColor.withValues(alpha: 0.6));
+      result.a1,
+      result.b1,
+      result.c1,
+      result.slopeIntercept1,
+      accentColor,
+    );
+    drawLineLabel(
+      result.a2,
+      result.b2,
+      result.c2,
+      result.slopeIntercept2,
+      accentColor.withValues(alpha: 0.6),
+    );
 
     // -- Intersection dot (perpendicular / neither) ------------
     if (result.relationship == PPRelationship.perpendicular ||

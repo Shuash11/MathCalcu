@@ -39,10 +39,16 @@ void main() {
 
     test('every spec route is leaf-wired (gate open, destination exists)', () {
       for (final entry in specToRoute.entries) {
-        expect(ModmatModuleRegistry.isLeafRoute(entry.value), isTrue,
-            reason: entry.key);
-        expect(ModmatModuleRegistry.isRouteAvailable(entry.value), isTrue,
-            reason: entry.key);
+        expect(
+          ModmatModuleRegistry.isLeafRoute(entry.value),
+          isTrue,
+          reason: entry.key,
+        );
+        expect(
+          ModmatModuleRegistry.isRouteAvailable(entry.value),
+          isTrue,
+          reason: entry.key,
+        );
       }
       expect(
         ModmatModuleRegistry.wiredLeafRoutes,
@@ -95,10 +101,12 @@ void main() {
 
   group('Cycle 9 F3: repointed stubs resolve to wired finals screens', () {
     test('limits intro + derivatives are solver-backed', () {
-      final limits = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'g11-limits-intro');
-      final derivatives = CurriculumRegistry.allTopics()
-          .firstWhere((t) => t.id == 'g12-derivatives');
+      final limits = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'g11-limits-intro',
+      );
+      final derivatives = CurriculumRegistry.allTopics().firstWhere(
+        (t) => t.id == 'g12-derivatives',
+      );
       expect(limits.solverAvailable, isTrue);
       expect(limits.route, '/topics/calculus/finals/limits');
       expect(derivatives.solverAvailable, isTrue);

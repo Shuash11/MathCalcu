@@ -69,18 +69,16 @@ class PPResultCard extends StatelessWidget {
         color: context.watch<ThemeProvider>().card,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: context
-              .watch<ThemeProvider>()
-              .accentColor
-              .withValues(alpha: 0.35),
+          color: context.watch<ThemeProvider>().accentColor.withValues(
+            alpha: 0.35,
+          ),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: context
-                .watch<ThemeProvider>()
-                .accentColor
-                .withValues(alpha: 0.15),
+            color: context.watch<ThemeProvider>().accentColor.withValues(
+              alpha: 0.15,
+            ),
             blurRadius: 32,
             offset: const Offset(0, 8),
             spreadRadius: 2,
@@ -121,10 +119,7 @@ class PPResultCard extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Verdict card
-          _VerdictCard(
-            result: result,
-            accent: _verdictColor(context),
-          ),
+          _VerdictCard(result: result, accent: _verdictColor(context)),
 
           const SizedBox(height: 16),
 
@@ -134,7 +129,8 @@ class PPResultCard extends StatelessWidget {
               Expanded(
                 child: _ResultTile(
                   label: 'Slope 1',
-                  value: result.slope1?.toDouble().toStringAsFixed(2) ??
+                  value:
+                      result.slope1?.toDouble().toStringAsFixed(2) ??
                       'undefined',
                   color: context.watch<ThemeProvider>().accentColor,
                   icon: Icons.show_chart_rounded,
@@ -144,7 +140,8 @@ class PPResultCard extends StatelessWidget {
               Expanded(
                 child: _ResultTile(
                   label: 'Slope 2',
-                  value: result.slope2?.toDouble().toStringAsFixed(2) ??
+                  value:
+                      result.slope2?.toDouble().toStringAsFixed(2) ??
                       'undefined',
                   color: context.watch<ThemeProvider>().accentColor,
                   icon: Icons.show_chart_rounded,
@@ -223,8 +220,9 @@ class PPResultCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color:
-            context.watch<ThemeProvider>().accentColor.withValues(alpha: 0.1),
+        color: context.watch<ThemeProvider>().accentColor.withValues(
+          alpha: 0.1,
+        ),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -239,8 +237,11 @@ class PPResultCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 4),
-          Icon(Icons.keyboard_arrow_down_rounded,
-              color: context.watch<ThemeProvider>().accentColor, size: 16),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: context.watch<ThemeProvider>().accentColor,
+            size: 16,
+          ),
         ],
       ),
     );
@@ -347,44 +348,44 @@ class _ResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: color.withValues(alpha: 0.2)),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                Icon(icon, size: 14, color: color.withValues(alpha: 0.7)),
-                const SizedBox(width: 6),
-                ResponsiveText(
-                  label,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: color.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
+            Icon(icon, size: 14, color: color.withValues(alpha: 0.7)),
+            const SizedBox(width: 6),
             ResponsiveText(
-              value,
+              label,
               style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: color,
-                height: 1.2,
+                fontSize: 11,
+                color: color.withValues(alpha: 0.7),
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
               ),
             ),
           ],
         ),
-      );
+        const SizedBox(height: 8),
+        ResponsiveText(
+          value,
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: color,
+            height: 1.2,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _EquationTile extends StatelessWidget {

@@ -102,8 +102,9 @@ void main() {
       }
     });
 
-    testWidgets('solves without overflow from phone to desktop',
-        (tester) async {
+    testWidgets('solves without overflow from phone to desktop', (
+      tester,
+    ) async {
       for (final width in [320.0, 768.0, 1280.0]) {
         await _pumpShell(tester, width: width);
 
@@ -129,8 +130,9 @@ void main() {
       matching: find.byType(SelectableMath),
     );
 
-    testWidgets('(a) latex-filled steps render Math widgets in the modal',
-        (tester) async {
+    testWidgets('(a) latex-filled steps render Math widgets in the modal', (
+      tester,
+    ) async {
       const steps = [
         StepModel(
           stepNumber: 1,
@@ -155,8 +157,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets(
-        '(b) plain steps (no latex) render title/explanation '
+    testWidgets('(b) plain steps (no latex) render title/explanation '
         'unchanged — zero regression', (tester) async {
       const steps = [
         StepModel(
@@ -170,15 +171,11 @@ void main() {
 
       expect(find.text('Plain step title'), findsOneWidget);
       expect(find.text('Plain step explanation line.'), findsOneWidget);
-      expect(
-        inModalMath,
-        findsNothing,
-      );
+      expect(inModalMath, findsNothing);
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets(
-        '(c) malformed TeX never crashes — the explanation '
+    testWidgets('(c) malformed TeX never crashes — the explanation '
         'fallback renders', (tester) async {
       const steps = [
         StepModel(
@@ -195,8 +192,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('(d) subLatex and expandable details render when present',
-        (tester) async {
+    testWidgets('(d) subLatex and expandable details render when present', (
+      tester,
+    ) async {
       const steps = [
         StepModel(
           stepNumber: 1,
@@ -222,8 +220,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('(e) light and dark themes render without exceptions',
-        (tester) async {
+    testWidgets('(e) light and dark themes render without exceptions', (
+      tester,
+    ) async {
       const steps = [
         StepModel(
           stepNumber: 1,
@@ -236,10 +235,7 @@ void main() {
         await _pumpShell(tester, width: 320, isDark: isDark, steps: steps);
         await _openStepsModal(tester);
 
-        expect(
-          inModalMath,
-          findsOneWidget,
-        );
+        expect(inModalMath, findsOneWidget);
         expect(find.text('Theme step'), findsOneWidget);
         expect(tester.takeException(), isNull);
 

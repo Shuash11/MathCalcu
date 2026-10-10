@@ -36,11 +36,12 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
     _searchFocusNode.addListener(() => setState(() {}));
 
     _controllers = List.generate(
-        2,
-        (i) => AnimationController(
-              vsync: this,
-              duration: const Duration(milliseconds: 600),
-            ));
+      2,
+      (i) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      ),
+    );
 
     _fadeAnims = _controllers
         .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOut))
@@ -169,10 +170,7 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
               padding: const EdgeInsets.only(left: 60),
               child: Text(
                 '2 sections available',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: theme.textSecondary,
-                ),
+                style: TextStyle(fontSize: 15, color: theme.textSecondary),
               ),
             ),
             const SizedBox(height: 20),
@@ -238,8 +236,10 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: accent,
                   borderRadius: BorderRadius.circular(20),
@@ -402,29 +402,26 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
             ),
           ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final hit = hits[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _ModmatSearchResultCard(
-                    hit: hit,
-                    // Cycle 9: unwired leaves stay gated — gate
-                    // instead of dead-pushing.
-                    onTap: () {
-                      if (!ModmatModuleRegistry.isRouteAvailable(
-                        hit.module.route,
-                      )) {
-                        showTopicComingSoon(context, hit.module.label);
-                        return;
-                      }
-                      context.push(hit.module.route);
-                    },
-                  ),
-                );
-              },
-              childCount: hits.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final hit = hits[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _ModmatSearchResultCard(
+                  hit: hit,
+                  // Cycle 9: unwired leaves stay gated — gate
+                  // instead of dead-pushing.
+                  onTap: () {
+                    if (!ModmatModuleRegistry.isRouteAvailable(
+                      hit.module.route,
+                    )) {
+                      showTopicComingSoon(context, hit.module.label);
+                      return;
+                    }
+                    context.push(hit.module.route);
+                  },
+                ),
+              );
+            }, childCount: hits.length),
           ),
           if (curriculumHits.isNotEmpty)
             SliverToBoxAdapter(
@@ -469,31 +466,28 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final section = sections[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: FadeTransition(
-                    opacity: _fadeAnims[index],
-                    child: SlideTransition(
-                      position: _slideAnims[index],
-                      child: _ModmatSectionCard(
-                        section: section,
-                        onTap: () {
-                          if (section.label == 'Foundations') {
-                            context.push('/topics/modmat/foundations');
-                          } else {
-                            context.push('/topics/modmat/advanced');
-                          }
-                        },
-                      ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final section = sections[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: FadeTransition(
+                  opacity: _fadeAnims[index],
+                  child: SlideTransition(
+                    position: _slideAnims[index],
+                    child: _ModmatSectionCard(
+                      section: section,
+                      onTap: () {
+                        if (section.label == 'Foundations') {
+                          context.push('/topics/modmat/foundations');
+                        } else {
+                          context.push('/topics/modmat/advanced');
+                        }
+                      },
                     ),
                   ),
-                );
-              },
-              childCount: sections.length,
-            ),
+                ),
+              );
+            }, childCount: sections.length),
           ),
         ),
         SliverToBoxAdapter(
@@ -502,7 +496,8 @@ class _ModmatPickerScreenState extends State<ModmatPickerScreen>
             child: CatalogueDisclosure(
               // Cycle 9: truthful wired count from the allowlist.
               solverBacked: ModmatModuleRegistry.wiredLeafRoutes.length,
-              catalogueOnly: foundationsCount +
+              catalogueOnly:
+                  foundationsCount +
                   advancedCount -
                   ModmatModuleRegistry.wiredLeafRoutes.length,
               catalogueName: 'Modern Math',
@@ -745,9 +740,11 @@ class _ModmatSectionCardState extends State<_ModmatSectionCard> {
                               gradient: LinearGradient(
                                 colors: [
                                   accent.withValues(
-                                      alpha: _hovered ? 0.22 : 0.13),
+                                    alpha: _hovered ? 0.22 : 0.13,
+                                  ),
                                   accent.withValues(
-                                      alpha: _hovered ? 0.10 : 0.05),
+                                    alpha: _hovered ? 0.10 : 0.05,
+                                  ),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -778,8 +775,9 @@ class _ModmatSectionCardState extends State<_ModmatSectionCard> {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
-                                    color:
-                                        _hovered ? accent : theme.textPrimary,
+                                    color: _hovered
+                                        ? accent
+                                        : theme.textPrimary,
                                     letterSpacing: -0.3,
                                   ),
                                 ),

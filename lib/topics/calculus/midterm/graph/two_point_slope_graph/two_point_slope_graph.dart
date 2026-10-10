@@ -42,15 +42,18 @@ class TwoPointSlopeGraph extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text('GRAPH',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: context
-                            .watch<ThemeProvider>()
-                            .textSecondary
-                            .withValues(alpha: 0.7),
-                        letterSpacing: 0.5)),
+                Text(
+                  'GRAPH',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: context
+                        .watch<ThemeProvider>()
+                        .textSecondary
+                        .withValues(alpha: 0.7),
+                    letterSpacing: 0.5,
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -70,8 +73,9 @@ class TwoPointSlopeGraph extends StatelessWidget {
                 const Spacer(),
                 // Legend
                 _LegendDot(
-                    color: context.watch<ThemeProvider>().accentColor,
-                    label: 'Line'),
+                  color: context.watch<ThemeProvider>().accentColor,
+                  label: 'Line',
+                ),
                 const SizedBox(width: 12),
                 _LegendDot(
                   color: context.watch<ThemeProvider>().accentColor,
@@ -93,18 +97,16 @@ class TwoPointSlopeGraph extends StatelessWidget {
               color: context.watch<ThemeProvider>().card,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: context
-                    .watch<ThemeProvider>()
-                    .accentColor
-                    .withValues(alpha: 0.35),
+                color: context.watch<ThemeProvider>().accentColor.withValues(
+                  alpha: 0.35,
+                ),
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: context
-                      .watch<ThemeProvider>()
-                      .accentColor
-                      .withValues(alpha: 0.15),
+                  color: context.watch<ThemeProvider>().accentColor.withValues(
+                    alpha: 0.15,
+                  ),
                   blurRadius: 32,
                   offset: const Offset(0, 8),
                   spreadRadius: 2,
@@ -212,14 +214,10 @@ class _LineGraph extends StatelessWidget {
           show: true,
           drawVerticalLine: true,
           drawHorizontalLine: true,
-          getDrawingHorizontalLine: (_) => const FlLine(
-            color: Color(0xFF1A1A2E),
-            strokeWidth: 1,
-          ),
-          getDrawingVerticalLine: (_) => const FlLine(
-            color: Color(0xFF1A1A2E),
-            strokeWidth: 1,
-          ),
+          getDrawingHorizontalLine: (_) =>
+              const FlLine(color: Color(0xFF1A1A2E), strokeWidth: 1),
+          getDrawingVerticalLine: (_) =>
+              const FlLine(color: Color(0xFF1A1A2E), strokeWidth: 1),
         ),
 
         // Borders (axes)
@@ -228,11 +226,14 @@ class _LineGraph extends StatelessWidget {
         // Axis titles
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
-            axisNameWidget: Text('Y',
-                style: TextStyle(
-                    color: context.watch<ThemeProvider>().textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold)),
+            axisNameWidget: Text(
+              'Y',
+              style: TextStyle(
+                color: context.watch<ThemeProvider>().textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             axisNameSize: 22,
             sideTitles: SideTitles(
               showTitles: true,
@@ -241,11 +242,14 @@ class _LineGraph extends StatelessWidget {
             ),
           ),
           bottomTitles: AxisTitles(
-            axisNameWidget: Text('X',
-                style: TextStyle(
-                    color: context.watch<ThemeProvider>().textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold)),
+            axisNameWidget: Text(
+              'X',
+              style: TextStyle(
+                color: context.watch<ThemeProvider>().textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             axisNameSize: 22,
             sideTitles: SideTitles(
               showTitles: true,
@@ -253,10 +257,12 @@ class _LineGraph extends StatelessWidget {
               getTitlesWidget: (v, _) => _AxisLabel(v.toString()),
             ),
           ),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
         ),
 
         // Axis bounds
@@ -367,11 +373,14 @@ class _VerticalLineGraph extends StatelessWidget {
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
-            axisNameWidget: Text('Y',
-                style: TextStyle(
-                    color: context.watch<ThemeProvider>().textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold)),
+            axisNameWidget: Text(
+              'Y',
+              style: TextStyle(
+                color: context.watch<ThemeProvider>().textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             axisNameSize: 20,
             sideTitles: SideTitles(
               showTitles: true,
@@ -380,11 +389,14 @@ class _VerticalLineGraph extends StatelessWidget {
             ),
           ),
           bottomTitles: AxisTitles(
-            axisNameWidget: Text('X',
-                style: TextStyle(
-                    color: context.watch<ThemeProvider>().textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold)),
+            axisNameWidget: Text(
+              'X',
+              style: TextStyle(
+                color: context.watch<ThemeProvider>().textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             axisNameSize: 20,
             sideTitles: SideTitles(
               showTitles: true,
@@ -392,10 +404,12 @@ class _VerticalLineGraph extends StatelessWidget {
               getTitlesWidget: (v, _) => _AxisLabel(v.toString()),
             ),
           ),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
         ),
         minX: x - 5,
         maxX: x + 5,
@@ -473,20 +487,20 @@ class _LegendDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: context.watch<ThemeProvider>().textSecondary,
-            ),
-          ),
-        ],
-      );
+    children: [
+      Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          color: context.watch<ThemeProvider>().textSecondary,
+        ),
+      ),
+    ],
+  );
 }

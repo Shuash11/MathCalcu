@@ -48,16 +48,13 @@ Future<void> _pump(
 
 void main() {
   group('Finals picker labeled tap targets', () {
-    testWidgets('meets labeledTapTargetGuideline in both themes',
-        (tester) async {
+    testWidgets('meets labeledTapTargetGuideline in both themes', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
 
       for (final isDark in [false, true]) {
-        await _pump(
-          tester,
-          const FinalsPickerScreen(),
-          isDark: isDark,
-        );
+        await _pump(tester, const FinalsPickerScreen(), isDark: isDark);
         // Stagger timers (120–920ms) fire during this pump; the 600ms
         // fade controllers then need additional frames — without
         // pumpAndSettle the cards stay at opacity 0 and their semantics
@@ -69,14 +66,8 @@ void main() {
         // IconButton tooltips surface in the semantics tooltip property.
         expect(find.byTooltip('Back to finals'), findsOneWidget);
         // The Evaluating Limits card is labeled by the shared ModuleCard.
-        expect(
-          find.bySemanticsLabel('Evaluating Limits'),
-          findsOneWidget,
-        );
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
+        expect(find.bySemanticsLabel('Evaluating Limits'), findsOneWidget);
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       }
 
       handle.dispose();
@@ -95,10 +86,7 @@ void main() {
         ],
       );
 
-      await _pump(
-        tester,
-        MaterialApp.router(routerConfig: router),
-      );
+      await _pump(tester, MaterialApp.router(routerConfig: router));
       // Stagger timers + 600ms fade controllers (see group test above).
       await tester.pump(const Duration(milliseconds: 1100));
       await tester.pumpAndSettle();
@@ -126,8 +114,9 @@ void main() {
   });
 
   group('Finals about sheet developer cards', () {
-    testWidgets('meets labeledTapTargetGuideline in both themes',
-        (tester) async {
+    testWidgets('meets labeledTapTargetGuideline in both themes', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
 
       for (final isDark in [false, true]) {
@@ -136,14 +125,8 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('DEVELOPERS'), findsOneWidget);
-        expect(
-          find.bySemanticsLabel('Expand developer info'),
-          findsWidgets,
-        );
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
+        expect(find.bySemanticsLabel('Expand developer info'), findsWidgets);
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         Navigator.of(tester.element(find.byType(Scaffold))).pop();
         await tester.pumpAndSettle();
       }
@@ -159,10 +142,7 @@ void main() {
 
       await tester.tap(find.bySemanticsLabel('Expand developer info').first);
       await tester.pumpAndSettle();
-      expect(
-        find.bySemanticsLabel('Collapse developer info'),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel('Collapse developer info'), findsOneWidget);
 
       Navigator.of(tester.element(find.byType(Scaffold))).pop();
       await tester.pumpAndSettle();
@@ -171,8 +151,7 @@ void main() {
   });
 
   group('Evaluating-limits method screens', () {
-    testWidgets(
-        'all five method screens meet labeledTapTargetGuideline '
+    testWidgets('all five method screens meet labeledTapTargetGuideline '
         'in both themes', (tester) async {
       final handle = tester.ensureSemantics();
 
@@ -194,10 +173,7 @@ void main() {
 
           // The back button is a tooltip-only IconButton.
           expect(find.byTooltip('Back to limits'), findsOneWidget);
-          await expectLater(
-            tester,
-            meetsGuideline(labeledTapTargetGuideline),
-          );
+          await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         }
       }
 
@@ -206,8 +182,9 @@ void main() {
   });
 
   group('Factoring answer card', () {
-    testWidgets('meets labeledTapTargetGuideline in both themes',
-        (tester) async {
+    testWidgets('meets labeledTapTargetGuideline in both themes', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
 
       for (final isDark in [false, true]) {
@@ -229,10 +206,7 @@ void main() {
           find.bySemanticsLabel('View limit solution steps'),
           findsOneWidget,
         );
-        await expectLater(
-          tester,
-          meetsGuideline(labeledTapTargetGuideline),
-        );
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       }
 
       handle.dispose();

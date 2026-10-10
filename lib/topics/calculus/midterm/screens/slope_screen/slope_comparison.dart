@@ -4,6 +4,7 @@ import 'package:calculus_system/topics/calculus/midterm/solvers/slope_solver/slo
 import 'package:calculus_system/shared/widgets/solution_steps_modal.dart';
 import 'package:calculus_system/theme/app_design.dart';
 import 'package:material_ui/material_ui.dart';
+
 import 'slope_steps.dart';
 
 /// Opens the slope-comparison steps modal (parallel / perpendicular / neither).
@@ -16,14 +17,14 @@ Future<void> showSlopeComparisonModal({
   final color = comparisonResult.isParallel
       ? const Color(0xFF4ECDC4)
       : comparisonResult.isPerpendicular
-          ? const Color(0xFFFFB347)
-          : const Color(0xFF95E1D3);
+      ? const Color(0xFFFFB347)
+      : const Color(0xFF95E1D3);
 
   final relationshipLabel = comparisonResult.isParallel
       ? 'PARALLEL'
       : comparisonResult.isPerpendicular
-          ? 'PERPENDICULAR'
-          : 'NEITHER';
+      ? 'PERPENDICULAR'
+      : 'NEITHER';
 
   return showSolutionStepsModal(
     context: context,
@@ -90,8 +91,11 @@ Future<void> showSlopeComparisonModal({
                 ),
                 elevation: 0,
               ),
-              icon: Icon(Icons.show_chart_rounded,
-                  size: 18, color: FinalsTheme.onPrimaryFor(modalContext)),
+              icon: Icon(
+                Icons.show_chart_rounded,
+                size: 18,
+                color: FinalsTheme.onPrimaryFor(modalContext),
+              ),
               label: Text(
                 'View Graph',
                 style: TextStyle(

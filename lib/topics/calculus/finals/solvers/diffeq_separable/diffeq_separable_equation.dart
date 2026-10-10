@@ -42,8 +42,9 @@ class _Separable {
 class DiffeqSeparableEquation extends BaseEquation {
   /// Elementary monomial: optional coefficient, one variable
   /// letter, optional integer exponent.
-  static final RegExp _monoRe =
-      RegExp(r'^([+-]?\d+(?:\.\d+)?)?\*?([xy])(?:\^([+-]?\d+))?$');
+  static final RegExp _monoRe = RegExp(
+    r'^([+-]?\d+(?:\.\d+)?)?\*?([xy])(?:\^([+-]?\d+))?$',
+  );
 
   DiffeqSeparableEquation(this.rawInput);
 
@@ -142,7 +143,7 @@ class DiffeqSeparableEquation extends BaseEquation {
             'F': fx,
             'G': gy,
             'form': 'dy/dx = f(x) · g(y)',
-          }
+          },
         ],
       );
     } catch (e) {
@@ -155,7 +156,10 @@ class DiffeqSeparableEquation extends BaseEquation {
     if (!validate()) {
       return [
         StepModel(
-            stepNumber: 1, title: 'Cannot solve', explanation: _error ?? '')
+          stepNumber: 1,
+          title: 'Cannot solve',
+          explanation: _error ?? '',
+        ),
       ];
     }
     final s = _parsed!;
@@ -167,27 +171,29 @@ class DiffeqSeparableEquation extends BaseEquation {
       StepModel(
         stepNumber: 1,
         title: 'Separate variables',
-        explanation: 'dy/dx = f(x)·g(y) → divide both sides by g(y) so every '
+        explanation:
+            'dy/dx = f(x)·g(y) → divide both sides by g(y) so every '
             'y sits with dy and every x with dx.',
         hint: 'dy/${s.gRaw} = ${s.fRaw} dx',
-        latex: '\\frac{dy}{${_monoLatex(s.g.k, 'y', s.g.n)}} = '
+        latex:
+            '\\frac{dy}{${_monoLatex(s.g.k, 'y', s.g.n)}} = '
             '${_monoLatex(s.f.k, 'x', s.f.n)} dx',
       ),
       StepModel(
         stepNumber: 2,
         title: 'Integrate both sides',
-        explanation: 'Left: ∫ dy/g(y) = $gy. Right: ∫ f(x) dx = $fx. '
+        explanation:
+            'Left: ∫ dy/g(y) = $gy. Right: ∫ f(x) dx = $fx. '
             'Power rule: ∫ y^n dy = y^(n+1)/(n+1); ∫ dy/y = ln|y|.',
         hint: '$gy and $fx',
         latex: '\\int \\frac{dy}{${_monoLatex(s.g.k, 'y', s.g.n)}} = $gyLatex',
-        subLatex: [
-          '\\int ${_monoLatex(s.f.k, 'x', s.f.n)} dx = $fxLatex',
-        ],
+        subLatex: ['\\int ${_monoLatex(s.f.k, 'x', s.f.n)} dx = $fxLatex'],
       ),
       StepModel(
         stepNumber: 3,
         title: 'General solution',
-        explanation: '$gy = $fx + C — one constant C covers both '
+        explanation:
+            '$gy = $fx + C — one constant C covers both '
             'antiderivatives.',
         latex: '$gyLatex = $fxLatex + C',
       ),
@@ -202,8 +208,8 @@ class DiffeqSeparableEquation extends BaseEquation {
     final prefix = k == 1
         ? ''
         : k == -1
-            ? '-'
-            : G6Format.num(k);
+        ? '-'
+        : G6Format.num(k);
     if (n == 1) return '$prefix$varName';
     return '$prefix$varName^{${G6Format.num(n)}}';
   }
@@ -227,8 +233,8 @@ class DiffeqSeparableEquation extends BaseEquation {
       final coef = ci == 1
           ? ''
           : ci == -1
-              ? '-'
-              : '$ci';
+          ? '-'
+          : '$ci';
       return e == 1 ? '${coef}x' : '${coef}x^{${G6Format.num(e)}}';
     }
     final kf = G6Format.num(k);
@@ -273,8 +279,8 @@ class DiffeqSeparableEquation extends BaseEquation {
       final coef = ci == 1
           ? ''
           : ci == -1
-              ? '-'
-              : '$ci';
+          ? '-'
+          : '$ci';
       return e == 1 ? '${coef}x' : '${coef}x^${G6Format.num(e)}';
     }
     final kf = G6Format.num(k);
