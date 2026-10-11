@@ -75,6 +75,246 @@ void main() {
       expect(r.hasError, isTrue);
     });
 
+    test(
+      'C2: true double-angle identities now verify (sin + cos families)',
+      () {
+        // Pre-fix (HEAD fcfeeee) the numeric evaluator dropped the `x` variable
+        // and the implicit product, so every one of these errored with
+        // 'Not an identity — sides differ at sample angles (0/5 match).'
+        final sinEq = TrigIdentityEquation('prove: sin 2x = 2 sin x cos x');
+        expect(sinEq.validate(), isTrue);
+        final sin = sinEq.solve();
+        expect(sin.hasError, isFalse);
+        expect(sin.answer, 'Identity holds — sin 2θ = 2 sin θ cos θ. ∎');
+        expect((sin.customData!.first as Map)['template'], 'double-angle-sin');
+
+        final cosPyth = TrigIdentityEquation('prove: cos 2x = 1 - 2 sin^2 x');
+        final cosDiff = TrigIdentityEquation(
+          'prove: cos 2x = cos^2 x - sin^2 x',
+        );
+        final cosTwice = TrigIdentityEquation('prove: cos 2x = 2 cos^2 x - 1');
+        for (final eq in [cosPyth, cosDiff, cosTwice]) {
+          final r = eq.solve();
+          expect(r.hasError, isFalse, reason: eq.rawInput);
+          expect(
+            r.answer,
+            'Identity holds — Forms: 2cos²θ − 1, or 1 − 2sin²θ. ∎',
+          );
+          expect((r.customData!.first as Map)['template'], 'double-angle-cos');
+        }
+
+        // Same truth in θ-spelling and with no spaces around the factor.
+        for (final input in const [
+          'prove: sin 2θ = 2 sin θ cos θ',
+          'prove: sin2x = 2 sin x cos x',
+          'prove: cos 2θ = cos^2 θ - sin^2 θ',
+        ]) {
+          expect(
+            TrigIdentityEquation(input).solve().hasError,
+            isFalse,
+            reason: input,
+          );
+        }
+      },
+    );
+
+    test('C2: FALSE double-angle identities are NEVER accepted', () {
+      // The first three were WRONGLY accepted by the old evaluator (it read
+      // `sin2x` as `sin x` and `2 sin x cos x` as the constant 2), so they are
+      // the soundness half of the fix. The rest guard the new evaluator.
+      const falseBattery = <String>[
+        'prove: sin 2x = sin x cos x', // baseline: bogus 5/5
+        'prove: sin2x = sinx', // baseline: bogus 5/5
+        'prove: 2 sin x cos x = 2', // baseline: bogus 5/5
+        'prove: sin 2x = 2 sin x', // no cos factor
+        'prove: sin 2x = 2 sin 2x', // double-counted argument
+        'prove: sin 2x = 3 sin x cos x', // wrong coefficient
+        'prove: sin x = cos x',
+        'prove: sin 2x = 0',
+        'prove: cos 2x = 1 - 2 sin^2 x + 1', // extra +1
+        'prove: cos 2x = cos^2 x + sin^2 x', // wrong sign
+        'prove: cos 2x = 1 + 2 sin^2 x', // wrong sign
+        'prove: cos 2x = 1 - 2 cos^2 x', // sin/cos swapped
+        'prove: cos 2x = 2 cos^2 x + 1', // wrong sign
+      ];
+      for (final input in falseBattery) {
+        final r = TrigIdentityEquation(input).solve();
+        expect(r.hasError, isTrue, reason: input);
+        expect(r.customData, isNull, reason: input);
+        // Assert the BEHAVIOUR (rejected as a non-identity), not the sample
+        // arithmetic: the sample count changes if the sampler changes (it is
+        // 12 angles now: 10 input-derived + 2 pi-zone), and pinning '0/5'
+        // exactly would couple this test to that implementation detail.
+        expect(
+          r.errorMessage,
+          startsWith('Not an identity — sides differ at sample angles ('),
+          reason: input,
+        );
+      }
+    });
+
+    test('C2c: spike / high-power false accepts are NEVER verified (cap)', () {
+      // Adversarial-review regression (9 reproduced false-accepts): a bounded
+      // spike like (sin x - 0.6)^40 stays below the 1e-6 tolerance at EVERY
+      // safe-zone angle, so numeric sampling alone cannot reject it; a
+      // fractional power like (sin x)^41.5 is NaN exactly where sin x < 0;
+      // and (sin x)^100*(cos x)^100 has sup-norm 2^-100 < 1e-6 everywhere.
+      // The exponent cap (evaluated power > 19 -> Unsupported BEFORE sampling)
+      // is the grammar-level defense. The tan-mention factor used to
+      // additionally disable the pi-zone samples via a raw substring match on
+      // the input — the zone-skip is now decided from the parsed token stream,
+      // and these inputs are rejected at the gate either way.
+      const attacks = <String>[
+        // The three mandated spikes.
+        'prove: 0 = (sin x - 0.6)^40',
+        'prove: sin 2x = 2 sin x cos x + (sin x - 0.3)^40',
+        'prove: cos 2x = cos^2 x - sin^2 x + (cos x - 0.7)^40',
+        // Tan-mention attack (substring zone-skip disarm attempt).
+        'prove: 0 = (sin x - 0.6)^40 * tan x * 0',
+        // Fractional-power NaN attack.
+        'prove: 0 = (sin x - 0.6)^40 * (sin x)^41.5',
+        // Sup-norm attack: |(sin x cos x)^100| < 1e-6 for every x.
+        'prove: 0 = (sin x)^100 * (cos x)^100',
+      ];
+      for (final input in attacks) {
+        final r = TrigIdentityEquation(input).solve();
+        expect(r.hasError, isTrue, reason: input);
+        expect(r.customData, isNull, reason: input);
+        // The honest verdict is a rejection, never a success: with the cap in
+        // place these all surface as Unsupported; the sampler's honest
+        // rejections are equally acceptable should gate routing change.
+        expect(
+          r.errorMessage,
+          anyOf(
+            startsWith('Unsupported — only trig expressions in one angle'),
+            startsWith('Not an identity — sides differ at sample angles ('),
+            'Could not verify — keep to sin/cos/tan/sec/csc/cot with numeric angles.',
+          ),
+          reason: input,
+        );
+      }
+    });
+
+    test('C2c: one-sided NaN sample counts as a mismatch, never a skip', () {
+      // Root-cause-2 regression: the sample loop used to `continue` when
+      // EITHER side was non-finite, so a term that is NaN precisely at the
+      // pi-zone angles (where sin x < 0) silenced the zone defense for
+      // exactly the crafted inputs. These exponents are <= 19, so the cap
+      // leaves them in scope and the NaN must count as a MISMATCH.
+      const nanPoison = <String>[
+        'prove: 0 = (sin x)^2.5 * 0', // NaN where sin x < 0 (3pi/2 zone)
+        'prove: 0 = (sin x)^0.5 * 0', // sqrt of a negative -> NaN at 3pi/2
+        'prove: sin 2x = 2 sin x cos x + (sin x)^2.5 * 0',
+      ];
+      for (final input in nanPoison) {
+        final r = TrigIdentityEquation(input).solve();
+        expect(r.hasError, isTrue, reason: input);
+        expect(r.customData, isNull, reason: input);
+        expect(
+          r.errorMessage,
+          startsWith('Not an identity — sides differ at sample angles ('),
+          reason: input,
+        );
+      }
+    });
+
+    test('C2b: malformed / trailing-token input is REJECTED, never proved', () {
+      // Regression for Failure 1: solve() only guarded `checked == 0` inside
+      // the key==null branch, so a template match on a completely
+      // non-evaluable side fell through to a bogus 'Identity holds'. The new
+      // evaluator's `if (!atEnd()) return null;` (trailing tokens) made this
+      // reachable. Each of these scored a top-level template name yet no side
+      // parses, so all must error — never a proof.
+      const malformed = <String>[
+        'prove: cos2) = 1',
+        'prove: sin 2x = 2 sin x cos x + 1)',
+        'prove: sin 2x = 2 sin x cos x/',
+      ];
+      for (final input in malformed) {
+        final r = TrigIdentityEquation(input).solve();
+        expect(r.hasError, isTrue, reason: input);
+        expect(r.customData, isNull, reason: input);
+        expect(
+          r.errorMessage,
+          'Could not verify — keep to sin/cos/tan/sec/csc/cot with numeric angles.',
+          reason: input,
+        );
+      }
+    });
+
+    test('C2b: bare-variable polynomial terms are REJECTED by the scope gate', () {
+      // Regression for Failure 2: the verifier's five sample angles used to be
+      // the FIXED set {0.3, 0.7, 1.1, 2.0, 2.6}, so a degree-5 polynomial whose
+      // roots were exactly those points was accepted as an identity. Merely
+      // re-seeding the sampler would leave the evasion CLASS open (a polynomial
+      // crafted against the new angles), so any variable occurrence outside a
+      // trig argument — i.e. a polynomial/rational term in x — is now rejected
+      // BEFORE sampling with an honest unsupported message.
+      const evasion = <String>[
+        'prove: sin 2x = 2 sin x cos x + (x-0.3)(x-0.7)(x-1.1)(x-2.0)(x-2.6)',
+        'prove: 0 = (x-0.3)(x-0.7)(x-1.1)(x-2.0)(x-2.6)',
+      ];
+      for (final input in evasion) {
+        final r = TrigIdentityEquation(input).solve();
+        expect(r.hasError, isTrue, reason: input);
+        expect(r.customData, isNull, reason: input);
+        expect(
+          r.errorMessage,
+          startsWith('Unsupported — only trig expressions in one angle'),
+          reason: input,
+        );
+      }
+      // The gate is a pure function of the input: the same input yields the
+      // same verdict on repeat (no flaky hash race).
+      for (final input in evasion) {
+        expect(
+          TrigIdentityEquation(input).solve().hasError,
+          TrigIdentityEquation(input).solve().hasError,
+          reason: input,
+        );
+      }
+      // The gate must NOT over-reach: trig of the angle, integer multiples,
+      // powers and parenthesised arguments all stay inside its scope.
+      for (final input in const [
+        'prove: sin 2x = 2 sin x cos x',
+        'prove: sin^2 x + cos^2 x = 1',
+        'prove: sin(2x) = 2 sin x cos x',
+        'prove: cos(2x) = cos^2 x - sin^2 x',
+      ]) {
+        expect(
+          TrigIdentityEquation(input).solve().hasError,
+          isFalse,
+          reason: input,
+        );
+      }
+    });
+
+    test('C2: previously-working template families are unchanged', () {
+      // Collateral guards for the evaluator rewrite.
+      const expected = <String, String>{
+        'prove: sin^2 + cos^2 = 1': 'pythagorean',
+        'prove: tan^2 + 1 = sec^2': 'tangent',
+        'prove: sec = 1/cos': 'reciprocal',
+        'prove: tan = sin/cos': 'quotient',
+      };
+      for (final e in expected.entries) {
+        final r = TrigIdentityEquation(e.key).solve();
+        expect(r.hasError, isFalse, reason: e.key);
+        expect(
+          (r.customData!.first as Map)['template'],
+          e.value,
+          reason: e.key,
+        );
+      }
+      expect(
+        TrigIdentityEquation('prove: sin^2 + cos^2 = 2').solve().hasError,
+        isTrue,
+      );
+      final numeric = TrigIdentityEquation('prove: sin + 0 = sin').solve();
+      expect(numeric.hasError, isFalse);
+      expect((numeric.customData!.first as Map)['template'], 'numeric');
+    });
+
     test('missing = never throws', () {
       final eq = TrigIdentityEquation('sin x');
       expect(eq.validate(), isFalse);
@@ -253,8 +493,7 @@ void main() {
           expect(
             valid,
             !err,
-            reason:
-                'validate() must equal !solve().hasError for ${entry.key}',
+            reason: 'validate() must equal !solve().hasError for ${entry.key}',
           );
         }
       },
@@ -330,6 +569,12 @@ void main() {
       TrigIdentityEquation('prove: tan^2 + 1 = sec^2'),
       TrigIdentityEquation('prove: sec = 1/cos'),
       TrigIdentityEquation('prove: tan = sin/cos'),
+      // C2: the double-angle templates are reachable now, so their TeX lines
+      // (previously never emitted) are checked ASCII + parsed.
+      TrigIdentityEquation('prove: sin 2x = 2 sin x cos x'),
+      TrigIdentityEquation('prove: cos 2x = 1 - 2 sin^2 x'),
+      TrigIdentityEquation('prove: cos 2x = cos^2 x - sin^2 x'),
+      TrigIdentityEquation('prove: cos 2x = 2 cos^2 x - 1'),
       IntegralSubEquation('def a = 0, b = 2, f = x^2'),
       IntegralSubEquation('int x^2 dx'),
       IntegralSubEquation('int 2x(x^2+1)^3 dx'),

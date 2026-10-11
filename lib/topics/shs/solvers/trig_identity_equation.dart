@@ -92,6 +92,29 @@ class TrigIdentityEquation extends BaseEquation {
       .replaceAll('prove:', '')
       .replaceAll('prove', '');
 
+  /// Normalisation for *numeric evaluation*: unlike [_norm] it KEEPS spaces so
+  /// the implicit-multiplication / function-argument structure survives
+  /// (`sin 2x` != `sin2x` != `sin x`), and it maps every spelling of the angle
+  /// variable (`θ`, `x`, `t`) onto the canonical symbol `x`.
+  String _evalInput() => rawInput
+      .toLowerCase()
+      .replaceAll('²', '^2')
+      .replaceAll('θ', 'x')
+      .replaceAll('prove:', '')
+      .replaceAll('prove', '');
+
+  static const _funcs = {'sin', 'cos', 'tan', 'sec', 'csc', 'cot'};
+
+  /// Exponent ceiling for `^` anywhere in the grammar. Grade-11 identities use
+  /// powers <= 3 (sin^2, cos^2, tan^2, sin^3); anything beyond [_maxExponent]
+  /// is the crafted-tolerance evasion class — a bounded spike term
+  /// (e.g. (sin x - 0.6)^40) stays under 1e-6 at every sampled angle, so
+  /// numeric sampling alone cannot reject it. Such input is rejected BEFORE
+  /// sampling with the honest Unsupported message. Checked per `^` site, so
+  /// NESTED powers (e.g. ((sin x)^5)^5, effective exponent 25) are NOT caught
+  /// by the cap — see the RESIDUAL note at the sampler.
+  static const _maxExponent = 19;
+
   String? _match() {
     final t = _norm();
     if (t.contains('sin^2') && t.contains('cos^2') && t.contains('=1')) {
@@ -109,98 +132,262 @@ class TrigIdentityEquation extends BaseEquation {
     return null;
   }
 
-  double? _evalSide(String expr, double th) {
-    // Tiny evaluator for sin/cos/tan/sec/csc/cot with ^2 and numbers.
+  /// `math.pow` gated by the exponent ceiling: an evaluated exponent above
+  /// [_maxExponent] is a scope violation (same channel as the bare-variable
+  /// gate), so the caller rejects the input before sampling. Violations is
+  /// non-null exactly in the gate pass; in sampling passes it throws into the
+  /// existing catch, which already means 'not evaluable here'.
+  double _powCapped(double base, double exp, {List<String>? violations}) {
+    if (violations != null && exp.abs() > _maxExponent) {
+      violations.add(
+        'power exponent ${exp.abs()} exceeds the supported maximum '
+        '($_maxExponent)',
+      );
+      throw StateError('power exponent above $_maxExponent');
+    }
+    return math.pow(base, exp).toDouble();
+  }
+
+  /// Evaluates [expr] at angle [th]. When [violations] is non-null it collects
+  /// scope violations: a variable consumed while [argDepth] == 0 is a BARE
+  /// variable — one outside every trig function's argument — i.e. a
+  /// polynomial/rational term in x; and any power operation whose EVALUATED
+  /// exponent exceeds [_maxExponent] (grade-11 identities use powers <= 3;
+  /// high powers are the crafted-tolerance evasion class). The gate reuses
+  /// this same parser so the checked grammar and the evaluated grammar can
+  /// never diverge. When [funcsSeen] is non-null, every trig FUNCTION token
+  /// encountered is recorded in it, so callers can branch on the parsed token
+  /// stream (e.g. the tan/sec/cot zone-skip) instead of a raw substring of
+  /// the input.
+  double? _evalSide(
+    String expr,
+    double th, {
+    List<String>? violations,
+    Set<String>? funcsSeen,
+  }) {
+    // Recursive-descent evaluator for sin/cos/tan/sec/csc/cot over the angle
+    // variable, with numbers, + - * /, ^ and implicit multiplication.
+    final toks = RegExp(r'sin|cos|tan|sec|csc|cot|x|t|\d+(?:\.\d+)?|[+\-*/^()]')
+        .allMatches(expr)
+        .map((m) => m.group(0)!)
+        .toList();
     try {
-      var e = expr;
-      e = e.replaceAll('sin', 's');
-      // Protect csc/sec before replacing.
-      e = e.replaceAll('csc', 'C');
-      e = e.replaceAll('sec', 'S');
-      e = e.replaceAll('cot', 'T');
-      e = e.replaceAll('cos', 'c');
-      e = e.replaceAll('tan', 'n');
-      double val(String tok) {
-        if (tok == 's') return math.sin(th);
-        if (tok == 'c') return math.cos(th);
-        if (tok == 'n') return math.tan(th);
-        if (tok == 'S') return 1 / math.cos(th);
-        if (tok == 'C') return 1 / math.sin(th);
-        if (tok == 'T') return 1 / math.tan(th);
-        return double.parse(tok);
+      var pos = 0;
+      var argDepth = 0;
+      bool atEnd() => pos >= toks.length;
+      String peek() => atEnd() ? '' : toks[pos];
+      bool isNum(String s) => s.isNotEmpty && RegExp(r'\d').hasMatch(s[0]);
+      bool startsAtom(String s) =>
+          s == '(' || s == 'x' || s == 't' || isNum(s) || _funcs.contains(s);
+
+      double applyFunc(String f, double a) {
+        switch (f) {
+          case 'sin':
+            return math.sin(a);
+          case 'cos':
+            return math.cos(a);
+          case 'tan':
+            return math.tan(a);
+          case 'sec':
+            return 1 / math.cos(a);
+          case 'csc':
+            return 1 / math.sin(a);
+          default: // cot
+            return 1 / math.tan(a);
+        }
       }
 
-      // Handle func^2 and func(t) / func t patterns simply.
-      final tokens = RegExp(r'[sScCnT]|t|-?\d+(?:\.\d+)?|[+*/^()-]')
-          .allMatches(e)
-          .map((m) => m.group(0)!)
-          .toList();
-      // Shunting-yard lite: convert to RPN with ^ right-assoc.
-      double calc(List<String> toks) {
-        var pos = 0;
-        late double Function() parseExpr, parseTerm, parsePow, parseAtom;
-        parseExpr = () {
-          var v = parseTerm();
-          while (pos < toks.length && (toks[pos] == '+' || toks[pos] == '-')) {
-            final op = toks[pos++];
-            final r = parseTerm();
-            v = op == '+' ? v + r : v - r;
+      late double Function() parseExpr,
+          parseTerm,
+          parseUnary,
+          parsePower,
+          parsePrimary,
+          parseArgAtom;
+
+      // Argument of a trig function: the tightest following product of
+      // numbers, the angle variable and parenthesised groups (implicit *).
+      // Nothing usable follows (e.g. `sin^2`, `sec`, `cot`) -> the implicit
+      // argument is the angle itself.
+      bool startsArg(String s) => s == '(' || s == 'x' || s == 't' || isNum(s);
+      double parseFuncArg() {
+        if (!startsArg(peek())) return th;
+        argDepth++;
+        try {
+          var v = parseArgAtom();
+          while (startsArg(peek())) {
+            v *= parseArgAtom();
           }
           return v;
-        };
+        } finally {
+          argDepth--;
+        }
+      }
 
-        parseTerm = () {
-          var v = parsePow();
-          while (pos < toks.length && (toks[pos] == '*' || toks[pos] == '/')) {
-            final op = toks[pos++];
-            final r = parsePow();
-            v = op == '*' ? v * r : v / r;
-          }
+      parseArgAtom = () {
+        if (peek() == '(') {
+          pos++;
+          final v = parseExpr();
+          if (peek() == ')') pos++;
           return v;
-        };
+        }
+        if (peek() == 'x' || peek() == 't') {
+          pos++;
+          return th;
+        }
+        final n = double.parse(toks[pos++]);
+        if (peek() == '^') {
+          pos++;
+          return math.pow(n, parsePower()).toDouble();
+        }
+        return n;
+      };
 
-        parsePow = () {
-          var v = parseAtom();
-          if (pos < toks.length && toks[pos] == '^') {
-            pos++;
-            final r = parsePow();
-            v = math.pow(v, r).toDouble();
-          }
+      parsePrimary = () {
+        if (peek() == '(') {
+          pos++;
+          final v = parseExpr();
+          if (peek() == ')') pos++;
           return v;
-        };
-
-        parseAtom = () {
-          if (toks[pos] == '(') {
+        }
+        if (_funcs.contains(peek())) {
+          final f = toks[pos++];
+          funcsSeen?.add(f);
+          var exp = 1.0;
+          if (peek() == '^') {
             pos++;
-            final v = parseExpr();
-            pos++; // ')'
-            return v;
+            exp = parsePower();
           }
-          if (toks[pos] == 't') {
-            pos++;
-            return th;
+          final base = applyFunc(f, parseFuncArg());
+          return exp == 1.0
+              ? base
+              : _powCapped(base, exp, violations: violations);
+        }
+        if (peek() == 'x' || peek() == 't') {
+          pos++;
+          if (argDepth == 0) {
+            violations?.add('bare variable outside a trig argument');
+            throw StateError('bare variable outside a trig argument');
           }
-          if (RegExp(r'^[sScCnT]$').hasMatch(toks[pos])) {
-            final f = toks[pos++];
-            // Optional (t) wrapper.
-            if (pos < toks.length && toks[pos] == '(') {
-              pos += 2; // '(' 't'
-              pos++; // ')'
-            } else if (pos < toks.length && toks[pos] == 't') {
-              pos++;
-            }
-            return val(f);
-          }
+          return th;
+        }
+        if (isNum(peek())) {
           return double.parse(toks[pos++]);
-        };
+        }
+        throw StateError('unexpected token "${peek()}"');
+      };
 
-        return parseExpr();
-      }
+      parsePower = () {
+        final v = parsePrimary();
+        if (peek() == '^') {
+          pos++;
+          return _powCapped(v, parseUnary(), violations: violations);
+        }
+        return v;
+      };
 
-      return calc(tokens);
+      parseUnary = () {
+        if (peek() == '-') {
+          pos++;
+          return -parseUnary();
+        }
+        if (peek() == '+') {
+          pos++;
+          return parseUnary();
+        }
+        return parsePower();
+      };
+
+      parseTerm = () {
+        var v = parseUnary();
+        while (!atEnd()) {
+          final t = peek();
+          if (t == '*') {
+            pos++;
+            v *= parseUnary();
+          } else if (t == '/') {
+            pos++;
+            v /= parseUnary();
+          } else if (startsAtom(t)) {
+            v *= parseUnary(); // implicit multiplication: 2x, 2 sin x, ...
+          } else {
+            break;
+          }
+        }
+        return v;
+      };
+
+      parseExpr = () {
+        var v = parseTerm();
+        while (!atEnd() && (peek() == '+' || peek() == '-')) {
+          final op = toks[pos++];
+          final r = parseTerm();
+          v = op == '+' ? v + r : v - r;
+        }
+        return v;
+      };
+
+      final value = parseExpr();
+      if (!atEnd()) return null; // unparsed trailing tokens -> not evaluable
+      return value;
     } catch (_) {
       return null;
     }
+  }
+
+  /// Deterministic, input-dependent sample angles for the numeric identity
+  /// check. Deriving the angles from a hash of the *whole* normalised input
+  /// (both sides) — instead of a fixed table — closes the fixed-sample evasion
+  /// class: a crafted term (e.g. a degree-5 polynomial whose roots are the old
+  /// fixed samples) changes the hash, hence changes the angles it would have to
+  /// vanish at, so no fixed-root construction can be authored against the
+  /// sampler. It is a pure function of the input, so results stay deterministic
+  /// and test-stable.
+  List<double> _sampleAngles() {
+    var h = _hash(_evalInput());
+    final angles = <double>[];
+    for (var i = 0; i < 5; i++) {
+      h = (h * 48271 + 11) % 2147483647; // Lehmer LCG (product < 2^53 on web)
+      angles.add(_mapAngle(h / 2147483647.0));
+    }
+    return angles;
+  }
+
+  /// Rolling hash kept below 2^31 so it is identical on the VM and on web
+  /// (dart2js doubles): the sampler must be deterministic everywhere.
+  static int _hash(String s) {
+    var h = 0;
+    for (final c in s.codeUnits) {
+      h = (h * 131 + c) % 2147483647;
+    }
+    return h;
+  }
+
+  /// Map t in [0,1) onto [0.20,1.45] u [1.70,2.90]: a spread of angles that
+  /// deliberately skips the (1.45,1.70) neighbourhood of pi/2, where tan/sec/cot
+  /// blow up and catastrophic cancellation could falsely reject a TRUE identity.
+  static double _mapAngle(double t) {
+    const w1 = 1.25; // width of [0.20, 1.45]
+    final u = t * 2.45; // w1 + width of [1.70, 2.90]
+    return u < w1 ? 0.20 + u : 1.70 + (u - w1);
+  }
+
+  /// A SECOND, differently-derived sample set used alongside [_sampleAngles].
+  /// Both are deterministic functions of the input, but with independent
+  /// roundings, so a spurious term crafted (or coincidentally small) at one
+  /// set must ALSO be small at the other to pass. A genuine identity is
+  /// identical everywhere, so extra samples cost it nothing.
+  static List<double> _auditAngles(String normed) {
+    // Independent LCG parameters (different multiplier and modulus).
+    var h = 7919;
+    for (final c in normed.codeUnits) {
+      h = (h * 48271 + c) % 2147483629;
+    }
+    final out = <double>[];
+    for (var i = 0; i < 5; i++) {
+      h = (h * 48271) % 2147483629;
+      out.add(_mapAngle(h / 2147483629 * 0.999 + 0.0005));
+    }
+    return out;
   }
 
   @override
@@ -226,32 +413,115 @@ class TrigIdentityEquation extends BaseEquation {
     if (!rawInput.contains('=')) {
       return SolveResult.error(_error ?? 'Write an identity with = sign.');
     }
-    final sides = _norm().split('=');
-    if (sides.length != 2 || sides.any((s) => s.isEmpty)) {
+    final sides = _evalInput().split('=');
+    if (sides.length != 2 || sides.any((s) => s.trim().isEmpty)) {
       return SolveResult.error('Need LHS = RHS — e.g. sin^2+cos^2 = 1.');
     }
-    // Numeric check at 5 sample angles.
+    // SCOPE GATE (Failure 2): every occurrence of the angle variable must sit
+    // inside a trig function's argument. A bare variable — one outside any
+    // sin/cos/tan/sec/csc/cot argument — is a polynomial/rational term in x,
+    // which this evaluator's algebraic grammar cannot reason about honestly,
+    // so such input is rejected BEFORE any sampling. This is not merely a
+    // sampler-hardening measure: the parser is shared with the numeric check,
+    // so no input that passes the gate can contain a term the evaluator only
+    // pretends to understand.
+    // EXPONENT CAP (Failure 3): a power whose EVALUATED exponent exceeds
+    // [_maxExponent] is rejected the same way — high powers are the crafted
+    // tolerance-evasion class (0 = (sin x - 0.6)^40 stays under 1e-6 at every
+    // sample), and an exponent containing the bare variable is already caught
+    // by the bare-variable rule above, so only constant exponents reach here.
+    const unsupported =
+        'Unsupported — only trig expressions in one angle are supported; '
+        'a bare variable outside sin/cos/tan/sec/csc/cot (e.g. a polynomial '
+        'term like (x-1)^2) cannot be verified, and exponents above '
+        '$_maxExponent (e.g. (sin x)^40) are not verifiable numerically.';
+    final violations = <String>[];
+    // Token-based zone-skip inputs (Failure 1): the parsed function tokens of
+    // each side, collected in the same gate pass — so 'tan x * 0' (harmless
+    // tan) no longer disables the pi-zone defense via a raw substring match.
+    final sideFuncs = List<Set<String>>.generate(
+      sides.length,
+      (_) => <String>{},
+    );
+    for (var i = 0; i < sides.length; i++) {
+      _evalSide(sides[i], 0.3, violations: violations, funcsSeen: sideFuncs[i]);
+    }
+    if (violations.isNotEmpty) {
+      return SolveResult.error(unsupported);
+    }
+    // Numeric check at input-derived sample angles (see [_sampleAngles]).
     var okCount = 0;
     var checked = 0;
-    for (final th in [0.3, 0.7, 1.1, 2.0, 2.6]) {
+    // A variable-dependent pair needs samples that a crafted term cannot have
+    // been tuned against. The LCG samples are input-derived (already hostile
+    // to pre-authoring), and we ADD a second, differently-derived set so a
+    // spurious term must vanish on BOTH sets to pass — while a true identity
+    // (identical functions, not tuned) matches everywhere by construction.
+    var angles = [..._sampleAngles(), ..._auditAngles(_evalInput())];
+    // sin-negative-zone samples (pi, 3pi/2): a term built to be tiny wherever
+    // sin t is in [0.2, 1.0] (e.g. (sin t - 0.3)^40, whose sup over the safe
+    // zone is ~3e-7) blows up where sin t is NEGATIVE. Skipped only when a
+    // tan/sec/cot function TOKEN actually occurs on a side (they blow up at
+    // pi/2-neighbourhood angles; the zone angles sit near cot's pole at pi),
+    // decided from the gate-pass token stream, not a substring of the input —
+    // a tan factor multiplied by 0 or sec/sec cancelling is still a tan/sec/cot
+    // token, so the defense stays ON for such inputs (their spike terms are
+    // caught by the exponent cap instead). Sin/cos identities are unaffected,
+    // and a true identity matches by construction.
+    final hasTanLike = sideFuncs.any(
+      (f) => f.intersection(const {'tan', 'sec', 'cot'}).isNotEmpty,
+    );
+    if (!hasTanLike) angles = [...angles, 3.14159265358979, 4.71238898038469];
+    // RESIDUAL: numeric sampling at finite angles with tolerance 1e-6 cannot
+    // distinguish a false pair whose difference has sup-norm < 1e-6 over the
+    // reals; deliberate constructions with NESTED bounded powers (e.g.
+    // ((sin x cos x)^5)^5, effective exponent 25 — each ^ site is 5, under
+    // the cap) can still evade, and symbolic verification is the recorded
+    // follow-up.
+    for (final th in angles) {
       final l = _evalSide(sides[0], th);
       final r = _evalSide(sides[1], th);
-      if (l == null || r == null || !l.isFinite || !r.isFinite) continue;
+      // null = structurally unevaluable (bad grammar). Parsing is
+      // angle-independent, so a null side is null at EVERY angle and carries
+      // no per-angle information — skip such samples; the checked == 0 guard
+      // below then reports the input honestly as unverifiable.
+      if (l == null || r == null) continue;
+      final lBad = !l.isFinite;
+      final rBad = !r.isFinite;
+      if (lBad && rBad) continue; // symmetric domain gap: no information.
+      // Exactly ONE side non-finite (e.g. (sin x)^2.5 * 0 is NaN where
+      // sin x < 0 while the other side stays finite) is a MISMATCH, not a
+      // skip — otherwise NaN poisons exactly the zone samples of a crafted
+      // input and the sampler silently loses its defense there.
+      if (lBad != rBad) {
+        checked++;
+        continue;
+      }
       checked++;
       if ((l - r).abs() < 1e-6) okCount++;
     }
-    final key = _match();
-    if (checked > 0 && okCount < checked) {
+    // A side that never produced a usable number (trailing tokens, unsupported
+    // grammar, …) must NEVER be reported as a proof — guard BOTH branches.
+    if (checked == 0) {
+      return SolveResult.error(
+        'Could not verify — keep to sin/cos/tan/sec/csc/cot with numeric angles.',
+      );
+    }
+    if (okCount < checked) {
       return SolveResult.error(
         'Not an identity — sides differ at sample angles ($okCount/$checked match).',
       );
     }
+    final key = _match();
     if (key == null) {
-      if (checked == 0) {
-        return SolveResult.error(
-          'Could not verify — keep to sin/cos/tan/sec/csc/cot with numeric angles.',
-        );
-      }
+      // Unnamed-template numeric verification (Adviser: restrict, don't trust
+      // blindly). The false-confidence hole was that a variable-dependent pair
+      // could be crushed below tolerance at the safe-zone samples by a high
+      // power (0 = (sin x - 0.6)^40 read "Verified numerically"). That is now
+      // closed by the exponent cap in the gate above (and, for powers the cap
+      // admits, by the pi-zone samples + one-sided-mismatch rule). What
+      // remains here is a genuine 12-point numeric verification of an
+      // in-scope expression no named template covers (e.g. sin + 0 = sin).
       return SolveResult(
         answer:
             'Verified numerically at $okCount/$checked sample angles (no named proof template).',
