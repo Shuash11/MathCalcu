@@ -273,6 +273,20 @@ class G6RateEquation extends BaseEquation {
         ),
       ];
     }
+    // An errored solve() must never fall through to the normal step chain:
+    // that used to emit a blank final step (latex=null, explanation='.') for
+    // e.g. `compare 0g 120 vs 1kg 220` (defect: errored-solve blank-step leak).
+    final SolveResult result = solve();
+    if (result.hasError) {
+      return [
+        StepModel(
+          stepNumber: 1,
+          title: 'Invalid input',
+          explanation:
+              result.errorMessage ?? 'Invalid values for this problem.',
+        ),
+      ];
+    }
     switch (p.kind) {
       case _RateKind.distance:
         return [
@@ -294,7 +308,7 @@ class G6RateEquation extends BaseEquation {
           StepModel(
             stepNumber: 3,
             title: 'Multiply with units',
-            explanation: '${solve().answer}.',
+            explanation: '${result.answer}.',
             latex: 'D = ${G6Format.num(p.first * p.second)}',
           ),
         ];
@@ -318,7 +332,7 @@ class G6RateEquation extends BaseEquation {
           StepModel(
             stepNumber: 3,
             title: 'Divide with units',
-            explanation: '${solve().answer}.',
+            explanation: '${result.answer}.',
             latex:
                 'R = ${G6Format.num(p.first / p.second)} '
                 '\\text{ per hour}',
@@ -344,7 +358,7 @@ class G6RateEquation extends BaseEquation {
           StepModel(
             stepNumber: 3,
             title: 'Divide with units',
-            explanation: '${solve().answer}.',
+            explanation: '${result.answer}.',
             latex:
                 'T = ${G6Format.num(p.first / p.second)} '
                 '\\text{ hours}',
@@ -369,13 +383,12 @@ class G6RateEquation extends BaseEquation {
           StepModel(
             stepNumber: 3,
             title: 'Compare',
-            explanation: '${solve().answer}.',
-            latex: solve().hasError
-                ? null
-                : '${G6Format.num(p.second / _toBase(p.first, p.unitA))} '
-                      '\\text{ vs } '
-                      '${G6Format.num(p.fourth / _toBase(p.third, p.unitB))} '
-                      '\\text{ per unit}',
+            explanation: '${result.answer}.',
+            latex:
+                '${G6Format.num(p.second / _toBase(p.first, p.unitA))} '
+                '\\text{ vs } '
+                '${G6Format.num(p.fourth / _toBase(p.third, p.unitB))} '
+                '\\text{ per unit}',
           ),
         ];
       case _RateKind.meter:
@@ -399,12 +412,11 @@ class G6RateEquation extends BaseEquation {
           StepModel(
             stepNumber: 3,
             title: 'Label kWh and pesos',
-            explanation: '${solve().answer}.',
-            latex: solve().hasError
-                ? null
-                : '\\text{Use} = ${G6Format.num(p.second - p.first)} '
-                      '\\text{ kWh}, \\quad \\text{Bill} = '
-                      '${G6Format.num((p.second - p.first) * p.third)}',
+            explanation: '${result.answer}.',
+            latex:
+                '\\text{Use} = ${G6Format.num(p.second - p.first)} '
+                '\\text{ kWh}, \\quad \\text{Bill} = '
+                '${G6Format.num((p.second - p.first) * p.third)}',
           ),
         ];
     }

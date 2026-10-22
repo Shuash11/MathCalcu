@@ -206,6 +206,107 @@ void main() {
     });
   });
 
+  // PHASE 14 — errored-solve honesty. Two root causes let validate()==true
+  // through to an errored solve(): (1) best-buy quantities are only checked for
+  // positivity inside solve() (`p.first <= 0 || p.third <= 0`), and (2) the
+  // meter kind only guards its reading order and rate sign inside solve().
+  // getSteps() then walked the NORMAL step chain, whose last step was blank
+  // (latex null, explanation '.') — a silently empty step instead of an error.
+  group('G6 rate: an errored solve() never emits the normal step chain', () {
+    const Map<String, String> offenders = <String, String>{
+      // root cause 1 — non-positive best-buy quantity
+      'compare 0g 120 vs 1kg 220': 'Quantities must be positive.',
+      'compare 1kg 220 vs 0g 120': 'Quantities must be positive.',
+      'compare 0g 0 vs 1kg 0': 'Quantities must be positive.',
+      'compare 0g 120 vs 0kg 220': 'Quantities must be positive.',
+      'compare 0.0kg 120 vs 0.00l 220': 'Quantities must be positive.',
+      'compare 0ml 120 vs 1l 220': 'Quantities must be positive.',
+      'compare 0pcs 120 vs 1pcs 220': 'Quantities must be positive.',
+      'compare -1g 120 vs -1g 120': 'Quantities must be positive.',
+      'compare -500g 120 vs 1kg 220': 'Quantities must be positive.',
+      'compare 500g 120 vs -1kg 220': 'Quantities must be positive.',
+      'compare -1kg 220 vs -500g 120': 'Quantities must be positive.',
+      'COMPARE 0G 120 VS 1KG 220': 'Quantities must be positive.',
+      // root cause 2 — meter reading order / negative rate
+      'prev=1380 pres=1250 rate=12':
+          'Present reading cannot be less than previous.',
+      'prev=1250 pres=-1380 rate=12':
+          'Present reading cannot be less than previous.',
+      'prev=-1250 pres=-1380 rate=12':
+          'Present reading cannot be less than previous.',
+      'prev=1250 pres=1380 rate=-12': 'Rate cannot be negative.',
+    };
+
+    test('every offender surfaces one honest Invalid input step', () {
+      expect(offenders, hasLength(16));
+      offenders.forEach((input, message) {
+        final eq = G6RateEquation(input);
+        expect(eq.validate(), isTrue, reason: input); // parseable but invalid
+        final r = eq.solve();
+        expect(r.hasError, isTrue, reason: input);
+        expect(r.errorMessage, message, reason: input);
+        final steps = eq.getSteps();
+        expect(steps, hasLength(1), reason: input);
+        expect(steps.single.title, 'Invalid input', reason: input);
+        expect(steps.single.explanation, message, reason: input);
+        expect(steps.single.latex, isNull, reason: input);
+        for (final s in steps) {
+          expect(s.explanation.trim(), isNotEmpty, reason: input);
+          expect(s.explanation.trim(), isNot('.'), reason: input);
+        }
+      });
+    });
+
+    test('previously-working shapes keep their 3-step chains and answers', () {
+      final buy = G6RateEquation('compare 500g 120 vs 1kg 220');
+      expect(buy.getSteps(), hasLength(3));
+      expect(
+        buy.getSteps()[2].explanation,
+        'Second is cheaper (₱0.24 vs ₱0.22 per unit).',
+      );
+      expect(buy.getSteps()[2].latex, isNotNull);
+
+      final meter = G6RateEquation('prev=1250 pres=1380 rate=12');
+      expect(meter.getSteps(), hasLength(3));
+      expect(
+        meter.getSteps()[2].explanation,
+        'Use = 130 kWh, Bill = ₱1560.00.',
+      );
+      expect(meter.getSteps()[2].latex, contains('1560'));
+
+      expect(G6RateEquation('R=? D=120 T=2').getSteps(), hasLength(3));
+      expect(G6RateEquation('D=? R=60 T=2').getSteps(), hasLength(3));
+      expect(G6RateEquation('T=? D=120 R=40').getSteps(), hasLength(3));
+      expect(
+        G6RateEquation('R=? D=120 T=2').getSteps()[2].explanation,
+        'R = 60 per hour.',
+      );
+
+      // Valid but boundary shapes keep the normal chain (no error branch).
+      for (final input in const [
+        'prev=1250 pres=1250 rate=12', // zero use
+        'prev=1250 pres=1380 rate=0', // zero rate
+        'prev=0 pres=0 rate=0',
+        'prev=-1250 pres=1380 rate=12',
+        'D=? R=60 T=0',
+        'D=? R=0 T=2',
+        'R=? D=-120 T=2',
+        'T=? D=120 R=-40',
+        'compare 500g 0 vs 1kg 0',
+        'compare 1pcs 5 vs 1pcs 5',
+        'compare 0.5kg 120 vs 500g 220',
+      ]) {
+        final eq = G6RateEquation(input);
+        expect(eq.solve().hasError, isFalse, reason: input);
+        expect(eq.getSteps(), hasLength(3), reason: input);
+        for (final s in eq.getSteps()) {
+          expect(s.explanation.trim(), isNotEmpty, reason: input);
+          expect(s.explanation.trim(), isNot('.'), reason: input);
+        }
+      }
+    });
+  });
+
   group('G6 wave2 LaTeX emission (Batch 1)', () {
     test('percent: every step across all six modes carries TeX', () {
       for (final input in const [

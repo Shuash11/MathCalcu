@@ -73,9 +73,107 @@ void main() {
       expect(r.answer, contains('30'));
     });
 
-    test('degenerate triangle rejected', () {
+    // CORRECTED (Phase 14): this assertion used to pass for the WRONG REASON.
+    // _all()'s `-?\d+` read the hyphenated triple '1-2-10' as [1, -2, -10], so
+    // the POSITIVITY guard rejected it and the triangle-INEQUALITY guard its
+    // name implies never ran. The sides now parse as positives; pin the reason.
+    test('degenerate triangle rejected by the triangle inequality', () {
       final eq = G6GeometryEquation('triangle 1-2-10');
       expect(eq.validate(), isFalse);
+      expect(eq.solve().hasError, isTrue);
+      expect(
+        eq.solve().errorMessage,
+        'Not a triangle: sides fail the triangle inequality.',
+      );
+    });
+
+    // PHASE 14 — a space-less hyphenated triple is a SIDE LIST, not signed
+    // numbers ('triangle 3-4-5' used to fail positivity and emit a single
+    // latex-null step).
+    test('space-less hyphenated triangle sides parse as positive sides', () {
+      for (final MapEntry<String, String> e in const <String, String>{
+        'triangle 3-4-5': 'P = 12 cm',
+        'triangle 6-8-10': 'P = 24 cm',
+        'triangle 5-4-3': 'P = 12 cm',
+        'triangle 4-4-4': 'P = 12 cm',
+        'triangle 3.5-4-5': 'P = 12.5 cm',
+        'triangle 1-2-2': 'P = 5 cm',
+      }.entries) {
+        final eq = G6GeometryEquation(e.key);
+        expect(eq.validate(), isTrue, reason: e.key);
+        final r = eq.solve();
+        expect(r.hasError, isFalse, reason: e.key);
+        expect(r.answer, e.value, reason: e.key);
+        expect(eq.getSteps(), hasLength(5), reason: e.key);
+      }
+      // The spaced form was already fine and must stay fine.
+      expect(
+        G6GeometryEquation('triangle 3 - 4 - 5').solve().answer,
+        'P = 12 cm',
+      );
+      // Degenerate hyphenated triples now fail the INEQUALITY guard.
+      final degenerate = G6GeometryEquation('triangle 2-2-4');
+      expect(degenerate.validate(), isFalse);
+      expect(
+        degenerate.solve().errorMessage,
+        'Not a triangle: sides fail the triangle inequality.',
+      );
+      // A leading sign is not a side list: still parsed as signed numbers and
+      // still rejected by the positivity guard (unchanged behaviour).
+      final signed = G6GeometryEquation('triangle -3-4-5');
+      expect(signed.validate(), isFalse);
+      expect(signed.solve().errorMessage, 'Lengths must be positive (> 0).');
+      expect(
+        G6GeometryEquation('triangle -3 - 4 - 5').solve().errorMessage,
+        'Lengths must be positive (> 0).',
+      );
+      // Bare space-separated sides are untouched.
+      expect(G6GeometryEquation('triangle 3 4 5').solve().answer, 'P = 12 cm');
+    });
+
+    // PHASE 14 (2b) — the solver carries ONE unit per shape, so an input that
+    // mixes units is refused honestly instead of being reported in a single
+    // one ('rect 6cm x 4m' used to answer 'P = 20 m, A = 24 m2').
+    test('mixed length units are refused instead of collapsed', () {
+      const String message =
+          'Use one unit for all lengths — this input mixes cm and m.';
+      final eq = G6GeometryEquation('rect 6cm x 4m');
+      expect(eq.validate(), isFalse);
+      final r = eq.solve();
+      expect(r.hasError, isTrue);
+      expect(r.errorMessage, message);
+      final steps = eq.getSteps();
+      expect(steps, hasLength(1));
+      expect(steps.single.title, 'Invalid input');
+      expect(steps.single.explanation, message);
+      expect(steps.single.latex, isNull);
+      expect(G6GeometryEquation('rect 6m x 4cm').solve().errorMessage, message);
+      // Single-unit inputs are unchanged.
+      expect(
+        G6GeometryEquation('square 5 m').solve().answer,
+        'P = 20 m, A = 25 m²',
+      );
+      expect(
+        G6GeometryEquation('rect 6 x 4m').solve().answer,
+        'P = 20 m, A = 24 m²',
+      );
+      expect(
+        G6GeometryEquation('rect 6m x 4m').solve().answer,
+        'P = 20 m, A = 24 m²',
+      );
+      expect(
+        G6GeometryEquation('rect 6cm x 4cm').solve().answer,
+        'P = 20 cm, A = 24 cm²',
+      );
+      expect(
+        G6GeometryEquation('rect 6mm x 4mm').solve().answer,
+        'P = 20 mm, A = 24 mm²',
+      );
+      expect(G6GeometryEquation('circle r=7cm').solve().answer, contains('cm'));
+      expect(
+        G6GeometryEquation('rect 6x4').solve().answer,
+        'P = 20 cm, A = 24 cm²',
+      );
     });
 
     test('negative length rejected', () {
@@ -354,7 +452,18 @@ void main() {
           G6ProbabilityEquation('P(red) in 3R + 2B'),
           G6ProbabilityEquation('3 out of 5'),
         ]) {
-          for (final s in eq.getSteps()) {
+          // NON-VACUITY (Phase 14): 'triangle 3-4-5' used to be rejected, so
+          // it emitted a single latex-null step and every inner assertion was
+          // skipped for it. Require a real chain with at least one TeX line.
+          final steps = eq.getSteps();
+          expect(eq.validate(), isTrue, reason: eq.rawInput);
+          expect(steps.length, greaterThan(1), reason: eq.rawInput);
+          expect(
+            steps.any((s) => s.latex != null && s.latex!.isNotEmpty),
+            isTrue,
+            reason: eq.rawInput,
+          );
+          for (final s in steps) {
             for (final tex in <String?>[s.latex, ...?s.subLatex]) {
               if (tex == null) {
                 continue;
@@ -401,7 +510,14 @@ void main() {
         ];
         var checked = 0;
         for (final eq in cases) {
-          for (final s in eq.getSteps()) {
+          final int before = checked;
+          final steps = eq.getSteps();
+          // NON-VACUITY (Phase 14): 'triangle 3-4-5' used to emit a single
+          // latex-null step, so nothing was rendered for it and 'checked'
+          // never grew — the case was silently unasserted.
+          expect(eq.validate(), isTrue, reason: eq.rawInput);
+          expect(steps.length, greaterThan(1), reason: eq.rawInput);
+          for (final s in steps) {
             if (s.latex != null && s.latex!.isNotEmpty) {
               await _expectTexParses(tester, s.latex!);
               checked++;
@@ -413,6 +529,9 @@ void main() {
               }
             }
           }
+          // Every case must contribute at least one parsed TeX line, so no
+          // case can pass by emitting nothing (Phase 14 non-vacuity).
+          expect(checked, greaterThan(before), reason: eq.rawInput);
         }
         expect(checked, greaterThan(0));
       },

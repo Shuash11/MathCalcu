@@ -70,6 +70,43 @@ class G6GeometryEquation extends BaseEquation {
     return 'cm';
   }
 
+  /// Distinct length units (mm/cm/m) actually named in [t].
+  ///
+  /// The solver can only carry ONE unit per shape, so an input that mixes two
+  /// ('rect 6cm x 4m' -> 'P = 20 m, A = 24 m2') used to report a single unit
+  /// for dimensions measured in different ones — misleading. Detect that here
+  /// so the solver can refuse honestly instead of answering in one unit.
+  static Set<String> _unitsIn(String t) {
+    final Set<String> found = <String>{};
+    for (final RegExpMatch m in RegExp(
+      r'\d+(?:\.\d+)?\s*(mm|cm|m)(?![a-z])',
+    ).allMatches(t)) {
+      found.add(m.group(1)!);
+    }
+    for (final RegExpMatch m in RegExp(
+      r'(?:^|[\s,=])(mm|cm|m)(?=[\s,]|$)',
+    ).allMatches(t)) {
+      found.add(m.group(1)!);
+    }
+    return found;
+  }
+
+  /// Error message when the input mixes length units, else null.
+  String? _mixedUnitError() {
+    final Set<String> units = _unitsIn(
+      rawInput.toLowerCase().replaceAll('−', '-'),
+    );
+    if (units.length <= 1) {
+      return null;
+    }
+    final List<String> ordered = [
+      for (final String u in const ['mm', 'cm', 'm'])
+        if (units.contains(u)) u,
+    ];
+    return 'Use one unit for all lengths — this input mixes '
+        '${ordered.join(' and ')}.';
+  }
+
   _GeoParsed? _parse() {
     final String t = rawInput.toLowerCase().replaceAll('−', '-');
     final String unit = _unit(t);
@@ -133,12 +170,23 @@ class G6GeometryEquation extends BaseEquation {
       return null;
     }
     if (t.startsWith('triangle')) {
-      if (RegExp(r'(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)')
-          .hasMatch(t)) {
-        final List<double> d = _all(t);
+      // A space-less hyphenated triple ('3-4-5') is a SIDE LIST, not signed
+      // numbers: _all()'s `-?\d+` used to turn it into [3, -4, -5], so the
+      // positivity guard rejected it and the triangle-inequality guard never
+      // ran. Read the three positive sides straight from the match groups.
+      // The prefix guard keeps a leading sign out of the match, so
+      // 'triangle -3-4-5' still parses as the signed list [-3, -4, -5].
+      final RegExpMatch? tri = RegExp(
+        r'(?:^|[^\d.\-])(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)',
+      ).firstMatch(t);
+      if (tri != null) {
         return _GeoParsed(
           shape: _Shape.triangleSides,
-          dims: d.sublist(0, 3),
+          dims: [
+            double.parse(tri.group(1)!),
+            double.parse(tri.group(2)!),
+            double.parse(tri.group(3)!),
+          ],
           unit: unit,
           diameter: false,
         );
@@ -325,6 +373,11 @@ class G6GeometryEquation extends BaseEquation {
           'Pick a shape first — e.g. rect 6x4, triangle b=8 h=5, circle r=7.';
       return false;
     }
+    final String? mixed = _mixedUnitError();
+    if (mixed != null) {
+      _error = mixed;
+      return false;
+    }
     final String? pos = _positiveCheck(p.dims);
     if (pos != null) {
       _error = pos;
@@ -346,6 +399,10 @@ class G6GeometryEquation extends BaseEquation {
     final _GeoParsed? p = _parse();
     if (p == null) {
       return SolveResult.error(_error ?? 'Pick a shape — e.g. rect 6x4.');
+    }
+    final String? mixed = _mixedUnitError();
+    if (mixed != null) {
+      return SolveResult.error(mixed);
     }
     final String? pos = _positiveCheck(p.dims);
     if (pos != null) {
