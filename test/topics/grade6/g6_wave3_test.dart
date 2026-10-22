@@ -131,6 +131,207 @@ void main() {
       expect(G6GeometryEquation('triangle 3 4 5').solve().answer, 'P = 12 cm');
     });
 
+    // PHASE 15 (issue 1) — the hyphen-triple matcher accepted TRAILING JUNK
+    // and silently truncated: 'triangle 3-4-5-6' answered 'P = 12 cm', quietly
+    // dropping '-6'. The three sides must now be the whole shape clause.
+    test('hyphenated triangle sides must be the whole clause', () {
+      const String message =
+          'Not a valid triangle side list — give exactly three '
+          'hyphen-separated sides, e.g. triangle 3-4-5.';
+      for (final String input in const <String>[
+        'triangle 3-4-5-6',
+        'triangle 3-4-5-',
+        'triangle abc 3-4-5',
+        'triangle 3-4-5 extra',
+        'triangle x3-4-5',
+        'triangle b=3-4-5',
+        'triangle 3-4-5e',
+        'triangle 3-4-5 cmx',
+        'triangle 3cm-4cm-5cm-6cm',
+        'triangle 3cm-4cm-5cm extra',
+      ]) {
+        final eq = G6GeometryEquation(input);
+        expect(eq.validate(), isFalse, reason: input);
+        final r = eq.solve();
+        expect(r.hasError, isTrue, reason: input);
+        expect(r.errorMessage, message, reason: input);
+        expect(r.answer, '', reason: input);
+        // The refusal is reported as a single honest step, not a truncated
+        // answer with a P = ... value.
+        expect(eq.getSteps(), hasLength(1), reason: input);
+        expect(eq.getSteps().single.title, 'Invalid input', reason: input);
+      }
+    });
+
+    // PHASE 15 (issues 1b + 3) — the forms Phase 14 made work, the guards they
+    // route through, and the comma/space-separated forms stay unchanged.
+    test('Phase 15 keeps the working triangle forms and guards', () {
+      for (final MapEntry<String, String> e in const <String, String>{
+        'triangle 3-4-5': 'P = 12 cm',
+        'triangle 6-8-10': 'P = 24 cm',
+        'triangle 5-4-3': 'P = 12 cm',
+        'triangle 4-4-4': 'P = 12 cm',
+        'triangle 3.5-4-5': 'P = 12.5 cm',
+        'triangle 1-2-2': 'P = 5 cm',
+        'triangle 03-4-5': 'P = 12 cm',
+        'triangle 3- 4- 5': 'P = 12 cm',
+        'triangle 3 - 4 - 5': 'P = 12 cm',
+        'triangle 3,4,5': 'P = 12 cm',
+        'triangle 3, 4, 5': 'P = 12 cm',
+        'triangle 3 4 5': 'P = 12 cm',
+        'triangle 0.5-0.5-0.5': 'P = 1.5 cm',
+        'triangle 3-4cm-5': 'P = 12 cm',
+      }.entries) {
+        final eq = G6GeometryEquation(e.key);
+        expect(eq.validate(), isTrue, reason: e.key);
+        expect(eq.solve().answer, e.value, reason: e.key);
+      }
+      // Triangle-inequality guard unchanged.
+      for (final String input in const <String>[
+        'triangle 1-2-10',
+        'triangle 2-2-4',
+        'triangle 1-1-2',
+      ]) {
+        final eq = G6GeometryEquation(input);
+        expect(eq.validate(), isFalse, reason: input);
+        expect(
+          eq.solve().errorMessage,
+          'Not a triangle: sides fail the triangle inequality.',
+          reason: input,
+        );
+      }
+      // Positivity guard unchanged: a leading sign is not a side list, a
+      // doubled separator is not a side list, and a non-positive side is
+      // refused whether or not the sides carry units.
+      const String positive = 'Lengths must be positive (> 0).';
+      for (final String input in const <String>[
+        'triangle -3-4-5',
+        'triangle -3 - 4 - 5',
+        'triangle 3--4--5',
+        'triangle 3-4--5',
+        'triangle 3-4',
+        'triangle 0-4-5',
+        'triangle 3-0-5',
+        'triangle 0cm-4cm-5cm',
+      ]) {
+        final eq = G6GeometryEquation(input);
+        expect(eq.validate(), isFalse, reason: input);
+        expect(eq.solve().errorMessage, positive, reason: input);
+      }
+    });
+
+    // PHASE 15 (issue 2) — a unit-suffixed hyphenated triple used to be
+    // refused with the misleading 'Lengths must be positive (> 0).' (_all()
+    // read '-4'/'-5' out of 'cm-'). The unit now comes through and the sides
+    // parse as three POSITIVE lengths.
+    test('unit-suffixed hyphenated triangles honour the unit', () {
+      for (final MapEntry<String, String> e in const <String, String>{
+        'triangle 3cm-4cm-5cm': 'P = 12 cm',
+        'triangle 3m-4m-5m': 'P = 12 m',
+        'triangle 3mm-4mm-5mm': 'P = 12 mm',
+        'triangle 6m-8m-10m': 'P = 24 m',
+        'triangle 3cm - 4cm - 5cm': 'P = 12 cm',
+        'triangle 3cm-4cm-5cm ': 'P = 12 cm',
+        'triangle 03cm-4cm-5cm': 'P = 12 cm',
+        'triangle 3.5cm-4cm-5cm': 'P = 12.5 cm',
+      }.entries) {
+        final eq = G6GeometryEquation(e.key);
+        expect(eq.validate(), isTrue, reason: e.key);
+        final r = eq.solve();
+        expect(r.hasError, isFalse, reason: e.key);
+        expect(r.answer, e.value, reason: e.key);
+        expect(r.customData?.first['shape'], 'triangle', reason: e.key);
+        expect(eq.getSteps(), hasLength(5), reason: e.key);
+        expect(eq.getSteps()[3].latex, isNotNull, reason: e.key);
+      }
+      // Consistent with the spaced/suffixed forms that were already fine.
+      expect(
+        G6GeometryEquation('triangle 3cm 4cm 5cm').solve().answer,
+        'P = 12 cm',
+      );
+      expect(
+        G6GeometryEquation('triangle 3 cm 4 cm 5 cm').solve().answer,
+        'P = 12 cm',
+      );
+      // The suffixed degenerate triple reaches the INEQUALITY guard (on
+      // baseline it never got past positivity).
+      final degenerate = G6GeometryEquation('triangle 2cm-2cm-4cm');
+      expect(degenerate.validate(), isFalse);
+      expect(
+        degenerate.solve().errorMessage,
+        'Not a triangle: sides fail the triangle inequality.',
+      );
+    });
+
+    // PHASE 15 (issue 2b) — a hyphenated triple that MIXES units is refused by
+    // the existing mixed-unit guard, exactly like the rectangle case.
+    test('mixed-unit hyphenated triangle is refused', () {
+      const String message =
+          'Use one unit for all lengths — this input mixes cm and m.';
+      final eq = G6GeometryEquation('triangle 3cm-4m-5cm');
+      expect(eq.validate(), isFalse);
+      final r = eq.solve();
+      expect(r.hasError, isTrue);
+      expect(r.errorMessage, message);
+      expect(eq.getSteps().single.title, 'Invalid input');
+      expect(
+        G6GeometryEquation('triangle 3m-4cm-5mm').solve().errorMessage,
+        'Use one unit for all lengths — this input mixes mm and cm and m.',
+      );
+    });
+
+    // PHASE 15 (issue 3) — _unit() used a loose contains('mm')/contains('cm')
+    // test while the mixed-unit guard used a strict regex, so they disagreed:
+    // 'rect 6 mmm x 4m' answered 'P = 20 mm, A = 24 mm2' while the guard saw
+    // only m. Both now read the SAME detector, so a unit is claimed only where
+    // the guard would see it (and a unit written before the × operator is seen
+    // by both).
+    test('unit detection agrees with the mixed-unit guard', () {
+      // 'mmm' is not a unit: the 6 mmm dimension is read as 6 m (the unit the
+      // guard also sees), not silently as 6 mm.
+      expect(
+        G6GeometryEquation('rect 6 mmm x 4m').solve().answer,
+        'P = 20 m, A = 24 m²',
+      );
+      // A unit suffix written against the × operator is now seen.
+      expect(
+        G6GeometryEquation('rect 6mx4').solve().answer,
+        'P = 20 m, A = 24 m²',
+      );
+      expect(
+        G6GeometryEquation('rect 5mx5').solve().answer,
+        'P = 20 m, A = 25 m²',
+      );
+      // ... and therefore a genuinely mixed input of that shape is refused
+      // instead of being collapsed into one unit.
+      final mixed = G6GeometryEquation('rect 6mmx4cm');
+      expect(mixed.validate(), isFalse);
+      expect(
+        mixed.solve().errorMessage,
+        'Use one unit for all lengths — this input mixes mm and cm.',
+      );
+      // Junk that merely CONTAINS the letters 'mm' is not a unit.
+      expect(
+        G6GeometryEquation('rect 6x4 hmm').solve().answer,
+        'P = 20 cm, A = 24 cm²',
+      );
+      // The documented unit forms are untouched.
+      for (final MapEntry<String, String> e in const <String, String>{
+        'rect 6mm x 4mm': 'P = 20 mm, A = 24 mm²',
+        'rect 6m x 4m': 'P = 20 m, A = 24 m²',
+        'rect 6cm x 4cm': 'P = 20 cm, A = 24 cm²',
+        'rect 6x4': 'P = 20 cm, A = 24 cm²',
+        'rect 6 x 4m': 'P = 20 m, A = 24 m²',
+        'square 5 mm': 'P = 20 mm, A = 25 mm²',
+      }.entries) {
+        expect(
+          G6GeometryEquation(e.key).solve().answer,
+          e.value,
+          reason: e.key,
+        );
+      }
+    });
+
     // PHASE 14 (2b) — the solver carries ONE unit per shape, so an input that
     // mixes units is refused honestly instead of being reported in a single
     // one ('rect 6cm x 4m' used to answer 'P = 20 m, A = 24 m2').
