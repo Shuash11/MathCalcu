@@ -1,12 +1,11 @@
 {
-    "name": "mathcalcu",
-    "short_name": "mathcalcu",
-    "start_url": "/MathCalcu/",
-    "scope": "/MathCalcu/",
+    "name": "MathCalc",
+    "short_name": "MathCalc",
+    "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A MathCalcu app .",
+    "background_color": "#FAFAF7",
+    "theme_color": "#0F766E",
+    "description": "Premium offline math solver with step-by-step LaTeX solutions — Grade 6 to College.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
